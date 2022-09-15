@@ -11,7 +11,6 @@ using System.Net.Sockets;
 using Uno.Extensions;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
-using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -64,7 +63,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 		}
 
 		private static bool IsRemoteControlClientInstalled(GeneratorExecutionContext context)
-			=> WellKnownTypeProvider.GetOrCreate(context.Compilation).TryGetOrCreateTypeByMetadataName("Uno.UI.RemoteControl.RemoteControlClient", out _);
+			=> context.Compilation.GetTypeByMetadataName("Uno.UI.RemoteControl.RemoteControlClient") != null;
 
 		private static void BuildSearchPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
 		{

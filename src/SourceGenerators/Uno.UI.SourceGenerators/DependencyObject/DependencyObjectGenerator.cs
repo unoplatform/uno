@@ -8,7 +8,6 @@ using Uno.Extensions;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
-using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -57,19 +56,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_context = context;
 
 				var comp = context.Compilation;
-				var provider = WellKnownTypeProvider.GetOrCreate(comp);
 
-				_dependencyObjectSymbol = provider.GetOrCreateTypeByMetadataName(XamlConstants.Types.DependencyObject);
-				_unoViewgroupSymbol = provider.GetOrCreateTypeByMetadataName("Uno.UI.UnoViewGroup");
-				_iosViewSymbol = provider.GetOrCreateTypeByMetadataName("UIKit.UIView");
-				_macosViewSymbol = provider.GetOrCreateTypeByMetadataName("AppKit.NSView");
-				_androidViewSymbol = provider.GetOrCreateTypeByMetadataName("Android.Views.View");
-				_javaObjectSymbol = provider.GetOrCreateTypeByMetadataName("Java.Lang.Object");
-				_androidActivitySymbol = provider.GetOrCreateTypeByMetadataName("Android.App.Activity");
-				_androidFragmentSymbol = provider.GetOrCreateTypeByMetadataName("AndroidX.Fragment.App.Fragment");
-				_bindableAttributeSymbol = provider.GetOrCreateTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
-				_iFrameworkElementSymbol = provider.GetOrCreateTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
-				_frameworkElementSymbol = provider.GetOrCreateTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
+				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
+				_unoViewgroupSymbol = comp.GetTypeByMetadataName("Uno.UI.UnoViewGroup");
+				_iosViewSymbol = comp.GetTypeByMetadataName("UIKit.UIView");
+				_macosViewSymbol = comp.GetTypeByMetadataName("AppKit.NSView");
+				_androidViewSymbol = comp.GetTypeByMetadataName("Android.Views.View");
+				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
+				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
+				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
+				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
+				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			}

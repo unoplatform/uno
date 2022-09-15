@@ -11,7 +11,6 @@ using Uno.UI.SourceGenerators.XamlGenerator;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
 using System.Threading;
-using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -93,14 +92,13 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
 
 							_bindableAttributeSymbol = FindBindableAttributes();
-							var provider = WellKnownTypeProvider.GetOrCreate(context.Compilation);
-							_dependencyPropertySymbol = provider.GetOrCreateTypeByMetadataName(XamlConstants.Types.DependencyProperty);
-							_dependencyObjectSymbol = provider.GetOrCreateTypeByMetadataName(XamlConstants.Types.DependencyObject);
+							_dependencyPropertySymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyProperty);
+							_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
 
-							_javaObjectSymbol = provider.GetOrCreateTypeByMetadataName("Java.Lang.Object");
-							_nsObjectSymbol = provider.GetOrCreateTypeByMetadataName("Foundation.NSObject");
-							_nonBindableSymbol = provider.GetOrCreateTypeByMetadataName("Windows.UI.Xaml.Data.NonBindableAttribute");
-							_resourceDictionarySymbol = provider.GetOrCreateTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
+							_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
+							_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
+							_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.NonBindableAttribute");
+							_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
 							_currentModule = context.Compilation.SourceModule;
 
 							var modules = from ext in context.Compilation.ExternalReferences
