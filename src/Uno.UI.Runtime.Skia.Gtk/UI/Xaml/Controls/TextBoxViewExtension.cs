@@ -24,8 +24,11 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 	{
 		private const string TextBoxViewCssClass = "textboxview";
 
+		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
 		private readonly GtkWindow _window;
+		
+		private CssProvider? _foregroundCssProvider;
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
 		private bool _handlingTextChanged;
@@ -103,6 +106,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
+			RemoveForegroundProvider();
 
 			if (_currentInputWidget != null)
 			{
@@ -240,8 +244,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				var inputText = GetInputText();
 				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
-				SetForeground(textBox.Foreground);
 			}
+			
+			SetForeground(textBox.Foreground);
 		}
 
 		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)
@@ -424,12 +429,27 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		{
 			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
 			{
-				var provider = new CssProvider();
+				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
+				RemoveForegroundProvider();
+				_foregroundCssProvider = new CssProvider();
 				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
-				var data = $".textbox_foreground {{ caret-color: {color}; color: {color} }}";
-				provider.LoadFromData(data);
-				StyleContext.AddProviderForScreen(Gdk.Screen.Default, provider, priority: uint.MaxValue);
-				_currentInputWidget.StyleContext.AddClass("textbox_foreground");
+				var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
+				_foregroundCssProvider.LoadFromData(data);
+				StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
+				if (!_currentInputWidget.StyleContext.HasClass(cssClassName))
+				{
+					_currentInputWidget.StyleContext.AddClass(cssClassName);
+				}
+			}
+		}
+
+		private void RemoveForegroundProvider()
+		{
+			if (_foregroundCssProvider is not null)
+			{
+				StyleContext.RemoveProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider);
+				_foregroundCssProvider.Dispose();
+				_foregroundCssProvider = null;
 			}
 		}
 	}
