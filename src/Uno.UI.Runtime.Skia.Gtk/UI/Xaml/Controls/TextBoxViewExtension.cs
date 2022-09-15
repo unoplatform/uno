@@ -24,6 +24,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 	internal class TextBoxViewExtension : ITextBoxViewExtension
 	{
 		private const string TextBoxViewCssClass = "textboxview";
+		private static bool _warnedAboutSelectionColorChanges;
 
 		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
@@ -115,6 +116,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
 				var textInputLayer = GetWindowTextInputLayer();
 				textInputLayer.Remove(_currentInputWidget);
+				RemoveForegroundCssProvider();
 			}
 		}
 
@@ -245,9 +247,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				var inputText = GetInputText();
 				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
+				SetForeground(textBox.Foreground);
+				SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 			}
-			
-			SetForeground(textBox.Foreground);
 		}
 
 		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)
@@ -426,9 +428,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 		}
 
-		public void UpdateForeground()
+		public void SetForeground(Brush brush)
 		{
-			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
+			if (_currentInputWidget is { } widget && brush is SolidColorBrush scb)
 			{
 				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
 				RemoveForegroundProvider();
@@ -444,7 +446,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 		}
 
-		private void RemoveForegroundProvider()
+		private void RemoveForegroundCssProvider()
 		{
 			if (_foregroundCssProvider is not null)
 			{
@@ -454,10 +456,17 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 		}
 
-		public void UpdateSelectionHighlightColor()
+		public void SetSelectionHighlightColor(Brush brush)
 		{
-			// Selection highlight color change is not supported on GTK currently
-			this.Log().LogWarning("SelectionHighlightColor changes are currently not supported on GTK");
+			if (!_warnedAboutSelectionColorChanges)
+			{
+				_warnedAboutSelectionColorChanges = true;
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					// Selection highlight color change is not supported on GTK currently
+					this.Log().LogWarning("SelectionHighlightColor changes are currently not supported on GTK");
+				}
+			}
 		}
 	}
 }

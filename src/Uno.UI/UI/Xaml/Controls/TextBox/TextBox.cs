@@ -436,16 +436,22 @@ namespace Windows.UI.Xaml.Controls
 
 		#region PlaceholderForeground DependencyProperty
 
+		/// <summary>
+		/// Gets or sets a brush that describes the color of placeholder text.
+		/// </summary>
 		public Brush PlaceholderForeground
 		{
-			get => (Brush)this.GetValue(PlaceholderForegroundProperty);
-			set => this.SetValue(PlaceholderForegroundProperty, value);
+			get => (Brush)GetValue(PlaceholderForegroundProperty);
+			set => SetValue(PlaceholderForegroundProperty, value);
 		}
 
-
+		/// <summary>
+		/// Identifies the PlaceholderForeground dependency property.
+		/// </summary>
 		public static DependencyProperty PlaceholderForegroundProperty { get; } =
 			DependencyProperty.Register(
-				nameof(PlaceholderForeground), typeof(Brush),
+				nameof(PlaceholderForeground),
+				typeof(Brush),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(default(Brush)));
 
