@@ -34,7 +34,7 @@ namespace Windows.Graphics.Display
 		/// <summary>
 		/// BOOLEAN value that indicates whether the brightness override is active. 
 		/// If TRUE, the current brightness level matches the override brightness level. 
-		/// This property value will always be FALSE if StartOverride() isn’t called.
+		/// This property value will always be FALSE if StartOverride() isn't called.
 		/// </summary>
 		public bool IsOverrideActive { get; private set; }
 	}
