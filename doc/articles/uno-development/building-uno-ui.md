@@ -5,9 +5,9 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 ## Prerequisites
 
 - Visual Studio 2022 (17.3 or later)
-    - `Mobile Development with .NET` (Xamarin) development
     - `Visual Studio extensions development` (for the VSIX projects)
-    - `MAUI` (In VS 2022 17.3 or later, for .NET 6 Android/iOS/macOS/Catalyst support)
+    - `MAUI`
+    - `Xamarin development` (Under the MAUI optional components)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
     - `UWP Development`, install all recent UWP SDKs, starting from 10.0.18362 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
