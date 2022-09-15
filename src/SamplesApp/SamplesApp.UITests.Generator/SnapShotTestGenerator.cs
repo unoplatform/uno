@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Newtonsoft.Json;
-using Uno.RoslynHelpers;
-using Uno.Samples.UITest.Generator.Helper;
+using Uno.Extensions;
+using Uno.Roslyn;
 
 namespace Uno.Samples.UITest.Generator
 {
@@ -18,9 +15,6 @@ namespace Uno.Samples.UITest.Generator
 	public class SnapShotTestGenerator : ISourceGenerator
 	{
 		private const int GroupCount = 5;
-
-		private INamedTypeSymbol _sampleControlInfoSymbol;
-		private INamedTypeSymbol _sampleSymbol;
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -61,18 +55,18 @@ namespace Uno.Samples.UITest.Generator
 
 		private void GenerateTests(GeneratorExecutionContext context, string assembly)
 		{
-			var compilation = GetCompilation(context, assembly);
+			var compilation = GetCompilation(context);
 
-			context.AddSource("debug", $"// inner compilation:{compilation.compilation.Assembly.Name}");
+			context.AddSource("debug", $"// inner compilation:{compilation.Assembly.Name}");
 
-			_sampleControlInfoSymbol = compilation.compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
-			_sampleSymbol = compilation.compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
+			var sampleControlInfoSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
+			var sampleSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
 
-			var query = from typeSymbol in compilation.compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
+			var query = from typeSymbol in compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
 						where typeSymbol.DeclaredAccessibility == Accessibility.Public
-						let info = typeSymbol.FindAttributeFlattened(_sampleSymbol) ?? typeSymbol.FindAttributeFlattened(_sampleControlInfoSymbol)
+						let info = typeSymbol.FindAttributeFlattened(sampleSymbol) ?? typeSymbol.FindAttributeFlattened(sampleControlInfoSymbol)
 						where info != null
-						let sampleInfo = GetSampleInfo(typeSymbol, info)
+						let sampleInfo = GetSampleInfo(typeSymbol, info, sampleControlInfoSymbol)
 						orderby sampleInfo.categories.First()
 						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests, sampleInfo.isManual);
 
@@ -81,9 +75,9 @@ namespace Uno.Samples.UITest.Generator
 			GenerateTests(assembly, context, query);
 		}
 
-		private (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
+		private static (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr, INamedTypeSymbol sampleControlInfoSymbol)
 		{
-			if (SymbolEqualityComparer.Default.Equals(attr.AttributeClass, _sampleControlInfoSymbol))
+			if (SymbolEqualityComparer.Default.Equals(attr.AttributeClass, sampleControlInfoSymbol))
 			{
 				return (
 					categories: new[] { GetConstructorParameterValue(attr, "category")?.ToString() ?? "Default" },
@@ -130,15 +124,15 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private object GetAttributePropertyValue(AttributeData attr, string name)
+		private static object GetAttributePropertyValue(AttributeData attr, string name)
 			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
 
-		private object GetConstructorParameterValue(AttributeData info, string name)
+		private static object GetConstructorParameterValue(AttributeData info, string name)
 			=> info.ConstructorArguments.IsDefaultOrEmpty
 				? default
 				: info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
 
-		private int GetParameterIndex(AttributeData info, string name)
+		private static int GetParameterIndex(AttributeData info, string name)
 			=> info
 				.AttributeConstructor
 				.Parameters
@@ -146,10 +140,10 @@ namespace Uno.Samples.UITest.Generator
 				.Single(p => p.p.Name == name)
 				.i;
 
-		private string AlignName(string v)
-			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_").Replace(":", "_");
+		private static string AlignName(string v)
+			=> v.Replace('/', '_').Replace(' ', '_').Replace('-', '_').Replace(':', '_');
 
-		private void GenerateTests(
+		private static void GenerateTests(
 			string assembly,
 			GeneratorExecutionContext context,
 			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)
@@ -165,26 +159,26 @@ namespace Uno.Samples.UITest.Generator
 
 			foreach (var group in groups)
 			{
-				string sanitizedAssemblyName = assembly.Replace(".", "_");
+				string sanitizedAssemblyName = assembly.Replace('.', '_');
 				var groupName = $"Generated_{sanitizedAssemblyName}_{group.Index:000}";
 
 				var builder = new IndentedStringBuilder();
 
-				builder.AppendLineInvariant("using System;");
+				builder.AppendLineIndented("using System;");
 
 				using (builder.BlockInvariant($"namespace {context.GetMSBuildPropertyValue("RootNamespace")}.Snap"))
 				{
-					builder.AppendLineInvariant("[global::NUnit.Framework.TestFixture]");
+					builder.AppendLineIndented("[global::NUnit.Framework.TestFixture]");
 
 					// Required for https://github.com/unoplatform/uno/issues/1955
-					builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.TestAppModeAttribute(cleanEnvironment: true, platform: Uno.UITest.Helpers.Queries.Platform.iOS)]");
+					builder.AppendLineIndented("[global::SamplesApp.UITests.TestFramework.TestAppModeAttribute(cleanEnvironment: true, platform: Uno.UITest.Helpers.Queries.Platform.iOS)]");
 
 					using (builder.BlockInvariant($"public partial class {groupName} : SampleControlUITestBase"))
 					{
 						foreach (var test in group.Symbols)
 						{
-							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
-							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
+							builder.AppendLineIndented("[global::NUnit.Framework.Test]");
+							builder.AppendLineIndented($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
 							var (ignored, ignoreReason) = (test.ignoreInSnapshotTests, test.isManual) switch
 							{
@@ -195,18 +189,18 @@ namespace Uno.Samples.UITest.Generator
 							};
 							if (ignored)
 							{
-								builder.AppendLineInvariant($"[global::NUnit.Framework.Ignore(\"{ignoreReason}\")]");
+								builder.AppendLineIndented($"[global::NUnit.Framework.Ignore(\"{ignoreReason}\")]");
 							}
 
-							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
+							builder.AppendLineIndented("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
 							// Set to 60 seconds to cover possible restart of the device
-							builder.AppendLineInvariant("[global::NUnit.Framework.Timeout(60000)]");
+							builder.AppendLineIndented("[global::NUnit.Framework.Timeout(60000)]");
 							var testName = $"{Sanitize(test.categories.First())}_{Sanitize(test.name)}";
 							using (builder.BlockInvariant($"public void {testName}()"))
 							{
-								builder.AppendLineInvariant($"Console.WriteLine(\"Running test [{testName}]\");");
-								builder.AppendLineInvariant($"Run(\"{test.symbol}\", waitForSampleControl: false);");
-								builder.AppendLineInvariant($"Console.WriteLine(\"Ran test [{testName}]\");");
+								builder.AppendLineIndented($"Console.WriteLine(\"Running test [{testName}]\");");
+								builder.AppendLineIndented($"Run(\"{test.symbol}\", waitForSampleControl: false);");
+								builder.AppendLineIndented($"Console.WriteLine(\"Ran test [{testName}]\");");
 							}
 						}
 					}
@@ -216,10 +210,10 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private object Sanitize(string category)
+		private static object Sanitize(string category)
 			=> string.Join("", category.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
 
-		private (Compilation compilation, Project project) GetCompilation(GeneratorExecutionContext context, string assembly)
+		private static Compilation GetCompilation(GeneratorExecutionContext context)
 		{
 			// Used to get the reference assemblies
 			var devEnvDir = context.GetMSBuildPropertyValue("MSBuildExtensionsPath");
@@ -248,7 +242,7 @@ namespace Uno.Samples.UITest.Generator
 
 			var compilation = project.GetCompilationAsync().Result;
 
-			return (compilation, project);
+			return compilation;
 		}
 
 		private static Project AddFiles(GeneratorExecutionContext context, Project project, string baseName)
@@ -260,22 +254,6 @@ namespace Uno.Samples.UITest.Generator
 			}
 
 			return project;
-		}
-
-		private IEnumerable<string> GetFrameworkPath(string devEnvDir, string path)
-		{
-			switch (Path.GetFileName(path).ToLowerInvariant())
-			{
-				case "MonoAndroid11.0":
-					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0";
-					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0";
-					yield break;
-				case "xamarinios10":
-					yield return $@"{devEnvDir}\..\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.iOS\v1.0";
-					yield break;
-			}
-
-			throw new InvalidOperationException("Unknown framework");
 		}
 	}
 }

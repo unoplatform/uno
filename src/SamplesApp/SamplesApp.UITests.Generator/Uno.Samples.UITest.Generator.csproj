@@ -8,13 +8,9 @@
 		<!-- Required to get roslyn workspaces files to be present -->
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Include="..\..\SourceGenerators\Uno.UI.SourceGenerators\Helpers\DependenciesInitializer.cs" Link="Helper\DependenciesInitializer.cs" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Uno.RoslynHelpers" Version="1.2.0-dev.10" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 
 			<!--
@@ -29,4 +25,6 @@
 
 		<PackageReference Include="System.ValueTuple" />
 	</ItemGroup>
+	
+	<Import Project="..\..\SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
 </Project>

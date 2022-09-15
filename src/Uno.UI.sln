@@ -310,6 +310,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoSolutionTemplate.WinUI.net6", "SolutionTemplate\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj", "{042F79A0-E0BB-4DED-8BC8-419700B9EE30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoUITestTemplate", "SolutionTemplate\UnoUITestTemplate\UnoUITestTemplate.csproj", "{228F24B6-B5C0-43BC-9B1A-B03E7B6DCA27}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnoIslands", "UnoIslands", "{A4072BFD-CE4D-493D-92FF-FCC770734218}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslands.Skia.Wpf", "SamplesApp\UnoIslands.WPF\UnoIslands.Skia.Wpf.csproj", "{2EE56477-A1CD-4AE0-A788-18B0D3A77EC6}"
@@ -335,6 +336,8 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Uno.UI.SourceGenerators.Tests.Shared", "SourceGenerators\Uno.UI.SourceGenerators.Tests.Shared\Uno.UI.SourceGenerators.Tests.Shared.shproj", "{3D9F95DB-4A7D-464A-B1CE-0DDDDEC80FBE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators.net6.Tests", "SourceGenerators\Uno.UI.SourceGenerators.net6.Tests\Uno.UI.SourceGenerators.net6.Tests.csproj", "{0068FF88-CAB8-4839-BE3B-D125B8D46F23}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SourceGeneratorHelpers", "SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.shproj", "{69EA1CB5-BB31-414A-9E0B-74C72FF7775F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -6081,6 +6084,7 @@ Global
 		{1AB2D0BF-DF3C-44F4-88B7-334CC41C2988} = {31B0EFDC-94D6-4599-B9BD-DECEA44FA3FE}
 		{3D9F95DB-4A7D-464A-B1CE-0DDDDEC80FBE} = {D4EBD71B-1C17-4774-A73C-D0BFD8FA3737}
 		{0068FF88-CAB8-4839-BE3B-D125B8D46F23} = {D4EBD71B-1C17-4774-A73C-D0BFD8FA3737}
+		{69EA1CB5-BB31-414A-9E0B-74C72FF7775F} = {D4EBD71B-1C17-4774-A73C-D0BFD8FA3737}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2608F4-D82B-4B72-B399-33E822DF01D0}
@@ -6107,6 +6111,8 @@ Global
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
 		SolutionTemplate\UnoSolutionTemplate.VSIX\UnoSolutionTemplate.VSIX.projitems*{6138cce5-b02c-4ea5-bf76-1491dd47cd6c}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
+		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{68e667c4-aaed-4242-a47f-3d77c33c489e}*SharedItemsImports = 5
+		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{69ea1cb5-bb31-414a-9e0b-74c72ff7775f}*SharedItemsImports = 13
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
@@ -6125,6 +6131,7 @@ Global
 		SamplesApp\UnoIslands.Shared\UnoIslands.Shared.projitems*{d946b7ca-da2b-4f0b-ae5c-d49f67ce0535}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{e3b940da-15a4-4104-b96b-6951d932fe0e}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{e3b940da-15a4-4104-b96b-6951d932fe0e}*SharedItemsImports = 4
+		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{e6872579-b7a0-42ce-ae97-44234bb55625}*SharedItemsImports = 5
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{f4581f51-40d6-4035-8a1d-65cc6917d0a9}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
