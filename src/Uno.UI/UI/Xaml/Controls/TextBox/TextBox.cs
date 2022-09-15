@@ -447,8 +447,6 @@ namespace Windows.UI.Xaml.Controls
 
 		#region InputScope DependencyProperty
 
-		#region InputScope DependencyProperty
-
 		public InputScope InputScope
 		{
 			get => (InputScope)this.GetValue(InputScopeProperty);

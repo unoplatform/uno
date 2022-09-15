@@ -30,8 +30,8 @@ namespace Uno.UI.Xaml.Controls.Extensions
 
 		int GetSelectionLength();
 
-		void UpdateForeground();
+		void SetForeground(Windows.UI.Xaml.Media.Brush brush);
 
-		void UpdateSelectionHighlightColor();
+		void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush);
 	}
 }

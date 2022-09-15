@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿
+#nullable enable
 
 using System;
 using System.Windows;
@@ -125,6 +126,8 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 			updateCommon(_currentTextBoxInputWidget);
 			updateCommon(_currentPasswordBoxInputWidget);
+			SetForeground(textBox.Foreground);
+			SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 
 			if (_currentTextBoxInputWidget is not null)
 			{
@@ -148,7 +151,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 				control.FontSize = textBox.FontSize;
 				control.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
-				control.Foreground = textBox.Foreground.ToWpfBrush();
 			}
 		}
 
@@ -305,7 +307,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			return 0;
 		}
 
-		public void UpdateForeground()
+		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 		{
 			var wpfBrush = brush.ToWpfBrush();
 			if (_currentTextBoxInputWidget != null)
@@ -318,6 +320,20 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			{
 				_currentPasswordBoxInputWidget.Foreground = wpfBrush;
 				_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
+			}
+		}
+
+		public void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush)
+		{
+			var wpfBrush = brush.ToWpfBrush();
+			if (_currentTextBoxInputWidget != null)
+			{
+				_currentTextBoxInputWidget.SelectionBrush = wpfBrush;
+			}
+
+			if (_currentPasswordBoxInputWidget != null)
+			{
+				_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
 			}
 		}
 	}
