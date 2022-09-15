@@ -24,8 +24,11 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 	{
 		private const string TextBoxViewCssClass = "textboxview";
 
+		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
 		private readonly GtkWindow _window;
+		
+		private CssProvider? _foregroundCssProvider;
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
 		private bool _handlingTextChanged;
@@ -103,6 +106,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
+			RemoveForegroundProvider();
 
 			if (_currentInputWidget != null)
 			{
@@ -240,8 +244,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				var inputText = GetInputText();
 				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
-				SetForeground(textBox.Foreground);
 			}
+			
+			SetForeground(textBox.Foreground);
 		}
 
 		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)
@@ -422,6 +427,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 		{
+<<<<<<< HEAD
 			if (brush is SolidColorBrush scb)
 			{
 #pragma warning disable CS0612 // Suppress Type or member is obsolete. This is a GtkSharp issue https://github.com/GtkSharp/GtkSharp/issues/362
@@ -433,6 +439,31 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 					Alpha = scb.ColorWithOpacity.A
 				});
 #pragma warning restore CS0612 // Type or member is obsolete
+=======
+			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
+			{
+				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
+				RemoveForegroundProvider();
+				_foregroundCssProvider = new CssProvider();
+				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
+				var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
+				_foregroundCssProvider.LoadFromData(data);
+				StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
+				if (!_currentInputWidget.StyleContext.HasClass(cssClassName))
+				{
+					_currentInputWidget.StyleContext.AddClass(cssClassName);
+				}
+			}
+		}
+
+		private void RemoveForegroundProvider()
+		{
+			if (_foregroundCssProvider is not null)
+			{
+				StyleContext.RemoveProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider);
+				_foregroundCssProvider.Dispose();
+				_foregroundCssProvider = null;
+>>>>>>> 9b493059fa (fix: TextBox.Foreground setting on Skia GTK)
 			}
 		}
 	}
