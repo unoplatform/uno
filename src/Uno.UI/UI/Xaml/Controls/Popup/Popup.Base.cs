@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
 		{
 			_childHasOwnDataContext = false;
-			if (Child is IDependencyObjectStoreProvider provider)
+			if (PropagatesDataContextToChild && Child is IDependencyObjectStoreProvider provider)
 			{
 				var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
 
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					// Child already has locally set DataContext, we shouldn't overwrite it.
 					_childHasOwnDataContext = true;
 				}
-				else if(PropagatesDataContextToChild)
+				else
 				{
 					provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
 				}
