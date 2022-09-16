@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Border()
-        {
+		{
 			_borderRenderer = new BorderLayerRenderer(this);
 		}
 
