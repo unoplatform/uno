@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Documents
 		#endregion
 
 		#region FontStretch Dependency Property
-#if __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__ || __IOS__
 		public FontStretch FontStretch
 		{
 			get => (FontStretch)GetValue(FontStretchProperty);

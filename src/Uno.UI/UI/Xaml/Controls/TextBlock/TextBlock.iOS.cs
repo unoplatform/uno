@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// This measures the height correctly, even if the Text is null or empty
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
-					var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+					var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontStretch, FontFamily);
 
 #pragma warning disable BI1234 // error BI1234: 'UIStringDrawing.StringSize(string, UIFont, CGSize)' is obsolete: 'Starting with ios7.0 use NSString.GetBoundingRect (CGSize, NSStringDrawingOptions, UIStringAttributes, NSStringDrawingContext) instead.'
 					result = (Text ?? NSString.Empty).StringSize(font, size);
@@ -192,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var attributes = new UIStringAttributes();
 
-			var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+			var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontStretch, FontFamily);
 
 			attributes.Font = font;
 
