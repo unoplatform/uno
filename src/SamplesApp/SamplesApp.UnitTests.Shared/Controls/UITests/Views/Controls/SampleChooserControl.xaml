@@ -46,7 +46,7 @@
 				   TargetType="Grid">
 				<Setter Property="Padding" Value="8" />
 				<Setter Property="Background"
-						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+						Value="{ThemeResource CommandBarBackground}" />
 			</Style>
 
 			<Style x:Key="BaseTitleContainerStyle"
@@ -197,33 +197,27 @@
 
 			<DataTemplate x:Key="SamplesTitle">
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="50" />
-					</Grid.ColumnDefinitions>
+					<Grid Height="48">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="48" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="48" />
+						</Grid.ColumnDefinitions>
 
-					<Button Style="{StaticResource IconButtonStyle}"
-							HorizontalContentAlignment="Left"
+						<Button Style="{StaticResource IconButtonStyle}"
+							AutomationProperties.Name="Go back"
 							Command="{Binding ShowPreviousSectionCommand}">
-						<StackPanel Orientation="Horizontal">
-							<u:PathControl Style="{StaticResource Icon_Back_Chevron}"
-										   Margin="5,0"
-										   HorizontalContentAlignment="Left"
-										   VerticalContentAlignment="Center" />
-							<TextBlock Text="Back"
-									   Style="{StaticResource Typo04}"
-									   VerticalAlignment="Center" />
-						</StackPanel>
-					</Button>
+							<FontIcon FontSize="12" Foreground="{StaticResource Color06Brush}" Glyph="&#xE112;" />
+						</Button>
 
-					<TextBlock Text="{Binding SelectedCategory.Category}"
-							   Style="{StaticResource Typo03}"
+						<TextBlock Text="{Binding SelectedCategory.Category}"
+							   Style="{ThemeResource PaneHeadingStyle}"
 							   HorizontalAlignment="Center"
 							   TextAlignment="Center"
 							   TextWrapping="NoWrap"
 							   VerticalAlignment="Center"
 							   Grid.Column="1" />
+					</Grid>
 				</Grid>
 			</DataTemplate>
 
@@ -269,7 +263,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
+						<RowDefinition Height="48" />
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
@@ -277,9 +271,10 @@
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
+							AutomationProperties.Name="Open runtime tests"
+							ToolTipService.ToolTip="Runtime tests"
 							Command="{Binding OpenRuntimeTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
-									   Margin="5,0" />
+						<FontIcon Foreground="{StaticResource Color06Brush}" Glyph="&#xE1EF;" />
 					</Button>
 
 					<!-- Title -->
@@ -288,7 +283,7 @@
 						Style="{StaticResource PaneHeadingStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center"
-						Text="Library" />
+						Text="Uno Platform" />
 
 					<!-- Record All Tests Button -->
 					<Button
@@ -328,10 +323,12 @@
 				<!--FAVORITES-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource PaneHeadingStyle}"
+					<Border Height="48">
+						<TextBlock Style="{StaticResource PaneHeadingStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
 							   Text="Favorites" />
+					</Border>
 				</Grid>
 				<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
@@ -340,12 +337,14 @@
 								ContentTemplate="{StaticResource FavoritesList}" />
 
 				<!--RECENTS-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+				<Grid Height="48" Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource PaneHeadingStyle}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Recents" />
+					<Border Height="48">
+						<TextBlock Style="{StaticResource PaneHeadingStyle}"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   Text="Recents" />
+					</Border>
 				</Grid>
 				<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
@@ -370,7 +369,6 @@
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 						Padding="4"
-						Height="60"
 						BorderBrush="{StaticResource Color05Brush}"
 						Grid.Row="2">
 					<u:StarStackPanel VerticalAlignment="Stretch"
@@ -384,14 +382,12 @@
 									 IsChecked="{Binding CategoriesSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Library">
-							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Library}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel Spacing="4">
+								<FontIcon Glyph="&#xE838;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Samples" />
-							</Grid>
+							</StackPanel>
 						</RadioButton>
 
 						<RadioButton GroupName="SelectedSectionPhone"
@@ -400,14 +396,12 @@
 									 IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Favorites">
-							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Favorites}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel Spacing="4">
+								<FontIcon Glyph="&#xE734;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Favorites" />
-							</Grid>
+							</StackPanel>
 						</RadioButton>
 
 						<RadioButton GroupName="SelectedSectionPhone"
@@ -416,14 +410,12 @@
 									 IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Recents">
-							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Recents}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel Spacing="4">
+								<FontIcon Glyph="&#xE81C;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Recents" />
-							</Grid>
+							</StackPanel>
 						</RadioButton>
 					</u:StarStackPanel>
 				</Border>
@@ -438,10 +430,11 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<!-- CONTENT -->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}">
+				<Grid Style="{StaticResource BaseTitleGridContainerStyle}" ColumnSpacing="8">
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50" />
+						<ColumnDefinition Width="48" />
 						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
@@ -472,14 +465,17 @@
 					<Button Style="{StaticResource IconButtonStyle}"
 							Grid.Column="2"
 							Command="{Binding ShowTestInformationCommand}"
-							Content="i"
 							FontWeight="SemiBold"
 							FontSize="24"
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
-							Foreground="{StaticResource Color06Brush}"
-							Visibility="{Binding IsDebug}" />
+							Visibility="{Binding IsDebug}">
+						<Grid>
+							<FontIcon Foreground="{StaticResource Color06Brush}" Glyph="&#xF136;" />
+							<FontIcon Foreground="White" Glyph="&#xF13F;" />
+						</Grid>
+					</Button>
 
 					<!-- Previous Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
@@ -538,12 +534,22 @@
 					</Button>
 
 					<!-- Fluent styles check box -->
-					<CheckBox Content="Use Fluent"
+					<CheckBox
 							  Grid.Column="8"
+							  MinWidth="0"
+							  win:IsEnabled="False"
+							  AutomationProperties.Name="Use Fluent theme"
+							  ToolTipService.ToolTip="Use Fluent theme"
 							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
-							  Style="{x:Null}"/>
+							  Style="{x:Null}">
+						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
+					</CheckBox>
+					
 					<!-- Dark theme check box -->
 					<CheckBox Grid.Column="9"
+							  MinWidth="0"
+							  AutomationProperties.Name="Use dark theme"
+							  ToolTipService.ToolTip="Use dark theme"
 							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
