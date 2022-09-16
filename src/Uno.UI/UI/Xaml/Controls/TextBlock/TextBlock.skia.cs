@@ -99,5 +99,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Inlines.InvalidateMeasure();
 		}
+
+		partial void OnFontStretchChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
 	}
 }

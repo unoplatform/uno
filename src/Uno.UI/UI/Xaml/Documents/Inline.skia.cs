@@ -83,6 +83,12 @@ namespace Windows.UI.Xaml.Documents
 			InvalidateFontInfo();
 		}
 
+		protected override void OnFontStretchChanged()
+		{
+			base.OnFontStretchChanged();
+			InvalidateFontInfo();
+		}
+
 		private void InvalidateFontInfo() => _fontInfo = null;
 
 		private static FontDetails GetFont(
@@ -92,9 +98,7 @@ namespace Windows.UI.Xaml.Documents
 			FontStyle style)
 		{
 			var skWeight = weight.ToSkiaWeight();
-			// TODO: FontStretch not supported by Uno yet
-			// var skWidth = FontStretch.ToSkiaWidth();
-			var skWidth = SKFontStyleWidth.Normal;
+			var skWidth = (SKFontStyleWidth)stretch;
 			var skSlant = style.ToSkiaSlant();
 
 			SKTypeface skTypeFace;
