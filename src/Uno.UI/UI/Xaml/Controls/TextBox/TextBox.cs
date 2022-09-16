@@ -85,7 +85,29 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
+
+			Loaded += TextBox_Loaded;
+			Unloaded += TextBox_Unloaded;
 		}
+
+		private void TextBox_Loaded(object sender, RoutedEventArgs e)
+		{
+			// Brush subscriptions might have been removed during Unloaded
+			if (_foregroundBrushSubscription.Disposable is null)
+			{
+				OnForegroundColorChanged(null, Foreground);
+			}
+			if (_selectionHighlightColorSubscription.Disposable is null)
+			{
+				OnSelectionHighlightColorChanged(SelectionHighlightColor);
+			}
+		}
+
+		private void TextBox_Unloaded(object sender, RoutedEventArgs e)
+		{
+			_foregroundBrushSubscription.Disposable = null;
+			_selectionHighlightColorSubscription.Disposable = null;
+		}	
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -106,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(CreateInitialValueChangerEventArgs(IsTextPredictionEnabledProperty, IsTextPredictionEnabledProperty.GetMetadata(GetType()).DefaultValue, IsTextPredictionEnabled));
-			OnSelectionHighlightColorChanged(CreateInitialValueChangerEventArgs(SelectionHighlightColorProperty, SelectionHighlightColorProperty.GetMetadata(GetType()).DefaultValue, SelectionHighlightColor));
+			OnSelectionHighlightColorChanged(SelectionHighlightColor);
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
@@ -424,12 +446,12 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					DefaultBrushes.SelectionHighlightColor,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged(e)));
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.NewValue)));
 
-		private void OnSelectionHighlightColorChanged(DependencyPropertyChangedEventArgs e)
+		private void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
 			_selectionHighlightColorSubscription.Disposable = null;
-			if (e.NewValue is SolidColorBrush brush)
+			if (brush is not null)
 			{
 				OnSelectionHighlightColorChangedPartial(brush);
 				_selectionHighlightColorSubscription.Disposable = Brush.AssignAndObserveBrush(brush, c => OnSelectionHighlightColorChangedPartial(brush));
