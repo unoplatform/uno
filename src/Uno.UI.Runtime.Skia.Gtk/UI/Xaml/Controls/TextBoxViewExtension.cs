@@ -432,10 +432,10 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		{
 			if (_currentInputWidget is { } widget && brush is SolidColorBrush scb)
 			{
-				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
-				RemoveForegroundProvider();
+				RemoveForegroundCssProvider();
 				_foregroundCssProvider = new CssProvider();
 				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
+				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
 				var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
 				_foregroundCssProvider.LoadFromData(data);
 				StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
