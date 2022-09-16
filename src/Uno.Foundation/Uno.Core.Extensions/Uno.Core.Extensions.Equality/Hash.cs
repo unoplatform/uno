@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
-extern alias __uno;
-
 using System.Collections.Immutable;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator;
+namespace Uno.Equality;
 
 internal static class Hash
 {

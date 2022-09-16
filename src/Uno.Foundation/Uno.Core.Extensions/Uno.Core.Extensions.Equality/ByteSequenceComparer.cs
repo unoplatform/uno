@@ -1,11 +1,9 @@
 ﻿#nullable enable
 
-extern alias __uno;
-
 using System.Collections.Immutable;
 using System.Diagnostics;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator;
+namespace Uno.Equality;
 
 internal static class ByteSequenceComparer
 {

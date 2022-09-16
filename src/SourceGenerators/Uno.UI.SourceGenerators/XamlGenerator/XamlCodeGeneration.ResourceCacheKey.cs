@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Uno.Equality;
 using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
@@ -15,7 +16,7 @@ internal partial class XamlCodeGeneration
 	private static readonly ConcurrentDictionary<ResourceCacheKey, CachedResource> _cachedResources = new();
 	private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
 
-	private static void ClearCache()
+	private static void ScavengeCache()
 	{
 		_cachedResources.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 	}

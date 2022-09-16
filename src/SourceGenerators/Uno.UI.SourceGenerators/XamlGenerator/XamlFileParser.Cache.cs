@@ -5,6 +5,7 @@ extern alias __uno;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Uno.Equality;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
 

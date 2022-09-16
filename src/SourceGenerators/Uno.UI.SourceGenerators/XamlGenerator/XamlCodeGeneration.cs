@@ -608,11 +608,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
 							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
-							ClearCache();
+							ScavengeCache();
 							return cachedResource.ResourceKeys;
 						}
 
-						ClearCache();
+						ScavengeCache();
 
 						//load document
 						var doc = new XmlDocument();
