@@ -430,7 +430,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		public void SetForeground(Brush brush)
 		{
-			if (_currentInputWidget is { } widget && brush is SolidColorBrush scb)
+			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
 			{
 				RemoveForegroundCssProvider();
 				_foregroundCssProvider = new CssProvider();
