@@ -603,7 +603,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 					try
 					{
-						var sourceText = file.File.GetText(ct);
+						var sourceText = file.File.GetText(ct)!;
 						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
