@@ -443,6 +443,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								return null;
 							}
+
+							type = baseType;
 						}
 					}
 				} while (true);
