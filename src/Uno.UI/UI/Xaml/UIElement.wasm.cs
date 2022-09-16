@@ -16,6 +16,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
+using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml
 {
