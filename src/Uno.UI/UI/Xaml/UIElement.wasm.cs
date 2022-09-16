@@ -151,12 +151,12 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
-		protected internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
+		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetSelectionHighlight(HtmlId, backgroundColor, foregroundColor);
 		}
 
-		protected internal void UnsetSelectionHighlight()
+		internal void UnsetSelectionHighlight()
 		{
 			UnsetCssClasses("selection-highlight");
 		}
