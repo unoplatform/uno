@@ -234,6 +234,35 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
+		#region FontStretch Dependency Property
+#if __WASM__
+		public FontStretch FontStretch
+		{
+			get => (FontStretch)GetValue(FontStretchProperty);
+			set => SetValue(FontStretchProperty, value);
+		}
+
+		public static DependencyProperty FontStretchProperty { get; } =
+			DependencyProperty.Register(
+				nameof(FontStretch),
+				typeof(FontStretch),
+				typeof(TextElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: FontStretch.Normal,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStretchChanged()
+				)
+			);
+
+		private void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+		}
+
+		partial void OnFontStretchChangedPartial();
+#endif
+		#endregion
+
 		#region TextDecorations
 
 		public TextDecorations TextDecorations

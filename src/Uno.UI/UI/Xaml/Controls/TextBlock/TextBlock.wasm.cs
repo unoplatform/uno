@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _textAlignmentChanged;
 		private bool _lineHeightChanged;
 		private bool _characterSpacingChanged;
+		private bool _fontStretchChanged;
 		private bool _textDecorationsChanged;
 		private bool _textWrappingChanged;
 		private bool _paddingChangedChanged;
@@ -39,12 +40,12 @@ namespace Windows.UI.Xaml.Controls
 			OnFontFamilyChangedPartial();
 			OnFontSizeChangedPartial();
 			OnCharacterSpacingChangedPartial();
+			OnFontStretchChangedPartial();
 			OnLineHeightChangedPartial();
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
 			OnIsTextSelectionEnabledChangedPartial();
 			InitializeDefaultValues();
-
 		}
 
 		/// <summary>
@@ -75,6 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
 			ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
 			ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(CharacterSpacing));
+			ConditionalUpdate(ref _fontStretchChanged, () => this.SetFontStretch(FontStretch));
 			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
 			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
 
@@ -192,6 +194,8 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnLineHeightChangedPartial() => _lineHeightChanged = true;
 
 		partial void OnCharacterSpacingChangedPartial() => _characterSpacingChanged = true;
+
+		partial void OnFontStretchChangedPartial() => _fontStretchChanged = true;
 
 		partial void OnTextDecorationsChangedPartial() => _textDecorationsChanged = true;
 
