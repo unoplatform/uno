@@ -192,35 +192,6 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Memoizer with six parameters, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)
-		/// </summary>
-		/// <typeparam name="TParam1">The first parameter type to memoize</typeparam>
-		/// <typeparam name="TParam2">The second parameter type to memoize</typeparam>
-		/// <typeparam name="TParam3">The third parameter type to memoize</typeparam>
-		/// <typeparam name="TParam4">The fourth parameter type to memoize</typeparam>
-		/// <typeparam name="TParam5">The fifth parameter type to memoize</typeparam>
-		/// <typeparam name="TParam6">The sixth parameter type to memoize</typeparam>
-		/// <param name="func">the function to evaluate</param>
-		/// <returns>A memoized value</returns>
-		public static Func<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TResult> AsMemoized<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TResult>(this Func<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TResult> func)
-		{
-			Dictionary<System.Tuple<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6>, TResult> values = new Dictionary<System.Tuple<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6>, TResult>();
-
-			return (arg1, arg2, arg3, arg4, arg5, arg6) =>
-			{
-				var tuple = System.Tuple.Create(arg1, arg2, arg3, arg4, arg5, arg6);
-				TResult value;
-
-				if (!values.TryGetValue(tuple, out value))
-				{
-					value = values[tuple] = func(arg1, arg2, arg3, arg4, arg5, arg6);
-				}
-
-				return value;
-			};
-		}
-
-		/// <summary>
 		/// Parameter less thread-safe memoizer, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)
 		/// </summary>
 		/// <typeparam name="T">The return type to memoize</typeparam>

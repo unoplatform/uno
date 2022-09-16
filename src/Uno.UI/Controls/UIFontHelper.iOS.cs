@@ -22,7 +22,9 @@ namespace Windows.UI
 {
 	internal static class UIFontHelper
 	{
-		private static Func<nfloat, FontWeight, FontStyle, FontStretch, FontFamily, nfloat?, UIFont> _tryGetFont;
+		private record struct TryGetFontParameters(nfloat Size, FontWeight FontWeight, FontStyle FontStyle, FontStretch FontStretch, FontFamily RequestedFamily, nfloat? BasePreferredSize);
+
+		private static Func<TryGetFontParameters, UIFont> _tryGetFont;
 
 		private const int DefaultUIFontPreferredBodyFontSize = 17;
 		private static float? DefaultPreferredBodyFontSize = UIFont.PreferredBody.FontDescriptor.FontAttributes.Size;
@@ -35,7 +37,7 @@ namespace Windows.UI
 
 		internal static UIFont TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch, FontFamily requestedFamily, float? preferredBodyFontSize = null)
 		{
-			return _tryGetFont(size, fontWeight, fontStyle, fontStretch, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
+			return _tryGetFont(new TryGetFontParameters(size, fontWeight, fontStyle, fontStretch, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize));
 		}
 
 		/// <summary>
@@ -72,21 +74,21 @@ namespace Windows.UI
 			return size * originalScale;
 		}
 
-		private static UIFont InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch, FontFamily requestedFamily, nfloat? basePreferredSize)
+		private static UIFont InternalTryGetFont(TryGetFontParameters parameters)
 		{
 			UIFont font = null;
 
-			size = GetScaledFontSize(size, basePreferredSize);
+			var size = GetScaledFontSize(parameters.Size, parameters.BasePreferredSize);
 
-			if (requestedFamily?.Source != null)
+			if (parameters.RequestedFamily?.Source != null)
 			{
-				var fontFamilyName = FontFamilyHelper.RemoveUri(requestedFamily.Source);
+				var fontFamilyName = FontFamilyHelper.RemoveUri(parameters.RequestedFamily.Source);
 
 				// If there's a ".", we assume there's an extension and that it's a font file path.
-				font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, fontWeight, fontStyle, fontStretch) : GetSystemFont(size, fontWeight, fontStyle, fontFamilyName);
+				font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, parameters.FontWeight, parameters.FontStyle, parameters.FontStretch) : GetSystemFont(size, parameters.FontWeight, parameters.FontStyle, fontFamilyName);
 			}
 
-			return font ?? GetDefaultFont(size, fontWeight, fontStyle, fontStretch);
+			return font ?? GetDefaultFont(size, parameters.FontWeight, parameters.FontStyle, parameters.FontStretch);
 		}
 
 		private static UIFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch)
