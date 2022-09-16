@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_FontStretch"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBlockControl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel>
+		<TextBlock Text="This TextBlock has FontStretch = Condensed" FontStretch="Condensed" FontFamily="Arial" />
+		<TextBlock Text="This TextBlock has FontStretch = Normal" FontStretch="Normal" FontFamily="Arial" />
+		<TextBlock Text="This TextBlock has FontStretch = Normal (default)" FontFamily="Arial" />
+		<TextBlock Text="This TextBlock has FontStretch = Expanded" FontStretch="Expanded" FontFamily="Arial" />
+
+		<TextBlock FontStretch="Condensed" FontFamily="Arial"><Run Text="This Run has inherited FontStretch = Condensed"/></TextBlock>
+		<TextBlock FontStretch="Normal" FontFamily="Arial"><Run Text="This Run has inherited FontStretch = Normal"/></TextBlock>
+		<TextBlock FontFamily="Arial"><Run Text="This Run has inherited FontStretch = Normal (default)"/></TextBlock>
+		<TextBlock FontStretch="Expanded" FontFamily="Arial"><Run Text="This Run has inherited FontStretch = Expanded"/></TextBlock>
+
+	</StackPanel>
+</Page>
