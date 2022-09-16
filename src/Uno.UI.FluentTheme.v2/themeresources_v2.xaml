@@ -22733,7 +22733,7 @@
                     </ObjectAnimationUsingKeyFrames>
                     <!-- Uno specific (LinearGradientBrush borders): Adjust color for accent overlay -->
                     <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="ControlStrokeColorOnAccentSecondaryBrush" />
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentSecondaryBrush}" />
                     </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundCheckedPointerOver}" />
