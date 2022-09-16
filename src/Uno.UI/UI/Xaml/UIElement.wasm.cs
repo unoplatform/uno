@@ -130,11 +130,16 @@ namespace Windows.UI.Xaml
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleString(HtmlId, name, value);
 		}
-
-		protected internal void SetStyle(string name, double value)
+		
+		private Rect GetBoundingClientRect()
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
+			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
+			var sizeParts = sizeString.Split(';');
+			return new Rect(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture), double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture));
 		}
+
+		protected internal void SetStyle(string name, double value) =>
+			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
 
 		protected internal void SetStyle(params (string name, string value)[] styles)
 		{
@@ -146,15 +151,11 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
-		protected internal void SetSolidColorBorder(Windows.UI.Color color, string borderWidth)
-		{
+		internal void SetSolidColorBorder(Windows.UI.Color color, string borderWidth) =>
 			Uno.UI.Xaml.WindowManagerInterop.SetSolidColorBorder(HtmlId, color, borderWidth);
-		}
 
-		protected internal void SetGradientBorder(string borderImage, string borderWidth)
-		{
+		internal void SetGradientBorder(string borderImage, string borderWidth) =>
 			Uno.UI.Xaml.WindowManagerInterop.SetGradientBorder(HtmlId, borderImage, borderWidth);
-		}			
 			
 		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
 		{
