@@ -158,6 +158,12 @@
       <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
       <Name>Uno.UI.MSAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+      <Project>{68e667c4-aaed-4242-a47f-3d77c33c489e}</Project>
+      <Name>Uno.UI.SourceGenerators</Name>
+      <OutputItemType>Analyzer</OutputItemType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj">
       <Project>{76875e6f-30f3-4225-821f-11a299bcbdb0}</Project>
       <Name>Uno.Foundation.Logging</Name>

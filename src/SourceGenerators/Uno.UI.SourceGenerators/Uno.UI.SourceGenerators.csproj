@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-		<RuntimeIdentifier></RuntimeIdentifier>
+		<!--<RuntimeIdentifiers>android-arm64;android-x86;android-x64</RuntimeIdentifiers>-->
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<WarningsAsErrors>true</WarningsAsErrors>
@@ -39,7 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
-		<PackageReference Include="Microsoft.CodeAnalysis">
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
 			<Version>3.8.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>

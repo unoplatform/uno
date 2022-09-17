@@ -110,6 +110,12 @@
 		  <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
 		  <Name>Uno.UI.MSAL</Name>
 	  </ProjectReference>
+    <ProjectReference Include="..\..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+      <Project>{68e667c4-aaed-4242-a47f-3d77c33c489e}</Project>
+      <Name>Uno.UI.SourceGenerators</Name>
+      <OutputItemType>Analyzer</OutputItemType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
 		  <Project>{C9824734-5116-425C-B490-C838D44105EC}</Project>
 		  <Name>Uno.UI.RemoteControl</Name>
