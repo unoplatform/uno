@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.Calls
 	public partial class PhoneCallHistoryEntryReader
 	{
 
-		private Android.Database.ICursor? _cursor = null;
+		private Android.Database.ICursor? _cursor;
 
 		public PhoneCallHistoryEntryReader()
 		{
