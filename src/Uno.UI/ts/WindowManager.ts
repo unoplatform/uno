@@ -737,6 +737,23 @@ namespace Uno.UI {
 		}
 
 		/**
+		 * Sets the element's selection highlight.
+		**/
+
+		public setSelectionHighlight(elementId: number, backgroundColor: number, foregroundColor: number): boolean {
+			const element = this.getView(elementId);
+			element.classList.add("selection-highlight");
+			element.style.setProperty("--selection-background", this.numberToCssColor(backgroundColor));
+			element.style.setProperty("--selection-color", this.numberToCssColor(foregroundColor));
+			return true;
+		}
+
+		public setSelectionHighlightNative(pParam: number): boolean {
+			const params = WindowManagerSetSelectionHighlightParams.unmarshal(pParam);
+			return this.setSelectionHighlight(params.HtmlId, params.BackgroundColor, params.ForegroundColor);
+		}
+
+		/**
 		* Sets the fill property of the specified element
 		*/
 		public setElementFill(elementId: number, color: number): string {

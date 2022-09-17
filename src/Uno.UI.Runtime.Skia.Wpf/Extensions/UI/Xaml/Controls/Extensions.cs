@@ -39,7 +39,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			return null;
 		}
 
-		private static System.Windows.Media.Color ToWpfColor(this Windows.UI.Color color)
+		public static System.Windows.Media.Color ToWpfColor(this Windows.UI.Color color)
 			=> System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
 
 		private static System.Windows.Point ToWpfPoint(this Windows.Foundation.Point point)

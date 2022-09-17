@@ -22,7 +22,8 @@ namespace Uno.UI.Tests
 			("Control", "XYFocusDown"),
 			("Control", "XYFocusLeft"),
 			("Control", "XYFocusRight"),
-			("Control", "UseSystemFocusVisuals")
+			("Control", "UseSystemFocusVisuals"),
+			("PasswordBox", "SelectionHighlightColor")
 		};
 
 		[TestMethod]

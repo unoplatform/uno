@@ -48,19 +48,18 @@ body {
     See WindowManager.ts on measureViewInternal() for more details.
   */
   transform: translate(0, 0);
-
   /*
     By default, the background of UWP controls is not drawn under the border of the control.
   */
   background-clip: padding-box;
 }
 
-.uno-uielement .noclip {
-  /* Used when we need to force the element to be unclipped.
+  .uno-uielement .noclip {
+    /* Used when we need to force the element to be unclipped.
       --> Used by the toolkit for elevation
   */
-  clip: auto !important;
-}
+    clip: auto !important;
+  }
 
 svg.uno-uielement {
   /*
@@ -69,7 +68,6 @@ svg.uno-uielement {
     This also ensure that we are HitTestVisible only for shapes that has a fill.
   */
   pointer-events: none;
-
   stroke-width: 1px; /* default value of Shape.StrokeThickness */
 }
 
@@ -130,12 +128,10 @@ embed.uno-frameworkelement.uno-unarranged {
 
 .uno-textblock {
   text-rendering: optimizeLegibility; /* iOS Safari */
-
   /* Following are required for gradient brush as Foreground on text. Should not affect normal rendering. */
   -ms-background-clip: text !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
-
   /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
   overflow: hidden;
 }
@@ -170,7 +166,7 @@ embed.uno-frameworkelement.uno-unarranged {
   position: relative;
 }
 
-.uno-htmlimage {  
+.uno-htmlimage {
   user-select: none;
   -moz-user-select: none;
   -webkit-user-drag: none;
@@ -199,9 +195,9 @@ embed.uno-frameworkelement.uno-unarranged {
     scrollbar-width: none; /* scrollbar-height has no effect on FF, using scrollbar-width works on all browsers (non standard property) */
   }
 
-  .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
-    height: 0;
-  }
+    .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {
+      height: 0;
+    }
 
   .uno-scrollcontentpresenter.scroll-y-disabled {
     overflow-y: hidden;
@@ -212,9 +208,9 @@ embed.uno-frameworkelement.uno-unarranged {
     scrollbar-width: none;
   }
 
-  .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
-    width: 0;
-  }
+    .uno-scrollcontentpresenter.scroll-y-hidden::-webkit-scrollbar {
+      width: 0;
+    }
 
   .uno-scrollcontentpresenter.scroll-x-visible {
     overflow-x: scroll;
@@ -259,4 +255,10 @@ textarea {
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
+}
+
+.selection-highlight::selection,
+.selection-highlight *::selection {
+  background: var(--selection-background);
+  color: var(--selection-color);
 }
