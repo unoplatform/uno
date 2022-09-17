@@ -95,16 +95,13 @@
 						</TextBlock>
 
 						<TextBlock
-							FontSize="10"
-							Margin="0,0,8,0"
+							FontSize="12"
+							Margin="0,0,4,0"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center"
 							TextLineBounds="Tight"
 							Opacity="0.5"
 							Text="{Binding Count}" />
-						<u:PathControl Style="{StaticResource Icon_Chevron}"
-									   VerticalContentAlignment="Center"
-									   HorizontalContentAlignment="Right" />
 					</u:StarStackPanel>
 				</Border>
 			</DataTemplate>
@@ -257,51 +254,57 @@
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="48" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
+					<Grid RowSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="48" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
-					<!-- Runtime tests button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Runtime Tests Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
 							AutomationProperties.Name="Open runtime tests"
 							ToolTipService.ToolTip="Runtime tests"
 							Command="{Binding OpenRuntimeTestsCommand}">
-						<FontIcon Foreground="{StaticResource Color06Brush}" Glyph="&#xE1EF;" />
-					</Button>
+							<FontIcon Foreground="{StaticResource Color06Brush}" Glyph="&#xE1EF;" />
+						</Button>
 
-					<!-- Title -->
-					<TextBlock
+						<!-- Title -->
+						<!--<TextBlock
 						Grid.Column="1"
 						Style="{StaticResource PaneHeadingStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center"
-						Text="Uno Platform" />
+						Text="Uno Platform" />-->
+						<Image Grid.Column="1" Source="/Assets/storelogo.png" Stretch="Uniform" Width="32" Height="32" />
 
-					<!-- Record All Tests Button -->
-					<Button
+						<!-- Record All Tests Button -->
+						<Button
 						Grid.Column="2"
 						Style="{StaticResource IconButtonStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
-						Command="{Binding RecordAllTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RunAll}"
-									   Margin="5,0" />
-					</Button>
-					<TextBox
+						AutomationProperties.Name="Record all tests"
+						ToolTipService.ToolTip="Record all tests"
+						Command="{Binding RecordAllTestsCommandCommand}">
+							<FontIcon Foreground="{StaticResource Color06Brush}" Glyph="&#xE8A2;" />
+						</Button>
+
+						<TextBox
 						Grid.Row="1"
 						Grid.ColumnSpan="3"
 						Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 						Style="{StaticResource SearchTextBoxStyle}"
+						AutomationProperties.Name="Search box"
 						PlaceholderText="Search"
 						 />
+					</Grid>
 				</Grid>
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="1"
@@ -337,7 +340,7 @@
 								ContentTemplate="{StaticResource FavoritesList}" />
 
 				<!--RECENTS-->
-				<Grid Height="48" Style="{StaticResource BaseTitleGridContainerStyle}"
+				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
 					<Border Height="48">
 						<TextBlock Style="{StaticResource PaneHeadingStyle}"
@@ -433,8 +436,8 @@
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}" ColumnSpacing="8">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="48" />
-						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
@@ -452,21 +455,34 @@
 								  HorizontalAlignment="Left"
 								  VerticalAlignment="Center" />
 
-					<!-- Sample Name -->
-					<TextBlock Text="{Binding CurrentSelectedSample.ControlName}"
+					<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="24" Grid.Column="2">
+						<!-- Previous Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
+					        Grid.Column="1"
+					        Command="{Binding LoadPreviousTestCommand}"
+					        CommandParameter="{Binding CurrentSelectedSample}">
+							<FontIcon Glyph="&#xE76B;" Foreground="{StaticResource Color06Brush}" />
+						</Button>
+						<!-- Sample Name -->
+						<TextBlock Text="{Binding CurrentSelectedSample.ControlName}"
 							   Style="{StaticResource Typo03}"
 							   HorizontalAlignment="Center"
 							   TextAlignment="Center"
 							   TextWrapping="NoWrap"
 							   VerticalAlignment="Center"
-							   Grid.Column="1" />
-
+							   Grid.Column="2" />
+						<!-- Next Button -->
+						<Button Style="{StaticResource IconButtonStyle}"
+					        Grid.Column="3"
+					        Command="{Binding LoadNextTestCommand}"
+					        CommandParameter="{Binding CurrentSelectedSample}">
+							<FontIcon Glyph="&#xE76C;" Foreground="{StaticResource Color06Brush}" />
+						</Button>
+					</StackPanel>
 					<!-- Info Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-							Grid.Column="2"
+							Grid.Column="4"
 							Command="{Binding ShowTestInformationCommand}"
-							FontWeight="SemiBold"
-							FontSize="24"
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
@@ -477,38 +493,17 @@
 						</Grid>
 					</Button>
 
-					<!-- Previous Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="3"
-					        Command="{Binding LoadPreviousTestCommand}"
-					        CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{StaticResource Icon_Previous}"
-						               VerticalContentAlignment="Center"
-						               HorizontalContentAlignment="Center"
-						               Margin="0,4,10,0" />
-					</Button>
+
 
 					<!-- Reload Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="4"
+					        Grid.Column="5"
 					        Command="{Binding ReloadCurrentTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{StaticResource Icon_Reload}"
-						               VerticalContentAlignment="Center"
-						               HorizontalContentAlignment="Center"
-						               Margin="0,4,10,0" />
+						<FontIcon Glyph="&#xE149;" Foreground="{StaticResource Color06Brush}" />
 					</Button>
 
-					<!-- Next Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
-					        Grid.Column="5"
-					        Command="{Binding LoadNextTestCommand}"
-					        CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{StaticResource Icon_Next}"
-						               VerticalContentAlignment="Center"
-						               HorizontalContentAlignment="Center"
-						               Margin="0,4,10,0" />
-					</Button>
+
 
 					<!-- Favorite Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
@@ -544,7 +539,7 @@
 							  Style="{x:Null}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
 					</CheckBox>
-					
+
 					<!-- Dark theme check box -->
 					<CheckBox Grid.Column="9"
 							  MinWidth="0"
@@ -556,6 +551,9 @@
 				</Grid>
 
 				<!-- Sample Content -->
+
+				<Image Visibility="{Binding IsPlaceholderVisible}" Source="/Assets/SplashScreen.png" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" />
+
 				<ContentControl Content="{Binding ContentPhone}"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Stretch"

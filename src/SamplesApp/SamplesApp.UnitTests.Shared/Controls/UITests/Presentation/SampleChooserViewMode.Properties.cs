@@ -336,8 +336,11 @@ namespace SampleControl.Presentation
 			{
 				_contentPhone = value;
 				RaisePropertyChanged();
+				RaisePropertyChanged(nameof(IsPlaceholderVisible));
 			}
 		}
+
+		public bool IsPlaceholderVisible => ContentPhone == null;
 
 		// OTHER
 		public string SearchTerm
