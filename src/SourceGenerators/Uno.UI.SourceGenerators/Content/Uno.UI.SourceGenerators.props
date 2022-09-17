@@ -8,17 +8,7 @@
 	<PropertyGroup>
 		<_isRoslynAnalyzerAvailable Condition="'$(MSBuildVersion)' &gt;= '16.8'">true</_isRoslynAnalyzerAvailable>
 
-		<_canUseRoslynAnalyzer Condition="
-							'$(LangVersion)' == 'preview'
-							Or '$(LangVersion)' == 'latest'
-							Or '$(LangVersion)' == 'latestMajor'
-							Or '$(LangVersion)' == 'default'
-							Or (
-								'$(LangVersion)'!=''
-								and '$(LangVersion)' &gt; '9.0'
-							)">true</_canUseRoslynAnalyzer>
-
-		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
+		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true'">true</UnoUIUseRoslynSourceGenerators>
 		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'==''">false</UnoUIUseRoslynSourceGenerators>
 
 		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('xamarinios')) or '$(TargetPlatformIdentifier)' == 'ios' OR '$(TargetFramework)' == 'net6.0-ios' OR '$(TargetFramework)' == 'net6.0-maccatalyst'">ios</XamarinProjectType>
