@@ -37,6 +37,11 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -47,6 +47,11 @@
 		</ProjectReference>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj">
 		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<WarningsAsErrors>true</WarningsAsErrors>
@@ -38,19 +39,35 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.6</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
-		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.8.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="Mono.Cecil">
-			<Version>0.11.4</Version>
-		</PackageReference>
 	</ItemGroup>
+
+	<!-- BEGIN: Handle generator dependencies for Roslyn generation when the generator is referenced as ProjectReference (inside Uno) -->
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Mono.Cecil" Version="0.11.4" GeneratePathProperty="true" PrivateAssets="all" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
+		<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+	</PropertyGroup>
+
+	<Target Name="GetDependencyTargetPaths" Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
+		<ItemGroup>
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_DotNet_PlatformAbstractions)\lib\netstandard2.0\Microsoft.DotNet.PlatformAbstractions.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_ApplicationInsights)\lib\netstandard2.0\Microsoft.ApplicationInsights.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGMono_Cecil)\lib\netstandard2.0\Mono.Cecil.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGMono_Cecil)\lib\netstandard2.0\Mono.Cecil.Mdb.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGMono_Cecil)\lib\netstandard2.0\Mono.Cecil.Pdb.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGMono_Cecil)\lib\netstandard2.0\Mono.Cecil.Rocks.dll" IncludeRuntimeDependency="false" />
+		</ItemGroup>
+	</Target>
+	<!-- END: Handle generator dependencies for Roslyn generation when the generator is referenced as ProjectReference (inside Uno) -->
+
 
 	<ItemGroup>
 		<Compile Include="..\..\Uno.Foundation\Point.cs">

@@ -61,6 +61,11 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj">
 			<Name>Uno.Foundation</Name>
 		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">

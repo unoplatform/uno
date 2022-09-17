@@ -178,6 +178,13 @@
       <Project>{637995af-2ddf-4b13-bde6-353bbd65250b}</Project>
       <Name>Uno.UI.Adapter.Microsoft.Extensions.Logging</Name>
     </ProjectReference>
+		<ProjectReference Include="..\..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+      <Project>{9a19103f-16f7-4668-be54-9a1e7a4f7556}</Project>
+      <Name>Uno.UI.SourceGenerators</Name>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+		</ProjectReference>
   </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <ItemGroup>

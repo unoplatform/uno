@@ -47,6 +47,12 @@
 	  <ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 	  <ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
+
+	  <ProjectReference Include="..\..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+	    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		  <OutputItemType>Analyzer</OutputItemType>
+		  <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+	  </ProjectReference>
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
