@@ -79,10 +79,13 @@
 	<Choose>
 		<When Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(WindowsAppSDKWinUI)'!='true'">
 			<!-- C# 9.0 Generator -->
-
-			<PropertyGroup>
-				<UnoUIUseRoslynSourceGeneratorsValue>$(UnoUIUseRoslynSourceGenerators)</UnoUIUseRoslynSourceGeneratorsValue>
-			</PropertyGroup>
+		  <ItemGroup Condition="'$(_IsUnoUISolution)'=='true'">
+			  <ProjectReference Include="$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj">
+				<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+				<OutputItemType>Analyzer</OutputItemType>
+				<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+			  </ProjectReference>
+		  </ItemGroup>
 
 		</When>
 		<Otherwise>

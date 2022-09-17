@@ -53,5 +53,5 @@
 	</Target>
 
 	<Target Name="GetTargetPath" />
-
+	<Target Name="GetCopyToPublishDirectoryItems" />
 </Project>

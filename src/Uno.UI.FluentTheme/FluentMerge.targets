@@ -38,12 +38,5 @@
   </PropertyGroup>
 
   <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-  <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Analyzer</OutputItemType>
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
-    </ProjectReference>
-  </ItemGroup>
 
 </Project>
