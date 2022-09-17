@@ -174,8 +174,8 @@ namespace Windows.ApplicationModel.Contacts
 					continue;
 				}
 
-				//// https://developer.android.com/reference/android/provider/ContactsContract.CommonDataKinds.StructuredPostal
-				//// 	FORMATTED_ADDRESS, TYPE, LABEL, STREET, POBOX, NEIGHBORHOOD, CITY, REGION, POSTCODE, COUNTRY
+				// https://developer.android.com/reference/android/provider/ContactsContract.CommonDataKinds.StructuredPostal
+				// 	FORMATTED_ADDRESS, TYPE, LABEL, STREET, POBOX, NEIGHBORHOOD, CITY, REGION, POSTCODE, COUNTRY
 
 				entry.Addresses.Clear();
 				if (desiredFields.HasFlag(ContactQueryDesiredFields.PostalAddress))
@@ -225,9 +225,6 @@ namespace Windows.ApplicationModel.Contacts
 			{
 				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor is null (impossible)");
 			}
-
-			//int columnD1 = subCursor.GetColumnIndex(Android.Provider.ContactsContract.DataColumns.Data1); // Phone.NUMBER
-			//int columnD2 = subCursor.GetColumnIndex(Android.Provider.ContactsContract.DataColumns.Data2); // Phone.TYPE
 
 			bool searchFound = false;
 
@@ -384,7 +381,7 @@ namespace Windows.ApplicationModel.Contacts
 				itemEntry.Region = subCursor.GetString(3) ?? "";
 				itemEntry.PostalCode = subCursor.GetString(4) ?? "";
 				itemEntry.Locality = subCursor.GetString(2) ?? "";
-				//itemEntry.Description = subCursor.GetString(columnD4);
+				//itemEntry.Description = subCursor.GetString(columnD4); // *TODO* we don't set this field value, but field is not marked as NotImplemented, so (in theory) we should not ignore this field
 				itemEntry.Country = subCursor.GetString(5) ?? "";
 
 				itemEntry.Kind = ContactPicker.TypeToContactAddressKind(subCursor.GetInt(0));
