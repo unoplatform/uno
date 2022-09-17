@@ -4,6 +4,7 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<LangVersion>10.0</LangVersion>
 
 		<!-- Required to get roslyn workspaces files to be present -->
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
