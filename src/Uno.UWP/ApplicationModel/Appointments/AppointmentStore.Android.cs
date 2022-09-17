@@ -14,9 +14,9 @@ namespace Windows.ApplicationModel.Appointments
 		// I don't know if this is default everywhere, or only on my tablet...
 		private const int DEFAULT_REMINDER_MINUTES = 15;
 
-		// set to `true` if should be included in UWP output result set
-		private bool _startTimeRequested = false;
-		private bool _durationRequested = false;
+		// set to `true` if it should be included in the UWP output result set
+		private bool _startTimeRequested;
+		private bool _durationRequested;
 
 		private List<string> ConvertWinRTToAndroidColumnNames(IList<string> uwpColumns)
 		{
