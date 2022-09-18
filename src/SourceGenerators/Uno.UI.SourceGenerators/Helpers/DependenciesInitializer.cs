@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using Uno.Extensions;
-using Uno.Extensions.Specialized;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
