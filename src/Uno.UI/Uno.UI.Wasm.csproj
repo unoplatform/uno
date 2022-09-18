@@ -18,7 +18,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
  
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
-		<TSBindingAssemblySource Include="Uno;Uno.UI" />
+		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
 		
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
