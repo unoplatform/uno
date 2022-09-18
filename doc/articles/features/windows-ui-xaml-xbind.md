@@ -91,4 +91,4 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   ```xml
   <TextBox x:Load="{x:Bind IsMyControlVisible}" />
   ```
-  See the [WinUI documentation](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-load-attribute) for more details.
+  See the [WinUI documentation](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) for more details.
