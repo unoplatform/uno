@@ -68,7 +68,7 @@ namespace Uno.UI.Samples.Tests
 		// asynchronously during test enumeration.
 		private int _ciTestsGroupCountCache = -1;
 		private int _ciTestGroupCache = -1;
-		
+
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
@@ -928,6 +928,11 @@ namespace Uno.UI.Samples.Tests
 				select type;
 
 			var types = GetType().GetTypeInfo().Assembly.GetTypes().Concat(testAssembliesTypes);
+
+			if (_ciTestGroupCache != -1)
+			{
+				Console.WriteLine($"Filtering with group #{_ciTestGroupCache} (Groups {_ciTestsGroupCountCache})");
+			}
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null

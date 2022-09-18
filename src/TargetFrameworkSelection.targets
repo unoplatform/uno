@@ -40,7 +40,7 @@
 
     <PropertyGroup>
       <TargetFrameworksOverride Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(TargetFrameworks)</TargetFrameworksOverride>
-      <TargetFrameworksOverride Condition="'$(CI_Build)'!='' and '$(TargetFrameworksCI)'!='' and '$(UITestsEnabled)'==''">$(TargetFrameworksCI)</TargetFrameworksOverride>
+      <TargetFrameworksOverride Condition="'$(CI_Build)'!='' and '$(TargetFrameworksCI)'!='' and '$(UITestsEnabled)'=='' and '$(UnoDisableTargetFrameworksCIOverride)'==''">$(TargetFrameworksCI)</TargetFrameworksOverride>
 
 
 		<!-- Allow projects to specify an always-built target framework -->

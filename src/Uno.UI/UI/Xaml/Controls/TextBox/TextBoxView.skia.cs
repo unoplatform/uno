@@ -81,6 +81,12 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxExtension?.SetForeground(brush);
 		}
 
+		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
+		{
+			DisplayBlock.SelectionHighlightColor = brush;
+			_textBoxExtension?.SetSelectionHighlightColor(brush);
+		}
+
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
 			if (focusState != FocusState.Unfocused)

@@ -24,13 +24,34 @@ public sealed partial class XamlRoot
 		{
 			_renderQueued = true;
 
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			DispatchQueueRender();
+		}
+	}
+	private void DispatchQueueRender()
+	{
+		CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+		{
+			if (_isMeasureWaiting || _isArrangeWaiting)
+			{
+				// If the Render request happends during a UI update pass, and later in the same
+				// dispatched iteration a measure is requested, visuals may be in an
+				// inconstistent state. We need to skip this request to be rescheduled
+				// to run after the pending measure/arrange so the visuals are drawn properly.
+				DispatchQueueRender();
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Trace))
+				{
+					this.Log().Trace("Delaying Render request");
+				}
+			}
+			else if(_renderQueued)
 			{
 				_renderQueued = false;
 				InvalidateRender();
-			});
-		}
+			}
+		});
 	}
+
 
 	internal void ScheduleInvalidateMeasureOrArrange(bool invalidateMeasure)
 	{

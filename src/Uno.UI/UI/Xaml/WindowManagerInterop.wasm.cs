@@ -898,6 +898,44 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region SetSelectionHighlight
+
+		internal static void SetSelectionHighlight(IntPtr htmlId, Color backgroundColor, Color foregroundColor)
+		{
+			var backgroundAsInteger = backgroundColor.ToCssInteger();
+			var foregroundAsInteger = foregroundColor.ToCssInteger();
+
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setSelectionHighlight(\"{htmlId}\", {backgroundAsInteger}, {foregroundAsInteger});";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetSelectionHighlightParams()
+				{
+					HtmlId = htmlId,
+					BackgroundColor = backgroundAsInteger,
+					ForegroundColor = foregroundAsInteger
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setSelectionHighlightNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetSelectionHighlightParams
+		{
+			public IntPtr HtmlId;
+
+			public uint BackgroundColor;
+
+			public uint ForegroundColor;
+		}
+
+		#endregion
+
 		#region SetElementFill
 
 		internal static void SetElementFill(IntPtr htmlId, Color color)

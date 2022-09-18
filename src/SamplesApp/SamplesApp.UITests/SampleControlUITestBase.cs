@@ -289,6 +289,11 @@ namespace SamplesApp.UITests
 				{
 					foreach (var attr in classAttributes)
 					{
+						if (attr.Error is not null)
+						{
+							throw attr.Error;
+						}
+
 						if (attr.Platforms == null)
 						{
 							continue;
@@ -311,6 +316,11 @@ namespace SamplesApp.UITests
 					{
 						foreach (var attr in methodAttributes)
 						{
+							if (attr.Error is not null)
+							{
+								throw attr.Error;
+							}
+
 							if (attr.Platforms == null)
 							{
 								continue;
