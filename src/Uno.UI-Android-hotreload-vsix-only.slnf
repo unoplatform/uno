@@ -14,6 +14,7 @@
       "SolutionTemplate\\UnoSolutionTemplate.Wizard.2019\\UnoSolutionTemplate.Wizard.2019.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.Wizard.2022\\UnoSolutionTemplate.Wizard.2022.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
+      "SolutionTemplate\\UnoUITestTemplate\\UnoUITestTemplate.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",

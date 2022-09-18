@@ -22,19 +22,4 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 	
-	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile">
-		<!-- Workaround for Linux and macos when building against mono where Analyzers 2.9.x depend on unknown members. This should not happen when building
-		     with "dotnet build"
-
-		CSC : error AD0001: Analyzer 'Microsoft.CodeAnalysis.Analyzers.MetaAnalyzers.CompareSymbolsCorrectlyAnalyzer' threw an exception of type
-				  'System.TypeLoadException' with message 'Could not load type of field 'Analyzer.Utilities.Extensions.IOperationExtensions:s_operationToCfgCache'
-					(0) due to: Could not resolve type with token 01000075 from typeref (expected class 'Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraph' in
-					assembly 'Microsoft.CodeAnalysis, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35') assembly:Microsoft.CodeAnalysis, Version=2.9.0.0,
-					Culture=neutral, PublicKeyToken=31bf3856ad364e35 type:Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraph member:(null)'.
-		-->
-		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" />
-		</ItemGroup>
-	</Target>
-
 </Project>

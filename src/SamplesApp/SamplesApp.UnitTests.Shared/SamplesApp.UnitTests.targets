@@ -1,14 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <ItemGroup>
-	<SourceGenerator Include="$(MSBuildThisFileDirectory)..\SamplesApp.UITests.Generator\bin\$(Configuration)\Uno.Samples.UITest.Generator.dll" />
-  </ItemGroup>
+	<ItemGroup>
+		<Analyzer Include="$(MSBuildThisFileDirectory)..\SamplesApp.UITests.Generator\bin\$(Configuration)\Uno.Samples.UITest.Generator.dll" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(DocsGeneration)'==''">
-	<ProjectReference Include="$(MSBuildThisFileDirectory)..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
-	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-	  <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-	  <UndefineProperties>TargetFramework;RuntimeIdentifier;TargetFrameworks;RuntimeIdentifiers</UndefineProperties>
-	</ProjectReference>
-  </ItemGroup>
+	<ItemGroup>
+		<CompilerVisibleProperty Include="MSBuildExtensionsPath" />
+		<CompilerVisibleProperty Include="RootNamespace" />
+		<CompilerVisibleProperty Include="MSBuildProjectDirectory" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="$(MSBuildThisFileDirectory)..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework;RuntimeIdentifier;TargetFrameworks;RuntimeIdentifiers</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
 </Project>

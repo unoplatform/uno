@@ -60,7 +60,12 @@ namespace Uno.UI.Runtime.Skia
 
 			HasDepthBuffer = false;
 			HasStencilBuffer = false;
-			AutoRender = true;
+
+			// AutoRender must be disabled to avoid having the GLArea re-render the
+			// composition Visuals after pointer interactions, causing undefined behaviors
+			// for Visuals being updated during a pointer interaction, while not having measured
+			// and arranged properly.
+			AutoRender = false;
 		}
 
 		public Widget Widget => this;

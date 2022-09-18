@@ -35,13 +35,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public Microsoft.Build.Framework.ITaskItem[]? DefinitionFiles { get; set; }
 
 		[Required]
-		public string TargetAssembly { get; set; } = "";
-
-		[Required]
-		public string TargetResourceName { get; set; } = "";
-
-		[Required]
-		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
+		public string TargetDefinitionFile { get; set; } = "";
 
 
 		public override bool Execute()
@@ -62,7 +56,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 				foreach (var definition in DefinitionFiles)
 				{
-					Log.LogMessage(DefaultLogMessageLevel, $"Merging substitution file {definition}");
+					Log.LogMessage(DefaultLogMessageLevel, $"Merging substitution file {definition.ItemSpec}");
 
 					var defDoc = new XmlDocument();
 					defDoc.Load(definition.ItemSpec);
@@ -70,67 +64,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					linkerNode.InnerXml += defDoc.DocumentElement.InnerXml;
 				}
 
-				var outputPath = Path.GetTempFileName();
-				doc.Save(outputPath);
-
-				Log.LogMessage(DefaultLogMessageLevel, $"Writing substitution file to {TargetAssembly}");
-
-				var resolver = new DefaultAssemblyResolver();
-				foreach(var path in BuildReferencesPaths())
-				{
-					resolver.AddSearchDirectory(path);
-				}
-
-				using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver, ReadSymbols = true, ReadWrite = true } ))
-                {
-                    // Clean existing resources with the same name
-                    var existingResources = asm.MainModule.Resources
-                        .OfType<EmbeddedResource>()
-                        .Where(r => r.Name.EndsWith(TargetResourceName, StringComparison.OrdinalIgnoreCase))
-                        .ToArray();
-
-                    foreach(var existingResource in existingResources)
-                    {
-                        asm.MainModule.Resources.Remove(existingResource);
-                    }
-
-                    // Add the new merged content
-                    asm.MainModule.Resources.Add(new EmbeddedResource(TargetResourceName, ManifestResourceAttributes.Public, File.ReadAllBytes(outputPath)));
-
-					asm.Write(new WriterParameters() { WriteSymbols = true });
-				}
-
-				WaitForUnlockedFile(TargetAssembly);
-				WaitForUnlockedFile(Path.ChangeExtension(TargetAssembly, "pdb"));
+				doc.Save(TargetDefinitionFile);				
 			}
 
 			return true;
-		}
-
-		private string[] BuildReferencesPaths() => ReferencePath
-				.Select(p => Path.GetDirectoryName(p.ItemSpec))
-				.Distinct()
-				.ToArray();
-
-		private void WaitForUnlockedFile(string filePath)
-		{
-			var sw = Stopwatch.StartNew();
-
-			while (sw.Elapsed < TimeSpan.FromSeconds(5))
-			{
-				try
-				{
-					File.OpenWrite(filePath).Dispose();
-
-					break;
-				}
-				catch
-				{
-					Log.LogMessage(MessageImportance.Low, $"Waiting for availability for {TargetAssembly}");
-				}
-
-				Thread.Sleep(100);
-			}
 		}
 	}
 }

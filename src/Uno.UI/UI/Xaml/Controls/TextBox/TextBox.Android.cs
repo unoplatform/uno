@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Content.Res;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Text;
@@ -358,6 +359,15 @@ namespace Windows.UI.Xaml.Controls
 					_textBoxView.InputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
 					_textBoxView.SetRawInputType(inputType);
 				}
+			}
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
+		{
+			if (_textBoxView != null)
+			{
+				var color = brush.ColorWithOpacity;
+				_textBoxView.SetHighlightColor(color);
 			}
 		}
 

@@ -1,6 +1,6 @@
 # Get Started on VS Code
 
-This guide will walk you through the set-up process for building WebAssembly apps with Uno under Windows, Linux, or macOS.
+This guide will walk you through the set-up process for building WebAssembly and Gtk+ apps with Uno under Windows, Linux, or macOS.
 
 See these sections for information about using Uno Platform with:
 - [Codespaces](features/working-with-codespaces.md)
@@ -10,7 +10,7 @@ See these sections for information about using Uno Platform with:
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
 * **.NET SDK**
-    * [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 6.0 (SDK 6.0.100)** or later)
+    * [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0) (**version 6.0 (SDK 6.0.100)** or later)
     > Use `dotnet --version` from the terminal to get the version installed.
 * The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 * For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))

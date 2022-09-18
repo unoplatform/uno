@@ -9,15 +9,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.RoslynHelpers;
-using Uno.SourceGeneration;
 
 namespace Uno.Samples.UITest.Generator
 {
-	public class CategoryBuckerGenerator : SourceGenerator
+	[Generator]
+	public class CategoryBuckerGenerator : ISourceGenerator
 	{
 		private INamedTypeSymbol _testAttribute;
+		public void Initialize(GeneratorInitializationContext context)
+		{
+		}
 
-		public override void Execute(SourceGeneratorContext context)
+		public void Execute(GeneratorExecutionContext context)
 		{
 #if DEBUG
 			// Debugger.Launch();
@@ -26,7 +29,7 @@ namespace Uno.Samples.UITest.Generator
 			GenerateTests(context);
 		}
 
-		private void GenerateTests(SourceGeneratorContext context)
+		private void GenerateTests(GeneratorExecutionContext context)
 		{
 			if (context.Compilation.Assembly.Name == "SamplesApp.UITests"
 				&& int.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_BUCKET_COUNT"), out var bucketCount))
@@ -43,7 +46,7 @@ namespace Uno.Samples.UITest.Generator
 		}
 
 		private void GenerateCategories(
-			SourceGeneratorContext context,
+			GeneratorExecutionContext context,
 			IEnumerable<INamedTypeSymbol> symbols,
 			int bucketCount)
 		{
@@ -71,7 +74,7 @@ namespace Uno.Samples.UITest.Generator
 					}
 				}
 
-				context.AddCompilationUnit(Sanitize(type.GetFullMetadataName()), builder.ToString());
+				context.AddSource(Sanitize(type.GetFullMetadataName()), builder.ToString());
 			}
 		}
 

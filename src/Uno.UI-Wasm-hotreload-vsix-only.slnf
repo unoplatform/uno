@@ -21,6 +21,7 @@
       "SolutionTemplate\\UnoSolutionTemplate.net6\\UnoSolutionTemplate.net6.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.WinUI.net6\\UnoSolutionTemplate.WinUI.net6.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
+      "SolutionTemplate\\UnoUITestTemplate\\UnoUITestTemplate.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",

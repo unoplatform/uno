@@ -18,7 +18,7 @@ public partial class Capture_Tests : SampleControlUITestBase
 {
 	[Test]
 	[AutoRetry]
-	[ActivePlatforms(Platform.iOS | Platform.Android)] // This fails with unit test
+	[ActivePlatforms(Platform.iOS, Platform.Android)] // This fails with unit test
 	[InjectedPointer(PointerDeviceType.Touch)]
 	public async Task TestSimple()
 		=> RunTest("Simple", TouchAndMoveOut);

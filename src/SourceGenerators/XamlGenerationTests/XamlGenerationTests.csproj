@@ -3,16 +3,12 @@
 		<TargetFrameworks>MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
 
-		<LangVersion>8.0</LangVersion>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<DefaultLanguage>en-US</DefaultLanguage>
-
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
