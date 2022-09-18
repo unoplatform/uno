@@ -409,7 +409,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallHistoryEntryReader.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallHistoryEntryReaderTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5160,8 +5160,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\BoolNegationValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\FromNullableBoolToCustomValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\StringConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallHistoryEntryReader.xaml.cs">
-      <DependentUpon>PhoneCallHistoryEntryReader.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallHistoryEntryReaderTests.xaml.cs">
+      <DependentUpon>PhoneCallHistoryEntryReaderTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallManagerTests.xaml.cs">
       <DependentUpon>PhoneCallManagerTests.xaml</DependentUpon>

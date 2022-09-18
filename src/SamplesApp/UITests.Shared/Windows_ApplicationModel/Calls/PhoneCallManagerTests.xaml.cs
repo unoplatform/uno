@@ -15,12 +15,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
-	[SampleControlInfo("Windows.ApplicationModel", "PhoneCallManager", ignoreInSnapshotTests: true, description: "PhoneCallManager APIs implementation.")]
-
+	[Sample("Windows.ApplicationModel.Calls", Name = "PhoneCallManager")]
 	public sealed partial class PhoneCallManagerTests : UserControl
 	{
 		public PhoneCallManagerTests()
