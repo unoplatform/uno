@@ -1,118 +1,121 @@
 ﻿#nullable enable
 
-#if __ANDROID__
-
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Android.Content.PM;
 using Windows.Foundation;
 
-namespace Windows.ApplicationModel.Calls
+namespace Windows.ApplicationModel.Calls;
+
+/// <summary>
+/// Provides APIs for the application to get access to the PhoneCallHistoryStore.
+/// </summary>
+public static partial class PhoneCallHistoryManager
 {
-	public partial class PhoneCallHistoryManager
+	/// <summary>
+	/// Requests the PhoneCallHistoryStore associated with the calling application.
+	/// </summary>
+	/// <remarks>
+	/// AppEntriesReadWrite access type is not supported.
+	/// </remarks>
+	/// <param name="accessType">The type of access requested for the PhoneCallHistoryStore object.</param>
+	/// <returns></returns>
+	/// <exception cref="NotSupportedException">For unsupported access type.</exception>
+	/// <exception cref="InvalidOperationException">When application package is invalid.</exception>
+	/// <exception cref="UnauthorizedAccessException"></exception>
+	public static IAsyncOperation<PhoneCallHistoryStore?> RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) =>
+		RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore?>();	
+	
+	private static async Task<PhoneCallHistoryStore?> RequestStoreAsyncTask(PhoneCallHistoryStoreAccessType accessType)
 	{
-
-		private static async Task<PhoneCallHistoryStore?> RequestStoreAsyncTask(PhoneCallHistoryStoreAccessType accessType)
+		if (accessType == PhoneCallHistoryStoreAccessType.AppEntriesReadWrite)
 		{
-			// UWP: AppEntriesReadWrite, AllEntriesLimitedReadWrite, AllEntriesReadWrite
-			// Android: Manifest has READ_CALL_LOG and WRITE_CALL_LOG, no difference between app/limited/full
-			// using: AllEntriesReadWrite as ReadWrite, and AllEntriesLimitedReadWrite as ReadOnly
+			// Should not happen, as this option is marked as NotImplemented
+			throw new NotSupportedException("PhoneCallHistoryManager.RequestStoreAsyncTask, accessType AppEntriesReadWrite is not implemented for Android");
+		}
 
-			if(accessType == PhoneCallHistoryStoreAccessType.AppEntriesReadWrite)
-			{   // should not happen, as this option is defined as NotImplemented in enum
-				throw new NotSupportedException("PhoneCallHistoryManager.RequestStoreAsyncTask, accessType AppEntriesReadWrite is not implemented for Android");
-			}
+		var historyStore = new PhoneCallHistoryStore();
 
-
-			var historyStore = new PhoneCallHistoryStore();
-
-			// below API 16 (JellyBean), permission are granted
-			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
-			{
-				return historyStore;
-			}
-
-			// since API 29, we should do something more:
-			// https://developer.android.com/reference/android/content/pm/PackageInstaller.SessionParams.html#setWhitelistedRestrictedPermissions(java.util.Set%3Cjava.lang.String%3E)
-
-			var context = Android.App.Application.Context;
-			var packageManager = context.PackageManager;
-			if (packageManager is null)
-			{
-				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsyncTask, PackageManager is null (impossible)");
-			}
-
-			var packageName = context.PackageName;
-			if(packageName is null)
-			{
-				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsyncTask, PackageName is null (impossible)");
-			}
-			var packageInfo =
-				packageManager.GetPackageInfo(packageName, Android.Content.PM.PackageInfoFlags.Permissions);
-			var requestedPermissions = packageInfo?.RequestedPermissions;
-			if (requestedPermissions is null)
-			{
-				throw new UnauthorizedAccessException("no permissions in Manifest defined (no permission at all)");
-			}
-
-			if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadCallLog))
-			{
-				return null;
-			}
-
-			// required for contact name
-			if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadContacts))
-			{
-				return null;
-			}
-
-			if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite)
-			{
-				if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.WriteCallLog))
-				{
-					return null;
-				}
-			}
-
-			List<string> requestPermission = new ();
-
-			// check what permission should be granted
-			if (! await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadCallLog))
-			{
-				requestPermission.Add(Android.Manifest.Permission.ReadCallLog);
-			}
-
-			if (! await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadContacts))
-			{
-				requestPermission.Add(Android.Manifest.Permission.ReadContacts);
-			}
-
-			if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite)
-			{
-				if (!await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.WriteCallLog))
-				{
-					requestPermission.Add(Android.Manifest.Permission.WriteCallLog);
-				}
-			}
-
-			if (requestPermission.Count < 1)
-				return historyStore;
-
-			foreach (var sPerm in requestPermission)
-			{
-				await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, sPerm);
-			}
-
+		// Below API 16 (JellyBean), permission are granted automatically
+		if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
+		{
 			return historyStore;
 		}
 
-		public static IAsyncOperation<PhoneCallHistoryStore?> RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) => RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore?>();
+		// Since API 29, more checks are required:
+		// https://developer.android.com/reference/android/content/pm/PackageInstaller.SessionParams.html#setWhitelistedRestrictedPermissions(java.util.Set%3Cjava.lang.String%3E
+
+		var context = Android.App.Application.Context;
+		var packageManager = context.PackageManager;
+		if (packageManager is null)
+		{
+			throw new InvalidOperationException("Context.PackageManager was null");
+		}
+
+		var packageName = context.PackageName;
+		if (packageName is null)
+		{
+			throw new InvalidOperationException("Context.PackageName was null");
+		}
+
+		var packageInfo = packageManager.GetPackageInfo(packageName, PackageInfoFlags.Permissions);
+		var requestedPermissions = packageInfo?.RequestedPermissions;
+		if (requestedPermissions is null)
+		{
+			throw new UnauthorizedAccessException("No permissions in Manifest declared");
+		}
+
+		if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadCallLog))
+		{
+			throw new InvalidOperationException($"{Android.Manifest.Permission.ReadCallLog} permission is required to read call log.");
+		}
+
+		// required for contact name
+		if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadContacts))
+		{
+			throw new InvalidOperationException($"{Android.Manifest.Permission.ReadContacts} permission is required to read contacts.");
+		}
+
+		if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite &&
+			!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.WriteCallLog))
+		{
+			throw new InvalidOperationException($"{Android.Manifest.Permission.WriteCallLog} permission is required to write in call log.");
+		}
+
+		List<string> requestPermission = new();
+
+		// check what permission should be granted
+		if (!await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadCallLog))
+		{
+			requestPermission.Add(Android.Manifest.Permission.ReadCallLog);
+		}
+
+		if (!await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadContacts))
+		{
+			requestPermission.Add(Android.Manifest.Permission.ReadContacts);
+		}
+
+		if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite &&
+			!await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.WriteCallLog))
+		{
+			requestPermission.Add(Android.Manifest.Permission.WriteCallLog);
+		}
+
+		var allOk = true;
+		if (requestPermission.Count > 0)
+		{
+			foreach (var sPerm in requestPermission)
+			{
+				if (!await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, sPerm))
+				{
+					allOk = false;
+					break;
+				}
+			}
+		}
+
+		return allOk ? historyStore : null;
 	}
 }
-
-#endif
