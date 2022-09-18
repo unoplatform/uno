@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UITests.Windows_UI_Xaml_Controls.TextBlockControl;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -64,6 +67,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
 			WindowHelper.WindowContent = SUT;
 			SUT.Measure(new Size(1000, 1000));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FontStretch()
+		{
+			var SUT = new TextBlock_FontStretch();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT.TextBlockCondensed);
+			await WindowHelper.WaitForLoaded(SUT.TextBlockNormal);
+			await WindowHelper.WaitForLoaded(SUT.TextBlockNormal2);
+			await WindowHelper.WaitForLoaded(SUT.TextBlockExpanded);
+
+			await WindowHelper.WaitForIdle();
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var screenshot = new RawBitmap(renderer, SUT);
+			screenshot.Populate();
+
+			int lastBlueNormal = GetLastBluePixel(screenshot, SUT.TextBlockNormal);
+			int lastBlueNormal2 = GetLastBluePixel(screenshot, SUT.TextBlockNormal2);
+
+			Assert.AreEqual(lastBlueNormal, lastBlueNormal2);
+#if !__SKIA__ // FontStretch doesn't work properly on Skia for custom fonts.
+			int lastBlueCondensed = GetLastBluePixel(screenshot, SUT.TextBlockCondensed);
+			Assert.IsTrue(lastBlueCondensed < lastBlueNormal);
+
+			int lastRedExpanded = GetLastBluePixel(screenshot, SUT.TextBlockExpanded);
+			Assert.IsTrue(lastRedExpanded > lastRedNormal);
+#endif
+
+			int lastBlueCondensedArial = GetLastBluePixel(screenshot, SUT.TextBlockCondensedArial);
+			int lastBlueNormalArial = GetLastBluePixel(screenshot, SUT.TextBlockNormalArial);
+			Assert.IsTrue(lastBlueCondensedArial < lastBlueNormalArial);
+		}
+
+		private static int GetLastBluePixel(RawBitmap screenshot, TextBlock textBlock)
+		{
+			for (int x = (int)textBlock.ActualWidth - 1; x >= 0; x--)
+			{
+				var point = textBlock.TransformToVisual(screenshot.RenderedElement).TransformPoint(new Point(x, textBlock.ActualHeight / 2));
+				var pixel = screenshot.GetPixel((int)point.X, (int)point.Y);
+				if (ImageAssert.AreSameColor(Windows.UI.Colors.Blue, pixel, tolerance: 10, out _))
+				{
+					return x;
+				}
+			}
+
+			return -1;
 		}
 	}
 }

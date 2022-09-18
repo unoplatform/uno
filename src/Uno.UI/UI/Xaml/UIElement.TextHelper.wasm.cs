@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -234,22 +235,11 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				var value = (FontStretch)localValue;
-				var styleValue = value switch
-				{
-					FontStretch.Undefined => "TODO",
-					FontStretch.UltraCondensed => "ultra-condensed",
-					FontStretch.ExtraCondensed => "extra-condensed",
-					FontStretch.Condensed => "condensed",
-					FontStretch.SemiCondensed => "semi-condensed",
-					FontStretch.Normal => "normal",
-					FontStretch.SemiExpanded => "semi-expanded",
-					FontStretch.Expanded => "expanded",
-					FontStretch.ExtraExpanded => "extra-expanded",
-					FontStretch.UltraExpanded => "ultra-expanded",
-					_ => "", // invalid FontStretch value.
-				};
-				this.SetStyle("font-stretch", styleValue);
+				var fontStretch = (FontStretch)localValue;
+				this.SetStyle(
+					("font-stretch", fontStretch.ToCssFontStretch()),
+					("font-variation-settings", fontStretch.ToCssFontVariationSettings())
+				);
 			}
 		}
 

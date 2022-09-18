@@ -115,6 +115,7 @@ namespace Windows.UI.Xaml.Documents
 					.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
 
 				skTypeFace = SKTypeface.FromFile(filePath);
+				skTypeFace = SKFontManager.Default.MatchTypeface(skTypeFace, new SKFontStyle(skWeight, skWidth, skSlant));
 			}
 			else
 			{
