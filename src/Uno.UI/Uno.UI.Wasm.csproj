@@ -18,6 +18,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
  
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
+		<TSBindingAssemblySource Include="Uno;Uno.UI" />
 		
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
@@ -27,8 +28,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<TSBindingAssemblySource Include="Uno" />
-		<TSBindingAssemblySource Include="Uno.UI" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
@@ -48,7 +47,7 @@
 
 	<ItemGroup>
 		<CompilerVisibleProperty Include="TSBindingsPath" />
-		<CompilerVisibleItemMetadata Include="TSBindingAssemblySource" MetadataName="FullPath" />
+		<CompilerVisibleProperty Include="TSBindingAssemblySource" />
 	</ItemGroup>
 
 	<ItemGroup>

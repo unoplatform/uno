@@ -19,7 +19,6 @@
 
 	<ItemGroup>
 	  <Compile Include="..\..\Uno.Foundation.Runtime.WebAssembly\Interop\TSInteropMessageAttribute.wasm.cs" Link="TSBindings\TSInteropMessageAttribute.cs" />
-	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\DependenciesInitializer.cs" Link="Helpers\DependenciesInitializer.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\DesignTimeHelper.cs" Link="Helpers\DesignTimeHelper.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\GeneratorExecutionContextExtensions.cs" Link="Helpers\GeneratorExecutionContextExtensions.cs" />
 		<Compile Include="..\Uno.UI.SourceGenerators\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
