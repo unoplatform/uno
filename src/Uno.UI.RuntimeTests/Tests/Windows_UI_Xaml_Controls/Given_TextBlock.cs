@@ -96,8 +96,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			int lastBlueCondensed = GetLastBluePixel(screenshot, SUT.TextBlockCondensed);
 			Assert.IsTrue(lastBlueCondensed < lastBlueNormal);
 
-			int lastRedExpanded = GetLastBluePixel(screenshot, SUT.TextBlockExpanded);
-			Assert.IsTrue(lastRedExpanded > lastRedNormal);
+			int lastBlueExpanded = GetLastBluePixel(screenshot, SUT.TextBlockExpanded);
+			Assert.IsTrue(lastBlueExpanded > lastBlueNormal);
 #endif
 
 			int lastBlueCondensedArial = GetLastBluePixel(screenshot, SUT.TextBlockCondensedArial);
