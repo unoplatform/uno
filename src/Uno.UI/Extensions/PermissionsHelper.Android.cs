@@ -69,7 +69,7 @@ namespace Uno.UI.Extensions
 				}
 			}
 
-			var current = BaseActivity.Current;
+			var current = await BaseActivity.GetCurrent(ct);
 			 
 			try
 			{
