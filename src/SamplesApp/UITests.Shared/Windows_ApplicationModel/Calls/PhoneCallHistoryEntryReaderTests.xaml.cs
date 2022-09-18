@@ -39,7 +39,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			{
 				try
 				{
-					_store = await PhoneCallHistoryManager.RequestStoreAsync(PhoneCallHistoryStoreAccessType.AllEntriesLimitedReadWrite);
+					_store = await PhoneCallHistoryManager.RequestStoreAsync(PhoneCallHistoryStoreAccessType.AllEntriesReadWrite);
 				}
 				catch (Exception ex)
 				{
