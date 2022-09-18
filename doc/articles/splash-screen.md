@@ -104,12 +104,16 @@ This article covers how to add a splash screen to your application.
         </item>
         <item>
         <!-- splash image -->
-            <bitmap android:src="@drawable/splashscreen"
+            <bitmap android:src="@drawable/assets_splashscreen"
                     android:tileMode="disabled"
                     android:gravity="center" />
         </item>
     </layer-list>
     ```
+
+    > [!IMPORTANT]
+    > Before Uno.UI 4.5, the `@drawable/assets_splashscreen` source should be `@drawable/splashscreen`. See the [breaking changes section](https://github.com/unoplatform/uno/releases/tag/4.5.9) of that release.
+
  1. Make sure `splash.xml` is added as an `AndroidResource` in the Droid project file : `[Project-name].Droid.csproj`.
     This is not always done automatically, especially if `splash.xml` is created and added outside the IDE.
     ```xml
