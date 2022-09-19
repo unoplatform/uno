@@ -111,7 +111,6 @@
 	<PackageReference Update="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
 	<PackageReference Update="System.Reactive" Version="5.0.0" />
 	<PackageReference Update="Unity" Version="5.11.10" />
-	<PackageReference Update="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" />
 	<PackageReference Update="System.Configuration.ConfigurationManager" Version="5.0.0" />
 	<PackageReference Update="EnvDTE100" Version="10.0.3" />
 	<PackageReference Update="Microsoft.VisualStudio.Shell.15.0" Version="15.9.28307" />
@@ -136,8 +135,6 @@
 	<PackageReference Update="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" />
 	<PackageReference Update="Xamarin.AndroidX.Browser" Version="1.0.0" />
 	<PackageReference Update="ManagedEsent" Version="1.9.4" />
-	<PackageReference Update="Microsoft.CodeAnalysis.VisualBasic" Version="3.6.0" />
-	<PackageReference Update="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.6.0" />
 	<PackageReference Update="Microsoft.Tpl.Dataflow" Version="4.5.24" />
 	<PackageReference Update="Microsoft.WindowsAppSDK.WinUI" Version="1.0.0-experimental1" />
 	<PackageReference Update="Microsoft.WindowsAppSDK.Foundation" Version="1.0.0-experimental1" />
