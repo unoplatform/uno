@@ -10,14 +10,14 @@
 
 	<StackPanel>
 		<!-- Making all TextBlocks with same Text to measure them in the test -->
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockCondensed" FontStretch="Condensed" />
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockNormal"    FontStretch="Normal"  />
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockNormal2"/>
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockExpanded"  FontStretch="Expanded"/>
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockCondensed" FontStretch="Condensed" />
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockNormal"    FontStretch="Normal"  />
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockNormal2"/>
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶" FontFamily="ms-appx:///Assets/Fonts/EncodeSans-VariableFont_wdthwght.ttf#Encode Sans" Foreground="Blue" x:Name="TextBlockExpanded"  FontStretch="Expanded"/>
 
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test with Arial" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockCondensedArial" FontStretch="Condensed" />
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test with Arial" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockNormalArial"    FontStretch="Normal"  />
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test with Arial" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockNormalArial2"/>
-		<TextBlock x:FieldModifier="public" FontSize="30" Text="This is a text for FontStretch test with Arial" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockExpandedArial"  FontStretch="Expanded"/>
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="•••••••••••" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockCondensedArial" FontStretch="Condensed" />
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="•••••••••••" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockNormalArial"    FontStretch="Normal"  />
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="•••••••••••" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockNormalArial2"/>
+		<TextBlock x:FieldModifier="public" FontSize="30" Text="•••••••••••" FontFamily="Arial" Foreground="Blue" x:Name="TextBlockExpandedArial"  FontStretch="Expanded"/>
 	</StackPanel>
 </Page>

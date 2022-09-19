@@ -117,6 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
+			Assert.Fail($"Cannot find a blue pixel in the given TextBlock '{textBlock.Name}'.");
 			return -1;
 		}
 	}
