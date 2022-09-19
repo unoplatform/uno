@@ -14,6 +14,7 @@ using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
+using System.Globalization;
 
 namespace Windows.UI.Xaml
 {
@@ -29,6 +30,8 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			SetCurrentLanguage();
+			
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			if (!_startInvoked)
@@ -39,6 +42,27 @@ namespace Windows.UI.Xaml
 			ApiExtensibility.CreateInstance(this, out _applicationExtension);
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+		}
+
+		private void SetCurrentLanguage()
+		{
+			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
+				CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "iv")
+			{
+				try
+				{
+					// Fallback to English
+					var cultureInfo = CultureInfo.CreateSpecificCulture("en");
+					CultureInfo.CurrentUICulture = cultureInfo;
+					CultureInfo.CurrentCulture = cultureInfo;
+					Thread.CurrentThread.CurrentCulture = cultureInfo;
+					Thread.CurrentThread.CurrentUICulture = cultureInfo;
+				}
+				catch (Exception ex)
+				{
+					this.Log().Error($"Failed to set default culture", ex);
+				}
+			}
 		}
 
 		internal static void StartWithArguments(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)

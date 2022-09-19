@@ -389,6 +389,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
             this.ColorPicker.FlowDirection = FlowDirection.LeftToRight;
         }
 
+		private void OrientationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			this.ColorPicker.Orientation = ((e.AddedItems[0] as ComboBoxItem).Content as string) == "Horizontal" ? Orientation.Horizontal : Orientation.Vertical;
+		}
+
 		// Uno TODO: Move this out into a helper class
         public static DependencyObject FindVisualChildByName(FrameworkElement parent, string name)
         {

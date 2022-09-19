@@ -6,6 +6,7 @@ using System.Linq;
 using Gtk;
 using Pango;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Foundation.Collections;
@@ -24,8 +25,13 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 	{
 		private const string TextBoxViewCssClass = "textboxview";
 
+		private static bool _warnedAboutSelectionColorChanges;
+
+		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
 		private readonly GtkWindow _window;
+		
+		private CssProvider? _foregroundCssProvider;
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
 		private bool _handlingTextChanged;
@@ -103,13 +109,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
-
+			
 			if (_currentInputWidget != null)
 			{
 				var bounds = GetNativeSelectionBounds();
 				(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
 				var textInputLayer = GetWindowTextInputLayer();
 				textInputLayer.Remove(_currentInputWidget);
+				RemoveForegroundCssProvider();
 			}
 		}
 
@@ -240,8 +247,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				var inputText = GetInputText();
 				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
-				SetForeground(textBox.Foreground);
 			}
+			SetForeground(textBox.Foreground);
+			SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 		}
 
 		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)
@@ -420,16 +428,44 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 		}
 
-		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		public void SetForeground(Brush brush)
 		{
 			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
 			{
-				var provider = new CssProvider();
+				RemoveForegroundCssProvider();
+				_foregroundCssProvider = new CssProvider();
 				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
-				var data = $".textbox_foreground {{ caret-color: {color}; color: {color} }}";
-				provider.LoadFromData(data);
-				StyleContext.AddProviderForScreen(Gdk.Screen.Default, provider, priority: uint.MaxValue);
-				_currentInputWidget.StyleContext.AddClass("textbox_foreground");
+				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
+				var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
+				_foregroundCssProvider.LoadFromData(data);
+				StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
+				if (!_currentInputWidget.StyleContext.HasClass(cssClassName))
+				{
+					_currentInputWidget.StyleContext.AddClass(cssClassName);
+				}
+			}
+		}
+
+		private void RemoveForegroundCssProvider()
+		{
+			if (_foregroundCssProvider is not null)
+			{
+				StyleContext.RemoveProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider);
+				_foregroundCssProvider.Dispose();
+				_foregroundCssProvider = null;
+			}
+		}
+
+		public void SetSelectionHighlightColor(Brush brush)
+		{
+			if (!_warnedAboutSelectionColorChanges)
+			{
+				_warnedAboutSelectionColorChanges = true;
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					// Selection highlight color change is not supported on GTK currently
+					this.Log().LogWarning("SelectionHighlightColor changes are currently not supported on GTK");
+				}
 			}
 		}
 	}

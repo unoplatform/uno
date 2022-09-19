@@ -39,5 +39,12 @@
 				 TextWrapping="Wrap"
 				 Foreground="{StaticResource TextBoxForegroundBrush}"
 				 Margin="5" />
+		<PasswordBox x:Name="TestPasswordBox"
+				 Password="Test"
+				 FontSize="96"
+				 VerticalAlignment="Top"
+				 HorizontalAlignment="Center"
+				 Foreground="{StaticResource TextBoxForegroundBrush}"
+				 Margin="5" />
 	</StackPanel>
 </UserControl>

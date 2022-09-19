@@ -172,6 +172,14 @@ namespace Windows.UI.Xaml.Controls
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
+		{
+			if (_textBoxView != null && brush != null)
+			{
+				_textBoxView.TintColor = brush.ColorWithOpacity;
+			}
+		}
+
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			if (_textBoxView != null)

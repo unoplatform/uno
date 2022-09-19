@@ -3,15 +3,11 @@
 #endif
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
 
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
@@ -21,14 +17,14 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Xaml.Input;
 using Uno.Foundation.Logging;
+using Uno.Disposables;
+using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
@@ -50,6 +46,9 @@ namespace Windows.UI.Xaml.Controls
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
 		private WeakReference<Button> _deleteButton;
+
+		private readonly SerialDisposable _selectionHighlightColorSubscription = new SerialDisposable();
+		private readonly SerialDisposable _foregroundBrushSubscription = new SerialDisposable();
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
@@ -86,7 +85,29 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
+
+			Loaded += TextBox_Loaded;
+			Unloaded += TextBox_Unloaded;
 		}
+
+		private void TextBox_Loaded(object sender, RoutedEventArgs e)
+		{
+			// Brush subscriptions might have been removed during Unloaded
+			if (_foregroundBrushSubscription.Disposable is null)
+			{
+				OnForegroundColorChanged(null, Foreground);
+			}
+			if (_selectionHighlightColorSubscription.Disposable is null)
+			{
+				OnSelectionHighlightColorChanged(SelectionHighlightColor);
+			}
+		}
+
+		private void TextBox_Unloaded(object sender, RoutedEventArgs e)
+		{
+			_foregroundBrushSubscription.Disposable = null;
+			_selectionHighlightColorSubscription.Disposable = null;
+		}	
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -107,6 +128,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(CreateInitialValueChangerEventArgs(IsTextPredictionEnabledProperty, IsTextPredictionEnabledProperty.GetMetadata(GetType()).DefaultValue, IsTextPredictionEnabled));
+			OnSelectionHighlightColorChanged(SelectionHighlightColor);
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
@@ -372,11 +394,20 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial();
 
-		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue) => OnForegroundColorChangedPartial(newValue);
+		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
+		{
+			_foregroundBrushSubscription.Disposable = null;
+			if (newValue is SolidColorBrush brush)
+			{
+				OnForegroundColorChangedPartial(brush);
+				_foregroundBrushSubscription.Disposable =
+					Brush.AssignAndObserveBrush(brush, c => OnForegroundColorChangedPartial(brush));
+			}
+		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
-#region PlaceholderText DependencyProperty
+		#region PlaceholderText DependencyProperty
 
 		public string PlaceholderText
 		{
@@ -392,9 +423,73 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(defaultValue: string.Empty)
 			);
 
-#endregion
+		#endregion
 
-#region InputScope DependencyProperty
+		#region SelectionHighlightColor DependencyProperty
+
+		/// <summary>
+		/// Gets or sets the brush used to highlight the selected text.
+		/// </summary>
+		public SolidColorBrush SelectionHighlightColor
+		{
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
+			set => SetValue(SelectionHighlightColorProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the SelectionHighlightColor dependency property.
+		/// </summary>
+		public static DependencyProperty SelectionHighlightColorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColor),
+				typeof(SolidColorBrush),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					DefaultBrushes.SelectionHighlightColor,
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.NewValue)));
+
+		private void OnSelectionHighlightColorChanged(SolidColorBrush brush)
+		{
+			_selectionHighlightColorSubscription.Disposable = null;
+			if (brush is not null)
+			{
+				OnSelectionHighlightColorChangedPartial(brush);
+				_selectionHighlightColorSubscription.Disposable = Brush.AssignAndObserveBrush(brush, c => OnSelectionHighlightColorChangedPartial(brush));
+			}
+			else
+			{
+				OnSelectionHighlightColorChangedPartial(DefaultBrushes.SelectionHighlightColor);
+			}
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+
+		#endregion
+
+		#region PlaceholderForeground DependencyProperty
+
+		/// <summary>
+		/// Gets or sets a brush that describes the color of placeholder text.
+		/// </summary>
+		public Brush PlaceholderForeground
+		{
+			get => (Brush)GetValue(PlaceholderForegroundProperty);
+			set => SetValue(PlaceholderForegroundProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the PlaceholderForeground dependency property.
+		/// </summary>
+		public static DependencyProperty PlaceholderForegroundProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PlaceholderForeground),
+				typeof(Brush),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(default(Brush)));
+
+		#endregion
+
+		#region InputScope DependencyProperty
 
 		public InputScope InputScope
 		{
@@ -425,9 +520,9 @@ namespace Windows.UI.Xaml.Controls
 		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e) => OnInputScopeChangedPartial(e);
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region MaxLength DependencyProperty
+		#region MaxLength DependencyProperty
 
 		public int MaxLength
 		{
@@ -450,9 +545,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region AcceptsReturn DependencyProperty
+		#region AcceptsReturn DependencyProperty
 
 		public bool AcceptsReturn
 		{
@@ -489,9 +584,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region TextWrapping DependencyProperty
+		#region TextWrapping DependencyProperty
 		public TextWrapping TextWrapping
 		{
 			get => (TextWrapping)this.GetValue(TextWrappingProperty);
@@ -516,7 +611,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
 #if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -574,9 +669,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region Header DependencyProperties
+		#region Header DependencyProperties
 
 		public object Header
 		{
@@ -620,9 +715,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region IsSpellCheckEnabled DependencyProperty
+		#region IsSpellCheckEnabled DependencyProperty
 
 		public bool IsSpellCheckEnabled
 		{
@@ -645,9 +740,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region IsTextPredictionEnabled DependencyProperty
+		#region IsTextPredictionEnabled DependencyProperty
 
 		[Uno.NotImplemented]
 		public bool IsTextPredictionEnabled
@@ -672,9 +767,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region TextAlignment DependencyProperty
+		#region TextAlignment DependencyProperty
 
 #if XAMARIN_ANDROID
 		public new TextAlignment TextAlignment
@@ -694,7 +789,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
 		public string SelectedText
 		{

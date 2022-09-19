@@ -5,24 +5,34 @@
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+
+		<!-- Required for TSBinding tests -->
+		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
+
+		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="tsconfig.json" />
-    <Content Include="tsconfig.json" />
- 		<ConfigFiles Include="tsconfig.json" />
- </ItemGroup>
+	<ItemGroup>
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleItemMetadata Include="TSBindingAssemblySource" MetadataName="FullPath" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="tsconfig.json" />
+		<Content Include="tsconfig.json" />
+		<ConfigFiles Include="tsconfig.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
-
+ 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
@@ -34,11 +44,5 @@
 		<EmbeddedResource Include="WasmScripts\*.js" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
-	</PropertyGroup>
-
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-
-
 </Project>

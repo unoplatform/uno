@@ -51,7 +51,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private string? _projectFullPath;
 			private string? _projectDirectory;
-			private string? _baseIntermediateOutputPath;
+			private string? _intermediateOutputPath;
 			private string? _intermediatePath;
 			private string? _assemblyName;
 			private bool _xamlResourcesTrimming;
@@ -81,10 +81,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							// Defaults to 'false'
 							_ = bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out _xamlResourcesTrimming);
 
-							_baseIntermediateOutputPath = context.GetMSBuildPropertyValue("BaseIntermediateOutputPath");
+							_intermediateOutputPath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
 							_intermediatePath = Path.Combine(
 								_projectDirectory,
-								_baseIntermediateOutputPath
+								_intermediateOutputPath
 							);
 							_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 

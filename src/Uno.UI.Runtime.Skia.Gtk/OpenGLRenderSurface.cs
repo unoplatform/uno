@@ -48,7 +48,12 @@ namespace Uno.UI.Runtime.Skia
 
 				try
 				{
-					var isAvailable = NativeContext.TryGetProcAddress("glGetString", out _);
+					var isAvailable = NativeContext.TryGetProcAddress("glGetString", out var getString);
+
+					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(OpenGLESRenderSurface).Log().Debug($"OpenGL support: isAvailable:{isAvailable} isMacOs:{isMacOs}");
+					}
 
 					return isAvailable && !isMacOs;
 				}
@@ -62,6 +67,42 @@ namespace Uno.UI.Runtime.Skia
 					return false;
 				}
 			}
+		}
+
+		public static void TryValidateExtensions()
+		{
+			if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(OpenGLESRenderSurface).Log().Debug($"Validating OpenGL Extensions");
+			}
+
+			var extensions = new GL(NativeContext).GetStringS(GLEnum.Extensions);
+			var hasARBVertexArrayObject = extensions?.Contains("GL_ARB_vertex_array_object");
+
+			if (hasARBVertexArrayObject.HasValue
+				&& hasARBVertexArrayObject == false
+				&& typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Error))
+			{
+				// In this case, the GTK runtime will terminate the app
+				// if some OpenGL extensions cannot be found. This can happen
+				// when the target video device does not provide the required support.
+				//
+				// For example, this is the error that may be raised:
+				//
+				// No provider of glGenVertexArrays found.  Requires one of:
+				// Desktop OpenGL 3.0
+
+				// GL_ARB_vertex_array_object
+				// OpenGL ES 3.0
+				// GL_APPLE_vertex_array_object
+				// GL_OES_vertex_array_object
+
+
+				typeof(OpenGLESRenderSurface).Log().Error(
+					$"OpenGL support on this system is missing extension \"GL_ARB_vertex_array_object\", you may need to enable software " +
+					$"rendering. (https://platform.uno/docs/articles/features/using-skia-gtk.html#changing-the-rendering-target)");
+			}
+
 		}
 
 		protected override (int framebuffer, int stencil, int samples) GetGLBuffers()

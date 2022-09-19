@@ -2,7 +2,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,7 +16,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
 using System.Threading;
-using System.IO;
+using Microsoft.CodeAnalysis.Text;
 
 #if NETFRAMEWORK
 using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
@@ -22,18 +24,32 @@ using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlFileParser
+	internal partial class XamlFileParser
 	{
+		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
+		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private readonly string _excludeXamlNamespacesProperty;
+		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
+
+		/// <summary>
+		/// Usages of this field should be careful, since we avoid xaml parse caching if we use it.
+		/// If the usage affects the parse result, you need to disable caching for the file.
+		/// </summary>
 		private readonly RoslynMetadataHelper _metadataHelper;
+
 		private int _depth;
 
-		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(string excludeXamlNamespaces, string includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
-			_excludeXamlNamespaces = excludeXamlNamespaces;
-			_includeXamlNamespaces = includeXamlNamespaces;
-			this._metadataHelper = roslynMetadataHelper;
+			_excludeXamlNamespacesProperty = excludeXamlNamespaces;
+			_excludeXamlNamespaces = excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			_includeXamlNamespacesProperty = includeXamlNamespaces;
+			_includeXamlNamespaces = includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			_metadataHelper = roslynMetadataHelper;
 		}
 
 		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, CancellationToken cancellationToken)
@@ -46,6 +62,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray()!;
 		}
 
+		private static void ClearCache()
+		{
+			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
+		}
+
 		private XamlFileDefinition? ParseFile(AdditionalText file, CancellationToken cancellationToken)
 		{
 			try
@@ -53,7 +74,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 				Console.WriteLine("Pre-processing XAML file: {0}", file);
 #endif
-				var document = ApplyIgnorables(file, cancellationToken);
+
+				var sourceText = file.GetText(cancellationToken)!;
+				if (sourceText is null)
+				{
+					throw new Exception($"Failed to read additional file '{file.Path}'");
+				}
+
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
+				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
+				{
+					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
+					ClearCache();
+					return cached.XamlFileDefinition;
+				}
+
+				ClearCache();
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
@@ -63,13 +99,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
+				(XmlReader document, bool disableCaching) = ApplyIgnorables(file, sourceText, cancellationToken);
+
 				using (var reader = new XamlXmlReader(document, context, settings))
 				{
 					if (reader.Read())
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						return Visit(reader, file.Path);
+						var xamlFileDefinition = Visit(reader, file.Path);
+						if (!disableCaching)
+						{
+							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						}
+
+						return xamlFileDefinition;
 					}
 				}
 
@@ -93,16 +137,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XmlReader ApplyIgnorables(AdditionalText file, CancellationToken cancellationToken)
+		private (XmlReader Reader, bool DisableCaching) ApplyIgnorables(AdditionalText file, SourceText sourceText, CancellationToken cancellationToken)
 		{
-			var sourceText = file.GetText(cancellationToken);
-			if (sourceText is null)
-			{
-				throw new Exception($"Failed to read additional file '{file.Path}'");
-			}
-
 			var originalString = sourceText.ToString();
-      StringBuilder adjusted;
+			StringBuilder adjusted;
 
 			var document = new XmlDocument();
 			document.LoadXml(originalString);
@@ -117,7 +155,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
 			{
 				// No need to modify file
-				return XmlReader.Create(file.Path);
+				return (XmlReader.Create(new StringReader(originalString)), conditionals.DisableCaching);
 			}
 
 			var originalIgnorables = ignorables?.Value ?? "";
@@ -136,7 +174,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				ignorables.Value = newIgnoredFlat;
 
 #if DEBUG
-				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
+				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file.Path);
 #endif
 				adjusted = new StringBuilder(originalString);
 
@@ -228,7 +266,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				adjusted = new(XBindExpressionParser.RewriteDocumentPaths(adjusted.ToString()));
 			}
 
-			return XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n")));
+			return (XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n"))), conditionals.DisableCaching);
 		}
 
 		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)
@@ -281,8 +319,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Returns those XAML namespace definitions for which a conditional is set, grouped by those for which the conditional returns true and
 		/// should be included, and those for which it returns fales and should be excluded.
 		/// </summary>
-		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals) FindConditionals(XmlDocument document)
+		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals, bool DisableCaching) FindConditionals(XmlDocument document)
 		{
+			var disableCaching = false;
 			var included = new List<XmlAttribute>();
 			var excluded = new List<XmlAttribute>();
 
@@ -301,9 +340,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				if (ShouldInclude() is bool shouldInclude)
+				(bool? shouldInclude, bool disableCaching1) = ShouldInclude();
+				disableCaching = disableCaching || disableCaching1;
+				if (shouldInclude.HasValue)
 				{
-					if (shouldInclude)
+					if (shouldInclude.GetValueOrDefault())
 					{
 						included.Add(attr);
 					}
@@ -313,7 +354,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				bool? ShouldInclude()
+				(bool? ShouldInclude, bool DisableCaching) ShouldInclude()
 				{
 					var elements = valueSplit[1].Split('(', ',', ')');
 
@@ -328,9 +369,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
 							}
 
-							return methodName == nameof(ApiInformation.IsApiContractPresent) ?
+							return (methodName == nameof(ApiInformation.IsApiContractPresent) ?
 								ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), false);
 						case nameof(ApiInformation.IsTypePresent):
 						case nameof(ApiInformation.IsTypeNotPresent):
 							if (elements.Length < 2)
@@ -338,16 +379,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
 							}
 							var expectedType = elements[1];
-							return methodName == nameof(ApiInformation.IsTypePresent) ?
+							return (methodName == nameof(ApiInformation.IsTypePresent) ?
 								ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), true);
 						default:
-							return null;// TODO: support IsPropertyPresent
+							return (null, false);// TODO: support IsPropertyPresent
 					}
 				}
 			}
 
-			return (included, excluded);
+			return (included, excluded, disableCaching);
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader, string file)

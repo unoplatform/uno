@@ -1002,7 +1002,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		private void InvalidateRender()
+		internal void InvalidateRender()
 		{
 			Uno_InvalidateRender();
 

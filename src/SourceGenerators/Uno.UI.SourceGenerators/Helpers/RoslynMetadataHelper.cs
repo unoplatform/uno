@@ -25,7 +25,6 @@ namespace Uno.Roslyn
 		private readonly Dictionary<string, INamedTypeSymbol> _legacyTypes;
 		private readonly Func<string, ITypeSymbol[]> _findTypesByName;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
-		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllDerivingTypes;
 		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
 		private readonly IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
@@ -33,7 +32,7 @@ namespace Uno.Roslyn
 
 		public string AssemblyName => Compilation.AssemblyName;
 
-		public RoslynMetadataHelper(string configuration, GeneratorExecutionContext context, Dictionary<string, string> legacyTypes = null)
+		public RoslynMetadataHelper(GeneratorExecutionContext context, Dictionary<string, string> legacyTypes = null)
 		{
 			Compilation = context.Compilation;
 			_additionalTypesMap = GenerateAdditionalTypesMap();
@@ -41,9 +40,8 @@ namespace Uno.Roslyn
 			_findTypesByName = Funcs.Create<string, ITypeSymbol[]>(SourceFindTypesByName).AsLockedMemoized();
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
-			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(GetAllDerivingTypes).AsLockedMemoized();
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
-			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
+			_nullableSymbol = Compilation.GetSpecialType(SpecialType.System_Nullable_T);
 
 			_namedSymbolsLookup = Compilation.GetSymbolNameLookup();
 		}
@@ -120,11 +118,10 @@ namespace Uno.Roslyn
 				}
 
 				return results
-					.OfType<INamedTypeSymbol>()
 					.Where(r => r.Kind != SymbolKind.ErrorType && r.TypeArguments.Length == 0)
 					// Apply legacy
 					.Where(r => legacyType == null || r.OriginalDefinition.Name != name || SymbolEqualityComparer.Default.Equals(r.OriginalDefinition, legacyType))
-					.ToArray() ?? new ITypeSymbol[0];
+					.ToArray() ?? Array.Empty<ITypeSymbol>();
 			}
 
 			return Array.Empty<ITypeSymbol>();
@@ -182,7 +179,7 @@ namespace Uno.Roslyn
 					}
 				}
 
-				if(_additionalTypesMap.TryGetValue(fullName, out var additionalType))
+				if (_additionalTypesMap.TryGetValue(fullName, out var additionalType))
 				{
 					return additionalType;
 				}
@@ -219,18 +216,6 @@ namespace Uno.Roslyn
 
 			return symbol;
 		}
-
-		public INamedTypeSymbol GetSpecial(SpecialType specialType) => Compilation.GetSpecialType(specialType);
-
-		public INamedTypeSymbol GetGenericType(string name = "T") =>  Compilation.CreateErrorTypeSymbol(null, name, 0);
-
-		public IArrayTypeSymbol GetArray(ITypeSymbol type) => Compilation.CreateArrayTypeSymbol(type);
-
-		public IEnumerable<INamedTypeSymbol> GetAllTypesDerivingFrom(INamedTypeSymbol baseType)
-			=> _getAllDerivingTypes(baseType);
-
-		private INamedTypeSymbol[] GetAllDerivingTypes(INamedTypeSymbol baseType)
-			=> Compilation.GlobalNamespace.GetNamespaceTypes().Where(t => t.Is(baseType)).ToArray();
 
 		public INamedTypeSymbol[] GetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
 			=> _getAllTypesAttributedWith(attributeClass);

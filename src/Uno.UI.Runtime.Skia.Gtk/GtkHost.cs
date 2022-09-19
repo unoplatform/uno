@@ -169,6 +169,20 @@ namespace Uno.UI.Runtime.Skia
 		{
 			TryReadRenderSurfaceTypeEnvironment();
 
+			if(!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
+			{
+				// Pre-validation is required to avoid initializing OpenGL on macOS
+				// where the whole app may get visually corrupted even if OpenGL is not
+				// used in the app.
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
+				}
+
+				RenderSurfaceType = Skia.RenderSurfaceType.Software;
+			}
+
 			if (RenderSurfaceType == null)
 			{
 				// Create a temporary surface to automatically detect

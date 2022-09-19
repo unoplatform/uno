@@ -4,7 +4,6 @@
     <IsPackable>false</IsPackable>
     <NoWarn>1998;4014;67</NoWarn>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
-		<LangVersion>7.2</LangVersion>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	

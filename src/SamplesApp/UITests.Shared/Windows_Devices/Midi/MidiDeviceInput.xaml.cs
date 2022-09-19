@@ -194,7 +194,7 @@ namespace UITests.Windows_Devices.Midi
 					{
 						byte byteRead = sysExDataReader.ReadByte();
 						// Pad with leading zero if necessary
-						outputMessage.Append(byteRead.ToString("X2", CultureInfo.InvariantCulture)).Append(" ");
+						outputMessage.Append(byteRead.ToString("X2", CultureInfo.InvariantCulture)).Append(' ');
 					}
 					break;
 				case MidiMessageType.MidiTimeCode:

@@ -16,6 +16,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
+using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml
 {
@@ -149,6 +150,16 @@ namespace Windows.UI.Xaml
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
+		}
+
+		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetSelectionHighlight(HtmlId, backgroundColor, foregroundColor);
+		}
+
+		internal void UnsetSelectionHighlight()
+		{
+			UnsetCssClasses("selection-highlight");
 		}
 
 		/// <summary>

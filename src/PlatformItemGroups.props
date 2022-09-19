@@ -41,8 +41,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(_IsAndroid)">
-    <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;MONOANDROID5_0;XAMARIN_ANDROID</DefineConstants>
 	<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
   </PropertyGroup>
