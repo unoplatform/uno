@@ -57,7 +57,7 @@ namespace Windows.Extensions
 			=> _tryGetPermission(ct, permissionIdentifier);
 
 		/// <summary>
-		/// Checks if the given Android permissions are declared the app manifest.
+		/// Checks if the given Android permissions are declared in the app manifest.
 		/// </summary>
 		/// <param name="permission">Array of permissions.</param>
 		/// <returns>true if all permissions are defined</returns>
@@ -66,7 +66,7 @@ namespace Windows.Extensions
 
 
 		/// <summary>
-		/// Ensures that the given Android permissions are declared in manifest file, otherwise throw an exception.
+		/// Ensures that the given Android permissions are declared in the manifest file, otherwise throw an exception.
 		/// </summary>
 		/// <param name="permission">Array of permissions.</param>
 		public static void EnsuresPermissionsAreDeclaredInManifest(string[] permissions)
