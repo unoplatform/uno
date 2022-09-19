@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <Import Project="..\Directory.Build.targets"/>
   <ItemGroup>
-
 	  <!-- Keep this reference below the current version of the C# compiler (e.g. 3.3.3 requires Roslyn 4.0) -->
-    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
   </ItemGroup>
+
+  <Import Project="..\Directory.Build.targets" />
 </Project>

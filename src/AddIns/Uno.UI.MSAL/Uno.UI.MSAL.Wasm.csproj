@@ -44,7 +44,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+	  <PackageReference Include="Microsoft.Identity.Client" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />

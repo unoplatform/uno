@@ -15,7 +15,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Uno.RoslynHelpers" Version="1.2.0-dev.10" />
+		<PackageReference Include="Uno.RoslynHelpers" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 
 			<!--

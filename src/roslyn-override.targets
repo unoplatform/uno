@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0">
+﻿<Project ToolsVersion="15.0">
 
   <!--
   This file is imported from Directory.Build.props as the nuget tooling

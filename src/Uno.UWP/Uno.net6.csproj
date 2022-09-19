@@ -50,7 +50,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
-		<PackageReference Include="Xamarin.AndroidX.Browser"  Version="1.0.0" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" />
 	</ItemGroup>
 
 	<ItemGroup>

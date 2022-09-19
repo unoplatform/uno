@@ -26,16 +26,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="Microsoft.CSharp" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 		<PackageReference Include="MSTest.TestAdapter" />
     <PackageReference Include="MSTest.TestFramework" />
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Moq">
-      <Version>4.17.2</Version>
-    </PackageReference>
+		<PackageReference Include="Moq" />
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.0</Version>
     </PackageReference>

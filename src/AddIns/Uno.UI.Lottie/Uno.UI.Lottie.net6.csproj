@@ -54,8 +54,8 @@
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<!-- Explicitly included to remove all assets from Uno dependencies coming from SkiaSharp.Views.* -->
-		<PackageReference Include="Uno.UI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="Uno.UI" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="Uno.WinUI" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
@@ -79,8 +79,8 @@
 	<Target Name="_CleanupReferences" BeforeTargets="CoreCompile">
 		<!-- Required when building under VS to remove analyzer references coming from the Uno.UI/Uno.WinUI transitive references -->
 		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.UI'"/>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.WinUI'"/>
+			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.UI'" />
+			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.WinUI'" />
 		</ItemGroup>
 	</Target>
 

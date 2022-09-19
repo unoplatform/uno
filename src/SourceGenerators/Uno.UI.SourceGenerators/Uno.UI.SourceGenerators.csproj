@@ -12,9 +12,9 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Engine" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.3.1</Version>
@@ -28,9 +28,7 @@
 			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.6</Version>
-		</PackageReference>
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" />
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>
 		</PackageReference>
@@ -38,10 +36,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.6</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" />
+		<PackageReference Include="Microsoft.ApplicationInsights" />
 		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.8.0</Version>
