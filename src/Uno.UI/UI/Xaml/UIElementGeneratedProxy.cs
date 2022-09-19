@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Uno.UI.Xaml;
 
+[EditorBrowsable(EditorBrowsableState.Never)]
 public static class UIElementGeneratedProxy
 {
 	private static readonly Dictionary<Type, RoutedEventFlag> _implementedRoutedEvents = new();

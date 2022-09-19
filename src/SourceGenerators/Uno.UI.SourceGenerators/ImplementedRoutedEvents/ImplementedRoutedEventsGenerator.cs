@@ -230,7 +230,6 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 		private static void WriteClass(IIndentedStringBuilder builder, INamedTypeSymbol type, string routedEventFlags)
 		{
-			// TODO MZ: Handle generics
 			builder.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 			builder.AppendLineIndented("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.Xaml.UIElementGeneratedProxy.RegisterImplementedRoutedEvents(");
 			using (builder.Indent())
