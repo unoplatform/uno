@@ -68,7 +68,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
 		private readonly string[] _resourceKeys;
-		private readonly bool _outputSourceComments;
 		private int _applyIndex;
 		private int _collectionIndex;
 		private int _subclassIndex;
@@ -224,7 +223,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			DateTime lastReferenceUpdateTime,
 			string[] analyzerSuppressions,
 			string[] resourceKeys,
-			bool outputSourceComments,
 			XamlGlobalStaticResourcesMap globalStaticResourcesMap,
 			bool isUiAutomationMappingEnabled,
 			Dictionary<string, string[]> uiAutomationMappings,
@@ -251,7 +249,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_lastReferenceUpdateTime = lastReferenceUpdateTime;
 			_analyzerSuppressions = analyzerSuppressions;
 			_resourceKeys = resourceKeys;
-			_outputSourceComments = outputSourceComments;
 			_globalStaticResourcesMap = globalStaticResourcesMap;
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
@@ -1639,15 +1636,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildSourceLineInfo(IIndentedStringBuilder writer, XamlObjectDefinition definition)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			if (_outputSourceComments)
-			{
-				writer.AppendLineInvariantIndented(
-					"// Source {0} (Line {1}:{2})",
-						_relativePath,
-					definition.LineNumber,
-					definition.LinePosition
-				);
-			}
+			writer.AppendLineInvariantIndented(
+				"// Source {0} (Line {1}:{2})",
+					_relativePath,
+				definition.LineNumber,
+				definition.LinePosition
+			);
 		}
 
 		private void BuildNamedResources(
