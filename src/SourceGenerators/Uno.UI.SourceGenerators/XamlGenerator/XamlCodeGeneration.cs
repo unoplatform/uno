@@ -274,7 +274,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public KeyValuePair<string, string>[] Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, string>> Generate(GenerationRunInfo generationRunInfo)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -298,10 +298,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks, _generatorContext.CancellationToken);
 
-				var filesQuery = files
-					.ToArray();
-
-				var filesToProcess = filesQuery.AsParallel();
+				var filesToProcess = files.AsParallel();
 
 				filesToProcess = filesToProcess
 					.WithCancellation(_generatorContext.CancellationToken);
@@ -368,7 +365,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return outputFiles.ToArray();
+				return outputFiles;
 			}
 			catch (OperationCanceledException)
 			{
@@ -391,7 +388,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private KeyValuePair<string, string>[] ProcessParsingException(Exception e)
+		private List<KeyValuePair<string, string>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
 			{
@@ -429,7 +426,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
 
-			return Array.Empty<KeyValuePair<string, string>>();
+			return new List<KeyValuePair<string, string>>();
 		}
 
 		private Location? GetExceptionFileLocation(Exception exception)
@@ -464,13 +461,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var map = new XamlGlobalStaticResourcesMap();
 
 			BuildLocalProjectResources(files, map, ct);
-			BuildAmbientResources(files, map, ct);
+			BuildAmbientResources(map, ct);
 			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}
 
-		private void BuildAmbientResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map, CancellationToken ct)
+		private void BuildAmbientResources(XamlGlobalStaticResourcesMap map, CancellationToken ct)
 		{
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
@@ -862,6 +859,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return writer.ToString();
 		}
 
-		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
+		private static bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
 	}
 }

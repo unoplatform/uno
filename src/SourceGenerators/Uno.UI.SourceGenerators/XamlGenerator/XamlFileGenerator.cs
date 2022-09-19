@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
-using Uno;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
@@ -5015,7 +5014,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
+				memberValue = ColorCodeParser.ParseColorCode(memberValue);
 
 				return "SolidColorBrushHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
 			}
@@ -5075,7 +5074,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
+				memberValue = ColorCodeParser.ParseColorCode(memberValue);
 
 				return $"{GlobalPrefix}{XamlConstants.Types.ColorHelper}.FromARGB({memberValue})";
 			}
