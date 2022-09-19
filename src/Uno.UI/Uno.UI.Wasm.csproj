@@ -18,6 +18,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
  
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
+		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
 		
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
@@ -27,8 +28,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<TSBindingAssemblySource Include="Uno" />
-		<TSBindingAssemblySource Include="Uno.UI" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
@@ -48,7 +47,7 @@
 
 	<ItemGroup>
 		<CompilerVisibleProperty Include="TSBindingsPath" />
-		<CompilerVisibleItemMetadata Include="TSBindingAssemblySource" MetadataName="FullPath" />
+		<CompilerVisibleProperty Include="TSBindingAssemblySource" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -136,6 +135,10 @@
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
