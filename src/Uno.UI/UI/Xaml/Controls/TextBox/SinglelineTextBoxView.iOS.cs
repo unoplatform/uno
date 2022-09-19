@@ -197,7 +197,6 @@ namespace Windows.UI.Xaml.Controls
 					void ApplyColor()
 					{
 						TextColor = scb.Color;
-						TintColor = scb.Color;
 					}
 				}
 			}

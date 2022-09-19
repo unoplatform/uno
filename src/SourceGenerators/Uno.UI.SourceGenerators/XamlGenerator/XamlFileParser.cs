@@ -62,7 +62,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray()!;
 		}
 
-		private static void ClearCache()
+		private static void ScavengeCache()
 		{
 			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 		}
@@ -85,11 +85,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
-					ClearCache();
+					ScavengeCache();
 					return cached.XamlFileDefinition;
 				}
 
-				ClearCache();
+				ScavengeCache();
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 

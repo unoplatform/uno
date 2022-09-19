@@ -98,6 +98,31 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.SetTextAlignment(TextAlignment);
 		}
 
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
+		{
+			if (_textBoxView != null)
+			{
+				if (brush != null)
+				{
+					var color = brush.ColorWithOpacity;
+
+					Windows.UI.Color foregroundColor = Colors.White;
+
+					// Check highlight color luminance to choose if black or white foreground is more appropriate
+					if (color.Luminance > 0.5)
+					{
+						foregroundColor = Colors.Black;
+					}
+
+					SetSelectionHighlight(color, foregroundColor);
+				}
+				else
+				{
+					UnsetSelectionHighlight();
+				}
+			}
+		}
+
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			_textBoxView?.SetAttribute("spellcheck", IsSpellCheckEnabled.ToString());
