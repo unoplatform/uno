@@ -71,6 +71,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __WASM__
+		[Ignore("RenderTargetBitmap doesn't work on Wasm")]
+#endif
 		public async Task When_FontStretch()
 		{
 			var SUT = new TextBlock_FontStretch();
