@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Xaml.Media;
+using Windows.ApplicationModel.DataTransfer;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -107,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_foregroundBrushSubscription.Disposable = null;
 			_selectionHighlightColorSubscription.Disposable = null;
-		}	
+		}
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -183,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue) => new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 
-#region Text DependencyProperty
+		#region Text DependencyProperty
 
 		public string Text
 		{
@@ -327,9 +328,9 @@ namespace Windows.UI.Xaml.Controls
 			return baseString;
 		}
 
-#endregion
+		#endregion
 
-#region Description DependencyProperty
+		#region Description DependencyProperty
 
 		public
 #if __IOS__ || __MACOS__
@@ -366,7 +367,7 @@ namespace Windows.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
-#endregion
+		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
@@ -642,7 +643,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#region IsReadOnly DependencyProperty
+		#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
 		{
@@ -1078,10 +1079,60 @@ namespace Windows.UI.Xaml.Controls
 
 		public void SelectAll() => SelectAllPartial();
 
-
 		partial void SelectPartial(int start, int length);
 
 		partial void SelectAllPartial();
+
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		public async void PasteFromClipboard()
+		{
+			var content = Clipboard.GetContent();
+			var clipboardText = await content.GetTextAsync();
+			var selectionStart = SelectionStart;
+			var selectionLength = SelectionLength;
+			var currentText = Text;
+			
+			if (selectionStart >= 0 && selectionLength > 0)
+			{
+				currentText = currentText.Remove(selectionStart, selectionLength);
+			}
+			
+			if (selectionStart >= 0)
+			{
+				currentText = currentText.Insert(selectionStart, clipboardText);
+			}
+			else
+			{
+				currentText += clipboardText;
+			}
+			
+			Text = currentText;
+		}
+
+		/// <summary>
+		/// Copies the selected content to the OS clipboard.
+		/// </summary>
+		public void CopySelectionToClipboard()
+		{
+			if (SelectionLength > 0)
+			{
+				var text = SelectedText;
+				var dataPackage = new DataPackage();
+				dataPackage.SetText(text);
+				Clipboard.SetContent(dataPackage);
+			}
+		}
+
+		/// <summary>
+		/// Moves the selected content to the OS clipboard and removes it from the text control.
+		/// </summary>
+		public void CutSelectionToClipboard()
+		{
+			CopySelectionToClipboard();
+			Text = Text.Remove(SelectionStart, SelectionLength);
+		}
 
 		internal override bool CanHaveChildren() => true;
 
