@@ -9007,26 +9007,10 @@
 		  <!-- END Android Resources ignore -->
 	  </Types>
 	  <Methods>
+	  	<Member fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryStore..ctor()" reason="Not present in WinUI" />
 	  </Methods>
 	  <Properties>
 	  </Properties>
-	</IgnoreSet>
-	<IgnoreSet baseVersion="4.5.9">
-		<Types>
-		</Types>
-
-		<Events>
-		</Events>
-
-		<Fields>
-		</Fields>
-
-		<Properties>
-		</Properties>
-
-		<Methods>
-			<Member fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryStore..ctor()" reason="Not present in WinUI" />
-		</Methods>
 	</IgnoreSet>
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
