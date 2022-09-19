@@ -72,7 +72,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if __WASM__
-		[Ignore("RenderTargetBitmap doesn't work on Wasm")]
+		[Ignore("RenderTargetBitmap doesn't work on Wasm.")]
+#elif __MACOS__
+		[Ignore("FontStretch is not yet implemented for macOS.")]
 #endif
 		public async Task When_FontStretch()
 		{
