@@ -236,6 +236,9 @@ namespace Windows.UI.Xaml
 			else
 			{
 				var fontStretch = (FontStretch)localValue;
+				// When using a custom font with "ms-appx:///", font-stretch doesn't work, but font-variation-settings does.
+				// When using a known font (e.g, "Arial"), font-stretch works but font-variation-settings doesn't.
+				// So we set both styles.
 				this.SetStyle(
 					("font-stretch", fontStretch.ToCssFontStretch()),
 					("font-variation-settings", fontStretch.ToCssFontVariationSettings())
