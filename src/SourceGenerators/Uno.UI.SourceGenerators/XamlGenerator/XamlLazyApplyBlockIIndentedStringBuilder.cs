@@ -101,6 +101,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_source.AppendIndented(text);
 		}
 
+		public void AppendIndented(ReadOnlySpan<char> text)
+		{
+			TryWriteApply();
+			_source.AppendIndented(text);
+		}
+
 		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
 		{
 			TryWriteApply();

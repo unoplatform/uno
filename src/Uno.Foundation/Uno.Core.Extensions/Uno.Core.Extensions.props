@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
+  <PropertyGroup>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
 	<Compile Remove="$(MSBuildThisFileDirectory)**\*.cs" />
 	<!-- Remove everything because of the inclusion in source generators -->
