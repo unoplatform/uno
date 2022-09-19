@@ -44,7 +44,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _excludeXamlNamespaces;
 		private readonly string _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
-		private readonly string[] _resourceFiles;
+		private readonly Uno.Roslyn.MSBuildItem[] _resourceFiles;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
@@ -152,7 +152,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").Select(i => i.Identity).ToArray();
+			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
 			{
@@ -591,32 +591,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		//get keys of localized strings
 		private string[] GetResourceKeys(CancellationToken ct)
 		{
-			string[] resourceKeys = Array.Empty<string>();
-
-			if (_resourceFiles != null)
-			{
-				resourceKeys = _resourceFiles
-					.AsParallel()
-					.WithCancellation(ct)
-					.SelectMany(file => {
+			string[] resourceKeys = _resourceFiles
+				.AsParallel()
+				.WithCancellation(ct)
+				.SelectMany(file => {
 #if DEBUG
-						Console.Write("Parse resource file : " + file);
+					Console.Write("Parse resource file : " + file.Identity);
 #endif
-						try
+					try
+					{
+						var sourceText = file.File.GetText(ct)!;
+						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
+						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
-							//load document
-							var doc = new XmlDocument();
-							doc.Load(file);
-
-							//extract all localization keys from Win10 resource file
-							return doc.SelectNodes("//data")
-								?.Cast<XmlElement>()
-								.Select(node => node.GetAttribute("name"))
-								.ToArray() ?? Array.Empty<string>();
+							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
+							ScavengeCache();
+							return cachedResource.ResourceKeys;
 						}
-						catch(Exception e)
-						{
-							var message = $"Unable to parse resource file [{file}], make sure it is a valid resw file. ({e.Message})";
+
+						ScavengeCache();
+
+						//load document
+						var doc = new XmlDocument();
+						doc.LoadXml(sourceText.ToString());
+
+						//extract all localization keys from Win10 resource file
+						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions
+						// Per this documentation, /root/data should be more performant than //data
+						var keys = doc.SelectNodes("/root/data")
+							?.Cast<XmlElement>()
+							.Select(node => node.GetAttribute("name"))
+							.ToArray() ?? Array.Empty<string>();
+						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
+						return keys;
+					}
+					catch (Exception e)
+					{
+						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
 #if NETSTANDARD
 							var diagnostic = Diagnostic.Create(
@@ -628,14 +639,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							return Array.Empty<string>();
 #else
-							throw new InvalidOperationException(message, e);
+						throw new InvalidOperationException(message, e);
 #endif
-						}
-					})
-					.Distinct()
-					.Select(k => k.Replace(".", "/"))
-					.ToArray();
-			}
+					}
+				})
+				.Distinct()
+				.Select(k => k.Replace('.', '/'))
+				.ToArray();
 
 #if DEBUG
 			Console.Write(resourceKeys.Length + " localization keys found");
