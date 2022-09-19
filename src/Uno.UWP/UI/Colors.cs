@@ -39,7 +39,7 @@ namespace Windows.UI
 		/// <returns></returns>
 		public static Color Parse(string colorCode)
 		{
-			if(colorCode?.StartsWith("#") ?? false)
+			if (colorCode?.StartsWith("#") ?? false)
 			{
 				return FromARGB(colorCode);
 			}
@@ -83,7 +83,6 @@ namespace Windows.UI
 		public static Color FromARGB(string colorCode)
 		{
 			byte a, r, b, g;
-			a = r = g = b = new byte();
 
 			colorCode = colorCode.TrimStart(new char[] { '#' });
 

@@ -44,7 +44,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _excludeXamlNamespaces;
 		private readonly string _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
-		private readonly string[] _resourceFiles;
+		private readonly Uno.Roslyn.MSBuildItem[] _resourceFiles;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
@@ -152,7 +152,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").Select(i => i.Identity).ToArray();
+			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
 			{
@@ -274,7 +274,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public KeyValuePair<string, string>[] Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, string>> Generate(GenerationRunInfo generationRunInfo)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -298,10 +298,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks, _generatorContext.CancellationToken);
 
-				var filesQuery = files
-					.ToArray();
-
-				var filesToProcess = filesQuery.AsParallel();
+				var filesToProcess = files.AsParallel();
 
 				filesToProcess = filesToProcess
 					.WithCancellation(_generatorContext.CancellationToken);
@@ -368,7 +365,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return outputFiles.ToArray();
+				return outputFiles;
 			}
 			catch (OperationCanceledException)
 			{
@@ -391,7 +388,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private KeyValuePair<string, string>[] ProcessParsingException(Exception e)
+		private List<KeyValuePair<string, string>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
 			{
@@ -429,7 +426,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
 
-			return Array.Empty<KeyValuePair<string, string>>();
+			return new List<KeyValuePair<string, string>>();
 		}
 
 		private Location? GetExceptionFileLocation(Exception exception)
@@ -464,13 +461,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var map = new XamlGlobalStaticResourcesMap();
 
 			BuildLocalProjectResources(files, map, ct);
-			BuildAmbientResources(files, map, ct);
+			BuildAmbientResources(map, ct);
 			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}
 
-		private void BuildAmbientResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map, CancellationToken ct)
+		private void BuildAmbientResources(XamlGlobalStaticResourcesMap map, CancellationToken ct)
 		{
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
@@ -594,32 +591,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		//get keys of localized strings
 		private string[] GetResourceKeys(CancellationToken ct)
 		{
-			string[] resourceKeys = Array.Empty<string>();
-
-			if (_resourceFiles != null)
-			{
-				resourceKeys = _resourceFiles
-					.AsParallel()
-					.WithCancellation(ct)
-					.SelectMany(file => {
+			string[] resourceKeys = _resourceFiles
+				.AsParallel()
+				.WithCancellation(ct)
+				.SelectMany(file => {
 #if DEBUG
-						Console.Write("Parse resource file : " + file);
+					Console.Write("Parse resource file : " + file.Identity);
 #endif
-						try
+					try
+					{
+						var sourceText = file.File.GetText(ct)!;
+						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
+						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
-							//load document
-							var doc = new XmlDocument();
-							doc.Load(file);
-
-							//extract all localization keys from Win10 resource file
-							return doc.SelectNodes("//data")
-								?.Cast<XmlElement>()
-								.Select(node => node.GetAttribute("name"))
-								.ToArray() ?? Array.Empty<string>();
+							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
+							ScavengeCache();
+							return cachedResource.ResourceKeys;
 						}
-						catch(Exception e)
-						{
-							var message = $"Unable to parse resource file [{file}], make sure it is a valid resw file. ({e.Message})";
+
+						ScavengeCache();
+
+						//load document
+						var doc = new XmlDocument();
+						doc.LoadXml(sourceText.ToString());
+
+						//extract all localization keys from Win10 resource file
+						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions
+						// Per this documentation, /root/data should be more performant than //data
+						var keys = doc.SelectNodes("/root/data")
+							?.Cast<XmlElement>()
+							.Select(node => node.GetAttribute("name"))
+							.ToArray() ?? Array.Empty<string>();
+						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
+						return keys;
+					}
+					catch (Exception e)
+					{
+						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
 #if NETSTANDARD
 							var diagnostic = Diagnostic.Create(
@@ -631,14 +639,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							return Array.Empty<string>();
 #else
-							throw new InvalidOperationException(message, e);
+						throw new InvalidOperationException(message, e);
 #endif
-						}
-					})
-					.Distinct()
-					.Select(k => k.Replace(".", "/"))
-					.ToArray();
-			}
+					}
+				})
+				.Distinct()
+				.Select(k => k.Replace('.', '/'))
+				.ToArray();
 
 #if DEBUG
 			Console.Write(resourceKeys.Length + " localization keys found");
@@ -862,6 +869,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return writer.ToString();
 		}
 
-		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
+		private static bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
 	}
 }

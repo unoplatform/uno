@@ -9,10 +9,6 @@ using Uno.Extensions;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
 	[Generator]
@@ -20,7 +16,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
