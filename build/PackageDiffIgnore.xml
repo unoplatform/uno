@@ -8688,6 +8688,9 @@
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
 				reason="Not public in UWP" />
 			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactQueryTextSearch..ctor()"
+				reason="Not public in UWP" />
+			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor()"
 				reason="Not public in UWP" />
 			<Member
@@ -8702,6 +8705,10 @@
 			<Member
 				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
 				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactReader..ctor()"
+				reason="Does not exist in UWP" />
+
 			<Member
 				fullName="System.Void Windows.UI.Xaml.BringIntoViewRequestedEventArgs..ctor()"
 				reason="Does not exist in UWP" />
@@ -9007,6 +9014,9 @@
 		  <!-- END Android Resources ignore -->
 	  </Types>
 	  <Methods>
+		  <Member
+	  fullName="System.Void Windows.ApplicationModel.Contacts.ContactQueryTextSearch..ctor()()"
+	  reason="Does not exist in UWP" />
 	  </Methods>
 	  <Properties>
 	  </Properties>

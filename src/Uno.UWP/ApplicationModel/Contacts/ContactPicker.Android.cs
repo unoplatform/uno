@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		private static void ReadStructuredName(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactWhere = "lookup = ? AND " + "mimetype = ?";
+			var contactWhere = "lookup = ? AND mimetype = ?";
 			var contactWhereParams = new[] { lookupKey, ContactsContract.CommonDataKinds.StructuredName.ContentItemType };
 			if (ContactsContract.Data.ContentUri != null)
 			{
@@ -95,6 +95,8 @@ namespace Windows.ApplicationModel.Contacts
 
 					contact.YomiGivenName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.PhoneticGivenName);
 					contact.YomiFamilyName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.PhoneticFamilyName);
+
+					contact.DisplayNameOverride = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.DisplayName);
 				}
 			}
 		}
@@ -185,7 +187,7 @@ namespace Windows.ApplicationModel.Contacts
 						{
 							var number = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Phone.Number));
 
-							var phoneType = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Type));
+							var phoneType = cursor.GetInt(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Type));
 							var kind = TypeToContactPhoneKind(phoneType);
 
 							contact.Phones.Add(new ContactPhone()
@@ -231,7 +233,7 @@ namespace Windows.ApplicationModel.Contacts
 						{
 							var address = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Email.Address));
 
-							var emailType = cursor.GetString(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Email.InterfaceConsts.Type));
+							var emailType = cursor.GetInt(cursor.GetColumnIndex(ContactsContract.CommonDataKinds.Email.InterfaceConsts.Type));
 							var kind = TypeToContactEmailKind(emailType);
 
 							contact.Emails.Add(new ContactEmail()
@@ -300,51 +302,38 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 
-		private static ContactPhoneKind TypeToContactPhoneKind(string? type)
+		internal static ContactPhoneKind TypeToContactPhoneKind(int type)
 		{
-			if (int.TryParse(type, out var typeInt))
+			var PhoneType = (PhoneDataKind)type;
+			return PhoneType switch
 			{
-				if (Enum.IsDefined(typeof(PhoneDataKind), typeInt))
-				{
-					var PhoneType = (PhoneDataKind)typeInt;
-					return PhoneType switch
-					{
-						PhoneDataKind.Assistant => ContactPhoneKind.Assistant,
-						PhoneDataKind.CompanyMain => ContactPhoneKind.Company,
-						PhoneDataKind.Main => ContactPhoneKind.Mobile,
-						PhoneDataKind.Mobile => ContactPhoneKind.Mobile,
-						PhoneDataKind.Home => ContactPhoneKind.Home,
-						PhoneDataKind.FaxHome => ContactPhoneKind.HomeFax,
-						PhoneDataKind.Pager => ContactPhoneKind.Pager,
-						PhoneDataKind.Radio => ContactPhoneKind.Radio,
-						PhoneDataKind.Work => ContactPhoneKind.Work,
-						PhoneDataKind.WorkMobile => ContactPhoneKind.Work,
-						PhoneDataKind.WorkPager => ContactPhoneKind.Work,
-						PhoneDataKind.FaxWork => ContactPhoneKind.BusinessFax,
-						_ => ContactPhoneKind.Other
-					};
-				}
-			}
-			return ContactPhoneKind.Other;
+				PhoneDataKind.Assistant => ContactPhoneKind.Assistant,
+				PhoneDataKind.CompanyMain => ContactPhoneKind.Company,
+				PhoneDataKind.Main => ContactPhoneKind.Mobile,
+				PhoneDataKind.Mobile => ContactPhoneKind.Mobile,
+				PhoneDataKind.Home => ContactPhoneKind.Home,
+				PhoneDataKind.FaxHome => ContactPhoneKind.HomeFax,
+				PhoneDataKind.Pager => ContactPhoneKind.Pager,
+				PhoneDataKind.Radio => ContactPhoneKind.Radio,
+				PhoneDataKind.Work => ContactPhoneKind.Work,
+				PhoneDataKind.WorkMobile => ContactPhoneKind.Work,
+				PhoneDataKind.WorkPager => ContactPhoneKind.Work,
+				PhoneDataKind.FaxWork => ContactPhoneKind.BusinessFax,
+				_ => ContactPhoneKind.Other
+			};
 		}
 
-		private static ContactEmailKind TypeToContactEmailKind(string? type)
+
+		internal static ContactEmailKind TypeToContactEmailKind(int type)
 		{
-			if (int.TryParse(type, out var typeInt))
+			var EmailType = (EmailDataKind)type;
+			return EmailType switch
 			{
-				if (Enum.IsDefined(typeof(EmailDataKind), typeInt))
-				{
-					var EmailType = (EmailDataKind)typeInt;
-					return EmailType switch
-					{
-						EmailDataKind.Home => ContactEmailKind.Personal,
-						EmailDataKind.Mobile => ContactEmailKind.Personal,
-						EmailDataKind.Work => ContactEmailKind.Work,
-						_ => ContactEmailKind.Other
-					};
-				}
-			}
-			return ContactEmailKind.Other;
+				EmailDataKind.Home => ContactEmailKind.Personal,
+				EmailDataKind.Mobile => ContactEmailKind.Personal,
+				EmailDataKind.Work => ContactEmailKind.Work,
+				_ => ContactEmailKind.Other
+			};
 		}
 
 		private static ContactAddressKind TypeToContactAddressKind(string? type)
@@ -353,16 +342,21 @@ namespace Windows.ApplicationModel.Contacts
 			{
 				if (Enum.IsDefined(typeof(AddressDataKind), typeInt))
 				{
-					var addressType = (AddressDataKind)typeInt;
-					return addressType switch
-					{
-						AddressDataKind.Home => ContactAddressKind.Home,
-						AddressDataKind.Work => ContactAddressKind.Work,
-						_ => ContactAddressKind.Other
-					};
+					return TypeToContactAddressKind(typeInt);
 				}
 			}
 			return ContactAddressKind.Other;
+		}
+
+		internal static ContactAddressKind TypeToContactAddressKind(int type)
+		{
+			var addressType = (AddressDataKind)type;
+			return addressType switch
+			{
+				AddressDataKind.Home => ContactAddressKind.Home,
+				AddressDataKind.Work => ContactAddressKind.Work,
+				_ => ContactAddressKind.Other
+			};
 		}
 
 		private static string GetColumn(ICursor cursor, string? columnName)
