@@ -42,13 +42,12 @@ namespace Uno.UI.Runtime.Skia
 	public class TizenHost : ISkiaHost
 	{
 		[ThreadStatic]
-		private static TizenHost _current;
+		private static TizenHost? _current;
 
 		private readonly TizenApplication _tizenApplication;
 		private readonly Func<WinUI.Application> _appBuilder;
-		private readonly TizenWindow _window;
 
-		public static TizenHost Current => _current;
+		public static TizenHost? Current => _current;
 
 		/// <summary>
 		/// Creates a host for a Uno Skia Tizen application.

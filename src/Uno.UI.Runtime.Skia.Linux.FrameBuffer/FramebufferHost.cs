@@ -24,7 +24,6 @@ namespace Uno.UI.Runtime.Skia
 		private Renderer? _renderer;
 		private DisplayInformationExtension? _displayInformationExtension;
 		private ApplicationExtension? _applicationExtension;
-		private Thread _consoleInterceptionThread;
 		private ManualResetEvent _terminationGate = new(false);
 
 		/// <summary>
@@ -70,7 +69,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private void StartConsoleInterception()
 		{
-			_consoleInterceptionThread = new(() => {
+			Thread consoleInterceptionThread = new(() => {
 
 				// Loop until Application.Current.Exit() is invoked
 				while (!_applicationExtension?.ShouldExit ?? true)
@@ -85,9 +84,9 @@ namespace Uno.UI.Runtime.Skia
 			});
 
 			// The thread must not block the process from exiting
-			_consoleInterceptionThread.IsBackground = true;
+			consoleInterceptionThread.IsBackground = true;
 			
-			_consoleInterceptionThread.Start();
+			consoleInterceptionThread.Start();
 		}
 
 		private void Initialize()

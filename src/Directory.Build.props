@@ -8,6 +8,7 @@
     <NoWarn>$(NoWarn);1998</NoWarn>
     <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn> <!-- A stable release of a package should not have a prerelease dependency. -->
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
@@ -181,6 +182,7 @@
         <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" PrivateAssets="All" />

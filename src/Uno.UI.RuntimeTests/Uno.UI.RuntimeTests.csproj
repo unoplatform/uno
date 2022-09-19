@@ -10,6 +10,7 @@
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
 		<NoWarn>$(NoWarn);CS0168;CS0219;CS0067;CS0162</NoWarn>
+		<NoWarn>$(NoWarn);APT2126</NoWarn> <!-- Resources\values\resources_resw-strings.xml : error APT2126: file not found. -->
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 

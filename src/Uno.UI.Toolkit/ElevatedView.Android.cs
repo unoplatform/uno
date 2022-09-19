@@ -20,7 +20,7 @@ partial class ElevatedView
 	private AndroidBitmap? _shadowBitmap;
 	private bool _invalidateShadow = true;
 
-	protected override void DispatchDraw(Canvas canvas)
+	protected override void DispatchDraw(Canvas? canvas)
 	{
 		if (Elevation > 0)
 		{
@@ -45,7 +45,7 @@ partial class ElevatedView
 		_shadowBitmap = null;
 	}
 
-	private void DrawShadow(AndroidCanvas canvas)
+	private void DrawShadow(AndroidCanvas? canvas)
 	{
 		_shadowCanvas ??= new AndroidCanvas();
 
@@ -63,8 +63,6 @@ partial class ElevatedView
 			FilterBitmap = true
 		};
 
-		AndroidColor? solidColor = null;
-
 		if (_invalidateShadow)
 		{
 			var viewHeight = ActualHeight;
@@ -81,7 +79,7 @@ partial class ElevatedView
 				_shadowBitmap = AndroidBitmap.CreateBitmap(
 					(int)bitmapWidth,
 					(int)bitmapHeight,
-					AndroidBitmap.Config.Argb8888);
+					AndroidBitmap.Config.Argb8888!);
 
 				// Reset Canvas
 				_shadowCanvas.SetBitmap(_shadowBitmap);
@@ -97,7 +95,7 @@ partial class ElevatedView
 				if (extractAlpha is not null)
 				{
 					// Clear past content content to draw shadow
-					_shadowCanvas.DrawColor(AndroidColor.Black, PorterDuff.Mode.Clear);
+					_shadowCanvas.DrawColor(AndroidColor.Black, PorterDuff.Mode.Clear!);
 
 					_shadowPaint.Color = ShadowColor;
 					const float x = 0.28f;
@@ -123,7 +121,7 @@ partial class ElevatedView
 		// Draw shadow bitmap
 		if (_shadowCanvas != null && _shadowBitmap != null && !_shadowBitmap.IsRecycled)
 		{
-			canvas.DrawBitmap(_shadowBitmap, 0.0F, 0.0F, _renderPaint);
+			canvas!.DrawBitmap(_shadowBitmap, 0.0F, 0.0F, _renderPaint);
 		}
 	}
 }

@@ -24,11 +24,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// </summary>
 	partial class UnoXamlHostBase
 	{
-		private bool _designMode;
-		private DisplayInformation _displayInformation;
 		private bool _ignorePixelScaling;
-		private WriteableBitmap _bitmap;
-		private HostPointerHandler _hostPointerHandler;
 		private WpfCanvas _nativeOverlayLayer;
 		private UnoWpfRenderer _renderer;
 		private Windows.UI.Xaml.UIElement? _rootElement;
@@ -53,10 +49,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			// TODO: These three lines are required here for initialization, but should be refactored later https://github.com/unoplatform/uno/issues/8978
 			WpfHost.RegisterExtensions();
 
-			_designMode = DesignerProperties.GetIsInDesignMode(this);
-
 			_renderer = new UnoWpfRenderer(this);
-			_hostPointerHandler = new HostPointerHandler(this);
 		}
 
 		protected override void OnRender(DrawingContext drawingContext)
