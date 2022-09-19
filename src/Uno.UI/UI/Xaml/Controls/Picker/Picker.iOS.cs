@@ -93,12 +93,12 @@ namespace Windows.UI.Xaml.Controls
 			if (SelectedItem == null)
 			{
 				Items = new[] { (object)null }
-				  .Concat((collection as IEnumerable)?.ToObjectArray() ?? new object[0])
+				  .Concat((collection as IEnumerable)?.ToObjectArray() ?? Array.Empty<object>())
 				  .ToObjectArray();
 			}
 			else
 			{
-				Items = (collection as IEnumerable)?.ToObjectArray() ?? new object[0];
+				Items = (collection as IEnumerable)?.ToObjectArray() ?? Array.Empty<object>();
 			}
 
 			ReloadAllComponents();

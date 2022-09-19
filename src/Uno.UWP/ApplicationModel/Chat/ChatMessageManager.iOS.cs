@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Chat
 			var messageController = new MFMessageComposeViewController();
 
 			messageController.Body = message.Body;
-			messageController.Recipients = message?.Recipients?.ToArray() ?? new string[] { };
+			messageController.Recipients = message?.Recipients?.ToArray() ?? Array.Empty<string>();
 			
 			messageController.Finished += (sender, e) =>
 			{

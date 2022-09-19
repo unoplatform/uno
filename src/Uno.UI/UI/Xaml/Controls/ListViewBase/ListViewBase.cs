@@ -181,12 +181,12 @@ namespace Windows.UI.Xaml.Controls
 			object[] validRemovals;
 			if (e.Action != NotifyCollectionChangedAction.Reset)
 			{
-				validAdditions = (e.NewItems ?? new object[0]).Where(item => items.Contains(item)).ToObjectArray();
-				validRemovals = (e.OldItems ?? new object[0]).Where(item => items.Contains(item)).ToObjectArray();
+				validAdditions = (e.NewItems ?? Array.Empty<object>()).Where(item => items.Contains(item)).ToObjectArray();
+				validRemovals = (e.OldItems ?? Array.Empty<object>()).Where(item => items.Contains(item)).ToObjectArray();
 			}
 			else
 			{
-				validAdditions = new object[0];
+				validAdditions = Array.Empty<object>();
 				validRemovals = _oldSelectedItems.Where(item => items.Contains(item)).ToObjectArray();
 			}
 			try
@@ -304,7 +304,7 @@ namespace Windows.UI.Xaml.Controls
 						_modifyingSelectionInternally = true;
 						removedItems = SelectedItems.Except(selectedItem).ToObjectArray();
 						var isRealSelection = selectedItem != null || items.Contains(null);
-						addedItems = SelectedItems.Contains(selectedItem) || !isRealSelection ? new object[0] : new[] { selectedItem };
+						addedItems = SelectedItems.Contains(selectedItem) || !isRealSelection ? Array.Empty<object>() : new[] { selectedItem };
 						SelectedItems.Clear();
 						if (isRealSelection)
 						{

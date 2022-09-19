@@ -514,13 +514,13 @@ namespace Uno.UI.Controls.Legacy
 
 				if (newMode == ListViewSelectionMode.None)
 				{
-					listView.SelectedItems = new object[0];
+					listView.SelectedItems = Array.Empty<object>();
 				}
 				else if (newMode == ListViewSelectionMode.Single && oldMode == ListViewSelectionMode.Multiple)
                 {
 					var firstSelection = listView.SelectedItems.FirstOrDefault();
 
-					listView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, new object[0]);
+					listView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, Array.Empty<object>());
 				}
             }
 		}

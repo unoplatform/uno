@@ -84,7 +84,7 @@ namespace Uno.Extensions
 			var result = from descriptor in descriptors
 			             join gItem in groupedItems on descriptor.Key equals gItem.Key into descrWithItems
 			             from descrIncludingEmptyItems in descrWithItems.DefaultIfEmpty()
-			             let groupItemsNoNull = descrIncludingEmptyItems ?? new BindableGroup<TKey, TItem>(descriptor.Key, new TItem[0])
+			             let groupItemsNoNull = descrIncludingEmptyItems ?? new BindableGroup<TKey, TItem>(descriptor.Key, Array.Empty<TItem>())
 			             where descriptor.Required || groupItemsNoNull.Any()
 			             select new BindableGroup<TKey, TItem>(descriptor.Key, groupItemsNoNull.ToArray());
 

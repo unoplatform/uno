@@ -40,7 +40,7 @@ namespace Uno.Collections
 		/// <summary>
 		/// Provides an empty list
 		/// </summary>
-		public static ImmutableList<T> Empty { get; } = new ImmutableList<T>(new T[0], false);
+		public static ImmutableList<T> Empty { get; } = new ImmutableList<T>(Array.Empty<T>(), false);
 
 		/// <summary>
 		/// Creates an empty list
