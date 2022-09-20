@@ -333,7 +333,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.XamlHost.Wasm", "Uno
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.XamlHost.Skia.Wpf", "Uno.UI.XamlHost.Skia.Wpf\Uno.UI.XamlHost.Skia.Wpf.csproj", "{1AB2D0BF-DF3C-44F4-88B7-334CC41C2988}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.SourceGenerators.Internal", "SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj", "{11A8ACA9-F8A2-4EC1-BC01-E29F2FA5AAA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators.Internal", "SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj", "{11A8ACA9-F8A2-4EC1-BC01-E29F2FA5AAA7}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Uno.UI.SourceGenerators.Tests.Shared", "SourceGenerators\Uno.UI.SourceGenerators.Tests.Shared\Uno.UI.SourceGenerators.Tests.Shared.shproj", "{3D9F95DB-4A7D-464A-B1CE-0DDDDEC80FBE}"
 EndProject
@@ -6137,6 +6137,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SourceGenerators\Uno.UI.SourceGenerators.Tests.Shared\Uno.UI.SourceGenerators.Tests.Shared.projitems*{0068ff88-cab8-4839-be3b-d125b8d46f23}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{04b1b5eb-d42e-47de-ada0-eb863e5574fd}*SharedItemsImports = 13
+		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{11a8aca9-f8a2-4ec1-bc01-e29f2fa5aaa7}*SharedItemsImports = 5
 		SolutionTemplate\UnoSolutionTemplate.VSIX\UnoSolutionTemplate.VSIX.projitems*{13b713f7-4f6c-4205-bdda-487ca528b499}*SharedItemsImports = 13
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{21206058-d5ef-466d-8e4d-ac62357fb479}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{21206058-d5ef-466d-8e4d-ac62357fb479}*SharedItemsImports = 5
