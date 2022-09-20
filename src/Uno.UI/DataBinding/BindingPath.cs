@@ -118,7 +118,7 @@ namespace Uno.UI.DataBinding
 		/// </remarks>
 		public IEnumerable<IBindingItem> GetPathItems()
 		{
-			return _chain?.Flatten(i => i.Next!) ?? new BindingItem[0];
+			return _chain?.Flatten(i => i.Next!) ?? Array.Empty<BindingItem>();
 		}
 
 		/// <summary>

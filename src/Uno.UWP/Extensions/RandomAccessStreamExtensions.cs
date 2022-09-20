@@ -47,7 +47,7 @@ namespace Uno.Extensions
 
 				if (length <= 0) // empty stream or position not before end of stream
 				{
-					return new byte[] { };
+					return Array.Empty<byte>();
 				}
 			}
 			catch (NotSupportedException)

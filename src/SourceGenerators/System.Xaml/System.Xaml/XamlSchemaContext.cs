@@ -117,7 +117,7 @@ namespace Uno.Xaml
 		Dictionary<string,string> prefixes;
 		Dictionary<string,string> compat_nss;
 		Dictionary<string,List<XamlType>> all_xaml_types;
-		XamlType [] empty_xaml_types = new XamlType [0];
+		XamlType [] empty_xaml_types = Array.Empty<XamlType>();
 		List<XamlType> run_time_types = new List<XamlType> ();
 		object gate = new object();
 #if SUPPORTS_LOAD_ASSEMBLIES
