@@ -24,6 +24,7 @@
 		<PackageReference Include="Uno.WinUI.Skia.Wpf" Version="4.2.6" />
 		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
+		<PackageReference Include="Uno.UI.Lottie" Version="4.5.9" />
 	</ItemGroup>
 
 	<ItemGroup>
