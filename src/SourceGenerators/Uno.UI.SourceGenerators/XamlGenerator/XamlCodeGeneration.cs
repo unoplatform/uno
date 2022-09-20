@@ -54,7 +54,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isHotReloadEnabled;
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
-		private readonly bool _outputSourceComments = true;
 		private readonly bool _xamlResourcesTrimming;
 		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
@@ -321,7 +320,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									lastReferenceUpdateTime: lastBinaryUpdateTime,
 									analyzerSuppressions: _analyzerSuppressions,
 									globalStaticResourcesMap: globalStaticResourcesMap,
-									outputSourceComments: _outputSourceComments,
 									resourceKeys: resourceKeys,
 									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 									uiAutomationMappings: _uiAutomationMappings,
