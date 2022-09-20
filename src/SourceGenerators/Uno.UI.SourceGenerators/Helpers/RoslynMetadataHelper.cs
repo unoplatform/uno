@@ -8,6 +8,8 @@ using System.Linq;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Diagnostics;
+using System.Collections.Concurrent;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -29,7 +31,8 @@ namespace Uno.Roslyn
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
 		private readonly IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
 		public Compilation Compilation { get; }
-
+		public int TotalCalls { get; private set; }
+		public ConcurrentBag<string> ErrorCalls { get; } = new ConcurrentBag<string>();
 		public string AssemblyName => Compilation.AssemblyName;
 
 		public RoslynMetadataHelper(GeneratorExecutionContext context, Dictionary<string, string> legacyTypes = null)
@@ -145,6 +148,7 @@ namespace Uno.Roslyn
 			}
 
 			var symbol = Compilation.GetTypeByMetadataName(fullName);
+			TotalCalls++;
 
 			if (symbol?.Kind == SymbolKind.ErrorType)
 			{
@@ -153,6 +157,12 @@ namespace Uno.Roslyn
 
 			if (symbol == null)
 			{
+				ErrorCalls.Add(fullName);
+				if ((double)ErrorCalls.Count / TotalCalls >= 0.3)
+				{
+					//Debugger.Launch();
+				}
+
 				// This type resolution is required because there is no way (yet) to get a type 
 				// symbol from a string for types that are not "simple", like generic types or arrays.
 
@@ -211,6 +221,7 @@ namespace Uno.Roslyn
 
 			if (symbol == null)
 			{
+				Debugger.Launch();
 				throw new InvalidOperationException($"Unable to find type {fullName}");
 			}
 

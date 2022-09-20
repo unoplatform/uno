@@ -1800,7 +1800,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				fullTargetType = foundFullTargetType;
 			}
 
-			var propertyType = FindPropertyType(fullTargetType, property);
+			var propertyType = FindPropertyTypeByFullName(fullTargetType, property);
 
 			if (propertyType != null)
 			{
@@ -5157,7 +5157,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			var value = BuildLiteralValue(m, GetPropertyType("Binding", memberName));
+			var value = BuildLiteralValue(m, GetPropertyTypeByFullName("Windows.UI.Xaml.Data.Binding", memberName));
 
 			if (memberName == "Path")
 			{
@@ -5702,7 +5702,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineIndented($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
 
 								var targetElementType = GetType(targetElement.Type);
-								var propertyType = FindPropertyType(targetElementType.ToString() ?? "", propertyName);
+								var propertyType = SourceFindPropertyByOwnerSymbol(targetElementType, propertyName);
 
 								if (valueNode.Objects.None())
 								{
