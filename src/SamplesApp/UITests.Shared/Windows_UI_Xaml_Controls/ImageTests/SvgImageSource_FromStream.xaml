@@ -17,7 +17,7 @@
 		<StackPanel Spacing="4">
 			<ComboBox ItemsSource="{x:Bind Sources}" SelectedItem="{x:Bind SelectedSource, Mode=TwoWay}" Header="SVG image">
 				<ComboBox.ItemTemplate>
-					<DataTemplate x:DataType="local:SvgSource">
+					<DataTemplate x:DataType="local:SampleSvgSource">
 						<TextBlock Text="{x:Bind Name}" />
 					</DataTemplate>
 				</ComboBox.ItemTemplate>

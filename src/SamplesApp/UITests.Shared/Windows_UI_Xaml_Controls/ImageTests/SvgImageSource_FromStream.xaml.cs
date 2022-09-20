@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1848 // Use LoggerMessage 
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +17,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 [Sample("Image")]
 public sealed partial class SvgImageSource_FromStream : Page
 {
-	private SvgSource _selectedSource;
+	private SampleSvgSource _selectedSource;
 	private string _imageWidth = "100";
 	private string _rasterizedWidth = "";
 	private string _imageHeight = "100";
@@ -30,7 +32,7 @@ public sealed partial class SvgImageSource_FromStream : Page
 		OnPropertyChanged();
 	}
 
-	public SvgSource[] Sources { get; } = new SvgSource[]
+	public SampleSvgSource[] Sources { get; } = new SampleSvgSource[]
 	{
 		new("Couch", new Uri("ms-appx:///Assets/Formats/couch.svg")),
 		new("Calendar", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
@@ -43,7 +45,7 @@ public sealed partial class SvgImageSource_FromStream : Page
 
 	public string[] Stretches { get; } = Enum.GetNames(typeof(Stretch)).ToArray();
 
-	public SvgSource SelectedSource
+	public SampleSvgSource SelectedSource
 	{
 		get => _selectedSource;
 		set
