@@ -88,7 +88,7 @@ internal partial struct ImageData
 	}
 #endif
 
-	public static ImageData Empty { get; } = new ImageData();
+	public static ImageData Empty { get; }
 
 	public bool HasData => Kind != ImageDataKind.Empty && Kind != ImageDataKind.Error;
 

@@ -28,7 +28,8 @@ internal partial class SvgCanvas : SkiaCanvas
 	private readonly SvgImageSource _svgImageSource;
 	private readonly SvgProvider _svgProvider;
 	private readonly CompositeDisposable _disposables = new();
-	private Size _lastArrangeSize = default;
+	
+	private Size _lastArrangeSize;
 
 	public SvgCanvas(SvgImageSource svgImageSource, SvgProvider svgProvider)
 	{
