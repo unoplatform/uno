@@ -55,7 +55,7 @@
 						</TextBlock>
 						<TextBlock Grid.Row="2" Grid.Column="1">
 							<Run Text="Organizer:" FontWeight="Bold" />
-							<Run Text="{x:Bind Organizer}" />
+							<Run Text="{x:Bind Organizer.DisplayName}" />
 						</TextBlock>
 						<TextBlock Grid.Row="3" Grid.Column="1">
 							<Run Text="All day:" FontWeight="Bold" />
