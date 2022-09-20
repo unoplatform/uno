@@ -15,7 +15,7 @@ namespace Uno.UI
 		/// <returns></returns>
 		public static IEnumerable<object> GetChildren(this object group)
 		{
-			return new object[0];
+			return Array.Empty<object>();
 		}
 	}
 }

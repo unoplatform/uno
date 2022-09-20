@@ -69,7 +69,7 @@ namespace Uno.Xaml.Schema
 				throw new NotSupportedException (String.Format ("not supported operation on directive member {0}", member));
 			if (UnderlyingGetter == null)
 				throw new NotSupportedException (String.Format ("Attempt to get value from write-only property or event {0}", member));
-			return UnderlyingGetter.Invoke (instance, new object [0]);
+			return UnderlyingGetter.Invoke (instance, Array.Empty<object>());
 		}
 		public virtual void SetValue (object instance, object value)
 		{

@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 
 						parameters = parameters.Length > 1 ?
 										parameters[1].Split(new[] { '&' }) :
-										new string[0];
+										Array.Empty<string>();
 
 						foreach (string param in parameters)
 						{

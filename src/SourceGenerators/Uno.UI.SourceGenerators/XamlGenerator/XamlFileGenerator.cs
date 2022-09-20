@@ -1932,7 +1932,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void GenerateError(IIndentedStringBuilder writer, string message)
 		{
-			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), new object[0]);
+			GenerateError(writer, message.Replace("{", "{{").Replace("}", "}}"), Array.Empty<object>());
 		}
 
 		private void GenerateError(IIndentedStringBuilder writer, string message, params object?[] options)
@@ -4021,7 +4021,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var closure = containsCustomMarkup ? "___b" : default;
 						var setters = bindingOptions
 							.Select(x => BuildMemberPropertyValue(x, closure))
-							.Concat(additionalOptions ?? new string[0])
+							.Concat(additionalOptions ?? Array.Empty<string>())
 							.Where(x => !string.IsNullOrEmpty(x))
 							.ToArray();
 

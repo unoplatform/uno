@@ -170,8 +170,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
-				isSelectionUnset ? new object[] { } : new[] { selectedItem }
+			InvokeSelectionChanged(wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
+				isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
 			);
 		}
 
