@@ -34,7 +34,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private const string GlobalPrefix = "global::";
 		private const string QualifiedNamespaceMarker = ".";
 
-		private readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
+		private static readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
 		{
 			{
 				XamlConstants.PresentationXamlXmlNamespace,
@@ -268,31 +268,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			InitCaches();
 
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
-			_stringSymbol = GetType("System.String");
-			_objectSymbol = GetType("System.Object");
-			_elementStubSymbol = GetType(XamlConstants.Types.ElementStub);
-			_setterSymbol = GetType(XamlConstants.Types.Setter);
-			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
-			_frameworkElementSymbol = GetType(XamlConstants.Types.FrameworkElement);
-			_uiElementSymbol = GetType(XamlConstants.Types.UIElement);
-			_dependencyObjectSymbol = GetType(XamlConstants.Types.DependencyObject);
-			_markupExtensionSymbol = GetType(XamlConstants.Types.MarkupExtension);
-			_brushSymbol = GetType(XamlConstants.Types.Brush);
-			_dependencyObjectParseSymbol = GetType(XamlConstants.Types.IDependencyObjectParse);
-			_iCollectionSymbol = GetType("System.Collections.ICollection");
-			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
-			_iConvertibleSymbol = GetType("System.IConvertible");
-			_iListSymbol = GetType("System.Collections.IList");
-			_iListOfTSymbol = GetType("System.Collections.Generic.IList`1");
-			_iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
-			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
-			_styleSymbol = GetType(XamlConstants.Types.Style);
-			_colorSymbol = GetType(XamlConstants.Types.Color);
-			_androidContentContextSymbol = FindType("Android.Content.Context");
-			_androidViewSymbol = FindType("Android.Views.View");
-			_iOSViewSymbol = FindType("UIKit.UIView");
-			_appKitViewSymbol = FindType("AppKit.NSView");
-			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
+			_stringSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_String);
+			_objectSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_Object);
+			_elementStubSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ElementStub);
+			_setterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Setter);
+			_contentPresenterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ContentPresenter);
+			_frameworkElementSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FrameworkElement);
+			_uiElementSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.UIElement);
+			_dependencyObjectSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.DependencyObject);
+			_markupExtensionSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.MarkupExtension);
+			_brushSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Brush);
+			_dependencyObjectParseSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.IDependencyObjectParse);
+			_iCollectionSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName("System.Collections.ICollection");
+			_iCollectionOfTSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_Collections_Generic_ICollection_T);
+			_iConvertibleSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName("System.IConvertible");
+			_iListSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName("System.Collections.IList");
+			_iListOfTSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_Collections_Generic_IList_T);
+			_iDictionaryOfTKeySymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName("System.Collections.Generic.IDictionary`2");
+			_dataBindingSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName("Windows.UI.Xaml.Data.Binding");
+			_styleSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Style);
+			_colorSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Color);
+			_androidContentContextSymbol = _metadataHelper.FindTypeByFullName("Android.Content.Context") as INamedTypeSymbol;
+			_androidViewSymbol = _metadataHelper.FindTypeByFullName("Android.Views.View") as INamedTypeSymbol;
+			_iOSViewSymbol = _metadataHelper.FindTypeByFullName("UIKit.UIView") as INamedTypeSymbol;
+			_appKitViewSymbol = _metadataHelper.FindTypeByFullName("AppKit.NSView") as INamedTypeSymbol;
+			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith((INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.CreateFromStringAttribute)).ToList();
 			ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 
 			_isWasm = isWasm;
@@ -1804,7 +1804,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (propertyType != null)
 			{
-				bool isDependencyProperty = IsDependencyProperty(FindType(fullTargetType), property);
+				bool isDependencyProperty = IsDependencyProperty(_metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol, property);
 
 				if (valueNode.Objects.None())
 				{
@@ -2098,8 +2098,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
 			var baseTypeString = $"{ns}.{xamlType.Name}";
-			var findType = FindType(baseTypeString);
-			findType ??= FindType(baseTypeString + "Extension"); // Support shortened syntax
+			INamedTypeSymbol? findType;
+			if (ns != xamlType.PreferredXamlNamespace)
+			{
+				// If GetTrimmedNamespace returned a different string, it's either a "using:"-prefixed
+				// or "clr-namespace:"-prefixed namespace. In those cases, we'll have `baseTypeString` as
+				// the fully qualified type name.
+				// In this case, we go through this code path as it's much more efficient than FindType.
+				findType = _metadataHelper.FindTypeByFullName(baseTypeString) as INamedTypeSymbol;
+				findType ??= _metadataHelper.FindTypeByFullName(baseTypeString + "Extension") as INamedTypeSymbol; // Support shortened syntax
+			}
+			else
+			{
+				findType = FindType(baseTypeString);
+				findType ??= FindType(baseTypeString + "Extension"); // Support shortened syntax
+			}
+
 			if (findType?.Is(_markupExtensionSymbol) ?? false)
 			{
 				return findType;
@@ -6028,7 +6042,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						disposable?.Dispose();
 
 						string closureName;
-						using (var innerWriter = CreateApplyBlock(writer, GetType(XamlConstants.Types.ElementStub), out closureName))
+						using (var innerWriter = CreateApplyBlock(writer, _elementStubSymbol, out closureName))
 						{
 							var elementStubType = new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext());
 
