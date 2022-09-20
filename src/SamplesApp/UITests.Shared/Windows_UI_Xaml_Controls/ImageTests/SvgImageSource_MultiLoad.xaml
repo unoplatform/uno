@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.SvgImageSource_Basic"
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.SvgImageSource_MultiLoad"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ImageTests"
@@ -22,17 +22,10 @@
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>
-			<ComboBox ItemsSource="{x:Bind Stretches}" SelectedItem="{x:Bind SelectedStretch, Mode=TwoWay}" Header="Stretch" />
-			<TextBox Text="{x:Bind ImageWidth, Mode=TwoWay}" Header="Image width" />
-			<TextBox Text="{x:Bind ImageHeight, Mode=TwoWay}" Header="Image height" />
-			<TextBox Text="{x:Bind RasterizedWidth, Mode=TwoWay}" Header="Rasterized width" />
-			<TextBox Text="{x:Bind RasterizedHeight, Mode=TwoWay}" Header="Rasterized height" />
+			<CheckBox IsChecked="{x:Bind ReuseImageSource, Mode=TwoWay}" Content="Reuse image source" />
 		</StackPanel>
 
-		<Grid Grid.Row="1">
-			<Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" BorderThickness="2">
-				<Image x:Name="ImageElement" />
-			</Border>
+		<Grid Grid.Row="1" x:Name="ImageContainer">
 		</Grid>
 	</Grid>
 </Page>

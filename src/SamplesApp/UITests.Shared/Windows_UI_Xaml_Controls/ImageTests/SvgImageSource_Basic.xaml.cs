@@ -14,7 +14,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 [Sample("Image")]
 public sealed partial class SvgImageSource_Basic : Page
 {
-	private SvgSource _selectedSource;
+	private SampleSvgSource _selectedSource;
 	private string _imageWidth = "100";
 	private string _rasterizedWidth = "";
 	private string _imageHeight = "100";
@@ -33,27 +33,10 @@ public sealed partial class SvgImageSource_Basic : Page
 
 	private async void SvgImageSource_Basic_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
-		await CopySourcesToAppDataAsync();
-	}
-
-	private async Task CopySourcesToAppDataAsync()
-	{
-		var appDataSvgs = new string[] { "chef.svg", "bookstack.svg" };
-		var localFolder = ApplicationData.Current.LocalFolder;
-		var folder = await localFolder.CreateFolderAsync("svg", CreationCollisionOption.OpenIfExists);
-
-		foreach (var appDataSvg in appDataSvgs)
-		{
-			var item = await folder.TryGetItemAsync(appDataSvg);
-			if (item is null)
-			{
-				var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/Formats/{appDataSvg}"));
-				await file.CopyAsync(folder);
-			}
-		}
-	}
+		await SvgImageSourceHelpers.CopySourcesToAppDataAsync();
+	}	
 	
-	public SvgSource[] Sources { get; } = new SvgSource[]
+	public SampleSvgSource[] Sources { get; } = new SampleSvgSource[]
 	{
 		new("Couch (ms-appx)", new Uri("ms-appx:///Assets/Formats/couch.svg")),
 		new("Calendar (ms-appx)", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
@@ -68,7 +51,7 @@ public sealed partial class SvgImageSource_Basic : Page
 
 	public string[] Stretches { get; } = Enum.GetNames(typeof(Stretch)).ToArray();
 
-	public SvgSource SelectedSource
+	public SampleSvgSource SelectedSource
 	{
 		get => _selectedSource;
 		set
@@ -182,17 +165,4 @@ public sealed partial class SvgImageSource_Basic : Page
 			//svgImageSource.RasterizePixelHeight = double.PositiveInfinity;
 		}
 	}
-}
-
-public class SvgSource
-{
-	public SvgSource(string name, Uri uri)
-	{
-		Name = name;
-		Uri = uri;
-	}
-
-	public string Name { get; }
-
-	public Uri Uri { get; }
 }
