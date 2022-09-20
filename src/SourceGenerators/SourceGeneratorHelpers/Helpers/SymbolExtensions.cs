@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -464,7 +465,9 @@ namespace Microsoft.CodeAnalysis
 		public static string GetFullMetadataName(this INamespaceOrTypeSymbol symbol)
 		{
 			ISymbol s = symbol;
-			var sb = new StringBuilder(s.MetadataName);
+			var pooledBuilder = PooledStringBuilder.GetInstance();
+			var sb = pooledBuilder.Builder;
+			sb.Append(s.MetadataName);
 
 			var last = s;
 			s = s.ContainingSymbol;
@@ -497,7 +500,7 @@ namespace Microsoft.CodeAnalysis
 				sb.Append($"[{ genericArgs }]");
 			}
 
-			return sb.ToString();
+			return pooledBuilder.ToStringAndFree();
 		}
 
 		private static bool IsRootNamespace(ISymbol s)

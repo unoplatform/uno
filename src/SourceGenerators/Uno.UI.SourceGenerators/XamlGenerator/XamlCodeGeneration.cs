@@ -864,7 +864,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			return writer.ToString();
+			return writer.ToStringAndFree();
 		}
 
 		private static bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";

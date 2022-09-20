@@ -13,7 +13,7 @@ namespace Uno.MsBuildTasks.Utils.XamlPathParser
 			var parser = new PathMarkupParser(context);
 			parser.Parse(pathString, ref fillRule);
 			context.FillRule = fillRule;
-			return context.Generate();
+			return context.GenerateAndFree();
 		}
 	}
 }

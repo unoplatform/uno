@@ -437,10 +437,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
 
 						_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-						_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
-					}
 
-					writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+						var componentCode = componentBuilder.ToStringAndFree();
+						_generationRunFileInfo.ComponentCode = componentCode;
+						writer.AppendLineInvariantIndented("{0}", componentCode);
+					}
 				}
 				else
 				{
@@ -498,10 +499,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildCompiledBindings(componentBuilder);
 
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
-								}
 
-								writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+									var componentCode = componentBuilder.ToStringAndFree();
+									_generationRunFileInfo.ComponentCode = componentCode;
+									writer.AppendLineInvariantIndented("{0}", componentCode);
+								}
 							}
 							else
 							{
@@ -525,7 +527,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			BuildXamlApplyBlocks(writer);
 
 			// var formattedCode = ReformatCode(writer.ToString());
-			return writer.ToString();
+			return writer.ToStringAndFree();
 		}
 
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)

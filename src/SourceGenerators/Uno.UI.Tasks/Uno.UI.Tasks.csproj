@@ -32,6 +32,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\..\Uno.Foundation\Uno.Core.Extensions\PooledObjects\ObjectPool`1.cs" Link="Uno.Core.Extensions\PooledObjects\ObjectPool`1.cs" />
+		<Compile Include="..\..\Uno.Foundation\Uno.Core.Extensions\PooledObjects\PooledStringBuilder.cs" Link="Uno.Core.Extensions\PooledObjects\PooledStringBuilder.cs" />
 		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\AndroidResourceConverter.cs">
 			<Link>Resources\AndroidResourceConverter.cs</Link>
 		</Compile>

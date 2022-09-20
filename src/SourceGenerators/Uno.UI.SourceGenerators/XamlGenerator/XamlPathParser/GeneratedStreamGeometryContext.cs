@@ -7,42 +7,44 @@ using System.Reflection;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Uno.Media
 {
 	internal class GeneratedStreamGeometryContext : StreamGeometryContext
 	{
-		StringBuilder _builder;
+		private readonly PooledStringBuilder _pooledBuilder;
 
 		private static readonly string CRLF = Environment.NewLine;
 
 		internal FillRule FillRule { get; set; }
 
-		public string Generate() => $"{_builder}}}, {FillRule.ToCode()})";
+		public string GenerateAndFree() => $"{_pooledBuilder.ToStringAndFree()}}}, {FillRule.ToCode()})";
 
 		public GeneratedStreamGeometryContext()
 		{
-			_builder = new StringBuilder("global::Uno.Media.GeometryHelper.Build(c =>" + CRLF + "{" + CRLF);
+			_pooledBuilder = PooledStringBuilder.GetInstance();
+			_pooledBuilder.Builder.Append("global::Uno.Media.GeometryHelper.Build(c =>" + CRLF + "{" + CRLF);
 		}
 
 		public override void ArcTo(Point point, Size size, double rotationAngle, bool isLargeArc, SweepDirection sweepDirection, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.ArcTo({0}, {1}, {2}, {3}, {4}, true, false);" + CRLF, point.ToCode(), size.ToCode(), rotationAngle.ToCode(), isLargeArc.ToCode(), sweepDirection.ToCode());
+			_pooledBuilder.Builder.AppendFormat("c.ArcTo({0}, {1}, {2}, {3}, {4}, true, false);" + CRLF, point.ToCode(), size.ToCode(), rotationAngle.ToCode(), isLargeArc.ToCode(), sweepDirection.ToCode());
 		}
 
 		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
-			_builder.AppendFormat("c.BeginFigure({0}, true);" + CRLF, startPoint.ToCode());
+			_pooledBuilder.Builder.AppendFormat("c.BeginFigure({0}, true);" + CRLF, startPoint.ToCode());
 		}
 
 		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.BezierTo({0}, {1}, {2}, true, false);" + CRLF, point1.ToCode(), point2.ToCode(), point3.ToCode());
+			_pooledBuilder.Builder.AppendFormat("c.BezierTo({0}, {1}, {2}, true, false);" + CRLF, point1.ToCode(), point2.ToCode(), point3.ToCode());
 		}
 
 		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.LineTo({0}, true, false);" + CRLF, point.ToCode());
+			_pooledBuilder.Builder.AppendFormat("c.LineTo({0}, true, false);" + CRLF, point.ToCode());
 		}
 
 		public override void PolyBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
@@ -62,12 +64,12 @@ namespace Uno.Media
 
 		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
-			_builder.AppendFormat("c.BezierTo({0}, {1}, true, false);" + CRLF, point1.ToCode(), point2.ToCode());
+			_pooledBuilder.Builder.AppendFormat("c.BezierTo({0}, {1}, true, false);" + CRLF, point1.ToCode(), point2.ToCode());
 		}
 
 		public override void SetClosedState(bool closed)
 		{
-			_builder.AppendFormat("c.SetClosedState({0});" + CRLF, closed.ToString(System.Globalization.CultureInfo.InvariantCulture).ToLowerInvariant());
+			_pooledBuilder.Builder.AppendFormat("c.SetClosedState({0});" + CRLF, closed.ToString(System.Globalization.CultureInfo.InvariantCulture).ToLowerInvariant());
 		}
 	}
 

@@ -161,7 +161,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							}
 						}
 
-						_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+						_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToStringAndFree());
 					}
 				}
 			}

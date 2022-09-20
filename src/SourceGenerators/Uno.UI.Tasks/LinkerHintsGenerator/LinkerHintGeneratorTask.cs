@@ -11,6 +11,7 @@ using System.Text;
 using System.Transactions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Mono.Cecil;
 using Uno.UI.SourceGenerators.BindableTypeProviders;
 
@@ -354,12 +355,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				p.StartInfo.WorkingDirectory = workingDirectory;
 			}
 
-			var output = new StringBuilder();
-			var error = new StringBuilder();
+			var output = PooledStringBuilder.GetInstance();;
+			var error = PooledStringBuilder.GetInstance();
 			var elapsed = Stopwatch.StartNew();
 
-			p.OutputDataReceived += (s, e) => { if (e.Data != null) { Log.LogMessage(DefaultLogMessageLevel, $"[{elapsed.Elapsed}] {e.Data}"); output.Append(e.Data); } };
-			p.ErrorDataReceived += (s, e) => { if (e.Data != null) { Log.LogError($"[{elapsed.Elapsed}] {e.Data}"); error.Append(e.Data); } };
+			p.OutputDataReceived += (s, e) => { if (e.Data != null) { Log.LogMessage(DefaultLogMessageLevel, $"[{elapsed.Elapsed}] {e.Data}"); output.Builder.Append(e.Data); } };
+			p.ErrorDataReceived += (s, e) => { if (e.Data != null) { Log.LogError($"[{elapsed.Elapsed}] {e.Data}"); error.Builder.Append(e.Data); } };
 
 			if (p.Start())
 			{
@@ -371,7 +372,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				p.CancelOutputRead();
 				p.Close();
 
-				return (exitCore, output.ToString(), error.ToString());
+				return (exitCore, output.ToStringAndFree(), error.ToStringAndFree());
 			}
 			else
 			{
