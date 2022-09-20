@@ -6,5 +6,5 @@ namespace Windows.UI.Xaml.Controls;
 
 partial class Image
 {
-	private UIElement? _svgCanvas = null;
+	private UIElement? _svgCanvas;
 }
