@@ -169,6 +169,9 @@
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.Runtime.WebAssembly']/@Version"
 							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.UI.Lottie']/@Version"
+							 Value="$(GitVersion_SemVer)" />
 
 		<!-- Update templates for Uno.WinUI -->
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
@@ -194,6 +197,9 @@
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.WinUI.Runtime.WebAssembly']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.Lottie']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 
 
