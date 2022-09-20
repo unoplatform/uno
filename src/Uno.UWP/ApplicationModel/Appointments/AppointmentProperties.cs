@@ -1,40 +1,66 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
-namespace Windows.ApplicationModel.Appointments
+namespace Windows.ApplicationModel.Appointments;
+
+/// <summary>
+/// Provides strings that identify the properties of an appointment.
+/// </summary>
+public partial class AppointmentProperties
 {
-	public partial class AppointmentProperties
+	/// <summary>
+	/// Gets the name of the AllDay property.
+	/// </summary>
+	public static string AllDay => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the Location property.
+	/// </summary>
+	public static string Location => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the StartTime property.
+	/// </summary>
+	public static string StartTime => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the Duration property.
+	/// </summary>
+	public static string Duration => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the Subject property.
+	/// </summary>
+	public static string Subject => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the Organizer property.
+	/// </summary>
+	public static string Organizer => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the Details property.
+	/// </summary>
+	public static string Details => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets the name of the Reminder property.
+	/// </summary>
+	public static string Reminder => GetAppointmentProperty();
+
+	/// <summary>
+	/// Gets a list of names for the default appointment properties.
+	/// </summary>
+	/// <remarks>The list of properties is different from WinUI/UWP.</remarks>
+	public static IList<string> DefaultProperties => new List<string>
 	{
-		public static string AllDay => "Appointment.AllDay";
-		public static string Location => "Appointment.Location";
-		public static string StartTime => "Appointment.StartTime";
-		public static string Duration => "Appointment.Duration";
-		public static string Subject => "Appointment.Subject";
-		public static string Organizer => "Appointment.Organizer";
-		public static string Details => "Appointment.Details";
-
-		public static IList<string> DefaultProperties
-		{
-			get
-			{
-				var properties = new List<string>();
-				properties.Add(AllDay);
-				properties.Add(Location);
-				properties.Add(StartTime);
-				properties.Add(Duration);
-				properties.Add(Subject);
-				return properties;
-				// UWP version returns this list:
-				// "Appointment.Subject", "Appointment.Location", "Appointment.StartTime", "Appointment.Duration",
-				// "Appointment.BusyStatus", "Appointment.AllDay", "Appointment.ParentFolderId", "Appointment.Recurrence"
-				// "Appointment.RemoteId", "Appointment.OriginalStartTime", "Appointment.ChangeNumber"
-				// but we define only some of them, that seems to be "a must" for every platform
-			}
-
-		}
-	}
+		Subject,
+		Location,
+		StartTime,
+		Duration,
+		AllDay
+	};
+	
+	private static string GetAppointmentProperty([CallerMemberName] string propertyName = null) =>
+		$"Appointment.{propertyName}";
 }
