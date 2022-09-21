@@ -19,7 +19,7 @@ partial class SvgImageSource
 	{
 		try
 		{
-			if (UriSource != null)
+			if (UriSource != null && UriSource.IsAbsoluteUri)
 			{
 				if (UriSource.Scheme == "http" || UriSource.Scheme == "https")
 				{

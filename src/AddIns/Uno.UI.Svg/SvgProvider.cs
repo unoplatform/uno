@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Data.SqlTypes;
 using System.IO;
+using System.Threading.Tasks;
 using ShimSkiaSharp;
 using Svg.Skia;
 using Uno.UI.Xaml.Media;
@@ -10,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Svg;
 
@@ -45,7 +48,7 @@ public partial class SvgProvider : ISvgProvider
 	internal SKSvg? SkSvg => _skSvg;
 
 	public bool IsParsed => _skSvg?.Picture is not null;
-	
+
 	public Size SourceSize
 	{
 		get
@@ -54,32 +57,59 @@ public partial class SvgProvider : ISvgProvider
 			{
 				return new Size(rect.Width, rect.Height);
 			}
-			
+
 			return default;
 		}
 	}
 
 	public UIElement GetCanvas() => new SvgCanvas(_owner, this);
 
-	private void OnSourceOpened(byte[] svgBytes)
+	private async void OnSourceOpened(byte[] svgBytes)
 	{
 		try
 		{
-			_skSvg = new SKSvg();
-			using (var memoryStream = new MemoryStream(svgBytes))
+			var skSvg = await LoadSvgAsync(svgBytes);
+			if (skSvg is not null)
 			{
-				_skSvg.Load(memoryStream);
+				_skSvg = skSvg;
+				_owner.RaiseImageOpened();
+				SourceLoaded?.Invoke(this, EventArgs.Empty);
 			}
-			_owner.RaiseImageOpened();
-			SourceLoaded?.Invoke(this, EventArgs.Empty);
+			else
+			{
+				_skSvg?.Dispose();
+				_skSvg = null;
+				_owner.RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
+			}
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
-			_skSvg?.Dispose();
-			_skSvg = null;
-			_owner.RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("Failed to load SVG image.", ex);
+			}
 		}
 	}
+
+	private Task<SKSvg?> LoadSvgAsync(byte[] svgBytes) =>
+		Task.Run(() =>
+		{
+			var skSvg = new SKSvg();
+			try
+			{
+				using (var memoryStream = new MemoryStream(svgBytes))
+				{
+					skSvg.Load(memoryStream);
+				}
+			}
+			catch (Exception)
+			{
+				skSvg?.Dispose();
+				skSvg = null;
+			}
+
+			return skSvg;
+		});
 
 	// TODO: This is used by iOS/macOS/Android while Skia uses subscription. This behavior
 	// should be aligned in the future so only one of the approaches is applied.
