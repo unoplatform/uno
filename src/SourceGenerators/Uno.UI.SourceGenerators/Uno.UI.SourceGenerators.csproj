@@ -6,6 +6,7 @@
 		<WarningsAsErrors>true</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- This target must always be built, regardless of the CI override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
@@ -25,14 +26,6 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>3.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>3.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
 			<Version>3.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
@@ -56,7 +49,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
-			<Version>0.10.1</Version>
+			<Version>0.11.4</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -96,9 +89,6 @@
 		</Compile>
 		<Compile Include="..\..\Uno.UI\UI\Xaml\XamlFilePathHelper.shared.cs">
 			<Link>Helpers\XamlFilePathHelper.shared.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.Foundation.Runtime.WebAssembly\Interop\TSInteropMessageAttribute.wasm.cs">
-			<Link>TSBindings\TSInteropMessageAttribute.cs</Link>
 		</Compile>
 	</ItemGroup>
 

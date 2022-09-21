@@ -35,7 +35,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 #endif
 
 		private static readonly object[] RandomValues = new object[] { null, new object(), 0, -1, 0, 0.5, 1, "", " ", "test", 'a', ' ', new string[] { "A", "B", "C" }, DateTime.Now };
-		private object[] _randomItems = new object[0];
+		private object[] _randomItems = Array.Empty<object>();
 		private string _newInput = "1,1,2,2,3,3";
 		private List<string> _sampleItemsGenerated = new List<string> { "1", "1", "2", "2", "3", "3" };
 		private List<string> _singleItemList = new List<string> { "1" };
@@ -290,7 +290,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 				for (int j = 0; j < wordCount; j++)
 				{
 					sb.Append(wordCount);
-					sb.Append(" ");
+					sb.Append(' ');
 				}
 				yield return sb.ToString();
 			}

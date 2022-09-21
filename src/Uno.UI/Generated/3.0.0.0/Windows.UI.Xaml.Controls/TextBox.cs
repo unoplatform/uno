@@ -48,20 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property SelectionHighlightColor
 		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property Header
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -106,20 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush PlaceholderForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PlaceholderForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(PlaceholderForegroundProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property PlaceholderForeground
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.TextAlignment HorizontalTextAlignment
@@ -217,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 				return (global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(ProofingMenuFlyoutProperty);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property TextWrappingProperty
 		// Skipping already declared property TextProperty
 		// Skipping already declared property TextAlignmentProperty
@@ -229,14 +203,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property AcceptsReturnProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property HeaderProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
-		#endif
+		// Skipping already declared property SelectionHighlightColorProperty
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
@@ -278,14 +245,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
+		// Skipping already declared property PlaceholderForegroundProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 

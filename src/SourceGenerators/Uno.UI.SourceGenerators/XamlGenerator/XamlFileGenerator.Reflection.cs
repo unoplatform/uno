@@ -224,21 +224,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return true;
 				}
 
-				do
+				if (symbol.AllInterfaces.Any(i => isSameType(i, interfaceName)))
 				{
-					if (symbol.Interfaces.Any(i => isSameType(i, interfaceName)))
-					{
-						return true;
-					}
-
-					symbol = symbol.BaseType;
-
-					if (symbol == null)
-					{
-						break;
-					}
-
-				} while (symbol.SpecialType != SpecialType.System_Object);
+					return true;
+				}
 			}
 
 			return false;
@@ -423,8 +412,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (property != null)
 					{
-						if (property.Type.OriginalDefinition != null
-							&& property.Type.OriginalDefinition?.ToDisplayString() == "System.Nullable<T>")
+						if (property.Type.OriginalDefinition is { SpecialType: SpecialType.System_Nullable_T })
 						{
 							//TODO
 							return (property.Type as INamedTypeSymbol)?.TypeArguments.First() as INamedTypeSymbol;
@@ -451,18 +439,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var baseType = type.BaseType;
 
-							if (baseType == null)
-							{
-								var baseTypeName = type?.BaseType?.ToDisplayString();
-								baseType = baseTypeName != null ? FindType(baseTypeName) : null;
-							}
-
-							type = baseType;
-
-							if (type == null || type.SpecialType == SpecialType.System_Object)
+							if (baseType == null || baseType.SpecialType == SpecialType.System_Object)
 							{
 								return null;
 							}
+
+							type = baseType;
 						}
 					}
 				} while (true);
@@ -526,7 +508,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool IsRelevantNamespace(string? xamlNamespace)
+		private static bool IsRelevantNamespace(string? xamlNamespace)
 		{
 			if (XamlConstants.XmlXmlNamespace.Equals(xamlNamespace, StringComparison.OrdinalIgnoreCase))
 			{
@@ -536,7 +518,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private bool IsRelevantProperty(XamlMember? member)
+		private static bool IsRelevantProperty(XamlMember? member)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
 			{
@@ -715,12 +697,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| typeName.EndsWith(".double", StringComparison.InvariantCultureIgnoreCase);
 		}
 
-		private bool IsString(XamlObjectDefinition xamlObjectDefinition)
+		private static bool IsString(XamlObjectDefinition xamlObjectDefinition)
 		{
 			return xamlObjectDefinition.Type.Name == "String";
 		}
 
-		private bool IsPrimitive(XamlObjectDefinition xamlObjectDefinition)
+		private static bool IsPrimitive(XamlObjectDefinition xamlObjectDefinition)
 		{
 			switch (xamlObjectDefinition.Type.Name)
 			{
@@ -740,7 +722,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool HasInitializer(XamlObjectDefinition objectDefinition)
+		private static bool HasInitializer(XamlObjectDefinition objectDefinition)
 		{
 			return objectDefinition.Members.Any(m => m.Member.Name == "_Initialization");
 		}

@@ -66,7 +66,7 @@ namespace Windows.Globalization.DateTimeFormatting
 				"{day.integer}‎ ‎{month.full}‎, ‎{year.full}",
 			};
 
-			_emptyLanguages = new string[0];
+			_emptyLanguages = Array.Empty<string>();
 
 			LongDate = new DateTimeFormatter("longdate");
 			LongTime = new DateTimeFormatter("longtime");

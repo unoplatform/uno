@@ -18,6 +18,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
  
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
+		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
 		
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
@@ -27,8 +28,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<TSBindingAssemblySource Include="Uno" />
-		<TSBindingAssemblySource Include="Uno.UI" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
@@ -47,6 +46,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleProperty Include="TSBindingAssemblySource" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
@@ -54,7 +58,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all"/>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
@@ -71,9 +75,6 @@
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Update="WasmScripts\*.js" />
-	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
 	  <Folder Include="tsBindings\" />
@@ -105,7 +106,7 @@
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>CoreCompile; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -134,6 +135,10 @@
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,10 +9,6 @@ using Uno.Extensions;
 using Uno.Foundation.Interop;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.Roslyn;
-
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
 
 namespace Uno.UI.SourceGenerators.TSBindings
 {
@@ -29,15 +24,14 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
 			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
-				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath")?.ToString();
-				_sourceAssemblies = context.GetMSBuildItemsWithAdditionalFiles("TSBindingAssemblySource").Select(i => Path.GetFileName(i.Identity)).ToArray();
+				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath");
+				_sourceAssemblies = context.GetMSBuildPropertyValue("TSBindingAssemblySource").Split(';');
 
 				if (!string.IsNullOrEmpty(_bindingsPaths))
 				{

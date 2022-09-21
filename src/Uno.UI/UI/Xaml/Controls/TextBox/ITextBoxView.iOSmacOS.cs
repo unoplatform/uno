@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		bool IsFirstResponder { get; }
 		void UpdateTextAlignment();
+		UIColor TintColor { get; set; }
 #endif
 
 		Brush Foreground { get; set; }

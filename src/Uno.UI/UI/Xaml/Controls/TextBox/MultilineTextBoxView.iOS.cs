@@ -221,7 +221,6 @@ namespace Windows.UI.Xaml.Controls
 					void ApplyColor()
 					{
 						this.TextColor = scb.Color;
-						this.TintColor = scb.Color;
 					}
 				}
 			}

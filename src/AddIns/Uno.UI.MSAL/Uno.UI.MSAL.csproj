@@ -111,7 +111,7 @@
 	</Target>
 
 	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->
-	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows'))">
+	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows')) and '$(TargetFramework)' != 'uap10.0.18362'">
 		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>

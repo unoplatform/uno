@@ -1790,7 +1790,11 @@ namespace Windows.UI.Xaml
 
 				if (frameworkPropertyMetadata.Options.HasAffectsRender())
 				{
-					actualInstanceAlias.InvalidateRender();
+					// Uno TODO: What should we do here for non-UIElements (if anything is needed)?
+					if (actualInstanceAlias is UIElement elt)
+					{
+						Windows.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
+					}
 				}
 
 				// Raise the property change for generic handlers for inheritance

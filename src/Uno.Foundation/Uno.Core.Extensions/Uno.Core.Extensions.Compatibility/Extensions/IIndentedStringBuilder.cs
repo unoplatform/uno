@@ -68,6 +68,8 @@ namespace Uno.Extensions
 
 		public void AppendIndented(string text);
 
+		public void AppendIndented(ReadOnlySpan<char> text);
+
 		void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements);
 	}
 }

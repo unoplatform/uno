@@ -341,6 +341,11 @@ declare namespace Uno.UI {
         setElementColorNative(pParam: number): boolean;
         private setElementColorInternal;
         /**
+         * Sets the element's selection highlight.
+        **/
+        setSelectionHighlight(elementId: number, backgroundColor: number, foregroundColor: number): boolean;
+        setSelectionHighlightNative(pParam: number): boolean;
+        /**
         * Sets the fill property of the specified element
         */
         setElementFill(elementId: number, color: number): string;
@@ -1479,6 +1484,12 @@ declare class WindowManagerSetPropertyParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetPropertyParams;
+}
+declare class WindowManagerSetSelectionHighlightParams {
+    HtmlId: number;
+    BackgroundColor: number;
+    ForegroundColor: number;
+    static unmarshal(pData: number): WindowManagerSetSelectionHighlightParams;
 }
 declare class WindowManagerSetStyleDoubleParams {
     HtmlId: number;
