@@ -6,6 +6,7 @@
 		<WarningsAsErrors>true</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- This target must always be built, regardless of the CI override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
@@ -88,9 +89,6 @@
 		</Compile>
 		<Compile Include="..\..\Uno.UI\UI\Xaml\XamlFilePathHelper.shared.cs">
 			<Link>Helpers\XamlFilePathHelper.shared.cs</Link>
-		</Compile>
-		<Compile Include="..\..\Uno.Foundation.Runtime.WebAssembly\Interop\TSInteropMessageAttribute.wasm.cs">
-			<Link>TSBindings\TSInteropMessageAttribute.cs</Link>
 		</Compile>
 	</ItemGroup>
 

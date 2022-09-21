@@ -141,24 +141,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var constants = _generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty");
 
-			if (constants != null)
+			if (constants.Contains("__WASM__"))
 			{
-				if (constants.Contains("__WASM__"))
-				{
-					return "WebAssembly";
-				}
-				if (constants.Contains("__SKIA__"))
-				{
-					return "Skia";
-				}
-				if (constants.Contains("__TIZEN__"))
-				{
-					return "Tizen";
-				}
-				if (constants.Contains("UNO_REFERENCE_API"))
-				{
-					return "Reference";
-				}
+				return "WebAssembly";
+			}
+			if (constants.Contains("__SKIA__"))
+			{
+				return "Skia";
+			}
+			if (constants.Contains("__TIZEN__"))
+			{
+				return "Tizen";
+			}
+			if (constants.Contains("UNO_REFERENCE_API"))
+			{
+				return "Reference";
 			}
 
 			return "Unknown";

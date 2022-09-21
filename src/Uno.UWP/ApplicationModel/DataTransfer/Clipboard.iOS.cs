@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void Clear()
 		{
-			UIPasteboard.General.Items = new NSDictionary[0];
+			UIPasteboard.General.Items = Array.Empty<NSDictionary>();
 		}
 
 		private static void StartContentChanged()

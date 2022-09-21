@@ -670,7 +670,7 @@ namespace Uno.UWPSyncGenerator
 			foreach (var property in ifaceSymbol.GetMembers().OfType<IPropertySymbol>())
 			{
 				var propertyTypeName = TransformType(ifaceSymbol, genericParameters, property.Type);
-				var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(ifaceSymbol, genericParameters, p.Type)} {SanitizeParameter(p.Name)}") ?? new string[0]);
+				var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(ifaceSymbol, genericParameters, p.Type)} {SanitizeParameter(p.Name)}") ?? Array.Empty<string>());
 
 				var allProperties = GetAllMatchingPropertyMember(types, property);
 
@@ -1064,7 +1064,7 @@ namespace Uno.UWPSyncGenerator
 									)
 								select ctor;
 
-						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? new string[0]);
+						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? Array.Empty<string>());
 
 						var baseParams = type.BaseType?.Name != "Object" && q.Any() ? $": base({baseParamString})" : "";
 
@@ -1742,7 +1742,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			var current = symbol
 				?.GetMembers(name)
-				.Where(m => m.Locations.None(l => l.SourceTree?.FilePath?.Contains("\\Generated\\") ?? false)) ?? new ISymbol[0];
+				.Where(m => m.Locations.None(l => l.SourceTree?.FilePath?.Contains("\\Generated\\") ?? false)) ?? Array.Empty<ISymbol>();
 
 			foreach (var memberSymbol in current)
 			{

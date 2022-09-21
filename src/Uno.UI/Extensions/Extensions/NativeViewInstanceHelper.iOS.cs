@@ -188,7 +188,7 @@ namespace Uno.UI
 				}
 			}
 
-			return new Type[0];
+			return Array.Empty<Type>();
 		}
 	}
 }

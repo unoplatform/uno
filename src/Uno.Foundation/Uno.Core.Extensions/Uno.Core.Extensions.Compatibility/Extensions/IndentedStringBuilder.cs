@@ -15,7 +15,7 @@
 //
 // ******************************************************************
 using System;
-using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Uno.Extensions
@@ -50,13 +50,13 @@ namespace Uno.Extensions
 			var current = CurrentLevel;
 
 			CurrentLevel += count;
-			AppendIndented("{", current);
+			AppendIndented('{', current);
 			AppendLine();
 
 			return new DisposableAction(() =>
 			{
 				CurrentLevel -= count;
-				AppendIndented("}", current);
+				AppendIndented('}', current);
 				AppendLine();
 			});
 		}
@@ -76,13 +76,26 @@ namespace Uno.Extensions
 
 		public void AppendIndented(string text)
 		{
-			AppendIndented(text, CurrentLevel);
+			_stringBuilder.Append('\t', CurrentLevel);
+			_stringBuilder.Append(text);
 		}
 
-		private void AppendIndented(string text, int indentCount)
+		public void AppendIndented(ReadOnlySpan<char> text)
+		{
+			_stringBuilder.Append('\t', CurrentLevel);
+			unsafe
+			{
+				fixed (char* ptr = &MemoryMarshal.GetReference(text))
+				{
+					_stringBuilder.Append(ptr, text.Length);
+				}
+			}
+		}
+
+		private void AppendIndented(char c, int indentCount)
 		{
 			_stringBuilder.Append('\t', indentCount);
-			_stringBuilder.Append(text);
+			_stringBuilder.Append(c);
 		}
 
 		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
@@ -100,16 +113,16 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Appends the given string, *without* appending a newline at the end.
+		/// Appends the given multi-line string with each line indented per CurentLevel, with a newline at the end.
 		/// </summary>
 		/// <param name="text">The string to append.</param>
-		/// <remarks>
-		/// Even though this method seems like it appends a newline, it doesn't. To append a
-		/// newline, call <see cref="AppendLine()"/> after this method.
-		/// </remarks>
 		public void AppendMultiLineIndented(string text)
 		{
-			_stringBuilder.Append(text.Indent(CurrentLevel));
+			foreach (var line in text.SplitLines())
+			{
+				AppendIndented(line);
+				AppendLine();
+			}
 		}
 
 		public override string ToString()

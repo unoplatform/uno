@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.CodeAnalysis;
-using Uno.Extensions;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -347,20 +345,6 @@ namespace Microsoft.CodeAnalysis
 			return property?.GetAllAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
-		/// <summary>
-		/// Returns the element type of the IEnumerable, if any.
-		/// </summary>
-		/// <param name="resolvedType"></param>
-		/// <returns></returns>
-		public static ITypeSymbol? EnumerableOf(this ITypeSymbol resolvedType)
-		{
-			var intf = resolvedType
-				.GetAllInterfaces(includeCurrent: true)
-				.FirstOrDefault(i => i.ToDisplayString().StartsWith("System.Collections.Generic.IEnumerable", StringComparison.OrdinalIgnoreCase));
-
-			return intf?.TypeArguments.First();
-		}
-
 		public static IEnumerable<INamedTypeSymbol> GetAllInterfaces(this ITypeSymbol? symbol, bool includeCurrent = true)
 		{
 			if (symbol != null)
@@ -370,33 +354,17 @@ namespace Microsoft.CodeAnalysis
 					yield return (INamedTypeSymbol)symbol;
 				}
 
-				do
+				foreach (var @interface in symbol.AllInterfaces)
 				{
-					foreach (var intf in symbol.Interfaces)
-					{
-						yield return intf;
-
-						foreach (var innerInterface in intf.GetAllInterfaces())
-						{
-							yield return innerInterface;
-						}
-					}
-
-					symbol = symbol?.BaseType;
-
-					if (symbol == null)
-					{
-						break;
-					}
-
-				} while (symbol.SpecialType != SpecialType.System_Object);
+					yield return @interface;
+				}
 			}
 		}
 
 		public static bool IsNullable(this ITypeSymbol type)
 		{
 			return ((type as INamedTypeSymbol)?.IsGenericType ?? false)
-				&& type.OriginalDefinition.ToDisplayString().Equals("System.Nullable<T>", StringComparison.OrdinalIgnoreCase);
+				&& type.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
 		}
 
 		public static bool IsNullable(this ITypeSymbol type, out ITypeSymbol? nullableType)
@@ -443,6 +411,36 @@ namespace Microsoft.CodeAnalysis
 			{"decimal",    typeof(decimal).ToString()},
 			{"bool",       typeof(bool).ToString()},
 		};
+
+		// https://github.com/CommunityToolkit/dotnet/blob/e6257d8c65126f2f977f2dcbce3fe6045086f270/CommunityToolkit.Mvvm.SourceGenerators/Extensions/INamedTypeSymbolExtensions.cs#L16-L44
+		/// <summary>
+		/// Gets a valid filename for a given <see cref="INamedTypeSymbol"/> instance.
+		/// </summary>
+		/// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
+		/// <returns>The full metadata name for <paramref name="symbol"/> that is also a valid filename.</returns>
+		public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
+		{
+			static StringBuilder BuildFrom(ISymbol? symbol, StringBuilder builder)
+			{
+				return symbol switch
+				{
+					INamespaceSymbol ns when ns.IsGlobalNamespace => builder,
+					INamespaceSymbol ns when ns.ContainingNamespace is { IsGlobalNamespace: false }
+						=> BuildFrom(ns.ContainingNamespace, builder.Insert(0, $".{ns.MetadataName}")),
+					ITypeSymbol ts when ts.ContainingType is ISymbol pt
+						=> BuildFrom(pt, builder.Insert(0, $"+{ts.MetadataName}")),
+					ITypeSymbol ts when ts.ContainingNamespace is ISymbol pn and not INamespaceSymbol { IsGlobalNamespace: true }
+						=> BuildFrom(pn, builder.Insert(0, $".{ts.MetadataName}")),
+					ISymbol => BuildFrom(symbol.ContainingSymbol, builder.Insert(0, symbol.MetadataName)),
+					_ => builder
+				};
+			}
+			// Build the full metadata name by concatenating the metadata names of all symbols from the input
+			// one to the outermost namespace, if any. Additionally, the ` and + symbols need to be replaced
+			// to avoid errors when generating code. This is a known issue with source generators not accepting
+			// those characters at the moment, see: https://github.com/dotnet/roslyn/issues/58476.
+			return BuildFrom(symbol, new StringBuilder(256)).Replace('`', '-').Replace('+', '.').ToString();
+		}
 
 		public static string? GetFullName(this INamespaceOrTypeSymbol? type)
 		{

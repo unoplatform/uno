@@ -16,6 +16,7 @@
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
       "SolutionTemplate\\UnoUITestTemplate\\UnoUITestTemplate.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",

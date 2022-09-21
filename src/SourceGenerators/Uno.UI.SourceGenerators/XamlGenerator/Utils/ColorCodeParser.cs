@@ -6,7 +6,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
 	internal static class ColorCodeParser
 	{
-		public static byte[] ParseColorCode(string colorCode)
+		public static string ParseColorCode(string colorCode)
 		{
 			if (colorCode == null)
 			{
@@ -18,47 +18,45 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				throw new FormatException("Color code must start with #");
 			}
 
-			byte a = 0x00;
-			byte r = 0x00;
-			byte g = 0x00;
-			byte b = 0x00;
+			byte a;
+			byte r;
+			byte g;
+			byte b;
 
-			colorCode = colorCode.Substring(1);
-
-			if (colorCode.Length == 3)
+			if (colorCode.Length == 4)
 			{
 				a = 0xFF;
-				r = Convert.ToByte(new String(colorCode[0], 2), 16);
-				g = Convert.ToByte(new String(colorCode[1], 2), 16);
-				b = Convert.ToByte(new String(colorCode[2], 2), 16);
+				r = Convert.ToByte(new string(colorCode[1], 2), 16);
+				g = Convert.ToByte(new string(colorCode[2], 2), 16);
+				b = Convert.ToByte(new string(colorCode[3], 2), 16);
 			}
-			else if (colorCode.Length == 4)
+			else if (colorCode.Length == 5)
 			{
-				a = Convert.ToByte(new String(colorCode[0], 2), 16);
-				r = Convert.ToByte(new String(colorCode[1], 2), 16);
-				g = Convert.ToByte(new String(colorCode[2], 2), 16);
-				b = Convert.ToByte(new String(colorCode[3], 2), 16);
+				a = Convert.ToByte(new string(colorCode[1], 2), 16);
+				r = Convert.ToByte(new string(colorCode[2], 2), 16);
+				g = Convert.ToByte(new string(colorCode[3], 2), 16);
+				b = Convert.ToByte(new string(colorCode[4], 2), 16);
 			}
-			else if (colorCode.Length == 6)
+			else if (colorCode.Length == 7)
 			{
 				a = 0xFF;
-				r = Convert.ToByte(colorCode.Substring(0, 2), 16);
-				g = Convert.ToByte(colorCode.Substring(2, 2), 16);
-				b = Convert.ToByte(colorCode.Substring(4, 2), 16);
+				r = Convert.ToByte(colorCode.Substring(1, 2), 16);
+				g = Convert.ToByte(colorCode.Substring(3, 2), 16);
+				b = Convert.ToByte(colorCode.Substring(5, 2), 16);
 			}
-			else if (colorCode.Length == 8)
+			else if (colorCode.Length == 9)
 			{
-				a = Convert.ToByte(colorCode.Substring(0, 2), 16);
-				r = Convert.ToByte(colorCode.Substring(2, 2), 16);
-				g = Convert.ToByte(colorCode.Substring(4, 2), 16);
-				b = Convert.ToByte(colorCode.Substring(6, 2), 16);
+				a = Convert.ToByte(colorCode.Substring(1, 2), 16);
+				r = Convert.ToByte(colorCode.Substring(3, 2), 16);
+				g = Convert.ToByte(colorCode.Substring(5, 2), 16);
+				b = Convert.ToByte(colorCode.Substring(7, 2), 16);
 			}
 			else
 			{
 				throw new FormatException($"Failed to parse color code: #{colorCode}");
 			}
 
-			return new byte[] { a, r, g, b };
+			return $"{a}, {r}, {g}, {b}";
 		}
 	}
 }

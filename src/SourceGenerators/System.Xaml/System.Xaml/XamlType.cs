@@ -442,7 +442,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		static readonly XamlMember [] empty_array = new XamlMember [0];
+		static readonly XamlMember [] empty_array = Array.Empty<XamlMember>();
 
 		protected virtual IEnumerable<XamlMember> LookupAllMembers ()
 		{
