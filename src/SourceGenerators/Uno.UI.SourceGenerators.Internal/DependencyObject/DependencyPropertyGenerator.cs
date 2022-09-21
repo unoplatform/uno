@@ -49,7 +49,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var dependencyObjectSymbol = combined.Right;
 				var containingType = fieldOrPropertyData.FieldOrPropertySymbol.ContainingType;
 				return containingType.TypeKind == TypeKind.Class &&
-					(containingType.IsStatic || containingType.GetAllInterfaces().Any(t => SymbolEqualityComparer.Default.Equals(t, dependencyObjectSymbol)));
+					(containingType.IsStatic || containingType.AllInterfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, dependencyObjectSymbol)));
 			});
 
 			var groupedByContainingProvider = filteredAttributedSymbolsProvider.Select((x, _) => x.Left).GroupBy(data => data.FieldOrPropertySymbol.ContainingType, SymbolEqualityComparer.Default);
@@ -170,7 +170,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			var changedCallbackName = GetAttributeValue(attribute, "ChangedCallbackName")?.Value.Value?.ToString();
 
 			var propertyTypeSymbol = getMethodSymbol.ReturnType;
-			var propertyTargetSymbol = getMethodSymbol.Parameters.First().Type;
+			var propertyTargetSymbol = getMethodSymbol.Parameters[0].Type;
 			var propertyOwnerType = getMethodSymbol.ContainingType;
 			var propertyTypeName = propertyTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 			var propertyOwnerTypeName = propertyOwnerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
@@ -260,7 +260,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			changedCallbackName ??= $"On{propertyName}Changed";
 			var propertyChangedMethods = propertyOwnerType.GetMethodsWithName(changedCallbackName).ToArray();
-			if (changedCallback || (propertyChangedMethods?.Any() ?? false))
+			if (changedCallback || propertyChangedMethods.Length > 0)
 			{
 				if (propertyChangedMethods.FirstOrDefault(m => IsCallbackWithDPChangedArgs(m, dependencyPropertyChangedEventArgsSymbol)) is { } callbackWithEventArgs)
 				{
@@ -270,7 +270,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(args)");
 				}
-				else if (propertyChangedMethods?.FirstOrDefault(m => m?.Parameters.Length == 2) is { } callbackWithOldAndNew)
+				else if (propertyChangedMethods.FirstOrDefault(m => m.Parameters.Length == 2) is { } callbackWithOldAndNew)
 				{
 					builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
 				}
@@ -286,16 +286,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		}
 
 		private static bool IsCallbackWithDPChangedArgsOnly(IMethodSymbol m, INamedTypeSymbol dependencyPropertyChangedEventArgsSymbol)
-			=> SymbolEqualityComparer.Default.Equals(m?.Parameters.FirstOrDefault()?.Type, dependencyPropertyChangedEventArgsSymbol);
+			=> m.Parameters.Length > 0 && SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, dependencyPropertyChangedEventArgsSymbol);
 
 		private static bool IsCallbackWithDPChangedArgs(IMethodSymbol m, INamedTypeSymbol dependencyPropertyChangedEventArgsSymbol)
-			=> m?.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(m?.Parameters[1].Type, dependencyPropertyChangedEventArgsSymbol);
+			=> m.Parameters.Length == 2 && SymbolEqualityComparer.Default.Equals(m.Parameters[1].Type, dependencyPropertyChangedEventArgsSymbol);
 
 		private static KeyValuePair<string, TypedConstant>? GetAttributeValue(AttributeData attribute, string parameterName)
-			=> attribute?.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName);
+			=> attribute.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName);
 
 		private static bool GetBooleanAttributeValue(AttributeData attribute, string parameterName, bool defaultValue)
-			=> attribute?.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName).Value.Value is bool value ? value : defaultValue;
+			=> attribute.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName).Value.Value is bool value ? value : defaultValue;
 
 		private static void GenerateProperty(IndentedStringBuilder builder, INamedTypeSymbol ownerType, ISymbol memberSymbol, AttributeData attribute, INamedTypeSymbol dependencyPropertyChangedEventArgsSymbol)
 		{
@@ -376,7 +376,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			changedCallbackName ??= $"On{propertyName}Changed";
 			var propertyChangedMethods = propertySymbol.ContainingType.GetMethodsWithName(changedCallbackName).ToArray();
-			if (changedCallback || propertyChangedMethods.Any())
+			if (changedCallback || propertyChangedMethods.Length > 0)
 			{
 				if (propertyChangedMethods.FirstOrDefault(m => IsCallbackWithDPChangedArgs(m, dependencyPropertyChangedEventArgsSymbol)) is { } callbackWithEventArgs)
 				{
@@ -386,7 +386,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(args)");
 				}
-				else if (propertyChangedMethods?.FirstOrDefault(m => m?.Parameters.Length == 2) is { } callbackWithOldAndNew)
+				else if (propertyChangedMethods.FirstOrDefault(m => m.Parameters.Length == 2) is { } callbackWithOldAndNew)
 				{
 					builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
 				}
@@ -411,21 +411,30 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"#endregion");
 		}
 
-		private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, params string[] invocations)
+		private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, string invocation)
 		{
-			if (propertySymbol.Locations.FirstOrDefault() is Location location)
-			{
-				if (location.SourceTree != null)
-				{
-					var node = location.SourceTree.GetRoot().FindNode(location.SourceSpan);
-					var syntaxNodeContent = node.ToString();
+			var node = propertySymbol.DeclaringSyntaxReferences[0].GetSyntax();
+			var syntaxNodeContent = node.ToString();
 
-					if (!invocations.All(l => syntaxNodeContent.Contains(l, StringComparison.Ordinal)))
-					{
-						var invocationsMessage = string.Join(", ", invocations);
-						builder.AppendLineIndented($"#error unable to find some of the following statements {invocationsMessage} in {propertySymbol}");
-					}
-				}
+			if (!syntaxNodeContent.Contains(invocation, StringComparison.Ordinal))
+			{
+				builder.AppendLineIndented($"#error unable to find the following statement '{invocation}' in {propertySymbol}");
+			}
+		}
+
+		private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, string invocation1, string invocation2)
+		{
+			var node = propertySymbol.DeclaringSyntaxReferences[0].GetSyntax();
+			var syntaxNodeContent = node.ToString();
+
+			if (!syntaxNodeContent.Contains(invocation1, StringComparison.Ordinal))
+			{
+				builder.AppendLineIndented($"#error unable to find the following statement '{invocation1}' in {propertySymbol}");
+			}
+
+			if (!syntaxNodeContent.Contains(invocation2, StringComparison.Ordinal))
+			{
+				builder.AppendLineIndented($"#error unable to find the following statement '{invocation2}' in {propertySymbol}");
 			}
 		}
 
