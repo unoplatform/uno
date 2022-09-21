@@ -780,7 +780,7 @@ namespace Uno.UI.Samples.Tests
 									}
 
 									sw.Start();
-									testClassInfo.Initialize?.Invoke(instance, new object[0]);
+									testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
 									returnValue = test.Method.Invoke(instance, testCase.Parameters);
 									sw.Stop();
 								});
@@ -794,7 +794,7 @@ namespace Uno.UI.Samples.Tests
 								}
 
 								sw.Start();
-								testClassInfo.Initialize?.Invoke(instance, new object[0]);
+								testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
 								returnValue = test.Method.Invoke(instance, testCase.Parameters);
 								sw.Stop();
 							}
@@ -899,7 +899,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					try
 					{
-						testClassInfo.Cleanup?.Invoke(instance, new object[0]);
+						testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>());
 					}
 					catch (Exception e)
 					{

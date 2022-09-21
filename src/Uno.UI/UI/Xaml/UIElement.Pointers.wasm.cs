@@ -18,6 +18,8 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier;
+
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -241,6 +243,42 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
+	private static readonly Dictionary<PointerIdentifier, PointerIdentifier> _nativeToManagedPointerId = new();
+	private static readonly Dictionary<PointerIdentifier, PointerIdentifier> _managedToNativePointerId = new();
+	private static uint _lastUsedId;
+
+	private static uint TransformPointerId(PointerIdentifier nativeId)
+	{
+		if (_nativeToManagedPointerId.TryGetValue(nativeId, out var managedId))
+		{
+			return managedId.Id;
+		}
+
+		managedId = new PointerIdentifier(nativeId.Type, ++_lastUsedId);
+		_managedToNativePointerId[managedId] = nativeId;
+		_nativeToManagedPointerId[nativeId] = managedId;
+		
+		return managedId.Id;
+	}
+
+	internal static void RemoveActivePointer(PointerIdentifier managedId)
+	{
+		if (_managedToNativePointerId.TryGetValue(managedId, out var nativeId))
+		{
+			_managedToNativePointerId.Remove(managedId);
+			_nativeToManagedPointerId.Remove(nativeId);
+
+			if (_managedToNativePointerId.Count == 0)
+			{
+				_lastUsedId = 0; // We reset the pointer ID only when there is no active pointer.
+			}
+		}
+		else if (typeof(UIElement).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(UIElement).Log().Warn($"Received an invalid managed pointer id {managedId}");
+		}
+	}
+
 	private static PointerRoutedEventArgs ToPointerArgs(
 		UIElement snd,
 		NativePointerEventArgs args,
@@ -249,8 +287,9 @@ public partial class UIElement : DependencyObject
 		const int cancel = (int)NativePointerEvent.pointercancel;
 		const int exitOrUp = (int)(NativePointerEvent.pointerout | NativePointerEvent.pointerup);
 
-		var pointerId = (uint)args.pointerId;
 		var pointerType = (PointerDeviceType)args.deviceType;
+		var pointerId = TransformPointerId(new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)pointerType, (uint)args.pointerId));
+		
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
 		var isInContact = args.buttons != 0;

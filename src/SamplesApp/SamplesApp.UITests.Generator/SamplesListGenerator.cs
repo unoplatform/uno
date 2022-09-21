@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Uno.RoslynHelpers;
+using Uno.Extensions;
 
 namespace Uno.Samples.UITest.Generator
 {
 	[Generator]
 	public class SamplesListGenerator : ISourceGenerator
 	{
-		private INamedTypeSymbol _sampleControlInfoSymbol;
-		private INamedTypeSymbol _sampleSymbol;
-
 		public void Initialize(GeneratorInitializationContext context)
 		{
 		}
@@ -34,11 +25,11 @@ namespace Uno.Samples.UITest.Generator
 
 		private void GenerateTests(GeneratorExecutionContext context)
 		{
-			_sampleControlInfoSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
-			_sampleSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
+			var sampleControlInfoSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
+			var sampleSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
 
 			var query = from typeSymbol in context.Compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
-						let info = typeSymbol.FindAttributeFlattened(_sampleSymbol) ?? typeSymbol.FindAttributeFlattened(_sampleControlInfoSymbol)
+						let info = typeSymbol.FindAttributeFlattened(sampleSymbol) ?? typeSymbol.FindAttributeFlattened(sampleControlInfoSymbol)
 						where info != null
 						select typeSymbol;
 
@@ -51,7 +42,7 @@ namespace Uno.Samples.UITest.Generator
 		{
 			var builder = new IndentedStringBuilder();
 
-			builder.AppendLineInvariant("using System;");
+			builder.AppendLineIndented("using System;");
 
 			using (builder.BlockInvariant($"namespace SampleControl.Presentation"))
 			{
@@ -61,11 +52,11 @@ namespace Uno.Samples.UITest.Generator
 					{
 						foreach (var type in query)
 						{
-							builder.AppendLineInvariant($"typeof({type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
+							builder.AppendLineIndented($"typeof({type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
 						}
 					}
 
-					builder.AppendLineInvariant(";");
+					builder.AppendLineIndented(";");
 				}
 			}
 

@@ -201,7 +201,7 @@ namespace Uno.Xaml
 			get { return LookupDeferringLoader (); }
 		}
 		
-		static readonly XamlMember [] empty_members = new XamlMember [0];
+		static readonly XamlMember [] empty_members = Array.Empty<XamlMember>();
 		
 		public IList<XamlMember> DependsOn {
 			get { return LookupDependsOn () ?? empty_members; }
@@ -331,7 +331,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static readonly XamlMember [] empty_list = new XamlMember [0];
+		static readonly XamlMember[] empty_list = Array.Empty<XamlMember>();
 
 		protected virtual IList<XamlMember> LookupDependsOn ()
 		{

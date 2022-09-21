@@ -397,6 +397,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal_Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -406,6 +414,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallHistoryEntryReaderTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5146,6 +5158,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevationView_Clipping.xaml.cs">
       <DependentUpon>ElevationView_Clipping.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal.xaml.cs">
+      <DependentUpon>VisibleBoundsPadding_Modal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal_Test.xaml.cs">
+      <DependentUpon>VisibleBoundsPadding_Modal_Test.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml.cs">
       <DependentUpon>CookieManagerTests.xaml</DependentUpon>
     </Compile>
@@ -5156,6 +5174,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\BoolNegationValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\FromNullableBoolToCustomValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ValueConverters\StringConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallHistoryEntryReaderTests.xaml.cs">
+      <DependentUpon>PhoneCallHistoryEntryReaderTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Calls\PhoneCallManagerTests.xaml.cs">
       <DependentUpon>PhoneCallManagerTests.xaml</DependentUpon>
     </Compile>

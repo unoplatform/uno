@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>69ea1cb5-bb31-414a-9e0b-74c72ff7775f</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SourceGeneratorHelpers</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\AnalyzerSuppressions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CompilationExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DependenciesInitializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DesignTimeHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeneratorExecutionContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IsExternalInit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Nullable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PathHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PlatformHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\RoslynMetadataHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SymbolExtensions.cs" />
+  </ItemGroup>
+  <Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
+</Project>

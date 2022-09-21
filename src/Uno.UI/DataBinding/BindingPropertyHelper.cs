@@ -659,7 +659,7 @@ namespace Uno.UI.DataBinding
 
 					var handler = MethodInvokerBuilder(getMethod);
 
-					return instance => handler(instance, new object[0]);
+					return instance => handler(instance, Array.Empty<object>());
 				}
 
 				// Look for a field (permitted for x:Bind only)
