@@ -17,15 +17,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	[Generator]
 	public class DependencyPropertyGenerator : IIncrementalGenerator
 	{
-		private sealed class ContainingTypeEqualityComparer : IEqualityComparer<ISymbol?>
-		{
-			public static readonly ContainingTypeEqualityComparer Instance = new();
-
-			public bool Equals(ISymbol? x, ISymbol? y) => SymbolEqualityComparer.Default.Equals(x?.ContainingType);
-
-			public int GetHashCode(ISymbol? obj) => SymbolEqualityComparer.Default.GetHashCode(obj?.ContainingType);
-		}
-
 		private readonly struct FieldOrPropertyData
 		{
 			public ISymbol FieldOrPropertySymbol { get; }
