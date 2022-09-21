@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public override string ToString()
 		{
-			if (WebUri is { } uri)
+			if (AbsoluteUri is { } uri)
 			{
 				return $"{GetType().Name}/{uri}";
 			}

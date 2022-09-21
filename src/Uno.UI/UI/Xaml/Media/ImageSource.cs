@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Media
 
 			CleanupResource();
 			FilePath = null;
-			WebUri = null;
+			AbsoluteUri = null;
 			
 			if (uri.IsLocalResource())
 			{
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Media
 				InitFromFile(uri.PathAndQuery);
 			}
 
-			WebUri = uri;
+			AbsoluteUri = uri;
 		}
 
 		private void InitFromFile(string filePath)
@@ -204,15 +204,15 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private Uri _webUri;
+		private Uri _absoluteUri;
 
-		internal Uri WebUri
+		internal Uri AbsoluteUri
 		{
-			get { return _webUri; }
+			get => _absoluteUri;
 
 			private set
 			{
-				_webUri = value;
+				_absoluteUri = value;
 
 				if (value != null)
 				{
