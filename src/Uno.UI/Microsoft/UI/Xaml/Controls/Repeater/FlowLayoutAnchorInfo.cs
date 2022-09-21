@@ -11,10 +11,13 @@ namespace Microsoft.UI.Xaml.Controls
 			Offset = offset;
 		}
 
+		// NOTE: Equality implementation should be modified if a new field/property is added.
+
 		public int Index;
 
 		public double Offset;
 
+		#region Equality Members
 		public override bool Equals(object obj) => obj is FlowLayoutAnchorInfo info && Equals(info);
 		public bool Equals(FlowLayoutAnchorInfo other) => Index == other.Index && Offset == other.Offset;
 
@@ -28,5 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static bool operator ==(FlowLayoutAnchorInfo left, FlowLayoutAnchorInfo right) => left.Equals(right);
 		public static bool operator !=(FlowLayoutAnchorInfo left, FlowLayoutAnchorInfo right) => !left.Equals(right);
+		#endregion
 	}
 }

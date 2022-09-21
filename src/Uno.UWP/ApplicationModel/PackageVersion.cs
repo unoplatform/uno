@@ -20,11 +20,14 @@ namespace Windows.ApplicationModel
 			Revision = (ushort)(version.Revision >= 0 ? version.Revision : 0);
 		}
 
+		// NOTE: Equality implementation should be modified if a new field/property is added.
+
 		public ushort Major;
 		public ushort Minor;
 		public ushort Build;
 		public ushort Revision;
 
+		#region Equality Members
 		public override bool Equals(object obj) => obj is PackageVersion version && Equals(version);
 		public bool Equals(PackageVersion other) => Major == other.Major && Minor == other.Minor && Build == other.Build && Revision == other.Revision;
 
@@ -40,5 +43,6 @@ namespace Windows.ApplicationModel
 
 		public static bool operator ==(PackageVersion left, PackageVersion right) => left.Equals(right);
 		public static bool operator !=(PackageVersion left, PackageVersion right) => !left.Equals(right);
+		#endregion
 	}
 }

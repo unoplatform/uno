@@ -28,6 +28,9 @@ namespace Windows.UI.Input
 		public float Rotation;
 		public float Expansion;
 
+		// NOTE: Equality implementation should be modified if a new field/property is added.
+
+		// IsEmpty is intentionally not included in equality since it's calculated from the other fields.
 		internal bool IsEmpty => Translation == Point.Zero && Rotation == 0 && Scale == 1 && Expansion == 0;
 
 		[Pure]
@@ -56,6 +59,7 @@ namespace Windows.UI.Input
 		public override string ToString()
 			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
 
+		#region Equality Members
 		public override bool Equals(object obj) => obj is ManipulationDelta delta && Equals(delta);
 
 		public bool Equals(ManipulationDelta other)
@@ -77,5 +81,6 @@ namespace Windows.UI.Input
 
 		public static bool operator ==(ManipulationDelta left, ManipulationDelta right) => left.Equals(right);
 		public static bool operator !=(ManipulationDelta left, ManipulationDelta right) => !left.Equals(right);
+		#endregion
 	}
 }

@@ -49,6 +49,9 @@ public partial struct GamepadReading : IEquatable<GamepadReading>
 	/// </summary>
 	public double RightThumbstickY;
 
+	// NOTE: Equality implementation should be modified if a new field/property is added.
+
+	#region Equality Members
 	public override bool Equals(object obj) => obj is GamepadReading reading && Equals(reading);
 	public bool Equals(GamepadReading other) => Timestamp == other.Timestamp && Buttons == other.Buttons && LeftTrigger == other.LeftTrigger && RightTrigger == other.RightTrigger && LeftThumbstickX == other.LeftThumbstickX && LeftThumbstickY == other.LeftThumbstickY && RightThumbstickX == other.RightThumbstickX && RightThumbstickY == other.RightThumbstickY;
 
@@ -68,4 +71,5 @@ public partial struct GamepadReading : IEquatable<GamepadReading>
 
 	public static bool operator ==(GamepadReading left, GamepadReading right) => left.Equals(right);
 	public static bool operator !=(GamepadReading left, GamepadReading right) => !left.Equals(right);
+	#endregion
 }

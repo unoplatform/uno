@@ -8,6 +8,9 @@ namespace Windows.Devices.Geolocation
         public double Latitude;
         public double Longitude;
 
+		// NOTE: Equality implementation should be modified if a new field/property is added.
+
+		#region Equality Members
 		public override bool Equals(object obj) => obj is BasicGeoposition geoposition && Equals(geoposition);
 		public bool Equals(BasicGeoposition other) => Altitude == other.Altitude && Latitude == other.Latitude && Longitude == other.Longitude;
 
@@ -22,5 +25,6 @@ namespace Windows.Devices.Geolocation
 
 		public static bool operator ==(BasicGeoposition left, BasicGeoposition right) => left.Equals(right);
 		public static bool operator !=(BasicGeoposition left, BasicGeoposition right) => !left.Equals(right);
+		#endregion
 	}
 }

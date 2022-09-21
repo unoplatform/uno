@@ -28,6 +28,8 @@ namespace Windows.UI.Input
 		/// </summary>
 		public float Expansion;
 
+		// NOTE: Equality implementation should be modified if a new field/property is added.
+
 		// Note: We should apply a velocity factor to thresholds to determine if isSignificant
 		internal bool IsAnyAbove(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Linear.X) > thresholds.TranslateX
@@ -40,6 +42,7 @@ namespace Windows.UI.Input
 		public override string ToString()
 			=> $"x:{Linear.X:N0};y:{Linear.Y:N0};θ:{Angular};e:{Expansion:F2}";
 
+		#region Equality Members
 		public override bool Equals(object obj) => obj is ManipulationVelocities velocities && Equals(velocities);
 
 		public bool Equals(ManipulationVelocities other)
@@ -60,5 +63,6 @@ namespace Windows.UI.Input
 
 		public static bool operator ==(ManipulationVelocities left, ManipulationVelocities right) => left.Equals(right);
 		public static bool operator !=(ManipulationVelocities left, ManipulationVelocities right) => !left.Equals(right);
+		#endregion
 	}
 }
