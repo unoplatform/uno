@@ -397,6 +397,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal_Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5149,6 +5157,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevationView_Clipping.xaml.cs">
       <DependentUpon>ElevationView_Clipping.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal.xaml.cs">
+      <DependentUpon>VisibleBoundsPadding_Modal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\VisibleBoundsPadding_Modal_Test.xaml.cs">
+      <DependentUpon>VisibleBoundsPadding_Modal_Test.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Uno_Web\Http\CookieManagerTests.xaml.cs">
       <DependentUpon>CookieManagerTests.xaml</DependentUpon>
