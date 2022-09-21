@@ -18,12 +18,12 @@ namespace Windows.UI.Xaml.Media
 	{
 		partial void InitFromResource(Uri uri)
 		{
-			WebUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
+			AbsoluteUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
 		}
 
 		partial void CleanupResource()
 		{
-			WebUri = null;
+			AbsoluteUri = null;
 		}
 
 		private protected async Task<ImageData> OpenFromStream(IRandomAccessStreamWithContentType stream, Action<ulong, ulong?>? progress, CancellationToken ct)

@@ -24,12 +24,12 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri)
 		{
-			WebUri = uri;
+			AbsoluteUri = uri;
 		}
 
 		partial void CleanupResource()
 		{
-			WebUri = null;
+			AbsoluteUri = null;
 		}
 
 		internal void UnloadImageData() { }
