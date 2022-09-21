@@ -186,8 +186,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			ValidateInvocation(builder, getMethodSymbol, $"Get{propertyName}Value");
 			ValidateInvocation(builder, setMethodSymbol, $"Set{propertyName}Value");
 
-			builder.AppendLineIndented($"");
-			builder.AppendLineIndented($"");
 			builder.AppendLineIndented($"#region {propertyName} Dependency Property");
 
 			using (builder.BlockInvariant($"private static {propertyTypeName} Get{propertyName}Value({propertyTargetName} instance)"))
@@ -321,8 +319,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			ValidateInvocation(builder, propertySymbol, $"Get{propertyName}Value", $"Set{propertyName}Value");
 			ValidateInvocation(builder, memberSymbol, $"Create{propertyName}Property");
 
-			builder.AppendLineIndented($"");
-			builder.AppendLineIndented($"");
 			builder.AppendLineIndented($"#region {propertyName} Dependency Property");
 
 			if (propertySymbol.GetMethod != null)
@@ -411,30 +407,21 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"#endregion");
 		}
 
-		private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, string invocation)
+		private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, params string[] invocations)
 		{
-			var node = propertySymbol.DeclaringSyntaxReferences[0].GetSyntax();
-			var syntaxNodeContent = node.ToString();
-
-			if (!syntaxNodeContent.Contains(invocation, StringComparison.Ordinal))
+			if (propertySymbol.Locations.FirstOrDefault() is Location location)
 			{
-				builder.AppendLineIndented($"#error unable to find the following statement '{invocation}' in {propertySymbol}");
-			}
-		}
+				if (location.SourceTree != null)
+				{
+					var node = location.SourceTree.GetRoot().FindNode(location.SourceSpan);
+					var syntaxNodeContent = node.ToString();
 
-		private static void ValidateInvocation(IndentedStringBuilder builder, ISymbol propertySymbol, string invocation1, string invocation2)
-		{
-			var node = propertySymbol.DeclaringSyntaxReferences[0].GetSyntax();
-			var syntaxNodeContent = node.ToString();
-
-			if (!syntaxNodeContent.Contains(invocation1, StringComparison.Ordinal))
-			{
-				builder.AppendLineIndented($"#error unable to find the following statement '{invocation1}' in {propertySymbol}");
-			}
-
-			if (!syntaxNodeContent.Contains(invocation2, StringComparison.Ordinal))
-			{
-				builder.AppendLineIndented($"#error unable to find the following statement '{invocation2}' in {propertySymbol}");
+					if (!invocations.All(l => syntaxNodeContent.Contains(l, StringComparison.Ordinal)))
+					{
+						var invocationsMessage = string.Join(", ", invocations);
+						builder.AppendLineIndented($"#error unable to find some of the following statements {invocationsMessage} in {propertySymbol}");
+					}
+				}
 			}
 		}
 

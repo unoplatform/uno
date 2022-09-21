@@ -243,8 +243,6 @@ namespace Windows.UI.Xaml
 						{
 							partial class C
 							{
-								
-								
 								#region MyValue Dependency Property
 								private static int GetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance)
 								{
