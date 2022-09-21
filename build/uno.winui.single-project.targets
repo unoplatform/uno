@@ -120,6 +120,10 @@
 				<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
 
 				<ProjectCapability Include="UseMauiCore" />
+
+				<!-- Required since VS 2022 17.4 Preview 1 -->
+				<ProjectCapability Include="MauiCore" />
+				<ProjectCapability Include="Maui" />
 			</ItemGroup>
 
 
