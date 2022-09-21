@@ -361,12 +361,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			EnsureXClassName();
 
 			var xamlDefinedBaseType = GetType(topLevelControl.Type);
-			var fullClassName = _xClassName.Namespace + "." + _xClassName.ClassName;
-			var classDefinedBaseType = FindType(fullClassName)?.BaseType;
+			var classDefinedBaseType = _xClassName.Symbol?.BaseType;
 
 			if (!SymbolEqualityComparer.Default.Equals(xamlDefinedBaseType, classDefinedBaseType))
 			{
-				var locations = FindType(fullClassName)?.Locations;
+				var locations = _xClassName.Symbol?.Locations;
+				var fullClassName = _xClassName.Namespace + "." + _xClassName.ClassName;
 				if (locations != null && locations.Value.Length > 0)
 				{
 					var diagnostic = Diagnostic.Create(XamlCodeGenerationDiagnostics.GenericXamlWarningRule,
@@ -721,7 +721,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_isDebug)
 			{
-				if (FindType("Uno.UI.RemoteControl.RemoteControlClient") != null)
+				if (_metadataHelper.FindTypeByFullName("Uno.UI.RemoteControl.RemoteControlClient") != null)
 				{
 					writer.AppendLineIndented($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
 				}
@@ -1009,7 +1009,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(c => HasMarkupExtensionNeedingComponent(c.XamlObject));
 			var isFrameworkElement =
-				IsType(_xClassName.ToString(), _frameworkElementSymbol)              // The current type may not have a base type as it is defined in XAML,
+				IsType(_xClassName.Symbol, _frameworkElementSymbol)              // The current type may not have a base type as it is defined in XAML,
 				|| IsType(controlBaseType, _frameworkElementSymbol);    // so look at the control base type extracted from the XAML.
 
 			if (hasXBindExpressions || hasResourceExtensions)
@@ -2110,8 +2110,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				findType = FindType(baseTypeString);
-				findType ??= FindType(baseTypeString + "Extension"); // Support shortened syntax
+				return null;
+				// It looks like FindType never returns non-null in this code path.
+				// findType = FindType(baseTypeString);
+				// findType ??= FindType(baseTypeString + "Extension"); // Support shortened syntax
 			}
 
 			if (findType?.Is(_markupExtensionSymbol) ?? false)
@@ -2210,7 +2212,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var index = fullName.LastIndexOf('.');
 
-				return new(fullName.Substring(0, index), fullName.Substring(index + 1), FindType(fullName));
+				return new(fullName.Substring(0, index), fullName.Substring(index + 1), _metadataHelper.FindTypeByFullName(fullName) as INamedTypeSymbol);
 			}
 			else
 			{
@@ -3136,14 +3138,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
-			var isFrameworkElement = IsFrameworkElement(objectDefinition.Type);
-			var hasIsParsing = HasIsParsing(objectDefinition.Type);
+			var objectDefinitionType = FindType(objectDefinition.Type);
+			var isFrameworkElement = IsType(objectDefinitionType, _frameworkElementSymbol);
+			var hasIsParsing = HasIsParsing(objectDefinitionType);
 
 			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing)
 			{
 				string closureName;
+				if (!useGenericApply && objectDefinitionType is null)
+				{
+					throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(objectDefinition.Type));
+				}
 
-				using (var writer = CreateApplyBlock(outerwriter, useGenericApply ? null : GetType(objectDefinition.Type), out closureName))
+				using (var writer = CreateApplyBlock(outerwriter, useGenericApply ? null : objectDefinitionType, out closureName))
 				{
 					XamlMemberDefinition? uidMember = null;
 					XamlMemberDefinition? nameMember = null;
@@ -3154,7 +3161,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						// Look up any potential UI automation member mappings available for the current object definition
 						extractionTargetMembers = _uiAutomationMappings
-							?.FirstOrDefault(m => IsType(objectDefinition.Type, m.Key) || IsImplementingInterface(FindType(objectDefinition.Type), FindType(m.Key)))
+							?.FirstOrDefault(m => _metadataHelper.FindTypeByFullName(m.Key) is INamedTypeSymbol mappingKeySymbol && (IsType(objectDefinitionType, mappingKeySymbol) || IsImplementingInterface(objectDefinitionType, mappingKeySymbol)))
 							.Value
 							?.ToArray() ?? Array.Empty<string>();
 					}
@@ -4337,15 +4344,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var isTopLevelMember = lastDotIndex == -1;
 
-			var className = isTopLevelMember
-				? _xClassName?.Namespace + "." + _xClassName?.ClassName
-				: fullMemberName.Substring(0, lastDotIndex);
+			var typeSymbol = isTopLevelMember
+				? _xClassName?.Symbol
+				: _metadataHelper.FindTypeByFullName(fullMemberName.Substring(0, lastDotIndex)) as INamedTypeSymbol;
 
 			var memberName = isTopLevelMember
 				? fullMemberName
 				: fullMemberName.Substring(lastDotIndex + 1);
 
-			if (_metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol)
+			if (typeSymbol is not null)
 			{
 				var isStaticMethod = typeSymbol.GetMethodsWithName(memberName).Any(m => m.IsStatic);
 				var isStaticProperty = typeSymbol.GetPropertiesWithName(memberName).Any(m => m.IsStatic);
@@ -4831,13 +4838,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var hasImplictToString = propertyType
 					.GetMethodsWithName("op_Implicit")
-					.Any(m => m.Parameters.FirstOrDefault().SelectOrDefault(p => SymbolEqualityComparer.Default.Equals(p?.Type, _stringSymbol))
+					.Any(m => m.Parameters.FirstOrDefault().SelectOrDefault(p => p?.Type.SpecialType == SpecialType.System_String)
 					);
 
 				if (hasImplictToString
 
 					// Can be an object (e.g. in case of Binding.ConverterParameter).
-					|| SymbolEqualityComparer.Default.Equals(propertyType, _objectSymbol)
+					|| propertyType.SpecialType == SpecialType.System_Object
 				)
 				{
 					return "@\"" + memberValue?.ToString() + "\"";
@@ -5498,8 +5505,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
 		{
-			return SymbolEqualityComparer.Default.Equals(propertyType, _stringSymbol)
-				|| SymbolEqualityComparer.Default.Equals(propertyType, _objectSymbol);
+			return propertyType is { SpecialType: SpecialType.System_String or SpecialType.System_Object };
 		}
 
 		private string? GetObjectUid(XamlObjectDefinition objectDefinition)

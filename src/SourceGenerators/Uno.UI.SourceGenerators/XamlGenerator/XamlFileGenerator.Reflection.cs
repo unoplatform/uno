@@ -132,7 +132,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					}
 
-				} while (!SymbolEqualityComparer.Default.Equals(type, _objectSymbol));
+				} while (type.SpecialType != SpecialType.System_Object);
 			}
 
 			return false;
@@ -163,17 +163,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						break;
 					}
 
-				} while (!SymbolEqualityComparer.Default.Equals(namedTypeSymbol, _objectSymbol));
+				} while (namedTypeSymbol.SpecialType != SpecialType.System_Object);
 			}
 
 			return false;
-		}
-
-		private bool IsType(string stringType, ISymbol typeSymbol)
-		{
-			var type = FindType(stringType);
-
-			return IsType(type, typeSymbol);
 		}
 
 		public bool HasProperty(XamlType xamlType, string propertyName)
@@ -310,6 +303,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsImplementingInterface(FindType(xamlType), _dependencyObjectParseSymbol);
 		}
 
+		private bool HasIsParsing(INamedTypeSymbol? type)
+		{
+			return IsImplementingInterface(type, _dependencyObjectParseSymbol);
+		}
+
 		private Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
 		{
 			if (
@@ -419,18 +417,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						if (property.Type.OriginalDefinition is { SpecialType: SpecialType.System_Nullable_T })
 						{
 							//TODO
-							return (property.Type as INamedTypeSymbol)?.TypeArguments.First() as INamedTypeSymbol;
+							return (property.Type as INamedTypeSymbol)?.TypeArguments[0] as INamedTypeSymbol;
 						}
 						else
 						{
-							var finalType = property.Type as INamedTypeSymbol;
-
-							if (finalType == null)
-							{
-								return FindType(property.Type.ToDisplayString());
-							}
-
-							return finalType;
+							return property.Type as INamedTypeSymbol;
 						}
 					}
 					else
@@ -659,9 +650,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
 			return SymbolEqualityComparer.Default.Equals(type, _iCollectionSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, _iCollectionOfTSymbol)
+				|| type.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_ICollection_T
 				|| SymbolEqualityComparer.Default.Equals(type, _iListSymbol)
-				|| SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, _iListOfTSymbol);
+				|| type.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_IList_T;
 		}
 
 		/// <summary>

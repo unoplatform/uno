@@ -195,11 +195,6 @@ namespace Uno.Roslyn
 				}
 			}
 
-			if (symbol?.Kind == SymbolKind.ErrorType)
-			{
-				return null;
-			}
-
 			return symbol;
 		}
 
