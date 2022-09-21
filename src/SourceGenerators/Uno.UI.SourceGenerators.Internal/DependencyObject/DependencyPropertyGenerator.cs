@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Internal.Extensions;
@@ -35,7 +36,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			var attributedSymbolsProvider = context.SyntaxProvider.ForAttributeWithMetadataName(
 				"Uno.UI.Xaml.GeneratedDependencyPropertyAttribute",
-				static (node, _) => node.IsKind(SyntaxKind.FieldDeclaration) || node.IsKind(SyntaxKind.PropertyDeclaration),
+				static (node, _) => node.IsKind(SyntaxKind.PropertyDeclaration) || node is VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax } },
 				static (context, token) =>
 				{
 					var attribute = context.Attributes[0];
