@@ -67,6 +67,7 @@ jobs:
 
     - name: commit
       run: |
+        set -xe
         git add .
         git commit -m "Update WinUI Autoconvert from $env:GITHUB_SHA"
         git push origin generated/$env:GITHUB_REF_NAME/winui-autoconvert -f
