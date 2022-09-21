@@ -11,31 +11,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_DataContext_Set_On_ToolTip_Owner()
 		{
-			var textBlock = new TextBlock();
-			var SUT = new ToolTip();
-			ToolTipService.SetToolTip(textBlock, SUT);
-			var stackPanel = new StackPanel
+			try 
 			{
-				Children =
+				var textBlock = new TextBlock();
+				var SUT = new ToolTip();
+				ToolTipService.SetToolTip(textBlock, SUT);
+				var stackPanel = new StackPanel
 				{
-					textBlock,
-				}
-			};
+					Children =
+					{
+						textBlock,
+					}
+				};
 
-			TestServices.WindowHelper.WindowContent = stackPanel;
-			await TestServices.WindowHelper.WaitForIdle();
+				TestServices.WindowHelper.WindowContent = stackPanel;
+				await TestServices.WindowHelper.WaitForIdle();
 
-			stackPanel.DataContext = "DataContext1";
+				stackPanel.DataContext = "DataContext1";
 
-			Assert.AreEqual("DataContext1", textBlock.DataContext);
-			Assert.AreEqual("DataContext1", SUT.DataContext);
+				Assert.AreEqual("DataContext1", textBlock.DataContext);
+				Assert.AreEqual("DataContext1", SUT.DataContext);
 
-			SUT.IsOpen = true;
+				SUT.IsOpen = true;
 
-			stackPanel.DataContext = "DataContext2";
+				stackPanel.DataContext = "DataContext2";
 
-			Assert.AreEqual("DataContext2", textBlock.DataContext);
-			Assert.AreEqual("DataContext2", SUT.DataContext);
+				Assert.AreEqual("DataContext2", textBlock.DataContext);
+				Assert.AreEqual("DataContext2", SUT.DataContext);
+			}
+			finally
+			{
+				Windows.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups();
+			}
 		}
 	}
 }
