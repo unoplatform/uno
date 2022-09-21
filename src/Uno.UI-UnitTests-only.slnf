@@ -9,6 +9,7 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Tests\\Uno.UI.SourceGenerators.Tests.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.net6.Tests\\Uno.UI.SourceGenerators.net6.Tests.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Tests.Shared\\Uno.UI.SourceGenerators.Tests.Shared.shproj",
+      "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "SourceGenerators\\XamlGenerationTests.Core\\XamlGenerationTests.Core.csproj",
