@@ -67,7 +67,7 @@ jobs:
 
     - name: commit
       run: |
-        set -xe
+        Set-PSDebug -Trace 1
         git add .
         git commit -m "Update WinUI Autoconvert from $env:GITHUB_SHA"
-        git push origin generated/$env:GITHUB_REF_NAME/winui-autoconvert -f
+        git push origin $env:GITHUB_REF_NAME:generated/$env:GITHUB_REF_NAME/winui-autoconvert -f
