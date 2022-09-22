@@ -72,7 +72,7 @@ namespace Uno.Reflection
 
         public Type[] SafeTypes
         {
-            get { return Types ?? new Type[0]; }
+            get { return Types ?? Array.Empty<Type>(); }
         }
 
         public Type[] Types { get; set; }

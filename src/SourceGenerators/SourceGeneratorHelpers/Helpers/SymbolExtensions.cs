@@ -414,7 +414,7 @@ namespace Microsoft.CodeAnalysis
 			{"bool",       typeof(bool).ToString()},
 		};
 
-		// https://github.com/CommunityToolkit/dotnet/blob/b3b60f47971ab8c6e5b4fe258cdd72d3d1039be0/CommunityToolkit.Mvvm.SourceGenerators/Extensions/INamedTypeSymbolExtensions.cs#L16-L37
+		// https://github.com/CommunityToolkit/dotnet/blob/e6257d8c65126f2f977f2dcbce3fe6045086f270/CommunityToolkit.Mvvm.SourceGenerators/Extensions/INamedTypeSymbolExtensions.cs#L16-L44
 		/// <summary>
 		/// Gets a valid filename for a given <see cref="INamedTypeSymbol"/> instance.
 		/// </summary>
@@ -441,7 +441,7 @@ namespace Microsoft.CodeAnalysis
 			// one to the outermost namespace, if any. Additionally, the ` and + symbols need to be replaced
 			// to avoid errors when generating code. This is a known issue with source generators not accepting
 			// those characters at the moment, see: https://github.com/dotnet/roslyn/issues/58476.
-			return BuildFrom(symbol, new StringBuilder(256)).ToString().Replace('`', '-').Replace('+', '.');
+			return BuildFrom(symbol, new StringBuilder(256)).Replace('`', '-').Replace('+', '.').ToString();
 		}
 
 		public static string? GetFullName(this INamespaceOrTypeSymbol? type)

@@ -129,7 +129,7 @@ namespace Uno.Buffers
 			{
 				// No need for events with the empty array.  Our pool is effectively infinite
 				// and we'll never allocate for rents and never store for returns.
-				return s_emptyArray ?? (s_emptyArray = new T[0]);
+				return s_emptyArray ?? (s_emptyArray = Array.Empty<T>());
 			}
 
 			T[] buffer = null;

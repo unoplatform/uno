@@ -167,18 +167,32 @@
   <PropertyGroup>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
+    <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
-    <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
-	<UnoDisableNetAnalyzers Condition="('$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true') and '$(UnoDisableNetAnalyzers)' == ''">true</UnoDisableNetAnalyzers>
+    <UnoDisableNetAnalyzers Condition="('$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true') and '$(UnoDisableNetAnalyzers)' == ''">true</UnoDisableNetAnalyzers>
+    <UnoDisableNetAnalyzers Condition="'$(UnoDisableNetAnalyzers)' == ''">false</UnoDisableNetAnalyzers>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(UnoDisableNetAnalyzers)'==''">
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="All" />
-  </ItemGroup>
+  <Choose>
+    <When Condition="'$(UnoDisableNetAnalyzers)'=='false'">
+      <PropertyGroup>
+        <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
+        <AnalysisLevel>latest</AnalysisLevel>
+        <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="All" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <!-- Even if we didn't install the NuGet package, we get the analyzers from the .NET SDK -->
+        <EnableNetAnalyzers>false</EnableNetAnalyzers>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
 
   <Choose>
     <When Condition="'$(Configuration)' != 'Debug' and '$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false' and '$(IsSampleProject)' != 'true'">

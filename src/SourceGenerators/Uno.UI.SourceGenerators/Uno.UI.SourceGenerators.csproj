@@ -88,7 +88,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
+	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
 
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />

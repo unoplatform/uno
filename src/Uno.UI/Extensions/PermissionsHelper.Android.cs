@@ -49,7 +49,7 @@ namespace Uno.UI.Extensions
 		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
 		public static async Task<bool> CheckPermission(CancellationToken ct, string permissionIdentifier)
-			=> ContextCompat.CheckSelfPermission(BaseActivity.Current, permissionIdentifier) == Permission.Granted;
+			=> ContextCompat.CheckSelfPermission(await BaseActivity.GetCurrent(ct), permissionIdentifier) == Permission.Granted;
 
 		private static async Task<bool> TryGetPermissionCore(CancellationToken ct, string permissionIdentifier)
 		{
@@ -69,7 +69,7 @@ namespace Uno.UI.Extensions
 				}
 			}
 
-			var current = BaseActivity.Current;
+			var current = await BaseActivity.GetCurrent(ct);
 			 
 			try
 			{
@@ -77,7 +77,7 @@ namespace Uno.UI.Extensions
 				{
 					current.RequestPermissionsResultWithResults += handler;
 
-					ActivityCompat.RequestPermissions(BaseActivity.Current, new[] { permissionIdentifier }, code);
+					ActivityCompat.RequestPermissions(current, new[] { permissionIdentifier }, code);
 
 					var result = await tcs.Task;
 

@@ -188,7 +188,7 @@ namespace Uno.Xaml.Schema
 			TypeArguments = empty_type_args;
 		}
 
-		static readonly XamlTypeName [] empty_type_args = new XamlTypeName [0];
+		static readonly XamlTypeName [] empty_type_args = Array.Empty<XamlTypeName>();
 
 		public XamlTypeName (XamlType xamlType)
 			: this ()

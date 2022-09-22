@@ -39,6 +39,11 @@
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<!-- Shows applied capabilities in a new VS project node -->
+		<ProjectCapability Include="DiagnoseCapabilities" />
+	</ItemGroup>
+
 	<Choose>
 
 		<When Condition="'$(TargetFramework)'=='net6.0-ios'">
@@ -79,7 +84,7 @@
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 	</PropertyGroup>
-
+	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
