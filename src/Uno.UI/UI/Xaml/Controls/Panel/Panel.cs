@@ -40,11 +40,9 @@ namespace Windows.UI.Xaml.Controls
 			_borderRenderer = new BorderLayerRenderer(this);
 
 			_children = new UIElementCollection(this);
-
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
 		}
+
+		private void UpdateBorder() => _borderRenderer.Update();
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 			=> OnChildrenChanged();
@@ -183,15 +181,13 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool CanHaveChildren() => true;
 
-
+		
 		private protected void OnBackgroundSizingChangedInnerPanel(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnBackgroundSizingChangedInner(e);
 
-			UpdateBorder();
+			_borderRenderer.UpdateLayer();
 		}
-
-		partial void UpdateBorder();
 
 		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}

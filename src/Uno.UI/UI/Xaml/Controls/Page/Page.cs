@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Controls
 			_borderRenderer = new BorderLayerRenderer(this);
 		}
 
+		private void UpdateBorder() => _borderRenderer.Update();
+
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 
 		protected internal virtual void OnNavigatedTo(NavigationEventArgs e) { }

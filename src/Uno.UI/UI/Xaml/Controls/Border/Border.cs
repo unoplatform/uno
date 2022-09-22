@@ -44,6 +44,8 @@ namespace Windows.UI.Xaml.Controls
 			_borderRenderer = new BorderLayerRenderer(this);
 		}
 
+		private void UpdateBorder() => _borderRenderer.UpdateLayer();
+
 		/// <summary>        
 		/// Support for the C# collection initializer style.
 		/// Allows items to be added like this 

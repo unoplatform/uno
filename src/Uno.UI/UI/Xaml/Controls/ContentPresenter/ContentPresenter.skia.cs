@@ -34,21 +34,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
 
-		private void UpdateBorder()
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
-			}
-		}
-
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			UpdateBorder();

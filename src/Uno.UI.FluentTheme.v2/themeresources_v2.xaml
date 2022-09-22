@@ -22590,10 +22590,6 @@ s                                       <ObjectAnimationUsingKeyFrames Storyboar
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushChecked}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Adjust color for accent overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentSecondaryBrush}" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <contract7Present:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BackgroundSizing">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonCheckedStateBackgroundSizing}" />
                     </contract7Present:ObjectAnimationUsingKeyFrames>

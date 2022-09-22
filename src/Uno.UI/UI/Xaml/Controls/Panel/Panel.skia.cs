@@ -21,20 +21,23 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		partial void UpdateBorder()
+		/// <summary>        
+		/// Support for the C# collection initializer style.
+		/// Allows items to be added like this 
+		/// new Panel 
+		/// {
+		///    new Border()
+		/// }
+		/// </summary>
+		/// <param name="view"></param>
+		public void Add(View view)
 		{
-			// Checking for Window avoids re-creating the layer until it is actually used.
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					null
-				);
-			}
+			Children.Add(view);
+		}
+
+		public new IEnumerator GetEnumerator()
+		{
+			return this.GetChildren().GetEnumerator();
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -62,25 +65,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		/// <summary>        
-		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Panel 
-		/// {
-		///    new Border()
-		/// }
-		/// </summary>
-		/// <param name="view"></param>
-		public void Add(View view)
-		{
-			Children.Add(view);
-		}
-
-		public new IEnumerator GetEnumerator()
-		{
-			return this.GetChildren().GetEnumerator();
-		}
-
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnBackgroundChanged(e);
@@ -89,6 +73,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }
