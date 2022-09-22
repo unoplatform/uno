@@ -22,7 +22,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/install-windows-sdk.yml
+  - template: templates/dotnet-install.yml
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml

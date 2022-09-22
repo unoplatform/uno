@@ -78,6 +78,15 @@ jobs:
       logProjectEvents: false
       createLogFile: false
 
+  # - task: CmdLine@2
+  #   inputs:
+  #     workingDirectory: $(build.artifactstagingdirectory)
+  #     script: |
+  #       dotnet tool install --global Basic.CompilerLog
+  #       # Adjust project name for the project you want to get compiler log for.
+  #       complog create --projectName=Uno.UI build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+  #   condition: always()
+
   - template: templates/copy-package-assets.yml
 
   - task: ArchiveFiles@2
