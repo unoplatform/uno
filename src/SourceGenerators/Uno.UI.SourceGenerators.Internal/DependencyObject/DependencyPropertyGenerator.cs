@@ -14,7 +14,6 @@ using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-	// TODO: We are not respecting IsValidPlatform now.
 	[Generator]
 	public class DependencyPropertyGenerator : IIncrementalGenerator
 	{
@@ -48,12 +47,20 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var fieldOrPropertyData = combined.Left;
 				var dependencyObjectSymbol = combined.Right;
 				var containingType = fieldOrPropertyData.FieldOrPropertySymbol.ContainingType;
+				var isDependencyObject = containingType.AllInterfaces
+				   .Any(t => SymbolEqualityComparer.Default.Equals(t, dependencyObjectSymbol));
+				
 				return containingType.TypeKind == TypeKind.Class &&
-					(containingType.IsStatic || containingType.AllInterfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, dependencyObjectSymbol)));
+					(containingType.IsStatic || isDependencyObject );
 			});
 
-			var groupedByContainingProvider = filteredAttributedSymbolsProvider.Select((x, _) => x.Left).GroupBy(data => data.FieldOrPropertySymbol.ContainingType, SymbolEqualityComparer.Default);
-			var finalProvider = groupedByContainingProvider.Combine(context.CompilationProvider.Select((c, _) => c.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs")));
+			var groupedByContainingProvider = filteredAttributedSymbolsProvider
+			   .Select((x, _) => x.Left)
+			   .GroupBy(data => data.FieldOrPropertySymbol.ContainingType, SymbolEqualityComparer.Default);
+			var finalProvider = groupedByContainingProvider
+			   .Combine(context.CompilationProvider
+			      .Select((c, _) => 
+			         c.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs")));
 			context.RegisterSourceOutput(finalProvider, static (context, item) =>
 			{
 				var fieldsAndProperties = item.Left;
