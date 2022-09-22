@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class CalendarViewBaseItem
+	partial class CalendarViewBaseItem : IBorderInfoProvider
 	{
 		private BorderLayerRenderer _borderRenderer;
 		private Size _lastSize;
@@ -71,53 +72,59 @@ namespace Microsoft.UI.Xaml.Controls
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
 
-			var background = Background;
-			var borderThickness = GetItemBorderThickness();
-			var borderBrush = GetItemBorderBrush(forFocus: false);
-			var cornerRadius = GetItemCornerRadius();
-
-			if (IsClear(background))
-			{
-				if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
-					&& !IsClear(todaySelectedBackground))
-				{
-					background = todaySelectedBackground;
-				}
-				else if (FindSelectedBackgroundBrush() is { } selectedBackground
-					&& !IsClear(selectedBackground))
-				{
-					background = selectedBackground;
-				}
-				else
-				{
-					background = GetItemBackgroundBrush();
-				}
-			}
-
-			if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
-			{
-				// We don't support inner border yet, so even if not optimal we just use it as border.
-				borderBrush = selectedBrush;
-			}
-
-#if __WASM__
-			if (borderBrush is not null)
-			{
-				EffectiveBorderThickness = borderThickness;
-			}
-			else
-			{
-				EffectiveBorderThickness = default;
-			}
-#endif
-
-			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
+			_borderRenderer.Update();
 		}
 
+		
+		Brush IBorderInfoProvider.Background
+		{
+			get
+			{
+				var background = Background;
+				
+				if (IsClear(background))
+				{
+					if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
+						&& !IsClear(todaySelectedBackground))
+					{
+						background = todaySelectedBackground;
+					}
+					else if (FindSelectedBackgroundBrush() is { } selectedBackground
+						&& !IsClear(selectedBackground))
+					{
+						background = selectedBackground;
+					}
+					else
+					{
+						background = GetItemBackgroundBrush();
+					}
+				}
+				return background;
+			}
+		}
 
-#if __WASM__
-		internal Thickness EffectiveBorderThickness { get; set; }
-#endif
+		BackgroundSizing IBorderInfoProvider.BackgroundSizing => BackgroundSizing.InnerBorderEdge;
+
+		Brush IBorderInfoProvider.BorderBrush
+		{
+			get
+			{
+				var borderBrush = GetItemBorderBrush(forFocus: false);
+				if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
+				{
+					// We don't support inner border yet, so even if not optimal we just use it as border.
+					borderBrush = selectedBrush;
+				}
+				return borderBrush;
+			}
+		}
+			
+
+		Thickness IBorderInfoProvider.BorderThickness => GetItemBorderThickness();
+
+		CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
+
+		object IBorderInfoProvider.BackgroundImage => default;
 
 		private bool IsClear(Brush brush)
 			=> brush is null

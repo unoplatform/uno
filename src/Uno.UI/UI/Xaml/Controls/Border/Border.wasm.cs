@@ -35,18 +35,6 @@ namespace Windows.UI.Xaml.Controls
 			AddChild(newValue);
 		}
 
-		private void UpdateBorder()
-		{
-			_borderRenderer.UpdateLayer(
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

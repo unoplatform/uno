@@ -20,20 +20,23 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		partial void UpdateBorder()
+		/// <summary>        
+		/// Support for the C# collection initializer style.
+		/// Allows items to be added like this 
+		/// new Panel 
+		/// {
+		///    new Border()
+		/// }
+		/// </summary>
+		/// <param name="view"></param>
+		public void Add(View view)
 		{
-			// Checking for Window avoids re-creating the layer until it is actually used.
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					null
-				);
-			}
+			Children.Add(view);
+		}
+
+		public new IEnumerator GetEnumerator()
+		{
+			return this.GetChildren().GetEnumerator();
 		}
 
 		protected virtual void OnChildrenChanged()

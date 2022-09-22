@@ -29,32 +29,11 @@ namespace Microsoft.UI.Xaml.Controls
 			AddChild(newValue);
 		}
 
-		private void UpdateBorder()
-		{
-			if (Visual != null)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
-			}
-		}
-
 		internal override void OnArrangeVisual(Rect rect, Rect? clip)
 		{
 			UpdateBorder();
 
 			base.OnArrangeVisual(rect, clip);
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			UpdateBorder();
 		}
 
 		partial void OnBorderBrushChangedPartial()
@@ -80,7 +59,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnBackgroundChanged(args);
-
 			UpdateBorder();
 		}
 	}
