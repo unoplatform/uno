@@ -100,7 +100,7 @@
 	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" />
 	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" />
 	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" />
-	<PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22362.3" />
+	<PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" />
 	<PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.1.1" />
 	<PackageReference Update="Microsoft.VisualStudio.Telemetry" Version="16.3.2" />
 	<PackageReference Update="microsoft.visualstudio.texttemplating.15.0" Version="16.3.29316.127" />
@@ -153,7 +153,6 @@
 	<PackageReference Update="System.Reflection.Emit" Version="4.6.0" />
 	<PackageReference Update="Uno.Extensions.Logging.OSLog" Version="1.4.0" />
 	<PackageReference Update="BenchmarkDotNet" Version="0.11.4-develop" />
-	<PackageReference Update="Uno.RoslynHelpers" Version="1.2.0-dev.10" />
 	<PackageReference Update="Microsoft.Toolkit.Uwp.UI.Lottie" Version="7.0.2" />
 	<PackageReference Update="Uno.Core" Version="2.2.0" />
 	<PackageReference Update="Microsoft.Windows.Compatibility" Version="5.0.2" />
