@@ -25,8 +25,7 @@ partial class SvgImageSource
 
 		if (_svgProvider is not null)
 		{
-			_svgProvider.SourceLoaded += OnSourceLoaded;
-			
+			_svgProvider.SourceLoaded += OnSourceLoaded;			
 		}
 	}
 

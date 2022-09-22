@@ -143,4 +143,6 @@ public partial class SvgImageSource : ImageSource
 		var data = memoryStream.ToArray();
 		return ImageData.FromBytes(data);
 	}
+
+	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 }

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
 using Windows.ApplicationModel.Activation;
+using SKRect = SkiaSharp.SKRect;
 #if __IOS__ || __MACOS__ || __ANDROID__
 using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
@@ -38,11 +39,8 @@ internal partial class SvgCanvas : SkiaCanvas
 
 		SizeChanged += SvgCanvas_SizeChanged;
 
-		_svgProvider.SourceLoaded += SvgProviderSourceOpened;
-		_disposables.Add(() => _svgProvider.SourceLoaded -= SvgProviderSourceOpened);
-		_disposables.Add(_svgImageSource.RegisterDisposablePropertyChangedCallback(SvgImageSource.UriSourceProperty, SourcePropertyChanged));
-		_disposables.Add(_svgImageSource.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelHeightProperty, SourcePropertyChanged));
-		_disposables.Add(_svgImageSource.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelWidthProperty, SourcePropertyChanged));
+		_svgProvider.SourceUpdated += SvgProviderSourceOpened;
+		_disposables.Add(() => _svgProvider.SourceUpdated -= SvgProviderSourceOpened);;
 
 		Loaded += SvgCanvas_Loaded;
 		Unloaded += SvgCanvas_Unloaded;
@@ -100,12 +98,17 @@ internal partial class SvgCanvas : SkiaCanvas
 		var scale = (float)GetScaleFactorForLayoutRounding();
 		e.Surface.Canvas.SetMatrix(SKMatrix.CreateScale(scale, scale));
 		e.Surface.Canvas.Clear(SKColors.Transparent);
-		if (_svgProvider.SkSvg?.Picture is { } picture)
+		if (_svgImageSource.UseRasterized && _svgProvider.SkBitmap is { } bitmap)
+		{
+			var sourceRect = new SKRect(0, 0, bitmap.Width, bitmap.Height);
+			var destRect = new SKRect(0, 0, (float)_lastArrangeSize.Width, (float)_lastArrangeSize.Height);
+			e.Surface.Canvas.DrawBitmap(bitmap, sourceRect, destRect);
+		}
+		else if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
 			var svgScaleMatrix = CreateScaleMatrix();
 			e.Surface.Canvas.DrawPicture(picture, ref svgScaleMatrix);
 		}
-		//TODO: Pre-rasterization support
 	}
 
 	private SKMatrix CreateScaleMatrix()

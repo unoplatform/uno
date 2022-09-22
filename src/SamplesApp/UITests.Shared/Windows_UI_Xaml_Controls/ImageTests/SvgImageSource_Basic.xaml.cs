@@ -153,7 +153,9 @@ public sealed partial class SvgImageSource_Basic : Page
 		}
 		else
 		{
-			//svgImageSource.RasterizePixelWidth = double.PositiveInfinity;
+#if HAS_UNO
+			svgImageSource.RasterizePixelWidth = double.NaN;
+#endif
 		}
 
 		if (double.TryParse(RasterizedHeight, out var rasterizedHeight))
@@ -162,7 +164,9 @@ public sealed partial class SvgImageSource_Basic : Page
 		}
 		else
 		{
-			//svgImageSource.RasterizePixelHeight = double.PositiveInfinity;
+#if HAS_UNO
+			svgImageSource.RasterizePixelHeight = double.NaN;
+#endif
 		}
 	}
 }
