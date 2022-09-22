@@ -38,7 +38,7 @@ public partial class FauxGradientBorderPresenter : ContentControl
 			nameof(RequestedBorderBrush),
 			typeof(Brush),
 			typeof(FauxGradientBorderPresenter),
-			new PropertyMetadata(null, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
+			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
 	public Thickness RequestedBorderThickness
 	{
@@ -51,7 +51,7 @@ public partial class FauxGradientBorderPresenter : ContentControl
 			nameof(RequestedBorderThickness),
 			typeof(Thickness),
 			typeof(FauxGradientBorderPresenter),
-			new PropertyMetadata(default(Thickness), propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
+			new FrameworkPropertyMetadata(default(Thickness), propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
 	public CornerRadius RequestedCornerRadius
 	{
@@ -64,7 +64,7 @@ public partial class FauxGradientBorderPresenter : ContentControl
 			nameof(RequestedCornerRadius),
 			typeof(CornerRadius),
 			typeof(FauxGradientBorderPresenter),
-			new PropertyMetadata(CornerRadius.None, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
+			new FrameworkPropertyMetadata(CornerRadius.None, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
 	private void OnBorderChanged()
 	{

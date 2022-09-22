@@ -54,6 +54,8 @@ namespace Windows.UI.Xaml.Controls
 			InitializePlatform();
 		}
 
+		private void UpdateBorder() => _borderRenderer.Update();
+
 		partial void InitializePlatform();
 
 		/// <summary>
