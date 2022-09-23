@@ -115,7 +115,9 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
 	}
 
+#if !__NETSTD__
 	internal event EventHandler StreamLoaded;
+#endif
 
 	partial void InitPartial();
 

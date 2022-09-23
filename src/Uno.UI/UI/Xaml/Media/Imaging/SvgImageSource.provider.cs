@@ -37,6 +37,6 @@ partial class SvgImageSource
 
 	internal Size SourceSize => _svgProvider?.SourceSize ?? default;
 
-	private void OnSourceLoaded(object sender, EventArgs e) => SourceLoaded?.Invoke(this, EventArgs.Empty);
+	private void OnSourceLoaded(object? sender, EventArgs e) => SourceLoaded?.Invoke(this, EventArgs.Empty);
 }
 #endif
