@@ -24,7 +24,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Xaml
 {
-	[System.AttributeUsage(AttributeTargets.Property|AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
+	[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 	internal sealed class GeneratedDependencyPropertyAttribute : Attribute
 	{
 		public GeneratedDependencyPropertyAttribute()
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml
 						public static partial class C
 						{
 							[GeneratedDependencyProperty(DefaultValue = 21, AttachedBackingFieldOwner = typeof(Owner), Attached = true)]
-							public static readonly DependencyProperty MyValueProperty = CreateMyValueProperty();
+							public static DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
 
 							public static void SetMyValue(DependencyObject instance, int value) => SetMyValueValue(instance, value);
 							public static int GetMyValue(DependencyObject instance) => GetMyValueValue(instance);
@@ -324,7 +324,7 @@ namespace Windows.UI.Xaml
 						public partial class C : DependencyObject
 						{
 							[GeneratedDependencyProperty(DefaultValue = 21, AttachedBackingFieldOwner = typeof(Owner), Attached = true)]
-							public static readonly DependencyProperty MyValueProperty = CreateMyValueProperty();
+							public static DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
 
 							public static void SetMyValue(DependencyObject instance, int value) => SetMyValueValue(instance, value);
 							public static int GetMyValue(DependencyObject instance) => GetMyValueValue(instance);
@@ -446,7 +446,7 @@ namespace Windows.UI.Xaml
 						public partial class C : DependencyObject
 						{
 							[GeneratedDependencyProperty(DefaultValue = 21)]
-							public static readonly DependencyProperty MyValueProperty = CreateMyValueProperty();
+							public static DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
 
 							public int MyValue
 							{
