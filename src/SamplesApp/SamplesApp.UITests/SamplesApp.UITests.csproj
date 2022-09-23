@@ -26,17 +26,10 @@
 		<CompilerVisibleProperty Include="MSBuildProjectDirectory" />
 	</ItemGroup>
 
-	<Target Name="_UnoInjectAnalyzers" BeforeTargets="CoreCompile">
-		<ItemGroup>
-			<Analyzer Include="..\SamplesApp.UITests.Generator\bin\$(Configuration)\*.dll" />
-		</ItemGroup>
-	</Target>
-
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
+			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 	</ItemGroup>
 
