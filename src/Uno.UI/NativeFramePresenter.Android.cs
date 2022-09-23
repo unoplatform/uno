@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media.Animation;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Threading.Tasks;
 using Android.App;
 using Android.Views.Animations;
 using Android.Views;
+using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using System.Threading;
-using Windows.UI.Core;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
 {
@@ -76,7 +77,11 @@ namespace Uno.UI.Controls
 				: Visibility.Collapsed;
 
 			var page = _frame?.CurrentEntry?.Instance;
-			var commandBar = page?.TopAppBar ?? page?.FindFirstChild<CommandBar>();
+			var commandBar = page?.TopAppBar as CommandBar ?? page.FindFirstDescendant<CommandBar>(
+				x => x is not Frame, // prevent looking into the nested page
+				_ => true
+			);
+
 			commandBar?.SetValue(BackButtonVisibilityProperty, backButtonVisibility);
 		}
 
