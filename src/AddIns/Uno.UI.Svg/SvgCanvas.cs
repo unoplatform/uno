@@ -14,12 +14,22 @@ using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
 using Windows.ApplicationModel.Activation;
 using SKRect = SkiaSharp.SKRect;
+#if HAS_UNO_WINUI
+#if __IOS__ || __MACOS__ || __ANDROID__
+using SkiaCanvas = SkiaSharp.Views.Windows.SKSwapChainPanel;
+using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
+#else
+using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
+using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
+#endif
+#else
 #if __IOS__ || __MACOS__ || __ANDROID__
 using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
 #else
 using SkiaCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
+#endif
 #endif
 
 namespace Uno.UI.Svg;
