@@ -20,7 +20,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	{
 		private static SymbolDisplayFormat _fullyQualifiedWithoutGlobal = SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
-		private readonly struct AttachedData
+		private readonly struct AttachedPropertyData
 		{
 			public string? AttachedBackingFieldOwnerFullyQualifiedName { get; }
 			public string? AttachedBackingFieldOwnerNamespace { get; }
@@ -37,15 +37,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public string? GetMethodSymbolNodeContent { get; }
 			public string? SetMethodSymbolNodeContent { get; }
 
-			public AttachedData(ISymbol fieldOrPropertySymbol, AttributeData attribute, string propertyName)
+			public AttachedPropertyData(ISymbol dpSymbol, AttributeData attribute, string propertyName)
 			{
 				var symbol = GetAttributeValue(attribute, "AttachedBackingFieldOwner")?.Value.Value as INamedTypeSymbol;
 				AttachedBackingFieldOwnerFullyQualifiedName = symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				AttachedBackingFieldOwnerName = symbol?.Name;
 				AttachedBackingFieldOwnerNamespace = symbol?.ContainingNamespace.ToString();
 
-				var getMethodSymbol = fieldOrPropertySymbol.ContainingType.GetFirstMethodWithName("Get" + propertyName);
-				var setMethodSymbol = fieldOrPropertySymbol.ContainingType.GetFirstMethodWithName("Set" + propertyName);
+				var getMethodSymbol = dpSymbol.ContainingType.GetFirstMethodWithName("Get" + propertyName);
+				var setMethodSymbol = dpSymbol.ContainingType.GetFirstMethodWithName("Set" + propertyName);
 				GetMethodSymbolNodeContent = SymbolToNodeString(getMethodSymbol);
 				SetMethodSymbolNodeContent = SymbolToNodeString(setMethodSymbol);
 
@@ -56,7 +56,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
-		private readonly struct NonAttachedData
+		private readonly struct PropertyData
 		{
 			public string? PropertySymbolNodeContent { get; }
 
@@ -69,9 +69,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public bool PropertyHasGetter { get; }
 			public bool PropertyHasSetter { get; }
 
-			public NonAttachedData(ISymbol fieldOrPropertySymbol, string propertyName)
+			public PropertyData(ISymbol dpSymbol, string propertyName)
 			{
-				var propertySymbol = fieldOrPropertySymbol.ContainingType.GetPropertiesWithName(propertyName).FirstOrDefault();
+				var propertySymbol = dpSymbol.ContainingType.GetPropertiesWithName(propertyName).FirstOrDefault();
 				PropertySymbolNodeContent = SymbolToNodeString(propertySymbol);
 
 				HasProperty = propertySymbol is not null;
@@ -82,7 +82,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
-		private readonly struct FieldOrPropertyData
+		private readonly struct GenerationCandidateData
 		{
 			#region Attribute arguments
 			public string MetadataOptions { get; }
@@ -90,8 +90,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public bool CoerceCallback { get; }
 			public bool LocalCache { get; }
 
-			[MemberNotNullWhen(true, nameof(AttachedData))]
-			[MemberNotNullWhen(false, nameof(NonAttachedData))]
+			[MemberNotNullWhen(true, nameof(AttachedPropertyData))]
+			[MemberNotNullWhen(false, nameof(PropertyData))]
 			public bool IsAttached { get; }
 
 			public string ChangedCallbackName { get; }
@@ -103,8 +103,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public string ContainingTypeHintName { get; }
 			public bool ContainingTypeIsCandidate { get; }
 
-			public NonAttachedData? NonAttachedData { get; }
-			public AttachedData? AttachedData { get; }
+			public PropertyData? PropertyData { get; }
+			public AttachedPropertyData? AttachedPropertyData { get; }
 
 			public bool ContainingTypeHasGetDefaultValueMethod { get; }
 			public string PropertyName { get; }
@@ -119,10 +119,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public string? MemberSymbolNodeContent { get; }
 
-			public FieldOrPropertyData(ISymbol fieldOrPropertySymbol, AttributeData attribute)
+			public GenerationCandidateData(ISymbol dpSymbol, AttributeData attribute)
 			{
-				PropertyName = fieldOrPropertySymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
-				HasPropertySuffix = fieldOrPropertySymbol.Name.EndsWith("Property", StringComparison.Ordinal);
+				PropertyName = dpSymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
+				HasPropertySuffix = dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal);
 
 				MetadataOptions = GetAttributeValue(attribute, "Options")?.Value.Value?.ToString() ?? "0";
 				DefaultValue = GetAttributeValue(attribute, "DefaultValue");
@@ -131,24 +131,24 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				IsAttached = GetBooleanAttributeValue(attribute, "Attached", false);
 				ChangedCallbackName = GetAttributeValue(attribute, "ChangedCallbackName")?.Value.Value?.ToString() ?? $"On{PropertyName}Changed";
 
-				ContainingNamespace = fieldOrPropertySymbol.ContainingNamespace.ToString();
-				ContainingTypeName = fieldOrPropertySymbol.ContainingType.Name;
+				ContainingNamespace = dpSymbol.ContainingNamespace.ToString();
+				ContainingTypeName = dpSymbol.ContainingType.Name;
 
-				var isDependencyObject = fieldOrPropertySymbol.ContainingType.AllInterfaces
+				var isDependencyObject = dpSymbol.ContainingType.AllInterfaces
 					.Any(t => t.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject);
 
-				ContainingTypeIsCandidate = fieldOrPropertySymbol.ContainingType.TypeKind == TypeKind.Class &&
-					(fieldOrPropertySymbol.ContainingType.IsStatic || isDependencyObject);
+				ContainingTypeIsCandidate = dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
+					(dpSymbol.ContainingType.IsStatic || isDependencyObject);
 				
-				ContainingTypeFullyQualifiedName = fieldOrPropertySymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(fieldOrPropertySymbol.ContainingType);
-				ContainingTypeHasGetDefaultValueMethod = fieldOrPropertySymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
-				HasCoerceCallback = fieldOrPropertySymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName) is not null;
+				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
+				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
+				HasCoerceCallback = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName) is not null;
 
-				MemberSymbolNodeContent = SymbolToNodeString(fieldOrPropertySymbol);
+				MemberSymbolNodeContent = SymbolToNodeString(dpSymbol);
 
 				var changedCallback = GetBooleanAttributeValue(attribute, "ChangedCallback", false);
-				var propertyChangedMethods = fieldOrPropertySymbol.ContainingType.GetMethodsWithName(ChangedCallbackName).ToArray();
+				var propertyChangedMethods = dpSymbol.ContainingType.GetMethodsWithName(ChangedCallbackName).ToArray();
 				if (changedCallback || propertyChangedMethods.Length > 0)
 				{
 					if (propertyChangedMethods.Any(m => IsCallbackWithDPChangedArgs(m)))
@@ -171,11 +171,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (IsAttached)
 				{
-					AttachedData = new AttachedData(fieldOrPropertySymbol, attribute, PropertyName);
+					AttachedPropertyData = new AttachedPropertyData(dpSymbol, attribute, PropertyName);
 				}
 				else
 				{
-					NonAttachedData = new NonAttachedData(fieldOrPropertySymbol, PropertyName);
+					PropertyData = new PropertyData(dpSymbol, PropertyName);
 				}
 			}
 		}
@@ -188,7 +188,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				static (context, token) =>
 				{
 					var attribute = context.Attributes[0];
-					return new FieldOrPropertyData(context.TargetSymbol, attribute);
+					return new GenerationCandidateData(context.TargetSymbol, attribute);
 				});
 
 			var filteredAttributedSymbolsProvider = attributedSymbolsProvider.Where(combined => combined.ContainingTypeIsCandidate);
@@ -199,9 +199,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			context.RegisterSourceOutput(groupedByContainingProvider, GenerateSource);
 		}
 
-		private void GenerateSource(SourceProductionContext context, ImmutableArray<FieldOrPropertyData> fieldsAndProperties)
+		private void GenerateSource(SourceProductionContext context, ImmutableArray<GenerationCandidateData> dpCandidatesData)
 		{
-			if (fieldsAndProperties.Length == 0)
+			if (dpCandidatesData.Length == 0)
 			{
 				return;
 			}
@@ -230,23 +230,23 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			var attachedPropertiesBackingFieldStatements = new Dictionary<(string ContainingNamespace, string Name), List<string>>();
 
-			using (builder.BlockInvariant($"namespace {fieldsAndProperties[0].ContainingNamespace}"))
+			using (builder.BlockInvariant($"namespace {dpCandidatesData[0].ContainingNamespace}"))
 			{
-				using (builder.BlockInvariant($"partial class {fieldsAndProperties[0].ContainingTypeName}"))
+				using (builder.BlockInvariant($"partial class {dpCandidatesData[0].ContainingTypeName}"))
 				{
-					foreach (var fieldOrPropertyData in fieldsAndProperties)
+					foreach (var dpCandidateData in dpCandidatesData)
 					{
-						if (!fieldOrPropertyData.HasPropertySuffix)
+						if (!dpCandidateData.HasPropertySuffix)
 						{
 							builder.AppendLineIndented("#error Property name should end with 'Property' suffix'");
 						}
-						else if (fieldOrPropertyData.IsAttached)
+						else if (dpCandidateData.IsAttached)
 						{
-							GenerateAttachedProperty(builder, fieldOrPropertyData, fieldOrPropertyData.AttachedData.Value, attachedPropertiesBackingFieldStatements);
+							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData.Value, attachedPropertiesBackingFieldStatements);
 						}
 						else
 						{
-							GenerateProperty(builder, fieldOrPropertyData, fieldOrPropertyData.NonAttachedData.Value);
+							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData.Value);
 						}
 					}
 				}
@@ -266,20 +266,20 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			context.AddSource(fieldsAndProperties[0].ContainingTypeHintName, builder.ToString());
+			context.AddSource(dpCandidatesData[0].ContainingTypeHintName, builder.ToString());
 		}
 
-		private static void GenerateAttachedProperty(IndentedStringBuilder builder, FieldOrPropertyData data, AttachedData attachedData, Dictionary<(string ContainingNamespace, string Name), List<string>> backingFieldStatements)
+		private static void GenerateAttachedProperty(IndentedStringBuilder builder, GenerationCandidateData data, AttachedPropertyData attachedPropertyData, Dictionary<(string ContainingNamespace, string Name), List<string>> backingFieldStatements)
 		{
 			var propertyName = data.PropertyName;
 
-			if (!attachedData.HasGetMethodSymbol)
+			if (!attachedPropertyData.HasGetMethodSymbol)
 			{
 				builder.AppendLineIndented($"#error unable to find getter method for {propertyName} on {data.ContainingTypeFullyQualifiedName}");
 				return;
 			}
 
-			if (!attachedData.HasSetMethodSymbol)
+			if (!attachedPropertyData.HasSetMethodSymbol)
 			{
 				builder.AppendLineIndented($"#error unable to find setter method for {propertyName} on {data.ContainingTypeFullyQualifiedName}");
 				return;
@@ -289,16 +289,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			var localCache = data.LocalCache;
 			var changedCallbackName = data.ChangedCallbackName;
 
-			var propertyTypeName = attachedData.PropertyTypeFullyQualifiedName;
+			var propertyTypeName = attachedPropertyData.PropertyTypeFullyQualifiedName;
 			var propertyOwnerTypeName = data.ContainingTypeFullyQualifiedName;
-			var propertyTargetName = attachedData.PropertyTargetFullyQualifiedName;
+			var propertyTargetName = attachedPropertyData.PropertyTargetFullyQualifiedName;
 
-			var backingFieldOwnerTypeName = attachedData.AttachedBackingFieldOwnerFullyQualifiedName;
+			var backingFieldOwnerTypeName = attachedPropertyData.AttachedBackingFieldOwnerFullyQualifiedName;
 			var backingFieldName = $"__{data.ContainingTypeName}_{propertyName}PropertyBackingField";
 
 			ValidateInvocation(builder, data.MemberSymbolNodeContent, data.PropertyName, $"Create{propertyName}Property");
-			ValidateInvocation(builder, attachedData.GetMethodSymbolNodeContent, "Get" + propertyName, $"Get{propertyName}Value");
-			ValidateInvocation(builder, attachedData.SetMethodSymbolNodeContent, "Set" + propertyName, $"Set{propertyName}Value");
+			ValidateInvocation(builder, attachedPropertyData.GetMethodSymbolNodeContent, "Get" + propertyName, $"Get{propertyName}Value");
+			ValidateInvocation(builder, attachedPropertyData.SetMethodSymbolNodeContent, "Set" + propertyName, $"Set{propertyName}Value");
 
 			builder.AppendLineIndented($"#region {propertyName} Dependency Property");
 
@@ -312,7 +312,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						return;
 					}
 
-					var key = (attachedData.AttachedBackingFieldOwnerNamespace!, attachedData.AttachedBackingFieldOwnerName!);
+					var key = (attachedPropertyData.AttachedBackingFieldOwnerNamespace!, attachedPropertyData.AttachedBackingFieldOwnerName!);
 					if (!backingFieldStatements.TryGetValue(key, out var statementList))
 					{
 						statementList = backingFieldStatements[key] = new List<string>();
@@ -390,27 +390,27 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"#endregion");
 		}
 
-		private static void GenerateProperty(IndentedStringBuilder builder, FieldOrPropertyData data, NonAttachedData nonAttachedData)
+		private static void GenerateProperty(IndentedStringBuilder builder, GenerationCandidateData data, PropertyData propertyData)
 		{
 			var propertyName = data.PropertyName;
-			if (!nonAttachedData.HasProperty)
+			if (!propertyData.HasProperty)
 			{
 				builder.AppendLineIndented($"#error unable to find property {propertyName} on {data.ContainingTypeFullyQualifiedName}");
 				return;
 			}
 
-			var propertyTypeName = nonAttachedData.PropertyTypeFullyQualifiedName;
+			var propertyTypeName = propertyData.PropertyTypeFullyQualifiedName;
 			var containingTypeName = data.ContainingTypeFullyQualifiedName;
 			var changedCallbackName = data.ChangedCallbackName;
 			var coerceCallback = data.CoerceCallback;
 			var localCache = data.LocalCache;
 
-			ValidateInvocation(builder, nonAttachedData.PropertySymbolNodeContent, data.PropertyName, $"Get{propertyName}Value", $"Set{propertyName}Value");
+			ValidateInvocation(builder, propertyData.PropertySymbolNodeContent, data.PropertyName, $"Get{propertyName}Value", $"Set{propertyName}Value");
 			ValidateInvocation(builder, data.MemberSymbolNodeContent, data.PropertyName + "Property", $"Create{propertyName}Property");
 
 			builder.AppendLineIndented($"#region {propertyName} Dependency Property");
 
-			if (nonAttachedData.PropertyHasGetter)
+			if (propertyData.PropertyHasGetter)
 			{
 				using (builder.BlockInvariant($"private {propertyTypeName} Get{propertyName}Value()"))
 				{
@@ -431,7 +431,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			if (nonAttachedData.PropertyHasSetter)
+			if (propertyData.PropertyHasSetter)
 			{
 				builder.AppendLineIndented($"private void Set{propertyName}Value({propertyTypeName} value) => SetValue({propertyName}Property, value);");
 			}
@@ -528,7 +528,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private static void BuildPropertyParameters(
 			IndentedStringBuilder builder,
-			FieldOrPropertyData data,
+			GenerationCandidateData data,
 			string propertyTypeName)
 		{
 			var propertyName = data.PropertyName;
