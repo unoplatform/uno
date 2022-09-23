@@ -9,7 +9,7 @@ using Uno.Extensions;
 namespace Uno.Samples.UITest.Generator
 {
 	[Generator]
-	public class CategoryBuckerGenerator : ISourceGenerator
+	public class CategoryBucketGenerator : ISourceGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -24,7 +24,7 @@ namespace Uno.Samples.UITest.Generator
 			GenerateTests(context);
 		}
 
-		private void GenerateTests(GeneratorExecutionContext context)
+		private static void GenerateTests(GeneratorExecutionContext context)
 		{
 			if (context.Compilation.Assembly.Name == "SamplesApp.UITests"
 				&& int.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_BUCKET_COUNT"), out var bucketCount))
@@ -40,23 +40,21 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private void GenerateCategories(
+		private static void GenerateCategories(
 			GeneratorExecutionContext context,
 			IEnumerable<INamedTypeSymbol> symbols,
 			int bucketCount)
 		{
-			var sha1 = SHA1.Create();
+			using var sha1 = SHA1.Create();
 
 			foreach (var type in symbols)
 			{
+				var fullMetadataName = type.GetFullMetadataName();
 				var builder = new IndentedStringBuilder();
-
-				builder.AppendLineIndented("using System;");
-
 				using (builder.BlockInvariant($"namespace {type.ContainingNamespace}"))
 				{
 					// Compute a stable hash of the full metadata name
-					var buffer = Encoding.UTF8.GetBytes(type.GetFullMetadataName());
+					var buffer = Encoding.UTF8.GetBytes(fullMetadataNAme);
 					var hash = sha1.ComputeHash(buffer);
 					var hashPart64 = BitConverter.ToUInt64(hash, 0);
 
@@ -69,14 +67,14 @@ namespace Uno.Samples.UITest.Generator
 					}
 				}
 
-				context.AddSource(Sanitize(type.GetFullMetadataName()), builder.ToString());
+				context.AddSource(Sanitize(fullMetadataName), builder.ToString());
 			}
 		}
 
-		private string Sanitize(string category)
+		private static string Sanitize(string category)
 			=> category
-				.Replace(" ", "_")
-				.Replace("-", "_")
-				.Replace(".", "_");
+				.Replace(' ', '_')
+				.Replace('-', '_')
+				.Replace('.', '_');
 	}
 }
