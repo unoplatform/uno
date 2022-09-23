@@ -81,14 +81,14 @@ namespace Uno.UI.Tests.BinderTests
 	public static partial class Binder_GeneratedAttached_Attached
 	{
 		[GeneratedDependencyProperty(DefaultValue = 21, AttachedBackingFieldOwner = typeof(Binder_GeneratedAttached_Data), Attached = true)]
-		public static readonly DependencyProperty MyValueProperty = CreateMyValueProperty();
+		public readonly DependencyProperty MyValueProperty { get; } = CreateMyValueProperty();
 
 		public static int GetMyValue(DependencyObject instance) => GetMyValueValue(instance);
 
 		public static void SetMyValue(DependencyObject instance, int value) => SetMyValueValue(instance, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 21, AttachedBackingFieldOwner = typeof(Binder_GeneratedAttached_Data), ChangedCallback = true, Attached = true)]
-		public static readonly DependencyProperty MyValue2Property = CreateMyValue2Property();
+		public readonly DependencyProperty MyValue2Property { get; } = CreateMyValue2Property();
 
 		public static int GetMyValue2(DependencyObject instance) => GetMyValue2Value(instance);
 
