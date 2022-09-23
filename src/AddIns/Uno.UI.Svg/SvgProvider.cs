@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Threading.Tasks;
