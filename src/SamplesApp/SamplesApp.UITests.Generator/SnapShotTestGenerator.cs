@@ -46,10 +46,10 @@ namespace Uno.Samples.UITest.Generator
 						sb.Append(loaderException.ToString());
 					}
 
-					throw new Exception(sb.ToString());
+					context.ReportDiagnostic(Diagnostic.Create("SnapshotGenerator001", "Generation", sb.ToString(), DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, "ReflectionTypeLoadException"));
 				}
 
-				throw;
+				context.ReportDiagnostic(Diagnostic.Create("SnapshotGenerator002", "Generation", e.ToString(), DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, "Exception"));
 			}
 		}
 
