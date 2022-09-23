@@ -79,7 +79,7 @@ internal partial class SvgCanvas : SkiaCanvas
 
 	private void SvgCanvas_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args) => Invalidate();
 
-	private void SvgProviderSourceOpened(object sender, EventArgs e)
+	private void SvgProviderSourceOpened(object? sender, EventArgs e)
 	{
 		InvalidateMeasure();
 		InvalidateArrange();
