@@ -46,7 +46,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		Unloaded += SvgCanvas_Unloaded;
 	}
 
-	private void SvgCanvas_Loaded(object sender, RoutedEventArgs e)
+	private void SvgCanvas_Loaded(object? sender, RoutedEventArgs e)
 	{
 		Invalidate();
 

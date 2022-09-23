@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.BitmapImageTests
 		{
 			var SUT = new BitmapImage(new Uri(uri, UriKind.RelativeOrAbsolute));
 
-			Assert.AreEqual(new Uri(expected), SUT.WebUri);
+			Assert.AreEqual(new Uri(expected), SUT.AbsoluteUri);
 		}
 
 		[TestMethod]
@@ -47,7 +47,7 @@ namespace Uno.UI.Tests.BitmapImageTests
 		{
 			var SUT = new BitmapImage(uri);
 
-			Assert.AreEqual(new Uri(expected), SUT.WebUri);
+			Assert.AreEqual(new Uri(expected), SUT.AbsoluteUri);
 		}
 	}
 }
