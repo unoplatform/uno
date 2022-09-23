@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -23,6 +25,8 @@ namespace Uno.Samples.UITest.Generator
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true);
 
+		private static readonly string[] _defaultCategories = new[] { "Default" };
+
 		private const int GroupCount = 5;
 
 		public void Initialize(GeneratorInitializationContext context)
@@ -41,25 +45,21 @@ namespace Uno.Samples.UITest.Generator
 					GenerateTests(context, "Uno.UI.Samples");
 				}
 			}
-			catch(Exception e)
+			catch (ReflectionTypeLoadException typeLoadException)
 			{
-				if (e is ReflectionTypeLoadException)
-				{
-					var typeLoadException = e as ReflectionTypeLoadException;
-					var loaderExceptions = typeLoadException.LoaderExceptions;
+				var loaderExceptions = typeLoadException.LoaderExceptions;
 
-					StringBuilder sb = new();
-					foreach (var loaderException in loaderExceptions)
-					{
-						sb.Append(loaderException.ToString());
-					}
-
-					context.ReportDiagnostic(Diagnostic.Create(_exceptionDiagnosticDescriptor, location: null, sb.ToString()));
-				}
-				else
+				StringBuilder sb = new();
+				foreach (var loaderException in loaderExceptions)
 				{
-					context.ReportDiagnostic(Diagnostic.Create(_exceptionDiagnosticDescriptor, location: null, e.ToString()));
+					sb.Append(loaderException.ToString());
 				}
+
+				context.ReportDiagnostic(Diagnostic.Create(_exceptionDiagnosticDescriptor, location: null, sb.ToString()));
+			}
+			catch (Exception e)
+			{
+				context.ReportDiagnostic(Diagnostic.Create(_exceptionDiagnosticDescriptor, location: null, e.ToString()));
 			}
 		}
 
@@ -67,10 +67,12 @@ namespace Uno.Samples.UITest.Generator
 		{
 			var compilation = GetCompilation(context);
 
-			context.AddSource("debug", $"// inner compilation:{compilation.Assembly.Name}");
-
 			var sampleControlInfoSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
 			var sampleSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
+			if (sampleControlInfoSymbol is null || sampleSymbol is null)
+			{
+				throw new Exception("Cannot find 'SampleControlInfoAttribute' or 'SampleAttribute'.");
+			}
 
 			var query = from typeSymbol in compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
 						where typeSymbol.DeclaredAccessibility == Accessibility.Public
@@ -105,7 +107,7 @@ namespace Uno.Samples.UITest.Generator
 					.SingleOrDefault()
 					?? GetCategories(attr.ConstructorArguments);
 
-				if (categories?.Any(string.IsNullOrWhiteSpace) ?? false)
+				if (categories.Any(string.IsNullOrWhiteSpace))
 				{
 					throw new InvalidOperationException(
 						"Invalid syntax for the SampleAttribute (found an empty category name). "
@@ -114,19 +116,19 @@ namespace Uno.Samples.UITest.Generator
 				}
 
 				return (
-					categories: (categories?.Any() ?? false) ? categories : new[] { "Default" },
+					categories: categories.Length > 0 ? categories : _defaultCategories,
 					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
 					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b,
 					isManual: GetAttributePropertyValue(attr, "IsManualTest") is bool m && m
-					);
+					)!;
 
-				string[] GetCategories(ImmutableArray<TypedConstant> args) => args
+				string?[] GetCategories(ImmutableArray<TypedConstant> args) => args
 					.Select(v =>
 					{
 						switch (v.Kind)
 						{
-							case TypedConstantKind.Primitive: return v.Value.ToString();
-							case TypedConstantKind.Type: return ((ITypeSymbol)v.Value).Name;
+							case TypedConstantKind.Primitive: return v.Value!.ToString();
+							case TypedConstantKind.Type: return ((ITypeSymbol)v.Value!).Name;
 							default: return null;
 						}
 					})
@@ -134,21 +136,14 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private static object GetAttributePropertyValue(AttributeData attr, string name)
+		private static object? GetAttributePropertyValue(AttributeData attr, string name)
 			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
 
-		private static object GetConstructorParameterValue(AttributeData info, string name)
-			=> info.ConstructorArguments.IsDefaultOrEmpty
-				? default
-				: info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
+		private static object? GetConstructorParameterValue(AttributeData info, string name)
+			=> info.ConstructorArguments[GetParameterIndex(info, name)].Value;
 
 		private static int GetParameterIndex(AttributeData info, string name)
-			=> info
-				.AttributeConstructor
-				.Parameters
-				.Select((p, i) => (p, i))
-				.Single(p => p.p.Name == name)
-				.i;
+			=> info.AttributeConstructor!.Parameters.Single(p => p.Name == name).Ordinal;
 
 		private static string AlignName(string v)
 			=> v.Replace('/', '_').Replace(' ', '_').Replace('-', '_').Replace(':', '_');
