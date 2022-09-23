@@ -63,6 +63,7 @@ namespace Uno.Samples.UITest.Generator
 					var testCategoryBucket = (hashPart64 % (uint)bucketCount) + 1;
 
 					builder.AppendLineIndented($"[global::NUnit.Framework.Category(\"testBucket:{testCategoryBucket}\")]");
+					builder.AppendLineIndented("[global::NUnit.Framework.TestFixture]");
 					using (builder.BlockInvariant($"partial class {type.Name}"))
 					{
 
