@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.WebUri}]");
+				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.AbsoluteUri}]");
 			}
 
 			if (_lastMeasuredSize == _zeroSize)

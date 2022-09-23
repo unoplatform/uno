@@ -1,4 +1,5 @@
 ﻿using Windows.UI.Xaml.Automation.Peers;
+using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml.Controls;
 

@@ -70,18 +70,18 @@ partial class SvgImageSource
 				return await ReadFromStreamAsync(fileStream, ct);
 			}
 
-			if (WebUri != null)
+			if (AbsoluteUri != null)
 			{
 				// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
-				if (IsContactUri(WebUri))
+				if (IsContactUri(AbsoluteUri))
 				{
-					var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(WebUri.OriginalString));
+					var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
 					return await ReadFromStreamAsync(stream, ct);
 				}
 
 				if (Downloader is not null)
 				{
-					var filePath = await Download(ct, WebUri);
+					var filePath = await Download(ct, AbsoluteUri);
 
 					if (filePath == null)
 					{

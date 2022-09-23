@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			if (WebUri is {} uri)
+			if (AbsoluteUri is {} uri)
 			{
 				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
 
