@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			return IsSourceReady
 				|| Stream != null
-				|| WebUri != null
+				|| AbsoluteUri != null
 				|| FilePath.HasValueTrimmed()
 				|| _imageData.HasData
 				|| BitmapDrawable != null
@@ -237,19 +237,19 @@ namespace Windows.UI.Xaml.Media
 				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(FilePath));
 			}
 
-			if (WebUri != null)
+			if (AbsoluteUri != null)
 			{
 				if (ImageLoader == null)
 				{
 					// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
-					if (IsContactUri(WebUri))
+					if (IsContactUri(AbsoluteUri))
 					{
-						var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(WebUri.OriginalString));
+						var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
 
 						return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(stream));
 					}
 
-					var filePath = await Download(ct, WebUri);
+					var filePath = await Download(ct, AbsoluteUri);
 
 					if (filePath == null)
 					{
@@ -262,10 +262,10 @@ namespace Windows.UI.Xaml.Media
 				{
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
-						this.Log().DebugFormat("Using ImageLoader to get {0}", WebUri);
+						this.Log().DebugFormat("Using ImageLoader to get {0}", AbsoluteUri);
 					}
 
-					_imageData = ImageData.FromBitmap(await ImageLoader(ct, WebUri.OriginalString, targetImage, targetSize));
+					_imageData = ImageData.FromBitmap(await ImageLoader(ct, AbsoluteUri.OriginalString, targetImage, targetSize));
 
 					if (
 						!ct.IsCancellationRequested
@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Media
 
 		public override string ToString()
 		{
-			var source = Stream ?? WebUri ?? FilePath ?? _imageData.Bitmap ?? (object)BitmapDrawable ?? ResourceString ?? "[No source]";
+			var source = Stream ?? AbsoluteUri ?? FilePath ?? _imageData.Bitmap ?? (object)BitmapDrawable ?? ResourceString ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
 

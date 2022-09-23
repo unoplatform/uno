@@ -23,17 +23,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if (WebUri is { } webUri)
+			if (AbsoluteUri is { } absoluteUri)
 			{
 				image = default;
 
-				var hasFileScheme = webUri.IsAbsoluteUri && webUri.Scheme == "file";
+				var hasFileScheme = absoluteUri.IsAbsoluteUri && absoluteUri.Scheme == "file";
 
 				// Local files are assumed as coming from the remote server
 				var uri = hasFileScheme switch
 				{
-					true => new Uri(webUri.PathAndQuery.TrimStart('/'), UriKind.Relative),
-					_ => webUri
+					true => new Uri(absoluteUri.PathAndQuery.TrimStart('/'), UriKind.Relative),
+					_ => absoluteUri
 				};
 
 				if (uri.IsAbsoluteUri)
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public override string ToString()
 		{
-			if (WebUri is { } uri)
+			if (AbsoluteUri is { } uri)
 			{
 				return $"{GetType().Name}/{uri}";
 			}

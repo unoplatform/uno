@@ -77,7 +77,7 @@ partial class SvgImageSource
 			}
 			else
 			{
-				var localFileUri = await Download(ct, WebUri);
+				var localFileUri = await Download(ct, AbsoluteUri);
 
 				if (localFileUri == null)
 				{
@@ -115,7 +115,7 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 
-		using var url = new NSUrl(WebUri.AbsoluteUri);
+		using var url = new NSUrl(AbsoluteUri.AbsoluteUri);
 #if __IOS__
 		using var request = NSUrlRequest.FromUrl(url);
 		NSUrlSessionDataTask task;
@@ -171,7 +171,7 @@ partial class SvgImageSource
 #else
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
+			this.Log().Debug($"Loading image from [{AbsoluteUri.OriginalString}]");
 		}
 
 #pragma warning disable CS0618

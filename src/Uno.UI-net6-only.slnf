@@ -4,6 +4,7 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.net6.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.net6.csproj",
+      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.net6.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",

@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			return IsSourceReady
 				|| Stream != null
-				|| WebUri != null
+				|| AbsoluteUri != null
 				|| FilePath.HasValueTrimmed()
 				|| _imageData.HasData
 				|| HasBundle;
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Media
 				}
 				else
 				{
-					var localFileUri = await Download(ct, WebUri);
+					var localFileUri = await Download(ct, AbsoluteUri);
 
 					if (localFileUri == null)
 					{
@@ -302,7 +302,7 @@ namespace Windows.UI.Xaml.Media
 				return;
 			}
 
-			using (var url = new NSUrl(WebUri.AbsoluteUri))
+			using (var url = new NSUrl(AbsoluteUri.AbsoluteUri))
 			{
 				using (var request = NSUrlRequest.FromUrl(url))
 				{
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml.Media
 		internal void UnloadImageData()
 		{
 			// If the original source is a UIImage, we can't dispose it because we will
-			// not be able to restore it later (from a WebUri, BundleName, file path, etc.)
+			// not be able to restore it later (from a AbsoluteUri, BundleName, file path, etc.)
 			if (!_isOriginalSourceUIImage)
 			{
 				DisposeImageData();
@@ -419,7 +419,7 @@ namespace Windows.UI.Xaml.Media
 
 		public override string ToString()
 		{
-			var source = Stream ?? WebUri ?? FilePath ?? (object)_imageData ?? BundlePath ?? BundleName ?? "[No source]";
+			var source = Stream ?? AbsoluteUri ?? FilePath ?? (object)_imageData ?? BundlePath ?? BundleName ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
 	}
