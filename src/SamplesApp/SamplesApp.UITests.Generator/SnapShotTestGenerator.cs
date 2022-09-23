@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Uno.Extensions;
 using Uno.Roslyn;
 
@@ -14,11 +15,18 @@ namespace Uno.Samples.UITest.Generator
 	[Generator]
 	public class SnapShotTestGenerator : ISourceGenerator
 	{
+		private static readonly DiagnosticDescriptor _exceptionDiagnosticDescriptor = new(
+			"SnapshotGenerator001",
+			"Exception is thrown from SnapShotTestGenerator",
+			"{0}",
+			"Generation",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true);
+
 		private const int GroupCount = 5;
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			UI.SourceGenerators.DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
@@ -46,10 +54,12 @@ namespace Uno.Samples.UITest.Generator
 						sb.Append(loaderException.ToString());
 					}
 
-					context.ReportDiagnostic(Diagnostic.Create("SnapshotGenerator001", "Generation", sb.ToString(), DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, "ReflectionTypeLoadException"));
+					context.ReportDiagnostic(Diagnostic.Create(_exceptionDiagnosticDescriptor, location: null, sb.ToString()));
 				}
-
-				context.ReportDiagnostic(Diagnostic.Create("SnapshotGenerator002", "Generation", e.ToString(), DiagnosticSeverity.Error, DiagnosticSeverity.Error, true, 0, "Exception"));
+				else
+				{
+					context.ReportDiagnostic(Diagnostic.Create(_exceptionDiagnosticDescriptor, location: null, e.ToString()));
+				}
 			}
 		}
 
@@ -215,45 +225,16 @@ namespace Uno.Samples.UITest.Generator
 
 		private static Compilation GetCompilation(GeneratorExecutionContext context)
 		{
-			// Used to get the reference assemblies
-			var devEnvDir = context.GetMSBuildPropertyValue("MSBuildExtensionsPath");
-
-			if (devEnvDir.StartsWith("*"))
-			{
-				throw new Exception($"The reference assemblies path is not defined");
-			}
-
-			var ws = new AdhocWorkspace();
-
-			var project = ws.CurrentSolution.AddProject("temp", "temp", LanguageNames.CSharp);
-
-			var referenceFiles = new[] {
-				typeof(object).Assembly.CodeBase,
-				typeof(Attribute).Assembly.CodeBase,
-			};
-
-			foreach (var file in referenceFiles.Distinct())
-			{
-				project = project.AddMetadataReference(MetadataReference.CreateFromFile(new Uri(file).LocalPath));
-			}
-
-			project = AddFiles(context, project, "UITests.Shared");
-			project = AddFiles(context, project, "SamplesApp.UnitTests.Shared");
-
-			var compilation = project.GetCompilationAsync().Result;
-
-			return compilation;
+			return context.Compilation.AddSyntaxTrees(GetSyntaxTrees(context, "UITests.Shared").Concat(GetSyntaxTrees(context, "SamplesApp.UnitTests.Shared")));
 		}
 
-		private static Project AddFiles(GeneratorExecutionContext context, Project project, string baseName)
+		private static IEnumerable<SyntaxTree> GetSyntaxTrees(GeneratorExecutionContext context, string baseName)
 		{
 			var sourcePath = Path.Combine(context.GetMSBuildPropertyValue("MSBuildProjectDirectory"), "..", baseName);
 			foreach (var file in Directory.GetFiles(sourcePath, "*.cs", SearchOption.AllDirectories))
 			{
-				project = project.AddDocument(Path.GetFileName(file), File.ReadAllText(file)).Project;
+				yield return SyntaxFactory.ParseSyntaxTree(File.ReadAllText(file), context.ParseOptions);
 			}
-
-			return project;
 		}
 	}
 }
