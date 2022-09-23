@@ -52,8 +52,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetMinWidthValue(value);
 		}
 
-		private static GridLength GetMaxWidthDefaultValue() => GridLengthHelper.OneStar;
-
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
 		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
 
