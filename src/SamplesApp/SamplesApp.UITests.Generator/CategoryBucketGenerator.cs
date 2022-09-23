@@ -54,7 +54,7 @@ namespace Uno.Samples.UITest.Generator
 				using (builder.BlockInvariant($"namespace {type.ContainingNamespace}"))
 				{
 					// Compute a stable hash of the full metadata name
-					var buffer = Encoding.UTF8.GetBytes(fullMetadataNAme);
+					var buffer = Encoding.UTF8.GetBytes(fullMetadataName);
 					var hash = sha1.ComputeHash(buffer);
 					var hashPart64 = BitConverter.ToUInt64(hash, 0);
 
