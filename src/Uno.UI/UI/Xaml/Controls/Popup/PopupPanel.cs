@@ -69,13 +69,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			else
 			{
 				Rect visibleBounds;
-				if (XamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+				if (XamlRoot is not { } xamlRoot || xamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
 				{
 					visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				}
 				else
 				{
-					visibleBounds = XamlRoot.Bounds;
+					visibleBounds = xamlRoot.Bounds;
 				}
 				visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 				visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
@@ -165,14 +165,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
 				Rect visibleBounds;
-				if (XamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+				if (XamlRoot is { } xamlRoot && xamlRoot.VisualTree.ContentRoot.Type != ContentRootType.CoreWindow)
 				{
-					visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					visibleBounds = xamlRoot.Bounds;
 				}
 				else
 				{
-					visibleBounds = XamlRoot.Bounds;
+					visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				}
+
 				visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 				visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
 
