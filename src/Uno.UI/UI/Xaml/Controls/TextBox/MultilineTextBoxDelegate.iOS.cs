@@ -67,6 +67,14 @@ namespace Windows.UI.Xaml.Controls
 						var newLength = bindableTextView.Text.Length + text.Length - range.Length;
 						return newLength <= textBox.MaxLength;
 					}
+
+					if (_textBox.GetTarget() is not TextBox textBox)
+					{
+						return false;
+					}
+
+					// Both IsReadOnly = true and IsTabStop = false can prevent editing
+					return !textBox.IsReadOnly && textBox.IsTabStop;
 				}
 
 				return true;
@@ -79,17 +87,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var bindableTextView = textView as MultilineTextBoxView;
 			return true;
-		}
-
-		public override bool ShouldBeginEditing(UITextView textView)
-		{
-			if (_textBox.GetTarget() is not TextBox textBox)
-			{
-				return false;
-			}
-
-			// Both IsReadOnly = true and IsTabStop = false can prevent editing
-			return !textBox.IsReadOnly && textBox.IsTabStop;
 		}
 	}
 }
