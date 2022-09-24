@@ -20,7 +20,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		private Action _endSession;
 		private object _targetInstance;
 
-		public readonly struct Update
+		public readonly record struct Update
 		{
 			public readonly Guid ModuleId;
 			public readonly ImmutableArray<byte> ILDelta;

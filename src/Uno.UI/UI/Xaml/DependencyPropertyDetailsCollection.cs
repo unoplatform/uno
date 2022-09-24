@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 	/// </remarks>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private static readonly DependencyPropertyDetails?[] Empty = new DependencyPropertyDetails?[0];
+		private static readonly DependencyPropertyDetails?[] Empty = Array.Empty<DependencyPropertyDetails?>();
 
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;

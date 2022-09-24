@@ -34,6 +34,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			var qualifiers = relativePath
 				.Split(Path.DirectorySeparatorChar, '_', '.')
 				.Select(ResourceQualifier.Parse)
+				.Reverse()
 				.Where(p => p != null)
 				.ToArray();
 

@@ -128,7 +128,7 @@
   </Target>
 
   <PropertyGroup>
-	  <MicrosoftNetCompilerVersionOverride>4.4.0-1.final</MicrosoftNetCompilerVersionOverride>
+	  <MicrosoftNetCompilerVersionOverride>4.4.0-2.final</MicrosoftNetCompilerVersionOverride>
   </PropertyGroup>
 
   <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->

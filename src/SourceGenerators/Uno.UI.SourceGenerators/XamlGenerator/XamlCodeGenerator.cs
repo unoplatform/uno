@@ -17,7 +17,7 @@ using Uno.SourceGeneration;
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 #if NETFRAMEWORK
-	[GenerateAfter("Uno.UI.SourceGenerators.DependencyObject." + nameof(DependencyObject.DependencyPropertyGenerator))]
+	[GenerateAfter("Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator")]
 #endif
 	[Generator]
 	public class XamlCodeGenerator : ISourceGenerator

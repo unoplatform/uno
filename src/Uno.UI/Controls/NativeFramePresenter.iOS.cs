@@ -764,7 +764,7 @@ namespace Uno.UI.Controls
 
 			internal CommandBar GetCommandBar()
 			{
-				return Page.TopAppBar as CommandBar ?? Page.FindFirstChild<CommandBar>();
+				return Page.TopAppBar as CommandBar ?? CommandBarHelper.FindTopCommandBar(Page);
 			}
 
 			public override string ToString()

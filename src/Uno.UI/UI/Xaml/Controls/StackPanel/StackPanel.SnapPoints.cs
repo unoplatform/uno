@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
-			return new float[0];
+			return Array.Empty<float>();
 
 		}
 		public float GetRegularSnapPoints(Orientation orientation, Primitives.SnapPointsAlignment alignment, out float offset)

@@ -9,25 +9,20 @@
 		<!-- Required to get roslyn workspaces files to be present -->
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Include="..\..\SourceGenerators\Uno.UI.SourceGenerators\Helpers\DependenciesInitializer.cs" Link="Helper\DependenciesInitializer.cs" />
-	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Uno.RoslynHelpers" Version="1.2.0-dev.10" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 
 			<!--
 			This version needs to be aligned with the CI build override MicrosoftNetCompilerVersionOverride, as long as
 			SnapShotTestGenerator uses an inner Roslyn Workspace to generate the snapshots test.
 			-->
-			<Version>4.0.1</Version>
+			<Version>4.4.0-2.final</Version>
 			
 			<!-- Workspaces need to be included (and without ExcludeAssets) to allow for SnapShotTestGenerator to run properly -->
 			<!--<ExcludeAssets>runtime</ExcludeAssets>-->
 		</PackageReference>
-
-		<PackageReference Include="System.ValueTuple" />
 	</ItemGroup>
+	
+	<Import Project="..\..\SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
 </Project>

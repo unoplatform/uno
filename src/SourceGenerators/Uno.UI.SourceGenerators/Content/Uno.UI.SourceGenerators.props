@@ -53,7 +53,6 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
-		<CompilerVisibleProperty Include="TSBindingsPath" />
 		<CompilerVisibleProperty Include="UseUnoXamlParser" />
 		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
@@ -212,11 +211,6 @@
 		-->
 		<XamlGeneratorAnalyzerSuppressions Include="dotnet-CA1001" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<OutputSourceComments Condition="'$(OutputSourceComments)'=='' And '$(Configuration)'=='Debug'">True</OutputSourceComments>
-		<OutputSourceComments Condition="'$(OutputSourceComments)'==''">False</OutputSourceComments>
-	</PropertyGroup>
 
 	<!--Default UI automation member mappings-->
 	<ItemGroup Condition="@(CustomUiAutomationMemberMapping)==''">
@@ -388,7 +382,6 @@
 			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
 			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 			<AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
-			<AdditionalFiles Include="@(TSBindingAssemblySource)" SourceItemGroup="TSBindingAssemblySource" />
 			<AdditionalFiles Include="@(UnoPage)" SourceItemGroup="Page" />
 			<AdditionalFiles Include="@(UnoApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 
@@ -463,7 +456,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_WPFIssue6792_RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
+	<Target Name="_WPFIssue6792_RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile" Condition="'$(UnoUseWPFIssue6792Workaround)'=='true'">
 		<!-- Work around https://github.com/dotnet/wpf/issues/6792, remove for .NET 6.0.500 or later -->
 
 		<ItemGroup>
