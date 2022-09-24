@@ -115,13 +115,13 @@ namespace UnoSolutionTemplate.Wizard
 
 		private void GenerateProject(Solution2 solution, SolutionFolder platformsFolder, string projectFullName, string templateName)
 		{
-			if(_projectName.Contains(" "))
-			{
-				throw new Exception("The project name should not contain spaces");
-			}
-
 			if (_projectName != null)
 			{
+				if (_projectName.Contains(' '))
+				{
+					throw new Exception("The project name should not contain spaces");
+				}
+
 				var targetPath = Path.Combine(_targetPath, projectFullName);
 
 				// Duplicate the template to add custom parameters

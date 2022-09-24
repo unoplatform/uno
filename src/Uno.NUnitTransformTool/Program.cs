@@ -31,7 +31,7 @@ namespace Uno.ReferenceImplComparer
 			var doc = new XmlDocument();
 			doc.LoadXml(File.ReadAllText(inputFile));
 
-			var failedNodes = doc.SelectNodes("//test-case[@result='Failed']");
+			var failedNodes = doc.SelectNodes("//test-case[@result='Failed']")!;
 
 			var builder = new StringBuilder();
 			foreach(var failedNode in failedNodes.OfType<XmlElement>())

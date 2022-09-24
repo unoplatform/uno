@@ -181,6 +181,7 @@
         <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+        <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" PrivateAssets="All" />
