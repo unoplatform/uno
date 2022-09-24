@@ -2104,10 +2104,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
+				// It looks like FindType always returns null in this code path.
+				// So, we avoid the costly call here.
 				return null;
-				// It looks like FindType never returns non-null in this code path.
-				// findType = FindType(baseTypeString);
-				// findType ??= FindType(baseTypeString + "Extension"); // Support shortened syntax
 			}
 
 			if (findType?.Is(_markupExtensionSymbol) ?? false)
@@ -5172,7 +5171,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			var value = BuildLiteralValue(m, GetPropertyTypeByFullName("Windows.UI.Xaml.Data.Binding", memberName));
+			var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol("Windows.UI.Xaml.Data.Binding", memberName));
 
 			if (memberName == "Path")
 			{
@@ -5716,7 +5715,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineIndented($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
 
 								var targetElementType = GetType(targetElement.Type);
-								var propertyType = SourceFindPropertyByOwnerSymbol(targetElementType, propertyName);
+								var propertyType = FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
 
 								if (valueNode.Objects.None())
 								{

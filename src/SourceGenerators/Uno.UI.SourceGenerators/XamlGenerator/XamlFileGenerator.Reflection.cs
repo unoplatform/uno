@@ -15,6 +15,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<string, INamedTypeSymbol?>? _findType;
 		private Func<XamlType, INamedTypeSymbol?>? _findTypeByXamlType;
 		private Func<string, string, INamedTypeSymbol?>? _findPropertyTypeByFullName;
+		private Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>>? _getEventsForType;
@@ -39,6 +40,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol?>(SourceFindPropertyType).AsLockedMemoized();
 			_findEventType = Funcs.Create<XamlMember, IEventSymbol?>(SourceFindEventType).AsLockedMemoized();
 			_findPropertyTypeByFullName = Funcs.Create<string, string, INamedTypeSymbol?>(SourceFindPropertyTypeByFullName).AsLockedMemoized();
+			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsLockedMemoized();
 			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
 			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
 			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsLockedMemoized();
@@ -240,7 +242,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
-			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
+			return IsType(xamlType, _frameworkElementSymbol);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
@@ -351,9 +353,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return definition;
 		}
 
-		private INamedTypeSymbol GetPropertyTypeByFullName(string ownerType, string propertyName)
+		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName)
 		{
-			var definition = FindPropertyTypeByFullName(ownerType, propertyName);
+			var definition = FindPropertyTypeByOwnerSymbol(ownerType, propertyName);
 
 			if (definition == null)
 			{
@@ -388,7 +390,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var type = FindType(xamlMember.DeclaringType);
 
 			// If not, try to find the closest match using the name only.
-			return SourceFindPropertyByOwnerSymbol(type, xamlMember.Name);
+			return FindPropertyTypeByOwnerSymbol(type, xamlMember.Name);
 		}
 
 		private INamedTypeSymbol? FindPropertyTypeByFullName(string ownerType, string propertyName) => _findPropertyTypeByFullName!(ownerType, propertyName);
@@ -396,10 +398,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private INamedTypeSymbol? SourceFindPropertyTypeByFullName(string ownerType, string propertyName)
 		{
 			var type = _metadataHelper.FindTypeByFullName(ownerType) as INamedTypeSymbol;
-			return SourceFindPropertyByOwnerSymbol(type, propertyName);
+			return FindPropertyTypeByOwnerSymbol(type, propertyName);
 		}
 
-		private INamedTypeSymbol? SourceFindPropertyByOwnerSymbol(INamedTypeSymbol? type, string propertyName)
+		private INamedTypeSymbol? FindPropertyTypeByOwnerSymbol(INamedTypeSymbol? type, string propertyName) => _findPropertyTypeByOwnerSymbol!(type, propertyName);
+
+		private INamedTypeSymbol? SourceFindPropertyTypeByOwnerSymbol(INamedTypeSymbol? type, string propertyName)
 		{
 			if (type != null && !string.IsNullOrEmpty(propertyName))
 			{
