@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 			var textBoxView = textField as SinglelineTextBoxView;
 			if (textBoxView != null)
 			{
-                if(_textBox.GetTarget()?.OnKey(replacementString.FirstOrDefault()) ?? false)
+				if (_textBox.GetTarget()?.OnKey(replacementString.FirstOrDefault()) ?? false)
                 {
                     return false;
                 }
@@ -40,6 +40,14 @@ namespace Windows.UI.Xaml.Controls
 					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
 					return newLength <= _textBox.GetTarget()?.MaxLength;
 				};
+
+				if (_textBox.GetTarget() is not TextBox textBox)
+				{
+					return false;
+				}
+
+				// Both IsReadOnly = true and IsTabStop = false can prevent editing
+				return !textBox.IsReadOnly && textBox.IsTabStop;
 			}
 
 			return true;
@@ -68,17 +76,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return true;
-		}
-
-		public override bool ShouldBeginEditing(UITextField textField)
-		{
-			if (_textBox.GetTarget() is not TextBox textBox)
-			{
-				return false;
-			}
-
-			// Both IsReadOnly = true and IsTabStop = false can prevent editing
-			return !textBox.IsReadOnly && textBox.IsTabStop;
 		}
 
 		/// <summary>
