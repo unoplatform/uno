@@ -5171,7 +5171,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol("Windows.UI.Xaml.Data.Binding", memberName));
+			var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(_dataBindingSymbol, memberName));
 
 			if (memberName == "Path")
 			{
