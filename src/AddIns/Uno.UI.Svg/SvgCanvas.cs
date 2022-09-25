@@ -2,7 +2,6 @@
 using System.IO;
 using ShimSkiaSharp;
 using SkiaSharp;
-using SkiaSharp.Views.UWP;
 using Svg.Skia;
 using Uno.Disposables;
 using Windows.Foundation;
@@ -15,6 +14,7 @@ using SKMatrix = SkiaSharp.SKMatrix;
 using Windows.ApplicationModel.Activation;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
+using SkiaSharp.Views.Windows;
 #if __IOS__ || __MACOS__ || __ANDROID__
 using SkiaCanvas = SkiaSharp.Views.Windows.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
@@ -23,6 +23,7 @@ using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 #endif
 #else
+using SkiaSharp.Views.UWP;
 #if __IOS__ || __MACOS__ || __ANDROID__
 using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
