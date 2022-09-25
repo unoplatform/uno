@@ -115,6 +115,7 @@
       <Name>Uno.UI.SourceGenerators</Name>
       <OutputItemType>Analyzer</OutputItemType>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <UndefineProperties>TargetFramework;RuntimeIdentifier;TargetFrameworks;RuntimeIdentifiers;Platform</UndefineProperties>
     </ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
 		  <Project>{C9824734-5116-425C-B490-C838D44105EC}</Project>
