@@ -118,7 +118,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				var outputPath = Path.Combine(_bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
 
 				var fileExists = File.Exists(outputPath);
-				var output = sb.ToString();
+				var output = sb.ToStringAndFree();
 
 				if (!fileExists || File.ReadAllText(outputPath) != output)
 				{

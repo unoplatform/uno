@@ -64,7 +64,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Provides a string representing the complete builder.
 		/// </summary>
-		string ToString();
+		string ToStringAndFree();
 
 		public void AppendIndented(string text);
 

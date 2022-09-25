@@ -119,7 +119,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_parentDisposable?.Dispose();
 		}
 
-		public override string ToString() => _source.ToString();
+		[Obsolete("Consider using ToStringAndFree instead.", error: true)]
+		public new string ToString() => throw new NotImplementedException();
+
+		[Obsolete("Use ToStringAndFree from the original IIndentedStringBuilder", error: true)]
+		public string ToStringAndFree() => throw new NotImplementedException();
 	}
 
 }

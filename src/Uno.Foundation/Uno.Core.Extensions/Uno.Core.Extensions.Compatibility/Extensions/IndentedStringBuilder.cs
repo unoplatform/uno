@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Uno.Extensions
 {
@@ -25,18 +26,15 @@ namespace Uno.Extensions
 	/// </summary>
 	internal sealed class IndentedStringBuilder : IIndentedStringBuilder
 	{
-		private readonly StringBuilder _stringBuilder;
+		private readonly PooledStringBuilder _pooledStringBuilder;
+		private StringBuilder _stringBuilder;
 
 		public int CurrentLevel { get; private set; }
 
 		public IndentedStringBuilder()
-			: this(new StringBuilder())
 		{
-		}
-
-		public IndentedStringBuilder(StringBuilder stringBuilder)
-		{
-			_stringBuilder = stringBuilder;
+			_pooledStringBuilder = PooledStringBuilder.GetInstance();
+			_stringBuilder = _pooledStringBuilder.Builder;
 		}
 
 		public IDisposable Indent(int count = 1)
@@ -125,10 +123,20 @@ namespace Uno.Extensions
 			}
 		}
 
-		public override string ToString()
+		[Obsolete("Consider using ToStringAndFree instead.", error: true)]
+		public new string ToString()
 		{
 			return _stringBuilder.ToString();
 		}
-	}
 
+		public string ToStringAndFree()
+		{
+			var s = _pooledStringBuilder.ToStringAndFree();
+
+			// In case the builder was incorrectly used after a free, let's
+			// fail with a null reference exception instead of having an undefined behavior.
+			_stringBuilder = null!;
+			return s;
+		}
+	}
 }

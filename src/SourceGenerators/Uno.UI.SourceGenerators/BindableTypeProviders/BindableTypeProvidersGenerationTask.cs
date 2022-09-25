@@ -183,7 +183,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					GenerateProviderTable(q, writer);
 				}
 
-				return writer.ToString();
+				return writer.ToStringAndFree();
 			}
 
 			private bool IsValidProvider(INamedTypeSymbol type)
@@ -491,7 +491,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						writer.AppendLineIndented(@"return bindableType;");
 					}
 
-					writer.Append(postWriter.ToString());
+					writer.Append(postWriter.ToStringAndFree());
 				}
 
 				writer.AppendLine();

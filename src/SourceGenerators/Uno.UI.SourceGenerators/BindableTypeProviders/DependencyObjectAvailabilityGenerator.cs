@@ -207,7 +207,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					}
 				}
 
-				return writer.ToString();
+				return writer.ToStringAndFree();
 			}
 		}
 	}

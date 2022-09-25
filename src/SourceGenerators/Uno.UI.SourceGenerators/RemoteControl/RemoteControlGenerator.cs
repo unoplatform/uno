@@ -51,7 +51,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				BuildSearchPaths(context, sb);
 				BuildServerProcessorsPaths(context, sb);
 
-				context.AddSource("RemoteControl", sb.ToString());
+				context.AddSource("RemoteControl", sb.ToStringAndFree());
 			}
 		}
 

@@ -206,7 +206,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						disposables.Pop().Dispose();
 					}
 
-					return builder.ToString();
+					return builder.ToStringAndFree();
 				}
 
 				static IMethodSymbol? GetNativeCtor(INamedTypeSymbol? type, Func<IMethodSymbol, bool> predicate, bool considerAllBaseTypes)

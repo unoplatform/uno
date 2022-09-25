@@ -65,13 +65,6 @@ namespace A.B
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
 			var disposables = type.AddToIndentedStringBuilder(builder);
-			Assert.AreEqual(@"namespace A.B.C
-{
-	partial class D
-	{
-		partial class E
-		{
-", builder.ToString());
 
 			while (disposables.Count > 0)
 			{
@@ -87,7 +80,7 @@ namespace A.B
 		}
 	}
 }
-", builder.ToString());
+", builder.ToStringAndFree());
 		}
 
 		[TestMethod]
@@ -110,14 +103,6 @@ namespace A.B
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
 			var disposables = type.AddToIndentedStringBuilder(builder, builder => builder.AppendLineIndented("[MyAttribute]"));
-			Assert.AreEqual(@"namespace A.B.C
-{
-	partial class D
-	{
-		[MyAttribute]
-		partial struct E
-		{
-", builder.ToString());
 
 			while (disposables.Count > 0)
 			{
@@ -134,7 +119,7 @@ namespace A.B
 		}
 	}
 }
-", builder.ToString());
+", builder.ToStringAndFree());
 		}
 
 		[TestMethod]
@@ -156,7 +141,7 @@ class C<T1, T2>
 			Assert.AreEqual(@"partial class C<T1, T2>
 {
 }
-", builder.ToString());
+", builder.ToStringAndFree());
 		}
 
 		[TestMethod]
@@ -182,7 +167,7 @@ interface I<in T1, out T2, T3>
 	{
 	}
 }
-", builder.ToString());
+", builder.ToStringAndFree());
 		}
 
 		private static Compilation CreateTestCompilation(string type)
