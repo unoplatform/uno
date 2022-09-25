@@ -33,7 +33,7 @@ jobs:
     displayName: 'Build UI Tests'
     inputs:
       solution: src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-      msbuildArguments: /r /m /p:Configuration=Release /p:MicrosoftNetCompilerVersionOverride=4.0.1 /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: CopyFiles@2
     displayName: 'Publish Wasm UITest binaries'
