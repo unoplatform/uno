@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\SourceGenerators\Uno.UI.SourceGenerators\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
+	  <Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

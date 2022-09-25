@@ -15,16 +15,10 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" ExcludeAssets="runtime" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
+	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
 
 	<ItemGroup>
 	  <Compile Include="..\..\Uno.Foundation.Runtime.WebAssembly\Interop\TSInteropMessageAttribute.wasm.cs" Link="TSBindings\TSInteropMessageAttribute.cs" />
-	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\DesignTimeHelper.cs" Link="Helpers\DesignTimeHelper.cs" />
-	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\GeneratorExecutionContextExtensions.cs" Link="Helpers\GeneratorExecutionContextExtensions.cs" />
-		<Compile Include="..\Uno.UI.SourceGenerators\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
-	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\HashBuilder.cs" Link="Helpers\HashBuilder.cs" />
-	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\PlatformHelper.cs" Link="Helpers\PlatformHelper.cs" />
-	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\SymbolExtensions.cs" Link="Helpers\SymbolExtensions.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\XamlGenerator\XamlConstants.cs" Link="XamlGenerator\XamlConstants.cs" />
 	</ItemGroup>
 

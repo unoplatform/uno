@@ -4,6 +4,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UIKit;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
 {
@@ -119,7 +120,15 @@ namespace Uno.UI.Controls
 		private static CommandBar? FindTopCommandBar(this UIViewController controller)
 		{
 			return (controller.View as Page)?.TopAppBar as CommandBar
-				?? controller.View.FindFirstChild<CommandBar?>();
+				?? FindTopCommandBar(controller.View);
+		}
+
+		internal static CommandBar? FindTopCommandBar(UIView? view)
+		{
+			return view.FindFirstDescendant<CommandBar>(
+				x => x is not Frame, // prevent looking into the nested page
+				_ => true
+			);
 		}
 	}
 }

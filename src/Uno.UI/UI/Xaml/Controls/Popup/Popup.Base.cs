@@ -31,6 +31,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal IDynamicPopupLayouter CustomLayouter { get; set; }
 
+		/// <summary>
+		/// Controls whether the Popup should propagate its own DataContext to its Child.
+		///
+		/// This is particularly useful when the child is a direct dependency of an entered UIElement
+		/// while the popup is not (e.g. ToolTip created through ToolTipService)
+		/// </summary>
+		internal bool PropagatesDataContextToChild { get; set; } = true;
+
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			if (args.Property == AllowFocusOnInteractionProperty ||
@@ -141,7 +149,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
 		{
 			_childHasOwnDataContext = false;
-			if (Child is IDependencyObjectStoreProvider provider)
+			if (PropagatesDataContextToChild && Child is IDependencyObjectStoreProvider provider)
 			{
 				var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
 

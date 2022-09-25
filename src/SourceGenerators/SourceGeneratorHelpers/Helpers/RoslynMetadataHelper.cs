@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Microsoft.CodeAnalysis;
 using System.Linq;
-using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

@@ -240,8 +240,8 @@ dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomme
 # CA1805: Do not initialize unnecessarily
 dotnet_diagnostic.CA1805.severity = error
 
-# CA1819: Properties should not return arrays
-dotnet_diagnostic.CA1819.severity = none
+# CA1815: Override equals and operator equals on value types
+dotnet_diagnostic.CA1815.severity = error
 
 # CA1821: Remove empty Finalizers
 dotnet_diagnostic.CA1821.severity = error
@@ -273,11 +273,11 @@ dotnet_diagnostic.CA1810.severity = none
 # CA1812: Avoid uninstantiated internal classes
 dotnet_diagnostic.CA1812.severity = none
 
-# CA1815: Override equals and operator equals on value types
-dotnet_diagnostic.CA1815.severity = none
-
 # CA1813: Avoid unsealed attributes
 dotnet_diagnostic.CA1813.severity = none
+
+# CA1819: Properties should not return arrays
+dotnet_diagnostic.CA1819.severity = none
 
 # CA1820: Test for empty strings using string length
 dotnet_diagnostic.CA1820.severity = none
@@ -291,6 +291,9 @@ dotnet_diagnostic.CA1823.severity = none
 # CA1835: Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
 dotnet_diagnostic.CA1835.severity = none
 
+# CA1838: Avoid 'StringBuilder' parameters for P/Invokes
+dotnet_diagnostic.CA1838.severity = none
+
 # CA1844: Provide memory-based overrides of async methods when subclassing 'Stream'
 dotnet_diagnostic.CA1844.severity = none
 
@@ -299,6 +302,9 @@ dotnet_diagnostic.CA1846.severity = none
 
 # CA1847: Use char literal for a single character lookup
 dotnet_diagnostic.CA1847.severity = none
+
+# CA1848: Use the LoggerMessage delegates
+dotnet_diagnostic.CA1848.severity = none
 
 # CA1849: Call async methods when in an async method
 dotnet_diagnostic.CA1849.severity = none

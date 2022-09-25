@@ -120,7 +120,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 						using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 						{
-							using (builder.GenerateNestingContainers(typeSymbol))
+							using (GenerateNestingContainers(builder, typeSymbol))
 							{
 								using (builder.BlockInvariant($"partial class {typeSymbol.Name}"))
 								{
@@ -148,7 +148,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							using (builder.BlockInvariant($"namespace {backingFieldType.Key.ContainingNamespace}"))
 							{
-								using (builder.GenerateNestingContainers(backingFieldType.Key))
+								using (GenerateNestingContainers(builder, backingFieldType.Key))
 								{
 									using (builder.BlockInvariant($"partial class {backingFieldType.Key.Name}"))
 									{
@@ -509,6 +509,22 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					builder.AppendLineIndented($"\t\t, options: (global::Windows.UI.Xaml.FrameworkPropertyMetadataOptions){metadataOptions}");
 				}
+			}
+
+			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
+			{
+				var disposables = new List<IDisposable>();
+
+				var currentSymbol = typeSymbol;
+
+				while (currentSymbol?.ContainingType != null)
+				{
+					disposables.Add(builder.BlockInvariant($"partial class {typeSymbol?.ContainingType.Name}"));
+
+					currentSymbol = currentSymbol?.ContainingType;
+				}
+
+				return new DisposableAction(() => disposables.ForEach(d => d.Dispose()));
 			}
 		}
 	}
