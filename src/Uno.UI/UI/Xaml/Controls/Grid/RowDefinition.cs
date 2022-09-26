@@ -51,8 +51,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetMinHeightValue(value);
 		}
 
-		private static GridLength GetMaxHeightDefaultValue() => GridLengthHelper.OneStar;
-
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
 		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
 		public double MaxHeight
