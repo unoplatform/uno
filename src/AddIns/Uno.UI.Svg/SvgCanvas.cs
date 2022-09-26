@@ -15,21 +15,21 @@ using Windows.ApplicationModel.Activation;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
-#if __IOS__ || __MACOS__ || __ANDROID__
-using SkiaCanvas = SkiaSharp.Views.Windows.SKSwapChainPanel;
-using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
-#else
+#if __MACCATALYST__ || !(__IOS__ || __MACOS__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
+#else
+using SkiaCanvas = SkiaSharp.Views.Windows.SKSwapChainPanel;
+using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
 #endif
 #else
 using SkiaSharp.Views.UWP;
-#if __IOS__ || __MACOS__ || __ANDROID__
-using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
-using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
-#else
+#if __MACCATALYST__ || !(__IOS__ || __MACOS__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
+#else
+using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
+using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
 #endif
 #endif
 
