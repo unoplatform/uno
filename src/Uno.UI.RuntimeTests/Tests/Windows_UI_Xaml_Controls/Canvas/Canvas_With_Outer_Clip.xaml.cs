@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public sealed partial class Canvas_With_Outer_Clip : UserControl
@@ -24,15 +22,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			this.InitializeComponent();
 		}
-
-		public Border Get_LocatorBorder1()
-		{
-			return LocatorBorder1;
-		}
-		public Border Get_LocatorBorder2()
-		{
-			return LocatorBorder2;
-		}
-
 	}
 }

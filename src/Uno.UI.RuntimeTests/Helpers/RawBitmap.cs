@@ -15,6 +15,7 @@ using Size = System.Drawing.Size;
 using Point = System.Drawing.Point;
 using Windows.UI;
 using Windows.UI.Xaml;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
@@ -37,6 +38,21 @@ namespace Uno.UI.RuntimeTests.Helpers
 			await raw.Populate();
 
 			return raw;
+		}
+
+		//Use the precedent helper to create the equivalent of an async screenshot from a Framework element
+		//It is in a sense a specialisation of From
+		//TODO see if Framework can be change for UIElement
+		public static async Task<RawBitmap> TakeScreenshot(FrameworkElement renderedElement)
+		{
+			WindowHelper.WindowContent = renderedElement;
+			WindowHelper.WaitForLoaded(renderedElement);
+			var renderer = new RenderTargetBitmap();
+			await WindowHelper.WaitForIdle();
+			await renderer.RenderAsync(renderedElement);
+			var result = await RawBitmap.From(renderer, renderedElement);
+			WindowHelper.WaitForIdle();
+			return result;
 		}
 
 		public Size Size => new(Bitmap.PixelWidth, Bitmap.PixelHeight);
@@ -74,4 +90,6 @@ namespace Uno.UI.RuntimeTests.Helpers
 		internal async Task Populate()
 			=> _pixels ??= (await Bitmap.GetPixelsAsync()).ToArray();
 	}
+
+
 }

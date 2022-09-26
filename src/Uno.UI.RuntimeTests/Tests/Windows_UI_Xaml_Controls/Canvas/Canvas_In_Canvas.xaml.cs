@@ -8,9 +8,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			this.InitializeComponent();
 		}
-		public Border Get_CanvasBorderBlue1()
-		{
-			return CanvasBorderBlue1;
-		}
 	}
 }

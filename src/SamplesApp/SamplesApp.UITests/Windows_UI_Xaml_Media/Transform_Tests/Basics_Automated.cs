@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SamplesApp.UITests._Utils;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 {
@@ -18,6 +19,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 		private IAppRect _sut;
 		private ScreenshotInfo _result;
 
+		// For other platforms than Browser all the tests have been moved in RuntimeTests
+		// in src\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Media\Given_BasicAutomatedTransformation.cs
+		// These UI Test can be deleted once we can test Wasm in RuntimeTests.
+		// This is currently blocked due to lack of support for RenderTargetBitmap on Wasm.
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void When_Rotate()
@@ -54,6 +60,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			Assert(80 + i, 99);
 		}
 
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void When_Translate()
@@ -76,6 +83,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			Assert(99, 15 + i, colored);
 		}
 
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void When_Skew()
@@ -100,6 +108,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			Assert(99, 99, colored);
 		}
 
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void When_Scale()
@@ -126,6 +135,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			Assert(90 + i, 90 + i);
 		}
 
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void When_Composite()
@@ -157,6 +167,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			Assert(88 + i, 99);
 		}
 
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void When_Group()

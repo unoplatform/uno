@@ -20,7 +20,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 		// src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Media/Given_ImageBrushStretch.cs
 		// This UI Test can be deleted once we can test Wasm in RuntimeTests.
 		// This is currently blocked due to lack of support for RenderTargetBitmap on Wasm.
-		[ActivePlatforms(Platform.Browser)] 
+		[ActivePlatforms(Platform.Browser)]
 		public void When_Stretch()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrush_Stretch");

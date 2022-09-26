@@ -21,9 +21,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	{
 		[DataRow(Stretch.Fill)]
 		[DataRow(Stretch.UniformToFill)]
-		#if !__SKIA__ //Stretch.Uniform create a Mosaic in Skia. See https://github.com/unoplatform/uno/issues/10021
+#if !__SKIA__ //Stretch.Uniform create a Mosaic in Skia. See https://github.com/unoplatform/uno/issues/10021
 		[DataRow(Stretch.Uniform)]
-		#endif
+#endif
 		[DataRow(Stretch.None)]
 
 		[TestMethod]
@@ -54,10 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				BorderBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0)),
 				Background = brush,
 			};
-			WindowHelper.WindowContent = SUT;
-			WindowHelper.WaitForLoaded(SUT);
 
-			var renderer = new RenderTargetBitmap();
 			const float BorderOffset = 8;
 			float width = (float)SUT.Width, height = (float)SUT.Height;
 			float centerX = width / 2, centerY = height / 2;
@@ -85,11 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			async Task<RawBitmap> UpdateStretchAndScreenshot(Stretch stretch)
 			{
 				brush.Stretch = stretch;
-
-				await WindowHelper.WaitForIdle();
-				await renderer.RenderAsync(SUT);
-
-				return await RawBitmap.From(renderer, SUT);
+				return await RawBitmap.TakeScreenshot(SUT);
 			}
 		}
 	}
