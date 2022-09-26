@@ -15,7 +15,7 @@
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
 	  </group>
-	  <group targetFramework="MonoAndroid11.0">
+	  <group targetFramework="MonoAndroid13.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
 	  </group>
@@ -56,7 +56,7 @@
 	  </group>
 	</dependencies>
 	<frameworkAssemblies>
-	  <frameworkAssembly assemblyName="Java.Interop" targetFramework="MonoAndroid11.0, MonoAndroid12.0" />
+	  <frameworkAssembly assemblyName="Java.Interop" targetFramework="MonoAndroid13.0, MonoAndroid12.0" />
 	</frameworkAssemblies>
   </metadata>
 
@@ -67,7 +67,7 @@
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\xamarinios10\Uno.UI.MSAL.*" target="lib\xamarinios10" />
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\xamarinmac20\Uno.UI.MSAL.*" target="lib\xamarinmac20" />
-	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\MonoAndroid11.0\Uno.UI.MSAL.*" target="lib\MonoAndroid11.0" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\MonoAndroid13.0\Uno.UI.MSAL.*" target="lib\MonoAndroid13.0" />
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\MonoAndroid12.0\Uno.UI.MSAL.*" target="lib\MonoAndroid12.0" />
 
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\uap10.0.18362\Uno.UI.MSAL.*" target="lib\uap10.0.18362" />

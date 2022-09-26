@@ -17,7 +17,7 @@
 	<dependencies>
 
 	  <!-- Android 11.0 -->
-	  <group targetFramework="MonoAndroid11.0">
+	  <group targetFramework="MonoAndroid13.0">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
@@ -121,7 +121,7 @@
 	  </group>
 
 	  <!-- Android 9.0 -->
-	  <group targetFramework="MonoAndroid11.0">
+	  <group targetFramework="MonoAndroid13.0">
 		<reference file="Uno.UI.RemoteControl.dll" />
 	  </group>
 
@@ -152,8 +152,8 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.dll" target="lib\net7.0" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.pdb" target="lib\net7.0" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid11.0" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid13.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid13.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid13.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid13.0" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid12.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid12.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid12.0" />

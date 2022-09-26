@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid12.0;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
@@ -43,7 +43,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="117.0.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="117.0.0" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />

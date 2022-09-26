@@ -90,7 +90,9 @@ namespace Uno.UI
 			{
 				if (File.Exists(_statsFilePath))
 				{
+#pragma warning disable CS0618 // Type or member is obsolete
 					var appInfo = Android.App.Application.Context.PackageManager.GetApplicationInfo(Android.App.Application.Context.PackageName, 0);
+#pragma warning restore CS0618 // Type or member is obsolete
 					var installedDate = System.IO.File.GetLastWriteTime(appInfo.SourceDir);
 
 					var cacheDate = System.IO.File.GetLastWriteTime(_statsFilePath);
