@@ -20,7 +20,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	{
 		private static SymbolDisplayFormat _fullyQualifiedWithoutGlobal = SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
-		private readonly struct AttachedPropertyData
+		private readonly record struct AttachedPropertyData
 		{
 			public string? AttachedBackingFieldOwnerFullyQualifiedName { get; }
 			public string? AttachedBackingFieldOwnerNamespace { get; }
@@ -56,7 +56,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
-		private readonly struct PropertyData
+		private readonly record struct PropertyData
 		{
 			public string? PropertySymbolNodeContent { get; }
 
@@ -82,7 +82,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
-		private readonly struct GenerationCandidateData
+		private readonly record struct GenerationCandidateData
 		{
 			#region Attribute arguments
 			public string MetadataOptions { get; }
