@@ -16,7 +16,6 @@
 
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
