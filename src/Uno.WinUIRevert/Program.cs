@@ -48,7 +48,7 @@ namespace UnoWinUIRevert
 
 					var targetFile = Path.Combine(basePath, "src", "Uno.UI", "UI", "Input", relativePath);
 
-					Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
+					Directory.CreateDirectory(Path.GetDirectoryName(targetFile)!);
 					File.Copy(file, targetFile, true);
 				}
 			}
@@ -63,7 +63,7 @@ namespace UnoWinUIRevert
 
 					var targetFile = Path.Combine(basePath, "src", "Uno.UI.Dispatching", "Dispatching", relativePath);
 
-					Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
+					Directory.CreateDirectory(Path.GetDirectoryName(targetFile)!);
 					File.Copy(file, targetFile, true);
 				}
 			}
