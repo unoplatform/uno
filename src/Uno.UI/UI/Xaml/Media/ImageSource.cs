@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Media
 			CleanupResource();
 			FilePath = null;
 			AbsoluteUri = null;
-			
+
 			if (uri.IsLocalResource())
 			{
 				InitFromResource(uri);
