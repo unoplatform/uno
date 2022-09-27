@@ -9005,10 +9005,26 @@
 		  <Member fullName="Uno.UI.Toolkit.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.Xaml.net6.Resource" reason="Unused public member, performance improvement" />
 		  <!-- END Android Resources ignore -->
+
+
+
 	  </Types>
 	  <Methods>
 	  	<Member fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryStore..ctor()" reason="Not present in WinUI" />
+		  
+		<!-- BEGIN Android 13 breaking change -->
+		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.add_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
+		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.remove_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
+		<Member fullName="System.Void Uno.UI.BaseActivity.add_PrepareOptionsPanel(System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; value)" reason="Not present in WinUI" />
+		<Member fullName="System.Void Uno.UI.BaseActivity.remove_PrepareOptionsPanel(System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; value)" reason="Not present in WinUI" />
+		<!-- END Android 13 breaking change -->
 	  </Methods>
+	  <Events>
+		<!-- BEGIN Android 13 breaking change -->
+		<Member fullName="Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler Uno.UI.ViewManagement.IBaseActivityEvents::PrepareOptionsPanel" reason="Not present in WinUI" />
+		<Member fullName="System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; Uno.UI.BaseActivity::PrepareOptionsPanel" reason="Not present in WinUI" />
+		<!-- BEGIN Android 13 breaking change -->
+	  </Events>
 	  <Properties>
 	  </Properties>
 	</IgnoreSet>
