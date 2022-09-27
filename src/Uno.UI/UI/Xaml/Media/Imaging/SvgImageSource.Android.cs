@@ -93,9 +93,7 @@ partial class SvgImageSource
 				}
 				else
 				{
-					var client = new HttpClient();
-					var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
-					using var imageStream = await response.Content.ReadAsStreamAsync();
+					using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
 					return await ReadFromStreamAsync(imageStream, ct);
 				}
 			}

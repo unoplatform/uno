@@ -13,6 +13,8 @@ namespace Windows.Services.Store
 {
 	public sealed partial class StoreContext
 	{
+		private static HttpClient _httpClient = null;
+		
 		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
 		{
 			return AsyncOperation.FromTask(async ct =>
@@ -22,8 +24,8 @@ namespace Windows.Services.Store
 					var bundleId = NSBundle.MainBundle.BundleIdentifier;
 					var url = $"http://itunes.apple.com/lookup?bundleId={bundleId}";
 
-					var httpClient = new HttpClient();
-					var json = await httpClient.GetStringAsync(url);
+					_httpClient ??= new HttpClient();
+					var json = await _httpClient.GetStringAsync(url);
 
 					var regex = new Regex("trackId[^0-9]*([0-9]*)");
 					var match = regex.Match(json);

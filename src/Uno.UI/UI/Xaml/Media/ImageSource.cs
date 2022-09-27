@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Media
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private protected static HttpClient _httpClient;
 
 		public static class TraceProvider
 		{
@@ -222,5 +223,12 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		partial void SetImageLoader();
+
+		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
+		{
+			_httpClient ??= new HttpClient();
+			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
+			return await response.Content.ReadAsStreamAsync();
+		}
 	}
 }

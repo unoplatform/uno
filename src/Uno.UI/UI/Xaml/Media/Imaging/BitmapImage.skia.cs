@@ -40,9 +40,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
 						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
-						var client = new HttpClient();
-						var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
-						var imageStream = await response.Content.ReadAsStreamAsync();
+						using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
 
 						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
 					}

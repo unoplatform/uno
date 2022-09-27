@@ -24,9 +24,7 @@ partial class SvgImageSource
 				if (AbsoluteUri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
 					AbsoluteUri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 				{
-					var client = new HttpClient();
-					var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
-					using var imageStream = await response.Content.ReadAsStreamAsync();
+					using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
 					return await ReadFromStreamAsync(imageStream, ct);
 				}
 				else if (AbsoluteUri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
