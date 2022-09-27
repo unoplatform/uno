@@ -23,7 +23,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
-		private static HttpClient? _httpClient = null;
+		private static HttpClient? _httpClient;
 
 		private AnimatedVisualPlayer? _player;
 
