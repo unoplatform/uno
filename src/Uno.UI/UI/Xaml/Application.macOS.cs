@@ -164,6 +164,7 @@ namespace Windows.UI.Xaml
 
 		public void Exit()
 		{
+			CoreApplication.Exiting?.Invoke(null, null);
 			NSApplication.SharedApplication.Terminate(null);
 		}
 

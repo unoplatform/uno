@@ -68,8 +68,8 @@ namespace Windows.ApplicationModel.Core
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.MainView.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static void Exit()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "void CoreApplication.Exit()");
@@ -141,8 +141,8 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> Exiting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

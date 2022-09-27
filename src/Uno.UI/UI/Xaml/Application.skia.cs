@@ -15,6 +15,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
 using System.Globalization;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.UI.Xaml
 {
@@ -73,6 +74,8 @@ namespace Windows.UI.Xaml
 
 		public void Exit()
 		{
+			CoreApplication.Exiting?.Invoke(null, null);
+			
 			if (_applicationExtension != null && _applicationExtension.CanExit)
 			{
 				_applicationExtension.Exit();

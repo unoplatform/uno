@@ -45,6 +45,7 @@ namespace Windows.UI.Xaml
 
 		public void Exit()
 		{
+			CoreApplication.Exiting?.Invoke(null, null);
 			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
 		}
 	}

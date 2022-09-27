@@ -62,6 +62,8 @@ public partial class CoreApplication
 
 	public static CoreApplicationView GetCurrentView() => _currentView;
 
+	public static void Exit() => Application.Current.Exit();
+
 	public static CoreApplicationView MainView => _currentView;
 
 	public static IReadOnlyList<CoreApplicationView> Views => _views ??= new List<CoreApplicationView>() { _currentView };
