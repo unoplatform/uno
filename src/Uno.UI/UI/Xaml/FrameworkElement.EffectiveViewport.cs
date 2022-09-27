@@ -1,4 +1,6 @@
-﻿// #define TRACE_EFFECTIVE_VIEWPORT
+﻿#nullable enable
+
+// #define TRACE_EFFECTIVE_VIEWPORT
 
 #if !(IS_NATIVE_ELEMENT && __IOS__)
 // On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
