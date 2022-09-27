@@ -50,34 +50,29 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool ShouldChangeText(UITextView textView, NSRange range, string text)
 		{
-			var textBox = _textBox.GetTarget();
-			if (textBox != null)
+			if (textView is MultilineTextBoxView bindableTextView)
 			{
-				var bindableTextView = textView as MultilineTextBoxView;
-				if (bindableTextView != null)
+				if (_textBox.GetTarget() is not TextBox textBox)
 				{
-					if (textBox.OnKey(text.FirstOrDefault()))
-					{
-						return false;
-
-					}
-
-					if (textBox.MaxLength > 0)
-					{
-						var newLength = bindableTextView.Text.Length + text.Length - range.Length;
-						return newLength <= textBox.MaxLength;
-					}
-
-					if (_textBox.GetTarget() is not TextBox textBox)
-					{
-						return false;
-					}
-
-					// Both IsReadOnly = true and IsTabStop = false can prevent editing
-					return !textBox.IsReadOnly && textBox.IsTabStop;
+					return false;
 				}
 
-				return true;
+				if (textBox.OnKey(text.FirstOrDefault()))
+				{
+					return false;
+				}
+
+				if (textBox.MaxLength > 0)
+				{
+					// When replacing text from pasting (multiple characters at once)
+					// We should only allow it (return true) when the new text length
+					// is lower or equal to the allowed length (TextBox.MaxLength)
+					var newLength = bindableTextView.Text.Length + text.Length - range.Length;
+					return newLength <= textBox.MaxLength;
+				}
+
+				// Both IsReadOnly = true and IsTabStop = false can prevent editing
+				return !textBox.IsReadOnly && textBox.IsTabStop;
 			}
 
 			return false;

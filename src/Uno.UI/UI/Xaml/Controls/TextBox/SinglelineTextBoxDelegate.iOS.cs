@@ -27,24 +27,26 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool ShouldChangeCharacters(UITextField textField, NSRange range, string replacementString)
 		{
-			var textBoxView = textField as SinglelineTextBoxView;
-			if (textBoxView != null)
+			if (textField is SinglelineTextBoxView textBoxView)
 			{
-				if (_textBox.GetTarget()?.OnKey(replacementString.FirstOrDefault()) ?? false)
-                {
-                    return false;
-                }
-
-                if (_textBox.GetTarget()?.MaxLength > 0)
-				{
-					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
-					return newLength <= _textBox.GetTarget()?.MaxLength;
-				};
-
 				if (_textBox.GetTarget() is not TextBox textBox)
 				{
 					return false;
 				}
+
+				if (textBox.OnKey(replacementString.FirstOrDefault()))
+                {
+                    return false;
+                }
+
+				if (textBox.MaxLength > 0)
+				{
+					// When replacing text from pasting (multiple characters at once)
+					// We should only allow it (return true) when the new text length
+					// is lower or equal to the allowed length (TextBox.MaxLength)
+					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
+					return newLength <= _textBox.GetTarget()?.MaxLength;
+				};
 
 				// Both IsReadOnly = true and IsTabStop = false can prevent editing
 				return !textBox.IsReadOnly && textBox.IsTabStop;
