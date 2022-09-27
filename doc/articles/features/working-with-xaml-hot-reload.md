@@ -79,5 +79,5 @@ If you want to disable Uno's XAML Hot Reload support for some reason, you can do
     - Set the command line arguments to `/rootsuffix Exp`
 1. Run the VSIX with or without the debugger
 1. Create a Uno Cross Platform app using the template
-1. Set the nuget package version for `Uno.UI` and `Uno.UI.RemoteControl` to that set previously in the `crosstargeting_override.props` file
+1. Set the nuget package version for `Uno.UI` (or `Uno.WinUI`) and `Uno.UI.RemoteControl` (or `Uno.WinUI.RemoteControl`) to that set previously in the `crosstargeting_override.props` file
 1. Launch and debug the application you just created

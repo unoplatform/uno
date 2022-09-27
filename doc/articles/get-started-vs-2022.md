@@ -33,7 +33,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.3 or 
 > [!NOTE]
 > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
-[!include[getting-help](use-uno-check-inline.md)]
+[!include[getting-help](use-uno-check-inline-windows.md)]
 
 ## Install the Solution Templates
 
