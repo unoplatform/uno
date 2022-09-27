@@ -4,14 +4,16 @@
 
 using System;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+#if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
 using Windows.UI.Xaml.Automation.Peers;
+#endif
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
