@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Media
 				_owner = owner;
 			}
 
-			public string ToString(string format, IFormatProvider formatProvider)
+			public string ToString(string? format, IFormatProvider? formatProvider)
 			{
 				var sb = new StringBuilder();
 

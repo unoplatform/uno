@@ -50,7 +50,7 @@ namespace Uno.Extensions.Storage.Pickers
                 {
 					var path = NativeMethods.SHGetPathFromIDListLong(pidl);
 					if (!string.IsNullOrEmpty(path))
-						return new StorageFolder(path);
+						return new StorageFolder(path!);
                 }
 				finally
                 {

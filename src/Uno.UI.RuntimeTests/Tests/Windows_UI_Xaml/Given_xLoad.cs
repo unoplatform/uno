@@ -45,20 +45,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sut.IsLoad = true;
 
 			Assert.IsNotNull(sut.LoadBorder);
-			var parent = sut.LoadBorder.Parent as Border;
+			var parent = (Border)sut.LoadBorder.Parent;
 
 			sut.IsLoad = false;
 
-			Assert.IsFalse((parent.Child as ElementStub).Load);
+			Assert.IsFalse(((ElementStub)parent.Child).Load);
 
 			sut.IsLoad = true;
 
 			Assert.IsNotNull(sut.LoadBorder);
-			parent = sut.LoadBorder.Parent as Border;
+			parent = (Border)sut.LoadBorder.Parent;
 
 			sut.IsLoad = false;
 
-			Assert.IsFalse((parent.Child as ElementStub).Load);
+			Assert.IsFalse(((ElementStub)parent.Child).Load);
 		}
 
 		[TestMethod]
