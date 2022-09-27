@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			width = SUT.tbOpacity0_1.ActualWidth;
 			height = SUT.tbOpacity0_1.ActualHeight;
-			await ImageAssert.HasColorAtChild(si, SUT.tbOpacity0_1, (width / 4) * 3, height / 2, "#0xFFE6E6E6");
+			await ImageAssert.HasColorAtChild(si, SUT.tbOpacity0_1, (width / 4) * 3, height / 2, "#FFE6E6E6");
 
 			width = SUT.border0_5.ActualWidth;
 			height = SUT.border0_5.ActualHeight;
