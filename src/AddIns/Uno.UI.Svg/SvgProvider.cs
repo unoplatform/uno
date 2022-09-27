@@ -42,10 +42,18 @@ public partial class SvgProvider : ISvgProvider
 #if __SKIA__
 		_owner.Subscribe(imageData =>
 		{
-			if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
+			if (imageData.Kind == ImageDataKind.Empty)
+			{
+				// Empty image data is ignored.
+				CleanupSvg();
+				SourceUpdated?.Invoke(this, EventArgs.Empty);
+				return;
+			}
+			else if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
 			{
 				throw new InvalidOperationException("SVG image data are not available.");
 			}
+			
 			OnSourceOpened(imageData.ByteArray);
 		});
 #endif
@@ -111,7 +119,7 @@ public partial class SvgProvider : ISvgProvider
 			{
 				this.Log().LogError("Failed to load SVG image.", ex);
 			}
-			CleanupSvg();			
+			CleanupSvg();	
 		}
 	}
 
