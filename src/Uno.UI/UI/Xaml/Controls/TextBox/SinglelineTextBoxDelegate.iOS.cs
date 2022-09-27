@@ -1,9 +1,7 @@
 ﻿using Foundation;
 using Uno.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UIKit;
 using Windows.UI.Core;
 using System.Threading.Tasks;
@@ -12,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxDelegate : UITextFieldDelegate
 	{
-		private WeakReference<TextBox> _textBox;
+		private readonly WeakReference<TextBox> _textBox;
 
 		public SinglelineTextBoxDelegate(WeakReference<TextBox> textbox)
 		{
@@ -34,6 +32,12 @@ namespace Windows.UI.Xaml.Controls
 					return false;
 				}
 
+				// Both IsReadOnly = true and IsTabStop = false can prevent editing
+				if (textBox.IsReadOnly || !textBox.IsTabStop)
+				{
+					return false;
+				}
+
 				if (textBox.OnKey(replacementString.FirstOrDefault()))
                 {
                     return false;
@@ -42,14 +46,11 @@ namespace Windows.UI.Xaml.Controls
 				if (textBox.MaxLength > 0)
 				{
 					// When replacing text from pasting (multiple characters at once)
-					// We should only allow it (return true) when the new text length
+					// we should only allow it (return true) when the new text length
 					// is lower or equal to the allowed length (TextBox.MaxLength)
 					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
-					return newLength <= _textBox.GetTarget()?.MaxLength;
+					return newLength <= textBox.MaxLength;
 				};
-
-				// Both IsReadOnly = true and IsTabStop = false can prevent editing
-				return !textBox.IsReadOnly && textBox.IsTabStop;
 			}
 
 			return true;

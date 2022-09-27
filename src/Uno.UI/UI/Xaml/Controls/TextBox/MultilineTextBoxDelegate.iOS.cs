@@ -1,9 +1,7 @@
 ﻿using Foundation;
 using Uno.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UIKit;
 
 namespace Windows.UI.Xaml.Controls
@@ -57,6 +55,12 @@ namespace Windows.UI.Xaml.Controls
 					return false;
 				}
 
+				// Both IsReadOnly = true and IsTabStop = false can prevent editing
+				if (textBox.IsReadOnly || !textBox.IsTabStop)
+				{
+					return false;
+				}
+
 				if (textBox.OnKey(text.FirstOrDefault()))
 				{
 					return false;
@@ -65,22 +69,18 @@ namespace Windows.UI.Xaml.Controls
 				if (textBox.MaxLength > 0)
 				{
 					// When replacing text from pasting (multiple characters at once)
-					// We should only allow it (return true) when the new text length
+					// we should only allow it (return true) when the new text length
 					// is lower or equal to the allowed length (TextBox.MaxLength)
 					var newLength = bindableTextView.Text.Length + text.Length - range.Length;
 					return newLength <= textBox.MaxLength;
 				}
-
-				// Both IsReadOnly = true and IsTabStop = false can prevent editing
-				return !textBox.IsReadOnly && textBox.IsTabStop;
 			}
 
-			return false;
+			return true;
 		}
 
 		public override bool ShouldEndEditing(UITextView textView)
 		{
-			var bindableTextView = textView as MultilineTextBoxView;
 			return true;
 		}
 	}
