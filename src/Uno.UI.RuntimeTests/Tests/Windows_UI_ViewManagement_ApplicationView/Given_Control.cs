@@ -17,7 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView
 
 #if __SKIA__
 		[TestMethod]
-		public async Task When_StartupTitle_Is_Defined()
+		public void When_StartupTitle_Is_Defined()
 		{
 			Assert.AreEqual(Windows.ApplicationModel.Package.Current.DisplayName, StartupTitle);
 		}

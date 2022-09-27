@@ -8,7 +8,7 @@ namespace Windows.Media.Capture
 {
 	public partial class CameraCaptureUI
 	{
-		private async Task<StorageFile> CaptureFile(CancellationToken arg, CameraCaptureUIMode mode)
+		private Task<StorageFile> CaptureFile(CancellationToken arg, CameraCaptureUIMode mode)
 
 		{
 			return null;

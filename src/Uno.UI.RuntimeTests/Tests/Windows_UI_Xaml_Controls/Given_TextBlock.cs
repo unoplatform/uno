@@ -59,7 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Null_FontFamily()
+		public void When_Null_FontFamily()
 		{
 			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
 			WindowHelper.WindowContent = SUT;

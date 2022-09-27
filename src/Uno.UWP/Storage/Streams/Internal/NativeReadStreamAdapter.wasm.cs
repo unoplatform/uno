@@ -68,7 +68,7 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException("This stream is read-only");
 
-		public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException("This stream is read-only.");
+		public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotSupportedException("This stream is read-only.");
 
 		public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
 		{
@@ -88,7 +88,7 @@ namespace Uno.Storage.Streams.Internal
 			}
 		}
 
-		protected override async void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			WebAssemblyRuntime.InvokeJS($"{JsType}.close('{_streamId}')");
 		}

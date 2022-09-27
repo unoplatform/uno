@@ -7,11 +7,11 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+		public static Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
 			var result = WebAssemblyRuntime.InvokeJS(command);
-			return result == "True";
+			return Task.FromResult(result == "True");
 		}
 	}
 }

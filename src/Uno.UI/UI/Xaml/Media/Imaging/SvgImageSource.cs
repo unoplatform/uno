@@ -56,7 +56,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 		{
-			async Task<SvgImageSourceLoadStatus> SetSourceAsync(
+#if __NETSTD__
+			async
+#endif
+			Task<SvgImageSourceLoadStatus> SetSourceAsync(
 				CancellationToken ct,
 				AsyncOperation<SvgImageSourceLoadStatus> _)
 			{
@@ -85,7 +88,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				}
 #else
 				Stream = streamSource.CloneStream().AsStream();
-				return SvgImageSourceLoadStatus.Success;
+				return Task.FromResult(SvgImageSourceLoadStatus.Success);
 #endif
 			}
 

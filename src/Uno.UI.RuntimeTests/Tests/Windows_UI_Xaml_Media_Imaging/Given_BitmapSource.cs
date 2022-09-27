@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_SetSource_Then_StreamClonedSynchronously()
+		public void When_SetSource_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
 			var stream = new Given_BitmapSource_Stream();
@@ -40,7 +40,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_SetSourceAsync_Then_StreamClonedSynchronously()
+		public void When_SetSourceAsync_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
 			var stream = new Given_BitmapSource_Stream();
@@ -85,7 +85,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_SetSource_Stream_Then_StreamClonedSynchronously()
+		public void When_SetSource_Stream_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
 			var stream = new Given_BitmapSource_Stream();
@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_SetSourceAsync_Stream_Then_StreamClonedSynchronously()
+		public void When_SetSourceAsync_Stream_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
 			var stream = new Given_BitmapSource_Stream();

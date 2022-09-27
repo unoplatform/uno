@@ -81,11 +81,12 @@ namespace Windows.UI.Xaml
 
 		/// <inheritdoc />
 		public IAsyncAction LeaveAsync(CoreDragInfo dragInfo)
-			=> AsyncAction.FromTask(async ct =>
+			=> AsyncAction.FromTask(ct =>
 			{
 				var leaveTasks = _pendingDropTargets.ToArray().Select(RaiseLeave);
 				_pendingDropTargets.Clear();
 				Task.WhenAll(leaveTasks);
+				return Task.CompletedTask;
 
 				async Task RaiseLeave(KeyValuePair<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> target)
 				{

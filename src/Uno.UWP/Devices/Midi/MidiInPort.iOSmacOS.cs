@@ -49,7 +49,7 @@ namespace Windows.Devices.Midi
 			_endpoint = null;
 		}
 
-		private static async Task<MidiInPort> FromIdInternalAsync(DeviceIdentifier identifier)
+		private static Task<MidiInPort> FromIdInternalAsync(DeviceIdentifier identifier)
 		{
 			var provider = new MidiInDeviceClassProvider();
 			var nativeDeviceInfo = provider.GetNativeEndpoint(identifier.Id);
@@ -59,7 +59,7 @@ namespace Windows.Devices.Midi
 					"Given MIDI out device does not exist or is no longer connected");
 			}
 
-			return new MidiInPort(identifier.ToString(), nativeDeviceInfo);						
+			return Task.FromResult(new MidiInPort(identifier.ToString(), nativeDeviceInfo));
 		}
 
 

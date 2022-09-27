@@ -86,10 +86,14 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 
-		private async Task<string> GetAndCreateFilePath(CancellationToken ct)
+		private
+#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+			async
+#endif
+			Task<string> GetAndCreateFilePath(CancellationToken ct)
 		{
 #if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
-			var bitmap = await CreateBitmap();
+			var bitmap = CreateBitmap();
 
 			_log.Warn(bitmap.ToString());
 
@@ -99,12 +103,12 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			FilePathUri = uri;
 			return uri.AbsoluteUri;
 #else
-			return "HAS_UNO-only sample.";
+			return Task.FromResult("HAS_UNO-only sample.");
 #endif
 		}
 
 #if __ANDROID__
-		private async Task<_Bitmap> CreateBitmap()
+		private _Bitmap CreateBitmap()
 		{
 			var size = ImageSize.LogicalToPhysicalPixels();
 			var bitmap = _Bitmap.CreateBitmap((int)size.Width, (int)size.Height, Android.Graphics.Bitmap.Config.Argb8888);
@@ -135,7 +139,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			}
 		}
 #elif __IOS__
-		private Task<_Bitmap> CreateBitmap()
+		private _Bitmap CreateBitmap()
 		{
 			UIGraphics.BeginImageContext(ImageSize);
 			var context = UIGraphics.GetCurrentContext();
@@ -143,7 +147,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 			context.FillEllipseInRect(new CGRect(0, 0, ImageSize.Width, ImageSize.Height));
 			var bitmap = UIGraphics.GetImageFromCurrentImageContext();
 
-			return Task.FromResult(bitmap);
+			return bitmap;
 		}
 		private Task<string> StoreFile(_Bitmap bitmap)
 		{

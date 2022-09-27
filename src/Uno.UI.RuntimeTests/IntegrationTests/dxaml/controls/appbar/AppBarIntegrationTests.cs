@@ -780,7 +780,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
 		[Ignore("Missing VerifyUIElementTreeHelper")]
-		public async Task CanClosedDisplayModesControlLayout()
+		public void CanClosedDisplayModesControlLayout()
 		{
 			//	TestCleanupWrapper cleanup;
 
@@ -1133,7 +1133,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
 		[Ignore("ValidateUIElementTree not implemented")]
-		public async Task ValidateInlineAppBars()
+		public void ValidateInlineAppBars()
 		{
 			//ControlHelper::ValidateUIElementTree(
 			//   wf::Size(400, 600),
@@ -1914,7 +1914,7 @@ namespace Windows.UI.Tests.Enterprise
 		[Ignore]// Not stable between runs; there is a phantom visual that keeps showing up..
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
-		public async Task ValidateOverlayDCompTree()
+		public void ValidateOverlayDCompTree()
 		{
 			//	TestServices::WindowHelper->SetWindowSizeOverride(wf::Size(400, 400));
 			//	WUCRenderingScopeGuard guard(DCompRendering::WUCCompleteSynchronousCompTree, false /*resizeWindow*/);
@@ -1961,7 +1961,8 @@ namespace Windows.UI.Tests.Enterprise
 		[Description("Validates UIElement tree with an overlay-enabled app bar.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("HasAssociatedMasterFile", "True")]
-		public async Task ValidateOverlayUIETree()
+		[Ignore("ValidateUIElementTree not implemented")]
+		public void ValidateOverlayUIETree()
 		{
 			TestCleanupWrapper cleanup;
 

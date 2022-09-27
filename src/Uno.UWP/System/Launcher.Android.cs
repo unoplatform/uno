@@ -13,7 +13,7 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+		public static Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			try
 			{
@@ -26,10 +26,10 @@ namespace Windows.System
 
 				if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 				{
-					return await HandleSpecialUriAsync(uri);
+					return Task.FromResult(HandleSpecialUri(uri));
 				}
 
-				return await LaunchUriActivityAsync(uri);
+				return Task.FromResult(LaunchUriActivityAsync(uri));
 			}
 			catch (Exception exception)
 			{
@@ -38,7 +38,7 @@ namespace Windows.System
 					typeof(Launcher).Log().Error($"Failed to {nameof(LaunchUriAsync)}.", exception);
 				}
 
-				return false;
+				return Task.FromResult(false);
 			}
 		}
 
@@ -76,13 +76,13 @@ namespace Windows.System
 			return Task.FromResult(supportStatus);
 		}
 
-		private static Task<bool> LaunchUriActivityAsync(Uri uri)
+		private static bool LaunchUriActivityAsync(Uri uri)
 		{
 			var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
 			var intent = new Intent(Intent.ActionView, androidUri);
 
 			StartActivity(intent);
-			return Task.FromResult(true);
+			return true;
 		}
 
 		private static void StartActivity(Intent intent) => ((Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);

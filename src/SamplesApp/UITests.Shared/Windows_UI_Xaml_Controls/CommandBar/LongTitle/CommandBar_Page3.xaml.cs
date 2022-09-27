@@ -17,7 +17,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
 		    this.InitializeComponent();
 	    }
 
-	    public async void OnButtonClicked(object sender, RoutedEventArgs e)
+	    public void OnButtonClicked(object sender, RoutedEventArgs e)
 	        => Frame.GoBack();
     }
 }

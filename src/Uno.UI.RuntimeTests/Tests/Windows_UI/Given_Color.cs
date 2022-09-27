@@ -17,12 +17,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 #if HAS_UNO
 		[TestMethod]
 		[DynamicData(nameof(GetData), DynamicDataSourceType.Method)]
-		public async Task When_FromArgb(byte a, byte r, byte g, byte b, uint result)
+		public void When_FromArgb(byte a, byte r, byte g, byte b, uint result)
 			=> Assert.AreEqual(result, Color.FromArgb(a, r, g, b).AsUInt32());
 
 		[TestMethod]
 		[DynamicData(nameof(GetData), DynamicDataSourceType.Method)]
-		public async Task When_GetHashCode(byte a, byte r, byte g, byte b, uint result)
+		public void When_GetHashCode(byte a, byte r, byte g, byte b, uint result)
 			=> Assert.AreEqual(result, (uint)Color.FromArgb(a, r, g, b).GetHashCode());
 
 		public static IEnumerable<object[]> GetData()
@@ -42,12 +42,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 
 		[TestMethod]
 		[DynamicData(nameof(GetCompare), DynamicDataSourceType.Method)]
-		public async Task When_Equals(Color left, Color right, bool result)
+		public void When_Equals(Color left, Color right, bool result)
 			=> Assert.AreEqual(result, left.Equals(right));
 
 		[TestMethod]
 		[DynamicData(nameof(GetCompare), DynamicDataSourceType.Method)]
-		public async Task When_op_Equals(Color left, Color right, bool result)
+		public void When_op_Equals(Color left, Color right, bool result)
 			=> Assert.AreEqual(result, left == right);
 
 		public static IEnumerable<object[]> GetCompare()
@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 		}
 #if __MACOS__ && NET6_0_OR_GREATER
 		[TestMethod]
-		public async Task When_User_Change_macOS_System_Colors()
+		public void When_User_Change_macOS_System_Colors()
 		{
 			var _uiSettings = new Windows.UI.ViewManagement.UISettings();
 

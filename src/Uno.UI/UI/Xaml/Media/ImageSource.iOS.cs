@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml.Media
 					{
 						await CoreDispatcher.Main.RunAsync(
 							CoreDispatcherPriority.Normal,
-							async () =>
+							() =>
 							{
 								_imageData = OpenBundle();
 							}
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Media
 					{
 						await CoreDispatcher.Main.RunAsync(
 							CoreDispatcherPriority.Normal,
-							async () =>
+							() =>
 							{
 								if (SupportsFromBundle)
 								{

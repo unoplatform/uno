@@ -1,6 +1,7 @@
 #if __ANDROID__ || __IOS__ || __WASM__
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Globalization;
 
@@ -33,12 +34,12 @@ namespace Windows.Media.SpeechRecognition
 
 		public IAsyncOperation<SpeechRecognitionCompilationResult> CompileConstraintsAsync()
 		{
-			return AsyncOperation.FromTask(async ct =>
+			return AsyncOperation.FromTask(ct =>
 			{
-				return new SpeechRecognitionCompilationResult()
+				return Task.FromResult(new SpeechRecognitionCompilationResult()
 				{
 					Status = SpeechRecognitionResultStatus.Success
-				};
+				});
 			});
 		}
 

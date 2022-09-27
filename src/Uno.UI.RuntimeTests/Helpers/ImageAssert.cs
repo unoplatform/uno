@@ -41,7 +41,7 @@ public static partial class ImageAssert
 	public static async Task HasColorAtChild(RawBitmap screenshot, UIElement child, double x, double y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 	{
 		var point = child.TransformToVisual(screenshot.RenderedElement).TransformPoint(new Windows.Foundation.Point(x, y));
-		HasColorAtImpl(screenshot, (int)point.X, (int)point.Y, expectedColor, tolerance, line);
+		await HasColorAtImpl(screenshot, (int)point.X, (int)point.Y, expectedColor, tolerance, line);
 	}
 
 	/// <summary>

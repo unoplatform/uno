@@ -4,6 +4,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Windows.Graphics.Imaging
 {
@@ -32,13 +33,13 @@ namespace Windows.Graphics.Imaging
 
 		public static IAsyncOperation<BitmapEncoder> CreateAsync(Guid encoderId
 			, Storage.Streams.IRandomAccessStream stream) =>
-			AsyncOperation<BitmapEncoder>.FromTask(async (ct, _) =>
+			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
 			{
 				if(!_encoderMap.TryGetValue(encoderId,out var imageFormat))
 				{
 					throw new NotImplementedException($"Encoder {encoderId} in not implemented.", new ArgumentException(nameof(encoderId)));
 				}
-				return new BitmapEncoder(imageFormat, stream);
+				return Task.FromResult(new BitmapEncoder(imageFormat, stream));
 			});
 
 		public void SetSoftwareBitmap(SoftwareBitmap bitmap)
@@ -48,10 +49,11 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public IAsyncAction FlushAsync() =>
-			AsyncAction.FromTask(async ct =>
+			AsyncAction.FromTask(ct =>
 				{
 					using var data = _softwareBitmap?.Bitmap?.Encode(_imageFormat, 100);
 					data?.SaveTo(_stream.AsStream());
+					return Task.CompletedTask;
 				});
 
 		public void SetPixelData(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)

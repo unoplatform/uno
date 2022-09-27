@@ -119,7 +119,7 @@ namespace SampleControl.Presentation
 		/// <param name="ct"></param>
 		/// <param name="section">The page to go to.</param>
 		/// <returns></returns>
-		private async Task ShowNewSection(CancellationToken ct, Section section)
+		private void ShowNewSection(CancellationToken ct, Section section)
 		{
 			Console.WriteLine($"Section changed: {section}");
 
@@ -132,7 +132,7 @@ namespace SampleControl.Presentation
 				case Section.Favorites:
 				case Section.Search:
 					_previousSections.Push(_lastSection);
-					await ShowSelectedList(ct, section);
+					ShowSelectedList(ct, section);
 
 					return; // Return after a Tab is shown
 
@@ -151,12 +151,12 @@ namespace SampleControl.Presentation
 		/// </summary>
 		/// <param name="ct"></param>
 		/// <returns></returns>
-		private async Task ShowPreviousSection(CancellationToken ct)
+		private void ShowPreviousSection(CancellationToken ct)
 		{
 			if (_previousSections.Count == 0)
 			{
 				_lastSection = Section.Library;
-				await ShowSelectedList(ct, Section.Library);
+				ShowSelectedList(ct, Section.Library);
 				return;
 			}
 
@@ -169,7 +169,7 @@ namespace SampleControl.Presentation
 				case Section.Recents:
 				case Section.Favorites:
 				case Section.Search:
-					await ShowSelectedList(ct, priorPage);
+					ShowSelectedList(ct, priorPage);
 					break;
 
 				default:
@@ -177,7 +177,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task ShowSelectedList(CancellationToken ct, Section section)
+		private void ShowSelectedList(CancellationToken ct, Section section)
 		{
 			CategoryVisibility = section == Section.Library;
 			CategoriesSelected = section == Section.Library || section == Section.Samples;
@@ -194,7 +194,7 @@ namespace SampleControl.Presentation
 		{
 			await Window.Current.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				async () =>
+				() =>
 				{
 					var currentContent = ContentPhone as Control;
 
@@ -356,7 +356,7 @@ namespace SampleControl.Presentation
 								_log.Debug($"Generating {folderName}\\{fileName}");
 							}
 
-							await ShowNewSection(ct, Section.SamplesContent);
+							ShowNewSection(ct, Section.SamplesContent);
 
 							SelectedLibrarySample = sample.Sample;
 
@@ -608,9 +608,9 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task<SampleChooserCategory> GetLatestCategory(CancellationToken ct)
+		private SampleChooserCategory GetLatestCategory(CancellationToken ct)
 		{
-			var latestSelected = await Get(SampleChooserLatestCategoryConstant, () => (string)null);
+			var latestSelected = Get(SampleChooserLatestCategoryConstant, () => (string)null);
 			return _categories.FirstOrDefault(c => c.Category == latestSelected) ??
 				_categories.FirstOrDefault();
 		}
@@ -883,11 +883,11 @@ description: {sample.Description}";
 			var recents = await GetRecentSamples(ct);
 
 			// Get the selected category, else if null find it using the SampleContent passed in
-			var selectedCategory = SelectedCategory ?? await GetCategory(newContent);
+			var selectedCategory = SelectedCategory ?? GetCategory(newContent);
 
 			if (selectedCategory != null)
 			{
-				await Set(SampleChooserLatestCategoryConstant, selectedCategory.Category);
+				Set(SampleChooserLatestCategoryConstant, selectedCategory.Category);
 			}
 
 			CurrentSelectedSample = newContent;
@@ -912,7 +912,7 @@ description: {sample.Description}";
 			return container;
 		}
 
-		private async Task<SampleChooserCategory> GetCategory(SampleChooserContent content)
+		private SampleChooserCategory GetCategory(SampleChooserContent content)
 		{
 			return _categories.FirstOrDefault(cat =>
 						cat.SamplesContent.Any(
@@ -938,7 +938,7 @@ description: {sample.Description}";
 			return string.Join(";", q.Distinct());
 		}
 
-		public async Task SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
+		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
 		{
 			var category = _categories.FirstOrDefault(
 				c => c.Category != null &&
@@ -957,7 +957,7 @@ description: {sample.Description}";
 				return;
 			}
 
-			await ShowNewSection(token, Section.SamplesContent);
+			ShowNewSection(token, Section.SamplesContent);
 
 			SelectedLibrarySample = sample;
 		}
@@ -979,7 +979,7 @@ description: {sample.Description}";
 				{
 					IsSplitVisible = false;
 
-					await ShowNewSection(ct, Section.SamplesContent);
+					ShowNewSection(ct, Section.SamplesContent);
 
 					SelectedLibrarySample = sample;
 
@@ -997,7 +997,7 @@ description: {sample.Description}";
 			}
 		}
 
-		private async Task Set<T>(string key, T value)
+		private void Set<T>(string key, T value)
 		{
 #if !UNO_REFERENCE_API
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
@@ -1005,7 +1005,7 @@ description: {sample.Description}";
 #endif
 		}
 
-		private async Task<T> Get<T>(string key, Func<T> d = null)
+		private T Get<T>(string key, Func<T> d = null)
 		{
 #if !UNO_REFERENCE_API
 			var json = (string)ApplicationData.Current.LocalSettings.Values[key];
@@ -1015,7 +1015,11 @@ description: {sample.Description}";
 #endif
 		}
 
-		private async Task SetFile<T>(string key, T value)
+		private
+#if !UNO_REFERENCE_API
+			async
+#endif
+			Task SetFile<T>(string key, T value)
 		{
 #if !UNO_REFERENCE_API
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
@@ -1039,10 +1043,16 @@ description: {sample.Description}";
 					_log.Error(e.Message);
 				}
 			}
+#else
+			return Task.CompletedTask;
 #endif
 		}
 
-		private async Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
+		private
+#if !UNO_REFERENCE_API
+			async
+#endif
+			Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
 		{
 #if !UNO_REFERENCE_API
 			string json = null;
@@ -1076,8 +1086,12 @@ description: {sample.Description}";
 					_log.Error($"Could not deserialize Sample chooser file {key}.", ex);
 				}
 			}
-#endif
+
 			return defaultValue != null ? defaultValue() : default(T);
+#else
+			return Task.FromResult(defaultValue != null ? defaultValue() : default(T));
+#endif
+
 		}
 
 
@@ -1091,7 +1105,11 @@ description: {sample.Description}";
 			}
 		}
 
-		private async Task GenerateBitmap(CancellationToken ct
+		private
+#if !__WASM__
+			async
+#endif
+			Task GenerateBitmap(CancellationToken ct
 			, Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
 			, StorageFile file
 			, FrameworkElement content

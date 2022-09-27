@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateRecycling()
 		{
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var elementFactory = new RecyclingElementFactory()
 				{
@@ -381,7 +381,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		public async Task ValidateNoSizeWhenEmptyDataTemplate()
 		{
 			ItemsRepeater repeater = null;
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var elementFactory = new RecyclingElementFactory();
 				elementFactory.RecyclePool = new RecyclePool();
@@ -459,7 +459,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateReyclingElementFactoryWithNoTemplate()
 		{
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var elementFactory = new RecyclingElementFactoryDerived()
 				{
@@ -521,7 +521,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
 		{
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ValidateTemplateSwitchingRefreshesElements(new StackLayout());
 			});
@@ -530,7 +530,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateTemplateSwitchingRefreshesElementsNonVirtualizingLayout()
 		{
-			await RunOnUIThread.ExecuteAsync(async () =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
 			});

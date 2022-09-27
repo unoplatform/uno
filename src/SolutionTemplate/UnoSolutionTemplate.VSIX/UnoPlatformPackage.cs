@@ -114,9 +114,10 @@ namespace UnoSolutionTemplate
 			}
 		}
 
-		private async Task OnBeforeClosingAsync()
+		private Task OnBeforeClosingAsync()
 		{
 			_currentCts?.Cancel();
+			return Task.CompletedTask;
 		}
 
 		void InvokeOnMainThread(Func<Task> func)
