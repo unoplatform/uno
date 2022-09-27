@@ -7,6 +7,8 @@ using Microsoft.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Diagnostics;
+using System.Collections.Concurrent;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -182,11 +184,6 @@ namespace Uno.Roslyn
 				{
 					return additionalType;
 				}
-			}
-
-			if (symbol?.Kind == SymbolKind.ErrorType)
-			{
-				return null;
 			}
 
 			return symbol;
