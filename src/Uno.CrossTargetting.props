@@ -16,8 +16,6 @@
 	<Copyright>nventive</Copyright>
 	<Author>nventive</Author>
 
-	<WarningsAsErrors>all</WarningsAsErrors>
-
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
