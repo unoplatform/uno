@@ -149,7 +149,7 @@
 	  "description": "If specified, skips the automatic restore of the project on create.",
 	  "defaultValue": "false"
 	},
-	"UseAndroid": {
+	"android": {
 	  "type": "generated",
 	  "generator": "constant",
 	  "dataType": "bool",
@@ -157,7 +157,7 @@
 		"value": "True"
 	  }
 	},
-	"UseIOS": {
+	"ios": {
 	  "type": "generated",
 	  "generator": "constant",
 	  "dataType": "bool",
@@ -165,7 +165,7 @@
 		"value": "True"
 	  }
 	},
-	"UseAppKit": {
+	"macos": {
 	  "type": "generated",
 	  "generator": "constant",
 	  "dataType": "bool",
@@ -173,7 +173,7 @@
 		"value": "True"
 	  }
 	},
-	"UseCatalyst": {
+	"maccatalyst": {
 	  "type": "generated",
 	  "generator": "constant",
 	  "dataType": "bool",

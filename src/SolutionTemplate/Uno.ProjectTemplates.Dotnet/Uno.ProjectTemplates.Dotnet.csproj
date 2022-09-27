@@ -313,6 +313,10 @@
 						s = s
 							.Replace("$ext_safeprojectname$", SafeProjectName)
 							.Replace("$safeprojectname$", SafeProjectName)
+							.Replace("UseAndroid", "android")
+							.Replace("UseIOS", "ios")
+							.Replace("UseAppKit", "macos")
+							.Replace("UseCatalyst", "maccatalyst")
 							;
 
 
