@@ -130,7 +130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				catch (Exception telemetryException)
 				{
 #if DEBUG
-					Console.Write($"Telemetry failure: {telemetryException}");
+					Console.WriteLine($"Telemetry failure: {telemetryException}");
 #endif
 				}
 #pragma warning restore CS0168 // unused parameter
