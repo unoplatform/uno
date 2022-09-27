@@ -1,6 +1,7 @@
 steps:
   - pwsh: |
-      Get-ChildItem $(Build.SourcesDirectory) -Include *.* -Recurse | ForEach  { $_.Delete()}
+      cd $(Build.SourcesDirectory)
+      rm -r -fo *.*
     condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
     displayName: Pre-cleanup for Restoring WinUI Converted Source Tree
 
