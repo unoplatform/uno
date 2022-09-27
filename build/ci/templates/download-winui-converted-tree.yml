@@ -1,6 +1,11 @@
 steps:
+  - pwsh: |
+      Remove-Item –Path $(Build.SourcesDirectory) -include *.* –recurse -exclude ".git"
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    displayName: Pre-cleanup for Restoring WinUI Converted Source Tree
+
   - task: DownloadPipelineArtifact@2
-    displayName: Restoring WinUI Converted source tree
+    displayName: Restoring WinUI Converted Source Rree
     condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
     inputs:
       artifact: winui-converted-tree
