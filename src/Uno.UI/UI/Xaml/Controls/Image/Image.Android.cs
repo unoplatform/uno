@@ -205,6 +205,7 @@ namespace Windows.UI.Xaml.Controls
 							{
 								this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view needs to be measured");
 							}
+							_openedSource = null;
 
 							return;
 						}
