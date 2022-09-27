@@ -165,11 +165,8 @@ namespace Windows.UI.Xaml
 		{
 			// Currently Uno supports only single window,
 			// for compatibility with WinUI we set the first activated
-			// as Current
-			if (_current is null)
-			{
-				_current = this;
-			}
+			// as Current #8341
+			_current ??= this;
 
 			InternalActivate();
 

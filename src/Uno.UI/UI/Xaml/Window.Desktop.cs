@@ -15,8 +15,6 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private static Window _current;
-		
 		private bool _isActive;
 
 		public Window()
