@@ -35,12 +35,12 @@ namespace UnoSolutionTemplate
 		/// <summary>
 		/// The block to post to when publishing new values.
 		/// </summary>
-		private ITargetBlock<IProjectVersionedValue<IImmutableDictionary<string, string>>> targetBlock;
+		private ITargetBlock<IProjectVersionedValue<IImmutableDictionary<string, string>>>? targetBlock;
 
 		/// <summary>
 		/// The backing field for the <see cref="SourceBlock"/> property.
 		/// </summary>
-		private IReceivableSourceBlock<IProjectVersionedValue<IImmutableDictionary<string, string>>> publicBlock;
+		private IReceivableSourceBlock<IProjectVersionedValue<IImmutableDictionary<string, string>>>? publicBlock;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MyProjectGlobalPropertiesProvider"/> class.
@@ -64,7 +64,7 @@ namespace UnoSolutionTemplate
 			get
 			{
 				this.EnsureInitialized();
-				return this.publicBlock;
+				return this.publicBlock!;
 			}
 		}
 
