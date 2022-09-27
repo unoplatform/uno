@@ -151,9 +151,9 @@ namespace Windows.UI.Xaml.Media
 
 		partial void CleanupResource();
 
-		public static implicit operator ImageSource(string stringSource)
+		public static implicit operator ImageSource(string url)
 		{
-			var uri = TryCreateUriFromString(stringSource);
+			var uri = TryCreateUriFromString(url);
 			return (ImageSource)uri;
 		}
 
