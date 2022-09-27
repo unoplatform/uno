@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   	<PropertyGroup>
-		<TargetFrameworks>$if$($UseAndroid$ == True)net6.0-android;$endif$$if$($UseIOS$ == True)net6.0-ios;$endif$$if$($UseCatalyst$ == True)net6.0-maccatalyst;$endif$$if$($UseAppKit$ == True)net6.0-macos$endif$</TargetFrameworks>
+		$if$($UseAndroid$ == True)<TargetFrameworks>net6.0-android</TargetFrameworks>$endif$
+		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);net6.0-ios</TargetFrameworks>$endif$
+		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);net6.0-macos</TargetFrameworks>$endif$
+		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst</TargetFrameworks>$endif$
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
 
@@ -32,7 +35,7 @@
 		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Uno.UI.Lottie" Version="4.5.9" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
 
 	<Choose>
