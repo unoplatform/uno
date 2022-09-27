@@ -9,7 +9,6 @@ jobs:
   dependsOn:
   - generic_win_build
   - net6_win_build
-  # - net6_mac_build
 
   pool: ${{ parameters.poolName }}
 
@@ -42,6 +41,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - template: templates/download-winui-converted-tree.yml
+
   - template: templates/gitversion.yml
    
   - task: NuGetToolInstaller@0
@@ -60,13 +61,6 @@ jobs:
   - task: NodeTool@0
 
   - template: templates/install-windows-sdk.yml
-
-  - powershell: |
-        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
-        dotnet run "$(build.sourcesdirectory)"
-
-    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
-    displayName: Convert source tree to WinUI 3 structure
 
   - task: DownloadBuildArtifacts@0
     inputs:

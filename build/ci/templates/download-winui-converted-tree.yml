@@ -1,0 +1,7 @@
+steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring WinUI Converted source tree
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    inputs:
+      artifact: winui-converted-tree
+      path: $(Build.SourcesDirectory)
