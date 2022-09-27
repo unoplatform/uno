@@ -163,8 +163,8 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			if (uri.LocalPath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase) ||
-				uri.LocalPath.EndsWith(".svgz", StringComparison.InvariantCultureIgnoreCase))
+			if (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
+				uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
 			{
 				return new SvgImageSource(uri);
 			}

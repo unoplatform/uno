@@ -69,14 +69,6 @@
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
-	<Target Name="_CleanupReferences" BeforeTargets="CoreCompile">
-		<!-- Required when building under VS to remove analyzer references coming from the Uno.UI/Uno.WinUI transitive references -->
-		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.UI'"/>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.WinUI'"/>
-		</ItemGroup>
-	</Target>
-
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
