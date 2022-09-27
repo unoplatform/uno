@@ -33,7 +33,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				if (UriSource != null)
 				{
-					if (UriSource.Scheme == "http" || UriSource.Scheme == "https")
+					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
 						var client = new HttpClient();
 						var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
@@ -41,7 +42,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
 					}
-					else if (UriSource.Scheme == "ms-appx")
+					else if (UriSource.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 					{
 						var path = UriSource.PathAndQuery;
 						var filePath = GetScaledPath(path);
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
 					}
-					else if (UriSource.Scheme == "ms-appdata")
+					else if (UriSource.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
 					{
 						using var fileStream = File.OpenRead(FilePath);
 

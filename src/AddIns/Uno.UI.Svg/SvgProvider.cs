@@ -16,10 +16,10 @@ using SkiaSharp;
 using SKCanvas = SkiaSharp.SKCanvas;
 using SKMatrix = SkiaSharp.SKMatrix;
 using Windows.Graphics.Display;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.Svg;
 
-[Preserve]
 public partial class SvgProvider : ISvgProvider
 {
 	private readonly SvgImageSource _owner;

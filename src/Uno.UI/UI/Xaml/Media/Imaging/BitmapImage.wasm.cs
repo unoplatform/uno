@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			if (AbsoluteUri is {} uri)
 			{
-				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
+				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
 				// Local files are assumed as coming from the remote server
 				var newUri = hasFileScheme switch
@@ -86,7 +86,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 					// ms-appx comes in as a relative path
 					if (uri.IsAbsoluteUri)
 					{
-						if (uri.Scheme == "http" || uri.Scheme == "https")
+						if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+							uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 						{
 							return ImageData.FromUrl(uri, source);
 						}

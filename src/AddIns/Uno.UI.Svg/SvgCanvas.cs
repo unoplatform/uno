@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using ShimSkiaSharp;
 using SkiaSharp;
 using Svg.Skia;
 using Uno.Disposables;
@@ -11,7 +10,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
-using Windows.ApplicationModel.Activation;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;

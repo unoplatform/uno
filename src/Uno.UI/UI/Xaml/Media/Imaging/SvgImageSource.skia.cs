@@ -21,22 +21,22 @@ partial class SvgImageSource
 		{
 			if (AbsoluteUri != null && AbsoluteUri.IsAbsoluteUri)
 			{
-				if (AbsoluteUri.Scheme.Equals("http", StringComparison.InvariantCultureIgnoreCase) ||
-					AbsoluteUri.Scheme.Equals("https", StringComparison.InvariantCultureIgnoreCase))
+				if (AbsoluteUri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+					AbsoluteUri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 				{
 					var client = new HttpClient();
 					var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
 					using var imageStream = await response.Content.ReadAsStreamAsync();
 					return await ReadFromStreamAsync(imageStream, ct);
 				}
-				else if (AbsoluteUri.Scheme.Equals("ms-appx", StringComparison.InvariantCultureIgnoreCase))
+				else if (AbsoluteUri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 				{
 					var path = AbsoluteUri.PathAndQuery;
 					path = GetApplicationPath(path);
 					using var fileStream = File.OpenRead(path);
 					return await ReadFromStreamAsync(fileStream, ct);
 				}
-				else if (AbsoluteUri.Scheme.Equals("ms-appdata", StringComparison.InvariantCultureIgnoreCase))
+				else if (AbsoluteUri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
 				{
 					using var fileStream = File.OpenRead(FilePath);
 					return await ReadFromStreamAsync(fileStream, ct);

@@ -31,7 +31,7 @@ partial class SvgImageSource
 
 	internal event EventHandler SourceLoaded;
 
-	internal UIElement? GetCanvas() => _svgProvider?.GetCanvas() ?? null;
+	internal UIElement? GetCanvas() => _svgProvider?.GetCanvas();
 
 	internal bool IsParsed => _svgProvider?.IsParsed ?? false;
 

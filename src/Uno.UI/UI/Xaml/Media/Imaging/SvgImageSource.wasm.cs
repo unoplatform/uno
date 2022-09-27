@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				image = default;
 
-				var hasFileScheme = absoluteUri.IsAbsoluteUri && absoluteUri.Scheme == "file";
+				var hasFileScheme = absoluteUri.IsAbsoluteUri && absoluteUri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
 				// Local files are assumed as coming from the remote server
 				var uri = hasFileScheme switch
@@ -38,7 +38,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				if (uri.IsAbsoluteUri)
 				{
-					if (uri.Scheme == "http" || uri.Scheme == "https")
+					if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+						uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
 						image = ImageData.FromUrl(uri.AbsoluteUri, this);
 					}
