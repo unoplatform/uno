@@ -153,10 +153,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __WASM__ || __SKIA__
 			var flipViewItems = (SUT as FrameworkElement)?.FindChildren<FlipViewItem>()?.ToArray() ?? new FlipViewItem[0];
-			//var flipViewItems = (SUT as UIElement)?.EnumerateAllChildren(a => a is FlipViewItem).Cast<FlipViewItem>().ToArray() ?? new FlipViewItem[0];
 
 			for (var i = 0; i < SUT.Items.Count; i++)
 			{
+				if (SUT.SelectedIndex != i)
+				{
+					SUT.SelectedIndex = i;
+					await WindowHelper.WaitForIdle();
+				}
+
 				var item = SUT.Items[i];
 				Assert.AreEqual(SUT.SelectedIndex, i, "SelectedIndex isn't the expected value");
 
@@ -164,16 +169,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var textblock = flipViewItems[i].FindName(textBlockName) as TextBlock;
 				AssertTextBlock(textblock, item);
-
-				if (i < SUT.Items.Count-1)
-				{
-					SUT.SelectedIndex = i + 1;
-					await WindowHelper.WaitForIdle();
-				}
 			}
 #else
 			for (var i = 0; i < SUT.Items.Count; i++)
 			{
+				if (SUT.SelectedIndex != i)
+				{
+					SUT.SelectedIndex = i;
+					await WindowHelper.WaitForIdle();
+				}
+
 				var item = SUT.Items[i];
 				Assert.AreEqual(SUT.SelectedIndex, i, "SelectedIndex isn't the expected value");
 
@@ -181,12 +186,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var textblock = SUT.FindName(textBlockName) as TextBlock;
 				AssertTextBlock(textblock, item);
-
-				if (i < SUT.Items.Count - 1)
-				{
-					SUT.SelectedIndex = i + 1;
-					await WindowHelper.WaitForIdle();
-				}
 			}
 #endif
 		}
