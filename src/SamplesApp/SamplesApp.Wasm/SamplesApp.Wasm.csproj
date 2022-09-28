@@ -3,14 +3,14 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
-		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API;PWA</DefineConstants>
 		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002</NoWarn>
 		<NoWarn>$(NoWarn);CA1834</NoWarn> <!-- Use span-based 'string.Concat' and 'AsSpan' instead of 'Substring' -->
 		<NoWarn>$(NoWarn);CA1845</NoWarn> <!-- Use 'StringBuilder.Append(char)' -->
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
-		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
+		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>		
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -22,6 +22,9 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
+	</PropertyGroup>
+	<PropertyGroup Condition="$(DefineConstants.Contains('PWA'))">
+		<WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>		
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />

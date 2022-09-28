@@ -462,7 +462,7 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-
+					<Grid x:Name="DragArea" Grid.ColumnSpan="80" Background="Red" />
 					<!-- Back Button -->
 					<ToggleButton Style="{StaticResource BurgerButtonStyle}"
 								  IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"

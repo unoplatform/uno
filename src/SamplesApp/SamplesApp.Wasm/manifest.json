@@ -1,0 +1,11 @@
+{
+  "name": "Uno Samples App",
+  "description": "Sample application for Uno Platform development",
+  "lang": "en-US",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display_override": [
+	  "window-controls-overlay"
+  ]
+}

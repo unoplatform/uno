@@ -26,6 +26,7 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+			Windows.UI.Xaml.Window.Current.SetTitleBar(DragArea);
 		}
 	}
 }

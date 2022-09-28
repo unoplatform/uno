@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
-		
+
 		private UIElement _content;
 		private RootVisual _rootVisual;
 
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml
 						oldRoot.SizeChanged -= RootSizeChanged;
 					}
 				}
-				
+
 				if (value != null)
 				{
 					value.IsWindowRoot = true;
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml
 
 				if (value is FrameworkElement newRoot)
 				{
-					newRoot.SizeChanged += RootSizeChanged;					
+					newRoot.SizeChanged += RootSizeChanged;
 				}
 
 				oldContent?.XamlRoot?.NotifyChanged();
@@ -180,7 +180,11 @@ namespace Windows.UI.Xaml
 
 		public void Close() { }
 
-		public void SetTitleBar(UIElement value) { }
+		public void SetTitleBar(UIElement value)
+		{
+			value.SetStyle("-webkit-app-region", "drag");
+			value.SetStyle("app-region", "drag");
+		}
 
 		/// <summary>
 		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
