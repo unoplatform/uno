@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FlipViewPages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -87,7 +91,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Flipview_Items_Modified()
 		{
-		   
 			var itemsSource = new ObservableCollection<string>();
 			AddItem(itemsSource);
 			AddItem(itemsSource);
@@ -121,6 +124,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		}
 
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Flipview_DataTemplateSelector()
+		{
+			var dataContext = new When_Flipview_DataTemplateSelector_DataContext();
 
+			var page = new FlipView_TemplateSelectorPage();
+			page.DataContext = dataContext;
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			FlipView SUT = page.MyFlipView;
+
+			static string GetTextBlockName(object item)
+			{
+				return Convert.ToInt32(item) % 2 == 0 ? "TextEven" : "TextOdd";
+			}
+
+			static void AssertTextBlock(TextBlock textblock, object item)
+			{
+				Assert.IsNotNull(textblock, "The Template applied wasn't the expected");
+				Assert.AreEqual(item.ToString(), textblock?.Text, "The TextBlock doesn't have the expected value");
+			}
+
+
+#if __WASM__ || __SKIA__
+			var flipViewItems = (SUT as FrameworkElement)?.FindChildren<FlipViewItem>()?.ToArray() ?? new FlipViewItem[0];
+
+			for (var i = 0; i < SUT.Items.Count; i++)
+			{
+				if (SUT.SelectedIndex != i)
+				{
+					SUT.SelectedIndex = i;
+					await WindowHelper.WaitForIdle();
+				}
+
+				var item = SUT.Items[i];
+				Assert.AreEqual(SUT.SelectedIndex, i, "SelectedIndex isn't the expected value");
+
+				var textBlockName = GetTextBlockName(item);
+
+				var textblock = flipViewItems[i].FindName(textBlockName) as TextBlock;
+				AssertTextBlock(textblock, item);
+			}
+#else
+			for (var i = 0; i < SUT.Items.Count; i++)
+			{
+				if (SUT.SelectedIndex != i)
+				{
+					SUT.SelectedIndex = i;
+					await WindowHelper.WaitForIdle();
+				}
+
+				var item = SUT.Items[i];
+				Assert.AreEqual(SUT.SelectedIndex, i, "SelectedIndex isn't the expected value");
+
+				var textBlockName = GetTextBlockName(item);
+
+				var textblock = SUT.FindName(textBlockName) as TextBlock;
+				AssertTextBlock(textblock, item);
+			}
+#endif
+		}
+
+	}
+
+#if __SKIA__ || __WASM__
+	static class Extensions
+	{
+		internal static IEnumerable<T> FindChildren<T>(this FrameworkElement root) where T : FrameworkElement
+		{
+			return root.GetDescendants().OfType<T>().ToArray();
+		}
+
+		private static IEnumerable<FrameworkElement> GetDescendants(this FrameworkElement root)
+		{
+			foreach (var child in root._children)
+			{
+				yield return child as FrameworkElement;
+
+				foreach (var descendant in (child as FrameworkElement).GetDescendants())
+				{
+					yield return descendant;
+				}
+			}
+		}
+}
+#endif
+
+	public class When_Flipview_DataTemplateSelector_DataContext
+	{
+		public IEnumerable<int> Items { get; set; } = Enumerable.Range(1, 6);
 	}
 }
