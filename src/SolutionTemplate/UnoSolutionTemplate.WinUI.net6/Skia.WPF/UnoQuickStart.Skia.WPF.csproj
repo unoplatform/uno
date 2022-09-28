@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>$basetargetframework$-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 

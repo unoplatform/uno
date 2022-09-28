@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>$basetargetframework$</TargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup Condition="exists('..\$ext_safeprojectname$.Windows')">

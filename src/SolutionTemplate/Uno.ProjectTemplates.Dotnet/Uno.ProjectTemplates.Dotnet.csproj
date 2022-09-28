@@ -317,6 +317,7 @@
 							.Replace("UseIOS", "ios")
 							.Replace("UseAppKit", "macos")
 							.Replace("UseCatalyst", "maccatalyst")
+							.Replace("$basetargetframework$", "net6.0")
 							;
 
 

@@ -35,6 +35,7 @@ namespace UnoSolutionTemplate.Wizard
 		private bool _useFramebuffer;
 		private bool _useWpf;
 		private bool _useWinUI;
+		private string? _baseTargetFramework;
 		private IDictionary<string, string>? _replacementDictionary;
 
 		public UnoSolutionWizard(bool enableNuGetConfig, string vsSuffix)
@@ -245,6 +246,7 @@ namespace UnoSolutionTemplate.Wizard
 						_useFramebuffer = targetPlatformWizardPicker.UseFramebuffer;
 						_useWpf = targetPlatformWizardPicker.UseWpf;
 						_useWinUI = targetPlatformWizardPicker.UseWinUI;
+						_baseTargetFramework = targetPlatformWizardPicker.UseBaseTargetFramework;
 
 						replacementsDictionary["$UseWebAssembly$"] = _useWebAssembly.ToString();
 						replacementsDictionary["$UseIOS$"] = _useiOS.ToString();
@@ -256,6 +258,7 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$UseWPF$"] = _useWpf.ToString();
 						replacementsDictionary["$UseWinUI$"] = _useWinUI.ToString();
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
+						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
 
 						_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
 
