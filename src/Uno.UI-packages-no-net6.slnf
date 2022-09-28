@@ -9,6 +9,8 @@
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Wasm.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
+      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.csproj",
+      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
       "ResourceConverter\\ResourceConverter.csproj",
       "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
       "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
