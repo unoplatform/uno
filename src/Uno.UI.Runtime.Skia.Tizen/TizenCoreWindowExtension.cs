@@ -30,11 +30,10 @@ namespace Uno.UI.Runtime.Skia
 		private readonly Windows.UI.Core.CoreWindow _owner;
 		private readonly ICoreWindowEvents _ownerEvents;
 		private readonly DisplayInformation _displayInformation;
-		private readonly EcoreEvent _mouseIn;
 		private readonly GestureLayer _gestureLayer;
 		private readonly UnoCanvas _canvas;
 
-		private PointerEventArgs _previous;
+		private PointerEventArgs? _previous;
 
 		public CoreCursor PointerCursor
 		{

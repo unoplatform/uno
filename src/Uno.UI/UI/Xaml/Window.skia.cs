@@ -16,11 +16,8 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private static Window? _current;
-		private RootVisual? _rootVisual;
 		// private ScrollViewer _rootScrollViewer;
 		private Border? _rootBorder;
-		private UIElement? _content;
 
 		public Window()
 		{
@@ -88,19 +85,5 @@ namespace Windows.UI.Xaml
 				_rootBorder.Child = _content = content;
 			}
 		}
-
-		private UIElement InternalGetContent() => _content!;
-
-		private UIElement InternalGetRootElement() => _rootVisual!;
-
-		private static Window InternalGetCurrentWindow()
-		{
-			if (_current == null)
-			{
-				_current = new Window();
-			}
-
-			return _current;
-		}		
 	}
 }

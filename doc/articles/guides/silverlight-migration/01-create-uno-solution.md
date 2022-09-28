@@ -44,9 +44,9 @@ When working with Uno, it is important to ensure that the latest and greatest ve
 1. From the list of available updates, select the following packages if they appear:
 
     * **Uno.Core**
-    * **Uno.UI**
-    * **Uno.UI.RemoteControl**
-    * **Uno.UI.WebAssembly**
+    * **Uno.WinUI** (or **Uno.UI**)
+    * **Uno.WinUI.RemoteControl** (or **Uno.UI.RemoteControl**)
+    * **Uno.WinUI.WebAssembly** (or **Uno.UI.WebAssembly**)
     * **Uno.Wasm.Bootstrap**
     * **Uno.Wasm.Bootstrap.DevServer**
 

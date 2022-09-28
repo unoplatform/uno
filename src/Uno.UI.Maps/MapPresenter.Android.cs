@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 		{
 			_callbacks = new MapLifeCycleCallBacks(onPause: _internalMapView.OnPause, onResume: _internalMapView.OnResume);
 
-			_application = Context.ApplicationContext as Android.App.Application;
+			_application = (Context?.ApplicationContext as Android.App.Application)!;
 			if (_application != null)
 			{
 				_application.RegisterActivityLifecycleCallbacks(_callbacks);
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 				_onPause();
 			}
 
-			public void OnActivityCreated(Activity activity, global::Android.OS.Bundle savedInstanceState)
+			public void OnActivityCreated(Activity activity, global::Android.OS.Bundle? savedInstanceState)
 			{
 			}
 

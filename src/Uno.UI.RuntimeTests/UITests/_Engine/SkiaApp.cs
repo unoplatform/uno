@@ -249,6 +249,6 @@ public partial class SkiaApp : IApp
 	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
-	private Exception NotSupported([CallerMemberName] string operation = null)
+	private Exception NotSupported([CallerMemberName] string operation = "")
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
 }

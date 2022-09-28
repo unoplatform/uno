@@ -25,6 +25,13 @@ namespace UnoSolutionTemplate.Wizard.Forms
 		public bool UseFramebuffer => checkLinux.Checked;
 		public bool UseWpf => checkWpf.Checked;
 		public bool UseWinUI => checkWinUI.Checked;
+		public string UseBaseTargetFramework => BaseTargetFramework.SelectedItem is TargetFrameworkOption option ? option.BaseValue : "invalid";
+
+		public class TargetFrameworkOption
+		{
+			public string BaseValue { get; set; }
+			public string DisplayValue { get; set; }
+		}
 
 		public UnoOptions(IServiceProvider serviceProvider)
 		{
@@ -42,6 +49,10 @@ namespace UnoSolutionTemplate.Wizard.Forms
 					Font = FontFromUIDLGLOGFONT(array[0]);
 				}
 			}
+
+			BaseTargetFramework.Items.Add(new TargetFrameworkOption { BaseValue = "net6.0", DisplayValue = ".NET 6.0" });
+			BaseTargetFramework.Items.Add(new TargetFrameworkOption { BaseValue = "net7.0", DisplayValue = ".NET 7.0" });
+			BaseTargetFramework.SelectedIndex = 0;
 		}
 
 		private static Font FontFromUIDLGLOGFONT(UIDLGLOGFONT logFont)

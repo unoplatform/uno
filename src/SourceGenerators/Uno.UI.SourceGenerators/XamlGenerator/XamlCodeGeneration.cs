@@ -280,7 +280,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 #if DEBUG
-				Console.Write("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
 #endif
 
 				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
@@ -594,7 +594,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.WithCancellation(ct)
 				.SelectMany(file => {
 #if DEBUG
-					Console.Write("Parse resource file : " + file.Identity);
+					Console.WriteLine("Parse resource file : " + file.Identity);
 #endif
 					try
 					{
@@ -646,7 +646,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray();
 
 #if DEBUG
-			Console.Write(resourceKeys.Length + " localization keys found");
+			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
 		}

@@ -98,14 +98,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\__*.png" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.csproj" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\__*.png" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.csproj" />
 
-		<_UnoAppnet6TemplateFiles Include="..\UnoSolutionTemplate.net6\**" Exclude="@(_UnoAppnet6TemplateFilesExclude)" />
+		<_UnoAppnet6UWPTemplateFiles Include="..\UnoSolutionTemplate.net6\**" Exclude="@(_UnoAppnet6UWPTemplateFilesExclude)" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\*.vstemplate" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\__*.png" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\obj\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\bin\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\Properties\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.csproj" />
+
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.net6\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -171,7 +182,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_UnoAppnet6TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(_UnoAppnet6UWPTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="False" />
 
@@ -248,7 +259,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_UnoAppnet6TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(_UnoAppnet6WinUITemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
 		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
@@ -280,6 +291,7 @@
 		<Task>
 			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
+			<Using Namespace="System.Text.RegularExpressions" />
 			<Using Namespace="System.Linq" />
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
@@ -301,7 +313,25 @@
 						s = s
 							.Replace("$ext_safeprojectname$", SafeProjectName)
 							.Replace("$safeprojectname$", SafeProjectName)
+							.Replace("UseAndroid", "android")
+							.Replace("UseIOS", "ios")
+							.Replace("UseAppKit", "macos")
+							.Replace("UseCatalyst", "maccatalyst")
+							.Replace("$basetargetframework$", "net6.0")
 							;
+
+
+						if(Path.GetExtension(file).ToLower() == ".csproj")
+						{
+							// Avoid value replacement with msbuild's CodeTaskFactory expansion
+							string pattern = string.Format("^{0}\\$if\\$\\(\\${0}\\${0} == True\\)", "(.*?)");
+
+							s = Regex.Replace(s, pattern, @"$1<!--#if ($2)" + Environment.NewLine + "$1", RegexOptions.Multiline);
+
+							s = s
+								.Replace("$endif$", "\n#endif -->");
+								;
+						}
 
 						if(IsWinUI)
 						{

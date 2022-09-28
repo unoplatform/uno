@@ -49,8 +49,6 @@
 
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
 
-		<CallTarget Targets="RunAPISyncTool" Condition="'$(UNO_UWP_BUILD)'=='false'" />
-
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 
 		<CallTarget Targets="PublishVSIX2019" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
@@ -60,8 +58,6 @@
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
-
-		<CallTarget Targets="RunAPISyncTool" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</Target>
 
 	<Target Name="GeneratePackages" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">

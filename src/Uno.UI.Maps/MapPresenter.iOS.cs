@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 			SetUpOverlayRenderer();
 
-			_internalMapView.GetViewForAnnotation = OnGetViewForAnnotation;
+			_internalMapView.GetViewForAnnotation = OnGetViewForAnnotation!;
 		}
 
 		private IDisposable UpdateOwnerSubscriptions(MapControl owner)

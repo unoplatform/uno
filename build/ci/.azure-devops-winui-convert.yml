@@ -1,0 +1,64 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: winui_convert_tree
+  displayName: 'WinUI Converted Tree Generation'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  
+  dependsOn: Pipeline_Validations
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI 
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/dotnet6-install-windows.yml
+  - template: templates/install-windows-sdk.yml
+
+  - powershell: |
+        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
+        dotnet run "$(build.sourcesdirectory)"
+
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    displayName: Convert source tree to WinUI 3 structure
+
+  # Required to build on net5 because of uwp compatibility (until 16.10 gets published)
+  - task: MSBuild@1
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(build.sourcesdirectory)
+      artifactName: winui-converted-tree
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts
+      ArtifactType: Container

@@ -118,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			void HolderUpdate(int value)
 			{
-				_ = rootContainer.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+				_ = rootContainer!.Dispatcher.RunAsync(CoreDispatcherPriority.High,
 					() =>
 					{
 						maxCounter = Math.Max(value, maxCounter);
@@ -195,7 +195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
-				var item = (FrameworkElement)Activator.CreateInstance(controlType);
+				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
 				TrackDependencyObject(item);
 				rootContainer.Content = item;
 				await TestServices.WindowHelper.WaitForIdle();
