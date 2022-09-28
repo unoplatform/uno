@@ -21,6 +21,11 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public sealed partial class Window
 	{
+		private static Window _current;
+		
+		private UIElement _content;
+		private RootVisual _rootVisual;
+
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
 
@@ -158,6 +163,11 @@ namespace Windows.UI.Xaml
 
 		public void Activate()
 		{
+			// Currently Uno supports only single window,
+			// for compatibility with WinUI we set the first activated
+			// as Current #8341
+			_current ??= this;
+
 			InternalActivate();
 
 			OnActivated(CoreWindowActivationState.CodeActivated);
@@ -271,6 +281,12 @@ namespace Windows.UI.Xaml
 				(h, s, e) =>
 					(h as EventHandler)?.Invoke(s, (EventArgs)e)
 			);
+
+		private static Window InternalGetCurrentWindow() => _current ??= new Window();
+
+		private UIElement InternalGetContent() => _content!;
+
+		private UIElement InternalGetRootElement() => _rootVisual!;
 
 		#region Drag and Drop
 		private DragRoot _dragRoot;
