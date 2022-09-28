@@ -72,23 +72,6 @@ namespace Windows.UI.Xaml
 			Start(callback);
 		}
 
-		public void Exit()
-		{
-			CoreApplication.Exiting?.Invoke(null, null);
-			
-			if (_applicationExtension != null && _applicationExtension.CanExit)
-			{
-				_applicationExtension.Exit();
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning("This platform does not support application exit.");
-				}
-			}
-		}
-
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			_startInvoked = true;

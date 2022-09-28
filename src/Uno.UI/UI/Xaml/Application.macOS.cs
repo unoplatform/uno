@@ -162,12 +162,6 @@ namespace Windows.UI.Xaml
 		[Export("themeChanged:")]
 		public void ThemeChanged(NSObject change) => OnSystemThemeChanged();
 
-		public void Exit()
-		{
-			CoreApplication.Exiting?.Invoke(null, null);
-			NSApplication.SharedApplication.Terminate(null);
-		}
-
 		private void SubscribeBackgroundNotifications()
 		{
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationHiddenNotification, OnEnteredBackground);

@@ -42,12 +42,6 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		private SuspendingOperation CreateSuspendingOperation() =>
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(5), null);
-
-		public void Exit()
-		{
-			CoreApplication.Exiting?.Invoke(null, null);
-			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
-		}
 	}
 }
 #endif
