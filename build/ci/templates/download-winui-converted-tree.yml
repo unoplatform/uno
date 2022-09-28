@@ -1,7 +1,7 @@
 steps:
   - pwsh: |
       cd $(Build.SourcesDirectory)
-      rm -r -fo *.* -Exclude ".git"
+      Get-ChildItem -Exclude ".git" | Remove-Item -Recurse -Force -Exclude
     condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
     displayName: Pre-cleanup for Restoring WinUI Converted Source Tree
 
