@@ -1,4 +1,6 @@
-﻿namespace Windows.ApplicationModel.Core;
+﻿using AppKit;
+
+namespace Windows.ApplicationModel.Core;
 
 partial class CoreApplication
 {
