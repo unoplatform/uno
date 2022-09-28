@@ -8,7 +8,7 @@ jobs:
 
   pool: ${{ parameters.poolName }}
   
-  dependsOn: Pipeline_Validations
+  dependsOn: winui_convert_tree
 
   strategy:
     matrix:
@@ -45,16 +45,11 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - template: templates/download-winui-converted-tree.yml
+
   - template: templates/gitversion.yml
   - template: templates/dotnet6-install-windows.yml
   - template: templates/install-windows-sdk.yml
-
-  - powershell: |
-        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
-        dotnet run "$(build.sourcesdirectory)"
-
-    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
-    displayName: Convert source tree to WinUI 3 structure
 
   # Required to build on net5 because of uwp compatibility (until 16.10 gets published)
   - task: MSBuild@1
