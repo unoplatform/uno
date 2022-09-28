@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   	<PropertyGroup>
-		$if$($UseAndroid$ == True)<TargetFrameworks>net6.0-android</TargetFrameworks>$endif$
-		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);net6.0-ios</TargetFrameworks>$endif$
-		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);net6.0-macos</TargetFrameworks>$endif$
-		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst</TargetFrameworks>$endif$
+		$if$($UseAndroid$ == True)<TargetFrameworks>$basetargetframework$-android</TargetFrameworks>$endif$
+		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
+		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
+		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
 
 		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
-		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
+		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
 
 		<!-- Required for C# Hot Reload, except for macOS which uses CoreCLR (not Mono) -->
 		<!-- Disabled because of https://github.com/dotnet/runtime/issues/68808 -->
-		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != 'net6.0-maccatalyst' and '$(TargetFramework)' != 'net6.0-macos'">True</UseInterpreter>-->
+		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != '$basetargetframework$-maccatalyst' and '$(TargetFramework)' != '$basetargetframework$-macos'">True</UseInterpreter>-->
 
 		<IsUnoHead>true</IsUnoHead>
 
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-ios'">14.2</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">14.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='net6.0-macos'">10.14</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">10.14</SupportedOSPlatformVersion>
   	</PropertyGroup>
 
   	<PropertyGroup Condition="'$(RuntimeIdentifier)'==''">
 		<!-- Default values for command line builds -->
-		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
-		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
-		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-macos'">osx-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == '$basetargetframework$-ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == '$basetargetframework$-macos'">osx-x64</RuntimeIdentifier>
   	</PropertyGroup>
 
   	<ItemGroup>
@@ -40,7 +40,7 @@
 
 	<Choose>
 
-		<When Condition="'$(TargetFramework)'=='net6.0-android'">
+		<When Condition="'$(TargetFramework)'=='$basetargetframework$-android'">
 			<ItemGroup>
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
@@ -50,8 +50,8 @@
 			</ItemGroup>
 		</When>
 
-		<When Condition="'$(TargetFramework)'=='net6.0-ios'">
-		  	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
+		<When Condition="'$(TargetFramework)'=='$basetargetframework$-ios'">
+		  	<PropertyGroup Condition="'$(TargetFramework)'=='$basetargetframework$-ios'">
 				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
 
 				<!-- See https://github.com/unoplatform/uno/issues/9430 for more details. -->
@@ -65,7 +65,7 @@
 			</ItemGroup>
 		</When>
 
-		<When Condition="'$(TargetFramework)'=='net6.0-maccatalyst'">
+		<When Condition="'$(TargetFramework)'=='$basetargetframework$-maccatalyst'">
 			<PropertyGroup>
 				<!-- Configure the GC -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
@@ -85,7 +85,7 @@
 			</ItemGroup>
 		</When>
 
-		<When Condition="'$(TargetFramework)'=='net6.0-macos'">
+		<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
 			<PropertyGroup>
 			</PropertyGroup>
 		</When>
