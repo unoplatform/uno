@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-using GLib;
+using Gtk;
 using Uno.ApplicationModel.Core;
 
 namespace Uno.Extensions.ApplicationModel.Core;
@@ -13,5 +13,5 @@ internal class CoreApplicationExtension : ICoreApplicationExtension
 	
 	public bool CanExit => true;
 
-	public void Exit() => Application.Default.Quit();
+	public void Exit() => Application.Quit();
 }
