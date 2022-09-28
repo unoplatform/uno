@@ -78,10 +78,10 @@ body:
         - iOS
         - Android
         - WebAssembly
-        - WebAssembly renderers for Xamarin.Forms
         - macOS
         - Skia (WPF)
         - Skia (GTK on Linux/macOS/Windows)
+        - Skia (Linux Framebuffer)
         - Skia (Tizen)
         - Windows
         - Build tasks
@@ -95,11 +95,10 @@ body:
       options:
         - Visual Studio 2022
         - Visual Studio 2019
-        - Visual Studio 2017
+        - Visual Studio Code
         - Visual Studio for Mac
         - Rider Windows
         - Rider macOS
-        - Visual Studio Code
 
   - type: input
     id: ide-version
