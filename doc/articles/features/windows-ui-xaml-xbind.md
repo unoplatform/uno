@@ -87,6 +87,28 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />
   ```
 
+- [Pathless casting](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#pathless-casting)
+  ```xml
+  <Page
+    x:Class="AppSample.MainPage"
+    ...
+    xmlns:local="using:AppSample">
+
+    <Grid>
+        <ListView ItemsSource="{x:Bind Songs}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:SongItem">
+                    <TextBlock
+                        Margin="12"
+                        FontSize="40"
+                        Text="{x:Bind local:MainPage.GenerateSongTitle((local:SongItem))}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+  </Page>
+  ```
+
 - `x:Load` binding
   ```xml
   <TextBox x:Load="{x:Bind IsMyControlVisible}" />
