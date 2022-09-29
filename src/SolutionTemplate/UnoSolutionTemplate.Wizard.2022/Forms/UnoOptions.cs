@@ -29,8 +29,14 @@ namespace UnoSolutionTemplate.Wizard.Forms
 
 		public class TargetFrameworkOption
 		{
-			public string BaseValue { get; set; }
-			public string DisplayValue { get; set; }
+			public TargetFrameworkOption(string baseValue, string displayValue)
+			{
+				BaseValue = baseValue;
+				DisplayValue = displayValue;
+			}
+
+			public string BaseValue { get; }
+			public string DisplayValue { get; }
 		}
 
 		public UnoOptions(IServiceProvider serviceProvider)
@@ -50,8 +56,8 @@ namespace UnoSolutionTemplate.Wizard.Forms
 				}
 			}
 
-			BaseTargetFramework.Items.Add(new TargetFrameworkOption { BaseValue = "net6.0", DisplayValue = ".NET 6.0" });
-			BaseTargetFramework.Items.Add(new TargetFrameworkOption { BaseValue = "net7.0", DisplayValue = ".NET 7.0" });
+			BaseTargetFramework.Items.Add(new TargetFrameworkOption(baseValue: "net6.0", displayValue: ".NET 6.0"));
+			BaseTargetFramework.Items.Add(new TargetFrameworkOption(baseValue: "net7.0", displayValue: ".NET 7.0"));
 			BaseTargetFramework.SelectedIndex = 0;
 		}
 
