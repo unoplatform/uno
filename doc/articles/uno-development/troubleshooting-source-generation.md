@@ -50,6 +50,25 @@ It is possible to step into the XAML generator by adding the following property:
 ```
 Setting this property will popup a Debugger window allowing the selection of a visual studio instance, giving the ability to set breakpoints and trace the generator.
 
+## Dumping the XAML Source Generator state
+In the context of hot reload or otherwise, troubleshooting the generator's state may be useful.
+
+Using this feature, the generator will dump the following for **each** run:
+- CommandLine arguments
+- MSBuild properties
+- MSBuild items
+- Generated source files
+
+To enable this feature, add the following property:
+```xml
+<PropertyGroup>
+  <XamlSourceGeneratorTracingFolder>path_to_folder</XamlSourceGeneratorTracingFolder>
+</PropertyGroup>
+```
+
+> [!WARNING]
+> A lot of data may be generated in some cases, make sure to disable this feature once it is no longer needed and don't forget to cleanup.
+
 ## Troubleshooting Uno.SourceGeneration based generation
 
 When building, if you're having build error messages that looks like one of those:
