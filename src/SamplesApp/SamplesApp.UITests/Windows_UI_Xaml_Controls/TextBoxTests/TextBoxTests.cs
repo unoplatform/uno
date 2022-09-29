@@ -924,5 +924,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.Less(buttonRect2.Y, buttonRect.Y);
 			Assert.AreEqual(textBoxRect.Height, buttonRect.Y - buttonRect2.Y);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void TextBox_Selection_IsReadOnly()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection");
+
+			var myTextBox = _app.WaitForElement("myTextBox").Single().Rect;
+			var readonlyTextBox = _app.WaitForElement("MyReadOnlyTextBox").Single().Rect;
+
+			// Attempt selection
+			_app.DoubleTapCoordinates(myTextBox.CenterX, myTextBox.CenterY);
+
+			using (var selectableScreenshot = TakeScreenshot("myTextBox", ignoreInSnapshotCompare: true))
+			{
+				ImageAssert.DoesNotHaveColorAt(selectableScreenshot, myTextBox.CenterX, myTextBox.CenterY, Color.White);
+			}
+
+			// Attempt selection
+			_app.DoubleTapCoordinates(readonlyTextBox.CenterX, readonlyTextBox.CenterY);
+
+			using (var selectableScreenshot = TakeScreenshot("MyReadOnlyTextBox", ignoreInSnapshotCompare: true))
+			{
+				ImageAssert.DoesNotHaveColorAt(selectableScreenshot, readonlyTextBox.CenterX, readonlyTextBox.CenterY, Color.White);
+			}
+		}
 	}
 }
