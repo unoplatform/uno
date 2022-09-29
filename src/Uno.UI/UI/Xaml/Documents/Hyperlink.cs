@@ -18,7 +18,9 @@ namespace Windows.UI.Xaml.Documents
 {
 	public sealed partial class Hyperlink : Span
 	{
+#pragma warning disable CS0649 // error CS0649: Field '_focusableHelper' is never assigned to, and will always have its default value null
 		private readonly IFocusable _focusableHelper;
+#pragma warning restore CS0649 // error CS0649: Field '_focusableHelper' is never assigned to, and will always have its default value null
 
 		#region Static
 		private static Brush _defaultForeground;

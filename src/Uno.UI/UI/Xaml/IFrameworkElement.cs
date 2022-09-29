@@ -47,6 +47,7 @@ using Point = Windows.Foundation.Point;
 using ObjCRuntime;
 #endif
 #elif __WASM__
+#pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
 using nfloat = System.Double;
 using Point = Windows.Foundation.Point;
