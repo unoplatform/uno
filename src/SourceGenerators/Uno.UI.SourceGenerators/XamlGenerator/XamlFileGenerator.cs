@@ -130,6 +130,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly GenerationRunFileInfo _generationRunFileInfo;
 
+		private readonly Dictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
+
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
@@ -238,7 +240,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isLazyVisualStateManagerEnabled,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
-			GenerationRunFileInfo generationRunFileInfo)
+			GenerationRunFileInfo generationRunFileInfo,
+			Dictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap)
 		{
 			_fileDefinition = file;
 			_targetPath = targetPath;
@@ -261,6 +264,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_generatorContext = generatorContext;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_generationRunFileInfo = generationRunFileInfo;
+			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 
 			InitCaches();
 
@@ -2213,6 +2217,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		internal static INamedTypeSymbol? FindClassSymbol(XamlObjectDefinition control, RoslynMetadataHelper metadataHelper)
+		{
+			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class");
+
+			if (classMember?.Value != null)
+			{
+				var fullName = classMember.Value.ToString() ?? "";
+				return metadataHelper.FindTypeByFullName(fullName) as INamedTypeSymbol;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
 		[MemberNotNull(nameof(_xClassName))]
 		private void EnsureXClassName()
 		{
@@ -3999,7 +4018,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isAttachedProperty = IsDependencyProperty(member.Member);
 					var isBindingType = SymbolEqualityComparer.Default.Equals(FindPropertyType(member.Member), _dataBindingSymbol);
-					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
+					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
+						(
+							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)) == true) ||
+							ownerType.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
+						);
 
 					if (isAttachedProperty)
 					{

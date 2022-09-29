@@ -288,6 +288,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
+
+				var xamlTypeToXamlTypeBaseMap = new Dictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
+				foreach (var file in filesFull)
+				{
+					var topLevelControl = file.Objects.FirstOrDefault();
+					if (topLevelControl is null)
+					{
+						continue;
+					}
+
+					var xClassSymbol = XamlFileGenerator.FindClassSymbol(topLevelControl, _metadataHelper);
+					if (xClassSymbol is not null)
+					{
+						xamlTypeToXamlTypeBaseMap.Add(xClassSymbol, topLevelControl.Type);
+					}
+				}
+
 				var files = filesFull
 					.Trim()
 					.OrderBy(f => f.UniqueID)
@@ -336,7 +353,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 									generatorContext: _generatorContext,
 									xamlResourcesTrimming: _xamlResourcesTrimming,
-									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID)
+									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
+									xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
 								)
 								.GenerateFile()
 						)
