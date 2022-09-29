@@ -11,10 +11,12 @@
     d:DesignWidth="400">
 
 	<StackPanel>
-		<controls:NumberBox x:Name="startNumber" PlaceholderText="Start" />
-		<controls:NumberBox x:Name="lengthNumber" PlaceholderText="Length" />
-		<TextBox x:Name="myTextBox" />
-		<Button Click="Select_OnClick" Content="Select"></Button>
+		<controls:NumberBox x:Name="startNumber" Value="5" PlaceholderText="Start" />
+		<controls:NumberBox x:Name="lengthNumber" Length="12" PlaceholderText="Length" />
+		<TextBox x:Name="myTextBox" Text="Text Uno Platform non-readonly textbox" />
+        <Button Click="Select_OnClick" Content="Select"></Button>
+        <TextBox x:Name="MyReadOnlyTextBox" Text="Text Uno Plaform in the readonly textbox" IsReadOnly="True" />
+		<Button Click="SelectReadOnly_OnClick" Content="Select ReadOnly"></Button>
 		<Button Click="SelectAll_OnClick" Content="Select all"></Button>
 	</StackPanel>
 </UserControl>
