@@ -104,15 +104,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var e = base.VisitMemberAccessExpression(node);
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
 				var isParentMemberStatic = node.Expression is MemberAccessExpressionSyntax m && _isStaticMember(m.ToFullString());
+				var isPathLessCast = Helpers.IsPathLessCast(node);
 
 				if (e!= null && isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
 				{
-					var expression = e.ToFullString();
-					var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
-					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {contextBuilder}{expression}; }}");
+					if (isPathLessCast.result)
+					{
+						var expression = e.ToFullString();
+						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => ({isPathLessCast.expression?.Expression}){_contextName}; }}");
 
-					var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
-					return o2;
+						var newSyntax = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
+						return newSyntax;
+					}
+					else
+					{
+						var expression = e.ToFullString();
+						var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
+						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {contextBuilder}{expression}; }}");
+
+						var newSyntax = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
+						return newSyntax;
+					}
 				}
 				else
 				{
@@ -251,6 +263,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					if (currentNode is CastExpressionSyntax cast)
 					{
 						return (true, cast);
+					}
+
+					currentNode = currentNode?.Parent;
+				}
+				while (currentNode != null);
+
+				return (false, null);
+			}
+
+			internal static (bool result, ParenthesizedExpressionSyntax? expression) IsPathLessCast(SyntaxNode node)
+			{
+				var currentNode = node.Parent;
+
+				do
+				{
+					if (currentNode is ArgumentSyntax arg
+						&& arg.Expression is ParenthesizedExpressionSyntax expressionSyntax)
+					{
+						return (true, expressionSyntax);
+					}
+
+					if (currentNode is ArrowExpressionClauseSyntax arrow
+						&& arrow.Expression is ParenthesizedExpressionSyntax expressionSyntax2)
+					{
+						return (true, expressionSyntax2);
 					}
 
 					currentNode = currentNode?.Parent;

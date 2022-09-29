@@ -30,6 +30,11 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "(FontFamily)a.Value", "(FontFamily)ctx.a.Value")]
 		[DataRow("ctx", "(global::System.Int32)a.Value", "(global::System.Int32)ctx.a.Value")]
 
+		// Pathless casting https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#pathless-casting
+		[DataRow("ctx", "MyFunction((global::System.String))", "ctx.MyFunction(((global::System.String)ctx))")]
+		[DataRow("ctx", "MyFunction2((global::System.String),(global::System.String))", "ctx.MyFunction2(((global::System.String)ctx),((global::System.String)ctx))")]
+		[DataRow("ctx", "(global::System.String)", "((global::System.String)ctx)")]
+
 		// Not supported https://github.com/unoplatform/uno/issues/5061
 		// [DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
 
