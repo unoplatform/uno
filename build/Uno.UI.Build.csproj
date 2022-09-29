@@ -255,7 +255,7 @@
 
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
-				 Projects="filter\Uno.UI-packages-no-net6.slnf;filter\Uno.UI-packages-wasm.slnf;filter\Uno.UI-packages-skia.slnf"
+				 Projects="filters\Uno.UI-packages-no-net6.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
 				 Targets="Restore"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
