@@ -1,22 +1,9 @@
 steps:
 
   - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 6.0.300'
+    displayName: 'Use .NET Core SDK 7.0.100-rc.1.22431.12'
     retryCountOnTaskFailure: 3
     inputs:
       packageType: sdk
-      version: 6.0.300
-
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 5.0.400'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      version: 5.0.400
-      
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 3.1.406'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      version: 3.1.406
+      includePreviewVersions: true
+      version: 7.0.100-rc.1.22431.12

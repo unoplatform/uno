@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net47;netcoreapp3.1;net7.0</TargetFrameworks>
   </PropertyGroup>
 
 	<Import Project="../netcore-build-windows.props" />

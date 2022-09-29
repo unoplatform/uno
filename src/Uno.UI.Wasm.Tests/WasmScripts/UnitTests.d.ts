@@ -1,5 +1,6 @@
 declare class TSBindingsTests {
     TSBindingsTests(): void;
+    static When_SingleStringNet7(value: string): string;
     When_IntPtr(pParams: number, pReturn: number): boolean;
     When_IntPtr_Zero(pParams: number, pReturn: number): boolean;
     When_SingleString(pParams: number, pReturn: number): boolean;

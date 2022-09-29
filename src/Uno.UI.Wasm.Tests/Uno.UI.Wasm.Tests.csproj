@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
@@ -10,6 +10,7 @@
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
 
 		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">

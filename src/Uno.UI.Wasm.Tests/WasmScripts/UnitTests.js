@@ -4,6 +4,9 @@ require([`${config.uno_app_base}/Uno.UI`], () => {
 class TSBindingsTests {
     TSBindingsTests() {
     }
+    static When_SingleStringNet7(value) {
+        return value;
+    }
     When_IntPtr(pParams, pReturn) {
         var params = SamplesApp.UnitTests.TSBindings.When_IntPtrParams.unmarshal(pParams);
         var ret = new SamplesApp.UnitTests.TSBindings.GenericReturn();

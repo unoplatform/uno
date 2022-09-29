@@ -43,29 +43,22 @@
 		<Warning Text="Building this project under Visual Studio has no effect." />
 	</Target>
 
-	<Target Name="BuildGeneric" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
-
+	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
-
+		
+		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
+	</Target>
+	
+	<Target Name="BuildGeneric" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 
 		<CallTarget Targets="PublishVSIX2019" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 	</Target>
 
-	<Target Name="BuildNet6" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
-		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
-	</Target>
-
-	<Target Name="GeneratePackages" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
-
-		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
-
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
-
+	<Target Name="GeneratePackages" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	</Target>
 	
@@ -222,17 +215,36 @@
 	<Target Name="BuildCI">
 		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
 		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-generic;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="..\src\Uno.UI-packages-no-net6.slnf"
+             Projects="filters\Uno.UI-packages-no-net6.slnf"
+             Targets="Restore;Build"
+             RebaseOutputs="false"
+             BuildInParallel="true" />
+	</Target>
+
+	<Target Name="BuildCINet6" DependsOnTargets="PrepareBuildAssets">
+
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-net6;PackageVersion=$(GITVERSION_SemVer)"
+             Projects="..\src\Uno.UI-net6-only.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
 	</Target>
 
-	<Target Name="BuildCINet6">
-		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-net6;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="..\src\Uno.UI-net6-only.slnf"
+	<Target Name="BuildCIWasm" DependsOnTargets="PrepareBuildAssets">
+
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(GITVERSION_SemVer)"
+             Projects="filters\Uno.UI-packages-wasm.slnf"
+             Targets="Restore;Build"
+             RebaseOutputs="false"
+             BuildInParallel="true" />
+
+	</Target>
+
+	<Target Name="BuildCISkia" DependsOnTargets="PrepareBuildAssets">
+
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
+             Projects="filters\Uno.UI-packages-skia.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />

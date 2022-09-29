@@ -78,6 +78,13 @@ jobs:
   parameters:
     poolName: '$(windowsScaledPool)'
 
+- template: build/ci/.azure-devops-package-wasm.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+    
+- template: build/ci/.azure-devops-package-skia.yml
+  parameters:
+    poolName: '$(windowsScaledPool)'
 - template: build/ci/.azure-devops-package.yml
   parameters:
     poolName: '$(windowsScaledPool)'
