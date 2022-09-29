@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Uno.UI.SourceGenerators.Helpers;
+using System.Collections.Immutable;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -66,7 +67,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _fileUniqueId;
 		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
-		private readonly string[] _resourceKeys;
+		private readonly ImmutableHashSet<string> _resourceKeys;
 		private int _applyIndex;
 		private int _collectionIndex;
 		private int _subclassIndex;
@@ -221,7 +222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string fileUniqueId,
 			DateTime lastReferenceUpdateTime,
 			string[] analyzerSuppressions,
-			string[] resourceKeys,
+			ImmutableHashSet<string> resourceKeys,
 			XamlGlobalStaticResourcesMap globalStaticResourcesMap,
 			bool isUiAutomationMappingEnabled,
 			Dictionary<string, string[]> uiAutomationMappings,
@@ -4897,7 +4898,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				fullKey = $"{uidName}/[using:{ns}]{type}/{memberName}";
 			}
 
-			if (_resourceKeys.Any(k => k == fullKey))
+			if (_resourceKeys.Contains(fullKey))
 			{
 				var resourceNameString = resourceFileName == null ? "null" : $"\"{resourceFileName}\"";
 
