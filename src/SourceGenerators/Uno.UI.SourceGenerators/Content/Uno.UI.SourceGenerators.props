@@ -30,6 +30,7 @@
 	</PropertyGroup>
 
   <ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
+		<CompilerVisibleProperty Include="XamlSourceGeneratorTracingFolder" />
 		<CompilerVisibleProperty Include="TargetPlatformIdentifier" />
 		<CompilerVisibleProperty Include="TargetFramework" />
 		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
