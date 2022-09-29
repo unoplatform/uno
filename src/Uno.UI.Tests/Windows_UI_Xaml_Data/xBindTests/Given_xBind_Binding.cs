@@ -1289,6 +1289,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(rootData, myObject.Tag);
 		}
 
+		[TestMethod]
+		public async Task When_AttachedProperty()
+		{
+			var SUT = new xBind_AttachedProperty();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(42, SUT.tb1.Tag);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);

@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	internal partial class XamlFileGenerator
 	{
 		private Func<string, INamedTypeSymbol?>? _findType;
-		private Func<XamlType, INamedTypeSymbol?>? _findTypeByXamlType;
+		private Func<XamlType, bool, INamedTypeSymbol?>? _findTypeByXamlType;
 		private Func<string, string, INamedTypeSymbol?>? _findPropertyTypeByFullName;
 		private Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
@@ -41,7 +41,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findEventType = Funcs.Create<XamlMember, IEventSymbol?>(SourceFindEventType).AsLockedMemoized();
 			_findPropertyTypeByFullName = Funcs.Create<string, string, INamedTypeSymbol?>(SourceFindPropertyTypeByFullName).AsLockedMemoized();
 			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsLockedMemoized();
-			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
+			_findTypeByXamlType = Funcs.Create<XamlType, bool, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
 			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
 			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsLockedMemoized();
 
@@ -742,10 +742,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private INamedTypeSymbol? FindType(string name)
 			=> _findType!(name);
 
-		private INamedTypeSymbol? FindType(XamlType? type)
-			=> type != null ? _findTypeByXamlType!(type) : null;
+		private INamedTypeSymbol? FindType(XamlType? type, bool strictSearch = false)
+			=> type != null ? _findTypeByXamlType!(type, strictSearch) : null;
 
-		private INamedTypeSymbol? SourceFindTypeByXamlType(XamlType type)
+		private INamedTypeSymbol? SourceFindTypeByXamlType(XamlType type, bool strictSearch)
 		{
 			if (type != null)
 			{
@@ -779,14 +779,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
-				var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
 
-				return _findType!(fullName);
+				if (strictSearch)
+				{
+					if(isKnownNamespace && ns != null)
+					{
+						var nsName = GetTrimmedNamespace(ns.Namespace);
+						return _metadataHelper.FindTypeByFullName(nsName + "." + type.Name) as INamedTypeSymbol;
+					}
+				}
+				else
+				{
+					var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
+
+					return _findType!(fullName);
+				}
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		private INamedTypeSymbol GetType(string name)

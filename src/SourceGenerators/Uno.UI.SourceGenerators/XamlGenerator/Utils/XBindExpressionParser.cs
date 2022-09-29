@@ -6,8 +6,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
@@ -80,10 +78,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					{
 						var methodName = newSyntax.Expression.ToFullString();
 						var arguments = newSyntax.ArgumentList.ToFullString();
-						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{methodName}{arguments}; }}");
+						var contextBuilder = _isStaticMember(methodName) ? "" : ContextBuilder;
 
-						var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
-						return o2;
+						return Helpers.ParseMethodBody($"{contextBuilder}{methodName}{arguments}");
 					}
 					else
 					{
@@ -105,31 +102,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
 				var isParentMemberStatic = node.Expression is MemberAccessExpressionSyntax m && _isStaticMember(m.ToFullString());
 				var isPathLessCast = Helpers.IsPathLessCast(node);
+				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
+				var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
 
-				if (e!= null && isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
+				if (e != null && isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
 				{
 					if (isPathLessCast.result)
 					{
-						var expression = e.ToFullString();
-						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => ({isPathLessCast.expression?.Expression}){_contextName}; }}");
-
-						var newSyntax = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
-						return newSyntax;
+						return Helpers.ParseMethodBody($"({isPathLessCast.expression?.Expression}){_contextName}");
+					}
+					else if (isInsideAttachedPropertySyntax.result)
+					{
+						var contextBuilder = ContextBuilder;
+						return Helpers.ParseMethodBody($"{contextBuilder}{isInsideAttachedPropertySyntax.expression?.Expression.ToString().TrimEnd('.')}");
 					}
 					else
 					{
 						var expression = e.ToFullString();
 						var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
-						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {contextBuilder}{expression}; }}");
 
-						var newSyntax = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
-						return newSyntax;
+						return Helpers.ParseMethodBody($"{contextBuilder}{expression}");
 					}
 				}
-				else
+				else if (e != null && isAttachedPropertySyntax.result)
 				{
-					return e;
+					if(e is MemberAccessExpressionSyntax memberAccess
+						&& memberAccess.Expression is IdentifierNameSyntax identifierSyntax)
+					{
+						if(
+							isAttachedPropertySyntax.expression?.ArgumentList.Arguments.FirstOrDefault() is { } property
+							&& property.Expression is MemberAccessExpressionSyntax memberAccessExpression
+							)
+						{
+							return Helpers.ParseMethodBody($"{memberAccessExpression.Expression}.Get{memberAccessExpression.Name}");
+						}
+					}
 				}
+
+				return e;
 			}
 
 			public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
@@ -144,13 +154,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					var newIdentifier = node.ToFullString();
 
 					var rawFunction = string.IsNullOrWhiteSpace(newIdentifier)
-						? $"class __Temp {{ private Func<object> __prop => {_contextName}; }}"
-						: $"class __Temp {{ private Func<object> __prop => {ContextBuilder}{newIdentifier}; }}";
+						? _contextName
+						: $"{ContextBuilder}{newIdentifier}";
 
-					var output = ParseCompilationUnit(rawFunction);
+					return Helpers.ParseMethodBody(rawFunction);
 
-					var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
-					return o2;
 				}
 				else
 				{
@@ -215,6 +223,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		private static class Helpers
 		{
+			internal static ExpressionSyntax ParseMethodBody(string body)
+				=> ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {body}; }}")
+					.DescendantNodes()
+					.OfType<ArrowExpressionClauseSyntax>()
+					.First()
+					.Expression;
+
 			internal static (bool result, MemberAccessExpressionSyntax? memberAccess) IsInsideMemberAccessExpression(SyntaxNode node)
 			{
 				var currentNode = node.Parent;
@@ -288,6 +303,47 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						&& arrow.Expression is ParenthesizedExpressionSyntax expressionSyntax2)
 					{
 						return (true, expressionSyntax2);
+					}
+
+					currentNode = currentNode?.Parent;
+				}
+				while (currentNode != null);
+
+				return (false, null);
+			}
+
+			internal static (bool result, InvocationExpressionSyntax? expression) IsAttachedPropertySyntax(SyntaxNode node)
+			{
+				var currentNode = node.Parent;
+
+				if (node.GetText().ToString().EndsWith("."))
+				{
+					do
+					{
+						if (currentNode is InvocationExpressionSyntax arg)
+						{
+							return (true, arg);
+						}
+
+						currentNode = currentNode?.Parent;
+					}
+					while (currentNode != null);
+				}
+
+				return (false, null);
+			}
+
+			internal static (bool result, InvocationExpressionSyntax? expression) IsInsideAttachedPropertySyntax(SyntaxNode node)
+			{
+				var currentNode = node.Parent;
+
+				do
+				{
+					if (currentNode is InvocationExpressionSyntax arg
+						&& arg.Expression is MemberAccessExpressionSyntax memberAccess
+						&& memberAccess.ToString().EndsWith("."))
+					{
+						return (true, arg);
 					}
 
 					currentNode = currentNode?.Parent;
