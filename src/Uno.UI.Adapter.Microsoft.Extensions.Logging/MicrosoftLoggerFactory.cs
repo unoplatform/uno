@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
+﻿namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 {
 	using Uno.Foundation.Logging;
 

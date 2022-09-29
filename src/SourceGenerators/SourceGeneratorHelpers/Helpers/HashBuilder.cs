@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;

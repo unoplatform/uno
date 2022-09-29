@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;

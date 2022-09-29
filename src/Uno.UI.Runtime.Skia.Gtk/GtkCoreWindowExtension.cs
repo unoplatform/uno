@@ -1,5 +1,4 @@
-﻿#nullable enable
-//#define TRACE_NATIVE_POINTER_EVENTS
+﻿//#define TRACE_NATIVE_POINTER_EVENTS
 
 using System;
 using System.Collections.Generic;

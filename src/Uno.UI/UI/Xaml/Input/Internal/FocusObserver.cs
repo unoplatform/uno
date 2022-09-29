@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusObserver.h, FocusObserver.cpp
 
-#nullable enable
-
 using System;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;

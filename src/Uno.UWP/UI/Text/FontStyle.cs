@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Text
+﻿#nullable disable
+
+namespace Windows.UI.Text
 {
 	public enum FontStyle
 	{

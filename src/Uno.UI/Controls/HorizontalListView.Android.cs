@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 /*
  * HorizontalListView.cs a derivation of Paul Soucy's HorizontalListView.java,
  * with additional features, including Snap mode and C# event handlers.

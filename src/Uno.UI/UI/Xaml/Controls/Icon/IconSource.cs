@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls

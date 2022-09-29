@@ -1,4 +1,6 @@
-﻿// MUX Reference: TabViewAutomationPeer.cpp, commit 542e6f9
+﻿#nullable disable
+
+// MUX Reference: TabViewAutomationPeer.cpp, commit 542e6f9
 
 using System;
 using Microsoft.UI.Xaml.Controls;

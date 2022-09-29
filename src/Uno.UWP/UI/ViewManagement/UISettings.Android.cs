@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Android;
 using Android.OS;
 using Android.Util;

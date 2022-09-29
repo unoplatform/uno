@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if HAS_UNO_WINUI
+﻿#if HAS_UNO_WINUI
 using Windows.ApplicationModel.Activation;
 
 namespace Microsoft.UI.Xaml

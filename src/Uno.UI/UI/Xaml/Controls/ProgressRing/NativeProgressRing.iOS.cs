@@ -1,4 +1,6 @@
-﻿using Uno.UI.Views.Controls;
+﻿#nullable disable
+
+using Uno.UI.Views.Controls;
 
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml;

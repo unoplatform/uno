@@ -1,4 +1,6 @@
-﻿namespace XamlGenerationTests.Shared
+﻿#nullable disable
+
+namespace XamlGenerationTests.Shared
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

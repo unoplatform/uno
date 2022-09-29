@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // DXamlCore.h, DXamlCore.cpp
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using Uno.Foundation.Collections;

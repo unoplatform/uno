@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Focusability.h
 
-#nullable enable
-
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Input

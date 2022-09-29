@@ -1,4 +1,6 @@
-﻿#if NET461 || __WASM__
+﻿#nullable disable
+
+#if NET461 || __WASM__
 #pragma warning disable CS0067
 #endif
 

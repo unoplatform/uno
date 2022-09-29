@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;

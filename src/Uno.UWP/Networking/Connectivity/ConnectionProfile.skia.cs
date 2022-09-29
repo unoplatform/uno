@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Net.NetworkInformation;
+﻿using System.Net.NetworkInformation;
 using Uno;
 using Uno.Foundation.Extensibility;
 

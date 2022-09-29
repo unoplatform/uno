@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;

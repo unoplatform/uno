@@ -1,4 +1,6 @@
-﻿namespace Windows.Graphics.Imaging
+﻿#nullable disable
+
+namespace Windows.Graphics.Imaging
 {
 	partial class BitmapEncoder
 	{

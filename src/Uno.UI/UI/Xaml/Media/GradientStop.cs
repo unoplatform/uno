@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+﻿#nullable disable
+
+#if XAMARIN_ANDROID
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;

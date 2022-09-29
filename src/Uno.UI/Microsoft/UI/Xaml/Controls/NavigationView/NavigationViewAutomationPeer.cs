@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationViewAutomationPeer.cpp, commit 8f1a682
+﻿#nullable disable
+
+// MUX reference NavigationViewAutomationPeer.cpp, commit 8f1a682
 
 using System;
 using Microsoft.UI.Xaml.Controls;

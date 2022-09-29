@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives
+﻿#nullable disable
+
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public enum CornerRadiusFilterKind
 	{

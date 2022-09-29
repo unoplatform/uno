@@ -1,5 +1,4 @@
-﻿#nullable enable
-// #define TRACE_MEMORY_LAYOUT
+﻿// #define TRACE_MEMORY_LAYOUT
 
 using System;
 using System.Collections.Generic;

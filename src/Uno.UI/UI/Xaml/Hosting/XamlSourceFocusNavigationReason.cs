@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Hosting;
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Hosting;
 
 /// <summary>
 /// Defines values that represent the reasons that the Windows.UI.Xaml.UIElement got focus

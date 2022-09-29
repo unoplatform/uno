@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 
 // Keep this using in place until UWP support is dropped.
 using Windows.UI.Xaml.Controls;

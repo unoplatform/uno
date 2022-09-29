@@ -1,4 +1,6 @@
-﻿using Windows.UI.Text;
+﻿#nullable disable
+
+using Windows.UI.Text;
 using Pango;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Text

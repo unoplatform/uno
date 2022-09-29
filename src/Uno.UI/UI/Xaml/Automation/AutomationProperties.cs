@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+
+using System.Collections.Generic;
 using Uno.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Automation.Peers;

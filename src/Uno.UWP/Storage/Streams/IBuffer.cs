@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Storage.Streams
 {
 	public partial interface IBuffer

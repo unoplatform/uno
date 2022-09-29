@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using Uno.Helpers.Theming;
 

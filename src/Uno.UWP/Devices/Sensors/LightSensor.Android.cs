@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Android.Hardware;
 using Android.Runtime;
 using Uno.Devices.Sensors.Helpers;

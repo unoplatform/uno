@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls.Primitives
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// Provides data about a change in range value for the ValueChanged event.

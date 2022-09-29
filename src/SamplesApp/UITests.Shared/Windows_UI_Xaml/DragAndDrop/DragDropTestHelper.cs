@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;

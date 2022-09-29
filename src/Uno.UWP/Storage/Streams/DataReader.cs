@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Uno.Buffers;
 using System.Text;
 using Uno.Disposables;

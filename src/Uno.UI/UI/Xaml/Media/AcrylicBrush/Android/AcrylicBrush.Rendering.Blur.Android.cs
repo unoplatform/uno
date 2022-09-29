@@ -1,4 +1,6 @@
-﻿/*
+﻿#nullable disable
+
+/*
 
 Implementation based on https://github.com/roubachof/Sharpnado.MaterialFrame.
 with some modifications and removal of unused features.

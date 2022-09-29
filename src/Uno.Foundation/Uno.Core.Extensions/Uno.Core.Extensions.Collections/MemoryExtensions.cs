@@ -1,4 +1,6 @@
-﻿// ******************************************************************
+﻿#nullable disable
+
+// ******************************************************************
 // Copyright � 2015-2018 nventive inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

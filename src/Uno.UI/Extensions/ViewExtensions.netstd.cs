@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if !__NETSTD_REFERENCE__
+﻿#if !__NETSTD_REFERENCE__
 using System;
 using System.Collections.Generic;
 using System.Text;

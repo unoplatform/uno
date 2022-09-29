@@ -5,8 +5,6 @@ using System.Text;
 using HarfBuzzSharp;
 using Windows.Foundation;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>

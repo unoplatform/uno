@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+
+using System.Collections.Generic;
 using Windows.UI.Xaml.Controls;
 using UITests.Windows_UI_Xaml_Controls.ImageTests;
 using Uno.UI.Samples.Controls;

@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Helpers.WinUI
+﻿#nullable disable
+
+namespace Uno.UI.Helpers.WinUI
 {
 	internal partial class ResourceAccessor
 	{

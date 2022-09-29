@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Tizen.Applications;
 using System.Threading.Tasks;
 using Uno.Extensions.System;

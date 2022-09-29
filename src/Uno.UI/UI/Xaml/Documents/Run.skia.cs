@@ -10,8 +10,6 @@ using Uno.UI.Xaml;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Documents
 {
 	partial class Run

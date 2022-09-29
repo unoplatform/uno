@@ -1,4 +1,6 @@
-﻿// SnapHelper is only available in API 24+
+﻿#nullable disable
+
+// SnapHelper is only available in API 24+
 #if !MONOANDROID6_0 && !MONOANDROID7_0
 using System;
 using System.Collections.Generic;

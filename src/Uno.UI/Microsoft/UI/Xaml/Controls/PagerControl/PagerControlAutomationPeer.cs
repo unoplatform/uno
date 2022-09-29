@@ -1,4 +1,6 @@
-﻿// MUX reference PagerControlAutomationPeer.cpp, commit a08f765
+﻿#nullable disable
+
+// MUX reference PagerControlAutomationPeer.cpp, commit a08f765
 
 using System;
 using Microsoft.UI.Xaml.Controls;

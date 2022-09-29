@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#nullable disable
+
+#if __ANDROID__ || __IOS__
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;

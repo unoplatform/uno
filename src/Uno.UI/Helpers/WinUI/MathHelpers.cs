@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // inlined.cpp, math.cpp
 
-#nullable enable
-
 using System;
 using Windows.Foundation;
 

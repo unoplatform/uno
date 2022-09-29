@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml
+﻿#nullable disable
+
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Specifies the display state of an element.

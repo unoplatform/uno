@@ -1,4 +1,6 @@
-﻿#if __WASM__ || __SKIA__
+﻿#nullable disable
+
+#if __WASM__ || __SKIA__
 // "Managed Measure Dirty Path" means it's the responsibility of the
 // managed code (Uno) to walk the tree and do the measure phase.
 #define IMPLEMENTS_MANAGED_MEASURE_DIRTY_PATH

@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿#nullable disable
+
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Testing;

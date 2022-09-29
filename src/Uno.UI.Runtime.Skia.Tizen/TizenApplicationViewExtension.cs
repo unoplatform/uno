@@ -1,4 +1,6 @@
-﻿using Windows.UI.ViewManagement;
+﻿#nullable disable
+
+using Windows.UI.ViewManagement;
 using TizenWindow = ElmSharp.Window;
 using Uno.Foundation.Logging;
 

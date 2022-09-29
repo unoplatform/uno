@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	public enum UniformGridLayoutItemsJustification

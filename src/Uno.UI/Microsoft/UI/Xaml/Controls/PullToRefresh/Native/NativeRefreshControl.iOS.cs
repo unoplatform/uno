@@ -1,4 +1,6 @@
-﻿using CoreGraphics;
+﻿#nullable disable
+
+using CoreGraphics;
 using UIKit;
 
 namespace Uno.UI.Xaml.Controls;

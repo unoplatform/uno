@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿#nullable disable
+
+using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

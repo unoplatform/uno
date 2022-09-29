@@ -1,4 +1,6 @@
-﻿namespace Windows.Networking.Connectivity;
+﻿#nullable disable
+
+namespace Windows.Networking.Connectivity;
 
 internal interface IConnectionProfileExtension
 {

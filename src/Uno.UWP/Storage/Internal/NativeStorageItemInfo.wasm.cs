@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace Uno.Storage.Internal

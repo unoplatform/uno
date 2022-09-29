@@ -1,6 +1,4 @@
-#nullable enable
-
-namespace Windows.UI.Input.Preview.Injection;
+﻿namespace Windows.UI.Input.Preview.Injection;
 
 public partial struct InjectedInputRectangle 
 {

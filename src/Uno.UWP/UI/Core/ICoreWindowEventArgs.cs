@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Core
+﻿#nullable disable
+
+namespace Windows.UI.Core
 {
 	/// <summary>
 	/// Defines the set of arguments returned to an app after a window input or behavior event.

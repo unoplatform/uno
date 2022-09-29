@@ -1,4 +1,6 @@
-﻿#if __WASM__ || __SKIA__
+﻿#nullable disable
+
+#if __WASM__ || __SKIA__
 // On iOS and Android, pointers are implicitly captured, so we will receive the "irrelevant" (i.e. !isOverOrCaptured)
 // pointer moves and we can use them for manipulation. But on WASM and SKIA we have to explicitly request to get those events
 // (expect on FF where they are also implicitly captured ... but we still capture them anyway).

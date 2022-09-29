@@ -2,9 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusRectManager.h, FocusRectManager.cpp
 
-#nullable enable
-
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;

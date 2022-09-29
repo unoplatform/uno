@@ -1,4 +1,6 @@
-﻿using static Uno.Foundation.WebAssemblyRuntime;
+﻿#nullable disable
+
+using static Uno.Foundation.WebAssemblyRuntime;
 
 namespace Windows.Security.ExchangeActiveSyncProvisioning
 {

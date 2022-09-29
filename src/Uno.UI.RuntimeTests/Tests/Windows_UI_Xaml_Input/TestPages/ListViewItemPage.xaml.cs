@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿#nullable disable
+
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages

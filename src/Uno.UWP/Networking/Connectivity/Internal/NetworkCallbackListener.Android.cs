@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using System;
 using Android.Net;
 using AndroidConnectivityManager = Android.Net.ConnectivityManager;

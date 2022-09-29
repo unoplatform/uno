@@ -1,4 +1,6 @@
-﻿#if !HAS_UI_TESTS
+﻿#nullable disable
+
+#if !HAS_UI_TESTS
 using System;
 using System.Collections.Generic;
 using System.Drawing;

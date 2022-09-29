@@ -1,4 +1,6 @@
-﻿// Microsoft.Graphics.IGeometrySource2D
+﻿#nullable disable
+
+// Microsoft.Graphics.IGeometrySource2D
 using System.Runtime.InteropServices;
 using Windows.Foundation.Metadata;
 

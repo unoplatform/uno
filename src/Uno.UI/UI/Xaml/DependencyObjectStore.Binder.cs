@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;

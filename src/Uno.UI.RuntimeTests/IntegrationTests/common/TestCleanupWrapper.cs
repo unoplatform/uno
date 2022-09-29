@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Tests.Common
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Tests.Common
 {
 	public struct TestCleanupWrapper { }
 }

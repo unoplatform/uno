@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Uno.Helpers.Theming
+﻿namespace Uno.Helpers.Theming
 {
 	internal static partial class SystemThemeHelper
     {

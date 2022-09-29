@@ -1,4 +1,6 @@
-﻿using Android.Graphics;
+﻿#nullable disable
+
+using Android.Graphics;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;

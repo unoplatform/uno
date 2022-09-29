@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;

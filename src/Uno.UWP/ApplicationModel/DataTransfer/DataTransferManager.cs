@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
+﻿#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
 using System;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;

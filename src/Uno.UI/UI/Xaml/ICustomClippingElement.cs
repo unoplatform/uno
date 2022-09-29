@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml
+﻿#nullable disable
+
+namespace Windows.UI.Xaml
 {
 	internal interface ICustomClippingElement
 	{

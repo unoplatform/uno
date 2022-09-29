@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if NET461 || __NETSTD_REFERENCE__
 
 using System;

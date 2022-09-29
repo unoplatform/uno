@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Windows.Globalization.NumberFormatting;
 
 namespace Uno.Globalization.NumberFormatting

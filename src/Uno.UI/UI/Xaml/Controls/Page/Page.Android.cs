@@ -1,4 +1,6 @@
-﻿using Android.Views;
+﻿#nullable disable
+
+using Android.Views;
 using Android.Widget;
 using Uno.Foundation.Logging;
 using Uno.Extensions;

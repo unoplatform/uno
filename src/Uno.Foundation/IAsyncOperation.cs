@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Foundation
 {
 	public partial interface IAsyncOperation<TResult> : IAsyncInfo

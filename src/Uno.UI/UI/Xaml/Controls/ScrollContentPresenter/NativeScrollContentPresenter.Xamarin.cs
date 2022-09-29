@@ -1,4 +1,6 @@
-﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+﻿#nullable disable
+
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;

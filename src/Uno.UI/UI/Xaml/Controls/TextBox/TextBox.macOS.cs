@@ -1,4 +1,6 @@
-﻿using AppKit;
+﻿#nullable disable
+
+using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;

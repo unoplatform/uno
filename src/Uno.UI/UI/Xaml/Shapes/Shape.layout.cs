@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__
+﻿#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__
 using System;
 using System.Linq;
 using Windows.Foundation;

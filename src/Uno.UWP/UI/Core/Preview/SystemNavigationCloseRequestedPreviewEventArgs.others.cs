@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Core.Preview;
+﻿#nullable disable
+
+namespace Windows.UI.Core.Preview;
 
 public partial class SystemNavigationCloseRequestedPreviewEventArgs
 {

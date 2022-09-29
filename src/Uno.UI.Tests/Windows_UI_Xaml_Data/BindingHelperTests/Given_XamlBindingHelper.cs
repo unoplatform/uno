@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#nullable disable
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;

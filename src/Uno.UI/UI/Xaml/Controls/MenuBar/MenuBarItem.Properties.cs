@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Uno.Disposables;

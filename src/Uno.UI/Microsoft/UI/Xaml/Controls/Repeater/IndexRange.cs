@@ -1,4 +1,6 @@
-﻿//MUX reference IndexRange.cpp, commit de78834
+﻿#nullable disable
+
+//MUX reference IndexRange.cpp, commit de78834
 
 using static Microsoft.UI.Xaml.Controls._Tracing;
 

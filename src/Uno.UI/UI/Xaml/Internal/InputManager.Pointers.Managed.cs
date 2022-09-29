@@ -1,6 +1,4 @@
 ﻿#if UNO_HAS_MANAGED_POINTERS
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Linq;

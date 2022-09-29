@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Text;
 using Uno.Core.Comparison;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;

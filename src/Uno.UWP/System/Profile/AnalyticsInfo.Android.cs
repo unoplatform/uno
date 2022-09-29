@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Windows.Graphics.Display;
 using Android.App;
 using Android.Content;

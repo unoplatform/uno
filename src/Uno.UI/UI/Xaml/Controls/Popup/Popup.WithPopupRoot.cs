@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __WASM__ || __SKIA__
+﻿#nullable disable
+
+#if __ANDROID__ || __WASM__ || __SKIA__
 using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;

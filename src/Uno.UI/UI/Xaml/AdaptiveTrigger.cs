@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using Uno.Disposables;
 using Windows.Foundation;

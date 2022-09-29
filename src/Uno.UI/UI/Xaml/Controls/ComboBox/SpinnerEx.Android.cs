@@ -1,4 +1,6 @@
-﻿#pragma warning disable 0618 // For SetBackgroundDrawable
+﻿#nullable disable
+
+#pragma warning disable 0618 // For SetBackgroundDrawable
 
 using Uno.UI;
 using System;

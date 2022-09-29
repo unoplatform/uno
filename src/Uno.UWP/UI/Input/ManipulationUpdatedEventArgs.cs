@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System.Linq;
 using System.Reflection;
 using Windows.Devices.Input;

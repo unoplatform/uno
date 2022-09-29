@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Markup;

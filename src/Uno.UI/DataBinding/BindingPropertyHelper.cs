@@ -1,6 +1,4 @@
-#nullable enable
-
-#if !NETFX_CORE
+﻿#if !NETFX_CORE
 using System;
 using System.Collections.Generic;
 using System.Linq;

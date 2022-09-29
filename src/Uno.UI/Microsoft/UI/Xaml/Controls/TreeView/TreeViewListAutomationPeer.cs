@@ -1,4 +1,6 @@
-﻿// MUX Reference TreeViewListAutomationPeer.cpp, commit 46f9da3
+﻿#nullable disable
+
+// MUX Reference TreeViewListAutomationPeer.cpp, commit 46f9da3
 
 using System;
 using Windows.UI.Xaml.Automation.Peers;

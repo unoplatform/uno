@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #pragma warning disable 108 // new keyword hiding
 using System;
 

@@ -1,4 +1,6 @@
-﻿#if XAMARIN_IOS_UNIFIED
+﻿#nullable disable
+
+#if XAMARIN_IOS_UNIFIED
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;

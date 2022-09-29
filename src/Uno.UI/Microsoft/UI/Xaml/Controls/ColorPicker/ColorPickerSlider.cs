@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.UI.Xaml.Documents
 {
 	public partial class Italic : Span

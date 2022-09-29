@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if __IOS__ || __ANDROID__ || __WASM__
 using Uno.Extensions;
 using Uno.Foundation.Logging;

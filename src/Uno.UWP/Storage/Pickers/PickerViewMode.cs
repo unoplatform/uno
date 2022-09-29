@@ -1,4 +1,6 @@
-﻿namespace Windows.Storage.Pickers
+﻿#nullable disable
+
+namespace Windows.Storage.Pickers
 {
 	/// <summary>
 	/// Indicates the view mode that the file picker is using to present items.

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 //
 // Copyright (C) 2011 Novell Inc. http://novell.com
 //

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;

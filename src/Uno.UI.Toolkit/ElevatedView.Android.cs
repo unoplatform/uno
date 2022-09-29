@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Android.App;
 using Android.Graphics;
 using AndroidBitmap = Android.Graphics.Bitmap;

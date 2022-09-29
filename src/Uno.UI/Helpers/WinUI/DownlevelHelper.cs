@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Helpers.WinUI
+﻿#nullable disable
+
+namespace Uno.UI.Helpers.WinUI
 {
 	// Uno Docs: This is implemented completely differently from the WinUI source which is generated.
 	// Several properties/methods are also omitted.

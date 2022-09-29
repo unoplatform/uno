@@ -1,4 +1,6 @@
-﻿using CoreAnimation;
+﻿#nullable disable
+
+using CoreAnimation;
 using CoreGraphics;
 
 namespace Windows.UI.Xaml.Media

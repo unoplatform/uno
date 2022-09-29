@@ -1,4 +1,6 @@
-﻿using Tizen.Applications;
+﻿#nullable disable
+
+using Tizen.Applications;
 using ElmSharp;
 using SkiaSharp.Views.Tizen;
 using SkiaSharp;

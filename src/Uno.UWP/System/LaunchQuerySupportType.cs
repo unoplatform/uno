@@ -1,4 +1,6 @@
-﻿namespace Windows.System
+﻿#nullable disable
+
+namespace Windows.System
 {
 	public enum LaunchQuerySupportType
 	{

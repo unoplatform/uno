@@ -1,4 +1,6 @@
-﻿#if !__IOS__ && !__ANDROID__
+﻿#nullable disable
+
+#if !__IOS__ && !__ANDROID__
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;

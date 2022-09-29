@@ -1,6 +1,4 @@
-#nullable enable
-
-namespace Windows.UI.Core
+﻿namespace Windows.UI.Core
 {
 	public partial struct CorePhysicalKeyStatus
 	{

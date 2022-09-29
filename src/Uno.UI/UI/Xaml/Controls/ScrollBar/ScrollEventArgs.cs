@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public  partial class ScrollEventArgs : global::Windows.UI.Xaml.RoutedEventArgs

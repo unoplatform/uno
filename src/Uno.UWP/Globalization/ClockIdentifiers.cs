@@ -1,4 +1,6 @@
-﻿namespace Windows.Globalization
+﻿#nullable disable
+
+namespace Windows.Globalization
 {
 	public static partial class ClockIdentifiers
 	{

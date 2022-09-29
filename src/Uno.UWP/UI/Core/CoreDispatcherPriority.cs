@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Core
+﻿#nullable disable
+
+namespace Windows.UI.Core
 {
 	public enum CoreDispatcherPriority : int
 	{

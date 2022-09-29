@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿#nullable disable
+
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Uno.UITest.Helpers;

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Android.App;
 using Android.Views;
 using Uno.Extensions;

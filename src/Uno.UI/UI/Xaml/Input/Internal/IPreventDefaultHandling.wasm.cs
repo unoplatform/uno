@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Xaml.Input
+﻿#nullable disable
+
+namespace Uno.UI.Xaml.Input
 {
 	internal interface IPreventDefaultHandling
 	{

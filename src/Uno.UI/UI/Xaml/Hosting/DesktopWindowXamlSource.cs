@@ -1,4 +1,6 @@
-﻿#pragma warning disable 67 // TODO: Focus-related members are currently unused https://github.com/unoplatform/uno/issues/8978
+﻿#nullable disable
+
+#pragma warning disable 67 // TODO: Focus-related members are currently unused https://github.com/unoplatform/uno/issues/8978
 
 using System;
 using Uno.UI.Xaml.Core;

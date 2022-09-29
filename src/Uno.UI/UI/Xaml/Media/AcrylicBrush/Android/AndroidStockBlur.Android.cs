@@ -1,4 +1,6 @@
-﻿/*
+﻿#nullable disable
+
+/*
 
 Implementation based on https://github.com/mmin18/RealtimeBlurView.
 with some modifications and removal of unused features.

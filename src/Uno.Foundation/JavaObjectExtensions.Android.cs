@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#nullable disable
+
+using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Runtime;
 using System;

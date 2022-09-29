@@ -1,4 +1,6 @@
-﻿#if __IOS__ || __MACOS__ || __ANDROID__
+﻿#nullable disable
+
+#if __IOS__ || __MACOS__ || __ANDROID__
 #define HAS_NATIVE_VIEWS
 #endif
 

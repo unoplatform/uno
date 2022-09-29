@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Media.Imaging
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	public partial class SvgImageSourceFailedEventArgs
 	{

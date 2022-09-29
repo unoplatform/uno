@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if __WASM__
+﻿#if __WASM__
 using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;

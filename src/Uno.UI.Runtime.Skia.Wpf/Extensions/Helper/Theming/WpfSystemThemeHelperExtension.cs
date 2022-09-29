@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.Helpers.Theming;
+﻿using Uno.Helpers.Theming;
 
 namespace Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming
 {

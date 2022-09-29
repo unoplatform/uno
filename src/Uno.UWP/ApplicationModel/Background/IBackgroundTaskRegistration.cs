@@ -1,4 +1,6 @@
-﻿
+﻿#nullable disable
+
+
 
 namespace Windows.ApplicationModel.Background
 {

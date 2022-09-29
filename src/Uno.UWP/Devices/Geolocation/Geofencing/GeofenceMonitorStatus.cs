@@ -1,4 +1,6 @@
-﻿namespace Windows.Devices.Geolocation.Geofencing
+﻿#nullable disable
+
+namespace Windows.Devices.Geolocation.Geofencing
 {
 	public enum GeofenceMonitorStatus
 	{

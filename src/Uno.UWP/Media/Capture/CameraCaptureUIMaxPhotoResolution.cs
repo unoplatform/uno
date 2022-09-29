@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Media.Capture
 {
 	public enum CameraCaptureUIMaxPhotoResolution

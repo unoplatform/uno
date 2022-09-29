@@ -2,8 +2,6 @@
 
 using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
-#nullable enable
-
 namespace Windows.Devices.Haptics
 {
 	public partial class VibrationDevice

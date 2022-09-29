@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using System.Threading.Tasks;
 using Android.Content;

@@ -1,4 +1,6 @@
-﻿using ElmSharp;
+﻿#nullable disable
+
+using ElmSharp;
 using Tizen.System;
 using Windows.Graphics.Display;
 

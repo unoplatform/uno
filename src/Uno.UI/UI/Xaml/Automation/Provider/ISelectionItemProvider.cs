@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Automation.Provider
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Automation.Provider
 {
 	/// <summary>
 	/// Exposes methods and properties to support access by a Microsoft UI Automation client to individual,

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using AppKit;
 
 namespace Uno.Helpers.Theming

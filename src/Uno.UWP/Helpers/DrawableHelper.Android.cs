@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using Android.Graphics.Drawables;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics.Drawable;

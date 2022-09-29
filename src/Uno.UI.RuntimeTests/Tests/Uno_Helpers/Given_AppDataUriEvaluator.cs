@@ -1,4 +1,6 @@
-﻿#if !WINDOWS_UWP
+﻿#nullable disable
+
+#if !WINDOWS_UWP
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

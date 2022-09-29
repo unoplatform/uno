@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using UIKit;
 
-#nullable enable
-
 namespace Windows.Devices.Haptics
 {
 	public partial class SimpleHapticsController

@@ -1,4 +1,6 @@
-﻿namespace Windows.Devices.Haptics
+﻿#nullable disable
+
+namespace Windows.Devices.Haptics
 {
 	public enum VibrationAccessStatus
 	{

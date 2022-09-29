@@ -1,4 +1,6 @@
-﻿using Uno.UI;
+﻿#nullable disable
+
+using Uno.UI;
 using Settings = Android.Provider.Settings;
 
 namespace Windows.Security.ExchangeActiveSyncProvisioning

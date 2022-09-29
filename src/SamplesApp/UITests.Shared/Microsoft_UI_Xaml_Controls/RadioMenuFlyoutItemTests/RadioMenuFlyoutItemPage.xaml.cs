@@ -1,4 +1,6 @@
-﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+﻿#nullable disable
+
+#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
 using Windows.UI.Xaml;

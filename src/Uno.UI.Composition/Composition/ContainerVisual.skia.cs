@@ -1,5 +1,4 @@
-#nullable enable
-using SkiaSharp;
+﻿using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
 

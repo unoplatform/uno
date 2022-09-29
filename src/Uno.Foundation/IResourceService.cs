@@ -1,4 +1,6 @@
-﻿namespace Uno.UI
+﻿#nullable disable
+
+namespace Uno.UI
 {
     public interface IResourcesService
     {

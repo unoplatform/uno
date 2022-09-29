@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.UI.Core;
 
 namespace Windows.UI.Xaml

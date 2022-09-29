@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using System;
 using Uno.Media;
 using Uno.UI;

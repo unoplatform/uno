@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || __SKIA__
+﻿#nullable disable
+
+#if __MACOS__ || __SKIA__
 using System;
 using Uno.Helpers;
 using Windows.Foundation;

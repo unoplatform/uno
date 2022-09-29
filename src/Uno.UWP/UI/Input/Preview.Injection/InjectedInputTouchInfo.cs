@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;

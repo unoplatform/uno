@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if NET461 || UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using SamplesApp.UITests.TestFramework;

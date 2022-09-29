@@ -1,6 +1,4 @@
-#nullable enable
-
-using Uno.Foundation.Logging;
+﻿using Uno.Foundation.Logging;
 using Uno.Extensions;
 
 using Windows.Data.Xml.Dom;

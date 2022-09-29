@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using Uno.Foundation;

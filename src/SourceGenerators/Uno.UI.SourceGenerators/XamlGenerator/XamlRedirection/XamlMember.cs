@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-extern alias __uno;
+﻿extern alias __uno;
 
 using System;
 using Uno.Extensions;

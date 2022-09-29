@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Composition
+﻿#nullable disable
+
+namespace Windows.UI.Composition
 {
 	public enum CompositionGradientExtendMode
 	{

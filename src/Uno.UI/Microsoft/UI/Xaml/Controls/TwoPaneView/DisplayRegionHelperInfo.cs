@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference DisplayRegionHelper.h, commit d876b4e
 
-#nullable enable
-
 using System;
 using Windows.Foundation;
 

@@ -1,4 +1,6 @@
-﻿namespace Private.Infrastructure
+﻿#nullable disable
+
+namespace Private.Infrastructure
 {
 	public class MockDComp
 	{

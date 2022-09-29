@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || NET461
+﻿#nullable disable
+
+#if __MACOS__ || NET461
 namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer

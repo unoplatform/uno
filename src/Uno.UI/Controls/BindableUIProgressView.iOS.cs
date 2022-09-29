@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿#nullable disable
+
+using Foundation;
 using System;
 using System.Collections.Generic;
 using System.Text;

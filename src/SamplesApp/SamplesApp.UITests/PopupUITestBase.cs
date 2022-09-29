@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿#nullable disable
+
+using NUnit.Framework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;

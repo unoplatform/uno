@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ElementSoundPlayerService.cpp
 
-#nullable enable
-
 using System;
 using Windows.UI.Xaml;
 using static Microsoft.UI.Xaml.Controls._Tracing;

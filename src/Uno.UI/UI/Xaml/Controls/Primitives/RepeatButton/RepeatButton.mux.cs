@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // RepeatButton_Partial.h, RepeatButton_Partial.cpp
 
-#nullable enable
-
 using System;
 using Windows.Devices.Input;
 using Windows.System;

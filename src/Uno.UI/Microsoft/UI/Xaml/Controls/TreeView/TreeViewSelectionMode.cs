@@ -1,4 +1,6 @@
-﻿// MUX Reference TreeView.idl, commit 96244e6
+﻿#nullable disable
+
+// MUX Reference TreeView.idl, commit 96244e6
 
 namespace Microsoft.UI.Xaml.Controls
 {

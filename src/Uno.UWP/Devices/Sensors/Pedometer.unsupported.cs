@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || __WASM__ || NET461
+﻿#nullable disable
+
+#if __MACOS__ || __WASM__ || NET461
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;

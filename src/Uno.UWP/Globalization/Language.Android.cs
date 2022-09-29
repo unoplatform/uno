@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using Android.Content;
 using Android.Views.InputMethods;
 using Java.Interop;

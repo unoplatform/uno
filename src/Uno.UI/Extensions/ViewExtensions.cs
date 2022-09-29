@@ -1,5 +1,4 @@
-#nullable enable
-#if __IOS__
+﻿#if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
 #elif __MACOS__

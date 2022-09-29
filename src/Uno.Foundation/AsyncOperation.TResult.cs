@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.Diagnostics.Eventing;
+﻿using Uno.Diagnostics.Eventing;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Uno.Extensions;
 
 #if XAMARIN_IOS_UNIFIED

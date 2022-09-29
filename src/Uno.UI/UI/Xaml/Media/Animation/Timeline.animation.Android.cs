@@ -1,4 +1,6 @@
-﻿using Android.Animation;
+﻿#nullable disable
+
+using Android.Animation;
 using Android.Views;
 using Android.Views.Animations;
 using Uno.UI;

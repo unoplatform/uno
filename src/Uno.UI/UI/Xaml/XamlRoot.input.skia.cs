@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Diagnostics;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;

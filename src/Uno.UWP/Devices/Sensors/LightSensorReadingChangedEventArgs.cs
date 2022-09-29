@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.Devices.Sensors
+﻿namespace Windows.Devices.Sensors
 {
 	/// <summary>
 	/// Provides data for the ambient-light sensor reading-changed event.

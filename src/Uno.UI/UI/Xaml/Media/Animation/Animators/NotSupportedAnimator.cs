@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0067
+﻿#nullable disable
+
+#pragma warning disable CS0067
 
 using System;
 using System.Collections.Generic;

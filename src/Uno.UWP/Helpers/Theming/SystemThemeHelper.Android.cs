@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Android.Content.Res;
+﻿using Android.Content.Res;
 using Android.OS;
 
 namespace Uno.Helpers.Theming

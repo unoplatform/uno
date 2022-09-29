@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #pragma warning disable 67
 
 using System;

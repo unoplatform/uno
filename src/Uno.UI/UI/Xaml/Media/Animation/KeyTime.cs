@@ -1,4 +1,6 @@
-﻿using Uno.UI.Extensions;
+﻿#nullable disable
+
+using Uno.UI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

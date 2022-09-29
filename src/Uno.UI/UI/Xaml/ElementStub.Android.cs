@@ -1,4 +1,6 @@
-﻿using Android.Views;
+﻿#nullable disable
+
+using Android.Views;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 using System;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 
 #if XAMARIN_IOS_UNIFIED
 using UIKit;

@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Notifications
+﻿#nullable disable
+
+namespace Windows.UI.Notifications
 {
 	public partial class TileNotification
 	{

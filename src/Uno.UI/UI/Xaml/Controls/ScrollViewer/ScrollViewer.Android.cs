@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Android.Views;
+﻿using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;

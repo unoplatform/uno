@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#nullable disable
+
+using System.Linq;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;

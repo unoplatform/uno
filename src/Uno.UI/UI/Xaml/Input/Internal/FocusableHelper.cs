@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusableHelper.h, FocusableHelper.cpp
 
-#nullable enable
-
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Documents;
 

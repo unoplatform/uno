@@ -1,4 +1,6 @@
-﻿// MUX Reference: InfoBadgeTests.cs, commit 76bd573a73595ac66e8ff5ce755537d19f50a96d
+﻿#nullable disable
+
+// MUX Reference: InfoBadgeTests.cs, commit 76bd573a73595ac66e8ff5ce755537d19f50a96d
 
 using System;
 using Common;

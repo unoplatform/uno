@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;

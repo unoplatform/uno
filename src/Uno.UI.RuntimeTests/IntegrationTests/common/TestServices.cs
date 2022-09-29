@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Tests.Enterprise;

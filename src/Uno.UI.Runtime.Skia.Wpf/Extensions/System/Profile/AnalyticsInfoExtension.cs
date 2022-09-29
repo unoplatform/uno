@@ -1,4 +1,6 @@
-﻿using Windows.System.Profile.Internal;
+﻿#nullable disable
+
+using Windows.System.Profile.Internal;
 
 namespace Uno.Extensions.System.Profile
 {

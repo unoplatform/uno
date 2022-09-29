@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Markup;
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Markup;
 
 /// <summary>
 /// Provides the means to report XAML-type system specifics about XAML members. Using this interface contract,

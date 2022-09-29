@@ -1,4 +1,6 @@
-﻿namespace Windows.Gaming.Input;
+﻿#nullable disable
+
+namespace Windows.Gaming.Input;
 
 /// <summary>
 /// Represents a gamepad.

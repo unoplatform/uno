@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0169
+﻿#nullable disable
+
+#pragma warning disable CS0169
 
 using System;
 using System.Collections.Generic;

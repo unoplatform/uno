@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Threading.Tasks;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;

@@ -1,6 +1,4 @@
 ﻿
-#nullable enable
-
 namespace Windows.Devices.Power
 {
 	public partial class Battery

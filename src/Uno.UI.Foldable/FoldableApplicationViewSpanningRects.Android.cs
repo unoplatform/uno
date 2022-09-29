@@ -1,4 +1,6 @@
-﻿using Android.Views;
+﻿#nullable disable
+
+using Android.Views;
 using AndroidX.Window.Java.Layout;
 using AndroidX.Window.Layout;
 using System;

@@ -1,4 +1,6 @@
-﻿using Android.Views;
+﻿#nullable disable
+
+using Android.Views;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls.Primitives

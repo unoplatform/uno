@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 //#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;

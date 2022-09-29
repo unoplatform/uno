@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+﻿#nullable disable
+
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;

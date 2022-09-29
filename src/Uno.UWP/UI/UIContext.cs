@@ -1,4 +1,6 @@
-﻿namespace Windows.UI;
+﻿#nullable disable
+
+namespace Windows.UI;
 
 /// <summary>
 /// Represents an identifier for an app window or view.

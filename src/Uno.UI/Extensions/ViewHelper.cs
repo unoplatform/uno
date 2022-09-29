@@ -1,4 +1,6 @@
-﻿#if NET461 || UNO_REFERENCE_API
+﻿#nullable disable
+
+#if NET461 || UNO_REFERENCE_API
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;

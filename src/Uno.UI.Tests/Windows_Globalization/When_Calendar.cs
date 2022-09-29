@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Globalization;
 using FluentAssertions;
 using FluentAssertions.Execution;

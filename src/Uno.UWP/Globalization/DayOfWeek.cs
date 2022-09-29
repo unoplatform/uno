@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Globalization
 {
 	public enum DayOfWeek

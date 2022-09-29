@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Windows.Foundation;
 #if XAMARIN_IOS
 using UIKit;

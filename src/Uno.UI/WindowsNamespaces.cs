@@ -1,4 +1,6 @@
-﻿
+﻿#nullable disable
+
+
 // Namespaces declared in Control templates
 
 namespace Windows.Foundation.Collections { public class MissingNamespaceClass { } }

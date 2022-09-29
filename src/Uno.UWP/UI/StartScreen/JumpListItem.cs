@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#nullable disable
+
+#if __ANDROID__ || __IOS__
 using System;
 
 namespace Windows.UI.StartScreen

@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using System.Threading.Tasks;
 using Android.Content;
 using Windows.Networking.Connectivity;

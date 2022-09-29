@@ -1,6 +1,4 @@
 ﻿#if !NET461
-#nullable enable
-
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if !NET461 && !__SKIA__ && !__NETSTD_REFERENCE__
 using Windows.Storage.Streams;
 

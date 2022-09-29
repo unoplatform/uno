@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {

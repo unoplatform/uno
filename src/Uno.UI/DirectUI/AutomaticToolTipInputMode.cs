@@ -1,4 +1,6 @@
-﻿namespace DirectUI
+﻿#nullable disable
+
+namespace DirectUI
 {
 	/// <summary>
 	/// Defines the different modes for opening an automatic ToolTip.

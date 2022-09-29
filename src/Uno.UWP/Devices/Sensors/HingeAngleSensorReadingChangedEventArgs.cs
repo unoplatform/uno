@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if __ANDROID__
 namespace Windows.Devices.Sensors
 {

@@ -1,4 +1,6 @@
-﻿#if __WASM__ || __SKIA__
+﻿#nullable disable
+
+#if __WASM__ || __SKIA__
 using System;
 using System.Collections;
 using System.Collections.Generic;

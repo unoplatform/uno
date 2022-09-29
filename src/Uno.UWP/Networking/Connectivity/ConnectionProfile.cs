@@ -1,4 +1,6 @@
-﻿#if !NET461
+﻿#nullable disable
+
+#if !NET461
 
 namespace Windows.Networking.Connectivity
 {

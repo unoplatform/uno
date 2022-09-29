@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

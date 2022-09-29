@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Composition;
+﻿#nullable disable
+
+namespace Windows.UI.Composition;
 
 public partial class DelegatedInkTrailVisual : Visual
 {

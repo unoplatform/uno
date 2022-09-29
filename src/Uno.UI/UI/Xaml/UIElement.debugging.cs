@@ -1,4 +1,6 @@
-﻿#if DEBUG
+﻿#nullable disable
+
+#if DEBUG
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;

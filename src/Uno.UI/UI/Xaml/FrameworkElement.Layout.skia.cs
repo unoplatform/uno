@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;

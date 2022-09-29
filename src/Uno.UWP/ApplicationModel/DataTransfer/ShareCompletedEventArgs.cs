@@ -1,4 +1,6 @@
-﻿namespace Windows.ApplicationModel.DataTransfer
+﻿#nullable disable
+
+namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class ShareCompletedEventArgs
 	{

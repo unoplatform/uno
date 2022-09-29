@@ -1,4 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+﻿#nullable disable
+
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // Imported from https://github.com/dotnet/runtime/blob/c7804d5b3c8bd32e35cbb674e8f275fcaf754d93/src/libraries/System.Private.CoreLib/src/System/Collections/Generic/Dictionary.cs
 

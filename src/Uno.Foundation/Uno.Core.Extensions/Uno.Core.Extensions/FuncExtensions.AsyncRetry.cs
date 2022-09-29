@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // ******************************************************************
 // Copyright � 2015-2018 nventive inc. All rights reserved.
 //

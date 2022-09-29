@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.RemoteControl.Messages
+﻿#nullable disable
+
+namespace Uno.UI.RemoteControl.Messages
 {
 	public class KeepAliveMessage : IMessage
 	{

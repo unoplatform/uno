@@ -1,4 +1,6 @@
-﻿// Licensed under the MIT License. See LICENSE in the project root for license information.
+﻿#nullable disable
+
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference SliderUnitTests.cpp
 
 #if HAS_UNO

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.Foundation;
+﻿using Uno.Foundation;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml;

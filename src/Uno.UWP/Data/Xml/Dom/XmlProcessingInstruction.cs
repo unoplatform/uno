@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using SystemProcessingInstruction = System.Xml.XmlProcessingInstruction;
 using SystemXmlNode = System.Xml.XmlNode;
 

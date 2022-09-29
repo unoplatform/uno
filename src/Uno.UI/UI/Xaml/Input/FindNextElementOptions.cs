@@ -1,6 +1,4 @@
-#nullable enable
-
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Input
 {

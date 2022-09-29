@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel;
 using Windows.System;

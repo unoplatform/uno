@@ -1,4 +1,6 @@
-﻿using UIKit;
+﻿#nullable disable
+
+using UIKit;
 using Windows.System.Profile.Internal;
 
 namespace Windows.System.Profile;

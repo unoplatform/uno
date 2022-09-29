@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
 #else

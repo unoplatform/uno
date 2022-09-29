@@ -1,6 +1,4 @@
-#pragma warning disable 67
-#nullable enable
-
+﻿#pragma warning disable 67
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;

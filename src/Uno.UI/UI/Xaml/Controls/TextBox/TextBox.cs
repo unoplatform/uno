@@ -1,4 +1,6 @@
-﻿#if NET461 || UNO_REFERENCE_API || __MACOS__
+﻿#nullable disable
+
+#if NET461 || UNO_REFERENCE_API || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 

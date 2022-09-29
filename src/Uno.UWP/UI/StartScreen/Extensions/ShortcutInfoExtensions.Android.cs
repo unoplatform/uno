@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using System;
 using Android.Content.PM;
 using Windows.UI.StartScreen;

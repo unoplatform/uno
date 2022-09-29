@@ -1,4 +1,6 @@
-﻿// #define TRACE_REUSE
+﻿#nullable disable
+
+// #define TRACE_REUSE
 //
 // Imported from https://github.com/dotnet/corefx/commit/d9d1e815ad6c642cf5d61afa4a16726548598bb2 until Xamarin exposes it properly.
 // Trimming portions imported from https://github.com/dotnet/runtime/blob/f53c8dcd130e7591079e9475fb0a3a22c3f21adc/src/libraries/System.Private.CoreLib/src/System/Buffers/TlsOverPerCoreLockedStacksArrayPool.cs#L412

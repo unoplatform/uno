@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Wasm;

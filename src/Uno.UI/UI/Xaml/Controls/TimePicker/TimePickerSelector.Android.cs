@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+﻿#nullable disable
+
+#if XAMARIN_ANDROID
 
 using System;
 using Uno.Extensions;

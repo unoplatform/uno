@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Automation.Peers;
+﻿#nullable disable
+
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Controls

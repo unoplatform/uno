@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using CoreGraphics;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;

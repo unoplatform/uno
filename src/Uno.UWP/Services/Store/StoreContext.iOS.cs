@@ -1,4 +1,6 @@
-﻿#if __IOS__
+﻿#nullable disable
+
+#if __IOS__
 using System;
 using System.Net.Http;
 using System.Text.RegularExpressions;

@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Core
+﻿#nullable disable
+
+namespace Windows.UI.Core
 {
 	/// <summary>
 	/// Defines constants that specify whether the back button is shown in the system UI.

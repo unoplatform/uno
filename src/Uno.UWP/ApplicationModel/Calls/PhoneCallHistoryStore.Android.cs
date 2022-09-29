@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.ApplicationModel.Calls;
+﻿namespace Windows.ApplicationModel.Calls;
 
 /// <summary>
 /// Represents a collection of information about the phone lines available on a device.

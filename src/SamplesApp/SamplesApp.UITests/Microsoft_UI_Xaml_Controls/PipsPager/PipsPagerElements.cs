@@ -1,4 +1,6 @@
-﻿using Common;
+﻿#nullable disable
+
+using Common;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;

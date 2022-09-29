@@ -1,7 +1,4 @@
-﻿#nullable enable
-
-
-namespace Uno.UI.SourceGenerators.XamlGenerator
+﻿namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	/// <summary>
 	/// Definition for Components used for lazy static resources and x:Load marked objects

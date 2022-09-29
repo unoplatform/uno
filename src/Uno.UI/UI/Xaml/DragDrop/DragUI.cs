@@ -1,6 +1,4 @@
-#nullable enable
-
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 

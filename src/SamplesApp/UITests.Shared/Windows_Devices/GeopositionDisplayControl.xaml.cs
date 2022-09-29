@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿#nullable disable
+
+using System.ComponentModel;
 using System.Diagnostics;
 using UITests.Shared.Helpers;
 using Windows.Devices.Geolocation;

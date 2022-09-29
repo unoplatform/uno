@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+﻿#nullable disable
+
+#if XAMARIN_ANDROID
 using Java.Interop;
 using System;
 using System.Collections.Generic;

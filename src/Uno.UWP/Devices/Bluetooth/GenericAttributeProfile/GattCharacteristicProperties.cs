@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.Devices.Bluetooth.GenericAttributeProfile
+﻿namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 	public enum GattCharacteristicProperties : uint
 	{

@@ -1,4 +1,6 @@
-﻿#if IS_UNO
+﻿#nullable disable
+
+#if IS_UNO
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

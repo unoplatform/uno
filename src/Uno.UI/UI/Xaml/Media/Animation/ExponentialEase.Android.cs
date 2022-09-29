@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Android.Animation;
 
 namespace Windows.UI.Xaml.Media.Animation

@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Core
+﻿#nullable disable
+
+namespace Windows.UI.Core
 {
 	/// <summary>
 	/// Defines constants that specify the activation state of a window.

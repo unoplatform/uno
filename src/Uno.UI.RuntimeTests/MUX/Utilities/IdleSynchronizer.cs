@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.UI.Core;

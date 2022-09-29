@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Documents
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Documents
 {
 	partial class TextElement
 	{

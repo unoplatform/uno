@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls

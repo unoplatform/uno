@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
+﻿#nullable disable
+
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Windows.Foundation;
 namespace Windows.UI.Xaml.Media.Imaging
 {

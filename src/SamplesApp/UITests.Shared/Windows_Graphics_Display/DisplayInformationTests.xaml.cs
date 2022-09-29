@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿#nullable disable
+
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using DisplayInfo = Windows.Graphics.Display.DisplayInformation;

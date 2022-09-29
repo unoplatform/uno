@@ -1,4 +1,6 @@
-﻿// MUX reference PagerControlTemplateSettings.properties.cpp, commit a08f765
+﻿#nullable disable
+
+// MUX reference PagerControlTemplateSettings.properties.cpp, commit a08f765
 
 using System.Collections.Generic;
 using Windows.UI.Xaml;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using AppKit;
 
 namespace Windows.UI.Xaml.Controls

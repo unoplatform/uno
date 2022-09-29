@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Windows.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core
 {

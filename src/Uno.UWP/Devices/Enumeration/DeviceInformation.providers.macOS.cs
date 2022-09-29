@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;

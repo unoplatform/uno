@@ -1,6 +1,4 @@
-#nullable enable
-
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Windows.UI.Composition
 {

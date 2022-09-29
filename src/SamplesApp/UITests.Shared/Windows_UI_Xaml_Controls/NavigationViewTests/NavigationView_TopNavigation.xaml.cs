@@ -1,4 +1,6 @@
-﻿using SamplesApp.Samples.NavigationViewSample;
+﻿#nullable disable
+
+using SamplesApp.Samples.NavigationViewSample;
 using System;
 using System.Collections.Generic;
 using System.IO;

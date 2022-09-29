@@ -1,4 +1,6 @@
-﻿using ElmSharp;
+﻿#nullable disable
+
+using ElmSharp;
 using SkiaSharp.Views.Tizen;
 using Tizen.Applications;
 using Windows.UI.Core;

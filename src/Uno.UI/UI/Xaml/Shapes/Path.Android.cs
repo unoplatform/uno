@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes

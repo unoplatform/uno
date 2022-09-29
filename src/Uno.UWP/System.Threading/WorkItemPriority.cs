@@ -1,4 +1,6 @@
-﻿namespace Windows.System.Threading
+﻿#nullable disable
+
+namespace Windows.System.Threading
 {
 	public enum WorkItemPriority
 	{

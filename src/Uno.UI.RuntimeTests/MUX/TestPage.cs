@@ -1,4 +1,6 @@
-﻿using MUXControlsTestApp.Utilities;
+﻿#nullable disable
+
+using MUXControlsTestApp.Utilities;
 
 namespace MUXControlsTestApp
 {

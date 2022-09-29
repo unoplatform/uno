@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Storage.Pickers
 {
 	public enum PickerLocationId

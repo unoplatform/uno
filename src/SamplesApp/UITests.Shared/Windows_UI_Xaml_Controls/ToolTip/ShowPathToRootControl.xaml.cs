@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿#nullable disable
+
+using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

@@ -1,5 +1,4 @@
-﻿#nullable enable
-#if !WINDOWS_UWP
+﻿#if !WINDOWS_UWP
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;

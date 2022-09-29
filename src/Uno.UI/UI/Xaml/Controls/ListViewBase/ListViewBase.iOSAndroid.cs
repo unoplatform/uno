@@ -1,4 +1,6 @@
-﻿#if XAMARIN_IOS || XAMARIN_ANDROID
+﻿#nullable disable
+
+#if XAMARIN_IOS || XAMARIN_ANDROID
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Hosting;
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Hosting;
 
 /// <summary>
 /// Provides data for a request to navigate focus to

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using UIKit;
 using CoreGraphics;
 using Foundation;

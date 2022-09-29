@@ -1,4 +1,6 @@
-﻿#if !UNO_REFERENCE_API
+﻿#nullable disable
+
+#if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Globalization;

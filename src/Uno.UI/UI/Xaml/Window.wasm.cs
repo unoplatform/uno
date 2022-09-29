@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if __WASM__
 using System;
 using System.Diagnostics;

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿#nullable disable
+
+using System.Globalization;
 using System.Linq;
 using Windows.Globalization.DateTimeFormatting;
 using FluentAssertions;

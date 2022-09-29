@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿#nullable disable
+
+using System.Drawing;
 using Windows.UI.Xaml;
 using System;
 using System.ComponentModel;

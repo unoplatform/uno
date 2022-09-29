@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿#nullable disable
+
+using Foundation;
 using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;

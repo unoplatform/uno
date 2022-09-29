@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System.Numerics;
 using Windows.UI;
 using Windows.UI.Xaml;

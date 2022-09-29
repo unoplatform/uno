@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using AppKit;
+﻿using AppKit;
 
 namespace Windows.UI.Core.Preview;
 

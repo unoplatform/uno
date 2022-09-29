@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Windows.Storage.Pickers;
+﻿using Windows.Storage.Pickers;
 using static System.Environment;
 
 namespace Uno.Extensions.Storage.Pickers

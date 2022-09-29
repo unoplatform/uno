@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿#nullable disable
+
+using Foundation;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using System;

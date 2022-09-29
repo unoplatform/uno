@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Microsoft.Win32;
 using Uno.Helpers.Theming;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;

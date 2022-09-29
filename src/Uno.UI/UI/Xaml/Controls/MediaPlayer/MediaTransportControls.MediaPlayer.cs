@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if !HAS_UNO_WINUI && (__ANDROID__ || __IOS__ || NET461 || __MACOS__)
 
 using System;

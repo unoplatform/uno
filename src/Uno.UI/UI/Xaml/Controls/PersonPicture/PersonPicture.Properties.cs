@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // MUX Reference PersonPicture.properties.cpp, commit de78834
 
 #pragma warning disable 108 // new keyword hiding

@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.RemoteControl.Host
+﻿#nullable disable
+
+namespace Uno.UI.RemoteControl.Host
 {
 	public class RemoteControlOptions
 	{

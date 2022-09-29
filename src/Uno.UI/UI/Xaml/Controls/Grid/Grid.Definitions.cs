@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Controls
 {
 	partial class Grid
 	{

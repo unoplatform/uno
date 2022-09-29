@@ -1,4 +1,6 @@
-﻿#if !IS_RUNTIME_UI_TESTS
+﻿#nullable disable
+
+#if !IS_RUNTIME_UI_TESTS
 
 using System;
 using System.Linq;

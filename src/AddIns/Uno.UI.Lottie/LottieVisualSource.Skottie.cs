@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if HAS_SKOTTIE
+﻿#if HAS_SKOTTIE
 using System;
 using System.Threading;
 using Windows.Foundation;

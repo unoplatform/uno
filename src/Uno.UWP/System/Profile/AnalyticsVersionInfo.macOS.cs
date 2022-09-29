@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using Foundation;
 using Windows.System.Profile.Internal;

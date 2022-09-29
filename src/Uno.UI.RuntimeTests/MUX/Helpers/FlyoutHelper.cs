@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Threading.Tasks;
 using MUXControlsTestApp.Utilities;
 using Windows.UI;

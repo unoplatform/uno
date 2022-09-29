@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // TreeWalkerUnitTests.h, TreeWalkerUnitTests.cpp
 
-#nullable enable
-
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Input;

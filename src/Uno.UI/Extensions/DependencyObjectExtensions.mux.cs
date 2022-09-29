@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // CDependencyObject.h, dependencyobject.cpp
 
-#nullable enable
-
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;

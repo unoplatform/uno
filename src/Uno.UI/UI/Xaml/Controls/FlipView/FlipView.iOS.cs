@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using UIKit;
 using System.Collections;
 using System.Linq;

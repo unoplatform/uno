@@ -1,4 +1,6 @@
-﻿#if XAMARIN || __WASM__ || __SKIA__
+﻿#nullable disable
+
+#if XAMARIN || __WASM__ || __SKIA__
 
 using System;
 using Uno.UI.Controls;

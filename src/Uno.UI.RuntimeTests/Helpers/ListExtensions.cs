@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+
+using System.Collections.Generic;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {

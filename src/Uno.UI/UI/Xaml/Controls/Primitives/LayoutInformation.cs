@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#nullable disable
+
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Uno.Collections;
 

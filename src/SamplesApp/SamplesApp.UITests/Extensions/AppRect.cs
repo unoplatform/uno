@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Uno.UITest;
 
 #if IS_RUNTIME_UI_TESTS

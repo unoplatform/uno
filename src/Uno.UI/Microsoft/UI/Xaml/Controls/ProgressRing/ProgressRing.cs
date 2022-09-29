@@ -8,8 +8,6 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
 
-#nullable enable
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ProgressRing : Control

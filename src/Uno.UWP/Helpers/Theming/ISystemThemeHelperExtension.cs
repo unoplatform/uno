@@ -1,4 +1,6 @@
-﻿namespace Uno.Helpers.Theming
+﻿#nullable disable
+
+namespace Uno.Helpers.Theming
 {
 	internal interface ISystemThemeHelperExtension
 	{

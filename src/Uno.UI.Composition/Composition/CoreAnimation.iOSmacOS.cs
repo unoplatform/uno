@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using CoreAnimation;
+﻿using CoreAnimation;
 using Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;

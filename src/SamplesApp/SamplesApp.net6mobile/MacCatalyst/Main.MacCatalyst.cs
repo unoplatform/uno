@@ -1,4 +1,6 @@
-﻿using UIKit;
+﻿#nullable disable
+
+using UIKit;
 
 namespace SamplesApp.iOS
 {

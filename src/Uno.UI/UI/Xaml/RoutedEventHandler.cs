@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml
+﻿#nullable disable
+
+namespace Windows.UI.Xaml
 {
 	public delegate void RoutedEventHandler (object sender, RoutedEventArgs e);
 

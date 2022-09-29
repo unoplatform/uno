@@ -1,4 +1,6 @@
-﻿namespace Windows.Storage.Streams
+﻿#nullable disable
+
+namespace Windows.Storage.Streams
 {
 	/// <summary>
 	/// This class is no longer needed and can be removed

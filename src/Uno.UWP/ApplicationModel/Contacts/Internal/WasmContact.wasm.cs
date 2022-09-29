@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Uno.ApplicationModel.Contacts.Internal
 {

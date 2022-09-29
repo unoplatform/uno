@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.ApplicationModel;
+﻿namespace Windows.ApplicationModel;
 
 /// <summary>
 /// Manages a delayed app suspending operation.

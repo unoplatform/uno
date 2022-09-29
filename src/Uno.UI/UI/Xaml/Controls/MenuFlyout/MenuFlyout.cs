@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #pragma warning disable 649
 #pragma warning disable 414 // assigned but its value is never used
 

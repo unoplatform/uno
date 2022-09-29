@@ -1,4 +1,6 @@
-﻿#pragma warning disable 168 // for cleanup imported member
+﻿#nullable disable
+
+#pragma warning disable 168 // for cleanup imported member
 
 #if HAS_UNO
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿#if __IOS__ || __ANDROID__
+﻿#nullable disable
+
+#if __IOS__ || __ANDROID__
 #define SUPPORTS_NATIVE_DATEPICKER
 #endif
 using System;

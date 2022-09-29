@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using SkiaSharp;
+﻿using SkiaSharp;
 using Windows.Graphics;
 
 namespace Windows.UI.Composition

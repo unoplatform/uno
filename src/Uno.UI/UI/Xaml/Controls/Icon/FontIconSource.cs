@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
 

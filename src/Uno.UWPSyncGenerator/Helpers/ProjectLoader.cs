@@ -1,4 +1,6 @@
-﻿using Microsoft.Build.Framework;
+﻿#nullable disable
+
+using Microsoft.Build.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

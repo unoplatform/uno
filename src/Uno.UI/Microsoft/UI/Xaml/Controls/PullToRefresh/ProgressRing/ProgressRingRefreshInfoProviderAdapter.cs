@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Private.Controls;
+﻿#nullable disable
+
+using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;

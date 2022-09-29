@@ -1,4 +1,6 @@
-﻿#if !__IOS__ && !__MACOS__ && !__NETSTD_REFERENCE__ && !__SKIA__ && !__ANDROID__
+﻿#nullable disable
+
+#if !__IOS__ && !__MACOS__ && !__NETSTD_REFERENCE__ && !__SKIA__ && !__ANDROID__
 #define LEGACY_SHAPE_MEASURE
 #endif
 

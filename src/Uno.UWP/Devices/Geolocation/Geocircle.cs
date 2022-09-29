@@ -1,4 +1,6 @@
-﻿namespace Windows.Devices.Geolocation
+﻿#nullable disable
+
+namespace Windows.Devices.Geolocation
 {
 	public partial class Geocircle : IGeoshape
 	{

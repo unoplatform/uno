@@ -1,4 +1,6 @@
-﻿#if __IOS__ || __ANDROID__
+﻿#nullable disable
+
+#if __IOS__ || __ANDROID__
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 

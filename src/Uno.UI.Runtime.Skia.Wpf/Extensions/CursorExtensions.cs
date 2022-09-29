@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿#nullable disable
+
+using System.Windows.Input;
 using Windows.UI.Core;
 
 namespace Uno.UI.Skia.Platform.Extensions

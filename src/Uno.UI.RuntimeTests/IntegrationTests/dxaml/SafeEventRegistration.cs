@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using Windows.UI.Xaml.Controls;

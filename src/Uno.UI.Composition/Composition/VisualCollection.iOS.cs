@@ -1,6 +1,4 @@
-#nullable enable
-
-#if __IOS__
+﻿#if __IOS__
 using System;
 
 namespace Windows.UI.Composition

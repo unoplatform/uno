@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Windows.Devices.Input;
+﻿using Windows.Devices.Input;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;

@@ -1,6 +1,4 @@
-#nullable enable
-
-using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+﻿using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;

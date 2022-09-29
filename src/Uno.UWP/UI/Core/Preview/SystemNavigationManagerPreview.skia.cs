@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.Foundation.Extensibility;
+﻿using Uno.Foundation.Extensibility;
 using Uno.UI.Core.Preview;
 
 namespace Windows.UI.Core.Preview;

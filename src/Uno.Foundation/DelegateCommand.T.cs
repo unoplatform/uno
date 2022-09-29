@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Windows.Input;
 
 namespace Uno.UI.Common

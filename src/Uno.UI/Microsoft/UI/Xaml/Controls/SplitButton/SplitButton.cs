@@ -1,4 +1,6 @@
-﻿// MUX commit reference 36f8f8f6d5f11f414fdaa0462d0c4cb845cf4254
+﻿#nullable disable
+
+// MUX commit reference 36f8f8f6d5f11f414fdaa0462d0c4cb845cf4254
 
 using Microsoft.UI.Private.Controls;
 using Uno.UI.Helpers.WinUI;

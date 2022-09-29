@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Popups;
+﻿#nullable disable
+
+namespace Windows.UI.Popups;
 
 public sealed partial class UICommandSeparator : IUICommand
 {

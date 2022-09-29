@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿#nullable disable
+
+using System.ComponentModel;
 using System.Globalization;
 
 namespace XamlGenerationTests.Shared

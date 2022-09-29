@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.RemoteControl
+﻿#nullable disable
+
+namespace Uno.UI.RemoteControl
 {
 	public interface IMessage
 	{

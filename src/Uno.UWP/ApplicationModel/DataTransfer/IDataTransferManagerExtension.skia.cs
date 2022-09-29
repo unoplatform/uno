@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿#nullable disable
+
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Uno.ApplicationModel.DataTransfer

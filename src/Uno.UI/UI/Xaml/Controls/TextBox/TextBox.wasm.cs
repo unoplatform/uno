@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+﻿#nullable disable
+
+using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;

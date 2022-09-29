@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Foundation;
 using System;
 using System.Linq;

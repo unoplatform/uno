@@ -1,4 +1,6 @@
-﻿#pragma warning disable 108,114
+﻿#nullable disable
+
+#pragma warning disable 108,114
 
 using System;
 using System.Collections.Generic;

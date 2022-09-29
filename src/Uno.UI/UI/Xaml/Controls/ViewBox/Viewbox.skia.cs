@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Controls

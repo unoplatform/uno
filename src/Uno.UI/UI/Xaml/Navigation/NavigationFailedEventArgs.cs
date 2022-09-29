@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Xaml.Navigation

@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable disable
+
+using Android.App;
 using Android.Graphics;
 using AndroidX.ViewPager.Widget;
 using AndroidX.Fragment.App;

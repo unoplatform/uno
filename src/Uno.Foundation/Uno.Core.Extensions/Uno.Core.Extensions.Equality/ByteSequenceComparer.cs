@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace Uno.Equality;

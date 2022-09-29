@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿#nullable disable
+
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Core;
 using Windows.System;

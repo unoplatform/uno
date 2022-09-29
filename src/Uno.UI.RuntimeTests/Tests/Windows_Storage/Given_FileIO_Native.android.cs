@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AndroidX.DocumentFile.Provider;
 using Java.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

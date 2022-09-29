@@ -1,6 +1,4 @@
-#nullable enable
-
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using Uno.MsBuildTasks.Utils;
 using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;

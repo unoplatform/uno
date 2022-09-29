@@ -1,4 +1,6 @@
-﻿using Uno.UI.Samples.Controls;
+﻿#nullable disable
+
+using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 using Windows.UI.Xaml.Controls;
 

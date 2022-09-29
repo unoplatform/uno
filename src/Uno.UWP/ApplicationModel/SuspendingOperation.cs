@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using Uno.Helpers;
 
 namespace Windows.ApplicationModel;

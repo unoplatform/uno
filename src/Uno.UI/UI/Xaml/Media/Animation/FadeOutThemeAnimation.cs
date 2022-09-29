@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Threading;
 using Windows.UI.Xaml.Markup;
 using Uno.UI;

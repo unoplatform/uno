@@ -1,4 +1,6 @@
-﻿#if !NET461 && !__SKIA__ && !__NETSTD_REFERENCE__
+﻿#nullable disable
+
+#if !NET461 && !__SKIA__ && !__NETSTD_REFERENCE__
 using System;
 
 using Uno.Devices.Enumeration.Internal;

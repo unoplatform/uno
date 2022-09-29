@@ -1,4 +1,6 @@
-﻿#if NET461 || __NETSTD_REFERENCE__
+﻿#nullable disable
+
+#if NET461 || __NETSTD_REFERENCE__
 using Windows.System.Profile.Internal;
 
 namespace Windows.System.Profile;

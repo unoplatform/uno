@@ -1,4 +1,6 @@
-﻿using Windows.Foundation.Metadata;
+﻿#nullable disable
+
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests

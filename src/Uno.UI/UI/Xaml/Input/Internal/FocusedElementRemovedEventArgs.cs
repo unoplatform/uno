@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusedElementRemovedEventArgs.h, FocusedElementRemovedEventArgs.cpp
 
-#nullable enable
-
 using System;
 using Windows.UI.Xaml;
 

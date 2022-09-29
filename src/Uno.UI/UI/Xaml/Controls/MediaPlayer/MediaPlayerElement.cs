@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if !HAS_UNO_WINUI && (__IOS__ || __ANDROID__ || __MACOS__)
 using System;
 using Uno.Extensions;

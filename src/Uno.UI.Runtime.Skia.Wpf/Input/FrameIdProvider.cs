@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Threading;
+﻿using System.Threading;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Input
 {

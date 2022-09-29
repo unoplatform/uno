@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Drawing;
 using AppKit;
 using Uno.Extensions;

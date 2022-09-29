@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0109
+﻿#nullable disable
+
+#pragma warning disable CS0109
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Buffers;
 using System.Net.WebSockets;
 using System.Threading;

@@ -1,4 +1,6 @@
-﻿//MUX Reference IndexPath.cpp, commit de78834
+﻿#nullable disable
+
+//MUX Reference IndexPath.cpp, commit de78834
 
 using System;
 using System.Collections.Generic;

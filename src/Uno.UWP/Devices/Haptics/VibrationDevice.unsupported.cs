@@ -1,6 +1,4 @@
 ﻿#if NET461 || __NETSTD_REFERENCE__
-#nullable enable
-
 using System.Threading.Tasks;
 
 namespace Windows.Devices.Haptics

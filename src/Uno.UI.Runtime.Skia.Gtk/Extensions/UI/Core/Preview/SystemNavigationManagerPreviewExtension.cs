@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Gtk;
+﻿using Gtk;
 using Uno.UI.Core.Preview;
 
 namespace Uno.Extensions.UI.Core.Preview;

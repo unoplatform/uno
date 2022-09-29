@@ -1,4 +1,6 @@
-﻿using CoreGraphics;
+﻿#nullable disable
+
+using CoreGraphics;
 using Uno.Media;
 using System;
 using System.Collections.Generic;

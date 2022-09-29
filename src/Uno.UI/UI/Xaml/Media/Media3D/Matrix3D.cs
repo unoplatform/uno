@@ -1,4 +1,6 @@
-﻿#region Assembly System.Runtime.WindowsRuntime.UI.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+﻿#nullable disable
+
+#region Assembly System.Runtime.WindowsRuntime.UI.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
 // C:\Users\jerome.laban\.nuget\packages\System.Runtime.WindowsRuntime.UI.Xaml\4.0.0\ref\netcore50\System.Runtime.WindowsRuntime.UI.Xaml.dll
 #endregion
 

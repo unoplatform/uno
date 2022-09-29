@@ -1,6 +1,4 @@
 ﻿#if __MACOS__
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,7 +1,4 @@
-#nullable enable
-
-
-namespace Windows.UI.Composition
+﻿namespace Windows.UI.Composition
 {
 	public partial class CompositionBrush : CompositionObject
 	{

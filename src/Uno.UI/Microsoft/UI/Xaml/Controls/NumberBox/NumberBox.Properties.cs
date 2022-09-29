@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #pragma warning disable 109 // Member does not hide an inherited member; new keyword is not required
 
 // Copyright (c) Microsoft Corporation. All rights reserved.

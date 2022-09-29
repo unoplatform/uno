@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;

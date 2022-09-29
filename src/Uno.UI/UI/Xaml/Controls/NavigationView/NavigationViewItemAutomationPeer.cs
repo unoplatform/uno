@@ -1,4 +1,6 @@
-﻿#if HAS_UNO_WINUI
+﻿#nullable disable
+
+#if HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Automation.Peers;
 #endif
 using NavigationViewItem = Windows.UI.Xaml.Controls.NavigationViewItem;

@@ -1,4 +1,6 @@
-﻿#if !SILVERLIGHT
+﻿#nullable disable
+
+#if !SILVERLIGHT
 using System;
 using System.Collections.Generic;
 using System.Text;

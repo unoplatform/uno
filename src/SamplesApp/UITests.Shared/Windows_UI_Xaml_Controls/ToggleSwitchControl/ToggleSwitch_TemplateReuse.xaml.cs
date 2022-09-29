@@ -1,4 +1,6 @@
-﻿using SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models;
+﻿#nullable disable
+
+using SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models;
 using Uno.UI.Samples.Controls;
 using Uno.UI;
 using Windows.UI.Xaml;

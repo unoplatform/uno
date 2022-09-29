@@ -1,4 +1,6 @@
-﻿#if __WASM__
+﻿#nullable disable
+
+#if __WASM__
 using SampleControl.Entities;
 using System;
 using System.Collections;

@@ -1,4 +1,6 @@
-﻿namespace Windows.Devices.Haptics
+﻿#nullable disable
+
+namespace Windows.Devices.Haptics
 {
 	/// <summary>
 	/// Provides a set of well-known haptic waveform types

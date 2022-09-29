@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // MUX Reference InitialsGenerator.cpp, commit de78834
 
 // Copyright (c) Microsoft Corporation. All rights reserved.

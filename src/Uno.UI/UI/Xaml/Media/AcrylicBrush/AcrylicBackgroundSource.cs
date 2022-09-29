@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.UI.Xaml.Media
 {
 	public enum AcrylicBackgroundSource

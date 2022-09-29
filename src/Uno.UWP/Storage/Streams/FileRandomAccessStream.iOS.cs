@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.IO;
 using Foundation;
 using Uno.Storage.Streams.Internal;

@@ -11,8 +11,6 @@ using Uno.UI.Xaml;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Documents
 {
 	partial class Inline

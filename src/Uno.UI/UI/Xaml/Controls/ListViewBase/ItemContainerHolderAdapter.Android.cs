@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Android.Views;
 using Android.Widget;
 using Windows.UI.Xaml.Controls;

@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿#nullable disable
+
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Extensions
 {

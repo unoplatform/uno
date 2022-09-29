@@ -1,6 +1,4 @@
-﻿#nullable enable 
-
-using AndroidBatteryStatus = Android.OS.BatteryStatus;
+﻿using AndroidBatteryStatus = Android.OS.BatteryStatus;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
 
 

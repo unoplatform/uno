@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusSelection.h, FocusSelection.cpp
 
-#nullable enable
-
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;

@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ProximityStrategy.h, ProximityStrategy.cpp
 
-#nullable enable
-
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using static Uno.UI.Xaml.Input.XYFocusAlgorithmHelper;

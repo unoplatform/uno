@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Xaml.Core
+﻿#nullable disable
+
+namespace Uno.UI.Xaml.Core
 {
 	internal class AccessKeyExport
 	{

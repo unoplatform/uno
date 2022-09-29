@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable disable
+
+using Android.App;
 using AndroidX.Fragment.App;
 using Uno.Extensions;
 using System;

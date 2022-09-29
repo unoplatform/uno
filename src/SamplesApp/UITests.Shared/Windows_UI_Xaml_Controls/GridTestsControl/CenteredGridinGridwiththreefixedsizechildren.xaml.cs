@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;

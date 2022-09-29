@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;

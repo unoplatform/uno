@@ -1,4 +1,6 @@
-﻿namespace Uno.Web.Http
+﻿#nullable disable
+
+namespace Uno.Web.Http
 {
 	/// <summary>
 	/// Represents the valid options for the same-site

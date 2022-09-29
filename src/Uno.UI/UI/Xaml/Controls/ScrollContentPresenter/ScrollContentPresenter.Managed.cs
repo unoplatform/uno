@@ -1,4 +1,6 @@
-﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+﻿#nullable disable
+
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;

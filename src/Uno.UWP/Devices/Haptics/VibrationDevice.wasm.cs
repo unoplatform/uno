@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using PhoneVibrationDevice = Windows.Phone.Devices.Notification.VibrationDevice;
 
 namespace Windows.Devices.Haptics

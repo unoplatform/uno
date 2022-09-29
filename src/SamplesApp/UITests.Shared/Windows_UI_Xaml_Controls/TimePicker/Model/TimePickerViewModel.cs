@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Windows.Input;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;

@@ -1,4 +1,6 @@
-﻿#if XAMARIN || __WASM__
+﻿#nullable disable
+
+#if XAMARIN || __WASM__
 using Windows.UI.Xaml;
 using _WebView = Windows.UI.Xaml.Controls.WebView;
 

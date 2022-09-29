@@ -1,4 +1,6 @@
-﻿#if __MACOS__
+﻿#nullable disable
+
+#if __MACOS__
 using Foundation;
 using System;
 using System.Collections.Generic;

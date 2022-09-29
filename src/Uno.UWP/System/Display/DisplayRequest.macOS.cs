@@ -1,4 +1,6 @@
-﻿#if __MACOS__
+﻿#nullable disable
+
+#if __MACOS__
 using Uno.Helpers;
 
 namespace Windows.System.Display

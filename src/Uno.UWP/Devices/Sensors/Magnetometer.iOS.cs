@@ -1,4 +1,6 @@
-﻿#if __IOS__
+﻿#nullable disable
+
+#if __IOS__
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

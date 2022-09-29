@@ -1,6 +1,4 @@
-#if !NET461
-#nullable enable
-
+﻿#if !NET461
 using Uno.Helpers;
 
 namespace Windows.Networking.Connectivity;

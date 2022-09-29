@@ -1,4 +1,6 @@
-﻿using Windows.UI.Core;
+﻿#nullable disable
+
+using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Slider

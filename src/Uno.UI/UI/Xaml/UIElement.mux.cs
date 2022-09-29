@@ -1,7 +1,5 @@
 ﻿//UIElement.cpp, UIElement_Partial.cpp
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using DirectUI;

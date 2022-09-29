@@ -1,6 +1,4 @@
-#nullable enable
-
-namespace Windows.Security.Authentication.Web
+﻿namespace Windows.Security.Authentication.Web
 {
 	public partial class WebAuthenticationResult
 	{

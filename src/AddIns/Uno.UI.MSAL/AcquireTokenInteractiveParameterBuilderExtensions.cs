@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#nullable disable
+
+using System.Runtime.CompilerServices;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensibility;
 

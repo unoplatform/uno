@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Automation
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Automation
 {
 	/// <summary>
 	/// Contains values that specify the ExpandCollapseState of a UI Automation element.

@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable disable
+
+using Android.App;
 using Android.Hardware;
 using Android.OS;
 using Android.Runtime;

@@ -1,4 +1,6 @@
-﻿namespace Uno
+﻿#nullable disable
+
+namespace Uno
 {
 	partial class WinRTFeatureConfiguration
 	{

@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+﻿#nullable disable
+
+using Uno.Extensions;
 using Windows.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;

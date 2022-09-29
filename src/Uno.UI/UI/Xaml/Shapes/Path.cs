@@ -2,7 +2,6 @@
 #define LEGACY_SHAPE_MEASURE
 #endif
 
-#nullable enable
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;

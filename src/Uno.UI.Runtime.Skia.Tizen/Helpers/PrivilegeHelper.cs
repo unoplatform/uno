@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Linq;
+﻿using System.Linq;
 using Tizen.Applications;
 
 namespace Uno.UI.Runtime.Skia.Tizen.Helpers

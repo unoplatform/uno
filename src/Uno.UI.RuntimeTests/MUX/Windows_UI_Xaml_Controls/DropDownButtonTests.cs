@@ -1,4 +1,6 @@
-﻿using Common;
+﻿#nullable disable
+
+using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;

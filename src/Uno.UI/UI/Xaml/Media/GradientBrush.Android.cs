@@ -1,4 +1,6 @@
-﻿using Android.Graphics;
+﻿#nullable disable
+
+using Android.Graphics;
 using Rect = Windows.Foundation.Rect;
 using Size = Windows.Foundation.Size;
 

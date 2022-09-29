@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __IOS__ || __WASM__
+﻿#nullable disable
+
+#if __ANDROID__ || __IOS__ || __WASM__
 using System;
 using System.Text.RegularExpressions;
 using Windows.System.Profile;

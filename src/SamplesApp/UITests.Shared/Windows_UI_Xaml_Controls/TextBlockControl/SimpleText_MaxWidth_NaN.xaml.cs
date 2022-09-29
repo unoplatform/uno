@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Controls

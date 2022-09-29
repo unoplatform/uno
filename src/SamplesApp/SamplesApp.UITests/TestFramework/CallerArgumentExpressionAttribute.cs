@@ -1,4 +1,6 @@
-﻿#if !NETCOREAPP3_0_OR_GREATER
+﻿#nullable disable
+
+#if !NETCOREAPP3_0_OR_GREATER
 
 namespace System.Runtime.CompilerServices;
 

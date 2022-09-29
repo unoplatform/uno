@@ -1,6 +1,4 @@
-#nullable enable
-
-namespace Windows.ApplicationModel.Contacts
+﻿namespace Windows.ApplicationModel.Contacts
 {
 	/// <summary>
 	/// Represents an email address of a contact.

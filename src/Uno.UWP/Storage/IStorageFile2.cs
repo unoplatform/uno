@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.Foundation;
 using Windows.Storage.Streams;
 

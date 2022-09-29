@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Linq;
+﻿using System.Linq;
 using System.Diagnostics;
 
 namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls

@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Popup.cpp, PopupRoot_Partial.cpp, PopupRoot.cpp
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using Uno;

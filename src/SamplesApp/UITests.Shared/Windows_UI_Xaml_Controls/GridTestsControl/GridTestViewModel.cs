@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;

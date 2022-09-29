@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Media.SpeechRecognition
 {
 	public partial class SpeechRecognizerStateChangedEventArgs 

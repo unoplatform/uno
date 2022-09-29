@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System.Collections.Generic;
 using Windows.System;
 using Windows.UI.Input;

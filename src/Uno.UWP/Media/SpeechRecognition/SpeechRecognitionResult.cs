@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if __ANDROID__ || __IOS__ || __WASM__
 using System;
 using System.Collections.Generic;

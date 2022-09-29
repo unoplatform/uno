@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;

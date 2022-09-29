@@ -1,6 +1,4 @@
-#nullable enable
-
-using Windows.ApplicationModel.DataTransfer;
+﻿using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 
 namespace Windows.UI.Xaml

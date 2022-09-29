@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;

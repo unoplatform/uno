@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.ApplicationModel.DataTransfer
+﻿namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class ShareTargetInfo
 	{

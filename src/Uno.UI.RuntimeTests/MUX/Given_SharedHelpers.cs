@@ -1,4 +1,6 @@
-﻿#if HAS_UNO
+﻿#nullable disable
+
+#if HAS_UNO
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Helpers.WinUI;
 

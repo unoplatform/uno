@@ -1,6 +1,4 @@
-#nullable enable
-
-namespace Windows.UI.Composition.Private
+﻿namespace Windows.UI.Composition.Private
 {
 	public  partial class RectangleClip : CompositionClip
 	{

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System.Text;
 using Windows.Foundation;
 using Uno;

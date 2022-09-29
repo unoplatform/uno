@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using UIKit;
 using Windows.System.Profile.Internal;

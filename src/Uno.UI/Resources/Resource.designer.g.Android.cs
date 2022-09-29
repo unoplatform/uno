@@ -1,4 +1,6 @@
-﻿namespace Uno.UI;
+﻿#nullable disable
+
+namespace Uno.UI;
 
 //
 // This file is manually maintained and should not be modified to add partial qualifiers. If you

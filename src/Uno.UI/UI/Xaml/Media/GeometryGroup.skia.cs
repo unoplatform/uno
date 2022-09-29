@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿#nullable disable
+
+using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media

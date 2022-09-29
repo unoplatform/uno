@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Samples.Tests
+﻿#nullable disable
+
+namespace Uno.UI.Samples.Tests
 {
 	public sealed partial class UnitTestsControl
 	{

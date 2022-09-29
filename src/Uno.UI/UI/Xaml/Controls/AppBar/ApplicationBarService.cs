@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ApplicationBarService.h, ApplicationBarService.cpp, ApplicationBarService_Partial.cpp
 
-#nullable enable
-
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml;
 

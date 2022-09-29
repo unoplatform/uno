@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿#nullable disable
+
+using System.Net.Http;
 using Microsoft.Identity.Client;
 using Uno.UI.Wasm;
 

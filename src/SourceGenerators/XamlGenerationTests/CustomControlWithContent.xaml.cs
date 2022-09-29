@@ -1,4 +1,6 @@
-﻿#pragma warning disable 618 // Ignore obsolete members warnings
+﻿#nullable disable
+
+#pragma warning disable 618 // Ignore obsolete members warnings
 using System;
 using System.Linq;
 using System.Diagnostics;

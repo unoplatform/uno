@@ -1,5 +1,4 @@
-﻿#nullable enable
-using CoreGraphics;
+﻿using CoreGraphics;
 using System;
 using System.Linq;
 using Windows.Foundation;

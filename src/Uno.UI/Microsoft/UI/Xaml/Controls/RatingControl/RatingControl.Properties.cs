@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // MUX Reference RatingControl.properties.cpp, commit de78834
 
 // Copyright (c) Microsoft Corporation. All rights reserved.

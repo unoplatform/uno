@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;

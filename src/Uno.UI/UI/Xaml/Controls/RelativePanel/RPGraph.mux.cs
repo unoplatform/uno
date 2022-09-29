@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml;

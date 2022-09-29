@@ -1,5 +1,4 @@
-﻿#nullable enable
-// Based on https://github.com/dotnet/runtime/commit/bdc8e420aa75999021e06b85e2e1869962730a0f
+﻿// Based on https://github.com/dotnet/runtime/commit/bdc8e420aa75999021e06b85e2e1869962730a0f
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.

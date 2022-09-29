@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 
 using DateTime = System.DateTimeOffset;

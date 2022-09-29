@@ -1,4 +1,6 @@
-﻿using SamplesApp.Windows_UI_Xaml_Controls.Models;
+﻿#nullable disable
+
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Windows.UI.Xaml.Wasm;
 
 namespace Windows.UI.Xaml.Media

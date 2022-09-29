@@ -1,4 +1,6 @@
-﻿// Source: https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/cf29259a6044a40b17a1f5692c8d0dc65a5c382f/Microsoft.Toolkit.Uwp/Helpers/ColorHelper.cs
+﻿#nullable disable
+
+// Source: https://github.com/windows-toolkit/WindowsCommunityToolkit/blob/cf29259a6044a40b17a1f5692c8d0dc65a5c382f/Microsoft.Toolkit.Uwp/Helpers/ColorHelper.cs
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.

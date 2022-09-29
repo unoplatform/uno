@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__
+﻿#if __IOS__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -13,8 +13,6 @@ using View = UIKit.UIView;
 #else
 using Android.Views;
 #endif
-
-#nullable enable
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {

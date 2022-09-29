@@ -1,4 +1,6 @@
-﻿#if NETFX_CORE
+﻿#nullable disable
+
+#if NETFX_CORE
 using Windows.ApplicationModel.Store;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

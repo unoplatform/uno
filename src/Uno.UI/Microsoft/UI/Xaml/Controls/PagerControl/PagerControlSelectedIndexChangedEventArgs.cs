@@ -1,4 +1,6 @@
-﻿// MUX reference PagerControlSelectedIndexChangedEventArgs.cpp, commit a08f765
+﻿#nullable disable
+
+// MUX reference PagerControlSelectedIndexChangedEventArgs.cpp, commit a08f765
 
 namespace Microsoft.UI.Xaml.Controls
 {

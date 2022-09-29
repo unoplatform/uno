@@ -1,4 +1,6 @@
-﻿#if !__WASM__
+﻿#nullable disable
+
+#if !__WASM__
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Provider;

@@ -1,4 +1,6 @@
-﻿#if XAMARIN
+﻿#nullable disable
+
+#if XAMARIN
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System;

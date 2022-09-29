@@ -1,4 +1,6 @@
-﻿#pragma warning disable 618
+﻿#nullable disable
+
+#pragma warning disable 618
 
 using System;
 using Android.App;

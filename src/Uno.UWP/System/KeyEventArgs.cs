@@ -1,6 +1,4 @@
-#nullable enable
-
-using Windows.Devices.Enumeration;
+﻿using Windows.Devices.Enumeration;
 using Windows.Security.Cryptography.Certificates;
 using Windows.System;
 

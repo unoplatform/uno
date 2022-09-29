@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.ApplicationModel;
+﻿namespace Windows.ApplicationModel;
 
 /// <summary>
 /// Provides data for an app suspending event.

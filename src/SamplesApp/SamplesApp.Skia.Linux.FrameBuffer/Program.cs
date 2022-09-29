@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
 using System.Threading;

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;

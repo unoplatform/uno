@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.ComponentModel;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;

@@ -1,4 +1,6 @@
-﻿using Uno.UI.DataBinding;
+﻿#nullable disable
+
+using Uno.UI.DataBinding;
 using System;
 using System.Collections.Generic;
 using System.Text;

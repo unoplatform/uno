@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿#nullable disable
+
+using Microsoft.UI.Xaml.Controls;
 
 using WUXProgressRing = Windows.UI.Xaml.Controls.ProgressRing;
 

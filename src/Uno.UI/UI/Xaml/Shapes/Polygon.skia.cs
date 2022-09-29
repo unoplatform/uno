@@ -1,4 +1,6 @@
-﻿using Uno.Media;
+﻿#nullable disable
+
+using Uno.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;

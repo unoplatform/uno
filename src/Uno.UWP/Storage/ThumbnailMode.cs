@@ -1,4 +1,6 @@
-﻿namespace Windows.Storage
+﻿#nullable disable
+
+namespace Windows.Storage
 {
 	public enum ThumbnailMode
 	{

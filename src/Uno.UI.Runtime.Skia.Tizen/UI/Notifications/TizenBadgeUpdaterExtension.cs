@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Tizen.Applications;
 using Uno.UI.Notifications;
 

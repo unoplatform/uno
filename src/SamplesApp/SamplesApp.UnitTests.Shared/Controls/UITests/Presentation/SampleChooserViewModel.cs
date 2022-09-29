@@ -1,4 +1,6 @@
-﻿// #define TRACK_REFS
+﻿#nullable disable
+
+// #define TRACK_REFS
 
 using System;
 using System.Threading;

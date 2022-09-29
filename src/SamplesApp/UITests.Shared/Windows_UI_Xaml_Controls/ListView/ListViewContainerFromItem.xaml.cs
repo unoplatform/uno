@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System.Linq;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;

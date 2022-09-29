@@ -1,4 +1,6 @@
-﻿//
+﻿#nullable disable
+
+//
 // Copyright (C) 2010 Novell Inc. http://novell.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining

@@ -1,4 +1,6 @@
-﻿using Windows.Devices.Input;
+﻿#nullable disable
+
+using Windows.Devices.Input;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Input;

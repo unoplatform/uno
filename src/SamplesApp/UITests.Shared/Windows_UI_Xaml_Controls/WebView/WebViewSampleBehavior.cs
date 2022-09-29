@@ -1,4 +1,6 @@
-﻿#if HAS_UNO
+﻿#nullable disable
+
+#if HAS_UNO
 using System;
 using Windows.UI.Xaml;
 using WebViewUno = Windows.UI.Xaml.Controls.WebView;

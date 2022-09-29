@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using Windows.UI;
 
 namespace Windows.UI.Composition

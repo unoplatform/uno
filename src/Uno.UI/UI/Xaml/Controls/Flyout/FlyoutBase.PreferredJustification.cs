@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls.Primitives
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutBase
 	{

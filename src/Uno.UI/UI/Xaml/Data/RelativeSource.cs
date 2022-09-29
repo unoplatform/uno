@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Data
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Data
 {
 	public partial class RelativeSource/* : DependencyObject*/
 	{

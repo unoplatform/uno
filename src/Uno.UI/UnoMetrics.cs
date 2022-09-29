@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Uno.UI
 {
 	public static class UnoMetrics

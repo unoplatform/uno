@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // VisualTree.h, VisualTree.cpp
 
-#nullable enable
-
 using System;
 
 using Uno.Extensions;

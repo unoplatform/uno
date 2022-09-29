@@ -1,4 +1,6 @@
-﻿#if __IOS__ || __MACOS__
+﻿#nullable disable
+
+#if __IOS__ || __MACOS__
 using Foundation;
 using SystemVersion = global::System.Version;
 

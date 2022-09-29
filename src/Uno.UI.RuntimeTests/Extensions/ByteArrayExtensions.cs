@@ -1,4 +1,6 @@
-﻿using Windows.Storage.Streams;
+﻿#nullable disable
+
+using Windows.Storage.Streams;
 
 namespace Uno.UI.RuntimeTests.Extensions
 {

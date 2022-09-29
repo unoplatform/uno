@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;

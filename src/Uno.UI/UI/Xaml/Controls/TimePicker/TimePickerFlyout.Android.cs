@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+﻿#nullable disable
+
+#if XAMARIN_ANDROID
 using Android.OS;
 using System;
 using Uno.UI;

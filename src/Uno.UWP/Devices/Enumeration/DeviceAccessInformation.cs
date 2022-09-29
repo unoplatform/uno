@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Windows.Devices.Enumeration
+﻿namespace Windows.Devices.Enumeration
 {
 	public partial class DeviceAccessInformation
 	{

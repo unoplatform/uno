@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Data
+﻿#nullable disable
+
+namespace Windows.UI.Xaml.Data
 {
 	/// <summary>
 	/// Defines constants that describe the location of the binding source relative to the position of the binding target.

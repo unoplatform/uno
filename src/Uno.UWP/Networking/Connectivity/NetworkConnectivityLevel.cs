@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Networking.Connectivity
 {
 	/// <summary>

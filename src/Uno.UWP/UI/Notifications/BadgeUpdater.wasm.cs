@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.Foundation;
+﻿using Uno.Foundation;
 
 namespace Windows.UI.Notifications
 {

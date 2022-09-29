@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using Windows.Foundation;

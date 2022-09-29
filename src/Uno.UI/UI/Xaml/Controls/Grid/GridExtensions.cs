@@ -1,4 +1,6 @@
-﻿using View = Windows.UI.Xaml.UIElement;
+﻿#nullable disable
+
+using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {

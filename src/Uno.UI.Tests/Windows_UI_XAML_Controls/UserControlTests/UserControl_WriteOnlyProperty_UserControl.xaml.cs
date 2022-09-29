@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿#nullable disable
+
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.UserControlTests

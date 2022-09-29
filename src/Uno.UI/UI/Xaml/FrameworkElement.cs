@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+﻿#nullable disable
+
+#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
 
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Controls;

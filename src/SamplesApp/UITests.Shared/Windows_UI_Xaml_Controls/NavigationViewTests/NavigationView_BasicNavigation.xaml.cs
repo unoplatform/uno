@@ -1,4 +1,6 @@
-﻿using SamplesApp.Samples.NavigationViewSample;
+﻿#nullable disable
+
+using SamplesApp.Samples.NavigationViewSample;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
 

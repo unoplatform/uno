@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Reflection;
+﻿using System.Reflection;
 using Uno.ApplicationModel;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;

@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿#nullable disable
+
+using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

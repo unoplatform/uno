@@ -1,4 +1,6 @@
-﻿using Uno.UI.Xaml.Input;
+﻿#nullable disable
+
+using Uno.UI.Xaml.Input;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.Devices.Input;
 using Windows.UI.Xaml;

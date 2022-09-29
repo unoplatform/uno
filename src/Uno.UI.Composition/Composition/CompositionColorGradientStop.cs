@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Windows.UI;
+﻿using Windows.UI;
 
 namespace Windows.UI.Composition
 {

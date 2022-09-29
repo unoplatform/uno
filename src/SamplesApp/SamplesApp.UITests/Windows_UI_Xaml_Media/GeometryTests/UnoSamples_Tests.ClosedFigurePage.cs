@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿#nullable disable
+
+using System.Drawing;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;

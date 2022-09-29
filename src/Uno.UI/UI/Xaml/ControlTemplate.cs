@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;

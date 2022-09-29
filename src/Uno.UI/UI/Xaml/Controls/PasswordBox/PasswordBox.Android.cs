@@ -1,4 +1,6 @@
-﻿using Android.Text;
+﻿#nullable disable
+
+using Android.Text;
 using System;
 using System.Collections.Generic;
 using System.Text;

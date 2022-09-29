@@ -1,4 +1,6 @@
-﻿#if __WASM__ || __MACOS__
+﻿#nullable disable
+
+#if __WASM__ || __MACOS__
 #pragma warning disable CS0067, CS0414
 #endif
 

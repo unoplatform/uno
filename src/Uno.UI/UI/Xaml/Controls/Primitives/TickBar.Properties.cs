@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Media;
+﻿#nullable disable
+
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 

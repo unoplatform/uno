@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 

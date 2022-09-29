@@ -5,8 +5,6 @@
 //
 // Base interactions with libinput derived from https://github.com/AvaloniaUI/Avalonia
 
-#nullable enable
-
 using System;
 using Uno.Extensions;
 using Windows.Devices.Input;

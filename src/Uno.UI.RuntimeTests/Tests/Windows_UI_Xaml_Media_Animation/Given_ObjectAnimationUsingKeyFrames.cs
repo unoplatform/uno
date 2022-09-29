@@ -1,4 +1,6 @@
-﻿#if !NETFX_CORE // Disabled on UWP as tests use Uno-specific APIs
+﻿#nullable disable
+
+#if !NETFX_CORE // Disabled on UWP as tests use Uno-specific APIs
 using System;
 using System.Collections.Generic;
 using System.Linq;

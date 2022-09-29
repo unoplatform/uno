@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Windows.Devices.Input;
 using Windows.UI.Core;
 using Uno.Extensions;

@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 
 using Windows.Foundation;
 using Windows.Networking.Connectivity;

@@ -1,6 +1,4 @@
-#nullable enable
-
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using Uno.UI.DataBinding;
 using Windows.Foundation;

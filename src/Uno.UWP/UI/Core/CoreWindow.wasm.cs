@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Uno.Foundation;
 
 namespace Windows.UI.Core

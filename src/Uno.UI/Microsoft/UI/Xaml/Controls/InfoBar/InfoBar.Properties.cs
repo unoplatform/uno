@@ -1,7 +1,5 @@
 ﻿// MUX reference InfoBar.properties.cpp, commit 3125489
 
-#nullable enable
-
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml;

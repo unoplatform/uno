@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using Android.Runtime;
 using Android.Text;

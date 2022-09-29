@@ -1,4 +1,6 @@
-﻿#if HAS_UNO // Testing internal UnoFocusInputHandler, not available on Windows
+﻿#nullable disable
+
+#if HAS_UNO // Testing internal UnoFocusInputHandler, not available on Windows
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.Xaml.Core;

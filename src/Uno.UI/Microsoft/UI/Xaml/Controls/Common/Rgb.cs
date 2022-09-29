@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	// Uno Doc: Originally defined in ColorConversion.h in WinUI but moved here to a separate file.

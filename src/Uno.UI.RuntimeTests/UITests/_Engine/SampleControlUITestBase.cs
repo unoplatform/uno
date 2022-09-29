@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Input;

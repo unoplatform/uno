@@ -1,4 +1,6 @@
-﻿// // Copyright (c) .NET Foundation and contributors. All rights reserved.
+﻿#nullable disable
+
+// // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //
 // 2019/04/12 (Jerome Laban <jerome.laban@nventive.com>):

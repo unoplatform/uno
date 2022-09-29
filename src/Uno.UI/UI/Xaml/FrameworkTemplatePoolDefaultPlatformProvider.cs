@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Uno.UI.Dispatching;

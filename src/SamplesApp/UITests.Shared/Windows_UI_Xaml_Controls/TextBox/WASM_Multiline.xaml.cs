@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+
+using System.Collections.Generic;
 using System.Reflection;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;

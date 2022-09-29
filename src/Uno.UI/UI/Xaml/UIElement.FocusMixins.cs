@@ -3,8 +3,6 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Rendering;
 using Windows.UI.Xaml.Controls;
 
-#nullable enable
-
 namespace Windows.UI.Xaml
 {
 	/// <summary>

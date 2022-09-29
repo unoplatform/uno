@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#nullable disable
+
+using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;

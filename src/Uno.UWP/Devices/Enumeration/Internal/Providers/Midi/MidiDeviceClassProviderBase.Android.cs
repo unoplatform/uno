@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 #pragma warning disable CS0618 // obsolete members
 
 using System;

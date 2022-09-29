@@ -1,6 +1,4 @@
-#nullable enable
-
-#if __MACOS__
+﻿#if __MACOS__
 using System;
 
 namespace Windows.UI.Composition

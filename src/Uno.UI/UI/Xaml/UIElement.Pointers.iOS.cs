@@ -1,4 +1,6 @@
-﻿// #define TRACE_NATIVE_POINTER_EVENTS
+﻿#nullable disable
+
+// #define TRACE_NATIVE_POINTER_EVENTS
 
 using System;
 using System.Collections;

@@ -1,6 +1,4 @@
-#nullable  enable
-
-using Windows.ApplicationModel.DataTransfer;
+﻿using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Uno.UI;

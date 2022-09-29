@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.UI.DataBinding;
+﻿using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Markup
 {

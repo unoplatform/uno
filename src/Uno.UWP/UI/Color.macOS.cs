@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if __MACOS__
 using System;
 using CoreGraphics;

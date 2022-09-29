@@ -15,8 +15,6 @@ using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock

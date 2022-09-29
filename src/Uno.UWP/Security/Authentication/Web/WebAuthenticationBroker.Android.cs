@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Android.Content;
+﻿using Android.Content;
 using Uno.AuthenticationBroker;
 
 namespace Windows.Security.Authentication.Web

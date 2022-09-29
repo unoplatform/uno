@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno;
+﻿using Uno;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using AndroidX.DocumentFile.Provider;
 using Java.IO;

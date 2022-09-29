@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #pragma warning disable CS0628  // new protected member declared in sealed class ==> Class is not sealed on all platforms
 using System;
 using System.Collections.Generic;

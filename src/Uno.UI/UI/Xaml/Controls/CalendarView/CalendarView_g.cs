@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Windows.Foundation;
 using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.CalendarView, Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
 

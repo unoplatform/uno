@@ -1,4 +1,6 @@
-﻿#if __IOS__
+﻿#nullable disable
+
+#if __IOS__
 using System;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
 using UwpEnergySaverStatus = Windows.System.Power.EnergySaverStatus;

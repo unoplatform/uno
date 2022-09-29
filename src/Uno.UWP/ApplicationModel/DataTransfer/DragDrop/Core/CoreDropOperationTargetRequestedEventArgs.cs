@@ -1,6 +1,4 @@
-#nullable enable
-
-namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
+﻿namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	public partial class CoreDropOperationTargetRequestedEventArgs 
 	{

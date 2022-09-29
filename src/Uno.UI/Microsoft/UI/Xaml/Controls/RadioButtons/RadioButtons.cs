@@ -1,4 +1,6 @@
-﻿#pragma warning disable 105 // remove when moving to WinUI tree
+﻿#nullable disable
+
+#pragma warning disable 105 // remove when moving to WinUI tree
 
 using System.Collections.Generic;
 using Microsoft.UI.Private.Controls;

@@ -1,4 +1,6 @@
-﻿#if XAMARIN_IOS
+﻿#nullable disable
+
+#if XAMARIN_IOS
 using Foundation;
 using System;
 using System.Linq;

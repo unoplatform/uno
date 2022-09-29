@@ -1,6 +1,4 @@
-#if DEBUG
-#nullable enable
-
+﻿#if DEBUG
 using System;
 using System.Collections.Generic;
 using System.Threading;

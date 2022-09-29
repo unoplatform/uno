@@ -1,7 +1,4 @@
-﻿#nullable enable
-
-
-namespace Uno.Foundation.Logging
+﻿namespace Uno.Foundation.Logging
 {
 	internal interface IExternalLoggerFactory
 	{

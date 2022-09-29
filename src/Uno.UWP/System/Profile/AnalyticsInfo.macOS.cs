@@ -1,4 +1,6 @@
-﻿using AppKit;
+﻿#nullable disable
+
+using AppKit;
 using System;
 using System.Runtime.InteropServices;
 using Foundation;

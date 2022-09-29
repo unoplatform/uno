@@ -1,4 +1,6 @@
-﻿namespace Windows.Networking.Connectivity;
+﻿#nullable disable
+
+namespace Windows.Networking.Connectivity;
 
 public partial class NetworkInformation
 {

@@ -1,4 +1,6 @@
-﻿using MUXControlsTestApp.Utilities;
+﻿#nullable disable
+
+using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests

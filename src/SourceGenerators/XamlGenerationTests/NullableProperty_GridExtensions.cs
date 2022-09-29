@@ -9,8 +9,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif
 
-#nullable enable
-
 namespace XamlGenerationTests.Dedoose.Extensions
 {
     public static class GridExtensions

@@ -13,8 +13,6 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-#nullable enable
-
 namespace Windows.UI.Composition
 {
 	internal class TextVisual : Visual

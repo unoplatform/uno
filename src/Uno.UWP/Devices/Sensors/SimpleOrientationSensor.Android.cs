@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#if __ANDROID__
+﻿#if __ANDROID__
 using System;
 using Android.App;
 using Android.Content;

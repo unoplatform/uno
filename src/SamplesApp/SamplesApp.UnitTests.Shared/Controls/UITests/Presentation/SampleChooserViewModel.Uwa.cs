@@ -1,4 +1,6 @@
-﻿#if NETFX_CORE
+﻿#nullable disable
+
+#if NETFX_CORE
 using System;
 using System.Threading;
 using System.Threading.Tasks;

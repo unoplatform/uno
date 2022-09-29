@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // #define LOG_LAYOUT
 
 #if !UNO_REFERENCE_API

@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // HyperlinkButton_Partial.h, HyperlinkButton_Partial.cpp
 
-#nullable enable
-
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;

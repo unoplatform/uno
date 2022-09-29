@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Uno.Devices.Midi.Internal;
 using Windows.Storage.Streams;
 

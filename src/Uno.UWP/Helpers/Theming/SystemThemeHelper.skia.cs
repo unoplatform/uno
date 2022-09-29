@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Uno.Foundation.Extensibility;
+﻿using Uno.Foundation.Extensibility;
 
 namespace Uno.Helpers.Theming
 {

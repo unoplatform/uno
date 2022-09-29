@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // CCOntrol.cpp, Control_Partial.cpp
 
-#nullable enable
-
 using System;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Android.Views;
 
 namespace Uno.UI.Controls

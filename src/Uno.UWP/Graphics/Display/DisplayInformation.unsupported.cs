@@ -1,4 +1,6 @@
-﻿using Uno;
+﻿#nullable disable
+
+using Uno;
 using System;
 
 namespace Windows.Graphics.Display

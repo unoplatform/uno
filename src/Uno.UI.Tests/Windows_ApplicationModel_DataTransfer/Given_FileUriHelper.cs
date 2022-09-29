@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using Windows.ApplicationModel.DataTransfer;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

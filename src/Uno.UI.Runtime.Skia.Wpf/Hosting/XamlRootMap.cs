@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Uno.UI.Runtime.Skia.Wpf;
 using Windows.UI.Xaml;

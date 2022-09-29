@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿#nullable disable
+
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.Resources
 {

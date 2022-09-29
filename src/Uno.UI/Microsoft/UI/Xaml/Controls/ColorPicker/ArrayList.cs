@@ -1,4 +1,6 @@
-﻿using global::System;
+﻿#nullable disable
+
+using global::System;
 
 namespace Microsoft.UI.Xaml.Controls
 {

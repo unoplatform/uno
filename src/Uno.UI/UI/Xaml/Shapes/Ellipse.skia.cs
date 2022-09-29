@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using Uno.Extensions;
 using Windows.UI.Composition;
 using System.Numerics;

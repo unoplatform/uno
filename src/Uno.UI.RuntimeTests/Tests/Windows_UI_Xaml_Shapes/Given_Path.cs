@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Media;
+﻿#nullable disable
+
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

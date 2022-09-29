@@ -1,4 +1,6 @@
-﻿#if HAS_UNO
+﻿#nullable disable
+
+#if HAS_UNO
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;

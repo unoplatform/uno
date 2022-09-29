@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using SystemXmlCDataSection = System.Xml.XmlCDataSection;
 using SystemXmlNode = System.Xml.XmlNode;
 

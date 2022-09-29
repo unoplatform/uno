@@ -1,6 +1,4 @@
-#nullable enable
-
-#if __ANDROID__
+﻿#if __ANDROID__
 using System.Numerics;
 using System;
 using Android.Views;

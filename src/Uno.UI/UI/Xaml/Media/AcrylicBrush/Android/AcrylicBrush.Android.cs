@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0618
+﻿#nullable disable
+
+#pragma warning disable CS0618
 using System;
 using Android.Graphics;
 using Android.Graphics.Drawables;

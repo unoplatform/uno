@@ -1,4 +1,6 @@
-﻿#if HAS_UNO
+﻿#nullable disable
+
+#if HAS_UNO
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 

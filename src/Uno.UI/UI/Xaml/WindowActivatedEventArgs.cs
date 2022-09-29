@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 #if HAS_UNO_WINUI
 using System;
 using Windows.Foundation;

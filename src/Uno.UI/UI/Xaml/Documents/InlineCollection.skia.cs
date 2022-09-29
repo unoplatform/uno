@@ -9,8 +9,6 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection

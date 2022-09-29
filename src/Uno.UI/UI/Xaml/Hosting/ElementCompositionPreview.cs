@@ -1,6 +1,4 @@
-#nullable enable
-
-using System.Linq;
+﻿using System.Linq;
 using Windows.UI.Composition;
 
 namespace Windows.UI.Xaml.Hosting;

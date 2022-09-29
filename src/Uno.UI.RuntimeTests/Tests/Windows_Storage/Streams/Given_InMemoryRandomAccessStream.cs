@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿#nullable disable
+
+using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams;

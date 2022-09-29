@@ -1,7 +1,4 @@
-﻿#nullable enable
-
-
-namespace Uno.UI.SourceGenerators.XamlGenerator
+﻿namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class ComponentEntry
 	{

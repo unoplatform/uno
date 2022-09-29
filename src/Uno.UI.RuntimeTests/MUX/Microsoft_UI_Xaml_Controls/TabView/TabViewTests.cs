@@ -1,4 +1,6 @@
-﻿#if !WINDOWS_UWP
+﻿#nullable disable
+
+#if !WINDOWS_UWP
 // MUX Reference: TabViewTests.cs, commit 542e6f9
 
 // Copyright (c) Microsoft Corporation. All rights reserved.

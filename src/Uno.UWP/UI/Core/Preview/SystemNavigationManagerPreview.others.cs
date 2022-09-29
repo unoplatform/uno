@@ -1,5 +1,4 @@
-﻿#nullable enable
-#if !__MACOS__ && !__SKIA__
+﻿#if !__MACOS__ && !__SKIA__
 
 namespace Windows.UI.Core.Preview;
 

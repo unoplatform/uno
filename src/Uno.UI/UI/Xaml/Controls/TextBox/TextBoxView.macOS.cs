@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using CoreGraphics;
 using System;
 using Uno.Extensions;

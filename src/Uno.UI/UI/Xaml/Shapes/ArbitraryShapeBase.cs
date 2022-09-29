@@ -3,7 +3,6 @@
 #endif
 
 #if LEGACY_SHAPE_MEASURE
-#nullable enable
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;

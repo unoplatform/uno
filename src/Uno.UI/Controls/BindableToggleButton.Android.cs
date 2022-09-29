@@ -1,4 +1,6 @@
-﻿using Android.Util;
+﻿#nullable disable
+
+using Android.Util;
 using Android.Widget;
 using Uno.UI.DataBinding;
 using System;

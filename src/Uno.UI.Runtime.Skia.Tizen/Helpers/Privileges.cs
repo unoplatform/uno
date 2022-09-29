@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Uno.UI.Runtime.Skia.Tizen.Helpers
+﻿namespace Uno.UI.Runtime.Skia.Tizen.Helpers
 {
 	internal static class Privileges
     {

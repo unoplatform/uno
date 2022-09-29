@@ -1,4 +1,6 @@
-﻿namespace SamplesApp.UITests
+﻿#nullable disable
+
+namespace SamplesApp.UITests
 {
 	public partial class ScreenshotOptions
 	{

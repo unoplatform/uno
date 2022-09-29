@@ -1,6 +1,4 @@
-#nullable enable
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Windows.UI.Xaml.Controls

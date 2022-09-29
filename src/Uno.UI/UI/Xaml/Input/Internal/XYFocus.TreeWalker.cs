@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // TreeWalker.h, TreeWalker.cpp
 
-#nullable enable
-
 using System.Collections.Generic;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;

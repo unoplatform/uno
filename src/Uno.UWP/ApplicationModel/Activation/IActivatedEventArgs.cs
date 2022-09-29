@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
 namespace Windows.ApplicationModel.Activation

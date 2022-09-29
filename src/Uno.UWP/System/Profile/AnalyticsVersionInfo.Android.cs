@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using Android.OS;
 using Windows.System.Profile.Internal;

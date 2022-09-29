@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Xaml;

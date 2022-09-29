@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 namespace Windows.Security.Authentication.Web
 {
 	public enum WebAuthenticationStatus

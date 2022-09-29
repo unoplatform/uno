@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Tizen.System;
 using Windows.System.Profile.Internal;
 

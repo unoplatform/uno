@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿#nullable disable
+
+using Windows.Foundation;
 using Uno.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI

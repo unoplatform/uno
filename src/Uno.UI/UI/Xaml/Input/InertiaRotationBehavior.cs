@@ -1,6 +1,4 @@
-#nullable enable
-
-#if HAS_UNO_WINUI
+﻿#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;

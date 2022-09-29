@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Uno.Devices.Enumeration.Internal;

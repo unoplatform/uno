@@ -1,4 +1,6 @@
-﻿using Windows.System.Profile.Internal;
+﻿#nullable disable
+
+using Windows.System.Profile.Internal;
 
 namespace Uno.UI.Runtime.Skia.GTK.System.Profile;
 

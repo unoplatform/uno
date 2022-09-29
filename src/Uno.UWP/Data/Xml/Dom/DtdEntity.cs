@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using SystemXmlEntity = System.Xml.XmlEntity;
 using SystemXmlNode = System.Xml.XmlNode;
 

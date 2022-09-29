@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using Uno;
 using Windows.UI.Xaml.Automation.Provider;

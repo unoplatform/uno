@@ -1,4 +1,6 @@
-﻿// MUX Reference ViewModel.cpp, commit de78834
+﻿#nullable disable
+
+// MUX Reference ViewModel.cpp, commit de78834
 
 using System.Collections.Generic;
 using Windows.Foundation.Collections;

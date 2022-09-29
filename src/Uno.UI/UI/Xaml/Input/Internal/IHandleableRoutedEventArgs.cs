@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Xaml.Input
+﻿#nullable disable
+
+namespace Uno.UI.Xaml.Input
 {
 	/// <summary>
 	/// Represents Routed event args which can be handled while bubbling/tunneling.

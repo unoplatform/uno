@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using Gtk;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;

@@ -1,4 +1,6 @@
-﻿using Windows.ApplicationModel;
+﻿#nullable disable
+
+using Windows.ApplicationModel;
 
 namespace Uno.ApplicationModel
 {

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using System.Runtime.InteropServices;
 using Windows.Foundation;

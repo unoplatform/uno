@@ -1,6 +1,4 @@
-#nullable enable
-
-using UIKit;
+﻿using UIKit;
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications

@@ -1,4 +1,6 @@
-﻿#pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
+﻿#nullable disable
+
+#pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
 
 using Android.Graphics;
 using Android.Graphics.Drawables;
