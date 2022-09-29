@@ -2,7 +2,7 @@ parameters:
   poolName: ''
 
 jobs:
-- job: wasm_package_build
+- job: skia_package_build
   displayName: 'Build WebAssembly Package Binaries'
   container: nv-bionic-wasm
   

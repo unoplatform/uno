@@ -9,6 +9,8 @@ jobs:
   dependsOn:
   - generic_win_build
   - net6_win_build
+  - skia_package_build
+  - wasm_package_build
 
   pool: ${{ parameters.poolName }}
 
