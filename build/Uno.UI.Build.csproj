@@ -254,7 +254,12 @@
 	<Target Name="BuildSyncGenerator">
 
 		<!-- Restore the nuget packages for the whole solution -->
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI-packages-no-net6.slnf" Targets="Restore" RebaseOutputs="false" BuildInParallel="true" />
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+				 Projects="filter\Uno.UI-packages-no-net6.slnf;filter\Uno.UI-packages-wasm.slnf;filter\Uno.UI-packages-skia.slnf"
+				 Targets="Restore"
+				 RebaseOutputs="false"
+				 BuildInParallel="true" />
+		
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
 
 		<ItemGroup>
