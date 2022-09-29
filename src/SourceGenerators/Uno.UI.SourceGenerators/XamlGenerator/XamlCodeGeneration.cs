@@ -19,6 +19,7 @@ using __uno::Uno.Xaml;
 using Microsoft.CodeAnalysis.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Immutable;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -587,9 +588,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		//get keys of localized strings
-		private string[] GetResourceKeys(CancellationToken ct)
+		private ImmutableHashSet<string> GetResourceKeys(CancellationToken ct)
 		{
-			string[] resourceKeys = _resourceFiles
+			ImmutableHashSet<string> resourceKeys = _resourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
 				.SelectMany(file => {
@@ -641,12 +642,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 					}
 				})
-				.Distinct()
 				.Select(k => k.Replace('.', '/'))
-				.ToArray();
+				.ToImmutableHashSet();
 
 #if DEBUG
-			Console.WriteLine(resourceKeys.Length + " localization keys found");
+			Console.WriteLine(resourceKeys.Count + " localization keys found");
 #endif
 			return resourceKeys;
 		}
