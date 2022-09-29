@@ -466,6 +466,8 @@
 			<Compile Include="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
 		</ItemGroup>
 	</Target>
+<<<<<<< HEAD
+=======
 
 	<Target Name="_WPFIssue6792_RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile" Condition="'$(UnoUseWPFIssue6792Workaround)'=='true'">
 		<!-- Work around https://github.com/dotnet/wpf/issues/6792, remove for .NET 6.0.500 or later -->
@@ -476,4 +478,5 @@
 			<Analyzer Include="@(FilteredAnalyzer)" />
 		</ItemGroup>
 	</Target>
+>>>>>>> 7fd50ce18fbc5e65b2a49c0f4f777d984b1e9d20
 </Project>
