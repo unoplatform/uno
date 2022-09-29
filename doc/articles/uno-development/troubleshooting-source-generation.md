@@ -50,19 +50,6 @@ It is possible to step into the XAML generator by adding the following property:
 ```
 Setting this property will popup a Debugger window allowing the selection of a visual studio instance, giving the ability to set breakpoints and trace the generator.
 
-## Historical dumping of generated XAML files
-In the context of hot reload, troubleshooting the generator's state may be useful. In this case, the generator maintains a state in order to work around the current edition limitations (e.g. editing lambdas is not possible in .NET 6).
-
-In order to see all the generated files historically, set the following property in the project:
-```xml
-<PropertyGroup>
-    <UnoXamlHistoricalOutputGenerationPath>$(MSBuildThisFileDirectory)obj\generation-history</UnoXamlHistoricalOutputGenerationPath>
-</PropertyGroup>
-```
-
-> [!WARNING]
-> Setting this property will generate a lot of data, particularly when editing files in the editor, as most key strokes invoke the source generators.
-
 ## Troubleshooting Uno.SourceGeneration based generation
 
 When building, if you're having build error messages that looks like one of those:

@@ -45,7 +45,6 @@
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
-		<CompilerVisibleProperty Include="UnoXamlHistoricalOutputGenerationPath" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
