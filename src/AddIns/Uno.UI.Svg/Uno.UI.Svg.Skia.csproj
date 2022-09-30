@@ -35,12 +35,6 @@
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="Properties\AssemblyInfo.cs">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Compile>
-	</ItemGroup>
-
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoUISvgOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

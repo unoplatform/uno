@@ -24,7 +24,6 @@ using UIKit;
 using _View = UIKit.UIView;
 using _Color = UIKit.UIColor;
 using _Image = UIKit.UIImage;
-using Uno.UI.Xaml.Media;
 #elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;
