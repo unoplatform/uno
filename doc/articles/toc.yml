@@ -342,6 +342,8 @@
               href: uno-fluent-assets.md
             - name: Lottie animations
               href: features/Lottie.md
+            - name: Using SVG images
+              href: features/svg.md
             - name: Working with XAML Trimming
               href: features/resources-trimming.md
             - name: Working with cookies
