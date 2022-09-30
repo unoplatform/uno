@@ -7,7 +7,10 @@ using Uno.Helpers.Theming;
 
 namespace Windows.ApplicationModel.Core;
 
-public partial class CoreApplication
+/// <summary>
+/// Enables apps to handle state changes, manage windows, and integrate with a variety of UI frameworks.
+/// </summary>
+public static partial class CoreApplication
 {
 	private static CoreApplicationView _currentView;
 	private static List<CoreApplicationView> _views;
@@ -15,7 +18,11 @@ public partial class CoreApplication
 	static CoreApplication()
 	{
 		_currentView = new CoreApplicationView();
+
+		InitializePlatform();
 	}
+
+	static partial void InitializePlatform();
 
 	/// <summary>
 	/// Occurs when an app is resuming.
@@ -36,6 +43,13 @@ public partial class CoreApplication
 	/// Fired just before application UI becomes visible.
 	/// </summary>
 	public static event EventHandler<LeavingBackgroundEventArgs> LeavingBackground;
+
+#if __ANDROID__ || __SKIA__ || __MACOS__
+	/// <summary>
+	/// Occurs when the app is shutting down.
+	/// </summary>
+	public static event EventHandler<object> Exiting;
+	#endif
 
 	/// <summary>
 	/// Raises the <see cref="Resuming"/> event.
@@ -61,6 +75,18 @@ public partial class CoreApplication
 	internal static void RaiseLeavingBackground(LeavingBackgroundEventArgs args) => LeavingBackground?.Invoke(null, args);
 
 	public static CoreApplicationView GetCurrentView() => _currentView;
+
+	#if __ANDROID__ || __SKIA__ || __MACOS__
+	/// <summary>
+	/// Shuts down the app.
+	/// </summary>
+	public static void Exit()
+	{
+		Exiting?.Invoke(null, null);
+
+		ExitPlatform();
+	}
+	#endif
 
 	public static CoreApplicationView MainView => _currentView;
 
