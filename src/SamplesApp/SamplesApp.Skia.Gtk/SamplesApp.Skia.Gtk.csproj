@@ -4,6 +4,10 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
 		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
