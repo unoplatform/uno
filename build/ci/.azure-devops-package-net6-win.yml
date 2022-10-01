@@ -93,3 +93,17 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts
       ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)\src\AddIns\Uno.UI.Svg\obj
+      ArtifactName: SvgObjNet6
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)\src\AddIns\Uno.UI.Lottie\obj
+      ArtifactName: LottieObjNet6
+      ArtifactType: Container
