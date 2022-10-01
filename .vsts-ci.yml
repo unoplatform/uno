@@ -64,7 +64,7 @@ jobs:
 
 - template: build/ci/.azure-devops-winui-convert.yml
   parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-pipeline-validations.yml
   parameters:
