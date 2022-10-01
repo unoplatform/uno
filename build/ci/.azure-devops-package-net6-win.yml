@@ -51,19 +51,6 @@ jobs:
   - template: templates/dotnet6-install-windows.yml
   - template: templates/install-windows-sdk.yml
 
-  # Required to build on net5 because of uwp compatibility (until 16.10 gets published)
-  - task: MSBuild@1
-    inputs:
-      solution: Build/Uno.UI.Build.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /m /t:BuildNet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-net6-$(UNO_UWP_BUILD).binlog
-      clean: false
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
-
   - powershell: |
         cp $(build.sourcesdirectory)\src\global-net6.json $(build.sourcesdirectory)\src\global.json
     displayName: Change active .NET SDK
