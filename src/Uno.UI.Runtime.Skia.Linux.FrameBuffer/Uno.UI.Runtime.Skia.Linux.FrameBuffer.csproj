@@ -1,10 +1,15 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net7.0</TargetFrameworks>
+		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>true</WarningsAsErrors>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+
 
 	<Import Project="../netcore-build.props" />
 	<Import Project="../targetframework-override.props" />
