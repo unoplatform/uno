@@ -7,9 +7,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Windows.Foundation;
 using Uno.Foundation.Interop;
-using System.Runtime.InteropServices.JavaScript;
 using System.Net.WebSockets;
 using System.Diagnostics;
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
 
 namespace SamplesApp.UnitTests.TSBindings
 {

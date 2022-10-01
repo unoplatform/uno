@@ -36,14 +36,14 @@ jobs:
   - bash: |
       dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Build sample app (net6.0)'
+    displayName: 'Build sample app (net7.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net6.0)'
+    displayName: 'Publish Wasm Site (net7.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net6.0/dist
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net7.0/dist
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/site-net6.0
+      TargetFolder: $(build.artifactstagingdirectory)/site-net7.0
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -69,7 +69,7 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'net6.0'
+    SITE_SUFFIX: 'net7.0'
 
   steps:
   - checkout: self
@@ -99,7 +99,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net6.0" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net7.0" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -137,32 +137,32 @@ jobs:
 
   strategy:
     matrix:
-      net6_default:
-        SITE_SUFFIX: 'net6.0'
+      net7_default:
+        SITE_SUFFIX: 'net7.0'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120000'
 
-      net6_benchmarks:
-        SITE_SUFFIX: 'net6.0'
+      net7_benchmarks:
+        SITE_SUFFIX: 'net7.0'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '120000'
 
-      net6_runtimetests_group_00:
-        SITE_SUFFIX: 'net6.0'
+      net7_runtimetests_group_00:
+        SITE_SUFFIX: 'net7.0'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800000'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-      net6_runtimetests_group_01:
-        SITE_SUFFIX: 'net6.0'
+      net7_runtimetests_group_01:
+        SITE_SUFFIX: 'net7.0'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800000'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-      net6_runtimetests_group_02:
-        SITE_SUFFIX: 'net6.0'
+      net7_runtimetests_group_02:
+        SITE_SUFFIX: 'net7.0'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800000'
         UITEST_RUNTIME_TEST_GROUP: 2

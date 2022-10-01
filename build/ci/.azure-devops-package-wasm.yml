@@ -4,7 +4,6 @@ parameters:
 jobs:
 - job: wasm_package_build
   displayName: 'Build WebAssembly Package Binaries'
-  container: nv-bionic-wasm
   
   dependsOn: winui_convert_tree
 
