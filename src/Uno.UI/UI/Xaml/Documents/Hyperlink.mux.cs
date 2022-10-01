@@ -10,7 +10,11 @@ namespace Windows.UI.Xaml.Documents
 {
 	public partial class Hyperlink
 	{
-		internal new bool IsFocusable()
+		internal
+#if __WASM__
+			new
+#endif
+			bool IsFocusable()
 		{
 			var element = GetContainingFrameworkElement();
 			return
