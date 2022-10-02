@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno</AssemblyName>
+		<RootNamespace>Windows</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+	</PropertyGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Include="System.Memory" Version="4.5.2" />
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
+		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Reference.csproj" />
+	</ItemGroup>
+
+</Project>

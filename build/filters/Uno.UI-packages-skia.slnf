@@ -20,7 +20,6 @@
       "SamplesApp\\UnoIslands.Skia\\UnoIslands.Skia.csproj",
       "SamplesApp\\UnoIslands.WPF\\UnoIslands.Skia.Wpf.csproj",
       "SamplesApp\\UnoIslands.WinForms\\UnoIslands.WinForms.csproj",
-      "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",

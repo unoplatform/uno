@@ -8,6 +8,10 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
+	</PropertyGroup>
+	
 	<ItemGroup Label="AssemblyInfo">
 		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
 			<_Parameter1>false</_Parameter1>

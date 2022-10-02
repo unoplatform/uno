@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.Foundation</AssemblyName>
+    	<RootNamespace>Windows.Foundation</RootNamespace>
+		<NoWarn>$(NoWarn);NU1701;1572;1712;1711;1574</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<PackageReference Include="System.Memory" />
+		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="LinkerDefinition.net6.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
+</Project>
