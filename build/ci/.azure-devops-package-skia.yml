@@ -45,7 +45,7 @@ jobs:
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build\Uno.UI.Build.csproj /m /t:BuildCIWasm "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build\Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Skia Binaries
 
   - template: templates/copy-package-assets.yml
