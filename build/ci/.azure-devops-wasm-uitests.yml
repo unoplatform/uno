@@ -97,7 +97,7 @@ jobs:
       IFS=$'\n\t'
       dotnet tool uninstall dotnet-serve -g || true
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
-      dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
+      dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
       $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net7.0" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests

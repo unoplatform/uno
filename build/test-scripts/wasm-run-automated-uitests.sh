@@ -11,7 +11,7 @@ npm i puppeteer@14.1.0
 # install dotnet serve / Remove as needed
 dotnet tool uninstall dotnet-serve -g || true
 dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
-dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
+dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
