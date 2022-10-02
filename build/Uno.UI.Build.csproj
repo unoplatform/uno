@@ -45,9 +45,8 @@
 
 	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
-		
-		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
+
+		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage;BuildT4Generator" Condition="$(_isWindows)" />
 	</Target>
 	
 	<Target Name="BuildGeneric" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
@@ -251,8 +250,7 @@
 
 	</Target>
 
-	<Target Name="BuildSyncGenerator">
-
+	<Target Name="BuildSyncGenerator" DependsOnTargets="BuildT4Generator">
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
 				 Projects="filters\Uno.UI-packages-no-net6.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
@@ -269,12 +267,15 @@
 			<MixinTargetFrameworks Include="net461" />
 			<MixinTargetFrameworks Include="netstandard2.0" />
 		</ItemGroup>
-
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;TargetFramework=%(MixinTargetFrameworks.Identity)"
 						 Projects="..\src\Uno.UI\Uno.UI.csproj"
 						 Targets="GenerateMixins"
 						 RebaseOutputs="false"
 						 BuildInParallel="true" />
+	</Target>
+
+	<Target Name="BuildT4Generator">
+		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
