@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: skia_package_build
-  displayName: 'Build WebAssembly Package Binaries'
+  displayName: 'Build Skia Package Binaries'
   
   dependsOn: winui_convert_tree
 
