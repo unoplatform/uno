@@ -1,8 +1,10 @@
 ﻿#if __WASM__
-using Uno;
-using Uno.Foundation;
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno;
+using Uno.Foundation;
 
 namespace Windows.Graphics.Display
 {
@@ -134,6 +136,13 @@ namespace Windows.Graphics.Display
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
+		static partial void SetOrientationPartial(DisplayOrientations orientations)
+		{
+			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+				Uno.UI.Dispatching.CoreDispatcherPriority.High,
+				(ct) => SetOrientationAsync(orientations, ct));
+		}
+
 		private static bool TryReadJsFloat(string property, out float value) =>
 			float.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
 
@@ -151,6 +160,11 @@ namespace Windows.Graphics.Display
 				"landscape-secondary" => DisplayOrientations.LandscapeFlipped,
 				_ => DisplayOrientations.None,
 			};
+		}
+
+		private static Task SetOrientationAsync(DisplayOrientations orientations, CancellationToken ct)
+		{
+			return WebAssemblyRuntime.InvokeAsync($"{JsType}.setOrientationAsync({(int)orientations})", ct);
 		}
 	}
 }

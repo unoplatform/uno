@@ -864,19 +864,30 @@ declare namespace Windows.Gaming.Input {
     }
 }
 declare namespace Windows.Graphics.Display {
-    class DisplayInformation {
+    enum DisplayOrientations {
+        None = 0,
+        Landscape = 1,
+        Portrait = 2,
+        LandscapeFlipped = 4,
+        PortraitFlipped = 8
+    }
+    export class DisplayInformation {
         private static readonly DpiCheckInterval;
         private static lastDpi;
         private static dpiWatcher;
         private static dispatchOrientationChanged;
         private static dispatchDpiChanged;
+        private static lockingSupported;
         static startOrientationChanged(): void;
         static stopOrientationChanged(): void;
         static startDpiChanged(): void;
         static stopDpiChanged(): void;
+        static setOrientationAsync(uwpOrientations: DisplayOrientations): Promise<void>;
+        private static parseUwpOrientation;
         private static updateDpi;
         private static onOrientationChange;
     }
+    export {};
 }
 interface Window {
     SpeechRecognition: any;
