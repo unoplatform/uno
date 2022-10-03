@@ -10,7 +10,6 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
-      "T4Generator\\T4Generator.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Reference.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",

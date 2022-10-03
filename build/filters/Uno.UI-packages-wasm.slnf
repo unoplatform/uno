@@ -15,7 +15,6 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
-      "T4Generator\\T4Generator.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
       "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
