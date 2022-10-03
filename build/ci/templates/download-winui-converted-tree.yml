@@ -6,7 +6,7 @@ steps:
     displayName: Pre-cleanup for Restoring WinUI Converted Source Tree
 
   - task: DownloadPipelineArtifact@2
-    displayName: Restoring WinUI Converted Source Rree
+    displayName: Restoring WinUI Converted Source Tree
     condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
     inputs:
       artifact: winui-converted-tree
