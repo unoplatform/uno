@@ -263,7 +263,7 @@
 
 	<Target Name="BuildSyncGenerator" DependsOnTargets="BuildT4Generator">
 		<!-- Restore the nuget packages for the whole solution -->
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;UnoUIDisableNetCoreBuild=true"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;UnoUIDisableNet7Build=true"
 				 Projects="filters\Uno.UI-packages-no-net6.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
 				 Targets="Restore"
 				 RebaseOutputs="false"
