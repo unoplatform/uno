@@ -46,7 +46,7 @@
 	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage;BuildT4Generator" Condition="$(_isWindows)" />
+		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage;BuildT4Generator" />
 	</Target>
 	
 	<Target Name="BuildGeneric" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
