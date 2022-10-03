@@ -7,5 +7,5 @@
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, derivesFromFrameworkElement: false);
     AddClass("Windows.UI.Xaml.Controls", "SecureTextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, derivesFromFrameworkElement: false);
 #>
-<#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.macOS.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElementImplementation.macOS.tt"#>
 #endif
