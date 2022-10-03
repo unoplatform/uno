@@ -18,6 +18,14 @@
 					Height="100"
 					CornerRadius="50" />
 
+			<!-- Sample for https://github.com/unoplatform/uno/issues/5440 -->
+			<Border Height="30" />
+			<Border x:Name="Sample2"
+					Width="128"
+					Height="64"
+					Background="Red"
+					CornerRadius="128" />
+
 			<Border Height="30" />
 			<Border Width="100"
 					Height="50"

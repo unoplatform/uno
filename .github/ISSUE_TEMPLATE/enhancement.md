@@ -15,11 +15,11 @@ labels: kind/enhancement, triage/untriaged, difficulty/tbd
 - [ ] iOS
 - [ ] Android
 - [ ] WebAssembly
-- [ ] WebAssembly renderers for Xamarin.Forms
 - [ ] macOS
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Linux Framebuffer
   - [ ] Tizen
 - [ ] Windows
 - [ ] Build tasks

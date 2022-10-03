@@ -1,7 +1,7 @@
 ﻿<#@template language="C#" hostspecific="True" #>
 <#@output extension="g.cs" #>
 
-<#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
 		"Windows.UI.Xaml.Controls.NativeListViewBase",
@@ -22,5 +22,5 @@
 	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true, derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
 #>
-<#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.iOS.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt"#>
 #endif

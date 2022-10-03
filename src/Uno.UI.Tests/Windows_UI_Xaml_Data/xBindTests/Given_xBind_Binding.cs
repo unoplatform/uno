@@ -1264,6 +1264,41 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("42", SUT.tb1.Text);
 		}
 
+		[TestMethod]
+		public async Task When_PathLessCasting()
+		{
+			var SUT = new xBind_PathLessCasting();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(SUT, SUT.tb1.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_PathLessCasting_Template()
+		{
+			var SUT = new xBind_PathLessCasting_Template();
+
+			SUT.ForceLoaded();
+
+			var rootData = new xBind_PathLessCasting_Template_Model();
+			SUT.root.Content = rootData;
+
+			var myObject = SUT.FindName("tb1") as TextBlock;
+
+			Assert.AreEqual(rootData, myObject.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_AttachedProperty()
+		{
+			var SUT = new xBind_AttachedProperty();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(42, SUT.tb1.Tag);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);

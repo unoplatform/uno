@@ -20,10 +20,7 @@ namespace Windows.UI.Xaml
 	{
 		private Uno.UI.Controls.Window _window;
 
-		private static Window _current;
 		private RootViewController _mainController;
-		private UIElement _content;
-		private RootVisual _rootVisual;
 		private Border _rootBorder;
 		private object _windowResizeNotificationObject;
 
@@ -120,20 +117,6 @@ namespace Windows.UI.Xaml
 			var trackingArea = new NSTrackingArea(Bounds, options, _rootVisual, null);
 
 			_rootVisual.AddTrackingArea(trackingArea);
-		}
-
-		private UIElement InternalGetContent() => _content;
-
-		private UIElement InternalGetRootElement() => _rootVisual;
-
-		private static Window InternalGetCurrentWindow()
-		{
-			if (_current == null)
-			{
-				_current = new Window();
-			}
-
-			return _current;
 		}
 
 		internal void RaiseNativeSizeChanged(CGSize size)

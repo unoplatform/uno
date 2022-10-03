@@ -6,7 +6,7 @@ jobs:
   displayName: 'Build Generic Binaries'
   timeoutInMinutes: 90
   
-  dependsOn: Pipeline_Validations
+  dependsOn: winui_convert_tree
 
   pool: ${{ parameters.poolName }}
 
@@ -34,6 +34,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -64,13 +66,6 @@ jobs:
   - template: templates/install-windows-sdk.yml
   - template: templates/jdk-setup.yml
 
-  - powershell: |
-        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
-        dotnet run "$(build.sourcesdirectory)"
-
-    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
-    displayName: Convert source tree to WinUI 3 structure
-
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj
@@ -82,6 +77,15 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
+
+  # - task: CmdLine@2
+  #   inputs:
+  #     workingDirectory: $(build.artifactstagingdirectory)
+  #     script: |
+  #       dotnet tool install --global Basic.CompilerLog
+  #       # Adjust project name for the project you want to get compiler log for.
+  #       complog create --projectName=Uno.UI build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+  #   condition: always()
 
   - template: templates/copy-package-assets.yml
 

@@ -33,53 +33,53 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
-        public void When_BasicRoot()
-        {
-            var s = GetContent(nameof(When_BasicRoot));
-            var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+		public void When_BasicRoot()
+		{
+			var s = GetContent(nameof(When_BasicRoot));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
 
-            Assert.IsNotNull(r);
-            Assert.AreEqual("testPage", r.Name);
-        }
+			Assert.IsNotNull(r);
+			Assert.AreEqual("testPage", r.Name);
+		}
 
-        [TestMethod]
-        public void When_BasicProperty()
-        {
-            var s = GetContent(nameof(When_BasicProperty));
-            var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+		[TestMethod]
+		public void When_BasicProperty()
+		{
+			var s = GetContent(nameof(When_BasicProperty));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
-            Assert.IsNotNull(r);
-            Assert.AreEqual("testPage", r.Name);
-            Assert.AreEqual(42.0, r.Width);
-        }
+			Assert.IsNotNull(r);
+			Assert.AreEqual("testPage", r.Name);
+			Assert.AreEqual(42.0, r.Width);
+		}
 
-        [TestMethod]
-        public void When_UserControl_With_Content()
-        {
-            var s = GetContent(nameof(When_UserControl_With_Content));
-            var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+		[TestMethod]
+		public void When_UserControl_With_Content()
+		{
+			var s = GetContent(nameof(When_UserControl_With_Content));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
-            Assert.IsNotNull(r);
-            Assert.AreEqual("testPage", r.Name);
+			Assert.IsNotNull(r);
+			Assert.AreEqual("testPage", r.Name);
 
-            var stackPanel = r.Content as StackPanel;
-            Assert.IsNotNull(stackPanel);
-            Assert.AreEqual(Orientation.Horizontal, stackPanel.Orientation);
-        }
+			var stackPanel = r.Content as StackPanel;
+			Assert.IsNotNull(stackPanel);
+			Assert.AreEqual(Orientation.Horizontal, stackPanel.Orientation);
+		}
 
-        [TestMethod]
-        public void When_UserControl_With_Grid()
-        {
-            var s = GetContent(nameof(When_UserControl_With_Grid));
-            var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+		[TestMethod]
+		public void When_UserControl_With_Grid()
+		{
+			var s = GetContent(nameof(When_UserControl_With_Grid));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
-            Assert.IsNotNull(r);
-            Assert.AreEqual("testPage", r.Name);
+			Assert.IsNotNull(r);
+			Assert.AreEqual("testPage", r.Name);
 
-            var grid = r.Content as Grid;
-            Assert.IsNotNull(grid);
+			var grid = r.Content as Grid;
+			Assert.IsNotNull(grid);
 
-            Assert.AreEqual(2, grid.Children.Count);
+			Assert.AreEqual(2, grid.Children.Count);
 
 			var border1 = grid.Children.ElementAt(0) as Border;
 			var border2 = grid.Children.ElementAt(1) as Border;
@@ -88,14 +88,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual((border2.Background as SolidColorBrush).Color, Windows.UI.Colors.Blue);
 		}
 
-        [TestMethod]
-        public void When_MultipleBindings()
-        {
-            var s = GetContent(nameof(When_MultipleBindings));
-            var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+		[TestMethod]
+		public void When_MultipleBindings()
+		{
+			var s = GetContent(nameof(When_MultipleBindings));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
-            Assert.IsNotNull(r);
-            Assert.AreEqual("rootPage", r.Name);
+			Assert.IsNotNull(r);
+			Assert.AreEqual("rootPage", r.Name);
 
 			var grid = r.FindName("rootGrid") as Grid;
 			var page = r.FindName("rootPage") as Page;
@@ -380,6 +380,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual("Width", expression.ParentBinding.Path.Path);
 			Assert.AreEqual(stackPanel, (expression.ParentBinding.ElementName as ElementNameSubject)?.ElementInstance);
 			Assert.AreEqual(42.0, textBlock.Width);
+		}
+
+		[TestMethod]
+		public void When_Empty_ResourceDictionary_As_Resources()
+		{
+			var s = GetContent(nameof(When_Empty_ResourceDictionary_As_Resources));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+			Assert.IsNotNull(r);
+			Assert.IsNotNull(r.Resources);
+			Assert.AreEqual(0, r.Resources.Count);
+		}
+
+		[TestMethod]
+		public void When_Empty_ThemeDictionaries()
+		{
+			var s = GetContent(nameof(When_Empty_ThemeDictionaries));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+			Assert.IsNotNull(r);
+			Assert.IsNotNull(r.Resources);
+			Assert.AreEqual(0, r.Resources.Count);
+			Assert.IsNotNull(r.Resources.ThemeDictionaries);
+			Assert.AreEqual(2, r.Resources.ThemeDictionaries.Count);
 		}
 
 		[TestMethod]
@@ -1314,6 +1338,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			b2 = (SolidColorBrush)panel.Resources["b2"];
 
 			Assert.AreEqual(b2.Color, c2);
+		}
+
+
+		[TestMethod]
+		public void When_StaticResource_In_Themed_ResourceDictionary()
+		{
+			var s = GetContent(nameof(When_StaticResource_In_Themed_ResourceDictionary));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var panel = r.FindName("panel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			var light = (ResourceDictionary)panel.Resources.ThemeDictionaries["Light"];
+			var dark = (ResourceDictionary)panel.Resources.ThemeDictionaries["Dark"];
+
+			Assert.AreEqual(1, light.Count);
+			Assert.AreEqual(1, dark.Count);
 		}
 
 		[TestMethod]

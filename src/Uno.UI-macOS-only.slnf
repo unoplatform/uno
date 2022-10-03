@@ -14,7 +14,6 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
-      "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",

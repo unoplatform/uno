@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
+using Uno.Extensions.ApplicationModel.Core;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Uno.Extensions.Networking.Connectivity;
 using Uno.Extensions.Storage.Pickers;
@@ -80,6 +81,7 @@ namespace Uno.UI.Skia.Platform
 				return;
 			}
 
+			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
 			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));

@@ -10,5 +10,8 @@
     <StackPanel>
 		<Button Content="Force exit"
 				Click="{x:Bind OnForceExit}" />
+
+		<Button Content="Force exit via CoreApplication"
+				Click="{x:Bind OnCoreApplicationForceExit}" />
 	</StackPanel>
 </Page>
