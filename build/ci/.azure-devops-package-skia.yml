@@ -25,7 +25,7 @@ jobs:
 
     # Disable .NET 5 build on CI for package generation
     # Build validation is performed on other jobs
-    UnoUIDisableNetCoreBuild: true
+    UnoUIDisableNet7Build: true
 
     NUGET_PACKAGES: $(build.sourcesdirectory)\.nuget
 
