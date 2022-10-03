@@ -82,6 +82,12 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
+- [Attached Properties](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#attached-properties)
+  ```xml
+  <Button x:Name="Button22" Content="Click me!" Grid.Row="42" />
+  <TextBlock Text="{x:Bind Button22.(Grid.Row)}" />
+  ```
+
 - Type casts
   ```xml
   <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />

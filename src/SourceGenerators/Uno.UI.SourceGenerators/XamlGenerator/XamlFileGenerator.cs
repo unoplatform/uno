@@ -61,6 +61,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private readonly Stack<ResourceOwner> _resourceOwnerStack = new Stack<ResourceOwner>();
 		private readonly XamlFileDefinition _fileDefinition;
+		private readonly NamespaceDeclaration _defaultXmlNamespace;
 		private readonly string _targetPath;
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
@@ -297,6 +298,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isUnoAssembly = isUnoAssembly;
 			_isUnoFluentAssembly = isUnoFluentAssembly;
+
+			_defaultXmlNamespace = _fileDefinition.Namespaces.First(n => n.Prefix == "");
 		}
 
 		/// <summary>
@@ -4338,9 +4341,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var isTopLevelMember = lastDotIndex == -1;
 
-			var typeSymbol = isTopLevelMember
-				? _xClassName?.Symbol
-				: _metadataHelper.FindTypeByFullName(fullMemberName.Substring(0, lastDotIndex)) as INamedTypeSymbol;
+			INamedTypeSymbol? GetTypeSymbol()
+			{
+				if (isTopLevelMember)
+				{
+					return _xClassName?.Symbol;
+				}
+				else
+				{
+					var typeName = fullMemberName.Substring(0, lastDotIndex);
+					return _metadataHelper.FindTypeByFullName(fullMemberName.Substring(0, lastDotIndex)) as INamedTypeSymbol
+						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()), true);
+				}
+			}
+
+			var typeSymbol = GetTypeSymbol();
 
 			var memberName = isTopLevelMember
 				? fullMemberName
