@@ -11,6 +11,7 @@ jobs:
   - net6_win_build
   - skia_package_build
   - wasm_package_build
+  - reference_package_build
 
   pool: ${{ parameters.poolName }}
 

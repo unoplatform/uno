@@ -1,29 +1,28 @@
 {
   "solution": {
-    "path": "..\\..\\src\\Uno.UI.sln",
+    "path": "Uno.UI.sln",
     "projects": [
-      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
-      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
-      "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Reference.csproj",
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",
       "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
+      "SourceGenerators\\System.Xaml\\Uno.Xaml.Reference.csproj",
+      "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
-      "Uno.Foundation\\Uno.Foundation.csproj",
-      "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
-      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
-      "Uno.UI.Composition\\Uno.UI.Composition.csproj",
-      "Uno.UI.Dispatching\\Uno.UI.Dispatching.csproj",
-      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
-      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
-      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
-      "Uno.UI.Maps\\Uno.UI.Maps.csproj",
-      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
-      "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.csproj"
+      "Uno.Foundation\\Uno.Foundation.Reference.csproj",
+      "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
+      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Reference.csproj",
+      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Reference.csproj",
+      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Reference.csproj",
+      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Reference.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Reference.csproj",
+      "Uno.UI.XamlHost\\Uno.UI.XamlHost.Reference.csproj",
+      "Uno.UI\\Uno.UI.Reference.csproj",
+      "Uno.UWP\\Uno.Reference.csproj"
     ]
   }
 }

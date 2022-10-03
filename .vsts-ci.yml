@@ -81,6 +81,10 @@ jobs:
 - template: build/ci/.azure-devops-package-wasm.yml
   parameters:
     vmImage: '$(linuxVMImage)'
+
+- template: build/ci/.azure-devops-package-reference.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
     
 - template: build/ci/.azure-devops-package-skia.yml
   parameters:
