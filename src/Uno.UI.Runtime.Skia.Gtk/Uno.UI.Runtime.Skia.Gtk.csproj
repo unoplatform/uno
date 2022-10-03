@@ -4,11 +4,15 @@
 		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../netcore-build.props" />
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
