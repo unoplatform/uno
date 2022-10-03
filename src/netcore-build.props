@@ -1,6 +1,6 @@
 <Project ToolsVersion="15.0">
 
-  <PropertyGroup Condition="'$(UnoUIDisableNetCoreBuild)'=='' and ('$(MSBuildRuntimeType)'=='Core' or '$(MSBuildVersion)' &gt;= '16.8')">
+  <PropertyGroup Condition="'$(UnoUIDisableNetCoreBuild)'=='' and '$(MSBuildRuntimeType)'=='Core'">
 	<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	<TargetFrameworksCI>$(TargetFrameworks);net7.0</TargetFrameworksCI>
   </PropertyGroup>
