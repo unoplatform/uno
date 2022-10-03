@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net5.0-windows</TargetFrameworks>		
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>		
 		<!--
 		Enable implicit dotnet runtime forward rolling, as a net5
 		project may run with net6 only SDK installed
@@ -8,7 +8,7 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
 		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	

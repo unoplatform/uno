@@ -7,8 +7,8 @@
   -->
   
   <PropertyGroup Condition="'$(UnoUIDisableNetCoreBuild)'=='' and ('$(MSBuildRuntimeType)'=='Core' or '$(MSBuildVersion)' &gt;= '16.8')">
-	<TargetFrameworks>$(TargetFrameworks);net5.0-windows</TargetFrameworks>
-	<TargetFrameworksCI>$(TargetFrameworks);net5.0-windows</TargetFrameworksCI>
+	<TargetFrameworks>$(TargetFrameworks);net7.0-windows</TargetFrameworks>
+	<TargetFrameworksCI>$(TargetFrameworks);net7.0-windows</TargetFrameworksCI>
   </PropertyGroup>
 
   <Choose>
@@ -22,6 +22,7 @@
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net5.0'">$(TargetFrameworks)-windows</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net6.0'">$(TargetFrameworks)-windows</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net7.0'">$(TargetFrameworks)-windows</TargetFrameworks>
 	  </PropertyGroup>
 	</When>
   </Choose>
