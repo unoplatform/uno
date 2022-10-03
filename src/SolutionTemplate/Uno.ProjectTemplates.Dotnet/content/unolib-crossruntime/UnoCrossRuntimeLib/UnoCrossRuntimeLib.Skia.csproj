@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<RootNamespace>UnoCrossRuntimeLib</RootNamespace>
+    <AssemblyName>UnoCrossRuntimeLib</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
