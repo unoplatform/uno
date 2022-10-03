@@ -909,6 +909,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				type = type.BaseType;
 			}
 		}
+		private bool IsAttachedProperty(INamedTypeSymbol declaringType, string name)
+			=> _isAttachedProperty(declaringType, name);
+
+		private IEnumerable<(INamedTypeSymbol ownerType, string property)> FindLocalizableAttachedProperties(string uid)
+		{
+			foreach (var key in _resourceKeys.Where(k => k.StartsWith(uid + "/")))
+			{
+				// fullKey = $"{uidName}.[using:{ns}]{type}.{memberName}";
+				//
+				// Example:
+				// OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip
+
+				var firstDotIndex = key.IndexOf('/');
+
+				var propertyPath = key.Substring(firstDotIndex + 1);
+
+				const string usingPattern = "[using:";
+
+				if(propertyPath.StartsWith(usingPattern))
+				{
+					var lastDotIndex = propertyPath.LastIndexOf('.');
+
+					var propertyName = propertyPath.Substring(lastDotIndex + 1);
+					var typeName = propertyPath
+						.Substring(usingPattern.Length, lastDotIndex - usingPattern.Length)
+						.Replace("]", ".");
+
+					if(GetType(typeName) is { } typeSymbol)
+					{
+						yield return (typeSymbol, propertyName);
+					}
+					else
+					{
+						throw new Exception($"Unable to find the type {typeName} in key {key}");
+					}
+				}
+			}
+		}
 
 		private string[] FindLocalizableDeclaredProperties(INamedTypeSymbol type) => _findLocalizableDeclaredProperties!(type);
 

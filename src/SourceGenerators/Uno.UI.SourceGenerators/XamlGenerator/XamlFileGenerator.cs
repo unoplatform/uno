@@ -3139,7 +3139,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isFrameworkElement = IsType(objectDefinitionType, _frameworkElementSymbol);
 			var hasIsParsing = HasIsParsing(objectDefinitionType);
 
-			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing)
+			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || objectUid.HasValue())
 			{
 				string closureName;
 				if (!useGenericApply && objectDefinitionType is null)
@@ -3556,6 +3556,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
 					}
 
+					BuildStatementLocalizedProperties(writer, objectDefinition, closureName);
+
 					if (hasIsParsing
 							// If true then this apply block will be applied to the content of a UserControl, which will already have had CreationComplete() called in its own apply block.
 							&& !useChildTypeForNamedElement
@@ -3811,7 +3813,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Build localized properties which have not been set in the xaml.
 		/// </summary>
-		private void BuildLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition)
+		private void BuildInlineLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var objectUid = GetObjectUid(objectDefinition);
@@ -3826,6 +3828,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (localizedValue != null)
 					{
 						writer.AppendLineInvariantIndented("{0} = {1},", prop, localizedValue);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Build localized properties which have not been set in the xaml.
+		/// </summary>
+		private void BuildStatementLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, string closureName)
+		{
+			TryAnnotateWithGeneratorSource(writer);
+			var objectUid = GetObjectUid(objectDefinition);
+
+			if (objectUid != null)
+			{
+				var candidateAttachedProperties = FindLocalizableAttachedProperties(objectUid);
+				foreach (var candidate in candidateAttachedProperties)
+				{
+					var localizedValue = BuildLocalizedResourceValue(candidate.ownerType, candidate.property, objectUid);
+					if (localizedValue != null)
+					{
+						writer.AppendLineInvariantIndented($"{candidate.ownerType}.Set{candidate.property}({closureName}, {localizedValue});");
 					}
 				}
 			}
@@ -4653,7 +4677,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (IsLocalizedString(propertyType, objectUid))
 				{
-					var resourceValue = BuildLocalizedResourceValue(owner, memberName, objectUid);
+					var resourceValue = BuildLocalizedResourceValue(FindType(owner?.Member.DeclaringType), memberName, objectUid);
 
 					if (resourceValue != null)
 					{
@@ -4871,7 +4895,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string? BuildLocalizedResourceValue(XamlMemberDefinition? owner, string memberName, string objectUid)
+		private string? BuildLocalizedResourceValue(INamedTypeSymbol? owner, string memberName, string objectUid)
 		{
 			// see: https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest
 			// Valid formats:
@@ -4904,13 +4928,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
 			var fullKey = uidName + "/" + memberName;
 
-			if (owner != null && IsAttachedProperty(owner))
+			if (owner != null && IsAttachedProperty(owner, memberName))
 			{
-				var declaringType = GetType(owner.Member.DeclaringType);
+				var declaringType = owner;
 				var nsRaw = declaringType.ContainingNamespace.GetFullName();
-				var ns = nsRaw?.Replace(".", "/");
 				var type = declaringType.Name;
-				fullKey = $"{uidName}/[using:{ns}]{type}/{memberName}";
+				fullKey = $"{uidName}/[using:{nsRaw}]{type}.{memberName}";
 			}
 
 			if (_resourceKeys.Contains(fullKey))
@@ -5806,7 +5829,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 								BuildLiteralProperties(writer, xamlObjectDefinition);
 								BuildProperties(writer, xamlObjectDefinition);
-								BuildLocalizedProperties(writer, xamlObjectDefinition);
+								BuildInlineLocalizedProperties(writer, xamlObjectDefinition);
 							}
 
 							BuildExtendedProperties(writer, xamlObjectDefinition);
