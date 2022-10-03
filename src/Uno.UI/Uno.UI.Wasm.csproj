@@ -51,6 +51,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>

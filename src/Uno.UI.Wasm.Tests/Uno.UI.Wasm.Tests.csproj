@@ -22,6 +22,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Remove="tsconfig.json" />
 		<Content Include="tsconfig.json" />
 		<ConfigFiles Include="tsconfig.json" />
