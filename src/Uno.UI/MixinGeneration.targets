@@ -99,7 +99,9 @@
 	<_UnoDotnetT4ToolBasePath>$(MSBuildThisFileDirectory)..\obj\dotnet-tools</_UnoDotnetT4ToolBasePath>
   </PropertyGroup>
 
-  <Target Name="UnoInstallDotnetT4" Condition="!exists('$(_UnoDotnetT4ToolBasePath)')">
+  <Target Name="UnoInstallDotnetT4"
+		  BeforeTargets="BeforeBuild"
+		  Condition="!exists('$(_UnoDotnetT4ToolBasePath)')">
 	<Exec Command="dotnet tool install dotnet-t4 --version 2.3.0-preview-0041-g0bb7f1d477 --tool-path $(_UnoDotnetT4ToolBasePath)" 
 	    WorkingDirectory="$(MSBuildThisFileDirectory)..\" />
   </Target>
@@ -112,7 +114,6 @@
         Inputs="@(MixinInput)" 
 		Outputs="@(MixinOutput)" 
 		BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
-		DependsOnTargets="UnoInstallDotnetT4"
 		Condition="'$(DesignTimeBuild)' != 'true'">
 
 	<ItemGroup>
