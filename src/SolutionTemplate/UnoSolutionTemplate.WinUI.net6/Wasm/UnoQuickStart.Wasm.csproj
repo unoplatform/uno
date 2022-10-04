@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
 	</PropertyGroup>
 
@@ -56,7 +56,7 @@
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="3.3.1" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.3.1" />
-		<PackageReference Include="Uno.UI.Lottie" Version="4.5.9" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />

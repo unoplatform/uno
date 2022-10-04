@@ -20,11 +20,8 @@ namespace Windows.UI.Xaml
 	{
 		private Uno.UI.Controls.Window _nativeWindow;
 
-		private static Window _current;
-		private RootVisual _rootVisual;
 		private Border _rootBorder;
 		private RootViewController _mainController;
-		private UIElement _content;
 		private NSObject _orientationRegistration;
 
 		/// <summary>
@@ -108,20 +105,6 @@ namespace Windows.UI.Xaml
 			_rootBorder.Child?.RemoveFromSuperview();
 			_rootBorder.Child = null;
 			_rootBorder.Child = _content = value;
-		}
-
-		private UIElement InternalGetContent() => _content;
-
-		private UIElement InternalGetRootElement() => _rootVisual;
-
-		private static Window InternalGetCurrentWindow()
-		{
-			if (_current == null)
-			{
-				_current = new Window();
-			}
-
-			return _current;
 		}
 
 		internal void RaiseNativeSizeChanged(CGSize size)

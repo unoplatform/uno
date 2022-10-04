@@ -105,6 +105,8 @@
               href: howto-use-uno-in-xamarin-forms.md
             - name: Samples
               topicHref: uno-samples.md
+            - name: Community Tutorials
+              topicHref: guides/community-tutorials.md
 
     - name: Development
       items:

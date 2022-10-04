@@ -54,12 +54,12 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-On WASM, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the following packages:
-  * `Uno.UI.Lottie` (for the `LottieVisualSource`)
+On WebAssembly, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the following packages:
+  * `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
 
 On Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
-  * `Uno.UI.Lottie` (for the `LottieVisualSource`)
-  * `SkiaSharp.Views.Uno` version 2.88.1-preview.79 or later
+  * `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
+  * `SkiaSharp.Views.Uno.WinUI` or `SkiaSharp.Views.Uno` version 2.88.1-preview.79 or later
   * `SkiaSharp.Skottie` version 2.88.1-preview.79 or later
 
 On UWP, you'll need to reference the following packages in your head project:

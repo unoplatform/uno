@@ -28,17 +28,17 @@ namespace Uno.UI.RuntimeTests.Helpers;
 /// </summary>
 public static partial class ImageAssert
 {
-#region HasColorAt
-	public static Task HasColorAt(RawBitmap screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	#region HasColorAt
+	public static void HasColorAt(RawBitmap screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> HasColorAtImpl(screenshot, (int)x, (int)y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode), tolerance, line);
 
-	public static Task HasColorAt(RawBitmap screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	public static void HasColorAt(RawBitmap screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, line);
 
-	public static Task HasColorAtChild(RawBitmap screenshot, UIElement child, double x, double y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	public static void HasColorAtChild(RawBitmap screenshot, UIElement child, double x, double y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> HasColorAtChild(screenshot, child, (int)x, (int)y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode), tolerance, line);
-	
-	public static async Task HasColorAtChild(RawBitmap screenshot, UIElement child, double x, double y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+
+	public static void HasColorAtChild(RawBitmap screenshot, UIElement child, double x, double y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 	{
 		var point = child.TransformToVisual(screenshot.RenderedElement).TransformPoint(new Windows.Foundation.Point(x, y));
 		await HasColorAtImpl(screenshot, (int)point.X, (int)point.Y, expectedColor, tolerance, line);
@@ -65,10 +65,8 @@ public static partial class ImageAssert
 		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
 	}
 
-	private static async Task HasColorAtImpl(RawBitmap screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
+	private static void HasColorAtImpl(RawBitmap screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
 	{
-		await screenshot.Populate();
-
 		var bitmap = screenshot;
 
 		if (bitmap.Width <= x || bitmap.Height <= y)
@@ -99,20 +97,18 @@ public static partial class ImageAssert
 				.ToString();
 		}
 	}
-#endregion
+	#endregion
 
-#region DoesNotHaveColorAt
-	public static Task DoesNotHaveColorAt(RawBitmap screenshot, float x, float y, string excludedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	#region DoesNotHaveColorAt
+	public static void DoesNotHaveColorAt(RawBitmap screenshot, float x, float y, string excludedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> DoesNotHaveColorAtImpl(screenshot, (int)x, (int)y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), excludedColorCode), tolerance, line);
 
-	public static Task DoesNotHaveColorAt(RawBitmap screenshot, float x, float y, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	public static void DoesNotHaveColorAt(RawBitmap screenshot, float x, float y, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> DoesNotHaveColorAtImpl(screenshot, (int)x, (int)y, excludedColor, tolerance, line);
 
-	private static async Task DoesNotHaveColorAtImpl(RawBitmap screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
+	private static void DoesNotHaveColorAtImpl(RawBitmap screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
 	{
 		var bitmap = screenshot;
-		await bitmap.Populate();
-
 		if (bitmap.Width <= x || bitmap.Height <= y)
 		{
 			Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
@@ -140,13 +136,11 @@ public static partial class ImageAssert
 				.ToString();
 		}
 	}
-#endregion
+	#endregion
 
-#region HasPixels
-	public static async Task HasPixels(RawBitmap actual, params ExpectedPixels[] expectations)
+	#region HasPixels
+	public static void HasPixels(RawBitmap actual, params ExpectedPixels[] expectations)
 	{
-		await actual.Populate();
-
 		var bitmap = actual;
 		using var assertionScope = new AssertionScope("ImageAssert");
 
@@ -166,5 +160,5 @@ public static partial class ImageAssert
 			}
 		}
 	}
-#endregion
+	#endregion
 }

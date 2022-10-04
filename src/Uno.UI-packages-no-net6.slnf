@@ -28,7 +28,6 @@
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "SourceGenerators\\XamlGenerationTests.Core\\XamlGenerationTests.Core.csproj",
       "SourceGenerators\\XamlGenerationTests\\XamlGenerationTests.csproj",
-      "T4Generator\\T4Generator.csproj",
       "UWPUsageStatsGenerator\\UWPUsageStatsGenerator.csproj",
       "Uno.Analyzers.Tests\\Uno.Analyzers.Tests.csproj",
       "Uno.Analyzers\\Uno.Analyzers.csproj",

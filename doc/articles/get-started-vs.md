@@ -27,7 +27,7 @@
 > [!NOTE]
 > For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
-[!include[getting-help](use-uno-check-inline.md)]
+[!include[getting-help](use-uno-check-inline-windows.md)]
 
 ## Installing the Uno Platform Solution Templates with Visual Studio
 

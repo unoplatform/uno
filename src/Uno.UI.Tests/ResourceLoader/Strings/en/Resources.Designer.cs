@@ -79,6 +79,15 @@ namespace Uno.UI.Tests.ResourceLoader.Strings.en {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Localized value.
+        /// </summary>
+        internal static string OpenVideosButton__using_Windows_UI_Xaml_Controls_ToolTipService_ToolTip {
+            get {
+                return ResourceManager.GetString("OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string TestEmptyConverterText_ValueIfNotNull {

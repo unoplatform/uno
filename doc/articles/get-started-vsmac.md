@@ -8,7 +8,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-[!include[getting-help](use-uno-check-inline.md)]
+[!include[getting-help](use-uno-check-inline-macos.md)]
 
 ## Installing the dotnet new templates
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).

@@ -30,6 +30,7 @@
 	</PropertyGroup>
 
   <ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
+		<CompilerVisibleProperty Include="XamlSourceGeneratorTracingFolder" />
 		<CompilerVisibleProperty Include="TargetPlatformIdentifier" />
 		<CompilerVisibleProperty Include="TargetFramework" />
 		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
@@ -44,7 +45,6 @@
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
-		<CompilerVisibleProperty Include="UnoXamlHistoricalOutputGenerationPath" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
 
 		<CompilerVisibleProperty Include="UseWPF" />

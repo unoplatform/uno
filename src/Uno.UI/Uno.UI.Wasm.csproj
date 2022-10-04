@@ -51,6 +51,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
@@ -141,11 +145,6 @@
 			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
-		<ProjectReference Include="..\T4Generator\T4Generator.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>

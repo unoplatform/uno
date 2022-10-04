@@ -101,7 +101,7 @@ Now let's run the application:
 You may also need to [install the Microsoft fonts](https://wiki.archlinux.org/title/Microsoft_fonts) manually.
 ***
 
-[!include[getting-help](use-uno-check-inline.md)]
+[!include[getting-help](use-uno-check-inline-linux.md)]
 
 ### Install the templates and create the application
 

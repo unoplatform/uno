@@ -35,5 +35,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XUidTests
 			Assert.IsNull(conv.ValueIfNotNull);
 			Assert.AreEqual("Test", conv.ValueIfNull);
 		}
+
+		[TestMethod]
+		public void When_AttachedProperty()
+		{
+			var SUT = new When_XUid_And_AttachedProperty();
+
+			Assert.AreEqual("Localized value", ToolTipService.GetToolTip(SUT.button1));
+			Assert.AreEqual("Localized value", ToolTipService.GetToolTip(SUT.button2));
+		}
 	}
 }
