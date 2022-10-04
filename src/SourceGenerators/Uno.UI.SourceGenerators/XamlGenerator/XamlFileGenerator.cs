@@ -3849,7 +3849,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var localizedValue = BuildLocalizedResourceValue(candidate.ownerType, candidate.property, objectUid);
 					if (localizedValue != null)
 					{
-						writer.AppendLineInvariantIndented($"{candidate.ownerType}.Set{candidate.property}({closureName}, {localizedValue});");
+						var propertyType = GetAttachedPropertyType(candidate.ownerType, candidate.property);
+						var convertedLocalizedProperty =
+							$"({propertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({propertyType}),{localizedValue})";
+
+						writer.AppendLineInvariantIndented($"{candidate.ownerType}.Set{candidate.property}({closureName}, {convertedLocalizedProperty});");
 					}
 				}
 			}
