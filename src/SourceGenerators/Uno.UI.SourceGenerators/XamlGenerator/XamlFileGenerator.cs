@@ -132,7 +132,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly GenerationRunFileInfo _generationRunFileInfo;
 
-		private readonly Dictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
+		private readonly IDictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
 
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
@@ -243,7 +243,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			GenerationRunFileInfo generationRunFileInfo,
-			Dictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap)
+			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap)
 		{
 			_fileDefinition = file;
 			_targetPath = targetPath;
