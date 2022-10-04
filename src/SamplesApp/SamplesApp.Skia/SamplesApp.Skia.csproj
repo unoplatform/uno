@@ -15,7 +15,8 @@
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-  </PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
