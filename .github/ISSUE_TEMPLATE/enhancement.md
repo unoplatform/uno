@@ -12,10 +12,11 @@ labels: kind/enhancement, triage/untriaged, difficulty/tbd
 
 ## For which Platform:
 
-- [ ] iOS
-- [ ] Android
 - [ ] WebAssembly
-- [ ] macOS
+- [ ] Android
+- [ ] iOS
+- [ ] macOS (AppKit)
+- [ ] Mac Catalyst
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
