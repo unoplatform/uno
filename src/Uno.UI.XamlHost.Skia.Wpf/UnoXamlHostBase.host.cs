@@ -25,9 +25,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	partial class UnoXamlHostBase
 	{
 		private bool _designMode;
-		private DisplayInformation _displayInformation;
 		private bool _ignorePixelScaling;
-		private WriteableBitmap _bitmap;
 		private HostPointerHandler _hostPointerHandler;
 		private WpfCanvas _nativeOverlayLayer;
 		private UnoWpfRenderer _renderer;
