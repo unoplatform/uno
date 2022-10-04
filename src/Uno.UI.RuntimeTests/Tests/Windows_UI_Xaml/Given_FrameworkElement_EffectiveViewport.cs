@@ -1026,7 +1026,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 					break;
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					if (attempt++ >= 30)
 					{
@@ -1054,7 +1054,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 					break;
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					if (attempt++ >= 30)
 					{
