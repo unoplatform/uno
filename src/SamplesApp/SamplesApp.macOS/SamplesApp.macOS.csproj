@@ -30,12 +30,12 @@
     <Profiling>true</Profiling>
     <HttpClientHandler>
     </HttpClientHandler>
-    <LinkMode>
-    </LinkMode>
+    <LinkMode>None</LinkMode>
     <XamMacArch>
     </XamMacArch>
     <NoWarn>
     </NoWarn>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugSymbols>false</DebugSymbols>
@@ -58,6 +58,7 @@
     </XamMacArch>
     <NoWarn>
     </NoWarn>
+    <AOTMode>None</AOTMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -77,9 +78,9 @@
 	  </PackageReference>
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
     <PackageReference Include="Uno.SourceGenerationTasks" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" PrivateAssets="all" />
 	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
@@ -87,7 +88,7 @@
       <Name>Uno.Foundation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
-      <Project>{F1FD5845-49E1-42B1-BF18-6493D1848330}</Project>
+      <Project>{2EAF39E3-2AC9-457A-A5B2-47D6548799B3}</Project>
       <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
@@ -103,7 +104,7 @@
 		  <Name>Uno.UI.RuntimeTests</Name>
 		</ProjectReference>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
-      <Project>{21A31391-B907-457F-A522-689D44E6D6E4}</Project>
+      <Project>{F9277925-FC11-4A97-8CA1-B4A33E726F55}</Project>
       <Name>Uno.UI.Lottie</Name>
     </ProjectReference>
 	  <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj">
@@ -111,11 +112,11 @@
 		  <Name>Uno.UI.MSAL</Name>
 	  </ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
-		  <Project>{C9824734-5116-425C-B490-C838D44105EC}</Project>
+		  <Project>{80798130-CB7E-4968-B4F6-554CC0FC8FEB}</Project>
 		  <Name>Uno.UI.RemoteControl</Name>
 		</ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
-      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Project>{2C4C6B14-3243-4ED5-B7B6-D737BAADA26F}</Project>
       <Name>Uno.UI.FluentTheme</Name>
     </ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.csproj">
@@ -125,19 +126,19 @@
 			<Name>Uno.UI.FluentTheme.v2</Name>
 		</ProjectReference>
 		<ProjectReference Include="..\..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj">
-			<Project>{76875e6f-30f3-4225-821f-11a299bcbdb0}</Project>
+			<Project>{4C3011E9-5769-474B-8B68-0066BF7374FE}</Project>
 			<Name>Uno.Foundation.Logging</Name>
 		</ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj">
-			<Project>{637995af-2ddf-4b13-bde6-353bbd65250b}</Project>
+			<Project>{65DFC81A-D4B8-40FD-8E02-F704A90759DB}</Project>
 			<Name>Uno.UI.Adapter.Microsoft.Extensions.Logging</Name>
 		</ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj">
-			<Project>{39c20ebb-59d8-43e5-9cf6-390521c0c82a}</Project>
+			<Project>{279E8DB6-655B-428D-B0E6-71FF4CE0EA52}</Project>
 			<Name>Uno.UI.Composition</Name>
 		</ProjectReference>
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj">
-			<Project>{ac6e2bd5-3902-46f4-8ea9-9bef09d8b39c}</Project>
+			<Project>{A42FF9B4-B30E-4B95-AE64-11871E62D182}</Project>
 			<Name>Uno.UI.Dispatching</Name>
 		</ProjectReference>
 	</ItemGroup>
