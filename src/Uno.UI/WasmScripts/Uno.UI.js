@@ -2773,6 +2773,14 @@ var Windows;
     (function (Graphics) {
         var Display;
         (function (Display) {
+            let DisplayOrientations;
+            (function (DisplayOrientations) {
+                DisplayOrientations[DisplayOrientations["None"] = 0] = "None";
+                DisplayOrientations[DisplayOrientations["Landscape"] = 1] = "Landscape";
+                DisplayOrientations[DisplayOrientations["Portrait"] = 2] = "Portrait";
+                DisplayOrientations[DisplayOrientations["LandscapeFlipped"] = 4] = "LandscapeFlipped";
+                DisplayOrientations[DisplayOrientations["PortraitFlipped"] = 8] = "PortraitFlipped";
+            })(DisplayOrientations || (DisplayOrientations = {}));
             class DisplayInformation {
                 static startOrientationChanged() {
                     window.screen.orientation.addEventListener("change", DisplayInformation.onOrientationChange);
@@ -2789,6 +2797,71 @@ var Windows;
                 }
                 static stopDpiChanged() {
                     window.clearInterval(DisplayInformation.dpiWatcher);
+                }
+                static async setOrientationAsync(uwpOrientations) {
+                    let oldOrientation = screen.orientation.type;
+                    let orientations = DisplayInformation.parseUwpOrientation(uwpOrientations);
+                    if (orientations.includes(oldOrientation)) {
+                        return;
+                    }
+                    // Setting the orientation requires briefly changing the device to fullscreen.
+                    // This causes a glitch, which is unnecessary for devices which does not support
+                    // setting the orientation, such as most desktop browsers.
+                    // We therefore attempt to check for support, and do nothing if the feature is
+                    // unavailable.
+                    if (this.lockingSupported == null) {
+                        try {
+                            await screen.orientation.lock(oldOrientation);
+                            this.lockingSupported = true;
+                        }
+                        catch (e) {
+                            if (e instanceof DOMException && e.name === "NotSupportedError") {
+                                this.lockingSupported = false;
+                                console.log("This browser does not support setting the orientation.");
+                            }
+                            else {
+                                // On most mobile devices we should reach this line.
+                                this.lockingSupported = true;
+                            }
+                        }
+                    }
+                    if (!this.lockingSupported) {
+                        return;
+                    }
+                    let wasFullscreen = document.fullscreenElement != null;
+                    if (!wasFullscreen) {
+                        await document.body.requestFullscreen();
+                    }
+                    for (let orientation of orientations) {
+                        try {
+                            // On success, screen.orientation should fire the 'change' event.
+                            await screen.orientation.lock(orientation);
+                            break;
+                        }
+                        catch (e) {
+                            // Absorb all errors to ensure that the exitFullscreen block below is called.
+                            console.log(`Failed to set the screen orientation to '${orientation}': ${e}`);
+                        }
+                    }
+                    if (!wasFullscreen) {
+                        await document.exitFullscreen();
+                    }
+                }
+                static parseUwpOrientation(uwpOrientations) {
+                    let orientations = [];
+                    if (uwpOrientations & DisplayOrientations.Landscape) {
+                        orientations.push("landscape-primary");
+                    }
+                    if (uwpOrientations & DisplayOrientations.Portrait) {
+                        orientations.push("portrait-primary");
+                    }
+                    if (uwpOrientations & DisplayOrientations.LandscapeFlipped) {
+                        orientations.push("landscape-secondary");
+                    }
+                    if (uwpOrientations & DisplayOrientations.PortraitFlipped) {
+                        orientations.push("portrait-secondary");
+                    }
+                    return orientations;
                 }
                 static updateDpi() {
                     const currentDpi = window.devicePixelRatio;
