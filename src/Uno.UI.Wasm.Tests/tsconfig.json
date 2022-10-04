@@ -4,7 +4,7 @@
 	"declaration": true,
 	"diagnostics": true,
 	"noImplicitAny": true,
-	"outFile": "WasmScripts/UnitTests.js",
+	// "outFile": "WasmScripts/UnitTests.js",
 	//"inlineSourceMap": true,
 	"locale": "en-US",
 	"target": "ES2017",

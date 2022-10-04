@@ -11,6 +11,8 @@
 
 		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
@@ -50,8 +52,33 @@
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
-		<EmbeddedResource Include="WasmScripts\*.js" />
+
+		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
+		<TypeScriptCompile Include="tsBindings\**\*.ts;tsBindings\**\*.tsx" />
 	</ItemGroup>
+	
+	<PropertyGroup>
+		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_UnoSetupTSCompilation">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)/javascript/UnitTests.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+		<ItemGroup>
+			<_UnoTSDefinitions Include="..\Uno.UI\bin\Uno.UI.Wasm\$(Configuration)\$(TargetFramework)\*.d.ts" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_UnoTSDefinitions)" DestinationFolder="ts" />
+		<MakeDir Directories="$(IntermediateOutputPath)/javascript" />
+	</Target>
+
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" AfterTargets="CompileTypeScript">
+		<ItemGroup>
+			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
+			<EmbeddedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace)WasmScripts.%(FileName)%(Extension)" />
+		</ItemGroup>
+	</Target>
+
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 </Project>
