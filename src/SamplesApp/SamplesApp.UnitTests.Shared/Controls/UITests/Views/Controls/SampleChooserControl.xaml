@@ -282,14 +282,9 @@
 									   Margin="5,0" />
 					</Button>
 
-					<!-- Title -->
-					<TextBlock
-						Grid.Column="1"
-						Style="{StaticResource Typo03}"
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="Library" />
-					
+					<!-- Title -->					
+					<Image Source="/Assets/square44x44logo.png" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="44" />
+
 					<!-- Record All Tests Button -->
 					<Button
 						Grid.Column="2"
