@@ -15,7 +15,9 @@ namespace SamplesApp.Droid
 	[Activity(
 			MainLauncher = true,
 			ConfigurationChanges = ActivityHelper.AllConfigChanges,
-			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
+			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden,
+			Icon = "@mipmap/ic_launcher",
+			Label = "Uno Samples"
 		)]
 	[IntentFilter(
 		new[] {

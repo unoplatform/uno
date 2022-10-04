@@ -198,6 +198,26 @@
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher.png">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\mipmap-mdpi\ic_launcher.png">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\mipmap-xhdpi\ic_launcher.png">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher.png">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher.png">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +233,39 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\sound.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_adaptive_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher_adaptive_fore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-mdpi\ic_launcher_adaptive_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-mdpi\ic_launcher_adaptive_fore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xhdpi\ic_launcher_adaptive_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xhdpi\ic_launcher_adaptive_fore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher_adaptive_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher_adaptive_fore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_adaptive_back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_adaptive_fore.png" />
   </ItemGroup>
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
