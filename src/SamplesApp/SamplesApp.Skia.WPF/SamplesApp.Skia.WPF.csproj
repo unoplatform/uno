@@ -58,6 +58,14 @@
 		<PackageReference Include="SkiaSharp.Views.Uno" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj">
 			<Project>{6ffac28c-aced-4ba1-954d-7e720b035928}</Project>

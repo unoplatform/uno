@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+	<PropertyGroup>
+		<TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 
-  <PropertyGroup Condition="'$(CI_Build)'=='true' or '$(TF_BUILD)' == 'true'">
+	<PropertyGroup Condition="'$(CI_Build)'=='true' or '$(TF_BUILD)' == 'true'">
 		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
 		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='true'">net6.0</TargetFrameworks>
 	</PropertyGroup>
-	
-  <ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)" />
 	</ItemGroup>
 
@@ -22,7 +23,7 @@
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 	</ItemGroup>
-		
+
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.0.1" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" />
@@ -48,13 +49,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\processors\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
