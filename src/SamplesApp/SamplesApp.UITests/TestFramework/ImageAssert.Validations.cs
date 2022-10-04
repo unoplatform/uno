@@ -174,7 +174,7 @@ public static partial class ImageAssert
 			Math.Min(rect.Width, size.Width),
 			Math.Min(rect.Height, size.Height));
 
-	private static bool AreSameColor(Color a, Color b, byte tolerance, out int currentDifference, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
+	public static bool AreSameColor(Color a, Color b, byte tolerance, out int currentDifference, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
 	{
 		switch (kind)
 		{

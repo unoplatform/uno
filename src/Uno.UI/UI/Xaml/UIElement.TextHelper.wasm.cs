@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -223,6 +224,25 @@ namespace Windows.UI.Xaml
 			{
 				var value = (int)localValue;
 				this.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
+			}
+		}
+
+		internal void SetFontStretch(object localValue)
+		{
+			if (localValue is UnsetValue)
+			{
+				this.ResetStyle("font-stretch");
+			}
+			else
+			{
+				var fontStretch = (FontStretch)localValue;
+				// When using a custom font with "ms-appx:///", font-stretch doesn't work, but font-variation-settings does.
+				// When using a known font (e.g, "Arial"), font-stretch works but font-variation-settings doesn't.
+				// So we set both styles.
+				this.SetStyle(
+					("font-stretch", fontStretch.ToCssFontStretch()),
+					("font-variation-settings", fontStretch.ToCssFontVariationSettings())
+				);
 			}
 		}
 

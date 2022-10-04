@@ -22,7 +22,9 @@ namespace Windows.UI
 {
 	internal static class UIFontHelper
 	{
-		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, UIFont> _tryGetFont;
+		private record struct TryGetFontParameters(nfloat Size, FontWeight FontWeight, FontStyle FontStyle, FontStretch FontStretch, FontFamily RequestedFamily, nfloat? BasePreferredSize);
+
+		private static Func<TryGetFontParameters, UIFont> _tryGetFont;
 
 		private const int DefaultUIFontPreferredBodyFontSize = 17;
 		private static float? DefaultPreferredBodyFontSize = UIFont.PreferredBody.FontDescriptor.FontAttributes.Size;
@@ -33,9 +35,9 @@ namespace Windows.UI
 			_tryGetFont = _tryGetFont.AsMemoized();
 		}
 
-		internal static UIFont TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, float? preferredBodyFontSize = null)
+		internal static UIFont TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch, FontFamily requestedFamily, float? preferredBodyFontSize = null)
 		{
-			return _tryGetFont(size, fontWeight, fontStyle, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
+			return _tryGetFont(new TryGetFontParameters(size, fontWeight, fontStyle, fontStretch, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize));
 		}
 
 		/// <summary>
@@ -72,35 +74,36 @@ namespace Windows.UI
 			return size * originalScale;
 		}
 
-		private static UIFont InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
+		private static UIFont InternalTryGetFont(TryGetFontParameters parameters)
 		{
 			UIFont font = null;
 
-			size = GetScaledFontSize(size, basePreferredSize);
+			var size = GetScaledFontSize(parameters.Size, parameters.BasePreferredSize);
 
-			if (requestedFamily?.Source != null)
+			if (parameters.RequestedFamily?.Source != null)
 			{
-				var fontFamilyName = FontFamilyHelper.RemoveUri(requestedFamily.Source);
+				var fontFamilyName = FontFamilyHelper.RemoveUri(parameters.RequestedFamily.Source);
 
 				// If there's a ".", we assume there's an extension and that it's a font file path.
-				font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, fontWeight, fontStyle) : GetSystemFont(size, fontWeight, fontStyle, fontFamilyName);
+				font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, parameters.FontWeight, parameters.FontStyle, parameters.FontStretch) : GetSystemFont(size, parameters.FontWeight, parameters.FontStyle, fontFamilyName);
 			}
 
-			return font ?? GetDefaultFont(size, fontWeight, fontStyle);
+			return font ?? GetDefaultFont(size, parameters.FontWeight, parameters.FontStyle, parameters.FontStretch);
 		}
 
-		private static UIFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle)
+		private static UIFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch)
 		{
 			if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 2))
 			{
 				return GetSystemFont(size, fontWeight, fontStyle, "HelveticaNeue");
 			}
 
-			return ApplyStyle(UIFont.SystemFontOfSize(size, fontWeight.ToUIFontWeight()), size, fontStyle);
+			var font = ApplyStyle(UIFont.SystemFontOfSize(size, fontWeight.ToUIFontWeight()), size, fontStyle);
+			return ApplyStretch(font, size, fontStretch);
 		}
 
 #region Load Custom Font
-		private static UIFont GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
+		private static UIFont GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch)
 		{
 			UIFont font;
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
@@ -119,18 +122,19 @@ namespace Windows.UI
 
 			if (font == null)
 			{
-				font = GetDefaultFont(size, fontWeight, fontStyle);
+				font = GetDefaultFont(size, fontWeight, fontStyle, fontStretch);
 			}
 
-			font = ApplyWeightAndStyle(font, size, fontWeight, fontStyle);
+			font = ApplyWeightAndStyleAndStretch(font, size, fontWeight, fontStyle, fontStretch);
 
 			return font;
 		}
 
-		private static UIFont ApplyWeightAndStyle(UIFont font, nfloat size, FontWeight fontWeight, FontStyle fontStyle)
+		private static UIFont ApplyWeightAndStyleAndStretch(UIFont font, nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontStretch fontStretch)
 		{
 			font = ApplyWeight(font, size, fontWeight);
 			font = ApplyStyle(font, size, fontStyle);
+			font = ApplyStretch(font, size, fontStretch);
 			return font;
 		}
 
@@ -191,6 +195,36 @@ namespace Windows.UI
 				else
 				{
 					typeof(UIFontHelper).Log().Error($"Can't remove Italic from font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
+				}
+			}
+
+			return font;
+		}
+
+		private static UIFont ApplyStretch(UIFont font, nfloat size, FontStretch fontStretch)
+		{
+			if (fontStretch is FontStretch.UltraCondensed or FontStretch.ExtraCondensed or FontStretch.Condensed or FontStretch.SemiCondensed && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Condensed))
+			{
+				var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits | UIFontDescriptorSymbolicTraits.Condensed);
+				if (descriptor != null)
+				{
+					font = UIFont.FromDescriptor(descriptor, size);
+				}
+				else
+				{
+					typeof(UIFontHelper).Log().Error($"Can't apply Condensed on font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
+				}
+			}
+			else if (fontStretch is FontStretch.SemiExpanded or FontStretch.Expanded or FontStretch.ExtraExpanded or FontStretch.UltraExpanded && font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Expanded))
+			{
+				var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits | UIFontDescriptorSymbolicTraits.Expanded);
+				if (descriptor != null)
+				{
+					font = UIFont.FromDescriptor(descriptor, size);
+				}
+				else
+				{
+					typeof(UIFontHelper).Log().Error($"Can't apply Expanded from font \"{font.Name}\". Make sure the font supports it or use another FontFamily.");
 				}
 			}
 

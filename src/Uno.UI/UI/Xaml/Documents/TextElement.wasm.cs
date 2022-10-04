@@ -36,6 +36,11 @@
 			this.SetCharacterSpacing(ReadLocalValue(CharacterSpacingProperty));
 		}
 
+		partial void OnFontStretchChangedPartial()
+		{
+			this.SetFontStretch(ReadLocalValue(FontStretchProperty));
+		}
+
 		partial void OnBaseLineAlignmentChangedPartial()
 		{
 

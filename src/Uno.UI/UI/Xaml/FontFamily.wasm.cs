@@ -78,14 +78,6 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
-		/// <summary>
-		/// Use this to launch the loading of a font before it is actually required to
-		/// minimize loading time and prevent potential flicking.
-		/// </summary>
-		/// <returns>True is the font loaded successfuly, otherwise false.</returns>
-		internal static Task<bool> PreloadAsync(FontFamily family)
-			=> family._loader.LoadFontAsync();
-
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void RegisterForInvalidateMeasureOnFontLoaded(UIElement uiElement)
 		{

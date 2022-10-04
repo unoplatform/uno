@@ -118,7 +118,6 @@ namespace Windows.UI.Xaml
 			string fontVariant = string.Empty;
 
 			if (fontWeight == FontWeights.Light
-				|| fontWeight == FontWeights.UltraLight
 				|| fontWeight == FontWeights.ExtraLight)
 			{
 				fontVariant = "-light";
@@ -135,7 +134,6 @@ namespace Windows.UI.Xaml
 					fontVariant = "-medium";
 				}
 				else if (fontWeight == FontWeights.Black
-						|| fontWeight == FontWeights.UltraBlack
 						|| fontWeight == FontWeights.ExtraBlack)
 				{
 					fontVariant = "-black";

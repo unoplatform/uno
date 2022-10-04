@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (textBox != null)
 			{
-				var newFont = UIFontHelper.TryGetFont((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontFamily);
+				var newFont = UIFontHelper.TryGetFont((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontStretch, textBox.FontFamily);
 
 				if (newFont != null)
 				{
