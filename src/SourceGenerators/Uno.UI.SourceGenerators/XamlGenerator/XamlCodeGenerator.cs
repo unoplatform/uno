@@ -20,7 +20,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	[GenerateAfter("Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator")]
 #endif
 	[Generator]
-	public class XamlCodeGenerator : ISourceGenerator
+	public partial class XamlCodeGenerator : ISourceGenerator
 	{
 		private readonly GenerationRunInfoManager _generationRunInfoManager = new GenerationRunInfoManager();
 		private readonly object _gate = new();
@@ -50,12 +50,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_generationRunInfoManager.Update(context);
 
 					var gen = new XamlCodeGeneration(context);
-					var genereratedTrees = gen.Generate(_generationRunInfoManager.CreateRun());
+					var generatedTrees = gen.Generate(_generationRunInfoManager.CreateRun());
 
-					foreach (var tree in genereratedTrees)
+					foreach (var tree in generatedTrees)
 					{
 						context.AddSource(tree.Key, tree.Value);
 					}
+
+#if !NETFRAMEWORK
+					DumpXamlSourceGeneratorState(context, generatedTrees);
+#endif
 				}
 			}
 		}

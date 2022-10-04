@@ -35,6 +35,11 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "MyFunction2((global::System.String),(global::System.String))", "ctx.MyFunction2(((global::System.String)ctx),((global::System.String)ctx))")]
 		[DataRow("ctx", "(global::System.String)", "((global::System.String)ctx)")]
 
+		// Attached properties
+		[DataRow("ctx", "AdornerCanvas.(MyNamespace.FrameworkElementExtensions.ActualWidth)", "MyNamespace.FrameworkElementExtensions.GetActualWidth(ctx.AdornerCanvas)")]
+		[DataRow("ctx", "AdornerCanvas.(Grid.Row)", "Grid.GetRow(ctx.AdornerCanvas)")]
+		[DataRow("ctx", "System.String.Format('{0:X8}', AdornerCanvas.(MyNamespace.FrameworkElementExtensions.ActualWidth))", "System.String.Format('{0:X8}', MyNamespace.FrameworkElementExtensions.GetActualWidth(ctx.AdornerCanvas))")]
+
 		// Not supported https://github.com/unoplatform/uno/issues/5061
 		// [DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
 
@@ -52,20 +57,20 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("", "(FontFamily)MyProperty.A", "(FontFamily)MyProperty.A")]
 		public void When_PathRewrite(string contextName, string inputExpression, string expectedOutput)
 		{
-			bool IsStaticMethod(string name)
-			{
-				return name switch
+			static bool IsStaticMethod(string name) =>
+				name switch
 				{
 					"MyStaticProperty" => true,
 					"MyStaticMethod" => true,
 					"Static.MyFunction" => true,
 					"System.String.Format" => true,
+					"Grid.GetRow" => true,
+					"MyNamespace.FrameworkElementExtensions.GetActualWidth" => true,
 					"MyNameSpace.Static2.MyFunction" => true,
 					"MyNameSpace.Static2.MyProperty" => true,
 					"MyNameSpace.Static2.MyEnum" => true,
 					_ => false,
 				};
-			}
 
 			var output = XBindExpressionParser.Rewrite(contextName, inputExpression, IsStaticMethod);
 

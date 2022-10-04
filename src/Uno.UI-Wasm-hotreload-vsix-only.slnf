@@ -25,7 +25,6 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
-      "T4Generator\\T4Generator.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",

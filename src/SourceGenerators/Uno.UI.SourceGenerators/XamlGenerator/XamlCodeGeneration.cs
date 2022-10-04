@@ -20,6 +20,7 @@ using Microsoft.CodeAnalysis.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -58,15 +59,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _xamlResourcesTrimming;
 		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
-
-		/// <summary>
-		/// Path to output all the intermediate generated code, per process.
-		/// </summary>
-		/// <remarks>
-		/// This is useful to troubleshoot transient generation issues in the context of
-		/// C# hot reload.
-		/// </remarks>
-		private string? _historicalOutputGenerationPath;
 
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
@@ -132,8 +124,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
 			_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 				?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
-
-			_historicalOutputGenerationPath = context.GetMSBuildPropertyValue("UnoXamlHistoricalOutputGenerationPath") is { Length: > 0 } value ? value : null;
 
 			var pageItems = GetWinUIItems("Page").Concat(GetWinUIItems("UnoPage"));
 			var applicationDefinitionItems = GetWinUIItems("ApplicationDefinition").Concat(GetWinUIItems("UnoApplicationDefinition"));
@@ -368,21 +358,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				TrackGenerationDone(stopwatch.Elapsed);
 
-				if(_historicalOutputGenerationPath is { Length: > 0 } path)
-				{
-					// Dumps all the generated files to the output folder
-					// in separate folder to troubleshoot transient compilation issues.
-
-					var dumpPath = Path.Combine(path, $"{DateTime.Now:yyyyMMdd-HHmmss-ffff}-{Process.GetCurrentProcess().ProcessName}");
-
-					Directory.CreateDirectory(dumpPath);
-
-					foreach(var file in outputFiles)
-					{
-						File.WriteAllText(Path.Combine(dumpPath	, file.Key), file.Value);
-					}
-				}
-
 				return outputFiles;
 			}
 			catch (OperationCanceledException)
@@ -607,9 +582,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		//get keys of localized strings
-		private string[] GetResourceKeys(CancellationToken ct)
+		private ImmutableHashSet<string> GetResourceKeys(CancellationToken ct)
 		{
-			string[] resourceKeys = _resourceFiles
+			ImmutableHashSet<string> resourceKeys = _resourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
 				.SelectMany(file => {
@@ -633,12 +608,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var doc = new XmlDocument();
 						doc.LoadXml(sourceText.ToString());
 
+						var rewriterBuilder = new StringBuilder();
+
 						//extract all localization keys from Win10 resource file
 						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions
 						// Per this documentation, /root/data should be more performant than //data
 						var keys = doc.SelectNodes("/root/data")
 							?.Cast<XmlElement>()
-							.Select(node => node.GetAttribute("name"))
+							.Select(node => RewriteResourceKeyName(rewriterBuilder, node.GetAttribute("name")))
 							.ToArray() ?? Array.Empty<string>();
 						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
 						return keys;
@@ -662,13 +639,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				})
 				.Distinct()
-				.Select(k => k.Replace('.', '/'))
-				.ToArray();
+				.ToImmutableHashSet();
 
 #if DEBUG
-			Console.WriteLine(resourceKeys.Length + " localization keys found");
+			Console.WriteLine(resourceKeys.Count + " localization keys found");
 #endif
 			return resourceKeys;
+		}
+
+		private string RewriteResourceKeyName(StringBuilder builder, string keyName)
+		{
+			var firstDotIndex = keyName.IndexOf('.');
+			if (firstDotIndex != -1)
+			{
+				builder.Clear();
+				builder.Append(keyName);
+
+				builder[firstDotIndex] = '/';
+
+				return builder.ToString();
+			}
+
+			return keyName;
 		}
 
 		private DateTime GetLastBinaryUpdateTime()

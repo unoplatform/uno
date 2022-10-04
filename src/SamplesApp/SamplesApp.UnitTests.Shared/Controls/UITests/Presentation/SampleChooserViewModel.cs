@@ -59,7 +59,7 @@ namespace SampleControl.Presentation
 		private List<SampleChooserCategory> _categories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 		private readonly string SampleChooserFileAddress = "SampleChooserFileAddress.";
 #endif
 
@@ -109,6 +109,22 @@ namespace SampleControl.Presentation
 			{
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
+
+			_ = Window.Current.Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				async () =>
+				{
+					// Initialize favorites and recents list as soon as possible.
+					if (FavoriteSamples == null || !FavoriteSamples.Any())
+					{
+						FavoriteSamples = await GetFavoriteSamples(CancellationToken.None, true);
+					}
+					if (RecentSamples == null || !RecentSamples.Any())
+					{
+						RecentSamples = await GetRecentSamples(CancellationToken.None);
+					}
+				}
+			);
 		}
 
 		public event EventHandler SampleChanging;
@@ -999,7 +1015,7 @@ description: {sample.Description}";
 
 		private async Task Set<T>(string key, T value)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 			ApplicationData.Current.LocalSettings.Values[key] = json;
 #endif
@@ -1007,7 +1023,7 @@ description: {sample.Description}";
 
 		private async Task<T> Get<T>(string key, Func<T> d = null)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			var json = (string)ApplicationData.Current.LocalSettings.Values[key];
 			return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
 #else
@@ -1017,7 +1033,7 @@ description: {sample.Description}";
 
 		private async Task SetFile<T>(string key, T value)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			var json = Newtonsoft.Json.JsonConvert.SerializeObject(value);
 
 			using (await _fileLock.LockAsync(CancellationToken.None))
@@ -1044,20 +1060,17 @@ description: {sample.Description}";
 
 		private async Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
 		{
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			string json = null;
 
 			using (await _fileLock.LockAsync(CancellationToken.None))
 			{
 				try
 				{
-					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					var filePath = Path.Combine(folderPath, SampleChooserFileAddress + key);
-					if (File.Exists(filePath))
-					{
-						json = File.ReadAllText(filePath);
-					}
-					
+					var folder = ApplicationData.Current.LocalFolder;
+					// GetFileAsync ensures the filesystem has been loaded on WASM.
+					var file = await folder.GetFileAsync(SampleChooserFileAddress + key);
+					json = await FileIO.ReadTextAsync(file);
 				}
 				catch (IOException e)
 				{
