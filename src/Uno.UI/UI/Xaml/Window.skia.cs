@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml
 
 				Bounds = newBounds;
 				
-				_rootVisual?.XamlRoot.InvalidateMeasure();
+				_rootVisual?.XamlRoot!.InvalidateMeasure();
 				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 				ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException("The root visual could not be created.");
 				}
 
-				CoreWindow.SetInvalidateRender(_rootVisual.XamlRoot.QueueInvalidateRender);
+				CoreWindow.SetInvalidateRender(_rootVisual.XamlRoot!.QueueInvalidateRender);
 
 				UIElement.LoadingRootElement(_rootVisual);
 
