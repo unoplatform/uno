@@ -19,6 +19,7 @@ using __uno::Uno.Xaml;
 using Microsoft.CodeAnalysis.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Concurrent;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -289,21 +290,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
 
-				var xamlTypeToXamlTypeBaseMap = new Dictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
-				foreach (var file in filesFull)
+				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
+				Parallel.ForEach(filesFull, file =>
 				{
 					var topLevelControl = file.Objects.FirstOrDefault();
 					if (topLevelControl is null)
 					{
-						continue;
+						return;
 					}
 
 					var xClassSymbol = XamlFileGenerator.FindClassSymbol(topLevelControl, _metadataHelper);
 					if (xClassSymbol is not null)
 					{
-						xamlTypeToXamlTypeBaseMap.Add(xClassSymbol, topLevelControl.Type);
+						xamlTypeToXamlTypeBaseMap.TryAdd(xClassSymbol, topLevelControl.Type);
 					}
-				}
+				});
+
 
 				var files = filesFull
 					.Trim()
