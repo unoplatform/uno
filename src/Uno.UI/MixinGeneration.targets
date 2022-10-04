@@ -150,6 +150,6 @@
   </Target>
 
   <Target Name="_InnerGenerateMixins">
-	  <Exec Command="t4 $(InputFile) -o $(OutputPath)" />
+	  <Exec Command="dotnet tool run t4 $(InputFile) -o $(OutputPath)" />
   </Target>
 </Project>
