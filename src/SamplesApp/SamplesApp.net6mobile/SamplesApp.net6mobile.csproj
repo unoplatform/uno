@@ -176,6 +176,14 @@
 	  <Folder Include="Properties\" />
 	</ItemGroup>
 	
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios' or '$(TargetFramework)' == 'net6.0-maccatalyst'">
+		<ImageAsset Include="Assets.xcassets\*\*.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
+			<Visible>false</Visible>
+		</ImageAsset>
+	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 	

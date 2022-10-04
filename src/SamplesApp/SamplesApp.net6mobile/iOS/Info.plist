@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Uno SamplesApp</string>
+	<string>Uno Samples</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.companyname.SamplesApp</string>
 	<key>CFBundleShortVersionString</key>
@@ -68,5 +68,7 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/AppIcon.appiconset</string>
 </dict>
 </plist>
