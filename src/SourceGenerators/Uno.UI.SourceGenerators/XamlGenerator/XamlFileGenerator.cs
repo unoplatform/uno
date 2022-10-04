@@ -5113,7 +5113,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol? propertyType)
 		{
 			// The default member is Path
-			var memberName = m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name;
+			var isPositionalParameter = m.Member.Name == "_PositionalParameters";
+			var memberName = isPositionalParameter ? "Path" : m.Member.Name;
 
 			if (m.Objects.Any())
 			{
@@ -5187,11 +5188,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(_dataBindingSymbol, memberName));
-
 			if (memberName == "Path")
 			{
+				var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(_dataBindingSymbol, memberName));
 				value = RewriteAttachedPropertyPath(value);
+
+				return value;
 			}
 			else if (memberName == "ElementName")
 			{
@@ -5201,24 +5203,65 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				// Skip the literal value, use the elementNameSubject instead
-				string elementName = m.Value.ToString() ?? "";
-				value = "_" + elementName + "Subject";
+				var elementName = m.Value.ToString() ?? "";
+				var value = "_" + elementName + "Subject";
+
 				// Track referenced ElementNames
 				CurrentScope.ReferencedElementNames.Add(elementName);
+
+				return value;
 			}
-			else if (memberName == "FallbackValue"
-				|| (memberName == "TargetNullValue"
-					&& m.Owner != null
-					&& m.Owner.Members.None(otherMember => otherMember.Member.Name == "Converter")))
+			else
 			{
-				// FallbackValue can match the type of the property being bound.
-				// TargetNullValue possibly doesn't match the type of the property being bound,
-				// if there is a converter
-				value = BuildLiteralValue(m, propertyType);
+				var shouldMatchPropertyType =
+					// FallbackValue can match the type of the property being bound.
+					memberName == "FallbackValue" ||
+					// TargetNullValue possibly doesn't match the type of the property being bound, if there is a converter
+					(memberName == "TargetNullValue" &&
+						m.Owner != null &&
+						m.Owner.Members.None(otherMember => otherMember.Member.Name == "Converter"));
+				propertyType = shouldMatchPropertyType
+					? propertyType
+					: GetPropertyTypeByOwnerSymbol(_dataBindingSymbol, memberName);
+				var targetValueType = propertyType;
+
+				// If value is typed and the property is not, the value type should be preserved.
+				var explicitCast = string.Empty;
+				if (propertyType?.SpecialType == SpecialType.System_Object &&
+					!isPositionalParameter &&
+					FindType(m.Owner?.Type) is { } actualValueType)
+				{
+					targetValueType = actualValueType;
+
+					// These members of Binding will upcast enum to its underlying type.
+					if (actualValueType.TypeKind == TypeKind.Enum && (
+						memberName == "ConverterParameter" ||
+						memberName == "FallbackValue" ||
+						memberName == "TargetNullValue"
+					))
+					{
+						explicitCast = actualValueType.EnumUnderlyingType!.SpecialType switch
+						{
+							// CS1008 Type byte, sbyte, short, ushort, int, uint, long, or ulong expected
+							SpecialType.System_Byte => "(byte)",
+							SpecialType.System_SByte => "(sbyte)",
+							SpecialType.System_Int16 => "(short)",
+							SpecialType.System_UInt16 => "(ushort)",
+							SpecialType.System_Int32 => "(int)",
+							SpecialType.System_UInt32 => "(uint)",
+							SpecialType.System_Int64 => "(long)",
+							SpecialType.System_UInt64 => "(ulong)",
+
+							_ => throw new Exception($"The enum underlying type '{actualValueType.EnumUnderlyingType}' is not expected."),
+						};
+					}
+				}
+
+				var value = BuildLiteralValue(m, targetValueType);
+				value = explicitCast + value;
+
+				return value;
 			}
-
-
-			return value;
 		}
 
 		private string RewriteAttachedPropertyPath(string value)
