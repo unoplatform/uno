@@ -95,18 +95,28 @@
 	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />	
   </ItemGroup>
 
-  <PropertyGroup>
-	<_UnoDotnetT4ToolBasePath>$(MSBuildThisFileDirectory)..\obj\dotnet-tools</_UnoDotnetT4ToolBasePath>
-  </PropertyGroup>
+	<Target Name="UnoDefineInstallDotnetT4"
+			  BeforeTargets="BeforeBuild;_InnerGenerateMixins">
+		<!--
+		Needs to be defined for _InnerGenerateMixins to work, but also
+		executed late for IntermediateOutputPath to be defined
+		-->
+		<PropertyGroup>
+			<_UnoDotnetT4ToolBasePath>$(MSBuildProjectDirectory)/$(IntermediateOutputPath)dotnet-tools</_UnoDotnetT4ToolBasePath>
+		</PropertyGroup>
+	</Target>
 
-  <Target Name="UnoInstallDotnetT4"
-		  BeforeTargets="BeforeBuild"
-		  Condition="!exists('$(_UnoDotnetT4ToolBasePath)')">
-	<Exec Command="dotnet tool install dotnet-t4 --version 2.3.0-preview-0041-g0bb7f1d477 --tool-path $(_UnoDotnetT4ToolBasePath)" 
-	    WorkingDirectory="$(MSBuildThisFileDirectory)..\" />
-  </Target>
+	<Target Name="UnoInstallDotnetT4"
+			BeforeTargets="BeforeBuild"
+			DependsOnTargets="UnoDefineInstallDotnetT4">
 
-  <!--
+		<Exec Command="dotnet tool install dotnet-t4 --version 2.3.0-preview-0041-g0bb7f1d477 --tool-path $(_UnoDotnetT4ToolBasePath)"
+			  StandardOutputImportance="Low"
+			  WorkingDirectory="$(MSBuildProjectDirectory)/$(IntermediateOutputPath)"
+			  Condition="!exists($(_UnoDotnetT4ToolBasePath))" />
+	</Target>
+
+	<!--
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
@@ -114,6 +124,7 @@
         Inputs="@(MixinInput)" 
 		Outputs="@(MixinOutput)" 
 		BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
+		DependsOnTargets="UnoInstallDotnetT4"
 		Condition="'$(DesignTimeBuild)' != 'true'">
 
 	<ItemGroup>

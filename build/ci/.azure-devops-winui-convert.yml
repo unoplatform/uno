@@ -51,6 +51,15 @@ jobs:
       logProjectEvents: false
       createLogFile: false
 
+  - powershell: |
+        git config --global user.email "ci@ci.com"
+        git config --global user.name "ci"
+        git add .
+        git commit -m "temporary commit for cleanup"
+        # Remove all non-source files to avoid cross-OS oddities.
+        git clean -fdx
+    displayName: Cleanup sources before publish
+
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: $(build.sourcesdirectory)
