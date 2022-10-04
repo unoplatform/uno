@@ -320,6 +320,7 @@
 							.Replace("UseAppKit", "macos")
 							.Replace("UseCatalyst", "maccatalyst")
 							.Replace("UseServer", "hosted")
+							.Replace("UseWebAssemblyManifestJson", "wasm-pwa-manifest")
 							.Replace("$basetargetframework$", "net6.0")
 							;
 
@@ -410,7 +411,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{
@@ -463,6 +464,6 @@
 	</UsingTask>
 
 	<ItemGroup>
-		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visble="false"/>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visble="false" />
 	</ItemGroup>
 </Project>
