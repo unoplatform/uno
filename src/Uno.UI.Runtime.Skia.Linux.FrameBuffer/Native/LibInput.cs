@@ -21,9 +21,17 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		static int OpenRestricted(IntPtr path, int flags, IntPtr userData)
 		{
-			var fd = Libc.open(Marshal.PtrToStringAnsi(path), flags, 0);
+			if(!(Marshal.PtrToStringAnsi(path) is { } pathAsString))
+			{
+				return -1;
+			}
+
+			var fd = Libc.open(pathAsString, flags, 0);
+
 			if (fd == -1)
+			{
 				return -Marshal.GetLastWin32Error();
+			}
 
 			return fd;
 		}
@@ -37,7 +45,7 @@ namespace Uno.UI.Runtime.Skia.Native
 		{
 			s_Interface = (IntPtr*)Marshal.AllocHGlobal(IntPtr.Size * 2);
 
-			IntPtr Convert<TDelegate>(TDelegate del)
+			static IntPtr Convert<TDelegate>(TDelegate del) where TDelegate:notnull
 			{
 				GCHandle.Alloc(del);
 				return Marshal.GetFunctionPointerForDelegate(del);
