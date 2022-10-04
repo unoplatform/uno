@@ -35,9 +35,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Visible_InvalidateArrange()
 		{
 			var sut = new Border() { Width = 100, Height = 10 };
@@ -232,9 +229,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_LayoutInformation_GetAvailableSize_Constraints()
 		{
 			var noConstraintsBorder = new Border();

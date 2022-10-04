@@ -436,7 +436,7 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
+#if true // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 				if (elt is ScrollViewer sv
 					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
 					&& elt != from)

@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml
 						XamlMeasure(availableSizeWithMargins);
 					}
 
-					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for iOS
+					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for macOS
 					{
 						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
 
