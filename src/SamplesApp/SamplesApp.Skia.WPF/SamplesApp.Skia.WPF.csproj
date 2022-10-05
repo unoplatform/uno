@@ -55,11 +55,6 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1-preview.79" />
-		<PackageReference Include="SkiaSharp.Views.Uno" />
-
-		<!-- Explicitly included to remove all assets from Uno dependencies coming from SkiaSharp.Views.* -->
-		<PackageReference Include="Uno.UI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows'">
