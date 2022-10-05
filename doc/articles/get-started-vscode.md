@@ -72,6 +72,7 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
 ## Run and Debug application
 
 ### WebAssembly
+1. Ensure that in debugger section of the Code activity bar, select `Debug (Chrome, WebAssembly)`
 1. Press `F5` to start the debugging session
 1. Place a breakpoint inside the `OnClick` method
 1. Click the button in the app, and the breakpoint will hit
