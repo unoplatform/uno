@@ -126,19 +126,19 @@
 	</Target>
 	
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
-			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
-			AfterTargets="CompileTypeScriptWithTSConfig">
+						Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+						AfterTargets="CompileTypeScriptWithTSConfig">
 		<PropertyGroup>
 			<_unoUIDTsFilePath>$(IntermediateOutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
 		</PropertyGroup>
 		<ItemGroup>
 			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
 			<EmbeddedResource Include="@(_generatedTSFiles)"
-								LogicalName="$(RootNamespace)WasmScripts.%(FileName)%(Extension)" />
+															LogicalName="$(RootNamespace)WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 		<Copy SourceFiles="$(IntermediateOutputPath)/javascript/Uno.UI.d.ts"
-			  DestinationFolder="$(OutputPath)"
-			  Condition="exists('$(_unoUIDTsFilePath)')"/>
+							DestinationFolder="$(OutputPath)"
+							Condition="exists('$(_unoUIDTsFilePath)')"/>
 	</Target>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
