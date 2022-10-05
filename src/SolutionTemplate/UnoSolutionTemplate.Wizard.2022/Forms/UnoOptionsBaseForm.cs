@@ -8,7 +8,7 @@ namespace UnoSolutionTemplate.Wizard.Forms
 {
 	public class UnoOptionsBaseForm : Form
 	{
-		private IServiceProvider _serviceProvider;
+		private readonly IServiceProvider _serviceProvider;
 
 		public UnoOptionsBaseForm(IServiceProvider serviceProvider)
 		{
@@ -74,6 +74,11 @@ namespace UnoSolutionTemplate.Wizard.Forms
 
 		protected void ResizeLabelDescription(Label labelDescription)
 		{
+			if (labelDescription == null)
+			{
+				throw new ArgumentNullException(nameof(labelDescription));
+			}
+
 			using Graphics graphics = CreateGraphics();
 			var sizeF = graphics.MeasureString(labelDescription.Text, Font);
 
