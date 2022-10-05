@@ -104,7 +104,7 @@
 	  </group>
 
 	  <!-- .NET 7 (Reference API) -->
-	  <group targetFramework="netstandard2.0">
+	  <group targetFramework="net7.0">
 		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0" />

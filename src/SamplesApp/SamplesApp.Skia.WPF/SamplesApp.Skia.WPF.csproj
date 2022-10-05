@@ -8,7 +8,7 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
 		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
 	

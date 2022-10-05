@@ -4,7 +4,7 @@
     <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
 

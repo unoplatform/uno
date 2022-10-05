@@ -27,11 +27,15 @@
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
 	  </group>
-	  <group targetFramework=".NETStandard2.0">
-		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
-	  </group>
-	  <group targetFramework="UAP10.0.18362">
+		<group targetFramework=".NETStandard2.0">
+			<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+		</group>
+		<group targetFramework="net7.0">
+			<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			<dependency id="Microsoft.Identity.Client" version="4.15.0" />
+		</group>
+		<group targetFramework="UAP10.0.18362">
 		<dependency id="Microsoft.Identity.Client" version="4.15.0" />
 	  </group>
 	  <group targetFramework="net6.0-android30.0">
@@ -60,6 +64,7 @@
 	<file src="..\src\Common\uno.png" target="/" />
 	
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\netstandard2.0\Uno.UI.MSAL.*" target="lib\netstandard2.0" />
+	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\xamarinios10\Uno.UI.MSAL.*" target="lib\xamarinios10" />
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\xamarinmac20\Uno.UI.MSAL.*" target="lib\xamarinmac20" />
 	<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\MonoAndroid11.0\Uno.UI.MSAL.*" target="lib\MonoAndroid11.0" />
@@ -75,11 +80,17 @@
 	<!-- Build targets -->
 	<file src="..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />
 
-	<!-- netstandard2.0 WebAssembly -->
-	<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\netstandard2.0\Uno.UI.MSAL.*" target="uno-runtime\webassembly" />
+	  <!-- netstandard2.0 WebAssembly -->
+	  <file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\netstandard2.0\Uno.UI.MSAL.*" target="uno-runtime\netstandard2.0\webassembly" />
 
-	<!-- netstandard2.0 Skia -->
-	<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\netstandard2.0\Uno.UI.MSAL.*" target="uno-runtime\skia" />
+	  <!-- netstandard2.0 Skia -->
+	  <file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\netstandard2.0\Uno.UI.MSAL.*" target="uno-runtime\netstandard2.0\skia" />
+
+	  <!-- net7.0 WebAssembly -->
+	  <file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\webassembly" />
+
+	  <!-- net7.0 Skia -->
+	  <file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\skia" />
 
   </files>
 
