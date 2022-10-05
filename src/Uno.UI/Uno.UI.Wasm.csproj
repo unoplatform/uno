@@ -126,9 +126,8 @@
 	</Target>
 	
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
-						Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
-						BeforeTargets="_UnoEmbeddedResourcesInjection"
-						AfterTargets="CompileTypeScriptWithTSConfig">
+			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<PropertyGroup>
 			<_unoUIDTsFilePath>$(IntermediateOutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
 		</PropertyGroup>
@@ -141,6 +140,10 @@
 							DestinationFolder="$(OutputPath)"
 							Condition="exists('$(_unoUIDTsFilePath)')"/>
 	</Target>
+	
+	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\Uno.UI\MixinGeneration.targets" />
