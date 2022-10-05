@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -16,6 +17,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 	public sealed partial class BitmapImage : BitmapSource
 	{
 		private const int MIN_DIMENSION_SYNC_LOADING = 100;
+
+		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
@@ -123,6 +126,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		internal static string GetScaledPath(string rawPath)
 		{
+			// Avoid querying filesystem if we already seen this file
+			if (_scaledBitmapCache.TryGetValue(rawPath, out var result))
+			{
+				return result;
+			}
+
 			var originalLocalPath =
 				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
@@ -140,7 +149,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 				applicableScale = FindApplicableScale(false);
 			}
 
-			return applicableScale ?? originalLocalPath;
+			result = applicableScale ?? originalLocalPath;
+			_scaledBitmapCache[rawPath] = result;
+			return result;
 
 			string FindApplicableScale(bool onlyMatching)
 			{
