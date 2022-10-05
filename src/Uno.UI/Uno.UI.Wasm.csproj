@@ -127,6 +127,7 @@
 	
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
 						Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+						BeforeTargets="_UnoEmbeddedResourcesInjection"
 						AfterTargets="CompileTypeScriptWithTSConfig">
 		<PropertyGroup>
 			<_unoUIDTsFilePath>$(IntermediateOutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
@@ -134,7 +135,7 @@
 		<ItemGroup>
 			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
 			<EmbeddedResource Include="@(_generatedTSFiles)"
-															LogicalName="$(RootNamespace)WasmScripts.%(FileName)%(Extension)" />
+							LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 		<Copy SourceFiles="$(IntermediateOutputPath)/javascript/Uno.UI.d.ts"
 							DestinationFolder="$(OutputPath)"
