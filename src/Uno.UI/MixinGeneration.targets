@@ -110,6 +110,9 @@
 			BeforeTargets="BeforeBuild"
 			DependsOnTargets="UnoDefineInstallDotnetT4">
 
+		<!-- Avoid dotnet tool to find multiple target projects-->
+		<MakeDir Directories="$(MSBuildProjectDirectory)/$(IntermediateOutputPath)"/>
+
 		<Exec Command="dotnet tool install dotnet-t4 --version 2.3.0-preview-0041-g0bb7f1d477 --tool-path $(_UnoDotnetT4ToolBasePath)"
 			  StandardOutputImportance="Low"
 			  WorkingDirectory="$(MSBuildProjectDirectory)/$(IntermediateOutputPath)"
