@@ -32,6 +32,7 @@ using System.ComponentModel;
 using Uno.Disposables;
 using System.Collections.Generic;
 using Uno.Extensions.ApplicationModel.Core;
+using Windows.ApplicationModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -116,7 +117,6 @@ namespace Uno.UI.Runtime.Skia
 				_window.SetDefaultSize(1024, 800);
 			}
 			_window.SetPosition(Gtk.WindowPosition.Center);
-
 			_window.Realized += (s, e) =>
 			{
 				// Load the correct cursors before the window is shown
@@ -283,12 +283,9 @@ namespace Uno.UI.Runtime.Skia
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 			WUX.Application.StartWithArguments(CreateApp);
-
-			_window.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			UpdateWindowPropertiesFromPackage();
 
 			RegisterForBackgroundColor();
-
-			UpdateWindowPropertiesFromPackage();
 		}
 
 		private void TryReadRenderSurfaceTypeEnvironment()
@@ -467,6 +464,15 @@ namespace Uno.UI.Runtime.Skia
 					}
 
 					GtkHost.Window.SetIconFromFile(iconPath);
+				}
+				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+					}
+
+					GtkHost.Window.SetIconFromFile(scaledPath);
 				}
 				else
 				{

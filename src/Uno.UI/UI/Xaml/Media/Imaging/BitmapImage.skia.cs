@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			(int)ResolutionScale.Scale500Percent
 		};
 
-		private static string GetScaledPath(string rawPath)
+		internal static string GetScaledPath(string rawPath)
 		{
 			var originalLocalPath =
 				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
