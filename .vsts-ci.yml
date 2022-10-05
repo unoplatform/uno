@@ -83,7 +83,7 @@ jobs:
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImageWindows: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
     vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml

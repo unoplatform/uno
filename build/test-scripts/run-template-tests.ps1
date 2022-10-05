@@ -57,12 +57,7 @@ $templateConfigurations =
     (Get-TemplateConfiguration),
     (Get-TemplateConfiguration -android 1),
     (Get-TemplateConfiguration -iOS 1),
-
-    # disabled because of https://developercommunity.visualstudio.com/t/XamarinMac-binaries-are-missing-in-173/10164443
-    # Replaced by a double test of iOS
-    # (Get-TemplateConfiguration -macOS 1),
-    (Get-TemplateConfiguration -iOS 1),
-
+    (Get-TemplateConfiguration -macOS 1),
     (Get-TemplateConfiguration -wasm 1),
     (Get-TemplateConfiguration -skiaGtk 1),
     (Get-TemplateConfiguration -skiaWpf 1),

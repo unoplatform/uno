@@ -6,8 +6,7 @@ jobs:
 - job: Dotnet_Template_Tests
   displayName: 'dotnet new Templates Tests'
 
-  pool:
-    vmImage: ${{ parameters.vmImageWindows }}
+  pool: ${{ parameters.poolName }}
 
   dependsOn: Generate_Packages
 
