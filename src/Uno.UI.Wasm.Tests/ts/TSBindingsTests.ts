@@ -2,6 +2,7 @@
 
 	MonoSupport.jsCallDispatcher.registerScope("TSBindingsUnitTests", new TSBindingsTests());
 
+	(<any>globalThis).When_SingleStringNet7 = TSBindingsTests.When_SingleStringNet7
 });
 
 class TSBindingsTests {

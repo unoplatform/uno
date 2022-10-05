@@ -202,7 +202,7 @@ namespace SamplesApp.UnitTests.TSBindings
 #if NET7_0_OR_GREATER
 	partial class TestImport
 	{
-		[JSImport("globalThis.TSBindingsTests.When_SingleStringNet7")]
+		[JSImport("globalThis.When_SingleStringNet7")]
 		internal static partial string When_SingleStringNet7(string value);
 	}
 #endif

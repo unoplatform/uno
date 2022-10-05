@@ -58,6 +58,7 @@
 	</ItemGroup>
 	
 	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
 
@@ -72,13 +73,19 @@
 		<MakeDir Directories="$(IntermediateOutputPath)/javascript" />
 	</Target>
 
-	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" AfterTargets="CompileTypeScript">
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
+			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
 			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace)WasmScripts.%(FileName)%(Extension)" />
+			<EmbeddedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 	</Target>
 
+	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
 
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 </Project>

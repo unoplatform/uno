@@ -4,7 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
 		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 
