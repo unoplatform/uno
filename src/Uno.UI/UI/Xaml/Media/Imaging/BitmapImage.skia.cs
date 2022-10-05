@@ -134,22 +134,34 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
 			var baseExtension = Path.GetExtension(originalLocalPath);
 
-			for (var i = KnownScales.Length - 1; i >= 0; i--)
+			var applicableScale = FindApplicableScale(true);
+			if (applicableScale is null)
 			{
-				var probeScale = KnownScales[i];
-
-				if (resolutionScale >= probeScale)
-				{
-					var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
-
-					if (File.Exists(filePath))
-					{
-						return filePath;
-					}
-				}
+				applicableScale = FindApplicableScale(false);
 			}
 
-			return originalLocalPath;
-		}
+			return applicableScale ?? originalLocalPath;
+
+			string FindApplicableScale(bool onlyMatching)
+			{
+				for (var i = KnownScales.Length - 1; i >= 0; i--)
+				{
+					var probeScale = KnownScales[i];
+
+					if ((onlyMatching && resolutionScale >= probeScale) ||
+						(!onlyMatching && resolutionScale < probeScale))
+					{
+						var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
+
+						if (File.Exists(filePath))
+						{
+							return filePath;
+						}
+					}
+				}
+
+				return null;
+			}
+		}		
 	}
 }
