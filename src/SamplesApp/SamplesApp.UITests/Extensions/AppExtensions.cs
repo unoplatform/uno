@@ -15,7 +15,10 @@ namespace SamplesApp.UITests.Extensions
 	{
 		public static void DragCoordinates(this IApp app, PointF from, PointF to) => app.DragCoordinates(from.X, from.Y, to.X, to.Y);
 
+#if !IS_RUNTIME_UI_TESTS
 		private static float? _scaling;
+#endif
+
 		public static float GetDisplayScreenScaling(this IApp app)
 		{
 #if IS_RUNTIME_UI_TESTS
