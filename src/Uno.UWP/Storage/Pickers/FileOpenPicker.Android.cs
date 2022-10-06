@@ -12,8 +12,8 @@ using Uno.UI;
 
 namespace Windows.Storage.Pickers
 {
-    public partial class FileOpenPicker
-    {
+	public partial class FileOpenPicker
+	{
 		internal const int RequestCode = 6002;
 		private static TaskCompletionSource<Intent?>? _currentFileOpenPickerRequest;
 
@@ -106,7 +106,7 @@ namespace Windows.Storage.Pickers
 					}
 				}
 
-				if(!wasPath)
+				if (!wasPath)
 				{   // if we have no path in any of files, remove setting - next call to Picker will not have InitialDir
 					ApplicationData.Current.LocalSettings.Values.Remove(settingName);
 				}
@@ -131,14 +131,14 @@ namespace Windows.Storage.Pickers
 			List<string> mimeTypes = new List<string>();
 
 			using Android.Webkit.MimeTypeMap? mimeTypeMap = Android.Webkit.MimeTypeMap.Singleton;
-			if (mimeTypeMap is null )
+			if (mimeTypeMap is null)
 			{
 				// when map is unavailable (probably never happens, but Singleton returns nullable)
 				return new[] { "*/*" };
 			}
 
 			foreach (string oneExtensionForLoop in FileTypeFilter)
-            {
+			{
 				bool unknownExtensionPresent = false;
 
 				string oneExtension = oneExtensionForLoop;
@@ -148,8 +148,8 @@ namespace Windows.Storage.Pickers
 					oneExtension = oneExtension.Substring(1);
 				}
 
-				if(!mimeTypeMap.HasExtension(oneExtension))
-                {
+				if (!mimeTypeMap.HasExtension(oneExtension))
+				{
 					// when there is unknown extension, we should show all files
 					unknownExtensionPresent = true;
 				}
@@ -183,7 +183,7 @@ namespace Windows.Storage.Pickers
 						return new[] { "*/*" };
 					}
 
-					foreach(var oneUnoMimeType in mimeTypesFromUno)
+					foreach (var oneUnoMimeType in mimeTypesFromUno)
 					{
 						if (!mimeTypes.Contains(oneUnoMimeType))
 						{

@@ -36,7 +36,7 @@ namespace Uno.Storage.Streams.Internal
 		{
 			get => _readStreamAdapter.Position;
 			set => _readStreamAdapter.Position = value;
-		}	
+		}
 
 		public RentedStream Rent()
 		{

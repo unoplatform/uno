@@ -1,7 +1,7 @@
 ﻿
 namespace Windows.Devices.Bluetooth
 {
-	public   enum BluetoothAddressType 
+	public enum BluetoothAddressType
 	{
 		Public,
 		Random,

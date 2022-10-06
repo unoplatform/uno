@@ -60,7 +60,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
-			
+
 			if (!IsXamlContentLoaded())
 			{
 				return;

@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 				}
 
 				Bounds = newBounds;
-				
+
 				_rootVisual?.XamlRoot.InvalidateMeasure();
 				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 

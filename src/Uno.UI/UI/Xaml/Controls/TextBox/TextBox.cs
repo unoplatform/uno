@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_foregroundBrushSubscription.Disposable = null;
 			_selectionHighlightColorSubscription.Disposable = null;
-		}	
+		}
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue) => new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 
-#region Text DependencyProperty
+		#region Text DependencyProperty
 
 		public string Text
 		{
@@ -327,9 +327,9 @@ namespace Windows.UI.Xaml.Controls
 			return baseString;
 		}
 
-#endregion
+		#endregion
 
-#region Description DependencyProperty
+		#region Description DependencyProperty
 
 		public
 #if __IOS__ || __MACOS__
@@ -366,7 +366,7 @@ namespace Windows.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
-#endregion
+		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
@@ -642,7 +642,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#region IsReadOnly DependencyProperty
+		#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
 		{

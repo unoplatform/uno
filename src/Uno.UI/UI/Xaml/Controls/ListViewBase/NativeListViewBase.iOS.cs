@@ -777,7 +777,7 @@ namespace Windows.UI.Xaml.Controls
 			set { NativeLayout.Padding = value; }
 		}
 
-#region Touches
+		#region Touches
 		private TouchesManager _touchesManager;
 
 		internal TouchesManager TouchesManager => _touchesManager ??= new NativeListViewBaseTouchesManager(this);
@@ -808,6 +808,6 @@ namespace Windows.UI.Xaml.Controls
 			protected override void SetCanCancel(bool canCancel)
 				=> _listView.CanCancelContentTouches = canCancel;
 		}
-#endregion
+		#endregion
 	}
 }

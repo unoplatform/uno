@@ -36,8 +36,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 		}
 
 		private class SerializationMethodsGenerator : SymbolVisitor
-		{ 
-			private readonly GeneratorExecutionContext _context; 
+		{
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _iosViewSymbol;
 			private readonly INamedTypeSymbol? _objcNativeHandleSymbol;
 			private readonly INamedTypeSymbol? _macosViewSymbol;
@@ -186,7 +186,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					builder.AppendLineIndented("/// </remarks>");
 					builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
 
-					if(_objcNativeHandleSymbol != null)
+					if (_objcNativeHandleSymbol != null)
 					{
 						builder.AppendLineIndented("/// <summary>");
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");

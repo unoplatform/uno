@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.Calls;
 public partial class PhoneCallHistoryStore
 {
 	internal PhoneCallHistoryStore()
-	{		
+	{
 	}
 
 	/// <summary>

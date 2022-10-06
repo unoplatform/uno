@@ -5,8 +5,8 @@ using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
-    internal static class TextAlignmentExtensions
-    {
+	internal static class TextAlignmentExtensions
+	{
 #if XAMARIN_IOS
 
 		internal static UIKit.UITextAlignment ToNativeTextAlignment(this TextAlignment textAlignment)

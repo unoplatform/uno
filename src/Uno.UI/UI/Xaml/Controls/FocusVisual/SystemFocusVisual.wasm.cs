@@ -24,7 +24,7 @@ internal partial class SystemFocusVisual : Control
 	}
 
 	partial void DetachVisualPartial()
-    {
+	{
 		WebAssemblyRuntime.InvokeJS($"{JsType}.detachVisual()");
 	}
 

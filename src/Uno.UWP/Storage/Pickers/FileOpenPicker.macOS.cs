@@ -62,7 +62,7 @@ namespace Windows.Storage.Pickers
 
 		private string[] GetFileTypes()
 		{
-			return FileTypeFilter.Except(new[] {"*"}).Select(ext => ext.TrimStart(new []{'.'})).ToArray();
+			return FileTypeFilter.Except(new[] { "*" }).Select(ext => ext.TrimStart(new[] { '.' })).ToArray();
 		}
 	}
 }

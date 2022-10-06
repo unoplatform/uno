@@ -19,10 +19,10 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.Background
 {
 	public sealed partial class CommandBar_Background_Page2 : Page
-    {
-        public CommandBar_Background_Page2()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public CommandBar_Background_Page2()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

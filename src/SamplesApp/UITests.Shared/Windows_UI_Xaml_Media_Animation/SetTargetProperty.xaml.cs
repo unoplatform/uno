@@ -19,9 +19,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media_Animation
 {
-    [Sample("Animations")]
-    public sealed partial class SetTargetProperty : Page
-    {
+	[Sample("Animations")]
+	public sealed partial class SetTargetProperty : Page
+	{
 		private static readonly TimeSpan AnimationDuration = TimeSpan.FromMilliseconds(1000);
 
 		private TranslateTransform _translateTransform;
@@ -31,8 +31,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Media_Animation
 		private DoubleAnimation _translateAnimation;
 
 		public SetTargetProperty()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 			this.Loaded += (s, e) => Setup();
 		}
 

@@ -15,7 +15,7 @@ public class GtkApplicationExtension : IApplicationExtension
 		var settings = Gtk.Settings.Default;
 		settings.AddNotification(nameof(settings.ApplicationPreferDarkTheme), ApplicationPreferDarkThemeHandler);
 	}
-	
+
 	public event EventHandler SystemThemeChanged;
 
 	private void ApplicationPreferDarkThemeHandler(object o, GLib.NotifyArgs args)

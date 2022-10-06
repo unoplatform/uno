@@ -49,7 +49,7 @@ namespace Uno.Collections
 			return new SynchronizedDictionary<TKey, object>();
 		}
 #else
-		private readonly ConditionalWeakTable<TOwner, System.Collections.Concurrent.ConcurrentDictionary<TKey, object>> _instances = 
+		private readonly ConditionalWeakTable<TOwner, System.Collections.Concurrent.ConcurrentDictionary<TKey, object>> _instances =
 			new ConditionalWeakTable<TOwner, System.Collections.Concurrent.ConcurrentDictionary<TKey, object>>();
 
 		private static System.Collections.Concurrent.ConcurrentDictionary<TKey, object> CreateDictionary(TOwner key)

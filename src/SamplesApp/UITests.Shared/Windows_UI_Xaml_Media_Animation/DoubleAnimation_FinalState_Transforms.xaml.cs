@@ -11,7 +11,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
-	[Sample("Animations", "Transform", Name="DoubleAnimation transforms final state", Description = _description)]
+	[Sample("Animations", "Transform", Name = "DoubleAnimation transforms final state", Description = _description)]
 	public sealed partial class DoubleAnimation_FinalState_Transforms : Page
 	{
 		private const string _description = @"This (automated) test validates the final state of when animating transformation using a double animation.

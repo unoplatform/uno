@@ -18,13 +18,13 @@ using Microsoft.UI.Xaml.Controls;
 namespace UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
 	[Sample("TreeView")]
-    public sealed partial class TreeView_ItemInvoked : Page
-    {
-        public TreeView_ItemInvoked()
-        {
-            this.InitializeComponent();
-			Tree.ItemInvoked += OnItemInvoked;			
-        }
+	public sealed partial class TreeView_ItemInvoked : Page
+	{
+		public TreeView_ItemInvoked()
+		{
+			this.InitializeComponent();
+			Tree.ItemInvoked += OnItemInvoked;
+		}
 
 		private void OnItemInvoked(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
 		{

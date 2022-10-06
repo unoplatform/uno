@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media
 {
-    public partial class ImageSourceConverter
-    {
+	public partial class ImageSourceConverter
+	{
 		partial void CanConvertFromPartial(Type sourceType, ref bool canConvert)
 		{
 			canConvert = sourceType == typeof(Android.Graphics.Bitmap)

@@ -83,7 +83,7 @@ namespace MUXControlsTestApp
 			//Button horizontalOrientationButton;
 			if (repeater.TryGetElement(0) as FrameworkElement is var horizontalOrientationPip && horizontalOrientationPip != null)
 			{
-				HorizontalOrientationPipsPagerButtonWidthTextBlock.Text = $"{ horizontalOrientationPip.ActualWidth}";
+				HorizontalOrientationPipsPagerButtonWidthTextBlock.Text = $"{horizontalOrientationPip.ActualWidth}";
 				HorizontalOrientationPipsPagerButtonHeightTextBlock.Text = $"{horizontalOrientationPip.ActualHeight}";
 			}
 			if (verticalOrientationPipsPagerRepeater.TryGetElement(1) as FrameworkElement is var verticalOrientationPip && verticalOrientationPip != null)

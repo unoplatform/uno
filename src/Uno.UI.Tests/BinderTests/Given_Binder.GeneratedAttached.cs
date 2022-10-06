@@ -96,7 +96,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public static void OnMyValue2Changed(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if(instance is Binder_GeneratedAttached_Data data)
+			if (instance is Binder_GeneratedAttached_Data data)
 			{
 				data.Value2ChangedCallback++;
 			}

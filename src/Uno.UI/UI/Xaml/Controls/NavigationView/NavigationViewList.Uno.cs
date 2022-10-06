@@ -17,7 +17,7 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewList : ListView
+	public partial class NavigationViewList : ListView
 	{
 		// Workaround for https://github.com/unoplatform/uno/issues/2477
 		//

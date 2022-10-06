@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.StyleTests
 {
-	[SampleControlInfo("Style", nameof(Style_Inline), description:"Demonstrates application of inline-defined Styles.")]
+	[SampleControlInfo("Style", nameof(Style_Inline), description: "Demonstrates application of inline-defined Styles.")]
 	public sealed partial class Style_Inline : UserControl
 	{
 		public Style_Inline()

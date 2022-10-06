@@ -37,7 +37,7 @@ namespace Uno.UI.Controls.Legacy
 
 			set
 			{
-				if(!(value is ListViewLayout))
+				if (!(value is ListViewLayout))
 				{
 					throw new InvalidOperationException("ListView only supports ListViewLayout");
 				}
@@ -79,7 +79,7 @@ namespace Uno.UI.Controls.Legacy
 		#endregion
 
 		public ListView()
-			: base (new RectangleF (), new ListViewLayout ())
+			: base(new RectangleF(), new ListViewLayout())
 		{
 			Initialize();
 		}
@@ -119,24 +119,24 @@ namespace Uno.UI.Controls.Legacy
 		#endregion
 
 		#region Properties Changed
-		protected override void OnSourceChanged (ListViewBaseSource oldSource, ListViewBaseSource newSource)
+		protected override void OnSourceChanged(ListViewBaseSource oldSource, ListViewBaseSource newSource)
 		{
-			base.OnSourceChanged (oldSource, newSource);
-			
+			base.OnSourceChanged(oldSource, newSource);
+
 			var newListViewSource = newSource as ListViewSource;
-			if (newListViewSource!= null)
+			if (newListViewSource != null)
 			{
 				Layout.Source = new WeakReference<ListViewBaseSource>(newListViewSource);
 			}
-        }
+		}
 
 		public void OnSelectionHasChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!e.AddedItems.Equals (e.RemovedItems)) 
-            {
-                SetBindingValue ((e.AddedItems.Count > 0) ? e.AddedItems [0] : null, "SelectedItem");
-            }
-        }
+		{
+			if (!e.AddedItems.Equals(e.RemovedItems))
+			{
+				SetBindingValue((e.AddedItems.Count > 0) ? e.AddedItems[0] : null, "SelectedItem");
+			}
+		}
 		#endregion
 
 		private void SetDefaultItemSize()

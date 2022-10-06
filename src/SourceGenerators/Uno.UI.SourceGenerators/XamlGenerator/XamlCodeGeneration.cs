@@ -454,7 +454,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var query = from sym in assembliesQuery
 						from module in sym.Modules
 
-						// Only consider assemblies that reference Uno.UI
+							// Only consider assemblies that reference Uno.UI
 						where module.ReferencedAssemblies.Any(r => r.Name == "Uno.UI") || sym.Name == "Uno.UI"
 
 						// Don't consider Uno.UI.FluentTheme assemblies, as they manage their own initialization
@@ -567,7 +567,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			ImmutableHashSet<string> resourceKeys = _resourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
-				.SelectMany(file => {
+				.SelectMany(file =>
+				{
 #if DEBUG
 					Console.WriteLine("Parse resource file : " + file.Identity);
 #endif

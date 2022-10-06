@@ -1,6 +1,6 @@
 namespace Windows.Globalization.NumberFormatting
 {
-	public partial interface INumberRounder 
+	public partial interface INumberRounder
 	{
 		int RoundInt32(int value);
 		uint RoundUInt32(uint value);

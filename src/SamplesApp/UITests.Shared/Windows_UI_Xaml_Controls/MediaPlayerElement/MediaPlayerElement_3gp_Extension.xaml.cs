@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Using .3gp", description: "Test .3gp video")]
 	public sealed partial class MediaPlayerElement_3gp_Extension : UserControl
-    {
-        public MediaPlayerElement_3gp_Extension()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_3gp_Extension()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

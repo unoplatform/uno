@@ -599,7 +599,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					container.Style = style;
 				}
-				
+
 				if (!container.IsContainerFromTemplateRoot)
 				{
 					container.ContentTemplate = dataTemplate;

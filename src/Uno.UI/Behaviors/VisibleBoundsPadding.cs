@@ -88,7 +88,8 @@ namespace Uno.UI.Toolkit
 #else
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				var bounds = Window.Current?.Bounds ?? Rect.Empty;
-				var result = new Thickness {
+				var result = new Thickness
+				{
 					Left = visibleBounds.Left - bounds.Left,
 					Top = visibleBounds.Top - bounds.Top,
 					Right = bounds.Right - visibleBounds.Right,
@@ -229,7 +230,7 @@ namespace Uno.UI.Toolkit
 				}
 
 				Thickness visibilityPadding;
-				
+
 				if (WindowPadding.Left != 0
 					|| WindowPadding.Right != 0
 					|| WindowPadding.Top != 0
@@ -275,7 +276,8 @@ namespace Uno.UI.Toolkit
 				var right = Math.Min(controlBounds.Right - visibleBounds.Right, windowPadding.Right);
 				var bottom = Math.Min(controlBounds.Bottom - visibleBounds.Bottom, windowPadding.Bottom);
 
-				return new Thickness {
+				return new Thickness
+				{
 					Left = left,
 					Top = top,
 					Right = right,
@@ -338,7 +340,8 @@ namespace Uno.UI.Toolkit
 					? Math.Max(_originalPadding.Bottom, visibilityPadding.Bottom)
 					: _originalPadding.Bottom;
 
-				return new Thickness {
+				return new Thickness
+				{
 					Left = left,
 					Top = top,
 					Right = right,

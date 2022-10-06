@@ -47,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var lastWriteTime = new FileInfo(runFilePath).LastWriteTime;
 
-					if(lastWriteTime > _previousWriteTime)
+					if (lastWriteTime > _previousWriteTime)
 					{
 						_previousWriteTime = lastWriteTime;
 
@@ -57,7 +57,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			if(GetIsDesignTimeBuild(context)
+			if (GetIsDesignTimeBuild(context)
 				&& !GetIsHotReloadHost(context)
 				&& !Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.InvariantCultureIgnoreCase))
 			{

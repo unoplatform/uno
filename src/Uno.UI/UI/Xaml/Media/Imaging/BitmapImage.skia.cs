@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if(_stream != null &&
+			if (_stream != null &&
 				targetWidth is { } width &&
 				targetHeight is { } height &&
 				height < MIN_DIMENSION_SYNC_LOADING &&
@@ -174,6 +174,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return null;
 			}
-		}		
+		}
 	}
 }

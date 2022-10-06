@@ -11,10 +11,10 @@ using ObjCRuntime;
 
 namespace Uno.UI.Extensions
 {
-    public static class FontWeightExtensions
-    {
-	    public static nfloat ToNSFontWeight(this FontWeight fontWeight)
-	    {
+	public static class FontWeightExtensions
+	{
+		public static nfloat ToNSFontWeight(this FontWeight fontWeight)
+		{
 			if (fontWeight == FontWeights.Black ||
 				fontWeight == FontWeights.ExtraBlack)
 			{
@@ -58,5 +58,5 @@ namespace Uno.UI.Extensions
 
 			return NSFontWeight.Regular;
 		}
-    }
+	}
 }

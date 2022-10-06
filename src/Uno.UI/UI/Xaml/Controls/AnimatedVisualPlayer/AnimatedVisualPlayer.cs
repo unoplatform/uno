@@ -10,28 +10,28 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Source")]
 	public partial class AnimatedVisualPlayer : FrameworkElement
 	{
-		public static DependencyProperty AutoPlayProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty AutoPlayProperty { get; } = DependencyProperty.Register(
 			"AutoPlay", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(true, UpdateSourceOnChanged));
 
-		public static DependencyProperty IsAnimatedVisualLoadedProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty IsAnimatedVisualLoadedProperty { get; } = DependencyProperty.Register(
 			"IsAnimatedVisualLoaded", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, UpdateSourceOnChanged));
 
-		public static DependencyProperty IsPlayingProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty IsPlayingProperty { get; } = DependencyProperty.Register(
 			"IsPlaying", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, UpdateSourceOnChanged));
 
-		public static DependencyProperty PlaybackRateProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty PlaybackRateProperty { get; } = DependencyProperty.Register(
 			"PlaybackRate", typeof(double), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(1.0, UpdateSourceOnChanged));
 
 		public static DependencyProperty FallbackContentProperty { get; } = DependencyProperty.Register(
 			"FallbackContent", typeof(DataTemplate), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, UpdateSourceOnChanged));
 
-		public static DependencyProperty SourceProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty SourceProperty { get; } = DependencyProperty.Register(
 			"Source", typeof(IAnimatedVisualSource), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
 
-		public static DependencyProperty StretchProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty StretchProperty { get; } = DependencyProperty.Register(
 			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
 
-		public static DependencyProperty DurationProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty DurationProperty { get; } = DependencyProperty.Register(
 			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(default(TimeSpan), UpdateSourceOnChanged));
 
 		public bool AutoPlay
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void UpdateSourceOnChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
 		{
-			if (source is AnimatedVisualPlayer {IsLoaded: true} player)
+			if (source is AnimatedVisualPlayer { IsLoaded: true } player)
 			{
 				if (player.Source != null)
 				{

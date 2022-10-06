@@ -21,10 +21,10 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
 	[SampleControlInfo("CommandBar", "BackGesture")]
 	public sealed partial class CommandBar_BackGesture : Page
-    {
-        public CommandBar_BackGesture()
-        {
-            this.InitializeComponent();
+	{
+		public CommandBar_BackGesture()
+		{
+			this.InitializeComponent();
 		}
 
 		private void FullWindow_Click(object sender, RoutedEventArgs e)

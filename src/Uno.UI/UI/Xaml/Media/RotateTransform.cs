@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal static Matrix3x2 GetMatrix(double centerX, double centerY, double angleDegree)
 		{
-			var angle = (float) MathEx.ToRadians(angleDegree);
+			var angle = (float)MathEx.ToRadians(angleDegree);
 			var centerPoint = new Vector2((float)centerX, (float)centerY);
 
 			return Matrix3x2.CreateRotation(angle, centerPoint);
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterYProperty, value);
 		}
 
-		public static DependencyProperty CenterYProperty { get ; } =
+		public static DependencyProperty CenterYProperty { get; } =
 			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double CenterX
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterXProperty, value);
 		}
 
-		public static DependencyProperty CenterXProperty { get ; } =
+		public static DependencyProperty CenterXProperty { get; } =
 			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double Angle
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleProperty, value);
 		}
 
-		public static DependencyProperty AngleProperty { get ; } =
+		public static DependencyProperty AngleProperty { get; } =
 			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 	}
 }

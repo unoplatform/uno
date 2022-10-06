@@ -5,7 +5,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class DragItemsStartingEventArgs 
+	public partial class DragItemsStartingEventArgs
 	{
 		private readonly DragStartingEventArgs? _inner;
 
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 			get => _inner?.Cancel ?? false;
 			set
 			{
-				if (_inner is {})
+				if (_inner is { })
 				{
 					_inner.Cancel = value;
 				}

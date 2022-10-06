@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				);
 
 				await UpdateLayoutWithWaitAsync();
-				
+
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -388,7 +388,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				elementFactory.Templates["Item"] = (DataTemplate)XamlReader.Load(
 					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' />");
 
-				repeater = new ItemsRepeater() {
+				repeater = new ItemsRepeater()
+				{
 					ItemsSource = Enumerable.Range(0, 10).Select(i => string.Format("Item #{0}", i)),
 					ItemTemplate = elementFactory,
 					// Default is StackLayout, so do not have to explicitly set.
@@ -415,12 +416,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Height='0' /></DataTemplate>");
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
-				var selector = new MySelector() {
+				var selector = new MySelector()
+				{
 					TemplateOdd = dataTemplateOdd,
 					TemplateEven = dataTemplateEven
 				};
 
-				repeater = new ItemsRepeater() {
+				repeater = new ItemsRepeater()
+				{
 					ItemTemplate = selector,
 					Layout = new StackLayout(),
 					ItemsSource = Enumerable.Range(0, numItems)
@@ -595,7 +598,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				await UpdateLayoutWithWaitAsync();
 
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
-				
+
 				for (int i = 0; i < numItems; i++)
 				{
 					var element = (Button)repeater.TryGetElement(i);
@@ -625,7 +628,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						</DataTemplate>");
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
-				var selector = new MyContainerSelector() {
+				var selector = new MyContainerSelector()
+				{
 					TemplateOdd = dataTemplateOdd,
 					TemplateEven = dataTemplateEven
 				};
@@ -682,7 +686,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				try
 				{
 					await UpdateLayoutWithWaitAsync();
-				} catch(Exception e)
+				}
+				catch (Exception e)
 				{
 					threwException = true;
 					Verify.IsTrue(e.Message.Contains("Null encountered as data template. That is not a valid value for a data template, and can not be used."));
@@ -723,14 +728,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			};
 		}
 
-		private List<UIElement> GetAllElementsFromPool(RecyclePool pool, string key="")
+		private List<UIElement> GetAllElementsFromPool(RecyclePool pool, string key = "")
 		{
 			List<UIElement> elements = new List<UIElement>();
 			bool poolEmpty = false;
-			while(!poolEmpty)
+			while (!poolEmpty)
 			{
 				var next = pool.TryGetElement(key);
-				if(next != null)
+				if (next != null)
 				{
 					elements.Add(next);
 				}

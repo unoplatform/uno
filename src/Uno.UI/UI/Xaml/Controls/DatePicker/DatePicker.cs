@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
-			   
+
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
 		const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
 		const int DATEPICKER_SENTINELTIME_HOUR = 12;
@@ -226,7 +226,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				WeakReference wrWeakThis = new WeakReference(this);
 
-				pCurrentWindow.Activated += (s, pArgs) => {
+				pCurrentWindow.Activated += (s, pArgs) =>
+				{
 
 					DatePicker spThis;
 
@@ -1085,15 +1086,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception /*e*/)
 			{
-				if (property == CalendarIdentifierProperty) {
+				if (property == CalendarIdentifierProperty)
+				{
 					CalendarIdentifier = strOldValue;
 				}
-				else if (property == DayFormatProperty) {
+				else if (property == DayFormatProperty)
+				{
 					DayFormat = strOldValue;
 				}
 				else if (property == MonthFormatProperty)
 					MonthFormat = strOldValue;
-				else if (property == YearFormatProperty) {
+				else if (property == YearFormatProperty)
+				{
 					YearFormat = strOldValue;
 				}
 			}
@@ -1370,7 +1374,8 @@ namespace Windows.UI.Xaml.Controls
 
 					if (args.Property == DayVisibleProperty
 					|| args.Property == MonthVisibleProperty
-					|| args.Property == YearVisibleProperty) {
+					|| args.Property == YearVisibleProperty)
+					{
 						UpdateOrderAndLayout();
 					}
 
@@ -2055,7 +2060,7 @@ namespace Windows.UI.Xaml.Controls
 			// Also move the spacers to the correct column.
 			if (m_tpFirstPickerSpacing != null)
 			{
-				m_tpFirstPickerSpacing.Visibility = 
+				m_tpFirstPickerSpacing.Visibility =
 					firstHostPopulated && (secondHostPopulated || thirdHostPopulated) ?
 					Visibility.Visible : Visibility.Collapsed;
 
@@ -2067,7 +2072,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpSecondPickerSpacing != null)
 			{
-				m_tpSecondPickerSpacing.Visibility = 
+				m_tpSecondPickerSpacing.Visibility =
 					secondHostPopulated && thirdHostPopulated ?
 					Visibility.Visible : Visibility.Collapsed;
 

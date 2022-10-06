@@ -89,7 +89,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
 				// Visual Studio uses to save files.
 
-				var changes = Observable.Create<string>(o => {
+				var changes = Observable.Create<string>(o =>
+				{
 
 					void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
 					void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
@@ -98,7 +99,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					watcher.Created += changed;
 					watcher.Renamed += renamed;
 
-					return Disposable.Create(() => {
+					return Disposable.Create(() =>
+					{
 						watcher.Changed -= changed;
 						watcher.Created -= changed;
 						watcher.Renamed -= renamed;

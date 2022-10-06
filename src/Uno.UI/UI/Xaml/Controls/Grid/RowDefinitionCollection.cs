@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			get => _inner[index];
 			set
 			{
-				if(_inner[index] != value)
+				if (_inner[index] != value)
 				{
 					_inner[index] = value;
 				}

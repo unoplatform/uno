@@ -39,14 +39,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 			// .Add
 			_wasEventFired = false;
 			_testSet.Add("thisisKey", "andValue");
-			
-			if(!_wasEventFired)
+
+			if (!_wasEventFired)
 			{
 				Assert.Fail("ValueSet.Add didn't fire event");
 			}
 
 			// .Contains
-			if(!_testSet.ContainsKey("thisisKey"))
+			if (!_testSet.ContainsKey("thisisKey"))
 			{
 				Assert.Fail("ValueSet doesn't contain .Added key");
 			}
@@ -70,7 +70,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 			// .Remove
 			_wasEventFired = false;
 			_testSet.Remove("thisisKey");
-			
+
 			if (!_wasEventFired)
 			{
 				Assert.Fail("ValueSet.Remove didn't fire event");
@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 			// .Clear
 			_wasEventFired = false;
 			_testSet.Clear();
-			
+
 			if (!_wasEventFired)
 			{
 				Assert.Fail("ValueSet.Clear didn't fire event");

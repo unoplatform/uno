@@ -171,7 +171,7 @@ namespace Private.Infrastructure
 			if (arguments != null && arguments.Length != 0)
 			{
 				var offset = 0;
-				for (var i = 0;; i++)
+				for (var i = 0; ; i++)
 				{
 					offset = log.IndexOf('%', offset + 1);
 					if (offset < 0 || offset + 1 >= log.Length)
@@ -181,7 +181,7 @@ namespace Private.Infrastructure
 
 					string replacement = default;
 
-					switch(log[offset + 1])
+					switch (log[offset + 1])
 					{
 						case 's':
 						case 'd':

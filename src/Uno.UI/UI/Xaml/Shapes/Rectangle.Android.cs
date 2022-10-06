@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Shapes
 		public Rectangle()
 		{
 		}
-			
+
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
 			=> base.MeasureRelativeShape(availableSize);

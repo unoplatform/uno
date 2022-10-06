@@ -78,7 +78,7 @@ namespace Uno.Analyzers
 
 		private ISymbol? GetUnoSymbolFromOperation(IOperation operation)
 		{
-			
+
 			ISymbol symbol = operation switch
 			{
 				IInvocationOperation invocationOperation => invocationOperation.TargetMethod,

@@ -17,7 +17,7 @@ using _Image = AppKit.NSImage;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class Border
+	public partial class Border
 	{
 		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 			if (old != null)
 			{
 				old.ImageChanged -= OnBackgroundImageBrushChanged;
-            }
+			}
 			var imgBrush = args.NewValue as ImageBrush;
 			if (imgBrush != null)
 			{
@@ -101,12 +101,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorderLayer();
 		}
 
-        partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			UpdateBorderLayer();
 		}
 
-        partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
+		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
 		{
 			previousValue?.RemoveFromSuperview();
 
@@ -118,12 +118,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorderLayer();
 		}
 
-        partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
+		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
 			UpdateBorderLayer();
 		}
-        bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
-        bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 
 		internal event EventHandler BoundsPathUpdated;
 		internal CGPath BoundsPath { get; private set; }

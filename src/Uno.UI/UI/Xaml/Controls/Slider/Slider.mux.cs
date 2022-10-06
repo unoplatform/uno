@@ -1077,7 +1077,7 @@ public partial class Slider
 #if HAS_UNO
 		isThumbToolTipEnabled &= FeatureConfiguration.ToolTip.UseToolTips;
 #endif
-		
+
 		maximum = Maximum;
 		minimum = Minimum;
 		currentValue = IntermediateValue;

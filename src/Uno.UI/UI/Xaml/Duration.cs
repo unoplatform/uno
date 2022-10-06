@@ -140,38 +140,38 @@ namespace Windows.UI.Xaml
 
 		public override bool Equals(object value)
 		{
-            if (value == null)
-            {
-                return false;
-            }
-            else if (value is Duration)
-            {
-                return Equals((Duration)value);
-            }
-            return false;            
+			if (value == null)
+			{
+				return false;
+			}
+			else if (value is Duration)
+			{
+				return Equals((Duration)value);
+			}
+			return false;
 		}
 
 		public bool Equals(Duration duration)
 		{
-            if (HasTimeSpan)
-            {
-                if (duration.HasTimeSpan)
-                {
-                    return TimeSpan == duration.TimeSpan;
-                }
-                return false;
-            }
-            else
-            {
-                return Type == duration.Type;
-            }
-        }
+			if (HasTimeSpan)
+			{
+				if (duration.HasTimeSpan)
+				{
+					return TimeSpan == duration.TimeSpan;
+				}
+				return false;
+			}
+			else
+			{
+				return Type == duration.Type;
+			}
+		}
 
 		public static bool Equals(Duration first, Duration second)
 		{
-            return first.Equals(second);
+			return first.Equals(second);
 
-        }
+		}
 
 		public int CompareTo(Duration other)
 		{

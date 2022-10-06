@@ -1180,7 +1180,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					parent = GetParentNavigationViewItemForContainer(parent);
 				}
-				
+
 				AnimateSelectionChanged(indicatorTarget);
 
 				CloseFlyoutIfRequired(nvi);

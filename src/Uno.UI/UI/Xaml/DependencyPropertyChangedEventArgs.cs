@@ -27,14 +27,14 @@ namespace Windows.UI.Xaml
 	public partial class DependencyPropertyChangedEventArgs : EventArgs
 	{
 		internal DependencyPropertyChangedEventArgs(
-            DependencyProperty property,
+			DependencyProperty property,
 			object oldValue,
 			DependencyPropertyValuePrecedences oldPrecedence,
 			object newValue,
 			DependencyPropertyValuePrecedences newPrecedence,
 			bool bypassesPropagation = false)
 		{
-            Property = property;
+			Property = property;
 			OldValue = oldValue;
 			OldPrecedence = oldPrecedence;
 			NewValue = newValue;
@@ -89,9 +89,9 @@ namespace Windows.UI.Xaml
 			private set;
 		}
 
-        public DependencyProperty Property
-        {
-            get;
-        }
-    }
+		public DependencyProperty Property
+		{
+			get;
+		}
+	}
 }

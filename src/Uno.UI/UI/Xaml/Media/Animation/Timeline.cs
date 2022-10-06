@@ -59,38 +59,38 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public TimeSpan? BeginTime
 		{
-			get => (TimeSpan?) GetValue(BeginTimeProperty);
+			get => (TimeSpan?)GetValue(BeginTimeProperty);
 			set => SetValue(BeginTimeProperty, value);
 		}
 
-		public static DependencyProperty BeginTimeProperty { get ; } =
+		public static DependencyProperty BeginTimeProperty { get; } =
 			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new FrameworkPropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
 		{
-			get => (Duration) GetValue(DurationProperty);
+			get => (Duration)GetValue(DurationProperty);
 			set => SetValue(DurationProperty, value);
 		}
 
-		public static DependencyProperty DurationProperty { get ; } =
+		public static DependencyProperty DurationProperty { get; } =
 			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new FrameworkPropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
 		{
-			get => (FillBehavior) GetValue(FillBehaviorProperty);
+			get => (FillBehavior)GetValue(FillBehaviorProperty);
 			set => SetValue(FillBehaviorProperty, value);
 		}
 
-		public static DependencyProperty FillBehaviorProperty { get ; } =
+		public static DependencyProperty FillBehaviorProperty { get; } =
 			DependencyProperty.Register("FillBehavior", typeof(FillBehavior), typeof(Timeline), new FrameworkPropertyMetadata(FillBehavior.HoldEnd));
 
 		public RepeatBehavior RepeatBehavior
 		{
-			get => (RepeatBehavior) GetValue(RepeatBehaviorProperty);
+			get => (RepeatBehavior)GetValue(RepeatBehaviorProperty);
 			set => SetValue(RepeatBehaviorProperty, value);
 		}
 
-		public static DependencyProperty RepeatBehaviorProperty { get ; } =
+		public static DependencyProperty RepeatBehaviorProperty { get; } =
 			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			subject.ElementInstanceChanged += handler;
 		}
 
-		private protected virtual void InitTarget() {}
+		private protected virtual void InitTarget() { }
 
 		/// <summary>
 		/// Path to the target property being animated.

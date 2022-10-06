@@ -18,12 +18,12 @@ namespace Uno.UI
 	///  An invisible (Transparent) Activity that starts an Intent and returns the parameters of the  OnActivityResult
 	/// </summary>
 	[Activity(
-        Theme = "@style/Theme.AppCompat.Translucent",
-        // This prevents the Activity from being destroyed when the orientation and/or screen size changes.
-        // This is important because OnDestroy would otherwise return Result.Canceled before OnActivityResult can return the actual result.
-        // Common example: Capture an image in landscape from an app locked to portrait (using MediaPickerService).
-        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize
-    )]
+		Theme = "@style/Theme.AppCompat.Translucent",
+		// This prevents the Activity from being destroyed when the orientation and/or screen size changes.
+		// This is important because OnDestroy would otherwise return Result.Canceled before OnActivityResult can return the actual result.
+		// Common example: Capture an image in landscape from an app locked to portrait (using MediaPickerService).
+		ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize
+	)]
 	public class DelegateActivity : BaseActivity
 	{
 		// Some devices (Galaxy S4) use a second activity to get the result.
@@ -63,7 +63,7 @@ namespace Uno.UI
 			{
 				Finish();//Close the activity
 				_originalActivities.Remove(requestCode);
-            }
+			}
 		}
 
 		/// <summary>
@@ -101,7 +101,7 @@ namespace Uno.UI
 			{
 				originalActivity._completionSource.TrySetResult(new OnActivityResultArgs(requestCode, resultCode, intent));
 			}
-        }
+		}
 
 		protected override void OnDestroy()
 		{

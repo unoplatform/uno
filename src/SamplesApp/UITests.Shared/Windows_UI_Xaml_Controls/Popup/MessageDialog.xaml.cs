@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
-	[SampleControlInfo("Popup", "MessageDialog", description:"The dialog dims the screen behind it and blocks touch events from passing to the app's canvas until the user responds.")]
+	[SampleControlInfo("Popup", "MessageDialog", description: "The dialog dims the screen behind it and blocks touch events from passing to the app's canvas until the user responds.")]
 	public sealed partial class MessageDialog : Page
 	{
 		private const string _title = "Internet Connectivity";
@@ -51,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.Commands.Add(new UICommand("Try Again", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.DefaultCommandIndex = 0;
 
-				messageDialog.Commands.Add(new UICommand("Cancel",new UICommandInvokedHandler(this.CommandInvokedHandler)));
+				messageDialog.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.DefaultCommandIndex = 1;
 
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await messageDialog.ShowAsync());
@@ -65,9 +65,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				messageDialog.Commands.Add(new UICommand("Try Again", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.DefaultCommandIndex = 0;
 
-				messageDialog.Commands.Add(new UICommand("Reset Network Settings",new UICommandInvokedHandler(this.CommandInvokedHandler)));
+				messageDialog.Commands.Add(new UICommand("Reset Network Settings", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 
-				messageDialog.Commands.Add(new UICommand("Cancel",new UICommandInvokedHandler(this.CommandInvokedHandler)));
+				messageDialog.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler(this.CommandInvokedHandler)));
 				messageDialog.CancelCommandIndex = 2;
 
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await messageDialog.ShowAsync());
@@ -76,7 +76,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 			WithEscapedCharacters.Tapped += (snd, evt) =>
 			{
 				var messageDialog = new Windows.UI.Popups.MessageDialog("\"Sample \\\"force escape test\\\" \\n \\t \\r continued sample.\"");
-				
+
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await messageDialog.ShowAsync());
 			};
 

@@ -154,7 +154,7 @@ namespace Uno.UI.Foldable
 						IsFlat = foldingFeature.State == FoldingFeatureState.Flat,
 						IsVertical = IsFoldVertical
 					};
-					
+
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						var summary = "\n    IsSeparating: " + foldingFeature.IsSeparating

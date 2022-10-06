@@ -126,10 +126,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (e != null && isAttachedPropertySyntax.result)
 				{
-					if(e is MemberAccessExpressionSyntax memberAccess
+					if (e is MemberAccessExpressionSyntax memberAccess
 						&& memberAccess.Expression is IdentifierNameSyntax identifierSyntax)
 					{
-						if(
+						if (
 							isAttachedPropertySyntax.expression?.ArgumentList.Arguments.FirstOrDefault() is { } property
 							&& property.Expression is MemberAccessExpressionSyntax memberAccessExpression
 							)

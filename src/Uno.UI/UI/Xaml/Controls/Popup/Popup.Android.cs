@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				if(_popupWindow.IsShowing)
+				if (_popupWindow.IsShowing)
 				{
 					_popupWindow.Dismiss();
 				}

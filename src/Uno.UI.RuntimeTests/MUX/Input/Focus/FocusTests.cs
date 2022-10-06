@@ -167,9 +167,9 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 		//{
 		//	const string rootPanelXaml =
 		//			@"<StackPanel Orientation='Horizontal' XYFocusKeyboardNavigation='Enabled' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
-  //                          <Button Width='50' x:Name='button' Content='Button Group 1'/>
-  //                          <TextBlock><Hyperlink x:Name='hyperlink'>Hyperlink</Hyperlink></TextBlock>
-  //                  </StackPanel>";
+		//                          <Button Width='50' x:Name='button' Content='Button Group 1'/>
+		//                          <TextBlock><Hyperlink x:Name='hyperlink'>Hyperlink</Hyperlink></TextBlock>
+		//                  </StackPanel>";
 
 		//	StackPanel rootPanel = null;
 		//	Button button = null;

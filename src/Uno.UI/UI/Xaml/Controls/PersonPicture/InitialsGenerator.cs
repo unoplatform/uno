@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 		static string GetFirstFullCharacter(string str)
 		{
 			// Index should begin at the first desireable character.
-			int  start = 0;
+			int start = 0;
 
 			while (start < str.Length)
 			{
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Combining characters begin only after the first character, so we should start
 			// looking 1 after the start character.
-			int  index = start + 1;
+			int index = start + 1;
 
 			while (index < str.Length)
 			{

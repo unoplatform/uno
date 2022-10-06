@@ -65,7 +65,7 @@ public sealed partial class ValueSet : IPropertySet, IObservableMap<string, obje
 	public bool Contains(KeyValuePair<string, object?> item)
 	{
 		object? value;
-		if(!_dictionary.TryGetValue(item.Key, out value))
+		if (!_dictionary.TryGetValue(item.Key, out value))
 		{
 			return false;
 		}
@@ -90,18 +90,18 @@ public sealed partial class ValueSet : IPropertySet, IObservableMap<string, obje
 			throw new ArgumentNullException("How can I copy elements to array when array is null?");
 		}
 
-		if(arrayIndex < 0)
+		if (arrayIndex < 0)
 		{
 			throw new ArgumentOutOfRangeException("Cannot copy less than 0 elements");
 		}
 
 		// check now, before starting to copy elements
-		if(array.GetUpperBound(0) - arrayIndex < Count)
+		if (array.GetUpperBound(0) - arrayIndex < Count)
 		{
 			throw new ArgumentException("Array is too small");
 		}
 
-		foreach(var item in _dictionary)
+		foreach (var item in _dictionary)
 		{
 			array[arrayIndex++] = item;
 		}

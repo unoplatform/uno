@@ -60,7 +60,7 @@ namespace Windows.UI.ViewManagement
 			{
 				CoreDispatcher.CheckThreadAccess();
 				UIApplication.SharedApplication.StatusBarHidden = false;
-			   Showing?.Invoke(this, null);
+				Showing?.Invoke(this, null);
 			});
 		}
 

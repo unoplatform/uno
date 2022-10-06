@@ -70,7 +70,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			RunLinker(pass1Path, features);
 			var currrentPassFeatures = BuildResultingFeaturesList(pass1Path);
 
-			int pass= 1;
+			int pass = 1;
 			do
 			{
 				pass++;
@@ -181,14 +181,14 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			var availableLinkerHints = FindAvailableLinkerHints(assemblies);
 
-			foreach(var hint in availableLinkerHints)
+			foreach (var hint in availableLinkerHints)
 			{
 				features[hint] = "false";
 			}
 
 			foreach (var asm in assemblies)
 			{
-				foreach(var type in asm.MainModule.Types)
+				foreach (var type in asm.MainModule.Types)
 				{
 					if (IsDependencyObject(type))
 					{
@@ -202,7 +202,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private bool IsDependencyObject(TypeDefinition type)
 		{
-			if(type.Interfaces.Any(c => c.InterfaceType.FullName == "Windows.UI.Xaml.DependencyObject"))
+			if (type.Interfaces.Any(c => c.InterfaceType.FullName == "Windows.UI.Xaml.DependencyObject"))
 			{
 				return true;
 			}
@@ -214,7 +214,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					return true;
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Log.LogMessage(DefaultLogMessageLevel, $"Failed to resolve base types for {type.FullName}: {e.Message}");
 			}

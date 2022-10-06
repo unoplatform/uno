@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Resources
 				{
 					return "";
 				}
-				var resourceFile = resource.Substring(1, separatorIndex-1);
+				var resourceFile = resource.Substring(1, separatorIndex - 1);
 				var resourceName = resource.Substring(separatorIndex + 1);
 				return GetForCurrentView(resourceFile).GetString(resourceName);
 			}
@@ -262,7 +262,7 @@ namespace Windows.ApplicationModel.Resources
 
 				bool adjustKeyTransformationForV2 = false;
 				var version = reader.ReadInt32();
-				if(version == 2)
+				if (version == 2)
 				{
 					version = UPRIVersion;
 					adjustKeyTransformationForV2 = true;
@@ -298,7 +298,7 @@ namespace Windows.ApplicationModel.Resources
 							key = key.Replace("/", ".");
 
 							var firstDotIndex = key.IndexOf('.');
-							if(firstDotIndex != -1)
+							if (firstDotIndex != -1)
 							{
 								sb.Clear();
 								sb.Append(key);

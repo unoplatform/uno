@@ -68,7 +68,7 @@ namespace Uno.UI.Runtime.Skia
 
 					return glContext != null;
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Information))
 					{
@@ -117,7 +117,7 @@ namespace Uno.UI.Runtime.Skia
 						return addr;
 					}
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					// In this context, the lamda is executed from a native context, where
 					// unhandled exceptions terminate the process. In this case, we can simply

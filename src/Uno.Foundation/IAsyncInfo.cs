@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Windows.Foundation
 {
-	public partial interface IAsyncInfo 
+	public partial interface IAsyncInfo
 	{
 		Exception ErrorCode { get; }
 

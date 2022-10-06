@@ -700,7 +700,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			NavigationView navView = null;
 			RunOnUIThread.Execute(() =>
 			{
-				navView = new NavigationView();				
+				navView = new NavigationView();
 
 				var template = (DataTemplate)XamlReader.Load(@"
                     <DataTemplate

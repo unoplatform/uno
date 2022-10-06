@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		{
 			var sut = new ItemsRepeater
 			{
-				ItemsSource = new[] {"Item_1", "Item_2"}
+				ItemsSource = new[] { "Item_1", "Item_2" }
 			};
 			var popup = new Popup
 			{
@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				{
 					Width = 100,
 					Height = 200,
-					Children = {sut}
+					Children = { sut }
 				}
 			};
 

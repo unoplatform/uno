@@ -205,32 +205,32 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
     }
 #endif
 
-	public class MyCustomNonVirtualizingStackLayout: NonVirtualizingLayout
-    {
-        protected internal override Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
-        {
-            double extentHeight = 0.0;
-            double extentWidth = 0.0;
-            foreach (var element in context.Children)
-            {
-                element.Measure(availableSize);
-                extentHeight += element.DesiredSize.Height;
-                extentWidth = Math.Max(extentWidth, element.DesiredSize.Width);
-            }
+	public class MyCustomNonVirtualizingStackLayout : NonVirtualizingLayout
+	{
+		protected internal override Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
+		{
+			double extentHeight = 0.0;
+			double extentWidth = 0.0;
+			foreach (var element in context.Children)
+			{
+				element.Measure(availableSize);
+				extentHeight += element.DesiredSize.Height;
+				extentWidth = Math.Max(extentWidth, element.DesiredSize.Width);
+			}
 
-            return new Size(extentWidth, extentHeight);
-        }
+			return new Size(extentWidth, extentHeight);
+		}
 
-        protected internal override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
-        {
-            double offset = 0.0;
-            foreach (var element in context.Children)
-            {
-                element.Arrange(new Rect(0, offset, element.DesiredSize.Width, element.DesiredSize.Height));
-                offset += element.DesiredSize.Height;
-            }
+		protected internal override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
+		{
+			double offset = 0.0;
+			foreach (var element in context.Children)
+			{
+				element.Arrange(new Rect(0, offset, element.DesiredSize.Width, element.DesiredSize.Height));
+				offset += element.DesiredSize.Height;
+			}
 
-            return finalSize;
-        }
-    }
+			return finalSize;
+		}
+	}
 }

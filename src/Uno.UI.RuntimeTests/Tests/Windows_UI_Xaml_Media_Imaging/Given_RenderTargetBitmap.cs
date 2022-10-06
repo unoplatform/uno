@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		private static readonly Windows.UI.Xaml.Media.SolidColorBrush BorderBrush
 			= new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(125, 125, 0, 0));
 		private static readonly System.Numerics.Vector2 BorderSize
-			= new(10,10);
+			= new(10, 10);
 
 		static readonly char[] map = { 'B', 'G', 'R', 'A' };
 

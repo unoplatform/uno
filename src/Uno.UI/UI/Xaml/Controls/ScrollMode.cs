@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	/// Specifies the scroll behavior in ScrollViewer control.
 	/// </summary>
 	public enum ScrollMode
-    {
+	{
 		/// <summary>
 		/// Disables scrolling
 		/// </summary>
@@ -23,5 +23,5 @@ namespace Windows.UI.Xaml.Controls
 		/// Scrolling is enabled but behavior uses a "rails" manipulation mode
 		/// </summary>
 		Auto,
-    }
+	}
 }

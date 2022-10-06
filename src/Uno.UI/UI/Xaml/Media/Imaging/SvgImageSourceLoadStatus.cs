@@ -1,7 +1,7 @@
 ﻿namespace Windows.UI.Xaml.Media.Imaging
 {
 #if !(__ANDROID__ || __WASM__)
-[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented]
 #endif
 	public enum SvgImageSourceLoadStatus
 	{

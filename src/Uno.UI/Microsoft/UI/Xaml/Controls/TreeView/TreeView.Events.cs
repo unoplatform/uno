@@ -40,6 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public event TypedEventHandler<TreeView, TreeViewSelectionChangedEventArgs> SelectionChanged;
 
-		private event TypedEventHandler<TreeView, ContainerContentChangingEventArgs> ContainerContentChanged;		
+		private event TypedEventHandler<TreeView, ContainerContentChangingEventArgs> ContainerContentChanged;
 	}
 }

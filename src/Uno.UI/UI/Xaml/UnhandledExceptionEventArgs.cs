@@ -3,7 +3,7 @@ using System;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UnhandledExceptionEventArgs 
+	public partial class UnhandledExceptionEventArgs
 	{
 		public UnhandledExceptionEventArgs(Exception e, bool fatal)
 		{

@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			get { return (double)this.GetValue(ValueProperty); }
 			set { this.SetValue(ValueProperty, value); }
 		}
-		public static DependencyProperty ValueProperty { get ; } =
+		public static DependencyProperty ValueProperty { get; } =
 			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(0d));
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			get { return (KeyTime)this.GetValue(KeyTimeProperty); }
 			set { this.SetValue(KeyTimeProperty, value); }
 		}
-		public static DependencyProperty KeyTimeProperty { get ; } =
+		public static DependencyProperty KeyTimeProperty { get; } =
 			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(default(KeyTime)));
 
 

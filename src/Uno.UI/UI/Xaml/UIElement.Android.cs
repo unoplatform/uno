@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
 			var parent = this.GetVisualTreeParent();
-			switch (parent) 
+			switch (parent)
 			{
 				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
 

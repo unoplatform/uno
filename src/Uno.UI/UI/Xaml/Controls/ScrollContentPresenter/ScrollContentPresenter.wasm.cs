@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private object RealContent => Content;
-		
+
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
 		{
 			if (

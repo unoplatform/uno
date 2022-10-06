@@ -395,7 +395,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			bool Predicate()
 			{
 				return isLoaded.GetDependencyPropertyValue<bool>("IsChecked")
-				       || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
+					   || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
 			}
 
 			_app.WaitFor(Predicate, timeout: loadTimeout);

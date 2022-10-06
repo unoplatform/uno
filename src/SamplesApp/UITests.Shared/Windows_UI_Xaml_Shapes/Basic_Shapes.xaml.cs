@@ -407,7 +407,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				var parsedId = Regex.Match(id, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
 				if (!parsedId.Success)
 				{
-					return new TextBlock {Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red)};
+					return new TextBlock { Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red) };
 				}
 
 				try
@@ -422,7 +422,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				}
 				catch (Exception error)
 				{
-					return new TextBlock {Text = $"Failed to render {parsedId}: {error.Message}", Foreground = new SolidColorBrush(Colors.Red)};
+					return new TextBlock { Text = $"Failed to render {parsedId}: {error.Message}", Foreground = new SolidColorBrush(Colors.Red) };
 				}
 			}
 		}
@@ -443,12 +443,12 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			grid.HorizontalAlignment = HorizontalAlignment.Left;
 
 			// We set clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
-			grid.Clip = new RectangleGeometry {Rect = new Rect(0, 0, grid.Width, grid.Height)};
+			grid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, grid.Width, grid.Height) };
 			var containerGrid = new Grid
 			{
 				Width = grid.Width,
 				Height = grid.Height,
-				Children = {grid}
+				Children = { grid }
 			};
 
 			return containerGrid;
@@ -457,16 +457,16 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		private static Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
 		{
 			var isLabelEnabled = title != null;
-			var horizontalAlignments = new[] {HorizontalAlignment.Left, HorizontalAlignment.Center, HorizontalAlignment.Right, HorizontalAlignment.Stretch};
-			var verticalAlignments = new[] {VerticalAlignment.Top, VerticalAlignment.Center, VerticalAlignment.Bottom, VerticalAlignment.Stretch};
+			var horizontalAlignments = new[] { HorizontalAlignment.Left, HorizontalAlignment.Center, HorizontalAlignment.Right, HorizontalAlignment.Stretch };
+			var verticalAlignments = new[] { VerticalAlignment.Top, VerticalAlignment.Center, VerticalAlignment.Bottom, VerticalAlignment.Stretch };
 			var grid = new Grid();
 			var itemDimensions = new Size(itemSize + 2, itemSize + 20 + 2);
 			(int x, int y) labels;
 			if (isLabelEnabled)
 			{
-				grid.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
-				grid.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
-				grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(75)});
+				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+				grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(75) });
 
 				labels = (1, 2);
 
@@ -484,40 +484,40 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				grid.Height = verticalAlignments.Length * itemDimensions.Height;
 			}
 
-			grid.ColumnDefinitions.AddRange(horizontalAlignments.Select(_ => new ColumnDefinition {Width = new GridLength(itemDimensions.Width)}));
-			grid.RowDefinitions.AddRange(verticalAlignments.Select(_ => new RowDefinition {Height = new GridLength(itemDimensions.Height)}));
+			grid.ColumnDefinitions.AddRange(horizontalAlignments.Select(_ => new ColumnDefinition { Width = new GridLength(itemDimensions.Width) }));
+			grid.RowDefinitions.AddRange(verticalAlignments.Select(_ => new RowDefinition { Height = new GridLength(itemDimensions.Height) }));
 
 			for (var x = 0; x < horizontalAlignments.Length; x++)
-			for (var y = 0; y < verticalAlignments.Length; y++)
-			{
-				var item = template();
-				var container = new Border
+				for (var y = 0; y < verticalAlignments.Length; y++)
 				{
-					Width = itemDimensions.Width,
-					Height = itemDimensions.Height,
-					BorderBrush = new SolidColorBrush(Colors.HotPink),
-					BorderThickness = new Thickness(1, 1, 1, 1),
-					Child = item
-				};
-
-				item.HorizontalAlignment = horizontalAlignments[x];
-				item.VerticalAlignment = verticalAlignments[y];
-
-				grid.Children.Add(container.GridColumn(x + labels.x).GridRow(y + labels.y));
-
-				if (isLabelEnabled)
-				{ 
-					var sizeOverlay = new TextBlock
+					var item = template();
+					var container = new Border
 					{
-						VerticalAlignment = VerticalAlignment.Top,
-						HorizontalAlignment = HorizontalAlignment.Left,
-						Foreground = new SolidColorBrush(Colors.Gray),
+						Width = itemDimensions.Width,
+						Height = itemDimensions.Height,
+						BorderBrush = new SolidColorBrush(Colors.HotPink),
+						BorderThickness = new Thickness(1, 1, 1, 1),
+						Child = item
 					};
-					item.Loaded += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
-					item.SizeChanged += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
-					grid.Children.Add(sizeOverlay.GridColumn(x + labels.x).GridRow(y + labels.y));
+
+					item.HorizontalAlignment = horizontalAlignments[x];
+					item.VerticalAlignment = verticalAlignments[y];
+
+					grid.Children.Add(container.GridColumn(x + labels.x).GridRow(y + labels.y));
+
+					if (isLabelEnabled)
+					{
+						var sizeOverlay = new TextBlock
+						{
+							VerticalAlignment = VerticalAlignment.Top,
+							HorizontalAlignment = HorizontalAlignment.Left,
+							Foreground = new SolidColorBrush(Colors.Gray),
+						};
+						item.Loaded += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
+						item.SizeChanged += (snd, e) => sizeOverlay.Text = $"d: {item.DesiredSize.Width}x{item.DesiredSize.Height}\r\na: {item.ActualWidth}x{item.ActualHeight}";
+						grid.Children.Add(sizeOverlay.GridColumn(x + labels.x).GridRow(y + labels.y));
+					}
 				}
-			}
 
 			return grid;
 

@@ -13,9 +13,9 @@ namespace Windows.Devices.Sensors
 		}
 
 		private void StartReading()
-		{			
+		{
 		}
-		
+
 		private void StopReading()
 		{
 		}

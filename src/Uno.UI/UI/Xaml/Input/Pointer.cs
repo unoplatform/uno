@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Input
 
 		public uint PointerId { get; }
 
-		public PointerDeviceType PointerDeviceType { get;}
+		public PointerDeviceType PointerDeviceType { get; }
 
 		public bool IsInContact { get; }
 
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			unchecked
 			{
-				return ((int) PointerDeviceType * 397) ^ (int) PointerId;
+				return ((int)PointerDeviceType * 397) ^ (int)PointerId;
 			}
 		}
 	}

@@ -208,7 +208,7 @@ namespace Uno.UI.Skia.Platform
 				dstBitmap.CacheOption = BitmapCacheOption.OnLoad; // Required for the BitmapImage to internally cache the data (so we can dispose the tmp stream)
 				dstBitmap.StreamSource = tmp;
 				dstBitmap.EndInit();
-					
+
 				dst.SetData(DataFormats.Bitmap, dstBitmap, false);
 			}
 

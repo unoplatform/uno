@@ -16,16 +16,16 @@ using Uno.UI.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent
 {
-    public sealed partial class CommandBar_Page1 : Page
-    {
-        public CommandBar_Page1()
-        {
-            this.InitializeComponent();
-            this.Loaded += OnLoaded;
-        }
+	public sealed partial class CommandBar_Page1 : Page
+	{
+		public CommandBar_Page1()
+		{
+			this.InitializeComponent();
+			this.Loaded += OnLoaded;
+		}
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
+		private void OnLoaded(object sender, RoutedEventArgs e)
+		{
 #if __IOS__
 	        UIView parent = this;
 	        while (parent.HasParent())
@@ -46,6 +46,6 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent
 
 	        Result.Text = height > 0 && width > 0 ? "PASSED" : "FAILED";
 #endif
-        }
-    }
+		}
+	}
 }

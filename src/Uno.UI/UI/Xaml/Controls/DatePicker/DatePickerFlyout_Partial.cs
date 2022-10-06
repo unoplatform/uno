@@ -18,8 +18,8 @@ namespace Windows.UI.Xaml.Controls
 		public DatePickerFlyout()
 		{
 			InitializeImpl();
-		}	
-		
+		}
+
 		private void InitializeImpl()
 		{
 			base.Placement = FlyoutPlacementMode.Right;
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			// Cleanup
 			// return hr;
 
-			_datePicked?.Invoke(this, new DatePickedEventArgs(newDateTime, oldDateTime) );
+			_datePicked?.Invoke(this, new DatePickedEventArgs(newDateTime, oldDateTime));
 
 			Close();
 		}
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			_tpTarget = placementTarget;
 			base.ShowAtCore(placementTarget, showOptions);
 			//_asyncOperationManager.Start(placementTarget);
-		} 
+		}
 
 		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
 		{
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			_tpPresenter.SetAcceptDismissButtonsVisibility(true);
 
 			if (_tpTarget is FrameworkElement spTargetAsFE &&
-			    _tpPresenter is FrameworkElement spPresenterAsFE)
+				_tpPresenter is FrameworkElement spPresenterAsFE)
 			{
 				//wrl.ComPtr<xaml.FrameworkElement> spPresenterAsFE;
 				//wrl.ComPtr<xaml.FrameworkElement> spTargetAsFE;
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Controls
 			//_tpPresenter.As(spFlyoutPresenterAsControl);
 			//_tpPresenter.As(spFlyoutPresenterAsControlProtected);
 
-			if (_tpTarget is {})
+			if (_tpTarget is { })
 			{
 				Point point;
 				FlyoutBase spFlyoutBase;
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 				_tpAcceptButton = spAcceptButtonAsButtonBase;
 			}
 
-			if (_tpAcceptButton is {})
+			if (_tpAcceptButton is { })
 			{
 				//global.System.Diagnostics.Debug.Assert(spAcceptButtonAsUIE);
 				//(_tpAcceptButton.add_Click(
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 				//spAutomationPropertiesStatics.SetName(spButtonAsDO, strAutomationName);
 			}
 
-			if (_tpDismissButton is {})
+			if (_tpDismissButton is { })
 			{
 				//global.System.Diagnostics.Debug.Assert(spDismissButtonAsUIE);
 				//(_tpDismissButton.add_Click(
@@ -368,7 +368,7 @@ namespace Windows.UI.Xaml.Controls
 				//	wrl_wrappers.Hstring(RuntimeClass_Windows_Globalization_Calendar),
 				//	&spCalendar));
 				spCalendar = new Calendar();
-				
+
 				spLanguages = spCalendar.Languages;
 				//spLanguages.As(spLanguagesAsIterable);
 				strClock = spCalendar.GetClock();

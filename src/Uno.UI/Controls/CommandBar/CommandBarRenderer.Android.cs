@@ -41,7 +41,7 @@ namespace Uno.UI.Controls
 				if (_actionBarUpDescription == null)
 				{
 					if (ContextHelper.Current is Activity activity
-					    && activity.Resources?.GetIdentifier("action_bar_up_description", "string", "android") is { } resourceId)
+						&& activity.Resources?.GetIdentifier("action_bar_up_description", "string", "android") is { } resourceId)
 					{
 						_actionBarUpDescription = activity.Resources.GetString(resourceId);
 					}

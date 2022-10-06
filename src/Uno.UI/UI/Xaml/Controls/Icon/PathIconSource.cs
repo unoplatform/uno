@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class PathIconSource : IconSource
 	{
-		public PathIconSource() 
+		public PathIconSource()
 		{
 		}
 

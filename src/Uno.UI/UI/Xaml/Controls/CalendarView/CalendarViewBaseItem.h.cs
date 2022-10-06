@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			Initialize_CalendarViewBaseItemChrome();
 		}
 
-		
+
 
 		//protected:
 

@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Data
 			// Note: Bindings should still be disposed in order to also remove reference on the Source.
 			_view = viewReference;
 
-			if(_view?.Target is AttachedDependencyObject ado)
+			if (_view?.Target is AttachedDependencyObject ado)
 			{
 				// This case is used to process x:Bind compiled bindings, where the POCO is wrapped around an
 				// AttachedDependencyObject instance to make it bindable.

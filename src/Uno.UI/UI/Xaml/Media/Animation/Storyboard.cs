@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetName(Timeline timeline, string value) => timeline.SetValue(TargetNameProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
-		public static DependencyProperty TargetNameProperty { get ; } =
+		public static DependencyProperty TargetNameProperty { get; } =
 			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTargetProperty(Timeline timeline, string value) => timeline.SetValue(TargetPropertyProperty, value);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty TargetPropertyProperty { get ; } =
+		public static DependencyProperty TargetPropertyProperty { get; } =
 			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(null));
 		#endregion
 
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				_trace.WriteEventActivity(
 					eventId: TraceProvider.StoryBoard_Stop,
-					opCode: EventOpcode.Stop, 
+					opCode: EventOpcode.Stop,
 					activity: _traceActivity,
 					payload: new object[] { Target?.GetType().ToString(), PropertyInfo?.Path }
 				);

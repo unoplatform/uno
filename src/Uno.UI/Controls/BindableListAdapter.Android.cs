@@ -53,7 +53,7 @@ namespace Uno.UI.Controls
 		}
 
 		private readonly List<View> _allocatedViews = new List<View>();
-        
+
 		public BindableListAdapter(Android.Content.Context context, object header = null, object footer = null)
 		{
 			_context = context;
@@ -256,7 +256,7 @@ namespace Uno.UI.Controls
 			return position;
 		}
 
-        protected override View GetContainerView(int position, View convertView, ViewGroup parent)
+		protected override View GetContainerView(int position, View convertView, ViewGroup parent)
 		{
 			if (IsHeader(position))
 			{
@@ -354,47 +354,47 @@ namespace Uno.UI.Controls
 
 			return bindableView;
 		}
-		
+
 		private View GetSimpleView(View convertView, object source, ViewGroup parent)
 		{
 			if (ItemTemplate != null || ItemTemplateSelector != null)
 			{
 				if (convertView == null)
 				{
-						if (ItemContainerTemplate != null)
+					if (ItemContainerTemplate != null)
+					{
+						var container = ItemContainerTemplate() as SelectorItem;
+
+						if (container != null)
 						{
-							var container = ItemContainerTemplate() as SelectorItem;
-
-							if (container != null)
-							{
-								container.Style = ItemContainerStyle;
-								container.ContentTemplateSelector = ItemTemplateSelector;
-								container.ContentTemplate = ItemTemplate;
-								container.Binding("Content", "");
-							}
-							else
-							{
-								throw new InvalidOperationException("The ItemContainerTemplate must be a SelectorItem");
-							}
-
-							_allocatedViews.Add(container);
-							return container;
+							container.Style = ItemContainerStyle;
+							container.ContentTemplateSelector = ItemTemplateSelector;
+							container.ContentTemplate = ItemTemplate;
+							container.Binding("Content", "");
 						}
 						else
 						{
-							var template = DataTemplateHelper.ResolveTemplate(
-								this.ItemTemplate,
-								this.ItemTemplateSelector,
-								source,
-								null
-							);
-
-							var templateView = template?.LoadContentCached();
-
-							_allocatedViews.Add(templateView);
-							return templateView;
+							throw new InvalidOperationException("The ItemContainerTemplate must be a SelectorItem");
 						}
+
+						_allocatedViews.Add(container);
+						return container;
 					}
+					else
+					{
+						var template = DataTemplateHelper.ResolveTemplate(
+							this.ItemTemplate,
+							this.ItemTemplateSelector,
+							source,
+							null
+						);
+
+						var templateView = template?.LoadContentCached();
+
+						_allocatedViews.Add(templateView);
+						return templateView;
+					}
+				}
 				else
 				{
 					return convertView;
@@ -449,7 +449,7 @@ namespace Uno.UI.Controls
 
 			_needsRefresh = true;
 			CoreDispatcher.Main.RunAsync(
-				CoreDispatcherPriority.Normal, 
+				CoreDispatcherPriority.Normal,
 				() =>
 			{
 				Refresh();
@@ -565,7 +565,7 @@ namespace Uno.UI.Controls
 				item,
 				null
 			);
-				
+
 			if (itemTemplate == null)
 			{
 				return 0;

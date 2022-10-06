@@ -85,7 +85,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 		{
 			var contact = new Contact();
 
-			
+
 			if (contactsRecord.GetChildRecordCount(TizenContact.Name) > 0)
 			{
 				var recordName = contactsRecord.GetChildRecord(TizenContact.Name, 0);
@@ -97,7 +97,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.Contacts
 				contact.HonorificNameSuffix = recordName.Get<string>(TizenName.Suffix) ?? string.Empty;
 
 				contact.YomiGivenName = recordName.Get<string>(TizenName.PhoneticFirst) ?? string.Empty;
-				contact.YomiFamilyName = recordName.Get<string>(TizenName.PhoneticLast) ?? string.Empty;			
+				contact.YomiFamilyName = recordName.Get<string>(TizenName.PhoneticLast) ?? string.Empty;
 			}
 
 			var emailCount = contactsRecord.GetChildRecordCount(TizenContact.Email);

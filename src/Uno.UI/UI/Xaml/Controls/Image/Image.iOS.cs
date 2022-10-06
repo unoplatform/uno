@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Image
 	{
 		private void SetImage(CGImage cgImage, CGSize _) => SetImage(UIImage.FromImage(cgImage));
-		
+
 		private void UpdateContentMode(Stretch stretch)
 		{
 			if (FeatureConfiguration.Image.LegacyIosAlignment && _native != null)
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Error($"Layout failed in {GetType()}", e);
 			}
 		}
-		
+
 		private void UpdateLayerRect()
 		{
 			// Use "Bounds" over "Frame" because it includes all transforms

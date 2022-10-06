@@ -46,7 +46,7 @@ namespace Uno.UI.Tasks.Assets
 
 			Func<ResourceCandidate, string> resourceToTargetPath;
 			Func<string, string> pathEncoder;
-			
+
 			switch (TargetPlatform)
 			{
 				case "ios":

@@ -75,7 +75,7 @@ namespace Uno.Disposables
 
 		private void Dispose(bool disposing)
 		{
-			if(disposing)
+			if (disposing)
 			{
 				GC.SuppressFinalize(this);
 			}

@@ -2677,7 +2677,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			public override PointF ComputeScrollVectorForPosition(int targetPosition) => _layout.ComputeScrollVectorForPosition(targetPosition);
-			
+
 			// The time (in ms) it should take for each pixel. For instance, if returned value is 2 ms,
 			// it means scrolling 1000 pixels with LinearInterpolation should take 2 seconds.
 			protected override float CalculateSpeedPerPixel(Android.Util.DisplayMetrics displayMetrics)

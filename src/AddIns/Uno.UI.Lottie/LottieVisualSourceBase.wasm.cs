@@ -26,7 +26,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		async Task InnerUpdate(CancellationToken ct)
 		{
 			var player = _player;
-			if(_initializedPlayer != player)
+			if (_initializedPlayer != player)
 			{
 				_initializedPlayer = player;
 				player?.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
@@ -44,7 +44,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			if (_lastSource == null || !_lastSource.Equals(sourceUri))
 			{
 				_lastSource = sourceUri;
-				
+
 				if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 				{
 					var firstLoad = true;
@@ -87,7 +87,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 							updatedJson,
 							");"
 						};
-						
+
 						ExecuteJs(js);
 
 						if (_playState != null && _domLoaded)

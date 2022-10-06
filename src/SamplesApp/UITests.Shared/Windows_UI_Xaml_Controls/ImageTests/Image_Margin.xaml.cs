@@ -23,10 +23,10 @@ namespace Uno.UI.Samples.UITests.Image
 	/// </summary>
 	[SampleControlInfo]
 	public sealed partial class Image_Margin : Page
-    {
-        public Image_Margin()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public Image_Margin()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

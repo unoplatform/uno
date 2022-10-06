@@ -6,8 +6,8 @@ using Foundation;
 
 namespace Windows.UI.Xaml
 {
-    partial class DispatcherTimer
-    {
+	partial class DispatcherTimer
+	{
 		private NSTimer _timer;
 
 		private void StartNative(TimeSpan interval)

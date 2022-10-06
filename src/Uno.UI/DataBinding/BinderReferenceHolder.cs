@@ -335,7 +335,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			return false;
-        }
+		}
 
 		~BinderReferenceHolder()
 		{

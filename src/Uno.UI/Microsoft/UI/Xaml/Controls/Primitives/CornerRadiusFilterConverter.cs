@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class CornerRadiusFilterConverter : DependencyObject, IValueConverter
 	{
-		public static DependencyProperty FilterProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty FilterProperty { get; } = DependencyProperty.Register(
 			nameof(Filter), typeof(CornerRadiusFilterKind), typeof(CornerRadiusFilterConverter), new FrameworkPropertyMetadata(CornerRadiusFilterKind.None));
 
 		public CornerRadiusFilterKind Filter

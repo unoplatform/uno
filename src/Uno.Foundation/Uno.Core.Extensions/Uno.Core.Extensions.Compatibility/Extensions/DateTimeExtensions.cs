@@ -52,66 +52,66 @@ namespace Uno.Extensions
 			return AddWeekDays(instance, Convert.ToInt32(timeSpan.TotalDays));
 		}
 
-        public static bool Equal(this DateTime lhs, DateTime rhs, DateTimeUnit unit)
-        {
-            if (unit.ContainsAll(DateTimeUnit.Year))
-            {
-                if (lhs.Year != rhs.Year)
-                {
-                    return false;
-                }
-            }
+		public static bool Equal(this DateTime lhs, DateTime rhs, DateTimeUnit unit)
+		{
+			if (unit.ContainsAll(DateTimeUnit.Year))
+			{
+				if (lhs.Year != rhs.Year)
+				{
+					return false;
+				}
+			}
 
-            if (unit.ContainsAll(DateTimeUnit.Month))
-            {
-                if (lhs.Month != rhs.Month)
-                {
-                    return false;
-                }
-            }
+			if (unit.ContainsAll(DateTimeUnit.Month))
+			{
+				if (lhs.Month != rhs.Month)
+				{
+					return false;
+				}
+			}
 
-            if (unit.ContainsAll(DateTimeUnit.Day))
-            {
-                if (lhs.Day != rhs.Day)
-                {
-                    return false;
-                }
-            }
+			if (unit.ContainsAll(DateTimeUnit.Day))
+			{
+				if (lhs.Day != rhs.Day)
+				{
+					return false;
+				}
+			}
 
-            if (unit.ContainsAll(DateTimeUnit.Hour))
-            {
-                if (lhs.Hour != rhs.Hour)
-                {
-                    return false;
-                }
-            }
+			if (unit.ContainsAll(DateTimeUnit.Hour))
+			{
+				if (lhs.Hour != rhs.Hour)
+				{
+					return false;
+				}
+			}
 
-            if (unit.ContainsAll(DateTimeUnit.Minute))
-            {
-                if (lhs.Minute != rhs.Minute)
-                {
-                    return false;
-                }
-            }
+			if (unit.ContainsAll(DateTimeUnit.Minute))
+			{
+				if (lhs.Minute != rhs.Minute)
+				{
+					return false;
+				}
+			}
 
-            if (unit.ContainsAll(DateTimeUnit.Second))
-            {
-                if (lhs.Second != rhs.Second)
-                {
-                    return false;
-                }
-            }
+			if (unit.ContainsAll(DateTimeUnit.Second))
+			{
+				if (lhs.Second != rhs.Second)
+				{
+					return false;
+				}
+			}
 
-            if (unit.ContainsAll(DateTimeUnit.Millisecond))
-            {
-                if (lhs.Millisecond != rhs.Millisecond)
-                {
-                    return false;
-                }
-            }
+			if (unit.ContainsAll(DateTimeUnit.Millisecond))
+			{
+				if (lhs.Millisecond != rhs.Millisecond)
+				{
+					return false;
+				}
+			}
 
-            return true;
-        }
+			return true;
+		}
 
 		public static DateTime Truncate(this DateTime instance, DateTimeUnit unit)
 		{
@@ -208,7 +208,7 @@ namespace Uno.Extensions
 		private const int DaysPer100Years = DaysPer4Years * 25 - 1;  // 36524
 		private const int DaysPer400Years = DaysPer100Years * 4 + 1; // 146097
 		private const int DaysTo1970 = DaysPer400Years * 4 + DaysPer100Years * 3 + DaysPer4Years * 17 + DaysPerYear; // 719,162
-		//https://github.com/dotnet/coreclr/blob/50ef79d48df81635e58ca59386620f0151df6022/src/mscorlib/src/System/DateTimeOffset.cs#L43
+																													 //https://github.com/dotnet/coreclr/blob/50ef79d48df81635e58ca59386620f0151df6022/src/mscorlib/src/System/DateTimeOffset.cs#L43
 		private const long UnixEpochTicks = TimeSpan.TicksPerDay * /*DateTime.*/DaysTo1970; // 621,355,968,000,000,000
 		private const long UnixEpochSeconds = UnixEpochTicks / TimeSpan.TicksPerSecond; // 62,135,596,800
 		private const long UnixEpochMilliseconds = UnixEpochTicks / TimeSpan.TicksPerMillisecond; // 62,135,596,800,000
@@ -247,7 +247,7 @@ namespace Uno.Extensions
 			// In other words, we want to consistently round toward the time 1/1/0001 00:00:00, 
 			// rather than toward the Unix Epoch (1/1/1970 00:00:00). 
 
-			var seconds = instance.UtcDateTime.Ticks/TimeSpan.TicksPerSecond;
+			var seconds = instance.UtcDateTime.Ticks / TimeSpan.TicksPerSecond;
 			return seconds - UnixEpochSeconds;
 		}
 

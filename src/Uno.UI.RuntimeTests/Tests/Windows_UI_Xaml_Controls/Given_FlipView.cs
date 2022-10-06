@@ -108,8 +108,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
 
 			flipView.SelectedItem = itemsSource[2];
-			
-			await WindowHelper.WaitForResultEqual(2, () => flipView.SelectedIndex);			 
+
+			await WindowHelper.WaitForResultEqual(2, () => flipView.SelectedIndex);
 
 			itemsSource.RemoveAt(2);
 
@@ -119,7 +119,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
 #endif
 			itemsSource.Clear();
-			  
+
 			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
 
 		}

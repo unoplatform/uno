@@ -11,7 +11,7 @@ public sealed partial class XamlRoot
 	private bool _isArrangeWaiting;
 	private bool _isMeasuringOrArranging;
 	private bool _renderQueued;
-	
+
 	internal event Action InvalidateRender = () => { };
 
 	internal void InvalidateMeasure() => ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
@@ -44,7 +44,7 @@ public sealed partial class XamlRoot
 					this.Log().Trace("Delaying Render request");
 				}
 			}
-			else if(_renderQueued)
+			else if (_renderQueued)
 			{
 				_renderQueued = false;
 				InvalidateRender();
@@ -110,12 +110,12 @@ public sealed partial class XamlRoot
 			_isMeasuringOrArranging = true;
 
 			var sw = Stopwatch.StartNew();
-			
+
 			if (forMeasure)
 			{
 				rootElement.Measure(Bounds.Size);
 			}
-			
+
 			if (forArrange)
 			{
 				rootElement.Arrange(Bounds);
@@ -133,5 +133,5 @@ public sealed partial class XamlRoot
 		{
 			_isMeasuringOrArranging = false;
 		}
-	}	
+	}
 }

@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI.Xaml_Automation
 {
 	[SampleControlInfo("Automation", nameof(AutomationProperties_AutomationId))]
 	public sealed partial class AutomationProperties_AutomationId : UserControl
-    {
-        public AutomationProperties_AutomationId()
-        {
-            this.InitializeComponent();
+	{
+		public AutomationProperties_AutomationId()
+		{
+			this.InitializeComponent();
 
 			myList.ItemsSource = new[] {
 				new MyItem { AutomationId = "Item01", Text = "Item 01" },
@@ -43,7 +43,7 @@ namespace UITests.Shared.Windows_UI.Xaml_Automation
 				}
 			};
 		}
-    }
+	}
 
 	[Bindable]
 	public class MyItem

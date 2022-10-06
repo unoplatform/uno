@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private IEasingFunction _easingFunction;
 		private bool _isDisposed;
 
-#region PropertyNameConstants
+		#region PropertyNameConstants
 		private const string TranslateTransformX = "TranslateTransform.X";
 		private const string TranslateTransformXWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.X";
 		private const string TranslateTransformY = "TranslateTransform.Y";
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private const string CompositeTransformSkewXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewX";
 		private const string CompositeTransformSkewY = "CompositeTransform.SkewY";
 		private const string CompositeTransformSkewYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewY";
-#endregion
+		#endregion
 
 		internal static Point GetAnchorForAnimation(Transform transform, Point relativeOrigin, Size viewSize)
 		{
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_valueAnimator.SetEasingFunction(easingFunction);
 		}
 
-#region coreAnimationInitializers
+		#region coreAnimationInitializers
 		private UnoCoreAnimation InitializeOpacityCoreAnimation(_View view)
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
@@ -371,14 +371,14 @@ namespace Windows.UI.Xaml.Media.Animation
 					throw new NotSupportedException(__notSupportedProperty);
 			}
 		}
-#endregion
+		#endregion
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			Transform transform,
 			string property,
 			Func<float, NSValue> nsValueConversion)
 			=> CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
-		
+
 		private UnoCoreAnimation CreateCoreAnimation(
 			_View view,
 			string property,
@@ -429,7 +429,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_valueAnimator.Cancel();
 			}
 
-			switch(completedInfo)
+			switch (completedInfo)
 			{
 				case UnoCoreAnimation.CompletedInfo.Sucesss: AnimationEnd?.Invoke(this, EventArgs.Empty); break;
 				case UnoCoreAnimation.CompletedInfo.Error: AnimationFailed?.Invoke(this, EventArgs.Empty); break;

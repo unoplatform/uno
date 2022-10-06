@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				ReportImageFailed(ex.Message);
 
-				return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+				return new ImageData { Kind = ImageDataKind.Error, Error = ex };
 			}
 		}
 

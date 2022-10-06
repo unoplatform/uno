@@ -78,12 +78,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using var _ = new AssertionScope();
 
-			var sut1 = new ContentControl {Tag = w};
+			var sut1 = new ContentControl { Tag = w };
 
 			// Bind sut1.Width to sut1.Tag
 			sut1.SetBinding(
 				FrameworkElement.WidthProperty,
-				new Binding {Source = sut1, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut1, Path = new PropertyPath("Tag") });
 
 			sut1.Width.Should().Be(expectedW, "sut1: Width bound after setting value");
 
@@ -92,19 +92,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Bind sut2.Width to sut2.Tag
 			sut2.SetBinding(
 				FrameworkElement.WidthProperty,
-				new Binding {Source = sut2, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut2, Path = new PropertyPath("Tag") });
 
 			// Set sut2.Tag AFTER the binding
 			sut2.Tag = w;
 
 			sut2.Width.Should().Be(expectedW, "sut2: Width bound before setting value");
 
-			var sut3 = new ContentControl {Tag = h};
+			var sut3 = new ContentControl { Tag = h };
 
 			// Bind sut3.Height to sut3.Tag
 			sut3.SetBinding(
 				FrameworkElement.HeightProperty,
-				new Binding {Source = sut3, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut3, Path = new PropertyPath("Tag") });
 
 			sut3.Height.Should().Be(expectedH, "sut3: Height bound after setting value");
 
@@ -113,7 +113,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Bind sut4.Height to sut4.Tag
 			sut4.SetBinding(
 				FrameworkElement.HeightProperty,
-				new Binding {Source = sut4, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut4, Path = new PropertyPath("Tag") });
 
 			// Set sut4.Tag AFTER the binding
 			sut4.Tag = h;
@@ -592,7 +592,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var dpName = SUT.GetValue(FrameworkElement.NameProperty);
 			Assert.AreEqual("Test", dpName);
 		}
-		
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Set_NameProperty()
@@ -608,7 +608,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Add_Element_Then_Unload_Raised()
 		{
 			var sut = new Border();
-			var hostPanel = new Grid {Children = {sut}};
+			var hostPanel = new Grid { Children = { sut } };
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
 			await TestServices.WindowHelper.WaitForIdle();

@@ -1,6 +1,6 @@
 namespace Windows.UI.Core
 {
-	public partial class CoreCursor 
+	public partial class CoreCursor
 	{
 		public CoreCursor(CoreCursorType type, uint id)
 		{

@@ -20,7 +20,8 @@ namespace Windows.UI.Xaml.Media
 		{
 			var currentPosition = oldView?.Superview?.Subviews.IndexOf(oldView) ?? -1;
 
-			if (currentPosition != -1) { 
+			if (currentPosition != -1)
+			{
 				var currentSuperview = oldView?.Superview;
 				oldView?.RemoveFromSuperview();
 
@@ -29,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 #elif __MACOS__
 				currentSuperview?.AddSubview(newView, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition-1)]);
 #endif
+			}
 		}
-	}
 	}
 }

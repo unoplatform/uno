@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	public   enum MapVisibleRegionKind 
+	public enum MapVisibleRegionKind
 	{
 		Near,
 		Full,

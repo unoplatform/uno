@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		public MapInputEventArgs() : base() => new MapInputEventArgs(null, new Windows.Foundation.Point());
 
 		internal MapInputEventArgs(Windows.Devices.Geolocation.Geopoint location, Windows.Foundation.Point position) : base()
-        {
+		{
 			Location = location;
 			Position = position;
 		}

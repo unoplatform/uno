@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnTemplatedParentChanged(e);
 		}
 
-		#region SCP to Native SCP
+#region SCP to Native SCP
 		public ScrollBarVisibility NativeHorizontalScrollBarVisibility
 		{
 			set
@@ -108,9 +108,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region Native SCP to SCP
+#region Native SCP to SCP
 		internal void OnNativeScroll(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 			Scroller?.OnPresenterScrolled(horizontalOffset, verticalOffset, isIntermediate);
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Scroller?.OnPresenterZoomed(zoomFactor);
 		}
-		#endregion
+#endregion
 	}
 }
 #endif

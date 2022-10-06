@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace Windows.UI.Xaml.Media
 {
-	public  partial class PathFigureCollection : DependencyObjectCollection<PathFigure>
+	public partial class PathFigureCollection : DependencyObjectCollection<PathFigure>
 	{
 		public PathFigureCollection()
 		{

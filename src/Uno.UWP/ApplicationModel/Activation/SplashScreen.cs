@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.Activation
 	{
 		public event TypedEventHandler<SplashScreen, object> Dismissed;
 
-		public  Rect ImageLocation
+		public Rect ImageLocation
 		{
 			get;
 		}

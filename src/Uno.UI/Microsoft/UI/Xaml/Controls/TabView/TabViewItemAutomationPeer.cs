@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			var owner = Owner as TabViewItem;
 			if (owner != null)
-		    {
+			{
 				owner.IsSelected = true;
 			}
 		}

@@ -22,24 +22,24 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Extensions
 {
-    /// <summary>
-    /// Provide extentions for the System.Text.RegularExpressions.Match class
-    /// </summary>
-    internal static class MatchExtensions
-    {
-        /// <summary>
-        /// Converts a Regular Expression Match instance to an enumerable of Regular Expression Match instances
-        /// </summary>
-        /// <param name="match">A Regular Expression Match instance</param>
-        /// <returns>An enumerable of matches</returns>
-        public static IEnumerable<Match> AsEnumerable(this Match match)
-        {
-            while (match.Success)
-            {
-                yield return match;
+	/// <summary>
+	/// Provide extentions for the System.Text.RegularExpressions.Match class
+	/// </summary>
+	internal static class MatchExtensions
+	{
+		/// <summary>
+		/// Converts a Regular Expression Match instance to an enumerable of Regular Expression Match instances
+		/// </summary>
+		/// <param name="match">A Regular Expression Match instance</param>
+		/// <returns>An enumerable of matches</returns>
+		public static IEnumerable<Match> AsEnumerable(this Match match)
+		{
+			while (match.Success)
+			{
+				yield return match;
 
-                match = match.NextMatch();
-            }
-        }
-    }
+				match = match.NextMatch();
+			}
+		}
+	}
 }

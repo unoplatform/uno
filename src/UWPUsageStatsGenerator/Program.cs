@@ -14,7 +14,7 @@ namespace UWPUsageStatsGenerator
 		{
 			var types = new List<string>();
 
-			foreach(var file in Directory.GetFiles(@"C:\temp\UWP-Analysis", "*.txt"))
+			foreach (var file in Directory.GetFiles(@"C:\temp\UWP-Analysis", "*.txt"))
 			{
 				var content = File.ReadAllText(file);
 

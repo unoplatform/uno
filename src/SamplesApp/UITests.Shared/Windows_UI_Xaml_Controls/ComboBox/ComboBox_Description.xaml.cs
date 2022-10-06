@@ -19,11 +19,11 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.ComboBox
 {
 	[Sample("ComboBox")]
-    public sealed partial class ComboBox_Description : Page
-    {
-        public ComboBox_Description()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class ComboBox_Description : Page
+	{
+		public ComboBox_Description()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

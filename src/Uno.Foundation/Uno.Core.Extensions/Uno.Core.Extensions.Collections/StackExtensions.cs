@@ -20,18 +20,18 @@ using Uno.Disposables;
 
 namespace Uno.Extensions
 {
-    internal static class StackExtensions
-    {
-        public static T PeekOrDefault<T>(this Stack<T> stack)
-        {
-            return stack.Empty() ? default(T) : stack.Peek();
-        }
+	internal static class StackExtensions
+	{
+		public static T PeekOrDefault<T>(this Stack<T> stack)
+		{
+			return stack.Empty() ? default(T) : stack.Peek();
+		}
 
-        public static IDisposable Subscribe<T>(this Stack<T> stack, T value)
-        {
-            stack.Push(value);
+		public static IDisposable Subscribe<T>(this Stack<T> stack, T value)
+		{
+			stack.Push(value);
 
-            return Disposable.Create(() => stack.Pop());
-        }
-    }
+			return Disposable.Create(() => stack.Pop());
+		}
+	}
 }

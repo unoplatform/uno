@@ -44,7 +44,7 @@ namespace Uno.UI.Media
 			Transform.Changed += UpdateOnTransformPropertyChanged;
 		}
 
-		partial void Initialized(); 
+		partial void Initialized();
 
 		/// <summary>
 		/// The view on which this render transform has been declared

@@ -8,10 +8,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DateTimePicker
 {
 	[SampleControlInfo("DateTimePicker", "DateTimePicker", typeof(DateTimePickerViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class DateTimePicker : UserControl
-    {
-        public DateTimePicker()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public DateTimePicker()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

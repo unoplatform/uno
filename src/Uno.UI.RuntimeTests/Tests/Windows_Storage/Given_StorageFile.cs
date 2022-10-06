@@ -194,7 +194,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				await folder.CreateFileAsync("test.txt");
 
 				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
-				
+
 				Assert.AreEqual("test (2).txt", createdFile.Name);
 			}
 			finally
@@ -325,15 +325,15 @@ namespace Uno.UI.RuntimeTests.Tests
 
 		[TestMethod]
 		public async Task When_Open_By_Encoded_URI_With_Space()
-		{ 
-			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg"); 
+		{
+			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg");
 
 			try
-			{				 
+			{
 				var file = await (await StorageFile.GetFileFromApplicationUriAsync(uri)).OpenReadAsync();
 				Assert.IsNotNull(file);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Assert.Fail("URI was not decoded " + ex.Message);
 			}
@@ -348,7 +348,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			Directory.CreateDirectory(path);
 			return path;
 		}
-		
+
 		public async Task<StorageFile> GetFile(string filePath)
 			=> await StorageFile.GetFileFromPathAsync(filePath);
 	}

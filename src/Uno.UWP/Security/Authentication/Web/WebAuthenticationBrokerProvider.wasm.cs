@@ -18,7 +18,7 @@ namespace Uno.AuthenticationBroker
 
 			Console.WriteLine("origin is: " + origin);
 
-			return new[] {origin};
+			return new[] { origin };
 		}
 
 		protected virtual async Task<WebAuthenticationResult> AuthenticateAsyncCore(
@@ -35,7 +35,7 @@ namespace Uno.AuthenticationBroker
 			var urlRedirect = WebAssemblyRuntime.EscapeJs(callbackUri.OriginalString);
 			string js;
 
-			var timeout = ((long) Timeout.TotalMilliseconds).ToString();
+			var timeout = ((long)Timeout.TotalMilliseconds).ToString();
 
 			var useIframe =
 				options.HasFlag(WebAuthenticationOptions.SilentMode) ||
@@ -50,7 +50,7 @@ namespace Uno.AuthenticationBroker
 			else
 			{
 				var title = WebAssemblyRuntime.EscapeJs(WinRTFeatureConfiguration.WebAuthenticationBroker.WindowTitle ??
-				                                        "Sign In");
+														"Sign In");
 
 				var windowWidth = WinRTFeatureConfiguration.WebAuthenticationBroker.WindowWidth;
 				var windowHeight = WinRTFeatureConfiguration.WebAuthenticationBroker.WindowHeight;
@@ -60,7 +60,7 @@ namespace Uno.AuthenticationBroker
 
 			try
 			{
-				var results = (await WebAssemblyRuntime.InvokeAsync(js)).Split(new[] {'|'}, 2);
+				var results = (await WebAssemblyRuntime.InvokeAsync(js)).Split(new[] { '|' }, 2);
 
 				return results[0] switch
 				{

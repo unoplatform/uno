@@ -5,9 +5,9 @@ using Windows.UI.Xaml.Media;
 namespace Uno.UI.Xaml.Controls.Extensions
 {
 	internal interface ITextBoxViewExtension
-    {
+	{
 		bool IsNativeOverlayLayerInitialized { get; }
-		
+
 		void StartEntry();
 
 		void EndEntry();

@@ -113,8 +113,8 @@ namespace Windows.UI.Xaml.Controls
 
 			OnPasswordChangedPartial(e);
 
-			if (Password.IsNullOrEmpty() && 
-                ((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
+			if (Password.IsNullOrEmpty() &&
+				((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
 			{
 				_isButtonEnabled = true;
 			}
@@ -228,8 +228,8 @@ namespace Windows.UI.Xaml.Controls
 			if (UseIsPasswordEnabledProperty)
 			{
 				SetPasswordScope(true);
-			} 
-            else
+			}
+			else
 			{
 				switch (PasswordRevealMode)
 				{
@@ -272,8 +272,8 @@ namespace Windows.UI.Xaml.Controls
 					{
 						VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 					}
-				} 
-                else
+				}
+				else
 				{
 					if (PasswordRevealMode == PasswordRevealMode.Peek && Password.IsNullOrEmpty())
 					{

@@ -75,7 +75,7 @@ namespace Uno.UI.Controls.Legacy
 		protected override void OnSourceChanged(ListViewBaseSource oldSource, ListViewBaseSource newSource)
 		{
 			base.OnSourceChanged(oldSource, newSource);
-			
+
 			var asGridViewSource = newSource as GridViewSource;
 			if (asGridViewSource != null)
 			{

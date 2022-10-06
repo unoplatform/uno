@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			var document = XmlReader.Create(new StringReader(content));
 
-            // Initialize the reader using an empty context, because when the tasl
-            // is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
-            // to interpret the meaning of objects, which is not correct in Uno.UI context.
-            var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
+			// Initialize the reader using an empty context, because when the tasl
+			// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+			// to interpret the meaning of objects, which is not correct in Uno.UI context.
+			var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
 			// Force the line info, otherwise it will be enabled only when the debugger is attached.
 			var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
@@ -184,13 +184,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				)
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
-		
+
 		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,
 				"Run",
-				new List<XamlType>(), 
+				new List<XamlType>(),
 				new XamlSchemaContext()
 			);
 

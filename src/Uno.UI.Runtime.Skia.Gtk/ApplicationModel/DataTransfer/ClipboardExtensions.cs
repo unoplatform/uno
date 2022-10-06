@@ -282,7 +282,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 				targetList.AddUriTargets(id);
 			}
 
-			_clipboard.SetWithData((TargetEntry [])targetList, SetDataNative, (clipboard) => { });
+			_clipboard.SetWithData((TargetEntry[])targetList, SetDataNative, (clipboard) => { });
 		}
 
 		public void StartContentChanged()

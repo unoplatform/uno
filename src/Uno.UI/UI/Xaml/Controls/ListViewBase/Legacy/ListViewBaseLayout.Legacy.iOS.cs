@@ -120,7 +120,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(AreStickyGroupHeadersEnabledProperty, value); }
 		}
 
-		public static DependencyProperty AreStickyGroupHeadersEnabledProperty { get ; } =
+		public static DependencyProperty AreStickyGroupHeadersEnabledProperty { get; } =
 			DependencyProperty.Register("AreStickyGroupHeadersEnabled", typeof(bool), typeof(ListViewBaseLayout), new FrameworkPropertyMetadata(false, OnAreStickyGroupHeadersEnabledChanged));
 
 		private static void OnAreStickyGroupHeadersEnabledChanged(object o, DependencyPropertyChangedEventArgs e)

@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			private set
 			{
 				_items = value;
-                RaisePropertyChanged();
+				RaisePropertyChanged();
 			}
 		}
 
@@ -72,7 +72,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			_jumpList.Items.Add(item);
 			NewItem = new NewJumpListItem();
 			await _jumpList.SaveAsync();
-            RefreshItems();
+			RefreshItems();
 		}
 
 		public ICommand RemoveItemCommand => GetOrCreateCommand(RemoveItemAsync);
@@ -82,15 +82,15 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			_jumpList.Items.Remove(SelectedItem);
 			SelectedItem = null;
 			await _jumpList.SaveAsync();
-            RefreshItems();
+			RefreshItems();
 		}
 
 		public ICommand LoadCurrentCommand => GetOrCreateCommand(LoadCurrentAsync);
 
-        private async void LoadCurrentAsync()
+		private async void LoadCurrentAsync()
 		{
 			_jumpList = await JumpList.LoadCurrentAsync();
-            RefreshItems();
+			RefreshItems();
 			RaisePropertyChanged(nameof(IsLoaded));
 		}
 

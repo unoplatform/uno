@@ -349,7 +349,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			Assert.AreEqual(77, o1.MyProperty);
 			Assert.AreEqual(78, o2.MyProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_DependencyObject_Bindable_Removed()
 		{
@@ -452,7 +452,8 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			var SUT = new ContentControl() { Tag = 42 };
 			DoubleAnimation anim = null;
 
-			var template = new ControlTemplate(() => {
+			var template = new ControlTemplate(() =>
+			{
 				var g = new Grid();
 
 				var vg = new VisualStateGroup();
@@ -534,7 +535,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 
-			if(dependencyObject is SubObject so)
+			if (dependencyObject is SubObject so)
 			{
 				so.MyPropertyCounter++;
 			}
@@ -581,7 +582,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				propertyType: typeof(MyObjectWithExplicitDefaultValue),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: null, 
+					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnSameTypeObjectChanged(e)
 				)
 		);
@@ -611,7 +612,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				propertyType: typeof(int),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: 77, 
+					defaultValue: 77,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnMyPropertyChanged(e)
 				)

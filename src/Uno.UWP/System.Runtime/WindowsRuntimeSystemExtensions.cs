@@ -86,7 +86,7 @@ namespace System
 			if (source is IAsyncActionWithProgressInternal<TProgress> operation)
 			{
 				using var _ = ct.CanBeCanceled ? ct.Register(operation.Cancel) : default;
-				if (progress is {})
+				if (progress is { })
 				{
 					operation.Progress = (snd, p) => progress.Report(p);
 				}

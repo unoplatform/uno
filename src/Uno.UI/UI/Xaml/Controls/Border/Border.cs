@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(ChildProperty, value);
 		}
 
-		public static DependencyProperty ChildProperty { get ; } =
+		public static DependencyProperty ChildProperty { get; } =
 			DependencyProperty.Register(
 				"Child",
 				typeof(UIElement),
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for Transitions.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ChildTransitionsProperty { get ; } =
+		public static DependencyProperty ChildTransitionsProperty { get; } =
 			DependencyProperty.Register("ChildTransitions", typeof(TransitionCollection), typeof(Border), new FrameworkPropertyMetadata(null));
 
 		private void ReAttachChildTransitions(UIElement originalChild, UIElement child)

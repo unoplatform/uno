@@ -21,7 +21,7 @@ namespace Uno.UI.Extensions
 {
 	internal static class NSBezierPathExtensions
 	{
-		public static CGPath ToCGPath(this  _BezierPath nSBezierPath)
+		public static CGPath ToCGPath(this _BezierPath nSBezierPath)
 		{
 #if __IOS__
 			return nSBezierPath.CGPath;

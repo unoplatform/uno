@@ -39,7 +39,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			var host = XamlRootMap.GetHostForRoot(xamlRoot);
 			return host?.NativeOverlayLayer;
 		}
-		
+
 		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
 
 		public void StartEntry()
@@ -163,7 +163,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		public void UpdateSize()
 		{
 			var textInputLayer = GetWindowTextInputLayer();
-			if (_contentElement == null|| textInputLayer == null)
+			if (_contentElement == null || textInputLayer == null)
 			{
 				return;
 			}
@@ -267,7 +267,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 					{
 						_currentPasswordBoxInputWidget.Visibility = isPassword ? Visibility.Visible : Visibility.Collapsed;
 					}
-					
+
 				}
 			}
 		}

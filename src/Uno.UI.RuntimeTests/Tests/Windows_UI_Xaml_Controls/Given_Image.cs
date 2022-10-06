@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if(Math.Round(desiredContainer.Width) != 0 && Math.Round(desiredContainer.Height) != 0)
+				if (Math.Round(desiredContainer.Width) != 0 && Math.Round(desiredContainer.Height) != 0)
 				{
 					break;
 				}
@@ -154,7 +154,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);			
+			Assert.IsTrue(img.ActualHeight > 0);
 		}
 	}
 }

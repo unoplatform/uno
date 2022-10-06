@@ -636,7 +636,7 @@ namespace Windows.UI.Xaml
 		internal
 #if __ANDROID__
 			new
-#endif 
+#endif
 			bool HasFocus()
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);

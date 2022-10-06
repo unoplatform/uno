@@ -11,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_DataContext_Set_On_ToolTip_Owner()
 		{
-			try 
+			try
 			{
 				var textBlock = new TextBlock();
 				var SUT = new ToolTip();

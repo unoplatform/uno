@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if(e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+			if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
 			{
 				return FindInFlyout(name, contextFlyout);
 			}

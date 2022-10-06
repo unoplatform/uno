@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Media
 				RequestOpen();
 			}
 		}
-#endregion
+		#endregion
 
 		private protected void RequestOpen(int? targetWidth = null, int? targetHeight = null)
 		{

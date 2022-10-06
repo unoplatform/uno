@@ -53,6 +53,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(Interval),
 				typeof(int),
 				typeof(RepeatButton),
-				new FrameworkPropertyMetadata(250));		
+				new FrameworkPropertyMetadata(250));
 	}
 }

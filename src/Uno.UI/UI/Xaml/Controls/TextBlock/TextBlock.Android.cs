@@ -635,7 +635,7 @@ namespace Windows.UI.Xaml.Controls
 					measuredHeight = Layout.GetLineTop(Layout.LineCount);
 				}
 
-				if(_maxLines > 0 && Layout.LineCount > _maxLines)
+				if (_maxLines > 0 && Layout.LineCount > _maxLines)
 				{
 					MakeLayout(
 						desiredWidth,

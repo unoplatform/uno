@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			m_content.ManipulationDelta += OnSwipeManipulationDelta;
 			//m_content.ManipulationInertiaStarting += OnSwipeManipulationInertiaStarting;
 			m_content.ManipulationCompleted += OnSwipeManipulationCompleted;
-		}		
+		}
 
 		private void UnoDetachEventHandlers()
 		{
@@ -321,7 +321,7 @@ namespace Windows.UI.Xaml.Controls
 			var useAfterInertiaPosition = false;
 			var estimatedPositionAfterInertia = _desiredPosition;
 
-			if (Math.Abs(estimatedSpeed) > speedThreshold) 
+			if (Math.Abs(estimatedSpeed) > speedThreshold)
 			{
 				// If the stackpanel IsMeasureDirty or IsArrangeDirty are true, it means we can't use its ActualSize, so we close the content.
 				// This solves a problem when the user swipes the content from one side to the other quickly and the stackpanel doesn't have time to measure and arrange itself before the inertia starts.

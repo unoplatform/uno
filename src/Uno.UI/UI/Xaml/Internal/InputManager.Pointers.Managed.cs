@@ -391,7 +391,7 @@ internal partial class InputManager
 			}
 		}
 
-		#region Helpers
+#region Helpers
 		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);
 
 		private static readonly RaisePointerEventArgs Wheel = (elt, args, ctx) => elt.OnPointerWheel(args, ctx);
@@ -457,7 +457,7 @@ internal partial class InputManager
 				raise(originalSource, routedArgs, BubblingContext.Bubble);
 			}
 		}
-		#endregion
+#endregion
 	}
 
 }

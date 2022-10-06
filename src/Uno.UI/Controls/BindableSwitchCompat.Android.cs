@@ -32,7 +32,7 @@ namespace Uno.UI.Controls
 
 			TextOn = "";
 			TextOff = "";
-        }
+		}
 
 		#region TextColor DependencyProperty
 
@@ -45,7 +45,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TextColorProperty, value); }
 		}
 
-		public static DependencyProperty TextColorProperty { get ; } =
+		public static DependencyProperty TextColorProperty { get; } =
 			DependencyProperty.Register("TextColor", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTextColorChanged((Brush)e.NewValue)));
 
 		private void OnTextColorChanged(Brush newValue)
@@ -69,7 +69,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ThumbTintProperty, value); }
 		}
 
-		public static DependencyProperty ThumbTintProperty { get ; } =
+		public static DependencyProperty ThumbTintProperty { get; } =
 			DependencyProperty.Register("ThumbTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnThumbTintChanged((Brush)e.NewValue)));
 
 		private void OnThumbTintChanged(Brush newValue)
@@ -86,9 +86,9 @@ namespace Uno.UI.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region TrackTint DependencyProperty
+		#region TrackTint DependencyProperty
 
 		/// <summary> 
 		/// The color used to tint the appearance of the track.
@@ -99,7 +99,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(TrackTintProperty, value); }
 		}
 
-		public static DependencyProperty TrackTintProperty { get ; } =
+		public static DependencyProperty TrackTintProperty { get; } =
 			DependencyProperty.Register("TrackTint", typeof(Brush), typeof(BindableSwitchCompat), new FrameworkPropertyMetadata(null, (s, e) => ((BindableSwitchCompat)s).OnTrackTintChanged((Brush)e.NewValue)));
 
 		private void OnTrackTintChanged(Brush newValue)
@@ -116,7 +116,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
 		private void OnCheckedChange(object sender, CheckedChangeEventArgs e)
 		{

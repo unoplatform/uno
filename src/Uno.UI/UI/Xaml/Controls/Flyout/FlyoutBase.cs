@@ -370,7 +370,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				content.TemplatedParent = TemplatedParent;
 			}
 		}
-		
+
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;
@@ -674,7 +674,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//		// Nudge down if necessary to avoid the exclusion rect
 			//		if (!RectUtil.AreDisjoint(m_exclusionRect, { (float)(horizontalOffset), (float)(verticalOffset), presenterSize.Width, presenterSize.Height }))
-   //         {
+			//         {
 			//			verticalOffset = m_exclusionRect.Y + m_exclusionRect.Height;
 			//		}
 			//	}
@@ -764,7 +764,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					//// Nudge down if necessary to avoid the exclusion rect
 					//if (!RectUtil.AreDisjoint(m_exclusionRect, { (float)(horizontalOffset), (float)(verticalOffset), presenterSize.Width, presenterSize.Height }))
-     //       {
+					//       {
 					//	verticalOffset = m_exclusionRect.Y + m_exclusionRect.Height;
 					//}
 				}

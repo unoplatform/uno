@@ -9,7 +9,7 @@ namespace Windows.UI.Composition
 	{
 		internal override void Render(SKSurface surface)
 		{
-			foreach(var shape in Shapes)
+			foreach (var shape in Shapes)
 			{
 				surface.Canvas.Save();
 

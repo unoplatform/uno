@@ -117,7 +117,7 @@ namespace Microsoft.CodeAnalysis
 				TypeKind.Struct => "struct ",
 				_ => throw new ArgumentException($"Unexpected type kind {namedTypeSymbol.TypeKind}")
 			};
-			
+
 			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
 
 			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}";
@@ -494,7 +494,7 @@ namespace Microsoft.CodeAnalysis
 			if (namedType?.TypeArguments.Any() ?? false)
 			{
 				var genericArgs = namedType.TypeArguments.Select(GetFullMetadataName).JoinBy(",");
-				sb.Append($"[{ genericArgs }]");
+				sb.Append($"[{genericArgs}]");
 			}
 
 			return sb.ToString();

@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls.Legacy
 {
-    internal partial class ListViewHeaderItem : ContentControl
+	internal partial class ListViewHeaderItem : ContentControl
 	{
 		public ListViewHeaderItem()
 		{

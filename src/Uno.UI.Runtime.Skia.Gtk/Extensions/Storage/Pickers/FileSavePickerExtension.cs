@@ -46,10 +46,10 @@ namespace Uno.Extensions.Storage.Pickers
 				{
 					File.Create(dialog.Filename).Dispose();
 				}
-				file = await StorageFile.GetFileFromPathAsync(dialog.Filename);				
+				file = await StorageFile.GetFileFromPathAsync(dialog.Filename);
 			}
 
-			
+
 			return file;
 		}
 	}

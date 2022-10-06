@@ -10,16 +10,16 @@ using CoreGraphics;
 
 namespace Windows.UI.ViewManagement
 {
-    partial class ApplicationView
-    {
-	    private string _title = string.Empty;
+	partial class ApplicationView
+	{
+		private string _title = string.Empty;
 		private Size _preferredMinSize = Size.Empty;
 
 		internal void SetCoreBounds(NSWindow keyWindow, Foundation.Rect windowBounds)
 		{
-            VisibleBounds = windowBounds;
+			VisibleBounds = windowBounds;
 
-			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Updated visible bounds {VisibleBounds}");
 			}
@@ -41,7 +41,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-        public bool IsFullScreen
+		public bool IsFullScreen
 		{
 			get
 			{
@@ -101,7 +101,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		private void VerifyKeyWindowInitialized([CallerMemberName]string propertyName = null)
+		private void VerifyKeyWindowInitialized([CallerMemberName] string propertyName = null)
 		{
 			if (!IsKeyWindowInitialized())
 			{
@@ -110,5 +110,5 @@ namespace Windows.UI.ViewManagement
 		}
 
 		private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
-    }
+	}
 }

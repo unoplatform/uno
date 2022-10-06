@@ -790,11 +790,11 @@ namespace UITests.Shared.Windows_Devices.Midi
 		}
 
 		private async Task PlayNoteAsync(byte noteNumber, int duration = Skip, byte velocity = 127)
-		{			
+		{
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOnMessage(0, noteNumber, velocity));
 			await Task.Delay(duration);
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOffMessage(0, noteNumber, velocity));
 		}
-#endregion
+		#endregion
 	}
 }

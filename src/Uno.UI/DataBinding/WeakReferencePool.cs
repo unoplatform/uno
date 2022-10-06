@@ -15,7 +15,7 @@ namespace Uno.UI.DataBinding
 	/// of <see cref="IWeakReferenceProvider"/> instances. Those instances are most likely to be 
 	/// weakly referenceed, and can provide their own reference more efficiently.
 	/// </remarks>
-    public static class WeakReferencePool
+	public static class WeakReferencePool
 	{
 		private readonly static Stack<ManagedGCHandle> _weakReferencePool = new Stack<ManagedGCHandle>();
 		private readonly static object _gate = new object();
@@ -132,7 +132,7 @@ namespace Uno.UI.DataBinding
 
 		private static ManagedGCHandle RentFromPool(object target)
 		{
-			if(target == null)
+			if (target == null)
 			{
 				return null;
 			}

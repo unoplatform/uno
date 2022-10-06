@@ -104,7 +104,7 @@ namespace Windows.UI
 				font = GetFontFromFile(size, fontPath);
 			}
 
-			if(font == null)
+			if (font == null)
 			{
 				font = GetDefaultFont(size, fontWeight, fontStyle);
 			}

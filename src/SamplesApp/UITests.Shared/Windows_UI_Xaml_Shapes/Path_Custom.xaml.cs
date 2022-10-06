@@ -13,11 +13,11 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-//#if __WASM__
-//	[Uno.UI.Runtime.WebAssembly.HtmlElement("svg")]
-//#endif
+	//#if __WASM__
+	//	[Uno.UI.Runtime.WebAssembly.HtmlElement("svg")]
+	//#endif
 	public partial class MyPath : Path
 	{
-		
+
 	}
 }

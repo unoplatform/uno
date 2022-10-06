@@ -16,12 +16,12 @@ namespace UITests.Windows_UI_ViewManagement
 {
 	[Sample("Windows.UI.ViewManagement", ViewModelType = typeof(UISettingsTestsViewModel))]
 	public sealed partial class UISettingsTests : Page
-    {
+	{
 		public UISettingsTests()
-        {
-            this.InitializeComponent();
-			this.DataContextChanged += UISettingsTests_DataContextChanged;			
-        }
+		{
+			this.InitializeComponent();
+			this.DataContextChanged += UISettingsTests_DataContextChanged;
+		}
 
 		internal UISettingsTestsViewModel ViewModel { get; private set; }
 
@@ -46,7 +46,7 @@ namespace UITests.Windows_UI_ViewManagement
 			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => UpdateColors());
 		}
 
-		public string AnimationsEnabled => GetValueSafe(() =>_uiSettings.AnimationsEnabled);
+		public string AnimationsEnabled => GetValueSafe(() => _uiSettings.AnimationsEnabled);
 
 		public ObservableCollection<UIColorTypeListItem> UIColors { get; } = new ObservableCollection<UIColorTypeListItem>();
 

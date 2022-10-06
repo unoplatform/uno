@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
 		private readonly LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
-		
+
 		public static readonly TextBlockMeasureCache Instance = new TextBlockMeasureCache();
 
 		/// <summary>

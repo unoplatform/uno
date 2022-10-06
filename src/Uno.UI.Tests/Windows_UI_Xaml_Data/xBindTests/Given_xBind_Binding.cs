@@ -364,7 +364,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			list.SelectedItem = list.Items[1];
 
 			Assert.AreEqual(1, list.SelectedIndex);
-			 Assert.IsFalse(cb.IsChecked.Value);
+			Assert.IsFalse(cb.IsChecked.Value);
 
 			list.SelectedItem = list.Items[0];
 
@@ -938,7 +938,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
-		 
+
 		[TestMethod]
 		public void When_xLoad_Event()
 		{
@@ -1104,7 +1104,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_xLoad_Setter();
 
 			SUT.ForceLoaded();
-			
+
 			Assert.IsNull(SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
@@ -1299,7 +1299,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(42, SUT.tb1.Tag);
 		}
 
-		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
+		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);
 

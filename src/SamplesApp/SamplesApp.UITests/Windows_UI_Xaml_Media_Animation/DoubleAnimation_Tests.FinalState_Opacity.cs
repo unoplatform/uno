@@ -19,12 +19,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	{
 		private const string _finalStateOpacityTestControl = "UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_FinalState_Opacity";
 
-		[Test] [AutoRetry] public void When_Opacity_Completed_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
-		[Test] [AutoRetry] public void When_Opacity_Completed_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
-		[Test] [AutoRetry] public void When_Opacity_Paused_With_FillBehaviorStop_Then_Hold() => TestOpacityFinalState();
-		[Test] [AutoRetry] public void When_Opacity_Paused_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
-		[Test] [AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
-		[Test] [AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorHold_Then_Rollback() => TestOpacityFinalState();
+		[Test][AutoRetry] public void When_Opacity_Completed_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
+		[Test][AutoRetry] public void When_Opacity_Completed_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
+		[Test][AutoRetry] public void When_Opacity_Paused_With_FillBehaviorStop_Then_Hold() => TestOpacityFinalState();
+		[Test][AutoRetry] public void When_Opacity_Paused_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
+		[Test][AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
+		[Test][AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorHold_Then_Rollback() => TestOpacityFinalState();
 
 		private void TestOpacityFinalState([CallerMemberName] string testName = null)
 		{

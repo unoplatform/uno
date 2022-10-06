@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BackStackDepth.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BackStackDepthProperty { get ; } =
+		public static DependencyProperty BackStackDepthProperty { get; } =
 			DependencyProperty.Register("BackStackDepth", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
 
 
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for BackStack.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BackStackProperty { get ; } =
+		public static DependencyProperty BackStackProperty { get; } =
 			DependencyProperty.Register("BackStack", typeof(IList<PageStackEntry>), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnBackStackChanged(e)));
 
 		private void OnBackStackChanged(DependencyPropertyChangedEventArgs e)
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CacheSize.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CacheSizeProperty { get ; } =
+		public static DependencyProperty CacheSizeProperty { get; } =
 			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
 
 
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CanGoBack.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CanGoBackProperty { get ; } =
+		public static DependencyProperty CanGoBackProperty { get; } =
 			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(Frame), new FrameworkPropertyMetadata(false, (s, e) => ((Frame)s)?.OnCanGoBackChanged(e)));
 
 
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for CanGoForward.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CanGoForwardProperty { get ; } =
+		public static DependencyProperty CanGoForwardProperty { get; } =
 			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(Frame), new FrameworkPropertyMetadata(true, (s, e) => ((Frame)s)?.OnCanGoForwardChanged(e)));
 
 
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public Type CurrentSourcePageType => (Type)GetValue(CurrentSourcePageTypeProperty);
 
-		public static DependencyProperty CurrentSourcePageTypeProperty { get ; } =
+		public static DependencyProperty CurrentSourcePageTypeProperty { get; } =
 			DependencyProperty.Register(nameof(CurrentSourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnCurrentSourcePageTypeChanged(e)));
 
 
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for ForwardStack.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ForwardStackProperty { get ; } =
+		public static DependencyProperty ForwardStackProperty { get; } =
 			DependencyProperty.Register("ForwardStack", typeof(IList<PageStackEntry>), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnForwardStackChanged(e)));
 
 
@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(SourcePageTypeProperty, value);
 		}
 
-		public static DependencyProperty SourcePageTypeProperty { get ; } =
+		public static DependencyProperty SourcePageTypeProperty { get; } =
 			DependencyProperty.Register(nameof(SourcePageType), typeof(Type), typeof(Frame), new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
 
 		private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
@@ -399,7 +399,7 @@ namespace Windows.UI.Xaml.Controls
 			SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
 
 			Navigated?.Invoke(this, navigationEvent);
-			
+
 			previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
 			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
 

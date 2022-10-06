@@ -42,12 +42,12 @@ namespace Windows.UI.Xaml
 
 		public static implicit operator DataTemplate?(Func<View?>? obj)
 		{
-            if(obj == null)
-            {
-                return null;
-            }
+			if (obj == null)
+			{
+				return null;
+			}
 
-            return new DataTemplate(obj);
+			return new DataTemplate(obj);
 		}
 	}
 }

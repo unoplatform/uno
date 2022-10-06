@@ -86,7 +86,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// x:Name cache for the lookups performed in the document.
 		/// </summary>
 		private Dictionary<string, List<XamlObjectDefinition>> _nameCache = new();
-		
+
 		/// <summary>
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
 		/// </summary>
@@ -6021,7 +6021,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					} while (current is not null);
 				}
 			}
-			
+
 			return null;
 		}
 

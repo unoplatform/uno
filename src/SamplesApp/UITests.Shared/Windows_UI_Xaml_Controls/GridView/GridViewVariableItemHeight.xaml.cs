@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(ListViewViewModel))]
+	[Sample("GridView", ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class GridViewVariableItemHeight : UserControl
 	{
 		public GridViewVariableItemHeight()

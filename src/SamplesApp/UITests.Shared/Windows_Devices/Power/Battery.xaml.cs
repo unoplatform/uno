@@ -23,10 +23,10 @@ namespace UITests.Windows_Devices.Power
 
 	[SampleControlInfo("Windows.Devices.Power", "Battery")]
 	public sealed partial class Battery : Page
-    {
-        public Battery()
-        {
-            this.InitializeComponent();
+	{
+		public Battery()
+		{
+			this.InitializeComponent();
 		}
 
 		private async void getBatteryInfo_Click(object sender, RoutedEventArgs e)

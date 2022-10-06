@@ -81,7 +81,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 			{
 				var options = (CSharpParseOptions)base.CreateParseOptions();
 				return options.WithPreprocessorSymbols(PreprocessorSymbols);
-				
+
 			}
 		}
 	}

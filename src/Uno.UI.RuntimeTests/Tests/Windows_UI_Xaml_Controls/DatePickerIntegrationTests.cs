@@ -75,7 +75,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			DatePicker datePicker = null;
 
-			await RunOnUIThread.ExecuteAsync(()=>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				datePicker = new DatePicker();
 

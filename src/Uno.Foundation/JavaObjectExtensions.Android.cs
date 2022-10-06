@@ -17,9 +17,9 @@ namespace Uno.Extensions
 		public static void RunIfNativeInstanceAvailable<T>(
 			this T instance,
 			Action<T> action,
-			[CallerMemberName]string member = null,
-			[CallerLineNumber]int line = 0,
-			[CallerFilePath]string filePath = null
+			[CallerMemberName] string member = null,
+			[CallerLineNumber] int line = 0,
+			[CallerFilePath] string filePath = null
 		) where T : IJavaObject
 		{
 			if (instance.Handle != IntPtr.Zero)

@@ -529,11 +529,11 @@ namespace Windows.UI.Tests.Enterprise.CalendarViewTests
 				var aprilDayPeer = FrameworkElementAutomationPeer.CreatePeerForElement(aprilDay);
 				var mayDayPeer = FrameworkElementAutomationPeer.CreatePeerForElement(mayDay);
 
-				var marchRowHeaders = ((ITableItemProvider )marchDayPeer.GetPattern(
+				var marchRowHeaders = ((ITableItemProvider)marchDayPeer.GetPattern(
 					PatternInterface.TableItem)).GetRowHeaderItems();
-				var aprilRowHeaders = ((ITableItemProvider )aprilDayPeer.GetPattern(
+				var aprilRowHeaders = ((ITableItemProvider)aprilDayPeer.GetPattern(
 					PatternInterface.TableItem)).GetRowHeaderItems();
-				var mayRowHeaders = ((ITableItemProvider )mayDayPeer.GetPattern(
+				var mayRowHeaders = ((ITableItemProvider)mayDayPeer.GetPattern(
 					PatternInterface.TableItem)).GetRowHeaderItems();
 
 				VERIFY_ARE_EQUAL(1, marchRowHeaders.Length);

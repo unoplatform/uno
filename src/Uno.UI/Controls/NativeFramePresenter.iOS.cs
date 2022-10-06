@@ -379,7 +379,7 @@ namespace Uno.UI.Controls
 				// TODO: iOS 14 introduced a bug where calling this method is getting unpleasant results (https://developer.apple.com/forums/thread/656524). (https://developer.apple.com/forums/thread/656524)
 				// A workaround for this is removing the animation as this seems to be related to the root cause.
 				// Note: This change should not affect consumer navigation since this is only used when resetting the stack.
-				if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0)) 
+				if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
 				{
 					NavigationController.SetViewControllers(viewControllers, animated: false);
 				}
@@ -387,7 +387,7 @@ namespace Uno.UI.Controls
 				{
 					NavigationController.SetViewControllers(viewControllers, animated: true);
 				}
-				
+
 			}
 		}
 

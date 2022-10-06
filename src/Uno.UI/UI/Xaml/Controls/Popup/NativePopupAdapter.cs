@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private IDisposable _openPopupRegistration;
 		private bool _isOpen;
-		
+
 		public event EventHandler<object> Opened;
 		public event EventHandler<object> Closed;
 

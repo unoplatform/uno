@@ -74,7 +74,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			// LOAD & PARSE JSON
 			LoadAndParseDocument(sourceJson);
 
-			if(_currentDocument == null)
+			if (_currentDocument == null)
 			{
 				return;
 			}
@@ -171,7 +171,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return;
 				}
 
-				if(!shapeElement.TryGetValue("nm", out var nameProperty)
+				if (!shapeElement.TryGetValue("nm", out var nameProperty)
 					|| nameProperty.JsonType != JsonType.String)
 				{
 					return; // No name
@@ -215,12 +215,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var changed = false;
 			foreach (var colorBinding in _colorsBindings)
 			{
-				if (!(colorBinding.Value.NextValue is {} color))
+				if (!(colorBinding.Value.NextValue is { } color))
 				{
 					continue; // nothing to change
 				}
 
-				var colorComponents = new[] {color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f};
+				var colorComponents = new[] { color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f };
 
 				foreach (var element in colorBinding.Value.Elements)
 				{
@@ -249,7 +249,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void NotifyCallback()
 		{
-			if (_updateCallback is {} callback)
+			if (_updateCallback is { } callback)
 			{
 				var json = _currentDocument?.ToString();
 				if (json is { })

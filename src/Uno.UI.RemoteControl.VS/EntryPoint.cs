@@ -101,31 +101,36 @@ namespace Uno.UI.RemoteControl.VS
 				.Add(UnoPlatformOutputPane);
 			}
 
-			_debugAction = s => {
+			_debugAction = s =>
+			{
 				if (!_closing)
 				{
 					owPane.OutputString("[DEBUG] " + s + "\r\n");
 				}
 			};
-			_infoAction = s => {
+			_infoAction = s =>
+			{
 				if (!_closing)
 				{
 					owPane.OutputString("[INFO] " + s + "\r\n");
 				}
 			};
-			_verboseAction = s => {
+			_verboseAction = s =>
+			{
 				if (!_closing)
 				{
 					owPane.OutputString("[VERBOSE] " + s + "\r\n");
 				}
 			};
-			_warningAction = s => {
+			_warningAction = s =>
+			{
 				if (!_closing)
 				{
 					owPane.OutputString("[WARNING] " + s + "\r\n");
 				}
 			};
-			_errorAction = e => {
+			_errorAction = e =>
+			{
 				if (!_closing)
 				{
 					owPane.OutputString("[ERROR] " + e + "\r\n");
@@ -228,7 +233,7 @@ namespace Uno.UI.RemoteControl.VS
 
 			if (result.output.Contains("."))
 			{
-				if(int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
+				if (int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
 				{
 					return majorVersion;
 				}
@@ -333,9 +338,9 @@ namespace Uno.UI.RemoteControl.VS
 
 				foreach (var project in subProjects)
 				{
-					if(project.Kind == FolderKind)
+					if (project.Kind == FolderKind)
 					{
-						foreach(var subProject in EnumSubProjects(project))
+						foreach (var subProject in EnumSubProjects(project))
 						{
 							yield return subProject;
 						}

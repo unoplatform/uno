@@ -19,7 +19,7 @@ using Windows.System;
 using Uno.UI.Skia.Platform.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Skia.Platform	
+namespace Uno.UI.Skia.Platform
 {
 	partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{

@@ -120,7 +120,7 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		[DllImport(LibInputName)]
 		public extern static double libinput_event_pointer_get_axis_value_discrete(IntPtr ev, libinput_pointer_axis axis);
-		
+
 		[DllImport(LibInputName)]
 		public extern static IntPtr libinput_event_get_keyboard_event(IntPtr ev);
 

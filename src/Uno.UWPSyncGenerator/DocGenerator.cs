@@ -41,7 +41,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				_sb.AppendComment($"Generation error: {e.Message}");
 #if !DEBUG
-				throw; 
+				throw;
 #endif
 			}
 

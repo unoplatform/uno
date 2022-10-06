@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Media
 
 					foreach (var segment in figure.Segments)
 					{
-						foreach(var p in segment.ToDataStream())
+						foreach (var p in segment.ToDataStream())
 						{
 							yield return p;
 						}

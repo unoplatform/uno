@@ -115,8 +115,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			AssertItem(0); // Top item, fully visible
 			AssertItem(2); // Bottom item, partially visible
-			// AssertItem(5); // Overflowing item, not materialized => No container for this
-			// AssertItem(9); // Last item, definitely not materialized => No container for this
+						   // AssertItem(5); // Overflowing item, not materialized => No container for this
+						   // AssertItem(9); // Last item, definitely not materialized => No container for this
 
 			void AssertItem(int index)
 			{
@@ -1121,7 +1121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Point(60, 60), innerPoint);
 			Assert.AreEqual(new Point(80, 80), middlePoint);
 			Assert.AreEqual(new Point(100, 100), outerPoint);
-		}		
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1145,7 +1145,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Point(80, 540), middlePoint);
 			Assert.AreEqual(new Point(100, 560), outerPoint);
 		}
-		
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]

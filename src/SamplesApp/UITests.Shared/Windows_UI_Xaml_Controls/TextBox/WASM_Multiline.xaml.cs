@@ -15,10 +15,10 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
 	public sealed partial class WASM_Multiline : Page
-    {
-        public WASM_Multiline()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public WASM_Multiline()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

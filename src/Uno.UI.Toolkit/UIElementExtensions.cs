@@ -42,7 +42,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class UIElementExtensions
 	{
-#region Elevation
+		#region Elevation
 
 		public static void SetElevation(this UIElement element, double elevation)
 		{

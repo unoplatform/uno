@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		internal override IEasingFunction GetEasingFunction()
 		{
 			return _easingFunction;
-        }
+		}
 
 		private static readonly IEasingFunction _easingFunction = new DiscreteDoubleKeyFrameEasingFunction();
 

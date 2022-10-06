@@ -311,7 +311,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				(borderRect, textRect) = GetRects(borderName, textName);
 				textRect.X.Should()
 					.BeApproximately(
-						borderRect.X + (borderRect.Width - textRect.Width)/2f,
+						borderRect.X + (borderRect.Width - textRect.Width) / 2f,
 						precision,
 						"X - center");
 				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - center");

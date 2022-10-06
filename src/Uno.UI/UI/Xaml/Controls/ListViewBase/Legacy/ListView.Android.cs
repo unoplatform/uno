@@ -22,7 +22,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {
-    public partial class ListView : Android.Widget.ListView, DependencyObject, IListView
+	public partial class ListView : Android.Widget.ListView, DependencyObject, IListView
 	{
 		private SerialDisposable _clickRegistration = new SerialDisposable();
 		private ICommand _itemLongClickCommand;
@@ -81,7 +81,7 @@ namespace Uno.UI.Controls.Legacy
 				return;
 			}
 
-            _adapter = new ListViewAdapter();
+			_adapter = new ListViewAdapter();
 			_adapter.ItemContainerStyle = ItemContainerStyle;
 			_adapter.ItemContainerFactory = () => new ListViewItem() { ShouldHandlePressed = false };
 			_adapter.ItemTemplate = ItemTemplate;
@@ -93,8 +93,8 @@ namespace Uno.UI.Controls.Legacy
 			_adapter.FooterTemplate = FooterTemplate;
 			_adapter.ItemsSource = ItemsSource;
 			_adapter.CustomViewTypeCount = this.CustomViewTypeCount;
-            _adapter.GroupStyle = this.GroupStyle;
-            _adapter.ItemContainerHolderStretchOrientation = Windows.UI.Xaml.Controls.Orientation.Horizontal;
+			_adapter.GroupStyle = this.GroupStyle;
+			_adapter.ItemContainerHolderStretchOrientation = Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			_adapter.SecondaryPool = _secondaryPool;
 
 			SelectedItems.Safe()
@@ -121,17 +121,17 @@ namespace Uno.UI.Controls.Legacy
 				// For the ListView to measure all its children, it needs to be measured with 
 				// an AtMost mode.
 				heightMeasureSpec = ViewHelper.MakeMeasureSpec(int.MaxValue, MeasureSpecMode.AtMost);
-            }
+			}
 
 			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
 		}
 
 		public ICommand Command
-		{ 
+		{
 			get { return ItemClickCommand; }
 			set { ItemClickCommand = value; }
 		}
-		
+
 		#region ItemTemplate Dependency Property
 		public DataTemplate ItemTemplate
 		{
@@ -196,7 +196,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(ItemTemplateSelectorProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateSelectorProperty { get ; } =
+		public static DependencyProperty ItemTemplateSelectorProperty { get; } =
 			DependencyProperty.Register("ItemTemplateSelector", typeof(DataTemplateSelector), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(DataTemplateSelector), propertyChangedCallback: (d, s) => (d as ListView)?.OnItemTemplateSelectorChanged()));
 
 		private void OnItemTemplateSelectorChanged()
@@ -240,7 +240,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(HeaderProperty, value); }
 		}
 
-		public static DependencyProperty HeaderProperty { get ; } =
+		public static DependencyProperty HeaderProperty { get; } =
 			DependencyProperty.Register("Header", typeof(object), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(object), propertyChangedCallback: (d, s) => (d as ListView)?.OnHeaderChanged()));
 
 		private void OnHeaderChanged()
@@ -259,7 +259,7 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(FooterProperty, value); }
 		}
 
-		public static DependencyProperty FooterProperty { get ; } =
+		public static DependencyProperty FooterProperty { get; } =
 			DependencyProperty.Register("Footer", typeof(object), typeof(ListView), new FrameworkPropertyMetadata(defaultValue: default(object), propertyChangedCallback: (d, s) => (d as ListView)?.OnFooterChanged()));
 
 		private void OnFooterChanged()
@@ -270,7 +270,7 @@ namespace Uno.UI.Controls.Legacy
 			}
 		}
 		#endregion
-		
+
 		public object HeaderDataContext
 		{
 			get { return (Header as IDataContextProvider).SelectOrDefault(d => d.DataContext); }
@@ -302,7 +302,7 @@ namespace Uno.UI.Controls.Legacy
 		public bool IsResetScrollOnItemsSourceChanged { get; set; }
 
 		#region ItemsSource Dependency Property
-		public static DependencyProperty ItemsSourceProperty { get ; } =
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register("ItemsSource", typeof(object), typeof(ListView), new FrameworkPropertyMetadata(null, OnItemsSourceChanged));
 
 		public object ItemsSource
@@ -314,9 +314,9 @@ namespace Uno.UI.Controls.Legacy
 
 		#region SelectionMode Dependency Property
 
-		public static DependencyProperty SelectionModeProperty { get ; } =
+		public static DependencyProperty SelectionModeProperty { get; } =
 			DependencyProperty.Register(
-				"SelectionMode", 
+				"SelectionMode",
 				typeof(ListViewSelectionMode),
 				typeof(ListView),
 				new FrameworkPropertyMetadata(defaultValue: ListViewSelectionMode.Single, propertyChangedCallback: OnSelectionModeChanged)
@@ -337,11 +337,11 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		// Using a DependencyProperty as the backing store for SelectedItems.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SelectedItemsProperty { get ; } =
+		public static DependencyProperty SelectedItemsProperty { get; } =
 			DependencyProperty.Register(
-				"SelectedItems", 
-				typeof(IList<object>), 
-				typeof(ListView), 
+				"SelectedItems",
+				typeof(IList<object>),
+				typeof(ListView),
 				new FrameworkPropertyMetadata(
 					defaultValue: new List<object>(),
 					propertyChangedCallback: OnSelectedItemsChanged
@@ -351,7 +351,7 @@ namespace Uno.UI.Controls.Legacy
 
 		#region SelectedItem Dependency Property
 
-		public static DependencyProperty SelectedItemProperty { get ; } =
+		public static DependencyProperty SelectedItemProperty { get; } =
 			DependencyProperty.Register(
 				"SelectedItem",
 				typeof(object),
@@ -371,10 +371,10 @@ namespace Uno.UI.Controls.Legacy
 
 		#region ItemContainerStyle Dependency Property
 
-		public static DependencyProperty ItemContainerStyleProperty { get ; } =
+		public static DependencyProperty ItemContainerStyleProperty { get; } =
 			DependencyProperty.Register(
 				"ItemContainerStyle",
-				typeof(Style), 
+				typeof(Style),
 				typeof(ListView),
 				new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, propertyChangedCallback: OnItemContainerStyleChanged)
 			);
@@ -385,17 +385,17 @@ namespace Uno.UI.Controls.Legacy
 			set { this.SetValue(ItemContainerStyleProperty, value); }
 		}
 
-        #endregion
+		#endregion
 
-        #region GroupStyle Dependency Property
+		#region GroupStyle Dependency Property
 
-        public static DependencyProperty GroupStyleProperty { get ; } =
-            DependencyProperty.Register(
-                "GroupStyle",
-                typeof(GroupStyle),
-                typeof(ListView),
-                new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: OnGroupStyleChanged)
-            );
+		public static DependencyProperty GroupStyleProperty { get; } =
+			DependencyProperty.Register(
+				"GroupStyle",
+				typeof(GroupStyle),
+				typeof(ListView),
+				new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: OnGroupStyleChanged)
+			);
 
 		internal void RegisterRecycledAction(View convertView, Action a)
 		{
@@ -403,22 +403,22 @@ namespace Uno.UI.Controls.Legacy
 		}
 
 		public GroupStyle GroupStyle
-        {
-            get { return (GroupStyle)this.GetValue(GroupStyleProperty); }
-            set { this.SetValue(GroupStyleProperty, value); }
-        }
+		{
+			get { return (GroupStyle)this.GetValue(GroupStyleProperty); }
+			set { this.SetValue(GroupStyleProperty, value); }
+		}
 
-        #endregion
+		#endregion
 
-        #region IsItemClickEnabled Dependency Property
+		#region IsItemClickEnabled Dependency Property
 
-        public bool IsItemClickEnabled
+		public bool IsItemClickEnabled
 		{
 			get { return (bool)GetValue(IsItemClickEnabledProperty); }
 			set { SetValue(IsItemClickEnabledProperty, value); }
 		}
 
-		public static DependencyProperty IsItemClickEnabledProperty { get ; } =
+		public static DependencyProperty IsItemClickEnabledProperty { get; } =
 			DependencyProperty.Register("IsItemClickEnabled", typeof(bool), typeof(ListView), new FrameworkPropertyMetadata(false));
 		#endregion
 
@@ -433,21 +433,21 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(UnselectOnClickProperty, value); }
 		}
 
-		public static DependencyProperty UnselectOnClickProperty { get ; } =
+		public static DependencyProperty UnselectOnClickProperty { get; } =
 			DependencyProperty.Register("UnselectOnClick", typeof(bool), typeof(ListView), new FrameworkPropertyMetadata(default(bool)));
-        #endregion
+		#endregion
 
-        private static void OnGroupStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var listView = dependencyObject as ListView;
+		private static void OnGroupStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var listView = dependencyObject as ListView;
 
-            if (listView != null && listView.ListViewAdapter != null)
-            {
-                listView.ListViewAdapter.GroupStyle = args.NewValue as GroupStyle;
-            }
-        }
+			if (listView != null && listView.ListViewAdapter != null)
+			{
+				listView.ListViewAdapter.GroupStyle = args.NewValue as GroupStyle;
+			}
+		}
 
-        private static void OnItemContainerStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private static void OnItemContainerStyleChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var listView = dependencyObject as ListView;
 
@@ -462,7 +462,7 @@ namespace Uno.UI.Controls.Legacy
 			ListView list = d as ListView;
 
 			if (list != null)
-			{ 
+			{
 				//We stop the execution here if the list is collapsed since we do not want to call a RequestLayout for no reason.
 				if (list.Visibility == Visibility.Collapsed)
 				{
@@ -517,12 +517,12 @@ namespace Uno.UI.Controls.Legacy
 					listView.SelectedItems = Array.Empty<object>();
 				}
 				else if (newMode == ListViewSelectionMode.Single && oldMode == ListViewSelectionMode.Multiple)
-                {
+				{
 					var firstSelection = listView.SelectedItems.FirstOrDefault();
 
 					listView.SelectedItems = firstSelection.SelectOrDefault(s => new[] { s }, Array.Empty<object>());
 				}
-            }
+			}
 		}
 
 		private static void OnSelectedItemsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -654,7 +654,7 @@ namespace Uno.UI.Controls.Legacy
 				SelectedItems = ListViewAdapter.SelectedItems.ToArray();
 
 			}
-        }
+		}
 
 		public ICommand ItemLongClickCommand
 		{

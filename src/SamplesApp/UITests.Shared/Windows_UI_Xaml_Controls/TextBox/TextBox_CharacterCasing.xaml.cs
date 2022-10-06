@@ -24,10 +24,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 	///
 	[SampleControlInfo("TextBox", description: "TextBox_CharacterCasing")]
 	public sealed partial class TextBox_CharacterCasing : UserControl
-    {
-        public TextBox_CharacterCasing()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public TextBox_CharacterCasing()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -23,22 +23,22 @@ using System.Runtime.CompilerServices;
 namespace Uno.UI.DataBinding
 {
 	internal delegate void ValueSetterHandler(object instance, object? value);
-    internal delegate void ValueUnsetterHandler(object instance);
-    internal delegate object? ValueGetterHandler(object instance);
+	internal delegate void ValueUnsetterHandler(object instance);
+	internal delegate object? ValueGetterHandler(object instance);
 
-    public static class BindableMetadata
-    {
-        /// <summary>
-        /// Sets the metadata provider for the whole app domain.
-        /// </summary>
-        public static IBindableMetadataProvider? Provider
+	public static class BindableMetadata
+	{
+		/// <summary>
+		/// Sets the metadata provider for the whole app domain.
+		/// </summary>
+		public static IBindableMetadataProvider? Provider
 		{
 			get => BindingPropertyHelper.BindableMetadataProvider;
 			set => BindingPropertyHelper.BindableMetadataProvider = value;
 		}
 	}
 
-    internal static partial class BindingPropertyHelper
+	internal static partial class BindingPropertyHelper
 	{
 		private static readonly Logger _log = typeof(BindingPropertyHelper).Log();
 
@@ -152,7 +152,7 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-        internal static ValueSetterHandler GetValueSetter(Type type, string property, bool convert)
+		internal static ValueSetterHandler GetValueSetter(Type type, string property, bool convert)
 		{
 			return GetValueSetter(type, property, convert, DependencyPropertyValuePrecedences.Local);
 		}
@@ -208,7 +208,7 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-        internal static ValueUnsetterHandler GetValueUnsetter(Type type, string property)
+		internal static ValueUnsetterHandler GetValueUnsetter(Type type, string property)
 		{
 			return GetValueUnsetter(type, property, DependencyPropertyValuePrecedences.Local);
 		}
@@ -241,7 +241,7 @@ namespace Uno.UI.DataBinding
 
 		private static Type? InternalGetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			if(type == typeof(UnsetValue))
+			if (type == typeof(UnsetValue))
 			{
 				return null;
 			}
@@ -571,11 +571,11 @@ namespace Uno.UI.DataBinding
 						var handler = MethodInvokerBuilder(method);
 
 						return instance => handler(
-                            instance, 
-                            new object?[] {
-                                Convert(() => indexerInfo.GetIndexParameters()[0].ParameterType, indexerString)
-                            }
-                        );
+							instance,
+							new object?[] {
+								Convert(() => indexerInfo.GetIndexParameters()[0].ParameterType, indexerString)
+							}
+						);
 					}
 					else
 					{
@@ -691,7 +691,7 @@ namespace Uno.UI.DataBinding
 					return instance => attachedPropertyGetter.Invoke(null, new[] { instance });
 				}
 
-				if(type == typeof(System.Dynamic.ExpandoObject))
+				if (type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return instance =>
 					{
@@ -707,7 +707,7 @@ namespace Uno.UI.DataBinding
 					};
 				}
 
-				if(type.Is(typeof(System.Dynamic.DynamicObject)))
+				if (type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
 					return instance =>
 					{
@@ -853,7 +853,7 @@ namespace Uno.UI.DataBinding
 					{
 						if (bindableProperty != null)
 						{
-							if(bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
+							if (bindableProperty.Property?.DependencyProperty is { } dependencyProperty)
 							{
 								return (instance, value) => instance.SetValue(dependencyProperty, convertSelector(() => bindableProperty.Property.PropertyType, value), precedence);
 							}
@@ -1015,7 +1015,7 @@ namespace Uno.UI.DataBinding
 			return delegate { once(); };
 		}
 
-		private static DependencyProperty FindDependencyProperty(Type ownerType, string property) 
+		private static DependencyProperty FindDependencyProperty(Type ownerType, string property)
 			=> DependencyProperty.GetProperty(ownerType, property);
 
 		private static DependencyProperty? FindAttachedProperty(Type type, string property)

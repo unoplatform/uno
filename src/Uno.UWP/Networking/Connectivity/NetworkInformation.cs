@@ -18,7 +18,7 @@ public static partial class NetworkInformation
 			StartNetworkStatusChanged,
 			StopNetworkStatusChanged);
 	}
-	
+
 	/// <summary>
 	/// Gets the connection profile associated with the internet connection currently used by the local machine.
 	/// </summary>

@@ -4,14 +4,14 @@ using Microsoft.UI.Xaml;
 namespace $ext_safeprojectname$.Wasm
 {
 	public class Program
+{
+	private static App _app;
+
+	static int Main(string[] args)
 	{
-		private static App _app;
+		Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
 
-		static int Main(string[] args)
-		{
-			Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
-
-			return 0;
-		}
+		return 0;
 	}
+}
 }

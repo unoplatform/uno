@@ -21,7 +21,8 @@ namespace $rootnamespace$
     {
         public $safeitemname$()
         {
-            this.InitializeComponent();
-        }
-    }
+
+			this.InitializeComponent();
+}
+}
 }

@@ -16,7 +16,7 @@ namespace Uno.Helpers.Theming
 			"Windows.UI.Xaml";
 #endif
 
-        private static SystemTheme GetSystemTheme()
+		private static SystemTheme GetSystemTheme()
 		{
 			var serializedTheme = WebAssemblyRuntime.InvokeJS(BaseUIXamlNamespace + ".Application.getDefaultSystemTheme()");
 

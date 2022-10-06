@@ -16,7 +16,7 @@ using Uno.UI.Samples.Controls;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
-{	
+{
 	public sealed partial class TabViewSizingPage : Page
 	{
 		public TabViewSizingPage()

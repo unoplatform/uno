@@ -413,7 +413,7 @@ namespace Windows.UI.Xaml.Documents
 				canvas.DrawLine(x, y, x + width, y, paint);
 				paint.IsStroke = false;
 			}
-        }
+		}
 
 		internal RenderLine? GetRenderLineAt(double y, bool extendedSelection)
 		{

@@ -23,7 +23,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Controls
 		public When_NameScope_DataTemplate()
 		{
 			this.InitializeComponent();
-			Loaded += delegate {
+			Loaded += delegate
+			{
 				OuterElementName = (content01.ContentTemplateRoot as FrameworkElement).FindName("OuterElementName") as When_NameScope_Inner;
 			};
 		}

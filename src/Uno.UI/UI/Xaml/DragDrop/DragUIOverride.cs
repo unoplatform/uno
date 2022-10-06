@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml
 {
-	public partial class DragUIOverride 
+	public partial class DragUIOverride
 	{
 		private readonly CoreDragUIOverride _core;
 

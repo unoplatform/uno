@@ -7,12 +7,12 @@ using Windows.UI.Xaml.Media.Imaging;
 namespace UITests.Microsoft_UI_Xaml_Controls.ImageIconTests
 {
 	[Sample("Icons")]
-    public sealed partial class ImageIconPage : Page
-    {
-        public ImageIconPage()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class ImageIconPage : Page
+	{
+		public ImageIconPage()
+		{
+			this.InitializeComponent();
+		}
 		private void ToggleButton_Checked(object sender, RoutedEventArgs e)
 		{
 			this.ImageIcon.Source = new BitmapImage(new Uri("ms-appx:///Assets/icon.png"));

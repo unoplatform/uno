@@ -36,12 +36,12 @@ namespace Windows.UI.Xaml.Controls
 
 			m_invokedEventSource?.Invoke(this, eventArgs);
 
-			if (CommandProperty is {})
+			if (CommandProperty is { })
 			{
 				var command = Command as ICommand;
 				var param = CommandParameter;
 
-				if (command is {} && command.CanExecute(param))
+				if (command is { } && command.CanExecute(param))
 				{
 					command.Execute(param);
 				}
@@ -75,17 +75,17 @@ namespace Windows.UI.Xaml.Controls
 		internal void GenerateControl(AppBarButton appBarButton, Style swipeItemStyle)
 		{
 			appBarButton.Style(swipeItemStyle);
-			if (Background is {})
+			if (Background is { })
 			{
 				appBarButton.Background = Background;
 			}
 
-			if (Foreground is {})
+			if (Foreground is { })
 			{
 				appBarButton.Foreground = Foreground;
 			}
 
-			if (IconSource is {})
+			if (IconSource is { })
 			{
 				appBarButton.Icon = IconSource.CreateIconElement();
 			}
@@ -118,10 +118,10 @@ namespace Windows.UI.Xaml.Controls
 			TappedRoutedEventArgs args)
 		{
 			var current = VisualTreeHelper.GetParent(sender as DependencyObject);
-			while (current is {})
+			while (current is { })
 			{
 				var control = current as SwipeControl;
-				if (control is {})
+				if (control is { })
 				{
 					InvokeSwipe(control);
 					args.Handled = true;

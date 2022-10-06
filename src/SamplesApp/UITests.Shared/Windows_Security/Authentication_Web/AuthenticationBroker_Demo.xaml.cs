@@ -64,7 +64,7 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 
 				resultTxt.Text = $"Initialization completed.\nStart={_loginState.StartUrl}\nCallback={_loginState.RedirectUri}\nLogout={_logoutUrl}";
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				resultTxt.Text = $"Error {ex}";
 

@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// If there are other buttons that have open sub-menus, then we should
 				// close those on a delay, since they no longer have mouse-over.
-			
+
 				CommandBar.FindParentCommandBarForElement(this, out var parentCommandBar);
 
 				if (parentCommandBar is { })

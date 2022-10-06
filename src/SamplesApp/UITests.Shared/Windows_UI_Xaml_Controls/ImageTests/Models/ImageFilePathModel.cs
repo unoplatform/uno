@@ -58,7 +58,8 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 		public ImageFilePathModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			var unused = dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
+			var unused = dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+			{
 				FilePath = await GetAndCreateFilePath(CancellationToken.None);
 			});
 		}

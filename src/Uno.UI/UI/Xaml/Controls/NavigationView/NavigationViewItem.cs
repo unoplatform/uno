@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Stop UpdateLocalVisualState before template is applied. Otherwise the visual may not the same as we expect
 			m_appliedTemplate = false;
- 
+
 			base.OnApplyTemplate();
 
 			// Find selection indicator
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 		void UpdateNavigationViewItemToolTip()
 		{
 			var toolTipContent = ToolTipService.GetToolTip(this);
-    
+
 			// no custom tooltip, then use suggested tooltip
 			if (toolTipContent == null || toolTipContent == m_suggestedToolTipContent)
 			{
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 
 		void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
 		{
-			var stateName = showIcon ? (showContent ? "IconOnLeft": "IconOnly") : "ContentOnly";
+			var stateName = showIcon ? (showContent ? "IconOnLeft" : "IconOnly") : "ContentOnly";
 			VisualStateManager.GoToState(this, stateName, false /*useTransitions*/);
 		}
 
@@ -303,15 +303,15 @@ namespace Windows.UI.Xaml.Controls
 
 			bool shouldShowIcon = ShouldShowIcon();
 			bool shouldShowContent = ShouldShowContent();
-  
+
 			if (IsOnLeftNav())
 			{
-				VisualStateManager.GoToState(this, m_isClosedCompact ? "ClosedCompact" : "NotClosedCompact", useTransitions); 
+				VisualStateManager.GoToState(this, m_isClosedCompact ? "ClosedCompact" : "NotClosedCompact", useTransitions);
 
 				// Backward Compatibility with RS4-, new implementation prefer IconOnLeft/IconOnly/ContentOnly
 				VisualStateManager.GoToState(this, shouldShowIcon ? "IconVisible" : "IconCollapsed", useTransitions);
-			} 
-   
+			}
+
 			UpdateVisualStateForToolTip();
 
 			UpdateVisualStateForIconAndContent(shouldShowIcon, shouldShowContent);
@@ -378,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 				if (navView != null)
 				{
 					navView.TopNavigationViewItemContentChanged();
-				} 
+				}
 				else
 				{
 					m_isContentChangeHandlingDelayedForTopNav = true;

@@ -11,7 +11,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		private GattReadResult(Storage.Streams.IBuffer buffer)
 		{
 			// dummy for Error CS8618  Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
-			Value= buffer;
+			Value = buffer;
 		}
 	}
 }

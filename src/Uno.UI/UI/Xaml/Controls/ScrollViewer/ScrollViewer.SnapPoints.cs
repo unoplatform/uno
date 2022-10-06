@@ -152,9 +152,9 @@ namespace Windows.UI.Xaml.Controls
 						var snapPoint = irregularSnapPoints[iIrregularSnapPoint];
 
 						if (snapPoint >= minOffset &&
-						    snapPoint <= maxOffset &&
-						    signFactor * (snapPoint - currentOffset) > 0.0 &&
-						    signFactor * (snapPoint - currentOffset) < smallestDistance)
+							snapPoint <= maxOffset &&
+							signFactor * (snapPoint - currentOffset) > 0.0 &&
+							signFactor * (snapPoint - currentOffset) < smallestDistance)
 						{
 							smallestDistance = signFactor * (snapPoint - currentOffset);
 							closestSnapPoint = snapPoint;
@@ -167,9 +167,9 @@ namespace Windows.UI.Xaml.Controls
 							var snapPoint = irregularSnapPoints[iIrregularSnapPoint];
 
 							if (snapPoint >= minOffset &&
-							    snapPoint <= maxOffset &&
-							    signFactor * (currentOffset - snapPoint) >= 0.0 &&
-							    signFactor * (currentOffset - snapPoint) < smallestDistance)
+								snapPoint <= maxOffset &&
+								signFactor * (currentOffset - snapPoint) >= 0.0 &&
+								signFactor * (currentOffset - snapPoint) < smallestDistance)
 							{
 								smallestDistance = signFactor * (currentOffset - snapPoint);
 								closestSnapPoint = snapPoint;
@@ -182,8 +182,8 @@ namespace Windows.UI.Xaml.Controls
 					for (var iIrregularSnapPoint = 0; iIrregularSnapPoint < irregularSnapPoints.Count; iIrregularSnapPoint++)
 					{
 						if (irregularSnapPoints[iIrregularSnapPoint] >= minOffset &&
-						    irregularSnapPoints[iIrregularSnapPoint] <= maxOffset &&
-						    Math.Abs(targetOffset - irregularSnapPoints[iIrregularSnapPoint]) < smallestDistance)
+							irregularSnapPoints[iIrregularSnapPoint] <= maxOffset &&
+							Math.Abs(targetOffset - irregularSnapPoints[iIrregularSnapPoint]) < smallestDistance)
 						{
 							smallestDistance = Math.Abs(targetOffset - irregularSnapPoints[iIrregularSnapPoint]);
 							closestSnapPoint = irregularSnapPoints[iIrregularSnapPoint];
@@ -398,7 +398,7 @@ namespace Windows.UI.Xaml.Controls
 						// With certain scale factors and resolutions the snap points sometimes get pushed out of bounds
 						// by rounding errors, in these cases we need to intervene and return them to the boundary.
 						if (distanceFromFarEdge < 0 &&
-						    distanceFromFarEdge >= (-1.0 * (ScrollViewerSnapPointLocationTolerance * Math.Max(1.0f, zoomFactor))))
+							distanceFromFarEdge >= (-1.0 * (ScrollViewerSnapPointLocationTolerance * Math.Max(1.0f, zoomFactor))))
 						{
 							alignedSnapPoint = (float)(extentDimension - viewportDimension);
 							distanceFromFarEdge = 0;

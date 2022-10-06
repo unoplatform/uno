@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			if (size.IsEmpty)
 			{
-				return (0,0,0);
+				return (0, 0, 0);
 			}
 			NSImage? img = default;
 			try

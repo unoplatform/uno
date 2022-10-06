@@ -46,11 +46,11 @@ namespace Umbrella.UI.TestComparer
 				var pat = "";
 				var sourceBranch = "";
 				var targetBranchParam = "";
-				var artifactName = ""; 
+				var artifactName = "";
 				var artifactInnerBasePath = ""; // base path inside the artifact archive
-				var definitionName = "";		// Build.DefinitionName
-				var projectName = "";			// System.TeamProject
-				var serverUri = "";					// System.TeamFoundationCollectionUri
+				var definitionName = "";        // Build.DefinitionName
+				var projectName = "";           // System.TeamProject
+				var serverUri = "";                 // System.TeamFoundationCollectionUri
 				var currentBuild = 0;           // Build.BuildId
 
 				var githubPAT = "";
@@ -80,7 +80,7 @@ namespace Umbrella.UI.TestComparer
 
 				var list = p.Parse(args);
 
-				var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;      	
+				var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
 				var artifacts = await downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit);
@@ -148,7 +148,7 @@ namespace Umbrella.UI.TestComparer
 			{
 				foreach (var toplevel in Directory.GetDirectories(artifactsBasePath, "*", SearchOption.TopDirectoryOnly))
 				{
-					foreach(var platform in Directory.GetDirectories(Path.Combine(toplevel, "uitests-results\\screenshots")))
+					foreach (var platform in Directory.GetDirectories(Path.Combine(toplevel, "uitests-results\\screenshots")))
 					{
 						yield return Path.GetFileName(platform);
 					}
@@ -346,7 +346,7 @@ namespace Umbrella.UI.TestComparer
 				}
 			}
 
-			using (var file = XmlWriter.Create(File.OpenWrite(resultsFilePath), new XmlWriterSettings { Indent = true } ))
+			using (var file = XmlWriter.Create(File.OpenWrite(resultsFilePath), new XmlWriterSettings { Indent = true }))
 			{
 				doc.WriteTo(file);
 			}
@@ -382,7 +382,7 @@ namespace Umbrella.UI.TestComparer
 
 			var filePathNode = doc.CreateElement("filePath");
 			attachmentNode.AppendChild(filePathNode);
-			filePathNode.InnerText =  @"\\?\" + filePath;
+			filePathNode.InnerText = @"\\?\" + filePath;
 
 			var descriptionNode = doc.CreateElement("description");
 			attachmentNode.AppendChild(descriptionNode);

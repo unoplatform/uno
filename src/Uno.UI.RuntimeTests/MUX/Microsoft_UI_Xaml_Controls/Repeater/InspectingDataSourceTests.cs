@@ -206,319 +206,319 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-	[TestMethod]
-	public void ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
-	{
-		ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
-	}
-
-	[TestMethod]
-	public void ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
-	{
-		ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
-	}
-
-	[TestMethod]
-	public void VerifyReadOnlyListCompatibility()
-	{
-		RunOnUIThread.Execute(() =>
+		[TestMethod]
+		public void ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
 		{
-			var collection = new ReadOnlyNotifyPropertyChangedCollection<object>();
-			var firstItem = "something1";
-
-			collection.Data = new ObservableCollection<object>();
-
-			collection.Data.Add(firstItem);
-			collection.Data.Add("something2");
-			collection.Data.Add("something3");
-
-			var itemsSourceView = new ItemsSourceView(collection);
-			Verify.AreEqual(3, itemsSourceView.Count);
-
-			collection.Data.Add("something4");
-			Verify.AreEqual(4, itemsSourceView.Count);
-
-			Verify.AreEqual(firstItem, itemsSourceView.GetAt(0));
-			Verify.AreEqual(0, itemsSourceView.IndexOf(firstItem));
-		});
-	}
-
-	[TestMethod]
-	public void VerifyNotifyCollectionChangeWithReadonlyListBehavior()
-	{
-		int invocationCount = 0;
-
-		RunOnUIThread.Execute(() =>
-		{
-			var collection = new ReadOnlyNotifyPropertyChangedCollection<object>();
-
-			var itemsSourceView = new ItemsSourceView(collection);
-			itemsSourceView.CollectionChanged += ItemsSourceView_CollectionChanged;
-
-			var underlyingData = new ObservableCollection<object>();
-			collection.Data = underlyingData;
-
-			Verify.AreEqual(1, invocationCount);
-		});
-
-		void ItemsSourceView_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			invocationCount++;
+			ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
 		}
-	}
 
-	//TODO Uno specific: This test is adjusted to pass on Android - UpdateLayout needs to be called twice.
-	public async Task ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
-	{
-		const int numItems = 10;
-		ItemsRepeater repeater = null;
-		await RunOnUIThread.ExecuteAsync(() =>
+		[TestMethod]
+		public void ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
 		{
-			repeater = new ItemsRepeater()
-			{
-				ItemsSource = Enumerable.Range(0, numItems),
-			};
+			ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
+		}
 
-			// By default we use stack layout that is virtualizing.
-			if (!isVirtualLayout)
+		[TestMethod]
+		public void VerifyReadOnlyListCompatibility()
+		{
+			RunOnUIThread.Execute(() =>
 			{
-				repeater.Layout = new NonVirtualStackLayout();
+				var collection = new ReadOnlyNotifyPropertyChangedCollection<object>();
+				var firstItem = "something1";
+
+				collection.Data = new ObservableCollection<object>();
+
+				collection.Data.Add(firstItem);
+				collection.Data.Add("something2");
+				collection.Data.Add("something3");
+
+				var itemsSourceView = new ItemsSourceView(collection);
+				Verify.AreEqual(3, itemsSourceView.Count);
+
+				collection.Data.Add("something4");
+				Verify.AreEqual(4, itemsSourceView.Count);
+
+				Verify.AreEqual(firstItem, itemsSourceView.GetAt(0));
+				Verify.AreEqual(0, itemsSourceView.IndexOf(firstItem));
+			});
+		}
+
+		[TestMethod]
+		public void VerifyNotifyCollectionChangeWithReadonlyListBehavior()
+		{
+			int invocationCount = 0;
+
+			RunOnUIThread.Execute(() =>
+			{
+				var collection = new ReadOnlyNotifyPropertyChangedCollection<object>();
+
+				var itemsSourceView = new ItemsSourceView(collection);
+				itemsSourceView.CollectionChanged += ItemsSourceView_CollectionChanged;
+
+				var underlyingData = new ObservableCollection<object>();
+				collection.Data = underlyingData;
+
+				Verify.AreEqual(1, invocationCount);
+			});
+
+			void ItemsSourceView_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+			{
+				invocationCount++;
 			}
+		}
 
-			Content = new ItemsRepeaterScrollHost()
+		//TODO Uno specific: This test is adjusted to pass on Android - UpdateLayout needs to be called twice.
+		public async Task ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
+		{
+			const int numItems = 10;
+			ItemsRepeater repeater = null;
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Width = 400,
-				Height = 400,
-				ScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
+				repeater = new ItemsRepeater()
 				{
-					Content = repeater
+					ItemsSource = Enumerable.Range(0, numItems),
+				};
+
+				// By default we use stack layout that is virtualizing.
+				if (!isVirtualLayout)
+				{
+					repeater.Layout = new NonVirtualStackLayout();
 				}
-			};
 
-			Content.UpdateLayout();
-			Content.UpdateLayout();
-		});
-		await TestServices.WindowHelper.WaitForIdle();
-		await RunOnUIThread.ExecuteAsync(() =>
-		{
-			for (int i = 0; i < numItems; i++)
-			{
-				var element = (TextBlock)repeater.TryGetElement(i);
-				Verify.AreEqual(i.ToString(), element.Text);
-			}
-
-			repeater.ItemsSource = Enumerable.Range(20, numItems);
-			Content.UpdateLayout();
-			Content.UpdateLayout();
-		});
-		await TestServices.WindowHelper.WaitForIdle();
-		await RunOnUIThread.ExecuteAsync(() =>
-		{
-			for (int i = 0; i < numItems; i++)
-			{
-				var element = (TextBlock)repeater.TryGetElement(i);
-				Verify.AreEqual((i + 20).ToString(), element.Text);
-			}
-		});
-	}
-
-	private static void VerifyRecordedCollectionChanges(NotifyCollectionChangedEventArgs[] expected, List<NotifyCollectionChangedEventArgs> actual)
-	{
-		Verify.AreEqual(expected.Length, actual.Count);
-
-		for (int i = 0; i < expected.Length; ++i)
-		{
-			Verify.AreEqual(expected[i].Action, actual[i].Action);
-			Verify.AreEqual(expected[i].NewStartingIndex, actual[i].NewStartingIndex);
-			Verify.AreEqual(expected[i].OldStartingIndex, actual[i].OldStartingIndex);
-			Verify.AreEqual(GetCount(expected[i].NewItems), GetCount(actual[i].NewItems));
-			Verify.AreEqual(GetCount(expected[i].OldItems), GetCount(actual[i].OldItems));
-		}
-	}
-
-	private static int GetCount(IList list)
-	{
-		return list == null ? -1 : list.Count;
-	}
-
-	class CollectionChangeRecorder
-	{
-		private List<NotifyCollectionChangedEventArgs> _recordedArgs = new List<NotifyCollectionChangedEventArgs>();
-
-		public List<NotifyCollectionChangedEventArgs> RecordedArgs { get { return _recordedArgs; } }
-
-		public CollectionChangeRecorder(ItemsSourceView source)
-		{
-			source.CollectionChanged += (sender, args) => RecordedArgs.Add(Clone(args));
-		}
-
-		private static NotifyCollectionChangedEventArgs Clone(NotifyCollectionChangedEventArgs args)
-		{
-			return CollectionChangeEventArgsConverters.CreateNotifyArgs(
-				args.Action,
-				args.OldStartingIndex,
-				args.OldItems == null ? -1 : args.OldItems.Count,
-				args.NewStartingIndex,
-				args.NewItems == null ? -1 : args.NewItems.Count);
-		}
-	}
-
-	class WinRTObservableVector : Windows.Foundation.Collections.IObservableVector<object>
-	{
-		private IList<object> _items;
-
-		public object this[int index]
-		{
-			get { return _items[index]; }
-			set
-			{
-				_items[index] = value;
-				if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemChanged, index)); }
-			}
-		}
-
-		public int Count { get { return _items.Count; } }
-
-		public bool IsReadOnly { get { return false; } }
-
-		public event VectorChangedEventHandler<object> VectorChanged;
-
-		public WinRTObservableVector()
-		{
-			_items = new List<object>();
-		}
-
-		public WinRTObservableVector(IEnumerable<object> items)
-		{
-			_items = new List<object>(items);
-		}
-
-		public void Add(object item)
-		{
-			_items.Add(item);
-			if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemInserted, _items.Count - 1)); }
-		}
-
-		public void Clear()
-		{
-			_items.Clear();
-			if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.Reset, 0)); }
-		}
-
-		public bool Contains(object item)
-		{
-			return _items.Contains(item);
-		}
-
-		public void CopyTo(object[] array, int arrayIndex)
-		{
-			_items.CopyTo(array, arrayIndex);
-		}
-
-		public IEnumerator<object> GetEnumerator()
-		{
-			return _items.GetEnumerator();
-		}
-
-		public int IndexOf(object item)
-		{
-			return _items.IndexOf(item);
-		}
-
-		public void Insert(int index, object item)
-		{
-			_items.Insert(index, item);
-			if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemInserted, index)); }
-		}
-
-		public bool Remove(object item)
-		{
-			RemoveAt(_items.IndexOf(item));
-			return true;
-		}
-
-		public void RemoveAt(int index)
-		{
-			_items.RemoveAt(index);
-			if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemRemoved, index)); }
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return _items.GetEnumerator();
-		}
-
-		private class WinRTVectorChangedEventArgs : IVectorChangedEventArgs
-		{
-			public CollectionChange CollectionChange { get; private set; }
-
-			private uint _index;
-			public uint Index
-			{
-				get
+				Content = new ItemsRepeaterScrollHost()
 				{
-					if (CollectionChange == CollectionChange.Reset)
+					Width = 400,
+					Height = 400,
+					ScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
 					{
-						// C++/CX observable collection fails if accessing index 
-						// when the args is for a Reset, so emulating that behavior here.
-						throw new InvalidOperationException();
+						Content = repeater
+					}
+				};
+
+				Content.UpdateLayout();
+				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				for (int i = 0; i < numItems; i++)
+				{
+					var element = (TextBlock)repeater.TryGetElement(i);
+					Verify.AreEqual(i.ToString(), element.Text);
+				}
+
+				repeater.ItemsSource = Enumerable.Range(20, numItems);
+				Content.UpdateLayout();
+				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				for (int i = 0; i < numItems; i++)
+				{
+					var element = (TextBlock)repeater.TryGetElement(i);
+					Verify.AreEqual((i + 20).ToString(), element.Text);
+				}
+			});
+		}
+
+		private static void VerifyRecordedCollectionChanges(NotifyCollectionChangedEventArgs[] expected, List<NotifyCollectionChangedEventArgs> actual)
+		{
+			Verify.AreEqual(expected.Length, actual.Count);
+
+			for (int i = 0; i < expected.Length; ++i)
+			{
+				Verify.AreEqual(expected[i].Action, actual[i].Action);
+				Verify.AreEqual(expected[i].NewStartingIndex, actual[i].NewStartingIndex);
+				Verify.AreEqual(expected[i].OldStartingIndex, actual[i].OldStartingIndex);
+				Verify.AreEqual(GetCount(expected[i].NewItems), GetCount(actual[i].NewItems));
+				Verify.AreEqual(GetCount(expected[i].OldItems), GetCount(actual[i].OldItems));
+			}
+		}
+
+		private static int GetCount(IList list)
+		{
+			return list == null ? -1 : list.Count;
+		}
+
+		class CollectionChangeRecorder
+		{
+			private List<NotifyCollectionChangedEventArgs> _recordedArgs = new List<NotifyCollectionChangedEventArgs>();
+
+			public List<NotifyCollectionChangedEventArgs> RecordedArgs { get { return _recordedArgs; } }
+
+			public CollectionChangeRecorder(ItemsSourceView source)
+			{
+				source.CollectionChanged += (sender, args) => RecordedArgs.Add(Clone(args));
+			}
+
+			private static NotifyCollectionChangedEventArgs Clone(NotifyCollectionChangedEventArgs args)
+			{
+				return CollectionChangeEventArgsConverters.CreateNotifyArgs(
+					args.Action,
+					args.OldStartingIndex,
+					args.OldItems == null ? -1 : args.OldItems.Count,
+					args.NewStartingIndex,
+					args.NewItems == null ? -1 : args.NewItems.Count);
+			}
+		}
+
+		class WinRTObservableVector : Windows.Foundation.Collections.IObservableVector<object>
+		{
+			private IList<object> _items;
+
+			public object this[int index]
+			{
+				get { return _items[index]; }
+				set
+				{
+					_items[index] = value;
+					if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemChanged, index)); }
+				}
+			}
+
+			public int Count { get { return _items.Count; } }
+
+			public bool IsReadOnly { get { return false; } }
+
+			public event VectorChangedEventHandler<object> VectorChanged;
+
+			public WinRTObservableVector()
+			{
+				_items = new List<object>();
+			}
+
+			public WinRTObservableVector(IEnumerable<object> items)
+			{
+				_items = new List<object>(items);
+			}
+
+			public void Add(object item)
+			{
+				_items.Add(item);
+				if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemInserted, _items.Count - 1)); }
+			}
+
+			public void Clear()
+			{
+				_items.Clear();
+				if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.Reset, 0)); }
+			}
+
+			public bool Contains(object item)
+			{
+				return _items.Contains(item);
+			}
+
+			public void CopyTo(object[] array, int arrayIndex)
+			{
+				_items.CopyTo(array, arrayIndex);
+			}
+
+			public IEnumerator<object> GetEnumerator()
+			{
+				return _items.GetEnumerator();
+			}
+
+			public int IndexOf(object item)
+			{
+				return _items.IndexOf(item);
+			}
+
+			public void Insert(int index, object item)
+			{
+				_items.Insert(index, item);
+				if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemInserted, index)); }
+			}
+
+			public bool Remove(object item)
+			{
+				RemoveAt(_items.IndexOf(item));
+				return true;
+			}
+
+			public void RemoveAt(int index)
+			{
+				_items.RemoveAt(index);
+				if (VectorChanged != null) { VectorChanged(this, new WinRTVectorChangedEventArgs(CollectionChange.ItemRemoved, index)); }
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return _items.GetEnumerator();
+			}
+
+			private class WinRTVectorChangedEventArgs : IVectorChangedEventArgs
+			{
+				public CollectionChange CollectionChange { get; private set; }
+
+				private uint _index;
+				public uint Index
+				{
+					get
+					{
+						if (CollectionChange == CollectionChange.Reset)
+						{
+							// C++/CX observable collection fails if accessing index 
+							// when the args is for a Reset, so emulating that behavior here.
+							throw new InvalidOperationException();
+						}
+
+						return _index;
 					}
 
-					return _index;
+					private set
+					{
+						_index = value;
+					}
 				}
 
-				private set
+				public WinRTVectorChangedEventArgs(CollectionChange change, int index)
 				{
-					_index = value;
+					CollectionChange = change;
+					Index = (uint)index;
 				}
 			}
+		}
 
-			public WinRTVectorChangedEventArgs(CollectionChange change, int index)
+		class ObservableVectorWithUniqueIds : ObservableCollection<int>, IKeyIndexMapping
+		{
+			public ObservableVectorWithUniqueIds(IEnumerable<int> data) : base(data) { }
+
+			// Note: In real world scenarios the mapping would be based on the object,
+			// but for testing purposes we can just use the index here.
+			public string KeyFromIndex(int index)
 			{
-				CollectionChange = change;
-				Index = (uint)index;
+				return index.ToString();
+			}
+
+			public int IndexFromKey(string id)
+			{
+				return int.Parse(id);
+			}
+		}
+
+		class CustomEnumerable : IEnumerable<object>
+		{
+			private List<string> myList = new List<string>();
+
+			public CustomEnumerable()
+			{
+				myList.Add("text");
+				myList.Add(null);
+				myList.Add("foobar");
+				myList.Add("WinUI is awesome");
+			}
+
+			public IEnumerator<object> GetEnumerator()
+			{
+				return myList.GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return myList.GetEnumerator();
 			}
 		}
 	}
-
-	class ObservableVectorWithUniqueIds : ObservableCollection<int>, IKeyIndexMapping
-	{
-		public ObservableVectorWithUniqueIds(IEnumerable<int> data) : base(data) { }
-
-		// Note: In real world scenarios the mapping would be based on the object,
-		// but for testing purposes we can just use the index here.
-		public string KeyFromIndex(int index)
-		{
-			return index.ToString();
-		}
-
-		public int IndexFromKey(string id)
-		{
-			return int.Parse(id);
-		}
-	}
-
-	class CustomEnumerable : IEnumerable<object>
-	{
-		private List<string> myList = new List<string>();
-
-		public CustomEnumerable()
-		{
-			myList.Add("text");
-			myList.Add(null);
-			myList.Add("foobar");
-			myList.Add("WinUI is awesome");
-		}
-
-		public IEnumerator<object> GetEnumerator()
-		{
-			return myList.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return myList.GetEnumerator();
-		}
-	}
-}
 }

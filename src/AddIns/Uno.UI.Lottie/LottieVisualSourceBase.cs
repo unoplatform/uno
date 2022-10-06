@@ -25,7 +25,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private AnimatedVisualPlayer? _player;
 
-		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty UriSourceProperty { get; } = DependencyProperty.Register(
 			"UriSource",
 			typeof(Uri),
 			typeof(LottieVisualSourceBase),
@@ -40,7 +40,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			set => SetValue(UriSourceProperty, value);
 		}
 
-		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty OptionsProperty { get; } = DependencyProperty.Register(
 			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSourceBase), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]
@@ -238,7 +238,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task<IInputStream?> TryLoadDownloadJson(Uri uri, CancellationToken ct)
 		{
-			if(await TryLoadEmbeddedJson(uri, ct) is {} json)
+			if (await TryLoadEmbeddedJson(uri, ct) is { } json)
 			{
 				return json;
 			}

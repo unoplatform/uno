@@ -34,7 +34,7 @@ namespace Windows.UI.ViewManagement
 		{
 			var jsEval = $"{ApplicationViewTsType}.setFullScreenMode({turnOn.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()})";
 			var result = WebAssemblyRuntime.InvokeJS(jsEval);
-			return bool.TryParse(result, out var modeSwitchSuccessful) && modeSwitchSuccessful;			
+			return bool.TryParse(result, out var modeSwitchSuccessful) && modeSwitchSuccessful;
 		}
 	}
 }

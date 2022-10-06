@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml
 				// This block is a manual enumeration to avoid the foreach pattern
 				// See https://github.com/dotnet/runtime/issues/56309 for details
 				var settersEnumerator = currentSetters.OfType<Setter>().GetEnumerator();
-				while(settersEnumerator.MoveNext())
+				while (settersEnumerator.MoveNext())
 				{
 					var setter = settersEnumerator.Current;
 
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml
 					// See https://github.com/dotnet/runtime/issues/56309 for details
 					var settersEnumerator = target.setters.OfType<Setter>().GetEnumerator();
 
-					while(settersEnumerator.MoveNext())
+					while (settersEnumerator.MoveNext())
 					{
 						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
 					}

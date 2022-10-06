@@ -6,7 +6,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Metadata
 {
 	[TestClass]
 	public class Given_ApiInformation
-    {
+	{
 		[TestMethod]
 		public async Task When_IsPropertyPresent_Called_Twice()
 		{

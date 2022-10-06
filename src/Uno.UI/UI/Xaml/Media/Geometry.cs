@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(TransformProperty, value);
 		}
 
-		public static DependencyProperty TransformProperty { get ; } =
+		public static DependencyProperty TransformProperty { get; } =
 			DependencyProperty.Register(
 				"Transform",
 				typeof(Transform),

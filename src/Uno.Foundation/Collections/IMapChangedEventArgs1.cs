@@ -1,8 +1,8 @@
 ﻿namespace Windows.Foundation.Collections;
 
-	public partial interface IMapChangedEventArgs<K>
-	{
-		CollectionChange CollectionChange { get; }
-		K Key { get; }
-	}
+public partial interface IMapChangedEventArgs<K>
+{
+	CollectionChange CollectionChange { get; }
+	K Key { get; }
+}
 

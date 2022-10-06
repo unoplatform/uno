@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.Runtime
 			bool IsTestExecutionDone()
 			{
 				try
-				{ 
+				{
 					var text = runStatus.GetDependencyPropertyValue("Text")?.ToString();
 					var r2 = text?.Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -69,7 +69,7 @@ namespace SamplesApp.UITests.Runtime
 			while (DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
 				try
-				{ 
+				{
 					if (IsTestExecutionDone())
 					{
 						break;
@@ -85,7 +85,7 @@ namespace SamplesApp.UITests.Runtime
 						TakeScreenshot($"Run {newValue}", ignoreInSnapshotCompare: true);
 					}
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					// Skip exceptions as they may be timeouts
 				}

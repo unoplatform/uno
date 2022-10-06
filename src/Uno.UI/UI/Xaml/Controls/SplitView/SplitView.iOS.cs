@@ -21,9 +21,9 @@ namespace Windows.UI.Xaml.Controls
 				The patch here only ensure to invalidate the view to force a layouting cycle.
 			
 		*/
-		
+
 		private VisualStateGroup _patchDisplayModeStatesGroup;
-		
+
 		private void PatchInvalidFinalState(string targetStateName)
 		{
 			// Get the DisplayModeStates visual state group from the root element of the template

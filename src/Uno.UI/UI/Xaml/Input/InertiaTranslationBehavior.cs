@@ -8,7 +8,7 @@ using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public partial class InertiaTranslationBehavior 
+	public partial class InertiaTranslationBehavior
 	{
 		private readonly GestureRecognizer.Manipulation.InertiaProcessor _processor;
 

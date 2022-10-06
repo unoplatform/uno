@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
 	[Sample("Pickers")]
-    public sealed partial class CalendarDatePicker_Description : Page
-    {
-        public CalendarDatePicker_Description()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class CalendarDatePicker_Description : Page
+	{
+		public CalendarDatePicker_Description()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

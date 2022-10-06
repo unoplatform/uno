@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public static DependencyProperty StoryboardProperty { get ; } =
+		public static DependencyProperty StoryboardProperty { get; } =
 			DependencyProperty.Register(
 				"Storyboard",
 				typeof(Storyboard),

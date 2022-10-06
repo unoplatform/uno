@@ -99,7 +99,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_screenInfo.bits_per_pixel != 32)
 				{
-					if(_screenInfo.bits_per_pixel != 16)
+					if (_screenInfo.bits_per_pixel != 16)
 					{
 						throw new InvalidOperationException($"Failed to set 32 bits display mode (Found {_screenInfo.bits_per_pixel})");
 					}

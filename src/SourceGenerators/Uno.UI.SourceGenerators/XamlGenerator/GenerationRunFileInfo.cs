@@ -11,7 +11,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string _fileId;
 		private Dictionary<INamedTypeSymbol, int> _appliedTypes = new Dictionary<INamedTypeSymbol, int>();
 
-		public GenerationRunFileInfo(GenerationRunInfo runInfo,string fileId)
+		public GenerationRunFileInfo(GenerationRunInfo runInfo, string fileId)
 		{
 			_fileId = fileId;
 			RunInfo = runInfo;
@@ -25,7 +25,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal void SetAppliedTypes(Dictionary<INamedTypeSymbol, int> appliedTypes)
 		{
-			foreach(var type in appliedTypes)
+			foreach (var type in appliedTypes)
 			{
 				_appliedTypes.Add(type.Key, type.Value);
 			}

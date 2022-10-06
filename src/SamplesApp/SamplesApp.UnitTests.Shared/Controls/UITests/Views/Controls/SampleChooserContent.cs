@@ -39,7 +39,8 @@ namespace SampleControl.Entities
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 		public override bool Equals(object obj) =>
-			obj switch {
+			obj switch
+			{
 				SampleChooserContent other => Equals(ControlName, other.ControlName),
 				_ => false
 			};

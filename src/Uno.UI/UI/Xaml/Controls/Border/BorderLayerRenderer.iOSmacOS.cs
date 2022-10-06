@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Shapes
 				return updatedBoundsPath;
 			}
 
-			
+
 			return null; // no change
 		}
 

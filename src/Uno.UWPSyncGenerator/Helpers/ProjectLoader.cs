@@ -30,9 +30,9 @@ namespace Uno.SourceGeneration.Host
 			var key = Tuple.Create(projectFile, configuration);
 			ProjectDetails details;
 
-			if(_allProjects.TryGetValue(key, out details))
+			if (_allProjects.TryGetValue(key, out details))
 			{
-				if(!details.HasChanged())
+				if (!details.HasChanged())
 				{
 					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -109,7 +109,7 @@ namespace Uno.SourceGeneration.Host
 			hostServices.RegisterHostObject(loadedProject.FullPath, "CoreCompile", "Csc", null);
 
 			var buildParameters = new Microsoft.Build.Execution.BuildParameters(loadedProject.ProjectCollection);
-			
+
 			// This allows for the loggers to 
 			buildParameters.Loggers = collection.Loggers;
 
@@ -122,10 +122,10 @@ namespace Uno.SourceGeneration.Host
 				ValidateOutputPath(details.ExecutedProject);
 
 				var projectFilePath = Path.GetFullPath(Path.GetDirectoryName(projectFile));
-				
+
 				details.References = details.ExecutedProject.GetItems("ReferencePath").Select(r => r.EvaluatedInclude).ToArray();
 
-				if(details.References.None())
+				if (details.References.None())
 				{
 					LogFailedTargets(projectFile, result);
 					return details;

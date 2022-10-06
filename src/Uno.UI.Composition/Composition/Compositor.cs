@@ -81,7 +81,8 @@ namespace Windows.UI.Composition
 			=> new InsetClip(this);
 
 		public InsetClip CreateInsetClip(float leftInset, float topInset, float rightInset, float bottomInset)
-			=> new InsetClip(this) {
+			=> new InsetClip(this)
+			{
 				LeftInset = leftInset,
 				TopInset = topInset,
 				RightInset = rightInset,
@@ -98,7 +99,8 @@ namespace Windows.UI.Composition
 			=> new CompositionColorGradientStop(this);
 
 		public CompositionColorGradientStop CreateColorGradientStop(float offset, Color color)
-			=> new CompositionColorGradientStop(this) {
+			=> new CompositionColorGradientStop(this)
+			{
 				Offset = offset,
 				Color = color
 			};

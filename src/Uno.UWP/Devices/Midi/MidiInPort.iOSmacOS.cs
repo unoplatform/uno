@@ -12,8 +12,8 @@ using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
 {
-    public partial class MidiInPort
-    {
+	public partial class MidiInPort
+	{
 		private MidiEndpoint _endpoint;
 		private MidiClient _client;
 		private MidiPort _port;
@@ -40,7 +40,7 @@ namespace Windows.Devices.Midi
 
 		partial void DisposeNative()
 		{
-			
+
 			_port?.Dispose();
 			_client?.Dispose();
 			_endpoint?.Dispose();
@@ -59,7 +59,7 @@ namespace Windows.Devices.Midi
 					"Given MIDI out device does not exist or is no longer connected");
 			}
 
-			return new MidiInPort(identifier.ToString(), nativeDeviceInfo);						
+			return new MidiInPort(identifier.ToString(), nativeDeviceInfo);
 		}
 
 

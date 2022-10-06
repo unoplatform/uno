@@ -37,7 +37,7 @@ namespace Windows.Graphics.Display
 				_autoRotationPreferences = value;
 				SetOrientationPartial(_autoRotationPreferences);
 			}
-		}		
+		}
 
 		public bool StereoEnabled { get; private set; }
 

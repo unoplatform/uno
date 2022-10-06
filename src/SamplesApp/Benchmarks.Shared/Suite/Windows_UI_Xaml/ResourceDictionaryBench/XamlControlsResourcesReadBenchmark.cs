@@ -19,7 +19,8 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml.ResourceDictionaryBench
 		public void Setup()
 		{
 			SUT = new XamlControlsResources();
-			if (!(SUT["ListViewItemExpanded"] is Style)) {
+			if (!(SUT["ListViewItemExpanded"] is Style))
+			{
 				throw new InvalidOperationException($"ListViewItemExpanded does not exist");
 			}
 

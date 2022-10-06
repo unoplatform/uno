@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Uno
 {
-    internal static class AndroidResourceNameEncoder
-    {
+	internal static class AndroidResourceNameEncoder
+	{
 		private const string NumberPrefix = "__";
 
 		// These characters are not supported on Android, but they're used by the attached property localization syntax.
@@ -28,7 +28,7 @@ namespace Uno
 			key = sanitizeName.Replace(key, "_");
 
 			//Checks if the keys are starting by a number because they are invalid in C#
-			if (int.TryParse(key.Substring(0,1), out var number))
+			if (int.TryParse(key.Substring(0, 1), out var number))
 			{
 				key = $"{NumberPrefix}{key}";
 			}

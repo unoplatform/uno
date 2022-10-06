@@ -1,4 +1,4 @@
-﻿#pragma warning disable 108,114
+﻿#pragma warning disable 108, 114
 
 using System;
 using System.Collections.Generic;

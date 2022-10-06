@@ -258,7 +258,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]		
+		[ActivePlatforms(Platform.iOS)]
 		public void When_Navigated_CommandBarDisplayCustomBackButtonIcon_NativeFrame()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage.CommandBar_Frame");

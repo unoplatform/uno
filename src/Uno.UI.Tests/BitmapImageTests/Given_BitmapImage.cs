@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.BitmapImageTests
 {
 	[TestClass]
 	public class Given_BitmapImage
-    {
+	{
 		[TestMethod]
 		[DataRow("http://example.com/image.png", "http://example.com/image.png")]
 		[DataRow("ms-appx:///image.png", "ms-appx:///image.png")]

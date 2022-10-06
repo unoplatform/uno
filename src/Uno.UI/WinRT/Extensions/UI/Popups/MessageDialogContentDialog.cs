@@ -25,7 +25,7 @@ internal partial class MessageDialogContentDialog : ContentDialog
 
 		var styleOverriden = TryApplyStyle(WinRTFeatureConfiguration.MessageDialog.StyleOverride);
 		if (!styleOverriden)
-        {
+		{
 			// WinUI provides a modern style for ContentDialog, which is not applied automatically.
 			// Force apply it if available.
 			TryApplyStyle("DefaultContentDialogStyle");

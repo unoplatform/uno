@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[Sample("MUX", Name= "NumberBox")]
+	[Sample("MUX", Name = "NumberBox")]
 	public sealed partial class NumberBoxPage : UserControl
 	{
 		public DataModelWithINPC DataModelWithINPC { get; set; } = new DataModelWithINPC();

@@ -20,7 +20,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class SimpleOrientationSensor : Java.Lang.Object, ISensorEventListener
 	{
-		#region Static
+#region Static
 
 		private static Orientation _defaultDeviceOrientation;
 
@@ -55,7 +55,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		#endregion
+#endregion
 
 		private SimpleOrientationEventListener? _orientationListener;
 		private SettingsContentObserver? _contentObserver;
@@ -107,7 +107,7 @@ namespace Windows.Devices.Sensors
 			}, null);
 		}
 
-		#region GraviySensorType Methods
+#region GraviySensorType Methods
 
 		public void OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
 		{
@@ -129,9 +129,9 @@ namespace Windows.Devices.Sensors
 			SetCurrentOrientation(simpleOrientation);
 		}
 
-		#endregion
+#endregion
 
-		#region OrientationSensorType Methods and Classes
+#region OrientationSensorType Methods and Classes
 
 		private void OnOrientationChanged(int angle)
 		{
@@ -255,7 +255,7 @@ namespace Windows.Devices.Sensors
 			public override void OnOrientationChanged(int orientation) => _orientationChanged(orientation);
 		}
 
-		#endregion
+#endregion
 	}
 }
 #endif

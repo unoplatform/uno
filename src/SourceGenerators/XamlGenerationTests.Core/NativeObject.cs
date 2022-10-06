@@ -8,9 +8,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace XamlGenerationTests.Core
 {
-    public partial class NativeObject : Panel
+	public partial class NativeObject : Panel
 	{
-    }
+	}
 
 	public class TestPanel
 	{

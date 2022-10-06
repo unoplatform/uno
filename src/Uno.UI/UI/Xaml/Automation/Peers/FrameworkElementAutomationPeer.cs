@@ -15,14 +15,14 @@ using UIKit;
 using View = AppKit.NSView;
 using AppKit;
 #else
-using View  = Windows.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
-		public UIElement Owner { get; } 
+		public UIElement Owner { get; }
 
 		public FrameworkElementAutomationPeer() { }
 
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		public static global::Windows.UI.Xaml.Automation.Peers.AutomationPeer FromElement(global::Windows.UI.Xaml.UIElement element)
 		{
-			if(element is IFrameworkElement fe)
+			if (element is IFrameworkElement fe)
 			{
 				return FromIFrameworkElement(fe);
 			}

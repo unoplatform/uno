@@ -292,10 +292,12 @@ namespace SampleControl.Presentation
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
-						try {
+						try
+						{
 							await RecordAllTestsInner(folderName, ct, doneAction);
 						}
-						finally {
+						finally
+						{
 							_isRecordAllTests = false;
 						}
 					});

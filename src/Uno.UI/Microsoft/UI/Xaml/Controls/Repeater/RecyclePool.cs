@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected  virtual UIElement TryGetElementCore(string key,  UIElement owner)
+		protected virtual UIElement TryGetElementCore(string key, UIElement owner)
 		{
 			if (m_elements.TryGetValue(key, out var elements))
 			{

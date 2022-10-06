@@ -24,7 +24,7 @@ namespace Uno.UI.Helpers
 		/// <param name="uid">The new uid to set</param>
 		public static void SetXUid(object target, string uid)
 		{
-			if(target is IXUidProvider provider)
+			if (target is IXUidProvider provider)
 			{
 				provider.Uid = uid;
 			}
@@ -66,7 +66,7 @@ namespace Uno.UI.Helpers
 		/// </summary>
 		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
 			=> target.LazyBuilder = builder;
-		
+
 		public static IXamlServiceProvider CreateParserContext(object? target, ProvideValueTargetProperty? property)
 			=> new XamlServiceProviderContext
 			{

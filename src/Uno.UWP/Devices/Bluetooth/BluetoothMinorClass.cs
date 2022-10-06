@@ -5,7 +5,7 @@ namespace Windows.Devices.Bluetooth
 	// https://docs.microsoft.com/en-us/uwp/api/windows.devices.bluetooth.bluetoothminorclass?view=winrt-19041
 	// (not from Generated)
 
-	public enum BluetoothMinorClass 
+	public enum BluetoothMinorClass
 	{
 		NetworkFullyAvailable = 0,
 		Uncategorized = 0,

@@ -2,46 +2,46 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public  partial class ProgressBarTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class ProgressBarTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		[global::Uno.NotImplemented]
-		public  double ContainerAnimationEndPosition
+		public double ContainerAnimationEndPosition
 		{
 			get;
 		}
 
 		[global::Uno.NotImplemented]
-		public  double ContainerAnimationStartPosition
+		public double ContainerAnimationStartPosition
 		{
 			get;
 		}
 
 		[global::Uno.NotImplemented]
-		public  double EllipseAnimationEndPosition
+		public double EllipseAnimationEndPosition
 		{
 			get;
 		}
 
 		[global::Uno.NotImplemented]
-		public  double EllipseAnimationWellPosition
+		public double EllipseAnimationWellPosition
 		{
 			get;
 		}
 
 		[global::Uno.NotImplemented]
-		public  double EllipseDiameter
+		public double EllipseDiameter
 		{
 			get;
 		}
 
 		[global::Uno.NotImplemented]
-		public  double EllipseOffset
+		public double EllipseOffset
 		{
 			get;
 		}
 
 		[global::Uno.NotImplemented]
-		public  double IndicatorLengthDelta
+		public double IndicatorLengthDelta
 		{
 			get;
 		}

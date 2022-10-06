@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Resources.Core
 				var dpi = GetDpi(resourceCandidate.GetQualifierValue("scale"));
 				var theme = GetTheme(resourceCandidate.GetQualifierValue("theme"));
 				var fileName = AndroidResourceNameEncoder.EncodeDrawablePath(resourceCandidate.LogicalPath);
-				
+
 				return Path.Combine($"drawable{language}{theme}{dpi}", fileName);
 			}
 #if HAS_UNO
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Resources.Core
 				default: throw new NotSupportedException($"Scale {scale} is not supported on Android.");
 			}
 		}
-		
+
 		private static string GetTheme(string theme)
 		{
 			switch (theme)

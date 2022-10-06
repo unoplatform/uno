@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var dataPackage = new DataPackage();
 
 			dataPackage.SetDataProvider(StandardDataFormats.Text, async ct => await GetClipboardText(ct));
-			
+
 			return dataPackage.GetView();
 		}
 

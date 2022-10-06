@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ItemsRepeater m_topNavRepeaterOverflowView;
 		private Grid m_topNavGrid;
 		private Border m_topNavContentOverlayAreaGrid;
-		private Grid m_shadowCaster;		
+		private Grid m_shadowCaster;
 		private Storyboard m_shadowCasterEaseOutStoryboard;
 
 		// Indicator animations

@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml
 		partial void InitializePointersPartial()
 		{
 			MultipleTouchEnabled = true;
-			
+
 			ArePointersEnabled = true;
 		}
 

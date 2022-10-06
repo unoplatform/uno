@@ -20,10 +20,10 @@ namespace UITests.Windows_UI_Xaml.xLoadTests
 {
 	[Sample("x:Load", Name = "xLoad_Literal")]
 	public sealed partial class xLoad_Literal : UserControl
-    {
-        public xLoad_Literal()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public xLoad_Literal()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

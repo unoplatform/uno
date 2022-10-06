@@ -1421,7 +1421,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		#region Private Helpers
+#region Private Helpers
 
 		private enum LayoutChoice
 		{
@@ -2010,7 +2010,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		private int DefaultWaitTime = 2000;
 
-		#endregion
+#endregion
 	}
 }
 #endif

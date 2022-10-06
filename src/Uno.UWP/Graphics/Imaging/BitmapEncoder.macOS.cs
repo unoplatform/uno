@@ -71,7 +71,7 @@ namespace Windows.Graphics.Imaging
 			using var imageRep = new NSBitmapImageRep(image.CGImage);
 			return imageRep.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png);
 		}
-			
+
 		private static NSData AsJPEG(NSImage image)
 		{
 			using var imageRep = new NSBitmapImageRep(image.CGImage);

@@ -16,7 +16,7 @@ namespace Windows.Devices.Midi
 		/// </summary>
 		/// <param name="frameType">The frame type from 0-7.</param>
 		/// <param name="values">The time code from 0-15.</param>
-		public MidiTimeCodeMessage(byte frameType, byte values)			
+		public MidiTimeCodeMessage(byte frameType, byte values)
 		{
 			MidiMessageValidators.VerifyRange(frameType, MidiMessageParameter.Frame);
 			MidiMessageValidators.VerifyRange(values, MidiMessageParameter.FrameValues);

@@ -56,11 +56,11 @@ namespace Uno.Foundation.Interop
 			}
 
 			/// <inheritdoc />
-			public string GetNativeInstance(IntPtr managedHandle, long jsHandle) 
+			public string GetNativeInstance(IntPtr managedHandle, long jsHandle)
 				=> $"{_type.FullName}.getInstance(\"{managedHandle}\", \"{jsHandle}\")";
 
 			/// <inheritdoc />
-			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle) 
+			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
 				=> WebAssemblyRuntime.InvokeJS($"{_type.FullName}.destroyInstance(\"{managedHandle}\", \"{jsHandle}\")");
 
 			/// <inheritdoc />
@@ -69,7 +69,7 @@ namespace Uno.Foundation.Interop
 				// TODO: Properly parse parameters
 				var parameters = jsonParameters
 					.Trim('{', '}', ' ')
-					.Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries)
+					.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
 					.Where(parameter => parameter.HasValueTrimmed())
 					.Select(parameter => parameter.Split(new[] { ':' }, 2)[1].Trim('"', ' '))
 					.ToArray();

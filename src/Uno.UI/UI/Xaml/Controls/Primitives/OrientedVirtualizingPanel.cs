@@ -2,7 +2,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	[global::Uno.NotImplemented]
-	public  partial class OrientedVirtualizingPanel 
+	public partial class OrientedVirtualizingPanel
 	{
 		public OrientedVirtualizingPanel()
 		{

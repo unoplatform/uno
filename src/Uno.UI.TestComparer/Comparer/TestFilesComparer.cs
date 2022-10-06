@@ -69,86 +69,86 @@ namespace Uno.UI.TestComparer.Comparer
 				.ToArray();
 
 			var changedList = new List<string>();
-            foreach (var testFile in allFiles)
-            {
-                var testFileIncrements = from folder in allFolders
-                                         orderby folder.Index ascending
-                                         select new
-                                         {
-                                             Folder = folder.Path,
-                                             FolderIndex = folder.Index,
-                                             Files = new[] {
-                                                new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
-                                             }
-                                         };
+			foreach (var testFile in allFiles)
+			{
+				var testFileIncrements = from folder in allFolders
+										 orderby folder.Index ascending
+										 select new
+										 {
+											 Folder = folder.Path,
+											 FolderIndex = folder.Index,
+											 Files = new[] {
+												new { FileInfo = folder.Files.FirstOrDefault(f => Path.GetFileName(f.File) == testFile) }
+											 }
+										 };
 
-                var increments =
-                    (
-                        from platformIndex in Enumerable.Range(0, 1)
-                        select testFileIncrements
-                            .Aggregate(
-                                new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
-                                (a, f) =>
-                                {
-                                    var platformFiles = f.Files[platformIndex];
+				var increments =
+					(
+						from platformIndex in Enumerable.Range(0, 1)
+						select testFileIncrements
+							.Aggregate(
+								new[] { new { FolderIndex = -1, Path = "", IdSha = "", Id = -1, CompareeId = -1 } },
+								(a, f) =>
+								{
+									var platformFiles = f.Files[platformIndex];
 
-                                    if (platformFiles?.FileInfo == null)
-                                    {
-                                        return a;
-                                    }
+									if (platformFiles?.FileInfo == null)
+									{
+										return a;
+									}
 
-                                    var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
-                                    if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
-                                            .ToArray();
-                                    }
-                                    else
-                                    {
-                                        return a
-                                            .Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
-                                            .ToArray();
-                                    }
-                                }
-                            )
-                    ).ToArray();
+									var otherMatch = a.Reverse().Where(i => i.IdSha != null).FirstOrDefault();
+									if (platformFiles.FileInfo?.Id.sha != otherMatch?.IdSha)
+									{
+										return a
+											.Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = platformFiles.FileInfo?.Id.sha, Id = platformFiles.FileInfo?.Id.index ?? -1, CompareeId = otherMatch.Id } })
+											.ToArray();
+									}
+									else
+									{
+										return a
+											.Concat(new[] { new { FolderIndex = f.FolderIndex, Path = platformFiles.FileInfo.File, IdSha = (string)null, Id = platformFiles.FileInfo.Id.index, CompareeId = -1 } })
+											.ToArray();
+									}
+								}
+							)
+					).ToArray();
 
-                var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
+				var hasChanges = increments.Any(i => i.Where(v => v.IdSha != null).Count() - 1 > 1);
 
-                var compareResultFile = new CompareResultFile();
-                compareResultFile.HasChanged = hasChanges;
-                compareResultFile.TestName = testFile;
+				var compareResultFile = new CompareResultFile();
+				compareResultFile.HasChanged = hasChanges;
+				compareResultFile.TestName = testFile;
 
-                testResult.Tests.Add(compareResultFile);
+				testResult.Tests.Add(compareResultFile);
 
-                var changeResult = increments[0];
+				var changeResult = increments[0];
 
-                var firstFolder = changeResult.Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
+				var firstFolder = changeResult.Where(i => i.FolderIndex != -1).Min(i => i.FolderIndex);
 
-                for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
-                {
-                    var folderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex);
+				for (int folderIndex = 0; folderIndex < allFolders.Length; folderIndex++)
+				{
+					var folderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex);
 
-                    if (folderInfo != null)
-                    {
-                        var hasChangedFromPrevious = folderIndex != firstFolder && folderInfo?.IdSha != null;
+					if (folderInfo != null)
+					{
+						var hasChangedFromPrevious = folderIndex != firstFolder && folderInfo?.IdSha != null;
 
-                        var compareResultFileRun = new CompareResultFileRun();
-                        compareResultFile.ResultRun.Add(compareResultFileRun);
+						var compareResultFileRun = new CompareResultFileRun();
+						compareResultFile.ResultRun.Add(compareResultFileRun);
 
-                        compareResultFileRun.ImageId = folderInfo.Id;
-                        compareResultFileRun.ImageSha = folderInfo.IdSha;
+						compareResultFileRun.ImageId = folderInfo.Id;
+						compareResultFileRun.ImageSha = folderInfo.IdSha;
 						compareResultFileRun.FilePath = folderInfo.Path;
 						compareResultFileRun.FolderIndex = folderIndex;
 
 						compareResultFileRun.HasChanged = hasChangedFromPrevious;
 
-                        if (folderInfo != null)
-                        {
-                            var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
-                            if (hasChangedFromPrevious && previousFolderInfo != null)
-                            {
+						if (folderInfo != null)
+						{
+							var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
+							if (hasChangedFromPrevious && previousFolderInfo != null)
+							{
 								var currentImage = DecodeImage(folderInfo.Path);
 								var previousImage = DecodeImage(previousFolderInfo.Path);
 
@@ -163,14 +163,14 @@ namespace Uno.UI.TestComparer.Comparer
 								}
 
 								changedList.Add(testFile);
-                            }
+							}
 
 							GC.Collect(2, GCCollectionMode.Forced);
 							GC.WaitForPendingFinalizers();
-                        }
-                    }
-                }
-            }
+						}
+					}
+				}
+			}
 
 			testResult.UnchangedTests = allFiles.Length - changedList.Distinct().Count();
 			testResult.TotalTests = allFiles.Length;
@@ -180,9 +180,9 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private bool CanBeUsedForCompare(string sample)
 		{
-			if(ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
+			if (ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
 			{
-				if(options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.ToLower() == "true")
+				if (options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.ToLower() == "true")
 				{
 					return false;
 				}

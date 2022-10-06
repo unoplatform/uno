@@ -159,14 +159,14 @@ public partial class UIElement : DependencyObject
 			switch ((NativePointerEvent)args.Event)
 			{
 				case NativePointerEvent.pointerover:
-				{
-					// On WASM we do get 'pointerover' event for sub elements,
-					// so we can avoid useless work by validating if the pointer is already flagged as over element.
-					// If so, we stop bubbling since our parent will do the same!
-					var ptArgs = ToPointerArgs(element, args);
-					stopPropagation = element.IsOver(ptArgs.Pointer) || element.OnNativePointerEnter(ptArgs);
-					break;
-				}
+					{
+						// On WASM we do get 'pointerover' event for sub elements,
+						// so we can avoid useless work by validating if the pointer is already flagged as over element.
+						// If so, we stop bubbling since our parent will do the same!
+						var ptArgs = ToPointerArgs(element, args);
+						stopPropagation = element.IsOver(ptArgs.Pointer) || element.OnNativePointerEnter(ptArgs);
+						break;
+					}
 
 				case NativePointerEvent.pointerout: // No needs to check IsOver (leaving vs. bubbling), it's already done in native code
 					stopPropagation = element.OnNativePointerExited(ToPointerArgs(element, args));
@@ -177,36 +177,36 @@ public partial class UIElement : DependencyObject
 					break;
 
 				case NativePointerEvent.pointerup:
-				{
-					var routedArgs = ToPointerArgs(element, args);
-					stopPropagation = element.OnNativePointerUp(routedArgs);
-
-					if (stopPropagation)
 					{
-						RootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+						var routedArgs = ToPointerArgs(element, args);
+						stopPropagation = element.OnNativePointerUp(routedArgs);
+
+						if (stopPropagation)
+						{
+							RootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+						}
+
+						break;
 					}
 
-					break;
-				}
-
 				case NativePointerEvent.pointermove:
-				{
-					var ptArgs = ToPointerArgs(element, args);
-
-					// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
-					// this means that we need to validate the isOver to raise enter and exit like on UWP.
-					var needsToCheckIsOver = ptArgs.Pointer.PointerDeviceType switch
 					{
-						PointerDeviceType.Touch => ptArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
-						PointerDeviceType.Pen => ptArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
-						PointerDeviceType.Mouse => PointerCapture.TryGet(ptArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
-						_ => true // For safety
-					};
-					stopPropagation = needsToCheckIsOver
-						? element.OnNativePointerMoveWithOverCheck(ptArgs, isOver: ptArgs.IsPointCoordinatesOver(element))
-						: element.OnNativePointerMove(ptArgs);
-					break;
-				}
+						var ptArgs = ToPointerArgs(element, args);
+
+						// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
+						// this means that we need to validate the isOver to raise enter and exit like on UWP.
+						var needsToCheckIsOver = ptArgs.Pointer.PointerDeviceType switch
+						{
+							PointerDeviceType.Touch => ptArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
+							PointerDeviceType.Pen => ptArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
+							PointerDeviceType.Mouse => PointerCapture.TryGet(ptArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
+							_ => true // For safety
+						};
+						stopPropagation = needsToCheckIsOver
+							? element.OnNativePointerMoveWithOverCheck(ptArgs, isOver: ptArgs.IsPointCoordinatesOver(element))
+							: element.OnNativePointerMove(ptArgs);
+						break;
+					}
 
 				case NativePointerEvent.pointercancel:
 					stopPropagation = element.OnNativePointerCancel(ToPointerArgs(element, args), isSwallowedBySystem: true);
@@ -257,7 +257,7 @@ public partial class UIElement : DependencyObject
 		managedId = new PointerIdentifier(nativeId.Type, ++_lastUsedId);
 		_managedToNativePointerId[managedId] = nativeId;
 		_nativeToManagedPointerId[nativeId] = managedId;
-		
+
 		return managedId.Id;
 	}
 
@@ -289,7 +289,7 @@ public partial class UIElement : DependencyObject
 
 		var pointerType = (PointerDeviceType)args.deviceType;
 		var pointerId = TransformPointerId(new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)pointerType, (uint)args.pointerId));
-		
+
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
 		var isInContact = args.buttons != 0;
@@ -401,7 +401,7 @@ public partial class UIElement : DependencyObject
 		// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.		
 		if (IsViewHit())
 		{
-			return HitTestability.Visible; 
+			return HitTestability.Visible;
 		}
 
 		// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.

@@ -30,7 +30,7 @@ namespace ResourceConverter
 					var key = line.Substring(0, sep).Trim().TrimStart('\"').TrimEnd('\"');
 
 					var value = line
-						.Substring(sep + 1, line.Length-sep-2)
+						.Substring(sep + 1, line.Length - sep - 2)
 						.Trim()
 						.TrimStart('\"')
 						.TrimEnd('\"')

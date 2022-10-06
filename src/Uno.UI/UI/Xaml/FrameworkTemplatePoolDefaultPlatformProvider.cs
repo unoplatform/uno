@@ -54,7 +54,7 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 
 	private void UpdateMemoryUsage()
 	{
-		if(Now - _lastMemorySnapshot > MemoryUsageUpdateResolution)
+		if (Now - _lastMemorySnapshot > MemoryUsageUpdateResolution)
 		{
 			_lastMemorySnapshot = Now;
 			_appMemoryUsageLimit = MemoryManager.AppMemoryUsageLimit;

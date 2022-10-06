@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides event data for the TreeView.DragItemsCompleted event.
 	/// </summary>
 	public partial class TreeViewDragItemsCompletedEventArgs
-    {
+	{
 		private readonly DragItemsCompletedEventArgs _dragItemsCompletedEventArgs;
 
 		internal TreeViewDragItemsCompletedEventArgs(DragItemsCompletedEventArgs args, object newParentItem)
@@ -36,5 +36,5 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Gets the new parent item.
 		/// </summary>
 		public object NewParentItem { get; }
-    }
+	}
 }

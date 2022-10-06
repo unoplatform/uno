@@ -23,7 +23,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 		{
 			Model = new Model();
 
-			Model.PropertyChanged += delegate {
+			Model.PropertyChanged += delegate
+			{
 				FindName("item1");
 			};
 

@@ -3,7 +3,7 @@ using Windows.Storage.Streams;
 
 namespace Windows.Storage
 {
-	public  partial interface IStorageFile
+	public partial interface IStorageFile
 	{
 		string ContentType { get; }
 		string FileType { get; }

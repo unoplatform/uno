@@ -76,7 +76,7 @@ namespace Uno.UI.Runtime.Skia
 			InvalidateOverlays();
 			QueueRender();
 		}
-		
+
 		private void GLRenderSurface_Realized(object? sender, EventArgs e)
 		{
 			Context.MakeCurrent();
@@ -112,7 +112,7 @@ namespace Uno.UI.Runtime.Skia
 				}
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
-				
+
 				_renderTarget = new GRBackendRenderTarget(w, h, samples, stencil, glInfo);
 
 				// create the surface

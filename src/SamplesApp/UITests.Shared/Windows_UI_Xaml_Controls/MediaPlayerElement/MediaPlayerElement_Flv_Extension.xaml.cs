@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Using .flv", description: "Test .flv video")]
 	public sealed partial class MediaPlayerElement_Flv_Extension : UserControl
-    {
-        public MediaPlayerElement_Flv_Extension()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_Flv_Extension()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

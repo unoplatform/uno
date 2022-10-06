@@ -10,14 +10,14 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.Background
 {
-    public sealed partial class CommandBar_Background_Page1 : Page
-    {
-        public CommandBar_Background_Page1()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class CommandBar_Background_Page1 : Page
+	{
+		public CommandBar_Background_Page1()
+		{
+			this.InitializeComponent();
+		}
 
-        public async void OnButtonClicked(object sender, RoutedEventArgs e)
+		public async void OnButtonClicked(object sender, RoutedEventArgs e)
 		{
 			Frame.Navigate(typeof(CommandBar_Background_Page2));
 

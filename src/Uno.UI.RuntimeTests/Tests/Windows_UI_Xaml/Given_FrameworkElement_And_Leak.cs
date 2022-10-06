@@ -29,9 +29,9 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
-	#if NET6_0 && __ANDROID__
+#if NET6_0 && __ANDROID__
 	[Ignore("Disabled until https://github.com/dotnet/runtime/pull/55681 is released. See https://github.com/unoplatform/uno/issues/5873")]
-	#endif
+#endif
 
 	[TestClass]
 	[RunsOnUIThread]
@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if(lastActiveControls != activeControls)
+				if (lastActiveControls != activeControls)
 				{
 					// Expand the timeout if the count has changed, as the
 					// GC may still be processing levels of the hierarcy on iOS

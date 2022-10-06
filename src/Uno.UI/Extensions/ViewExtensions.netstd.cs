@@ -97,7 +97,7 @@ namespace Uno.UI
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 					.Append(fe != null && fe.Visibility != Visibility.Visible ? "Collapsed " : "")
-					.Append(fe!= null && fe.Opacity != 1 ? $"Opacity={fe.Opacity} " : "")
+					.Append(fe != null && fe.Opacity != 1 ? $"Opacity={fe.Opacity} " : "")
 					.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
 					.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 					.Append(uiElement?.GetElementSpecificDetails())

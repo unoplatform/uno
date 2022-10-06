@@ -12,11 +12,11 @@ namespace Windows.Storage.Streams
 
 		ulong Size { get; set; }
 
-		IInputStream GetInputStreamAt( ulong position);
+		IInputStream GetInputStreamAt(ulong position);
 
-		IOutputStream GetOutputStreamAt( ulong position);
+		IOutputStream GetOutputStreamAt(ulong position);
 
-		void Seek( ulong position);
+		void Seek(ulong position);
 
 		IRandomAccessStream CloneStream();
 	}

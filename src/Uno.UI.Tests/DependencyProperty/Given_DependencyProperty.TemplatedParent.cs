@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.BinderTests_TemplatedParent
 
 			Assert.IsNull(inner.TemplatedParent);
 		}
-		
+
 		[TestMethod]
 		public void When_DataContextTemplateBinding()
 		{

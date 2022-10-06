@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Composition
 {
-	public  partial interface ICompositionSurface 
+	public partial interface ICompositionSurface
 	{
 	}
 }

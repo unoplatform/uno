@@ -9,11 +9,11 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 {
 	[Sample("Border", Name = "Border_CornerRadius_BorderThickness")]
 	public sealed partial class Border_CornerRadius_BorderThickness : UserControl
-    {
-        public Border_CornerRadius_BorderThickness()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public Border_CornerRadius_BorderThickness()
+		{
+			this.InitializeComponent();
+		}
 
 		public Thickness MyBorderThickness
 		{

@@ -31,7 +31,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-    partial class WrapPanel
+	partial class WrapPanel
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{

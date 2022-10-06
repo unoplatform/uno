@@ -1,6 +1,6 @@
 namespace Windows.UI.Core
 {
-	public enum CoreProcessEventsOption 
+	public enum CoreProcessEventsOption
 	{
 		ProcessOneAndAllPending,
 		ProcessOneIfPresent,

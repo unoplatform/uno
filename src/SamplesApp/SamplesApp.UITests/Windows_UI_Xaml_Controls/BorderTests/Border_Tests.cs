@@ -259,7 +259,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			var firstBorderRect = _app.GetPhysicalRect("firstBorder");
 			var secondBorderRect = _app.GetPhysicalRect("secondBorder");
-			
+
 			using var screenshot = TakeScreenshot(nameof(Border_AntiAlias));
 
 			ImageAssert.HasColorInRectangle(

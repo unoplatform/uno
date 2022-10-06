@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		public CompositionGradientExtendMode ExtendMode
 		{
 			get => _extendMode;
-			set => SetProperty(ref _extendMode, value); 
+			set => SetProperty(ref _extendMode, value);
 		}
 
 		public CompositionMappingMode MappingMode

@@ -50,8 +50,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Fill = sf,
 					Stroke = ss,
 					StrokeThickness = sst,
-					X2=xamlShape2.X2,
-					Y2=xamlShape2.Y2
+					X2 = xamlShape2.X2,
+					Y2 = xamlShape2.Y2
 				});
 
 			var p = await SetShape(

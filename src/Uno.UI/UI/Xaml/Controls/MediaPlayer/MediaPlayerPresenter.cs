@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private double _currentRatio = 1;
 
-		#region MediaPlayer Property
+#region MediaPlayer Property
 
 		public Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -45,9 +45,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region Stretch Property
+#region Stretch Property
 
 		public Stretch Stretch
 		{
@@ -62,9 +62,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerPresenter),
 				new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
-		#endregion
+#endregion
 
-		#region IsFullWindow Property
+#region IsFullWindow Property
 
 		public bool IsFullWindow
 		{
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(MediaPlayerPresenter),
 				new FrameworkPropertyMetadata(false));
 
-		#endregion
+#endregion
 
 		public MediaPlayerPresenter() : base()
 		{

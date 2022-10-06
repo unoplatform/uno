@@ -18,10 +18,10 @@ namespace UITests.Windows_UI_Xaml_Controls.PasswordBoxTests
 {
 	[Sample("PasswordBox")]
 	public sealed partial class PasswordBox_AutoFill : Page
-    {
-        public PasswordBox_AutoFill()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public PasswordBox_AutoFill()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -20,17 +20,17 @@ using System.IO;
 
 namespace Uno.Extensions
 {
-    internal static class TextWriterExtensions
-    {
-        public static void Write(this TextWriter writer, string format, params object[] args)
-        {
-            writer.Write(string.Format(CultureInfo.InvariantCulture, format, args));
-        }
-
-        public static void WriteLine(this TextWriter writer, string format, params object[] args)
-        {
+	internal static class TextWriterExtensions
+	{
+		public static void Write(this TextWriter writer, string format, params object[] args)
+		{
 			writer.Write(string.Format(CultureInfo.InvariantCulture, format, args));
-        }
+		}
+
+		public static void WriteLine(this TextWriter writer, string format, params object[] args)
+		{
+			writer.Write(string.Format(CultureInfo.InvariantCulture, format, args));
+		}
 
 		public static void Write(this TextWriter writer, IFormatProvider formatProvider, string format, params object[] args)
 		{

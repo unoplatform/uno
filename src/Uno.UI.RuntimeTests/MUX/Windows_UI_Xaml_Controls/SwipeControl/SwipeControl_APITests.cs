@@ -30,123 +30,123 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
-    [TestClass]
-    public class SwipeControlTests : MUXApiTestBase
-    {
-        [TestMethod]
-        public void SwipeItemTest()
-        {
-            SwipeItem swipeItem = null;
-            RunOnUIThread.Execute(() =>
-            {
-                swipeItem = new SwipeItem();
-                swipeItem.Text = "Selfie";
-                swipeItem.IconSource = new FontIconSource() { Glyph = "&#xE114;" };
-                swipeItem.Background = new SolidColorBrush(Windows.UI.Colors.Red);
-                swipeItem.Foreground = new SolidColorBrush(Windows.UI.Colors.Blue);
-            });
+	[TestClass]
+	public class SwipeControlTests : MUXApiTestBase
+	{
+		[TestMethod]
+		public void SwipeItemTest()
+		{
+			SwipeItem swipeItem = null;
+			RunOnUIThread.Execute(() =>
+			{
+				swipeItem = new SwipeItem();
+				swipeItem.Text = "Selfie";
+				swipeItem.IconSource = new FontIconSource() { Glyph = "&#xE114;" };
+				swipeItem.Background = new SolidColorBrush(Windows.UI.Colors.Red);
+				swipeItem.Foreground = new SolidColorBrush(Windows.UI.Colors.Blue);
+			});
 
-            IdleSynchronizer.Wait();
+			IdleSynchronizer.Wait();
 
-            RunOnUIThread.Execute(() =>
-            {
-                Verify.AreEqual(swipeItem.Text, "Selfie");
-                Verify.IsTrue(swipeItem.IconSource is FontIconSource);
-                Verify.AreEqual((swipeItem.IconSource as FontIconSource).Glyph, "&#xE114;");
-                Verify.AreEqual(((SolidColorBrush)swipeItem.Background).Color, Windows.UI.Colors.Red);
-                Verify.AreEqual(((SolidColorBrush)swipeItem.Foreground).Color, Windows.UI.Colors.Blue);
-            });
-        }
+			RunOnUIThread.Execute(() =>
+			{
+				Verify.AreEqual(swipeItem.Text, "Selfie");
+				Verify.IsTrue(swipeItem.IconSource is FontIconSource);
+				Verify.AreEqual((swipeItem.IconSource as FontIconSource).Glyph, "&#xE114;");
+				Verify.AreEqual(((SolidColorBrush)swipeItem.Background).Color, Windows.UI.Colors.Red);
+				Verify.AreEqual(((SolidColorBrush)swipeItem.Foreground).Color, Windows.UI.Colors.Blue);
+			});
+		}
 
-        [TestMethod]
-        public void SwipeItemsTest()
-        {
-            SwipeItems swipeItems = null;
+		[TestMethod]
+		public void SwipeItemsTest()
+		{
+			SwipeItems swipeItems = null;
 
-            RunOnUIThread.Execute(() =>
-            {
-                swipeItems = new SwipeItems();
+			RunOnUIThread.Execute(() =>
+			{
+				swipeItems = new SwipeItems();
 
-                // verify the default value
-                Verify.AreEqual(swipeItems.Mode, SwipeMode.Reveal);
-                Verify.AreEqual(swipeItems.Count, 0);
+				// verify the default value
+				Verify.AreEqual(swipeItems.Mode, SwipeMode.Reveal);
+				Verify.AreEqual(swipeItems.Count, 0);
 
-                swipeItems.Add(new SwipeItem());
-                swipeItems.Add(new SwipeItem());
-            });
+				swipeItems.Add(new SwipeItem());
+				swipeItems.Add(new SwipeItem());
+			});
 
-            IdleSynchronizer.Wait();
+			IdleSynchronizer.Wait();
 
-            RunOnUIThread.Execute(() =>
-            {
-                Verify.AreEqual(swipeItems.Count, 2);
-            });
-        }
+			RunOnUIThread.Execute(() =>
+			{
+				Verify.AreEqual(swipeItems.Count, 2);
+			});
+		}
 
-        [TestMethod]
-        public void SwipeItemsExecuteThrowsExceptionWhenMoreThanOneItemAreAdded()
-        {
-            RunOnUIThread.Execute(() =>
-            {
-                var swipeItems = new SwipeItems();
-                swipeItems.Mode = SwipeMode.Execute;
-                swipeItems.Add(new SwipeItem());
-                Verify.Throws<ArgumentException>(() => { swipeItems.Add(new SwipeItem()); });
-            });
-        }
+		[TestMethod]
+		public void SwipeItemsExecuteThrowsExceptionWhenMoreThanOneItemAreAdded()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var swipeItems = new SwipeItems();
+				swipeItems.Mode = SwipeMode.Execute;
+				swipeItems.Add(new SwipeItem());
+				Verify.Throws<ArgumentException>(() => { swipeItems.Add(new SwipeItem()); });
+			});
+		}
 
-        [TestMethod]
-        public void SwipeControlTest()
-        {
-            RunOnUIThread.Execute(() =>
-            {
-                SwipeControl swipeControl = new SwipeControl();
-                Verify.AreEqual(swipeControl.ActualHeight, 0);
-                Verify.AreEqual(swipeControl.ActualWidth, 0);
-                Verify.IsNull(swipeControl.LeftItems);
-                Verify.IsNull(swipeControl.RightItems);
-                Verify.IsNull(swipeControl.TopItems);
-                Verify.IsNull(swipeControl.BottomItems);
-                swipeControl.LeftItems = new SwipeItems();
-                swipeControl.RightItems = new SwipeItems();
-                Content = swipeControl;
-                Content.UpdateLayout();
-                Verify.IsFalse(swipeControl.IsTabStop);
-                Verify.IsNotNull(swipeControl.LeftItems);
-                Verify.IsNotNull(swipeControl.RightItems);
-            });
-        }
+		[TestMethod]
+		public void SwipeControlTest()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				SwipeControl swipeControl = new SwipeControl();
+				Verify.AreEqual(swipeControl.ActualHeight, 0);
+				Verify.AreEqual(swipeControl.ActualWidth, 0);
+				Verify.IsNull(swipeControl.LeftItems);
+				Verify.IsNull(swipeControl.RightItems);
+				Verify.IsNull(swipeControl.TopItems);
+				Verify.IsNull(swipeControl.BottomItems);
+				swipeControl.LeftItems = new SwipeItems();
+				swipeControl.RightItems = new SwipeItems();
+				Content = swipeControl;
+				Content.UpdateLayout();
+				Verify.IsFalse(swipeControl.IsTabStop);
+				Verify.IsNotNull(swipeControl.LeftItems);
+				Verify.IsNotNull(swipeControl.RightItems);
+			});
+		}
 
-        [TestMethod]
-        public void SwipeControlCanOnlyBeHorizontalOrVertical()
-        {
-            RunOnUIThread.Execute(() =>
-            {
-                SwipeControl swipeControl = new SwipeControl();
-                swipeControl.LeftItems = new SwipeItems();
-                var topItems = new SwipeItems();
-                topItems.Add(new SwipeItem());
-                swipeControl.TopItems = topItems;
-                Verify.Throws<ArgumentException>(() => { swipeControl.LeftItems.Add(new SwipeItem()); });
-            });
-        }
+		[TestMethod]
+		public void SwipeControlCanOnlyBeHorizontalOrVertical()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				SwipeControl swipeControl = new SwipeControl();
+				swipeControl.LeftItems = new SwipeItems();
+				var topItems = new SwipeItems();
+				topItems.Add(new SwipeItem());
+				swipeControl.TopItems = topItems;
+				Verify.Throws<ArgumentException>(() => { swipeControl.LeftItems.Add(new SwipeItem()); });
+			});
+		}
 
-        [TestMethod]
-        public void SwipeControlCanOnlyBeHorizontalOrVerticalAfterRendering()
-        {
-            var resetEvent = new AutoResetEvent(false);
-            RunOnUIThread.Execute(() =>
-            {
-                SwipeControl swipeControl = new SwipeControl();
-                swipeControl.Loaded += (object sender, RoutedEventArgs args) => { resetEvent.Set(); };
-                Content = swipeControl;
-                Content.UpdateLayout();
-                swipeControl.TopItems = new SwipeItems();
-                swipeControl.LeftItems = new SwipeItems();
-                swipeControl.LeftItems.Add(new SwipeItem());
-                Verify.Throws<ArgumentException>(() => { swipeControl.TopItems.Add(new SwipeItem()); });
-            });
-        }
+		[TestMethod]
+		public void SwipeControlCanOnlyBeHorizontalOrVerticalAfterRendering()
+		{
+			var resetEvent = new AutoResetEvent(false);
+			RunOnUIThread.Execute(() =>
+			{
+				SwipeControl swipeControl = new SwipeControl();
+				swipeControl.Loaded += (object sender, RoutedEventArgs args) => { resetEvent.Set(); };
+				Content = swipeControl;
+				Content.UpdateLayout();
+				swipeControl.TopItems = new SwipeItems();
+				swipeControl.LeftItems = new SwipeItems();
+				swipeControl.LeftItems.Add(new SwipeItem());
+				Verify.Throws<ArgumentException>(() => { swipeControl.TopItems.Add(new SwipeItem()); });
+			});
+		}
 
 #if false
 		[TestMethod]
@@ -184,5 +184,5 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
             });
         }
 #endif
-    }
+	}
 }

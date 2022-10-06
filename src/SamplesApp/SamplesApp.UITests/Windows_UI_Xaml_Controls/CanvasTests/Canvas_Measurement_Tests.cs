@@ -82,7 +82,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 			ImageAssert.HasColorAt(screenshot, greenBorderRect1.Right - 1, greenBorderRect1.CenterY, Color.Blue);
 			var greenBorderRect2 = _app.GetPhysicalRect("CanvasBorderGreen2");
 			ImageAssert.HasColorAt(screenshot, greenBorderRect2.CenterX, greenBorderRect2.CenterY, Color.Brown);
-			ImageAssert.HasColorAt(screenshot, greenBorderRect2.Right-1, greenBorderRect2.CenterY, Color.Blue);
+			ImageAssert.HasColorAt(screenshot, greenBorderRect2.Right - 1, greenBorderRect2.CenterY, Color.Blue);
 
 			if (AppInitializer.GetLocalPlatform() != Platform.Android) // Android doesn't support Canvas.ZIndex on any panel
 			{

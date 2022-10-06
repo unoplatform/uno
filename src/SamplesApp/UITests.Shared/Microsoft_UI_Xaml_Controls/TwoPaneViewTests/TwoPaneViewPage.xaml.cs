@@ -21,24 +21,24 @@ using DisplayRegionHelperTestApi = Microsoft.UI.Xaml.Controls.DisplayRegionHelpe
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 {
-	[Sample("MUX", Name= "TwoPaneView")]
+	[Sample("MUX", Name = "TwoPaneView")]
 	public sealed partial class TwoPaneViewPage : Page
-    {
-        // Need to be the same as c_defaultMinWideModeWidth/c_defaultMinTallModeHeight in TwoPaneViewFactory.cpp
-        private const double c_defaultMinWideModeWidth = 641.0;
-        private const double c_defaultMinTallModeHeight = 641.0;
+	{
+		// Need to be the same as c_defaultMinWideModeWidth/c_defaultMinTallModeHeight in TwoPaneViewFactory.cpp
+		private const double c_defaultMinWideModeWidth = 641.0;
+		private const double c_defaultMinTallModeHeight = 641.0;
 
-        // Need to be the same as c_simulatedPaneWidth/c_simulatedPaneHeight/c_simulatedMiddle in TwoPaneViewTests.cs
-        private const double c_simulatedPaneWidth = 300.0;
-        private const double c_simulatedPaneHeight = 400.0;
-        private const double c_simulatedMiddle = 12.0;
+		// Need to be the same as c_simulatedPaneWidth/c_simulatedPaneHeight/c_simulatedMiddle in TwoPaneViewTests.cs
+		private const double c_simulatedPaneWidth = 300.0;
+		private const double c_simulatedPaneHeight = 400.0;
+		private const double c_simulatedMiddle = 12.0;
 
-        // Need to be the same as c_controlMargin in TwoPaneViewTests.cs
-        private Thickness c_controlMargin = new Thickness(40, 10, 30, 20);
+		// Need to be the same as c_controlMargin in TwoPaneViewTests.cs
+		private Thickness c_controlMargin = new Thickness(40, 10, 30, 20);
 
-        public TwoPaneViewPage()
-        {
-            this.InitializeComponent();
+		public TwoPaneViewPage()
+		{
+			this.InitializeComponent();
 
 #if HAS_UNO
             DisplayRegionHelperTestApi.SimulateDisplayRegions = false;
@@ -46,7 +46,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
             TwoPaneView.ModeChanged += TwoPaneView_ModeChanged;
             ConfigurationTextBlock.Text = TwoPaneView.Mode.ToString();
 #endif
-        }
+		}
 
 #if HAS_UNO
 		private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
@@ -279,5 +279,5 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
             }
         }
 #endif
-    }
+	}
 }

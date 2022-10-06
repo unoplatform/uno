@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 			Add(videoSurface as _View);
 			((_View)videoSurface).Frame = this.Frame;
 		}
-		
+
 		private void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
 			ApplyStretch();

@@ -30,12 +30,12 @@ namespace Windows.UI.Xaml.Controls
 			var textBoxView = textField as SinglelineTextBoxView;
 			if (textBoxView != null)
 			{
-                if(_textBox.GetTarget()?.OnKey(replacementString.FirstOrDefault()) ?? false)
-                {
-                    return false;
-                }
+				if (_textBox.GetTarget()?.OnKey(replacementString.FirstOrDefault()) ?? false)
+				{
+					return false;
+				}
 
-                if (_textBox.GetTarget()?.MaxLength > 0)
+				if (_textBox.GetTarget()?.MaxLength > 0)
 				{
 					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
 					return newLength <= _textBox.GetTarget()?.MaxLength;
@@ -61,10 +61,10 @@ namespace Windows.UI.Xaml.Controls
 			var textBox = textField as SinglelineTextBoxView;
 			if (textBox != null)
 			{
-                if (_textBox.GetTarget()?.OnKey('\n') ?? false)
-                {
-                    return false;
-                }
+				if (_textBox.GetTarget()?.OnKey('\n') ?? false)
+				{
+					return false;
+				}
 			}
 
 			return true;

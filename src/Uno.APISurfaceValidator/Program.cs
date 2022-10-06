@@ -45,7 +45,7 @@ namespace Uno.APISurfaceValidator
 		private static bool CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition assembly, string pattern, string identifier)
 		{
 			var hasError = false;
-			
+
 			var referenceTypes = referenceAssembly.MainModule.GetTypes();
 			var types = assembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
@@ -53,7 +53,7 @@ namespace Uno.APISurfaceValidator
 			{
 				'+' => t => t.IsPublic && t.FullName.StartsWith(pattern[1..]),
 				'-' => t => t.IsPublic && !t.FullName.StartsWith(pattern[1..]),
-				_   => t => t.IsPublic
+				_ => t => t.IsPublic
 			};
 
 			foreach (var referenceType in referenceTypes.Where(predicate))
@@ -84,7 +84,7 @@ namespace Uno.APISurfaceValidator
 		private static bool CompareMembers(IEnumerable<MemberReference> referenceMembers, IEnumerable<MemberReference> members, string identifier)
 		{
 			var hasError = false;
-			
+
 			var membersLookup = members.Select(RewriteMember).ToDictionary(m => m.ToString());
 
 			foreach (var referenceMember in referenceMembers.Where(IncludeReferenceMember).Select(RewriteReferenceMember))

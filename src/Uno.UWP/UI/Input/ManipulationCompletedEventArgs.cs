@@ -11,7 +11,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public partial class ManipulationCompletedEventArgs 
+	public partial class ManipulationCompletedEventArgs
 	{
 		internal ManipulationCompletedEventArgs(
 			PointerIdentifier[] pointers,

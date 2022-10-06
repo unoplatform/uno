@@ -18,7 +18,7 @@ namespace UnoWinUIRevert
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "tsBindings")); // Generated
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressBar")); // ProgressBar in WinUI is a replacement of the UWP's version
-			
+
 			var colorsFilepath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Colors.cs");
 			if (File.Exists(colorsFilepath))
 			{
@@ -37,12 +37,12 @@ namespace UnoWinUIRevert
 				Directory.CreateDirectory(Path.Combine(basePath, "src", "Uno.UI", "UI", "Text"));
 				File.Copy(fontWeightsFilePath, Path.Combine(basePath, @"src", "Uno.UI", "UI", "Text", "FontWeights.cs"), true);
 			}
-			
+
 			var inputPath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Input");
 			if (Directory.Exists(inputPath))
 			{
 				Console.WriteLine(@"Copying UI.Input");
-				foreach(var file in Directory.GetFiles(inputPath))
+				foreach (var file in Directory.GetFiles(inputPath))
 				{
 					var relativePath = Path.GetRelativePath(inputPath, file);
 
@@ -57,7 +57,7 @@ namespace UnoWinUIRevert
 			if (Directory.Exists(dispatcherQueuePath))
 			{
 				Console.WriteLine(@"Copying DispatcherQueue types");
-				foreach(var file in Directory.GetFiles(dispatcherQueuePath, "DispatcherQueue*.cs"))
+				foreach (var file in Directory.GetFiles(dispatcherQueuePath, "DispatcherQueue*.cs"))
 				{
 					var relativePath = Path.GetRelativePath(dispatcherQueuePath, file);
 

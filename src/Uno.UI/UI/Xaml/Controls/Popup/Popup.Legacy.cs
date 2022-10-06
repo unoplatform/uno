@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnBasePropertyChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			if(_forwardedProperties.TryGetValue(dp, out var localProperty))
+			if (_forwardedProperties.TryGetValue(dp, out var localProperty))
 			{
 				SetValue(localProperty, GetValue(dp));
 			}

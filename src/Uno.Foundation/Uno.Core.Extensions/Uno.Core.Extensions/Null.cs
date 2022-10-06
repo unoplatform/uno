@@ -16,16 +16,16 @@
 // ******************************************************************
 namespace Uno
 {
-    /// <summary>
-    /// A container for a object that has no meaning (replaces void).
-    /// </summary>
-    internal class Null
-    {
-        /// <summary>
-        /// Private constructor, no one will ever construct these things, pass null.
-        /// </summary>
-        private Null()
-        {
-        }
-    }
+	/// <summary>
+	/// A container for a object that has no meaning (replaces void).
+	/// </summary>
+	internal class Null
+	{
+		/// <summary>
+		/// Private constructor, no one will ever construct these things, pass null.
+		/// </summary>
+		private Null()
+		{
+		}
+	}
 }

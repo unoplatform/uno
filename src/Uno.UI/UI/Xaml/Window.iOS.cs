@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 			_mainController.View.BackgroundColor = UIColor.Clear;
 			_mainController.NavigationBarHidden = true;
-			
+
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;

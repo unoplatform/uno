@@ -218,11 +218,11 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 			switch (msg)
 			{
 				case WM_CLIPBOARDUPDATE:
-				{
-					ContentChanged?.Invoke(this, EventArgs.Empty);
-					handled = true;
-					break;
-				}
+					{
+						ContentChanged?.Invoke(this, EventArgs.Empty);
+						handled = true;
+						break;
+					}
 			}
 
 			return IntPtr.Zero;

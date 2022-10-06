@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Input
 			{
 				return default; // Required for the default public ctor ...
 			}
-			else if(relativeTo == _originalSource)
+			else if (relativeTo == _originalSource)
 			{
 				return _position;
 			}

@@ -557,7 +557,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var link = tb1.Inlines.OfType<Hyperlink>().Single();
 			link.NavigateUri.ToString().Should().Be("http://www.site.com/");
 			link.Inlines.Single().Should().BeOfType<Run>();
-			((Run) link.Inlines.Single()).Text.Should().Be("Nav");
+			((Run)link.Inlines.Single()).Text.Should().Be("Nav");
 
 			var tb2 = r.FindName("tb02") as TextBlock;
 
@@ -731,7 +731,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsTrue((bool)tb1.IsChecked);
 			Assert.IsTrue((bool)tb2.IsChecked);
 		}
-		
+
 		[TestMethod]
 		public void When_GridRowDefinitions()
 		{
@@ -838,12 +838,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_ImplicitStyle_WithoutKey()
 		{
-			Assert.ThrowsException<InvalidOperationException>(() => {
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
 				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
 				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 			});
 		}
-		
+
 		[TestMethod]
 		public void When_NonDependencyPropertyAssignable()
 		{
@@ -857,7 +858,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual("42", inner.Tag);
 			Assert.AreEqual(43, inner.MyProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_NonDependencyProperty_Binding()
 		{
@@ -1147,7 +1148,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				Assert.AreEqual(24, owner.Test.Value);
 			}
 		}
-		
+
 		[TestMethod]
 		public void When_xName_Reload()
 		{
@@ -1464,7 +1465,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		/// <param name="sanitizedXaml">Xaml with single or double quots</param>
 		/// <param name="defaultXmlns">The default xmlns to inject; use null to not inject one.</param>
 		private T LoadXaml<T>(string sanitizedXaml, string defaultXmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation") where T : class =>
-			LoadXaml<T>(sanitizedXaml, new Dictionary<string, string>{ [string.Empty] = defaultXmlns });
+			LoadXaml<T>(sanitizedXaml, new Dictionary<string, string> { [string.Empty] = defaultXmlns });
 
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.

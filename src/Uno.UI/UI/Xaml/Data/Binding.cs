@@ -61,9 +61,9 @@ namespace Windows.UI.Xaml.Data
 			Mode = BindingMode.OneWay;
 		}
 
-		public static implicit operator Binding (string path)
+		public static implicit operator Binding(string path)
 		{
-			return new Binding (path);
+			return new Binding(path);
 		}
 
 		/// <summary>

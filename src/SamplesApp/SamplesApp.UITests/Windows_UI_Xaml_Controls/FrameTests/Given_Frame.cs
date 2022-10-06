@@ -49,6 +49,6 @@ internal class Given_Frame : SampleControlUITestBase
 		// 1. The red should be collapsed so it should not have receive the tapped event, so it has not flagged it as handled.
 		// 2. Even if the bg of the TransparentPage is not null (i.e. Transparent),
 		//	  the Page should not get any pointer event as its content is completely empty.
-		result.Should().Be("tapped"); 
+		result.Should().Be("tapped");
 	}
 }

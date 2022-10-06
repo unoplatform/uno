@@ -76,7 +76,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 		}
 
 		private bool CheckMimeTypeAssociations(Uri uri)
-        {
+		{
 			var list = new MimeAppsList();
 			var mimeType = $"x-scheme-handler/{uri.Scheme}";
 			return list.Supports(mimeType);

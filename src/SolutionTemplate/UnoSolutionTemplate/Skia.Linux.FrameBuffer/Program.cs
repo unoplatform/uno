@@ -4,20 +4,20 @@ using Uno.UI.Runtime.Skia;
 namespace $ext_safeprojectname$
 {
 	class Program
+{
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
+		try
 		{
-			try
-			{
-				Console.CursorVisible = false;
+			Console.CursorVisible = false;
 
-				var host = new FrameBufferHost(() => new App());
-				host.Run();
-			}
-			finally
-			{
-				Console.CursorVisible = true;
-			}
+			var host = new FrameBufferHost(() => new App());
+			host.Run();
+		}
+		finally
+		{
+			Console.CursorVisible = true;
 		}
 	}
+}
 }

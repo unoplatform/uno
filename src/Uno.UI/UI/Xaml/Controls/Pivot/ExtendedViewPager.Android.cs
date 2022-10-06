@@ -45,10 +45,10 @@ namespace Windows.UI.Xaml.Controls
 			// single visual tree, each one must have a unique id.
 			Id = ViewHelper.GenerateUniqueViewId();
 
-            PageMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 4, ContextHelper.Current.Resources.DisplayMetrics);
+			PageMargin = (int)TypedValue.ApplyDimension(ComplexUnitType.Dip, 4, ContextHelper.Current.Resources.DisplayMetrics);
 		}
 
-        public override bool OnInterceptTouchEvent(MotionEvent e)
+		public override bool OnInterceptTouchEvent(MotionEvent e)
 		{
 			if (SwipeEnabled)
 			{

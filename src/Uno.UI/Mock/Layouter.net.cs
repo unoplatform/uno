@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return view.DesiredSize;
 		}
-		
+
 		protected void ArrangeChildOverride(View view, Rect frame)
 		{
 			view.Arranged = frame;

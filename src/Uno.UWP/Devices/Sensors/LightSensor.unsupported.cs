@@ -3,13 +3,13 @@
 
 namespace Windows.Devices.Sensors
 {
-    public partial class LightSensor
-    {
+	public partial class LightSensor
+	{
 		private LightSensor()
 		{
 		}
 
-        public static LightSensor? GetDefault() => null;
-    }
+		public static LightSensor? GetDefault() => null;
+	}
 }
 #endif
