@@ -33,7 +33,7 @@
 
 		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\netcoreapp3.1\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\netcoreapp3.1" />
 
-		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net7.0\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net7.0" />
+		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net7.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net7.0-windows" />
 	</files>
 
 </package>
