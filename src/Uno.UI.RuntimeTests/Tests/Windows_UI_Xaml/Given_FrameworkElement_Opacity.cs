@@ -81,7 +81,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var renderer = new RenderTargetBitmap();
-			
+
 			await renderer.RenderAsync(SUT);
 
 			var si = await RawBitmap.From(renderer, SUT);
