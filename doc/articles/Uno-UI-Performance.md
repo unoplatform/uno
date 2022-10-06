@@ -1,6 +1,6 @@
 # Uno.UI - Performance
 
-This article lists a number of performance tips to optimize your Uno Platform application. 
+This article lists a number of performance tips to optimize your Uno Platform application.
 
 Here's what to look for:
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
@@ -27,7 +27,7 @@ Here's what to look for:
 			</DataTemplate>
 		```
 		Note that WinUI does not need this, and the issue is [tracked in Uno here](https://github.com/unoplatform/uno/issues/6910).
-	
+
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
 - Animations
 	- Prefer `Opacity` animations to `Visibility` animations (this avoids some measuring performance issues).
@@ -41,11 +41,11 @@ Here's what to look for:
 			builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
 			```
 			The logger will provide all the changes done to animated properties, with element names.
-		
+
 - Image Assets
 	- Try using an image that is appropriate for the DPI and screen size.
     - Whenever possible, specify and explicit Width and Height on `Image`.
-	- The pixel size of an image will impact the loading time of the image. If the image is intentionally blurry, prefer reducing the physical size of the image over 
+	- The pixel size of an image will impact the loading time of the image. If the image is intentionally blurry, prefer reducing the physical size of the image over
 	  the compressed disk size of the image.
 - Paths
 	- Prefer reusing paths, duplication costs Main and GPU memory.
@@ -53,11 +53,11 @@ Here's what to look for:
 - Bindings
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
-	- As of Uno 3.9, adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overriden to something else, ensure to set the DataContext before adding the control to its parent.T his will avoid having bindings be refreshed twice needlessly.
+	- As of Uno 3.9, adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overridden to something else, ensure to set the DataContext before adding the control to its parent.T his will avoid having bindings be refreshed twice needlessly.
 	- Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
 		- When data binding to classes not inheriting from DependencyObject, in Debug configuration only, the following message may appear:
 			```
-			The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider. 
+			The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider.
 			Reflection was used instead of the binding engine and generated static metadata. Add the Bindable 	attribute to prevent this message and performance issues.
 			```
 			This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
@@ -66,7 +66,7 @@ Here's what to look for:
 	- For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
 	- It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
 	- It is also supported as `xamarin:Phase` on controls that do not have bindings. This feature is not supported by UWP.
-	- It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The 
+	- It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The
 	attribute is ignored for templates of `ContentControl` instances, or any other control.
     - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:
        ```xml
@@ -77,7 +77,7 @@ Here's what to look for:
        </TextBlock>
        ```
 - Resources
-    - Avoid using `x:Name` in `ResourceDictionary` as those force early instanciation of the resource
+    - Avoid using `x:Name` in `ResourceDictionary` as those force early instantiation of the resource
     - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level App.xaml resource dictionaries
 
 ## Advanced performance Tracing

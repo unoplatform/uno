@@ -1,4 +1,4 @@
-# Uno Support for Windows.Devices.Haptics
+# Uno Support for `Windows.Devices.Haptics`
 
 ## `VibrationDevice`
 

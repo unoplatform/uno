@@ -99,15 +99,15 @@ You have now created a sample application that will be extended in later tasks.
 
 ## Task 2 - Sign up for API key
 
-In order to demonstrate how to consume a webservice, there needs to be a webservice available. In this tutorial you will build a simple client that leverages [The Cat API](https://thecatapi.com/). The website for this service describes it as:
+In order to demonstrate how to consume a web service, there needs to be a web service available. In this tutorial you will build a simple client that leverages [The Cat API](https://thecatapi.com/). The website for this service describes it as:
 
 > A public service API all about Cats, free to use when making your fancy new App, Website or Service.
 
 In order to use this service, you need to sign up for a free API key.
 
-1. In a browser, navigate to The Cat API signup page: [https://thecatapi.com/signup](https://thecatapi.com/signup)
+1. In a browser, navigate to The Cat API sign-up page: [https://thecatapi.com/signup](https://thecatapi.com/signup)
 
-1. Complete the signup form and click **SIGNUP**.
+1. Complete the sign-up form and click **sign-up**.
 
     You will receive an email with your API key - you will need the key later.
 
@@ -397,7 +397,7 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     Notice that this asynchronous method uses the **CreateRequestMessage** you just created. As the returned **HttpRequestMessage** object implements the **IDisposable** interface, the **request** variable is defined within a `using` statement that obtains the resource, executes the statements that you specify, and then automatically disposes of the **HttpRequestMessage** instance.
 
-    The remainder of the method uses the single **HttpClient** instance to send the **request** and `await` a response. If the response is successful, the reponse content is read and returned as a string. If, for some reason, the response does not indicate success, a `null` is returned.
+    The remainder of the method uses the single **HttpClient** instance to send the **request** and `await` a response. If the response is successful, the response content is read and returned as a string. If, for some reason, the response does not indicate success, a `null` is returned.
 
     > [!Important]
     > As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
@@ -751,7 +751,7 @@ In this task you will build the view-model that implements a simple breed search
 
     The final variable, **_breedSearchApi**, holds a reference to an instance of the **BreedSearchApi** you created earlier.
 
-    > [!TIP] 
+    > [!TIP]
     > You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=netcore-3.1)
 
 1. To add the properties that will be used in XAML bindings, locate the comment **// Insert properties below here** and replace it with the following code:
@@ -898,8 +898,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:TheCatApiClient"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d"
@@ -944,7 +944,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
     ```xml
     <Page
         ...
-        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         ...
@@ -965,7 +965,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ```xml
     <!-- ROW 1 - Search Box -->
-    <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
+    <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find"
                     Name="BreedSearchBox"
                     Width="300" Margin="4,20" HorizontalAlignment="Left"
                     Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
@@ -978,7 +978,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ```xml
     <!-- ROW 2 - Search Results -->
-    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4" 
+    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4"
             SelectionMode="None">
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="datamodels:Breed">
@@ -1025,8 +1025,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:TheCatApiClient"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d"
@@ -1048,14 +1048,14 @@ In this task you will create the XAML for the UI and implement the bindings for 
             <TextBlock Text="The Cat API Client" Style="{StaticResource HeaderTextBlockStyle}" />
 
             <!-- ROW 1 - Search Box -->
-            <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
+            <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find"
                             Name="BreedSearchBox"
                             Width="300" Margin="4,20" HorizontalAlignment="Left"
                             Text="{x:Bind ViewModel.SearchTerm, Mode=TwoWay}"
                             QuerySubmitted="BreedSearchBox_QuerySubmitted" />
 
             <!-- ROW 2 - Search Results -->
-            <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4" 
+            <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4"
                   SelectionMode="None">
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="datamodels:Breed">
@@ -1709,7 +1709,7 @@ In this final task you will bring together the new **FavoritesApi** with the upd
 
     ```xml
     <!-- ROW 2 - Search Results -->
-    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4" 
+    <GridView Grid.Row="2" ItemsSource="{x:Bind ViewModel.SearchResults, Mode=OneWay}" Margin="4"
             SelectionMode="None"
             IsItemClickEnabled="True"
             ItemClick="SearchResults_ItemClick">
@@ -1732,7 +1732,7 @@ In this final task you will bring together the new **FavoritesApi** with the upd
 
     ```xml
     <!-- ROW 4 - Favorites -->
-    <GridView Grid.Row="4" ItemsSource="{x:Bind ViewModel.Favorites, Mode=OneWay}" Margin="4" 
+    <GridView Grid.Row="4" ItemsSource="{x:Bind ViewModel.Favorites, Mode=OneWay}" Margin="4"
             SelectionMode="None"
             Name="Favorites"
             IsItemClickEnabled="True"
@@ -1836,7 +1836,7 @@ The full source code for this tutorial is available here - [Tutorial Source Code
   * [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
   * [ObservableCollection<T> Class](https://docs.microsoft.com/en-us/dotnet/api/system.collections.objectmodel.observablecollection-1?view=netcore-3.1)
 * The Cat API Documentation
-  * [Key Signup](https://thecatapi.com/signup)
+  * [Key sign-up](https://thecatapi.com/signup)
   * [API documentation](https://docs.thecatapi.com/)
   * [GET /breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search)
   * [/images](https://docs.thecatapi.com/api-reference/images/)

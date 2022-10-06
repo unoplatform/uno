@@ -300,7 +300,7 @@ The next steps will show how migrate the Silverlight styles to work in the Uno a
     </Style>
     ```
 
-    Save the resource and the designer should now display the rectangle background and the approrpiate foreground text color.
+    Save the resource and the designer should now display the rectangle background and the appropriate foreground text color.
 
 ## Adding the images
 

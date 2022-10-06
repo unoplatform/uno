@@ -21,7 +21,7 @@ In some cases, Uno's existing API is close to UWP, but not identical. (Hypotheti
 
 In these cases, we do want to align Uno with UWP, even at the expense of a breaking change. However, we tend to be more careful with when we merge these changes, compared to other bugfixes. We prefer to 'batch' many such breaking changes into a single stable release cycle, rather than wear out consumers' patience with a steady trickle of breaking changes each release.
 
-The best way to proceed is to create an issue if one doesn't exist already, and open a discussion with the core team about the change in question, so we can jointly work out how best to manage it. 
+The best way to proceed is to create an issue if one doesn't exist already, and open a discussion with the core team about the change in question, so we can jointly work out how best to manage it.
 
 Note that some cases may be sufficiently benign that the breaking change is acceptable in a normal release cycle. (For example, removing a public constructor for an obscure `EventArgs` subclass that would presumably never be created from user code anyway.)
 
@@ -47,7 +47,7 @@ You can find the report within the `NuGetPackages.zip` archive on the build serv
 
 Key things to pay attention to:
 - the report is for each TFM and the assemblies for that TFM.
-- breaking changes which have been blessed have been ~~striked out~~.
+- breaking changes which have been blessed have been ~~struck out~~.
 - `Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()` is the breaking change which has not been blessed and thus the process failed the build.
 
 ## MonoAndroid80 Platform
@@ -298,7 +298,7 @@ Key things to pay attention to:
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 0 missing or changed properties in existing types:
-## xamarinios10 Platform
+## `xamarinios10` Platform
 #### Uno.dll
 ##### 0 missing types:
 ##### 8 missing or changed method in existing types:
@@ -367,7 +367,7 @@ Key things to pay attention to:
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 0 missing or changed properties in existing types:
-## xamarinmac20 Platform
+## `xamarinmac20` Platform
 #### Uno.dll
 ##### 0 missing types:
 ##### 2 missing or changed method in existing types:

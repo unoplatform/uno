@@ -15,7 +15,7 @@ To fix this, find or add the following block in your Windows `.csproj` file:
 <ItemGroup>
     <!--
 	If you encounter this error message:
-		
+
 		error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll. Please update to a newer .NET SDK in order to reference this assembly.
 
 	This means that the two packages below must be aligned with the "build" version number of
@@ -32,8 +32,8 @@ To find the appropriate version:
 - The two `FrameworkReference` packages must be aligned with the "build" version number (`22000` in the example above) of the "Microsoft.Windows.SDK.BuildTools" package defined earlier in the project
 - The "revision" version number (`25` in the example above) must be the highest found in the versions of https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
 
-## Unpackaged application support
-By default the **Uno Platform App** Visual Studio template creates a packaged application. If you want to add unpackaged support, you'll need to do the following:
+## Un-packaged application support
+By default the **Uno Platform App** Visual Studio template creates a packaged application. If you want to add un-packaged support, you'll need to do the following:
 - Add a new entry in the launchSettings.json file:
     ```json
     {

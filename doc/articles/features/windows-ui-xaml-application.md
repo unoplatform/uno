@@ -8,7 +8,7 @@ This event is invoked when the application is about to be suspended.
 
 #### WebAssembly
 
-The application cannot perform asynchronous work during the execution of the handler of Suspending, as the browser window will be closed thereafter the execution of a [beforeunload](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) handler.
+The application cannot perform asynchronous work during the execution of the handler of Suspending, as the browser window will be closed thereafter the execution of a [`beforeunload`](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) handler.
 
 The handler must invoke the deferral at the end.
 

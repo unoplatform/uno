@@ -32,7 +32,7 @@ flowchart TD
     xamlmeasure["FrameworkElement.XamlMeasure(availableSize)"]
     layouter.measure["Layouter.Measure(availableSize)"]
     layouter.measureoverride["Layouter.MeasureOverride(availableSize)"]
-    measureoverride["FrameworkELement.MeasureOverride(availableSize)<br><em>overriden by element</em>"]
+    measureoverride["FrameworkELement.MeasureOverride(availableSize)<br><em>overridden by element</em>"]
     appmeasureoverrride[["local implementation of MeasureOverride(availableSize)<br>"]]
 
     subgraph Subelement measuring

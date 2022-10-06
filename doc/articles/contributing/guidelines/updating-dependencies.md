@@ -1,6 +1,6 @@
 # Guidelines for updating dependencies
 
-We use Dependabot to notify the team of any updates to dependencies. Once a week the robot will scan our dependencies and raise a pull-request if a new version is found. If an existing open pull-request is found for a dependency it will be closed and replaced with a new pull-request. The behaviour of the robot is [controlled by this configuration file](https://github.com/unoplatform/Uno/blob/master/.dependabot/config.yml). 
+We use Dependabot to notify the team of any updates to dependencies. Once a week the robot will scan our dependencies and raise a pull-request if a new version is found. If an existing open pull-request is found for a dependency it will be closed and replaced with a new pull-request. The behavior of the robot is [controlled by this configuration file](https://github.com/unoplatform/Uno/blob/master/.dependabot/config.yml).
 
 ## internal dependencies
 
@@ -8,7 +8,7 @@ These dependencies don't change the public API surface and are typically safe to
 
 - BenchmarkDotNet
 - [FluentAssertions](https://github.com/unoplatform/uno/pull/1196)
-- [NUnit3TestAdapter](https://github.com/unoplatform/uno/pull/1455) 
+- [NUnit3TestAdapter](https://github.com/unoplatform/uno/pull/1455)
 - [NUnit.Runners](https://github.com/unoplatform/uno/pull/1122)
 - [Microsoft.AppCenter](https://github.com/unoplatform/uno/pull/1175)
 - [Microsoft.SourceLink.GitHub](https://github.com/unoplatform/uno/pull/1204)
@@ -35,9 +35,9 @@ Updating these dependencies will require consumers to upgrade their dependencies
 
 These dependencies require care and human testing:
 
-- [Com.Airbnb.Android.Lottie](https://github.com/unoplatform/uno/pull/1201#issuecomment-511499023). This dependency reduces the number of supported SDKs (monoandroid80 is not supported). This dependency will be updated once monoandroid80 support is dropped from Uno.
+- [Com.Airbnb.Android.Lottie](https://github.com/unoplatform/uno/pull/1201#issuecomment-511499023). This dependency reduces the number of supported SDKs (monoandroid80 is not supported). This dependency will be updated once `monoandroid80` support is dropped from Uno.
 - [CommonServiceLocator](https://github.com/unoplatform/uno/pull/1174#issuecomment-507659717). This specific dependency needs to be removed from Uno.
-- [cef.redist.x86](https://github.com/unoplatform/uno/pull/1173#issuecomment-507662267) needs to be kept in alignment with `CefSharp.Wpf`
+- [`cef.redist.x86`](https://github.com/unoplatform/uno/pull/1173#issuecomment-507662267) needs to be kept in alignment with `CefSharp.Wpf`
 - [CefSharp.Wpf](https://github.com/unoplatform/uno/pull/1173#issuecomment-507662267) needs to be kept in alignment with `cef.redist.x86`
 - [Microsoft.CodeAnalysis.*](https://github.com/unoplatform/uno/pull/1169) children packages needs to be aligned with the other `Microsoft.CodeAnalysis` packages.
 - [Microsoft.Build.*](https://github.com/unoplatform/uno/pull/1169) children packages needs to be aligned with the other `Microsoft.Build` packages, and need to be aligned with `Uno.SourceGenerationTasks` package features.
