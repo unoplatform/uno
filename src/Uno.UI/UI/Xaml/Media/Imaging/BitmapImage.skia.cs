@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		private const int MIN_DIMENSION_SYNC_LOADING = 100;
 
+		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
