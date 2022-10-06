@@ -299,7 +299,8 @@ namespace Windows.Storage
 			}
 
 			protected override bool IsEqual(ImplementationBase implementation) =>
-				implementation is SecurityScopedFolder otherFolder && otherFolder._nsUrl.FilePathUrl.Path == _nsUrl.FilePathUrl.Path;
+				implementation is SecurityScopedFolder otherFolder && 
+				otherFolder._nsUrl.FilePathUrl?.Path == _nsUrl.FilePathUrl?.Path;
 		}
 	}
 }
