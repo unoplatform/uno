@@ -347,13 +347,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (CurrentEntry.Instance == null)
 			{
-				var page = CreatePageInstanceCached(entry.SourcePageType);
-				if (page == null)
+				if (EnsurePageInitialized(entry) is not { } page)
 				{
 					return false;
 				}
 
-				page.Frame = this;
 				CurrentEntry.Instance = page;
 			}
 
@@ -431,6 +429,17 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void SetNavigationState(string navigationState) => _navigationState = navigationState;
+
+		internal Page EnsurePageInitialized(PageStackEntry entry)
+		{
+			if (entry is { Instance: null } && CreatePageInstanceCached(entry.SourcePageType) is { } page)
+			{
+				page.Frame = this;
+				entry.Instance = page;
+			}
+
+			return entry?.Instance;
+		}
 
 		private static Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
 
