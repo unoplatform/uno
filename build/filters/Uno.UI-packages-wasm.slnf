@@ -35,7 +35,8 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Wasm.csproj",
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",
       "Uno.UI\\Uno.UI.Wasm.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj"
+      "Uno.UWP\\Uno.Wasm.csproj",
+      "Uno.UI.XamlHost\\Uno.UI.XamlHost.Wasm.csproj"
     ]
   }
 }
