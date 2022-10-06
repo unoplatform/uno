@@ -33,6 +33,8 @@
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Skia.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
+      "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
+      "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
       "Uno.UI.Runtime.Skia.Tizen\\Uno.UI.Runtime.Skia.Tizen.csproj",

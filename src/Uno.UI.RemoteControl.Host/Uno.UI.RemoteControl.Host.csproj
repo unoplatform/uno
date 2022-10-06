@@ -8,8 +8,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(CI_Build)'=='true' or '$(TF_BUILD)' == 'true'">
-		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='' and '$(IS_NET7_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
 		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='true'">net6.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(IS_NET7_BUILD)'=='true'">net6.0;net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>

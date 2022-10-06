@@ -101,7 +101,9 @@ namespace Uno.UI.RemoteControl.Host
 
 			var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
+			basePath = Path.Combine(basePath, "net7.0");
+#elif NET6_0_OR_GREATER
 			basePath = Path.Combine(basePath, "net6.0");
 #else
 			basePath = Path.Combine(basePath, "netcoreapp3.1");
