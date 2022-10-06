@@ -1032,7 +1032,7 @@ description: {sample.Description}";
 		}
 
 		private
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			async
 #endif
 			Task SetFile<T>(string key, T value)
@@ -1065,7 +1065,7 @@ description: {sample.Description}";
 		}
 
 		private
-#if !UNO_REFERENCE_API
+#if !__NETSTD_REFERENCE__
 			async
 #endif
 			Task<T> GetFile<T>(string key, Func<T> defaultValue = null)
