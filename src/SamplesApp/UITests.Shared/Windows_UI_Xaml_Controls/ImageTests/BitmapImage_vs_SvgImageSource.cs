@@ -140,11 +140,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private async Task<IRandomAccessStream> GetStream()
 		{
-#if __WASM__
-			using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 			using var httpClient = new HttpClient();
-#endif
 			var data = await httpClient.GetByteArrayAsync(url.Text);
 
 			return new MemoryStream(data).AsRandomAccessStream();

@@ -37,11 +37,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 
 			this.RunWhileLoaded(async ct =>
 			{
-#if __WASM__
-				using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 				using var httpClient = new HttpClient();
-#endif
 				const string imageUrl = "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.jpg";
 				var data = await httpClient.GetByteArrayAsync(imageUrl);
 
