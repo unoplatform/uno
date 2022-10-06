@@ -398,7 +398,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dialogOpenedScreenshot = CurrentTestTakeScreenShot("1 ContentDialog Opened");
 
 			// tapping outside of dialog
-			var dialogRect = _app.GetRect(dialogSpace);
+			var dialogRect = _app.GetPhysicalRect(dialogSpace);
 			_app.TapCoordinates(dialogRect.CenterX, dialogRect.Bottom + 50);
 			var dialogStillOpenedScreenshot = CurrentTestTakeScreenShot("2 ContentDialog Still Opened");
 

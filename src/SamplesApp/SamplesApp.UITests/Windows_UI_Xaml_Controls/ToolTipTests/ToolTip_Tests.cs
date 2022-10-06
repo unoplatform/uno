@@ -62,10 +62,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			const string BorderInsideToolTip = "BorderInsideToolTip";
 
 			_app.WaitForElement(ButtonWithTooltip);
-			var buttonRect = _app.GetRect(ButtonWithTooltip);
+			var buttonRect = _app.GetPhysicalRect(ButtonWithTooltip);
 
-			var upperRect = _app.GetRect("UpperLocator");
-			var lowerRect = _app.GetRect("LowerLocator");
+			var upperRect = _app.GetPhysicalRect("UpperLocator");
+			var lowerRect = _app.GetPhysicalRect("LowerLocator");
 
 			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
