@@ -57,11 +57,15 @@
 
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
+
+	<MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <!--This override is used to validate the use of specific version of the C# Compiler-->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.4.0" PrivateAssets="all" />
+	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -211,6 +215,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
