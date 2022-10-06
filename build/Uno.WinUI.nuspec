@@ -507,6 +507,23 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
 
+	<!-- net7.0 reference -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.Foundation.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.Foundation.Logging.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.UI.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.UI.Composition.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.UI.Dispatching.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.Xaml.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net7.0\Uno.UI.FluentTheme.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net7.0\Uno.UI.FluentTheme.pdb" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net7.0\Uno.UI.FluentTheme.v1.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net7.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net7.0\Uno.UI.FluentTheme.v2.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net7.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net7.0\Uno.UI.Toolkit.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net7.0\Uno.UI.Toolkit.pdb" target="lib\net7.0" />
+
 	<!-- netstandard2.0 WebAssembly -->
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.dll" target="uno-runtime\netstandard2.0\webassembly" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.pdb" target="uno-runtime\netstandard2.0\webassembly" />

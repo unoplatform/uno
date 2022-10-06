@@ -146,11 +146,11 @@
   <files>
 	<file src="..\src\Common\uno.png" target="/" />
 	<!-- Remote Control -->
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
 	  
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\net7.0\Uno.UI.RemoteControl.dll" target="lib\net7.0" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\net7.0\Uno.UI.RemoteControl.pdb" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.dll" target="lib\net7.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.pdb" target="lib\net7.0" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid11.0" />
