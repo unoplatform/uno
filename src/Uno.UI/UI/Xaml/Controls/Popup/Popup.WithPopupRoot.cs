@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void OnIsLightDismissEnabledChangedNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled);
 
-		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen) 
+		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{

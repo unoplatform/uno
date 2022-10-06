@@ -1027,7 +1027,7 @@ namespace Windows.UI.Xaml.Controls
 							OnAnimationComplete(sender, args);
 						};
 #else
-						OnAnimationComplete(null, null);
+					OnAnimationComplete(null, null);
 #endif
 				}
 				else

@@ -11,7 +11,7 @@ using Uno.Extensions;
 namespace Windows.UI.Xaml
 {
 	[TypeConverter(typeof(GridLength.Converter))]
-    public partial struct GridLength
+	public partial struct GridLength
 	{
 		public class Converter : TypeConverter
 		{

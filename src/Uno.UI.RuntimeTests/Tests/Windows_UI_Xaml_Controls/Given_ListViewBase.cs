@@ -793,16 +793,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
 		{
 			var materialized = 0;
-			var container = new Grid { Height = 100, Width=100 };
+			var container = new Grid { Height = 100, Width = 100 };
 
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
-
+				ItemTemplate = new DataTemplate(() =>
+				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
-					var border = new Border() {
+					var border = new Border()
+					{
 						Height = 100,
 						Child = tb
 					};
@@ -840,8 +841,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
-
+				ItemTemplate = new DataTemplate(() =>
+				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
 					var border = new Border()
@@ -884,8 +885,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
-
+				ItemTemplate = new DataTemplate(() =>
+				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
 					var border = new Border()
@@ -943,8 +944,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
-
+				ItemTemplate = new DataTemplate(() =>
+				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
 					var border = new Border()
@@ -1000,8 +1001,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
-
+				ItemTemplate = new DataTemplate(() =>
+				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
 					var border = new Border()

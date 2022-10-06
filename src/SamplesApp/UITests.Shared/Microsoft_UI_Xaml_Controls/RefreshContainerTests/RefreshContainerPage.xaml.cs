@@ -169,9 +169,9 @@ namespace MUXControlsTestApp
 		}
 #if HAS_UNO
 		private void RefreshInfoProvider_InteractionRatioChanged(IRefreshInfoProvider sender, RefreshInteractionRatioChangedEventArgs args)
-        {
-            this.InteractionRatio.Text = args.InteractionRatio.ToString();
-        }
+		{
+			this.InteractionRatio.Text = args.InteractionRatio.ToString();
+		}
 #endif
 		private void RCRefreshRequestedComboBoxSwitcher_Click(object sender, RoutedEventArgs e)
 		{
@@ -279,8 +279,8 @@ namespace MUXControlsTestApp
 #if HAS_UNO
 			((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider = ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.AdaptFromTree(this.listView, this.RefreshContainer.Visualizer.RenderSize);
 
-            ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.SetAnimations(this.RefreshContainer.Visualizer);
-            ((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
+			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.SetAnimations(this.RefreshContainer.Visualizer);
+			((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
 #endif
 		}
 

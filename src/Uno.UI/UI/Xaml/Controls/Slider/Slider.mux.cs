@@ -794,7 +794,7 @@ public partial class Slider
 		_tpElementVerticalThumb.SizeChanged += OnThumbSizeChanged;
 		_elementVerticalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.SizeChanged -= OnThumbSizeChanged);
 	}
-	
+
 	private void AttachHorizontalThumbSubscriptions()
 	{
 		_tpElementHorizontalThumb.DragStarted += OnThumbDragStarted;
@@ -806,7 +806,7 @@ public partial class Slider
 		_tpElementHorizontalThumb.SizeChanged += OnThumbSizeChanged;
 		_elementHorizontalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.SizeChanged -= OnThumbSizeChanged);
 	}
-	
+
 	private void AttachSliderContainerEvents()
 	{
 		FrameworkElement spSliderContainer = _tpSliderContainer ?? this;

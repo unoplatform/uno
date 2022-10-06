@@ -105,9 +105,9 @@ namespace MUXControlsTestApp
 
 #if HAS_UNO
 		private void RefreshInfoProvider_InteractionRatioChanged(IRefreshInfoProvider sender, RefreshInteractionRatioChangedEventArgs args)
-        {
-            UpdateInteractionRatiosComboBox(args.InteractionRatio);
-        }
+		{
+			UpdateInteractionRatiosComboBox(args.InteractionRatio);
+		}
 #endif
 
 		private void RefreshOnContainerButton_Click(object sender, RoutedEventArgs e)
@@ -199,15 +199,15 @@ namespace MUXControlsTestApp
 		private void AdaptButton_Click(object sender, RoutedEventArgs e)
 		{
 #if HAS_UNO
-            if (((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider != null)
-            {
-                ((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged -= RefreshInfoProvider_InteractionRatioChanged;
-            }
+			if (((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider != null)
+			{
+				((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged -= RefreshInfoProvider_InteractionRatioChanged;
+			}
 
-            ((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider = ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.AdaptFromTree(this.Image, this.RefreshContainer.Visualizer.RenderSize);
+			((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider = ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.AdaptFromTree(this.Image, this.RefreshContainer.Visualizer.RenderSize);
 
-            ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.SetAnimations(this.RefreshContainer.Visualizer);
-            ((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
+			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.SetAnimations(this.RefreshContainer.Visualizer);
+			((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
 #endif
 		}
 

@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				return current;
 			}
-		} 
+		}
 #endif
 
 		[TestMethod]

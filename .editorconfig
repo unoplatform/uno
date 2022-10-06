@@ -311,4 +311,4 @@ dotnet_diagnostic.CA1849.severity = none
 dotnet_code_quality.CA1822.api_surface = private, internal
 
 # IDE0055: Fix formatting
-dotnet_diagnostic.IDE0055.severity = error
+dotnet_diagnostic.IDE0055.severity = warning

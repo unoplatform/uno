@@ -166,7 +166,7 @@ namespace MUXControlsTestApp
 			this.RefreshVisualizer.RefreshRequested += RefreshVisualizer_RefreshRequested;
 #if HAS_UNO
 			var adapter = new SliderRefreshInfoProviderAdapter(this.Slider, adapterTimer);
-            ((IRefreshVisualizerPrivate)this.RefreshVisualizer).InfoProvider = adapter.adapt();
+			((IRefreshVisualizerPrivate)this.RefreshVisualizer).InfoProvider = adapter.adapt();
 #endif
 			this.OrientationComboBox.Items.Add(RefreshVisualizerOrientation.Auto);
 			this.OrientationComboBox.Items.Add(RefreshVisualizerOrientation.Normal);

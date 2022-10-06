@@ -430,7 +430,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Full_Collection_Reset()
 		{
 			var SUT = new ComboBox();
-			SUT.ItemTemplate = new DataTemplate(() => {
+			SUT.ItemTemplate = new DataTemplate(() =>
+			{
 
 				var tb = new TextBlock();
 				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });

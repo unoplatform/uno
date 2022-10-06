@@ -37,9 +37,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 		public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities)
 		{
-			if(Assembly.Load("Microsoft.CodeAnalysis.Features") is { } featuresAssembly)
+			if (Assembly.Load("Microsoft.CodeAnalysis.Features") is { } featuresAssembly)
 			{
-				if(featuresAssembly.GetType("Microsoft.CodeAnalysis.ExternalAccess.Watch.Api.WatchHotReloadService", false) is { } watchHotReloadServiceType)
+				if (featuresAssembly.GetType("Microsoft.CodeAnalysis.ExternalAccess.Watch.Api.WatchHotReloadService", false) is { } watchHotReloadServiceType)
 				{
 					_targetInstance = Activator.CreateInstance(
 						watchHotReloadServiceType,
@@ -58,8 +58,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 					if (watchHotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync)) is { } emitSolutionUpdateAsyncMethod)
 					{
-						_emitSolutionUpdateAsync = async (s, ct) => {
-							var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] {s, ct });
+						_emitSolutionUpdateAsync = async (s, ct) =>
+						{
+							var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] { s, ct });
 
 							if (r is Task t)
 							{
@@ -67,7 +68,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 								var value = r.GetType().GetProperty("Result").GetValue(r, null);
 
-								if(value is ITuple tuple)
+								if (value is ITuple tuple)
 								{
 									return tuple;
 								}

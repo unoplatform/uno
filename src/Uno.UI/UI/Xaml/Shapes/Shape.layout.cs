@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Shapes
 			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
 		}
 
-#region Measure / Arrange should be shared using Geometry instead of CGPath
+		#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
 		{
 			var stretch = Stretch;
@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			var alignmentWidth = Math.Max(size.Width, renderingArea.Width);
 			var horizontalOverflow = alignmentWidth - finalSize.Width;
-			if (horizontalOverflow > 0 && shouldAlign.horizontally) 
+			if (horizontalOverflow > 0 && shouldAlign.horizontally)
 			{
 				switch (horizontal)
 				{
@@ -564,9 +564,9 @@ namespace Windows.UI.Xaml.Shapes
 
 			return size;
 		}
-#endregion
+		#endregion
 
-#region Helper methods
+		#region Helper methods
 		/// <summary>
 		/// Gets the rounded/adjusted half stroke thickness that should be used for measuring absolute shapes (Path, Line, Polyline and Polygon)
 		/// </summary>
@@ -604,8 +604,8 @@ namespace Windows.UI.Xaml.Shapes
 			userSize)
 		{
 			var size = new Size(userSize.width, userSize.height);
-			var minSize = new Size(userSize.min.width, userSize.min.height);;
-			var maxSize = new Size(userSize.max.width, userSize.max.height); ;
+			var minSize = new Size(userSize.min.width, userSize.min.height);
+			var maxSize = new Size(userSize.max.width, userSize.max.height);
 
 			minSize = size
 				.NumberOrDefault(new Size(0, 0))
@@ -668,7 +668,7 @@ namespace Windows.UI.Xaml.Shapes
 			else
 			{
 				var renderHeightWithStrokeThickness = Math.Max(renderSize.Height - strokeThickness, 0);
-				y = (float)(renderHeightWithStrokeThickness  / geometrySize.Height);
+				y = (float)(renderHeightWithStrokeThickness / geometrySize.Height);
 			}
 
 			return (x, y);
@@ -770,7 +770,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 #endif
-#endregion
+		#endregion
 	}
 }
 #endif

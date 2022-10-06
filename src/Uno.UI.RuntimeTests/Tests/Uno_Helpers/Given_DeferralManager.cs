@@ -116,7 +116,7 @@ public class Given_DeferralManager
 		}
 
 		bool isCompleted = false;
-		deferralManager.Completed += (s,e) =>
+		deferralManager.Completed += (s, e) =>
 		{
 			isCompleted = true;
 		};
@@ -142,7 +142,7 @@ public class Given_DeferralManager
 
 		var deferral1 = deferralManager.GetDeferral();
 		var deferral2 = deferralManager.GetDeferral();
-				
+
 		bool isCompleted = false;
 		deferralManager.Completed += (s, e) =>
 		{

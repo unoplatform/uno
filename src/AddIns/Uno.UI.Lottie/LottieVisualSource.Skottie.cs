@@ -269,7 +269,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			else
 #endif
 			{
-				if(_softwareCanvas != null)
+				if (_softwareCanvas != null)
 				{
 					_softwareCanvas.PaintSurface -= OnSoftwareCanvas_PaintSurface;
 				}
@@ -333,7 +333,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private SKColor GetBackgroundColor()
 		{
-			if(_player?.Background is SolidColorBrush sb)
+			if (_player?.Background is SolidColorBrush sb)
 			{
 				return new SKColor(alpha: sb.ColorWithOpacity.A, red: sb.ColorWithOpacity.R, green: sb.ColorWithOpacity.G, blue: sb.ColorWithOpacity.B);
 			}
@@ -349,7 +349,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 
 			var frameTime = TimeSpan.FromSeconds((_stopwatch.Elapsed + playState.GetFromProgressUsingDuration(_animation.Duration)).TotalSeconds * _player.PlaybackRate);
-			
+
 			if (frameTime > playState.GetToProgressUsingDuration(_animation.Duration))
 			{
 				if (playState.Looped)
@@ -366,7 +366,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					Stop();
 				}
 			}
-			
+
 			return frameTime;
 		}
 
@@ -446,7 +446,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_stopwatch.Start();
 			_timer?.Start();
-			
+
 			SetIsPlaying(true);
 		}
 
