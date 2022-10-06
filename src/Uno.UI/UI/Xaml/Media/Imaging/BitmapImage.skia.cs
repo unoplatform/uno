@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -18,6 +19,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 	public sealed partial class BitmapImage : BitmapSource
 	{
 		private const int MIN_DIMENSION_SYNC_LOADING = 100;
+
+		// TODO: Introduce LRU caching if needed
+		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
@@ -123,8 +127,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 			(int)ResolutionScale.Scale500Percent
 		};
 
-		private static string GetScaledPath(string rawPath)
+		internal static string GetScaledPath(string rawPath)
 		{
+			// Avoid querying filesystem if we already seen this file
+			if (_scaledBitmapCache.TryGetValue(rawPath, out var result))
+			{
+				return result;
+			}
+
 			var originalLocalPath =
 				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
@@ -136,22 +146,36 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
 			var baseExtension = Path.GetExtension(originalLocalPath);
 
-			for (var i = KnownScales.Length - 1; i >= 0; i--)
+			var applicableScale = FindApplicableScale(true);
+			if (applicableScale is null)
 			{
-				var probeScale = KnownScales[i];
-
-				if (resolutionScale >= probeScale)
-				{
-					var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
-
-					if (File.Exists(filePath))
-					{
-						return filePath;
-					}
-				}
+				applicableScale = FindApplicableScale(false);
 			}
 
-			return originalLocalPath;
-		}
+			result = applicableScale ?? originalLocalPath;
+			_scaledBitmapCache[rawPath] = result;
+			return result;
+
+			string FindApplicableScale(bool onlyMatching)
+			{
+				for (var i = KnownScales.Length - 1; i >= 0; i--)
+				{
+					var probeScale = KnownScales[i];
+
+					if ((onlyMatching && resolutionScale >= probeScale) ||
+						(!onlyMatching && resolutionScale < probeScale))
+					{
+						var filePath = Path.Combine(baseDirectory, $"{baseFileName}.scale-{probeScale}{baseExtension}");
+
+						if (File.Exists(filePath))
+						{
+							return filePath;
+						}
+					}
+				}
+
+				return null;
+			}
+		}		
 	}
 }

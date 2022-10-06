@@ -30,7 +30,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private Solution _currentSolution;
 		private WatchHotReloadService _hotReloadService;
 		private IReporter _reporter = new Reporter();
-		private IDeltaApplier _deltaApplier;
 
 		private bool _useRoslynHotReload;
 

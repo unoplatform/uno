@@ -13,8 +13,6 @@ namespace UnoIslands.WPF
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private WpfHost _host;
-
 		public MainWindow()
 		{
 			InitializeComponent();

@@ -18,6 +18,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 {
 	public partial class Canvas_Measurement_Tests : SampleControlUITestBase
 	{
+		// The test Measur_CanvasChildren have been moved to Runtime Test
+		// src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Control/Given_Canvas_Meqsurement.cs
+
+		// For other platforms than Browser all the tests are also tested in RuntimeTests
+		// These UI Test can be deleted once we can test Wasm in RuntimeTests.
+		// This is currently blocked due to lack of support for RenderTargetBitmap on Wasm.
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void Measur_CanvasChildren()
@@ -35,6 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 			inRect.Height.Should().Be(outRect.Height, "Border in canvas measurement failed");
 		}
 
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void Verify_Canvas_With_Outer_Clip()
@@ -51,7 +59,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 
 			ImageAssert.HasColorAt(screenshot, unclippedLocation.CenterX, unclippedLocation.CenterY, Color.Blue);
 		}
-
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void Verify_Canvas_ZIndex()
@@ -86,7 +94,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 			}
 		}
 
-
+		[ActivePlatforms(Platform.Browser)]
 		[Test]
 		[AutoRetry]
 		public void Verify_Canvas_In_Canvas()

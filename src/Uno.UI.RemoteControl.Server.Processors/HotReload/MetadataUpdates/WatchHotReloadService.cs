@@ -16,7 +16,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	public class WatchHotReloadService
 	{
-		private HostWorkspaceServices services;
 		private Func<Solution, CancellationToken, Task> _startSessionAsync;
 		private Func<Solution, CancellationToken, Task<ITuple>> _emitSolutionUpdateAsync;
 		private Action _endSession;
