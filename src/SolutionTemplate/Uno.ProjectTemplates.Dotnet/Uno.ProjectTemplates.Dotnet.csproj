@@ -303,8 +303,10 @@
 						Log.LogMessage("Converting file: " + file);
 
 						var s = File.ReadAllText(file);
+						var fileExtension = Path.GetExtension(file).ToLower();
 
-						if(Path.GetExtension(file).ToLower() == ".cs")
+						if(fileExtension == ".cs"
+							&& !file.EndsWith("Server\\Program.cs"))
 						{
 							// Disable conditionals for all imported files
 							s = "//-:cnd:noEmit\r\n" + s;
@@ -317,11 +319,12 @@
 							.Replace("UseIOS", "ios")
 							.Replace("UseAppKit", "macos")
 							.Replace("UseCatalyst", "maccatalyst")
+							.Replace("UseServer", "hosted")
 							.Replace("$basetargetframework$", "net6.0")
 							;
 
-
-						if(Path.GetExtension(file).ToLower() == ".csproj")
+		
+						if(fileExtension == ".csproj" || fileExtension == ".cs")
 						{
 							// Avoid value replacement with msbuild's CodeTaskFactory expansion
 							string pattern = string.Format("^{0}\\$if\\$\\(\\${0}\\${0} == True\\)", "(.*?)");
@@ -378,7 +381,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Server", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
 
 					foreach(var platform in platforms)
 					{

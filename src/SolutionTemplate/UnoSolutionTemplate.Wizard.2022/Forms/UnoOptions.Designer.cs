@@ -46,10 +46,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.label5 = new System.Windows.Forms.Label();
             this.BaseTargetFramework = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.checkServer = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -59,9 +60,10 @@
             // labelDescription
             // 
             this.labelDescription.AutoSize = true;
-            this.labelDescription.Location = new System.Drawing.Point(12, 9);
+            this.labelDescription.Location = new System.Drawing.Point(18, 14);
+            this.labelDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDescription.Name = "labelDescription";
-            this.labelDescription.Size = new System.Drawing.Size(235, 13);
+            this.labelDescription.Size = new System.Drawing.Size(348, 20);
             this.labelDescription.TabIndex = 0;
             this.labelDescription.Text = "Select the following options for your new project.";
             // 
@@ -70,9 +72,10 @@
             this.checkWebAssembly.AutoSize = true;
             this.checkWebAssembly.Checked = true;
             this.checkWebAssembly.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkWebAssembly.Location = new System.Drawing.Point(3, 3);
+            this.checkWebAssembly.Location = new System.Drawing.Point(4, 5);
+            this.checkWebAssembly.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkWebAssembly.Name = "checkWebAssembly";
-            this.checkWebAssembly.Size = new System.Drawing.Size(100, 21);
+            this.checkWebAssembly.Size = new System.Drawing.Size(136, 24);
             this.checkWebAssembly.TabIndex = 1;
             this.checkWebAssembly.Text = "WebAssembly";
             this.checkWebAssembly.UseVisualStyleBackColor = true;
@@ -83,20 +86,21 @@
             this.checkGtk.AutoSize = true;
             this.checkGtk.Checked = true;
             this.checkGtk.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkGtk.Location = new System.Drawing.Point(3, 30);
+            this.checkGtk.Location = new System.Drawing.Point(4, 39);
+            this.checkGtk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkGtk.Name = "checkGtk";
-            this.checkGtk.Size = new System.Drawing.Size(219, 21);
+            this.checkGtk.Size = new System.Drawing.Size(311, 24);
             this.checkGtk.TabIndex = 1;
             this.checkGtk.Text = "Gtk (Linux, macOS, Windows 7 or later)";
             this.checkGtk.UseVisualStyleBackColor = true;
-            this.checkGtk.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // checkLinux
             // 
             this.checkLinux.AutoSize = true;
-            this.checkLinux.Location = new System.Drawing.Point(228, 3);
+            this.checkLinux.Location = new System.Drawing.Point(4, 175);
+            this.checkLinux.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkLinux.Name = "checkLinux";
-            this.checkLinux.Size = new System.Drawing.Size(117, 21);
+            this.checkLinux.Size = new System.Drawing.Size(164, 24);
             this.checkLinux.TabIndex = 1;
             this.checkLinux.Text = "Linux Framebuffer";
             this.checkLinux.UseVisualStyleBackColor = true;
@@ -104,9 +108,10 @@
             // checkWpf
             // 
             this.checkWpf.AutoSize = true;
-            this.checkWpf.Location = new System.Drawing.Point(3, 111);
+            this.checkWpf.Location = new System.Drawing.Point(4, 141);
+            this.checkWpf.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkWpf.Name = "checkWpf";
-            this.checkWpf.Size = new System.Drawing.Size(154, 21);
+            this.checkWpf.Size = new System.Drawing.Size(214, 24);
             this.checkWpf.TabIndex = 1;
             this.checkWpf.Text = "WPF (Windows 7 or later)";
             this.checkWpf.UseVisualStyleBackColor = true;
@@ -116,9 +121,10 @@
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonOK.Location = new System.Drawing.Point(218, 427);
+            this.buttonOK.Location = new System.Drawing.Point(327, 657);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(71, 23);
+            this.buttonOK.Size = new System.Drawing.Size(106, 35);
             this.buttonOK.TabIndex = 0;
             this.buttonOK.Text = "Create";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -128,9 +134,10 @@
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCancel.Location = new System.Drawing.Point(295, 427);
+            this.buttonCancel.Location = new System.Drawing.Point(442, 657);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(71, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(106, 35);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -140,22 +147,23 @@
             this.checkWinUI.AutoSize = true;
             this.checkWinUI.Checked = true;
             this.checkWinUI.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkWinUI.Location = new System.Drawing.Point(3, 3);
+            this.checkWinUI.Location = new System.Drawing.Point(4, 5);
+            this.checkWinUI.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkWinUI.Name = "checkWinUI";
-            this.checkWinUI.Size = new System.Drawing.Size(163, 21);
+            this.checkWinUI.Size = new System.Drawing.Size(227, 24);
             this.checkWinUI.TabIndex = 2;
             this.checkWinUI.Text = "WinUI (Windows App SDK)";
             this.checkWinUI.UseVisualStyleBackColor = true;
-            this.checkWinUI.CheckedChanged += new System.EventHandler(this.checkWinUI_CheckedChanged);
             // 
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.Controls.Add(this.checkiOS);
             this.flowLayoutPanel3.Controls.Add(this.checkAndroid);
             this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 135);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(4, 196);
+            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(341, 50);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(512, 77);
             this.flowLayoutPanel3.TabIndex = 1;
             // 
             // checkiOS
@@ -163,9 +171,10 @@
             this.checkiOS.AutoSize = true;
             this.checkiOS.Checked = true;
             this.checkiOS.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkiOS.Location = new System.Drawing.Point(3, 3);
+            this.checkiOS.Location = new System.Drawing.Point(4, 5);
+            this.checkiOS.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkiOS.Name = "checkiOS";
-            this.checkiOS.Size = new System.Drawing.Size(50, 21);
+            this.checkiOS.Size = new System.Drawing.Size(61, 24);
             this.checkiOS.TabIndex = 0;
             this.checkiOS.Text = "iOS";
             this.checkiOS.UseVisualStyleBackColor = true;
@@ -175,9 +184,10 @@
             this.checkAndroid.AutoSize = true;
             this.checkAndroid.Checked = true;
             this.checkAndroid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkAndroid.Location = new System.Drawing.Point(59, 3);
+            this.checkAndroid.Location = new System.Drawing.Point(4, 39);
+            this.checkAndroid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkAndroid.Name = "checkAndroid";
-            this.checkAndroid.Size = new System.Drawing.Size(69, 21);
+            this.checkAndroid.Size = new System.Drawing.Size(90, 24);
             this.checkAndroid.TabIndex = 1;
             this.checkAndroid.Text = "Android";
             this.checkAndroid.UseVisualStyleBackColor = true;
@@ -191,9 +201,10 @@
             this.flowLayoutPanel2.Controls.Add(this.checkWpf);
             this.flowLayoutPanel2.Controls.Add(this.checkLinux);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 211);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(4, 303);
+            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(341, 139);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(512, 214);
             this.flowLayoutPanel2.TabIndex = 2;
             // 
             // checkCatalyst
@@ -201,9 +212,10 @@
             this.checkCatalyst.AutoSize = true;
             this.checkCatalyst.Checked = true;
             this.checkCatalyst.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkCatalyst.Location = new System.Drawing.Point(3, 57);
+            this.checkCatalyst.Location = new System.Drawing.Point(4, 73);
+            this.checkCatalyst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkCatalyst.Name = "checkCatalyst";
-            this.checkCatalyst.Size = new System.Drawing.Size(114, 21);
+            this.checkCatalyst.Size = new System.Drawing.Size(159, 24);
             this.checkCatalyst.TabIndex = 3;
             this.checkCatalyst.Text = "macOS (Catalyst)";
             this.checkCatalyst.UseVisualStyleBackColor = true;
@@ -211,9 +223,10 @@
             // checkAppKit
             // 
             this.checkAppKit.AutoSize = true;
-            this.checkAppKit.Location = new System.Drawing.Point(3, 84);
+            this.checkAppKit.Location = new System.Drawing.Point(4, 107);
+            this.checkAppKit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkAppKit.Name = "checkAppKit";
-            this.checkAppKit.Size = new System.Drawing.Size(108, 21);
+            this.checkAppKit.Size = new System.Drawing.Size(149, 24);
             this.checkAppKit.TabIndex = 2;
             this.checkAppKit.Text = "macOS (AppKit)";
             this.checkAppKit.UseVisualStyleBackColor = true;
@@ -221,9 +234,10 @@
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(19, 389);
+            this.label1.Location = new System.Drawing.Point(28, 598);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(341, 35);
+            this.label1.Size = new System.Drawing.Size(512, 54);
             this.label1.TabIndex = 6;
             this.label1.Text = "If you do not select a platform at this time, you can add it back later by visiti" +
     "ng our documentation.";
@@ -232,26 +246,26 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 108);
+            this.label2.Location = new System.Drawing.Point(4, 167);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(57, 24);
             this.label2.TabIndex = 0;
             this.label2.Text = "Mobile";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label2.UseCompatibleTextRendering = true;
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(3, 188);
+            this.label3.Location = new System.Drawing.Point(4, 278);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(76, 20);
             this.label3.TabIndex = 0;
             this.label3.Text = "Desktop";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label3.Click += new System.EventHandler(this.label2_Click);
             // 
             // flowLayoutPanel1
             // 
@@ -267,36 +281,18 @@
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel2);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(13, 25);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(20, 38);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(347, 361);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(520, 555);
             this.flowLayoutPanel1.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(3, 51);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(41, 24);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Web";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label4.UseCompatibleTextRendering = true;
-            // 
-            // flowLayoutPanel4
-            // 
-            this.flowLayoutPanel4.Controls.Add(this.checkWebAssembly);
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(3, 78);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(341, 27);
-            this.flowLayoutPanel4.TabIndex = 4;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(3, 0);
+            this.label5.Location = new System.Drawing.Point(4, 0);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(91, 24);
             this.label5.TabIndex = 5;
@@ -309,31 +305,66 @@
             this.BaseTargetFramework.DisplayMember = "DisplayValue";
             this.BaseTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BaseTargetFramework.FormattingEnabled = true;
-            this.BaseTargetFramework.Location = new System.Drawing.Point(3, 27);
+            this.BaseTargetFramework.Location = new System.Drawing.Point(4, 29);
+            this.BaseTargetFramework.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.BaseTargetFramework.Name = "BaseTargetFramework";
-            this.BaseTargetFramework.Size = new System.Drawing.Size(121, 21);
+            this.BaseTargetFramework.Size = new System.Drawing.Size(180, 28);
             this.BaseTargetFramework.TabIndex = 6;
             this.BaseTargetFramework.ValueMember = "BaseValue";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(4, 62);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(41, 24);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Web";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label4.UseCompatibleTextRendering = true;
+            // 
+            // flowLayoutPanel4
+            // 
+            this.flowLayoutPanel4.Controls.Add(this.checkWebAssembly);
+            this.flowLayoutPanel4.Controls.Add(this.checkServer);
+            this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(4, 91);
+            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(512, 71);
+            this.flowLayoutPanel4.TabIndex = 4;
+            // 
+            // checkServer
+            // 
+            this.checkServer.AutoSize = true;
+            this.checkServer.Location = new System.Drawing.Point(4, 39);
+            this.checkServer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.checkServer.Name = "checkServer";
+            this.checkServer.Size = new System.Drawing.Size(196, 24);
+            this.checkServer.TabIndex = 2;
+            this.checkServer.Text = "ASP.NET Core Hosted";
+            this.checkServer.UseVisualStyleBackColor = true;
             // 
             // UnoOptions
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(378, 462);
+            this.ClientSize = new System.Drawing.Size(567, 711);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.labelDescription);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(400, 200);
+            this.MinimumSize = new System.Drawing.Size(589, 278);
             this.Name = "UnoOptions";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -376,5 +407,6 @@
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox BaseTargetFramework;
+        private System.Windows.Forms.CheckBox checkServer;
     }
 }
