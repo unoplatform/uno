@@ -5,6 +5,11 @@
 	<Target Name="ReplaceUnoRuntime"
 				Condition="'$(UnoRuntimeIdentifier)'!=''"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
+		<PropertyGroup>
+			<_UnoRuntimeTargetFramework>netstandard2.0</_UnoRuntimeTargetFramework>
+			<_UnoRuntimeTargetFramework Condition="'$(TargetFrameworkVersion)'!='' and '$(TargetFrameworkVersion.Substring(1))'&gt;='7.0'">net7.0</_UnoRuntimeTargetFramework>
+		</PropertyGroup>
+
 		<ItemGroup>
 
 			<!-- Create a list of all copy local items that are part of the UnoRuntimeEnabledPackage items -->
@@ -18,12 +23,15 @@
 				Include="@(UnoRuntimeEnabledPackage)"
 				Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
 
+			<!-- 
+			Legacy convention: netstandard2.0 (uno-runtime/**)
+			-->
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
 				NuGetPackageId="%(Identity)" />
 
-			<!-- Add metadata so the .deps.json file is generated properly (.NET Core/5) -->
+			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
 			<RuntimeCopyLocalItemsToUpdate
 				Include="@(RuntimeCopyLocalItemsMerged)"
 				AssetType="runtime"
@@ -32,11 +40,31 @@
 				CopyToPublishDirectory="true"
 				PathInPackage="uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
 
+			<!-- Publish pdb files -->
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+
+			<!-- 
+			Uno 4.6 or later convention: netstandard2.0, net7.0 or later (uno-runtime/[TargetFramework]/**)
+			-->
+			<!-- Add the files for the current selected runtime identifier -->
+			<RuntimeCopyLocalItemsMerged
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				NuGetPackageId="%(Identity)" />
+
+			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
+			<RuntimeCopyLocalItemsToUpdate
+				Include="@(RuntimeCopyLocalItemsMerged)"
+				AssetType="runtime"
+				CopyLocal="true"
+				DestinationSubPath="%(FileName)%(Extension)"
+				CopyToPublishDirectory="true"
+				PathInPackage="uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
+
 			<RuntimeCopyLocalItems
 				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
 
 			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 		</ItemGroup>
 
 		<Error
