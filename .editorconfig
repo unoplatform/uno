@@ -6,19 +6,16 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 end_of_line = crlf
 
-[*.{xaml,xml,targets,props}]
+[*.{xaml,xml,targets,props,csproj}]
 indent_style = tab
+tab_width = 2
+indent_size = 2
 
 [*.{cs,tt,java}]
 indent_style = tab
 
 [*.{ts,json}]
 indent_style = tab
-
-[*.csproj]
-indent_style = tab
-tab_width = 2
-indent_size = 2
 
 [*.js]
 indent_style = space
