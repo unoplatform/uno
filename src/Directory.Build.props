@@ -165,6 +165,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>

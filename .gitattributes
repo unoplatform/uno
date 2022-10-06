@@ -1,2 +1,4 @@
+* text=auto encoding=UTF-8
+*.sh text eol=lf
 #*.cs text
 #*.xaml text

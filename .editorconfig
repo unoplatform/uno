@@ -4,7 +4,6 @@ root = true
 tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
-end_of_line = crlf
 
 [*.{xaml,xml,targets,props}]
 indent_style = tab
@@ -310,3 +309,6 @@ dotnet_diagnostic.CA1848.severity = none
 dotnet_diagnostic.CA1849.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = error
