@@ -13,7 +13,7 @@
     "WebAssembly",
     "dotnet-new"
   ],
-  "name": "Cross-Runtime Library",
+  "name": "Cross-Runtime Library (Xamarin, UWP)",
   "identity": "Uno.Platform.UnoCrossRuntimeLib",
   "groupIdentity": "Uno.Platform.BlankCrossRuntimeLib",
   "description": "Solution template for creating a cross-runtime Uno Platform library that targets UWP, Android, iOS, macOS, Linux and WebAssembly.",
