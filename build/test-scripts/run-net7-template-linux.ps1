@@ -11,16 +11,14 @@ function Assert-ExitCodeIsZero()
 }
 
 function Get-TemplateConfiguration(
-    [bool]$android = $false,
-    [bool]$iOS = $false,
-    [bool]$macOS = $false,
+    [bool]$mobile = $false,
     [bool]$wasm = $false,
     [bool]$skiaGtk = $false,
     [bool]$skiaWpf = $false,
     [bool]$skiaLinuxFB = $false,
     [bool]$wasmVsCode = $false)
 {
-    $androidFlag = '-android'
+    $mobileFlag = '-mobile'
     $iOSFlag = '-ios'
     $macOSFlag = '-macos'
     $wasmFlag = '-wasm'
@@ -29,14 +27,12 @@ function Get-TemplateConfiguration(
     $skiaGtkFlag = '--skia-gtk'
     $skiaLinuxFBFlag = '--skia-linux-fb'
 
-    $a = If ($android)     { $androidFlag }    Else { $androidFlag     + '=false' }
-    $b = If ($iOS)         { $iOSFlag }        Else { $iOSFlag         + '=false' }
-    $c = If ($macOS)       { $macOSFlag }      Else { $macOSFlag       + '=false' }
-    $d = If ($wasm)        { $wasmFlag }       Else { $wasmFlag        + '=false' }
+    $a = If ($mobile)      { $mobileFlag     } Else { $mobileFlag      + '=false' }
+    $d = If ($wasm)        { $wasmFlag       } Else { $wasmFlag        + '=false' }
     $e = If ($wasmVsCode)  { $wasmVsCodeFlag } Else { $wasmVsCodeFlag  + '=false' }
     $f = If ($skiaWpf)     { $skiaWpfFlag    } Else { $skiaWpfFlag     + '=false' }
     $g = If ($skiaGtk)     { $skiaGtkFlag    } Else { $skiaGtkFlag     + '=false' }
-    $h = If ($skiaLinuxFB) { $skiaLinuxFB    } Else { $skiaLinuxFBFlag + '=false' }
+    $h = If ($skiaLinuxFB) { $skiaLinuxFBFlag} Else { $skiaLinuxFBFlag + '=false' }
 
     @($a, $b, $c, $d, $e, $f, $g, $h)
 }
@@ -47,7 +43,8 @@ $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
 
 # WinUI
-dotnet new unoapp -n UnoAppWinUI --framework net7.0 (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
+$createParams=(Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
+dotnet new unoapp -n UnoAppWinUI --framework net7.0 $createParams
 
 dotnet build $debug UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
 Assert-ExitCodeIsZero
