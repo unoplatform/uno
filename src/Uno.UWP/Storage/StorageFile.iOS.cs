@@ -87,7 +87,8 @@ namespace Windows.Storage
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
 
 			protected override bool IsEqual(ImplementationBase implementation) =>
-				implementation is SecurityScopedFile file && file._nsUrl.FilePathUrl.Path == _nsUrl.FilePathUrl.Path;
+				implementation is SecurityScopedFile file && 
+				file._nsUrl.FilePathUrl?.Path == _nsUrl.FilePathUrl?.Path;
 		}
 	}
 }

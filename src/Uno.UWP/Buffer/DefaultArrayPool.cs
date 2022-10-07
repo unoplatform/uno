@@ -22,8 +22,6 @@ namespace Uno.Buffers
 		/// <summary>Determines if automatic memory management can be used.</summary>
 		internal static readonly bool EnableAutomaticMemoryManagement;
 
-		/// <summary>Lazily-allocated empty array used when arrays of length 0 are requested.</summary>
-		private static T[] s_emptyArray; // we support contracts earlier than those with Array.Empty<T>()
 		/// <summary>Buckets list for different array sizes</summary>
 		private readonly Bucket[] _buckets;
 		/// <summary>Determines if automatic memory management is enabled</summary>
@@ -131,7 +129,7 @@ namespace Uno.Buffers
 			{
 				// No need for events with the empty array.  Our pool is effectively infinite
 				// and we'll never allocate for rents and never store for returns.
-				return s_emptyArray ?? (s_emptyArray = Array.Empty<T>());
+				return Array.Empty<T>();
 			}
 
 			T[] buffer = null;

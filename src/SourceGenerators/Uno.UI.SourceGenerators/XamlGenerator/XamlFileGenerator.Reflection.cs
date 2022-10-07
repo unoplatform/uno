@@ -559,6 +559,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _getAttachedPropertyType(type, member.Member.Name);
 		}
 
+		/// <summary>
+		/// Get the type of the attached property.
+		/// </summary>
+		private INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol type, string propertyName)
+			=> _getAttachedPropertyType(type, propertyName);
+
 		private static INamedTypeSymbol SourceGetAttachedPropertyType(INamedTypeSymbol? type, string name)
 		{
 			do
