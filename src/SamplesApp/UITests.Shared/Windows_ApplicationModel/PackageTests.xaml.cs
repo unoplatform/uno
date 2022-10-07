@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_ApplicationModel
 		{
 			SafeAdd("DisplayName", () => package.DisplayName);
 			SafeAdd("Description", () => package.Description);
-			SafeAdd("EffectiveExternalLocation", () => package.EffectiveExternalLocation.Path);
+			SafeAdd("EffectiveExternalLocation", () => package.EffectiveExternalLocation?.Path);
 			SafeAdd("EffectiveExternalPath", () => package.EffectiveExternalPath);
 			SafeAdd("EffectiveLocation", () => package.EffectiveLocation.Path);
 			SafeAdd("EffectivePath", () => package.EffectivePath);
@@ -40,12 +40,12 @@ namespace UITests.Shared.Windows_ApplicationModel
 			SafeAdd("IsResourcePackage", () => package.IsResourcePackage);
 			SafeAdd("IsStub", () => package.IsStub);
 			SafeAdd("Logo", () => package.Logo);
-			SafeAdd("MachineExternalLocation", () => package.MachineExternalLocation.Path);
+			SafeAdd("MachineExternalLocation", () => package.MachineExternalLocation?.Path);
 			SafeAdd("MachineExternalPath", () => package.MachineExternalPath);
 			SafeAdd("MutableLocation", () => package.MutableLocation);
 			SafeAdd("MutablePath", () => package.MutablePath);
 			SafeAdd("SignatureKind", () => package.SignatureKind);
-			SafeAdd("UserExternalLocation", () => package.UserExternalLocation.Path);
+			SafeAdd("UserExternalLocation", () => package.UserExternalLocation?.Path);
 			SafeAdd("UserExternalPath", () => package.UserExternalPath);
 			SafeAdd("Id.Architecture", () => package.Id.Architecture);
 			SafeAdd("Id.FamilyName", () => package.Id.FamilyName);
