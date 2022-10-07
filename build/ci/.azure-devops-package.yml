@@ -99,6 +99,32 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - task: CopyFiles@2
+    displayName: Copy generic build packages
+    condition: always()
+    inputs:
+      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-skia
+      Contents: |
+        *.nupkg
+        *.vsix
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: Copy generic build packages
+    condition: always()
+    inputs:
+      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-wasm
+      Contents: |
+        *.nupkg
+        *.vsix
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
   - task: PowerShell@2
     displayName: Authenticode Sign Packages
     inputs:
