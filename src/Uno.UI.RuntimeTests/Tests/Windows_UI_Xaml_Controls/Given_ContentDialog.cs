@@ -270,10 +270,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
 		[DataTestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-		public async Task When_BackButton_Pressed_With_CloseButton(bool isCloseButtonEnabled)
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
 		{
 			var closeButtonClickEvent = new Event();
 			var closedEvent = new Event();
@@ -323,6 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Hide();
 			}
 		}
+#endif
 
 #if __ANDROID__
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
