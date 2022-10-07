@@ -19,6 +19,7 @@ using __uno::Uno.Xaml;
 using Microsoft.CodeAnalysis.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 
 #if NETFRAMEWORK
@@ -278,6 +279,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
+
+				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
+				Parallel.ForEach(filesFull, file =>
+				{
+					var topLevelControl = file.Objects.FirstOrDefault();
+					if (topLevelControl is null)
+					{
+						return;
+					}
+
+					var xClassSymbol = XamlFileGenerator.FindClassSymbol(topLevelControl, _metadataHelper);
+					if (xClassSymbol is not null)
+					{
+						xamlTypeToXamlTypeBaseMap.TryAdd(xClassSymbol, topLevelControl.Type);
+					}
+				});
+
+
 				var files = filesFull
 					.Trim()
 					.OrderBy(f => f.UniqueID)
@@ -326,7 +345,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 									generatorContext: _generatorContext,
 									xamlResourcesTrimming: _xamlResourcesTrimming,
-									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID)
+									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
+									xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
 								)
 								.GenerateFile()
 						)

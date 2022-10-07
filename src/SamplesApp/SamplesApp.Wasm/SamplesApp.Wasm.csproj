@@ -4,9 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
-		<NoWarn>$(NoWarn);NU1701;NU1504;UXAML0002</NoWarn>
-		<NoWarn>$(NoWarn);CA1834</NoWarn> <!-- Use span-based 'string.Concat' and 'AsSpan' instead of 'Substring' -->
-		<NoWarn>$(NoWarn);CA1845</NoWarn> <!-- Use 'StringBuilder.Append(char)' -->
+		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002</NoWarn>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
