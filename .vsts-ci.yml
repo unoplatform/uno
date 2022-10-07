@@ -54,7 +54,8 @@ variables:
   xCodeRoot_iOS_UITests: '/Applications/Xcode_13.2.1.app'
   XamarinSDKVersion_iOS_UITests: 6_12_12
 
-  enable_package_cache: true
+  # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
+  #enable_package_cache: true
 
 jobs:
 - template: build/ci/.azure-devops-commitsar.yml
