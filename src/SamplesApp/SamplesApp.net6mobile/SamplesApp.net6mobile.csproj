@@ -175,16 +175,102 @@
 	  <Folder Include="MacOS\" />
 	  <Folder Include="Properties\" />
 	</ItemGroup>
-	
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios' or '$(TargetFramework)' == 'net6.0-maccatalyst'">
-		<ImageAsset Include="Assets.xcassets\*\*.png">
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios' or '$(TargetFramework)' == 'net6.0-maccatalyst' or '$(TargetFramework)' == 'net6.0-macos'">
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\16.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\20.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\29.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\32.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\40.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\50.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\55.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\57.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\58.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\60.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\64.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\72.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\76.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\87.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\88.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\100.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\114.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\120.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\128.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\144.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\152.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\167.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\172.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\180.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\196.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\216.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\256.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\512.png">
+			<Visible>false</Visible>
+		</ImageAsset>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\1024.png">
 			<Visible>false</Visible>
 		</ImageAsset>
 		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
 			<Visible>false</Visible>
 		</ImageAsset>
 	</ItemGroup>
-
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 	
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
