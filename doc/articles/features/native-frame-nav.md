@@ -42,8 +42,9 @@ There is a `FrameNavigationHelper` that is in place to expose useful properties 
 
 Method|Return Type|Description
 -|-|-
-`GetCurrentEntry(Frame)`|`PageStackEntry`|Returns the PageStackEntry for the currently displayed Page within the given `frame`.
-`GetInstance(PageStackEntry)`|`Page`|Returns the actual Page instance of the given `entry`.
+`GetCurrentEntry(Frame)`|`PageStackEntry`|Returns the PageStackEntry for the currently displayed Page within the given `frame`
+`GetInstance(PageStackEntry)`|`Page`|Returns the actual Page instance of the given `entry`
+`EnsurePageInitialized(Frame, PageStackEntry)`|`Page`|Retrieves the current `Page` instance of the given `PageStackEntry`. If no instance exists, the `Page` will be created and properly initialized to the provided `Frame`
 `CreateNavigationEventArgs(...)`|`NavigationEventArgs`|Creates a new instance of `NavigationEventArgs`/>
 
 ## Platform Specifics
