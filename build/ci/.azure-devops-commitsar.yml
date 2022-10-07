@@ -12,11 +12,12 @@ jobs:
   - checkout: self
     clean: true
 
-  - bash: |
-      curl -L -O https://github.com/aevea/commitsar/releases/download/v0.16.0/commitsar_0.16.0_Linux_x86_64.tar.gz
-      tar -xzf commitsar_0.16.0_Linux_x86_64.tar.gz
-      ./commitsar
+  # Disabled because of invalid revert validation
+  #- bash: |
+  #    curl -L -O https://github.com/aevea/commitsar/releases/download/v0.16.0/commitsar_0.16.0_Linux_x86_64.tar.gz
+  #    tar -xzf commitsar_0.16.0_Linux_x86_64.tar.gz
+  #    ./commitsar
 
-    condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
+  #  condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
 
   - template: templates/generate-changelog.yml
