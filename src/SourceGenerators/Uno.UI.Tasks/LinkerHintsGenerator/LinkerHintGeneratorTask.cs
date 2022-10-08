@@ -41,6 +41,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string ILLinkerPath { get; set; } = "";
 
 		[Required]
+		public string TargetFramework { get; set; } = "";
+
+		[Required]
+		public string TargetFrameworkVersion { get; set; } = "";
+
+		[Required]
 		public string OutputPath { get; set; } = "";
 
 		[Required]
@@ -316,10 +322,15 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				var separator = Path.DirectorySeparatorChar;
 				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
 
+				var runtimeTargetFramework =
+					new Version(TargetFrameworkVersion) >= new Version("7.0")
+					? "net7.0"
+					: "netstandard2.0";
+
 				return
 					(unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
 						referencePath.StartsWith(unoUIPackageBasePath) ?
-							referencePath.Replace($"lib{separator}netstandard2.0", $"uno-runtime{separator}{unoRuntimeIdentifier}") :
+							referencePath.Replace($"lib{separator}{runtimeTargetFramework}", $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}") :
 								referencePath;
 			}
 		}

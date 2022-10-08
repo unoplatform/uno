@@ -163,6 +163,8 @@
 			OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 			ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
 			ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
+			TargetFramework="$(TargetFramework)"
+			TargetFrameworkVersion="$(TargetFrameworkVersion.Substring(1))"
 			UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier)">
 			<Output TaskParameter="OutputFeatures"
