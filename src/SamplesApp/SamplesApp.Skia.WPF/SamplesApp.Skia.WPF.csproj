@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-windows</TargetFrameworks>		
 		<!--
-		Enable implicit dotnet runtime forward rolling, as a net5
-		project may run with net6 only SDK installed
+		Enable implicit dotnet runtime forward rolling, as the specifed target framework
+		project may run with only a later version of the .NET runtime installed.
 		-->
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
