@@ -100,7 +100,7 @@ jobs:
       flattenFolders: false
 
   - task: CopyFiles@2
-    displayName: Copy generic build packages
+    displayName: Copy Skia build packages
     condition: always()
     inputs:
       SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-skia
@@ -113,7 +113,7 @@ jobs:
       flattenFolders: false
 
   - task: CopyFiles@2
-    displayName: Copy generic build packages
+    displayName: Copy Wasm build packages
     condition: always()
     inputs:
       SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-wasm
