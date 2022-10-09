@@ -32,7 +32,7 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 
     private static void InitializeLogging()
     {
-#if DEBUG
+    #if DEBUG
 		// Logging is disabled by default for release builds, as it incurs a significant
 		// initialization cost from Microsoft.Extensions.Logging setup. If startup performance
 		// is a concern for your application, keep this disabled. If you're running on web or 
@@ -42,15 +42,15 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 
         var factory = LoggerFactory.Create(builder =>
         {
-#if __WASM__
+    #if __WASM__
             builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__
+    #elif __IOS__
             builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
-#elif NETFX_CORE
+    #elif NETFX_CORE
             builder.AddDebug();
-#else
+    #else
             builder.AddConsole();
-#endif
+    #endif
 
             // Exclude logs below this level
             builder.SetMinimumLevel(LogLevel.Information);
@@ -90,11 +90,11 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 
         global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 
-#if HAS_UNO
+    #if HAS_UNO
 		global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
-#endif
+    #endif
 
-#endif // DEBUG
+    #endif // DEBUG
     }
     ```
 
