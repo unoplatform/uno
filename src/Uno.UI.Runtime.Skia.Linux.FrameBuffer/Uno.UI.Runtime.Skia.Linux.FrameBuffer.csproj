@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 		<Nullable>enable</Nullable>
-		<WarningsAsErrors>true</WarningsAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">

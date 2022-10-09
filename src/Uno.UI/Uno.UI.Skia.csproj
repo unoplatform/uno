@@ -24,8 +24,6 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-		
-		<WarningsAsErrors>true</WarningsAsErrors>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
 
