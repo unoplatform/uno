@@ -94,7 +94,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			ImageAssert.AreEqual(before, upperToolTip, lowerRect);
 			ImageAssert.AreNotEqual(before, upperToolTip, upperRect); // Mouse is close to top of button, ToolTip should extend above Button bounds
-			ImageAssert.AreNotEqual(before, upperToolTip, buttonRect);
+			ImageAssert.AreNotEqual(before, upperToolTip, buttonRectPhysical);
 		}
 
 		[Test]
