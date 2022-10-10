@@ -85,8 +85,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.WaitForNoElement(BorderInsideToolTip);
 
-			var upperHoverY = buttonRect.Y + buttonRect.Height / 10;
-			_app.TapCoordinates(buttonRect.CenterX, upperHoverY);
+			var upperHoverY = buttonRectLogical.Y + buttonRectLogical.Height / 10;
+			_app.TapCoordinates(buttonRectLogical.CenterX, upperHoverY);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
