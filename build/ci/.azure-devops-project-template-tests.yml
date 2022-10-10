@@ -36,7 +36,7 @@ jobs:
   - powershell: build\test-scripts\run-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
-      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config
+      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.config
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
 
 - job: Dotnet_Template_Tests_Net6
@@ -68,7 +68,7 @@ jobs:
   - powershell: build\test-scripts\run-net6-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
-      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.net6.config
+      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.config
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
 
 - job: Dotnet_Template_Tests_Linux
@@ -102,4 +102,4 @@ jobs:
   - pwsh: build/test-scripts/run-template-tests-linux.ps1
     displayName: Run Project Templates Tests
     env:
-      NUGET_CI_CONFIG: $(Build.SourcesDirectory)/src/nuget.ci.config
+      NUGET_CI_CONFIG: $(Build.SourcesDirectory)/src/nuget.config
