@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
 			=> new ExceptionRoutedEventArgs(sender, e);
 		
-		partial void OnSourceChanged(ImageSource newValue, bool forceReload = false)
+		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
 			UpdateHitTest();
 
