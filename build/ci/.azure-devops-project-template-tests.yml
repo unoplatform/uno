@@ -91,10 +91,7 @@ jobs:
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - task: UseDotNet@2
-    inputs:
-      packageType: sdk
-      version: 5.0.102
+  - template: dotnet-install.yml
 
   - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates

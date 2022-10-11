@@ -4,13 +4,7 @@ parameters:
 
 steps:
 
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      useGlobalJson: true
-      includePreviewVersions: true
+  - template: dotnet-install.yml
 
   - template: jdk-setup.yml
     

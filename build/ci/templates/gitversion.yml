@@ -23,27 +23,11 @@ steps:
     displayName: Update GitVersion file for PullRequests
 
   - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 5.0.3'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: runtime
-      version: 5.0.3
-      installationPath: '${{parameters.dotnetInstallationPath}}'
-
-  - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 6.0.4'
+    displayName: 'Use .NET 6.0.4 runtime'
     retryCountOnTaskFailure: 3
     inputs:
       packageType: runtime
       version: 6.0.4
-      installationPath: '${{parameters.dotnetInstallationPath}}'
-
-  - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 3.1.12'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: runtime
-      version: 3.1.12
       installationPath: '${{parameters.dotnetInstallationPath}}'
 
   # Restore nuget.org to the list of existing sources, .NET 6 Pre 2 may somehow remove it
