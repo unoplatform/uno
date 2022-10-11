@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtTop(_imageSprite);
 		}
 
-		partial void OnSourceChanged(ImageSource newValue, bool forceReload = false)
+		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
 			_sourceDisposable.Disposable = null;
 
