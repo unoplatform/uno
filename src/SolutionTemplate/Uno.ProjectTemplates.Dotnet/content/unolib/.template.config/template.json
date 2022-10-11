@@ -13,7 +13,7 @@
     "WebAssembly",
     "dotnet-new"
   ],
-  "name": "Cross-Platform Library",
+  "name": "Cross-Platform Library (Xamarin, UWP)",
   "identity": "Uno.Platform.UnoLib",
   "groupIdentity": "Uno.Platform.BlankLibrary",
   "description": "Template for creating a multi-platform library with the Uno Platform that targets UWP, WebAssembly, Android, iOS, macOS and Linux",
