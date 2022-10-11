@@ -5,8 +5,7 @@ jobs:
 - job: winui_convert_tree
   displayName: 'WinUI Converted Tree Generation'
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
   
   dependsOn: Pipeline_Validations
 
@@ -29,6 +28,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/dotnet6-install-windows.yml
+  - template: templates/dotnet-install.yml
   - template: templates/install-windows-sdk.yml
 
   - powershell: |
@@ -45,7 +45,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
+      msbuildArguments: /r /m /v:m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

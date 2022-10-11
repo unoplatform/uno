@@ -19,9 +19,11 @@ using Windows.UI.Xaml.Shapes;
 namespace MUXControlsTestApp
 {
 	[Sample("MUX","PersonPicture")]
+#pragma warning disable UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class PersonPicturePage
-    {
-        private Uri imageUri = new Uri("ms-appx:///Assets/ingredient2.png");
+#pragma warning restore UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
+	{
+		private Uri imageUri = new Uri("ms-appx:///Assets/ingredient2.png");
         private bool primaryEllipseLoaded = false;
 
         public PersonPicturePage()

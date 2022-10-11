@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		public void Initialize(ScrollContentPresenter presenter)
 			=> presenter.LayoutUpdated += ScrollContentPresenter_LayoutUpdated;
 
-		private static void ScrollContentPresenter_LayoutUpdated(object sender, object e)
+		private static void ScrollContentPresenter_LayoutUpdated(object? sender, object e)
 		{
 			if (sender is ScrollContentPresenter presenter)
 			{

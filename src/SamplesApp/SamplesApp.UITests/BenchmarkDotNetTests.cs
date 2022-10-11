@@ -85,7 +85,7 @@ namespace SamplesApp.UITests.Runtime
 						TakeScreenshot($"Run {newValue}", ignoreInSnapshotCompare: true);
 					}
 				}
-				catch(Exception e)
+				catch (Exception)
 				{
 					// Skip exceptions as they may be timeouts
 				}

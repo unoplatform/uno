@@ -1,0 +1,92 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<Deterministic>true</Deterministic>
+		<AssemblyName>Uno.UI.MSAL</AssemblyName>
+		<RootNamespace>Uno.UI.MSAL</RootNamespace>
+
+		<!--
+		Required for Catalyst nuget restore to revalidate
+		once transitive dependencies have been updated.
+		-->
+		<NoWarn>$(NoWarn);NU1703</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>
+		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+
+		<PackageId>Uno.UI.MSAL</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
+		
+		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="buildTransitive\Uno.UI.MSAL.targets" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="buildTransitive/*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\..\Common.targets" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
+
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+	<!-- Workaround for missing target running on .NET 5 -->
+	<Target Name="GetTargetPath" />
+
+</Project>

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 			if (Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
 				var sb = new StringBuilder();
-				sb.Append("[");
+				sb.Append('[');
 				foreach (var group in groups)
 				{
 					sb.Append($"{group}: {group.CurrentState}, ");

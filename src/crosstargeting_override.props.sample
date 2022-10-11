@@ -18,20 +18,21 @@
 
         Available build targets and corresponding solution filters:
 
-        ┌────────────────────────────┬───────────────────────┬────────────────────────────────────────────────────────────────────────────────────┐
-        │ UnoTargetFrameworkOverride │ Platform              │ Solution filter file                                                               │
-        ├────────────────────────────┼───────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
-        │ uap10.0.18362              │ Windows               │ Uno.UI-Windows-only.slnf                                                           │
-        │ xamarinios10               │ iOS                   │ Uno.UI-iOS-only.slnf                                                               │
-        │ MonoAndroid12.0            │ Android 12.0          │ Uno.UI-Android-only.slnf                                                           │
-        │ netstandard2.0             │ WebAssembly, Skia     │ Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf                                       │
-        │ net6.0-ios                 │ .NET 6 iOS            │ Uno.UI-net6-only.slnf                                                              │
-        │ net6.0-android             │ .NET 6 Android        │ Uno.UI-net6-only.slnf                                                              │
-        │ net6.0-maccatalyst         │ .NET 6 macOS Catalyst │ Uno.UI-net6-only.slnf                                                              │
-        │ net6.0-macos               │ .NET 6 macOS AppKit   │ Uno.UI-net6-only.slnf                                                              │
-        │ xamarinmac20               │ macOS                 │ Uno.UI-macOS-only.slnf (VS for Windows), Uno.UI-vs4mac-macOS-only.sln (VS for Mac) │
-        │ net461                     │ Uno.UI.Tests          │ Uno.UI-UnitTests-only.slnf                                                         │
-        └────────────────────────────┴───────────────────────┴────────────────────────────────────────────────────────────────────────────────────┘
+        ┌────────────────────────────┬─────────────────────────┬────────────────────────────────────────────────────────────────────────────────────┐
+        │ UnoTargetFrameworkOverride │ Platform                │ Solution filter file                                                               │
+        ├────────────────────────────┼─────────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
+        │ uap10.0.18362              │ Windows                 │ Uno.UI-Windows-only.slnf                                                           │
+        │ xamarinios10               │ iOS                     │ Uno.UI-iOS-only.slnf                                                               │
+        │ MonoAndroid12.0            │ Android 12.0            │ Uno.UI-Android-only.slnf                                                           │
+        │ netstandard2.0             │ WebAssembly, Skia       │ Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf                                       │
+        │ net6.0-ios                 │ .NET 6 iOS              │ Uno.UI-net6-only.slnf                                                              │
+        │ net6.0-android             │ .NET 6 Android          │ Uno.UI-net6-only.slnf                                                              │
+        │ net6.0-maccatalyst         │ .NET 6 macOS Catalyst   │ Uno.UI-net6-only.slnf                                                              │
+        │ net6.0-macos               │ .NET 6 macOS AppKit     │ Uno.UI-net6-only.slnf                                                              │
+        │ xamarinmac20               │ macOS                   │ Uno.UI-macOS-only.slnf (VS for Windows), Uno.UI-vs4mac-macOS-only.sln (VS for Mac) │
+        │ netstandard2.0 or net7.0   │ Wasm+Skia Reference API │ Uno.UI-Reference-only.slnf                                                         │
+        │ net461                     │ Uno.UI.Tests            │ Uno.UI-UnitTests-only.slnf                                                         │
+        └────────────────────────────┴─────────────────────────┴────────────────────────────────────────────────────────────────────────────────────┘
 
         Only one target can be built, and the corresponding solution filter file must
         be loaded in Visual Studio (see next to Uno.UI.sln).

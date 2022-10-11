@@ -62,11 +62,7 @@ namespace UITests.Msal
 
 		private async void LoadFromGraph(object sender, RoutedEventArgs e)
 		{
-#if __WASM__
-			var http = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 			var http = new HttpClient();
-#endif
 			var httpClient = http;
 			var client = new GraphServiceClient(httpClient);
 			client.AuthenticationProvider = this;

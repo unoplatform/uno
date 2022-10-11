@@ -328,7 +328,7 @@ public partial class UIElement : DependencyObject
 	}
 	#endregion
 
-	partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
+	partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 	{
 		if (newMode is ManipulationModes.None or ManipulationModes.System)
 		{
