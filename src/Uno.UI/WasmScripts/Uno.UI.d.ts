@@ -690,6 +690,18 @@ declare namespace Windows.ApplicationModel.Contacts {
         static pickContacts(pickMultiple: boolean): Promise<string>;
     }
 }
+declare namespace Windows.ApplicationModel.Core {
+    class CoreApplicationViewTitleBar {
+        private static dispatchLayoutMetricsChanged;
+        static isExtendedIntoTitleBar(): boolean;
+        static getLeftInset(): number;
+        static getRightInset(): number;
+        static getHeight(): number;
+        static startLayoutMetricsChanged(): void;
+        private static OnGeometryChange;
+        static stopLayoutMetricsChanged(): void;
+    }
+}
 interface NavigatorDataTransferManager {
     share(data: any): Promise<void>;
 }

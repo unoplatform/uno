@@ -2023,6 +2023,61 @@ var Windows;
 (function (Windows) {
     var ApplicationModel;
     (function (ApplicationModel) {
+        var Core;
+        (function (Core) {
+            class CoreApplicationViewTitleBar {
+                static isExtendedIntoTitleBar() {
+                    if (navigator.windowControlsOverlay) {
+                        return navigator.windowControlsOverlay.visible;
+                    }
+                    return false;
+                }
+                static getLeftInset() {
+                    if (navigator.windowControlsOverlay) {
+                        return navigator.windowControlsOverlay.getTitlebarAreaRect().left;
+                    }
+                    return 0;
+                }
+                static getRightInset() {
+                    if (navigator.windowControlsOverlay) {
+                        const rect = navigator.windowControlsOverlay.getTitlebarAreaRect();
+                        return window.outerWidth - rect.width - rect.left;
+                    }
+                    return 0;
+                }
+                static getHeight() {
+                    if (navigator.windowControlsOverlay) {
+                        return navigator.windowControlsOverlay.getTitlebarAreaRect().height;
+                    }
+                    return 0;
+                }
+                static startLayoutMetricsChanged() {
+                    if (!navigator.windowControlsOverlay) {
+                        return;
+                    }
+                    if (!CoreApplicationViewTitleBar.dispatchLayoutMetricsChanged) {
+                        CoreApplicationViewTitleBar.dispatchLayoutMetricsChanged = Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.Core.CoreApplicationViewTitleBar:DispatchLayoutMetricsChanged");
+                    }
+                    navigator.windowControlsOverlay.addEventListener("geometrychange", CoreApplicationViewTitleBar.OnGeometryChange);
+                }
+                static OnGeometryChange() {
+                    CoreApplicationViewTitleBar.dispatchLayoutMetricsChanged();
+                }
+                static stopLayoutMetricsChanged() {
+                    if (!navigator.windowControlsOverlay) {
+                        return;
+                    }
+                    navigator.windowControlsOverlay.removeEventListener("geometrychange", CoreApplicationViewTitleBar.OnGeometryChange);
+                }
+            }
+            Core.CoreApplicationViewTitleBar = CoreApplicationViewTitleBar;
+        })(Core = ApplicationModel.Core || (ApplicationModel.Core = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
         var DataTransfer;
         (function (DataTransfer) {
             class DataTransferManager {

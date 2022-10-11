@@ -20,11 +20,14 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
+		private readonly SerialDisposable _titleBarSubscription = new SerialDisposable();
+		
 		private ScrollViewer _rootScrollViewer;
 		private Border _rootBorder;
 		private bool _invalidateRequested;
@@ -229,6 +232,16 @@ namespace Windows.UI.Xaml
 				}),
 				VisualTreeHelper.RegisterOpenPopup(popup)
 			);
+		}
+
+		partial void SetTitleBarPartial(UIElement value)
+		{
+			_titleBarSubscription.Disposable = null;
+			if (value is not null)
+			{
+				value.SetCssClasses("title-bar-area");
+				_titleBarSubscription.Disposable = Disposable.Create(() => value.UnsetCssClasses("title-bar-area"));
+			}
 		}
 	}
 }

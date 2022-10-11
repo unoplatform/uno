@@ -449,6 +449,7 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<!-- CONTENT -->
+				<Grid x:Name="TitleBarGrid" Background="Transparent" />
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="50" />

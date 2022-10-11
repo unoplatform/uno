@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
-		
+
 		private UIElement _content;
 		private RootVisual _rootVisual;
 
@@ -180,7 +180,9 @@ namespace Windows.UI.Xaml
 
 		public void Close() { }
 
-		public void SetTitleBar(UIElement value) { }
+		public void SetTitleBar(UIElement value) => SetTitleBarPartial(value);
+		
+		partial void SetTitleBarPartial(UIElement value);
 
 		/// <summary>
 		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.

@@ -39,6 +39,9 @@
 	<type fullname="Windows.ApplicationModel.DataTransfer.Clipboard">
 	  <method name="DispatchContentChanged" />
 	</type>
+	<type fullname="Windows.ApplicationModel.Core.CoreApplicationViewTitleBar">
+	  <method name="DispatchLayoutMetricsChanged" />
+	</type>
 	<type fullname="Windows.UI.Core.CoreDispatcher" />
 	<type fullname="Windows.UI.Core.SystemNavigationManager" />
     <type fullname="Windows.Devices.Midi.MidiInPort">

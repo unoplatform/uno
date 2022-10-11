@@ -262,3 +262,8 @@ input::-ms-clear {
   background: var(--selection-background);
   color: var(--selection-color);
 }
+
+.title-bar-area {
+  -webkit-app-region: drag;
+  app-region: drag;
+}

@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Controls;
 using System.Globalization;
 #endif
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Samples.Controls
 {
@@ -27,5 +28,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			this.InitializeComponent();
 		}
+
+		public UIElement TitleBarElement => TitleBarGrid;
 	}
 }
