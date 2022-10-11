@@ -7,11 +7,11 @@
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
-|---------------|-------|-------|-------|-------|-------|-------|-|
-| `GetDefault`         | ✔ | ✔ | ✖ | ✔ | ✖ | ✖ | ✖ |
-| `ReadingChanged` | ✔ | ✔ | ✖ | ✔ | ✖ | ✖| ✖ |
-| `ReportInterval`     | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
+| Feature          |Windows|Android|iOS|Wasm|macOS|Skia|
+|------------------|-------|-------|---|----|-----|----|
+| `GetDefault`     |   ✔   |   ✔   | ✖ | ✔ | ✖ | ✖ |
+| `ReadingChanged` |   ✔   |   ✔   | ✖ | ✔ | ✖ | ✖ |
+| `ReportInterval` |   ✔   |   ✔   | ✖ | ✖ | ✖ | ✖ |
 
 ## Using LightSensor with Uno
  
