@@ -83,9 +83,10 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.net6.csproj</_AdjustedOutputProjects>	
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.net6.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Reference.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.net6.csproj</_AdjustedOutputProjects>
