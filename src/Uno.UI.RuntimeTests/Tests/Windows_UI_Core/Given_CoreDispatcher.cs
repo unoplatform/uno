@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 			{
 			  await CoreDispatcher.Main.RunAsync(async () => result = Success);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 			  result = "failure";
 			}
@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 			{
 			  await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => result = Success);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 			  result = "failure";
 			}
@@ -45,7 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 			{
 			  await Task.Run(async () => result = Success);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 			  result = "failure";
 			}
