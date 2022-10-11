@@ -63,8 +63,8 @@ namespace Windows.UI.Xaml
 			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		}
 
-		private protected readonly Logger _log;
-		private protected readonly Logger _logDebug;
+		private new protected readonly Logger _log;
+		private new protected readonly Logger _logDebug;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 		public global::System.Uri BaseUri { get; internal set; } = DefaultBaseUri;

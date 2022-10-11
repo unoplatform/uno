@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 		[TestMethod]
 		public void When_Uri()
 		{
-#if NET5_0 || NET6_0_OR_GREATER || __SKIA__
+#if NET5_0 || NET6_0_OR_GREATER || __SKIA__ || __WASM__
 			string Expected = "http://platform.uno";
 #else
 			string Expected = "http://platform.uno/";

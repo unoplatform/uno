@@ -245,12 +245,12 @@ namespace Windows.UI.Xaml
 
 		public IntPtr Handle { get; set; }
 
-		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			UpdateHitTest();
 			UpdateOpacity();
 
-			if (newVisibility == Visibility.Collapsed)
+			if (newValue == Visibility.Collapsed)
 			{
 				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
 				_size = new Size(0, 0);
@@ -327,20 +327,20 @@ namespace Windows.UI.Xaml
 			ApplyNativeClip(clip ?? Rect.Empty);
 		}
 
-		partial void ApplyNativeClip(Rect clip)
+		partial void ApplyNativeClip(Rect rect)
 		{
 			if (ClippingIsSetByCornerRadius)
 			{
 				return; // already applied
 			}
 
-			if (clip.IsEmpty)
+			if (rect.IsEmpty)
 			{
 				Visual.Clip = null;
 			}
 			else
 			{
-				var roundedRectClip = LayoutRound(clip);
+				var roundedRectClip = LayoutRound(rect);
 
 				Visual.Clip = Visual.Compositor.CreateInsetClip(
 					topInset: (float)roundedRectClip.Top,

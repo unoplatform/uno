@@ -27,6 +27,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop" Version="7.10.6073" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="microsoft.visualstudio.threading.analyzers" Version="16.10.56" />
+		<PackageReference Include="microsoft.visualstudio.threading" Version="15.8.209" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net48'">

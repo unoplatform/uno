@@ -31,7 +31,7 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile
-      dotnet publish -f net6.0-android -c Release -p:UnoSampleAppRuntimeIdentifiers=android-x64
+      dotnet publish -f net6.0-android -c Release -p:UnoSampleAppRuntimeIdentifiers=android-x64 -p:UnoUIDisableNet7Build=true
     displayName: Build Android samples app
 
   - task: CopyFiles@2

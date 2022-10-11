@@ -88,7 +88,7 @@
 
 	<ItemGroup>
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\__*.png" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
@@ -99,7 +99,7 @@
 
 	<ItemGroup>
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\__*.png" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\__*.png" />
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
@@ -110,18 +110,18 @@
 	
 	<ItemGroup>
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\*.vstemplate" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\__*.png" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\__*.png" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\obj\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\bin\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\Properties\**" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.csproj" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj" />
 
 		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.net6\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\*.vstemplate" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\__*.png" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\**\__*.png" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\obj\**" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\bin\**" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\Properties\**" />
@@ -132,7 +132,7 @@
 	
 	<ItemGroup>
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\*.vstemplate" />
-		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\__*.png" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\**\__*.png" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\obj\**" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\bin\**" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\Properties\**" />
@@ -296,7 +296,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.json" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{

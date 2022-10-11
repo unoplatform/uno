@@ -26,7 +26,7 @@ jobs:
 
     # Disable .NET 5 build on CI for package generation
     # Build validation is performed on other jobs
-    UnoUIDisableNetCoreBuild: true
+    UnoUIDisableNet7Build: true
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
@@ -72,7 +72,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /t:BuildGeneric "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+      msbuildArguments: /r /m /v:m /t:BuildGeneric "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
