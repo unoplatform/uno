@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -154,6 +155,43 @@ namespace Uno.UI.Skia.Platform
 			RegisterForBackgroundColor();
 		}
 
+		private void UpdateWindowPropertiesFromPackage()
+		{
+			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
+			{
+				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
+				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path, basePath);
+
+				if (File.Exists(iconPath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
+					}
+
+					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(iconPath));
+				}
+				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+					}
+
+					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(scaledPath));
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
+					}
+				}
+			}
+
+			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+
 		private void RegisterForBackgroundColor()
 		{
 			void Update()
@@ -237,7 +275,7 @@ namespace Uno.UI.Skia.Platform
 			WinUI.Application.StartWithArguments(CreateApp);
 			_hostPointerHandler = new HostPointerHandler(this);
 
-			WpfApplication.Current.MainWindow.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			UpdateWindowPropertiesFromPackage();
 		}
 
 		private void MainWindow_StateChanged(object? sender, EventArgs e)

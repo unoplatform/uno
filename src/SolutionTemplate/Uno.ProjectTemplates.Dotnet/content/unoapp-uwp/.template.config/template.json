@@ -13,10 +13,10 @@
     "WebAssembly",
     "dotnet-new"
   ],
-  "name": "Multi-Platform App",
+  "name": "Multi-Platform App (Xamarin, UWP)",
   "identity": "Uno.Platform.UnoApp.Uwp",
   "groupIdentity": "Uno.Platform.Blank.UnoApp.Uwp",
-  "description": "Template for creating a multi-platform C# & XAML application targeting UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
+  "description": "Template for creating a multi-platform C# & XAML application that target UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
