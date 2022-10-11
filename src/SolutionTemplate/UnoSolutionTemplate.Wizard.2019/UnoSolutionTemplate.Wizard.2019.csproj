@@ -59,7 +59,7 @@
     <Compile Include="XamarinUnoSolutionWizard.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="global.json" />
+    <EmbeddedResource Include="global-netcore.json" />
     <None Include="key.snk" />
   </ItemGroup>
   <ItemGroup>

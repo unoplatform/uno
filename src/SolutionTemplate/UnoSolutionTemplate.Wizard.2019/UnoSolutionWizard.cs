@@ -50,7 +50,7 @@ namespace UnoSolutionTemplate.Wizard
 
 			if (!File.Exists(globalJson))
 			{
-				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream(FindManifestFileName($"global.json")));
+				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream(FindManifestFileName($"global-netcore.json")));
 				File.WriteAllText(globalJson, reader.ReadToEnd());
 			}
 
