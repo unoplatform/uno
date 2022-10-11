@@ -6,8 +6,7 @@ jobs:
   displayName: 'Unit Tests'
   timeoutInMinutes: 90
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   dependsOn: Pipeline_Validations
 
