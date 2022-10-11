@@ -51,10 +51,6 @@ jobs:
   - template: templates/dotnet6-install-windows.yml
   - template: templates/install-windows-sdk.yml
 
-  - powershell: |
-        cp $(build.sourcesdirectory)\src\global-net6.json $(build.sourcesdirectory)\src\global.json
-    displayName: Change active .NET SDK
-
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
