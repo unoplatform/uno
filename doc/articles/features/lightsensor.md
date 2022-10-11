@@ -1,7 +1,7 @@
 # LightSensor
 
 > [!TIP]
-> This article covers Uno-specific information for LightSensor. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/windows/uwp/devices-sensors/use-the-light-sensor
+> This article covers Uno-specific information for LightSensor. For a full description of the feature and instructions on using it, consult the [UWP documentation](https://learn.microsoft.com/windows/uwp/devices-sensors/use-the-light-sensor).
 
  * The `Windows.Devices.Sensors.LightSensor` class allows measuring the illuminance in LUX. 
 
