@@ -28,7 +28,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly Dictionary<uint, Point> _activePointers = new Dictionary<uint, Point>();
 		private readonly HashSet<libinput_event_code> _pointerPressed = new HashSet<libinput_event_code>();
 		private readonly DisplayInformation _displayInformation;
-		private readonly Thread _inputThread;
+		private readonly Thread? _inputThread;
 		private Point _mousePosition;
 		private int _libDevFd;
 		private readonly CancellationTokenSource _cts = new CancellationTokenSource();

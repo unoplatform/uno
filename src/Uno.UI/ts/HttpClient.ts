@@ -64,21 +64,13 @@
 		private static dispatchResponse(requestId: string, status: number, headers: string, payload: string) {
 
 			this.initMethods();
-
-			const requestIdStr = MonoRuntime.mono_string(requestId);
-			const statusStr = MonoRuntime.mono_string("" + status);
-			const headersStr = MonoRuntime.mono_string(headers);
-			const payloadStr = MonoRuntime.mono_string(payload);
-			MonoRuntime.call_method(this.dispatchResponseMethod, null, [requestIdStr, statusStr, headersStr, payloadStr]);
+			this.dispatchResponseMethod("" + requestId, "" + status, headers, payload);
 		}
 
 		private static dispatchError(requestId: string, error: string) {
 
 			this.initMethods();
-
-			const requestIdStr = MonoRuntime.mono_string(requestId);
-			const errorStr = MonoRuntime.mono_string(error);
-			MonoRuntime.call_method(this.dispatchErrorMethod, null, [requestIdStr, errorStr]);
+			this.dispatchErrorMethod(requestId, error);
 		}
 
 		private static dispatchResponseMethod: any;
@@ -89,10 +81,8 @@
 				return; // already initialized.
 			}
 
-			const asm = MonoRuntime.assembly_load("Uno.UI.Runtime.WebAssembly");
-			const httpClass = MonoRuntime.find_class(asm, "Uno.UI.Wasm", "WasmHttpHandler");
-			this.dispatchResponseMethod = MonoRuntime.find_method(httpClass, "DispatchResponse", -1);
-			this.dispatchErrorMethod = MonoRuntime.find_method(httpClass, "DispatchError", -1);
+			this.dispatchResponseMethod = (<any>Module).mono_bind_static_method("[Uno.UI.Runtime.WebAssembly] Uno.UI.Wasm.WasmHttpHandler:DispatchResponse");
+			this.dispatchErrorMethod = (<any>Module).mono_bind_static_method("[Uno.UI.Runtime.WebAssembly] Uno.UI.Wasm.WasmHttpHandler:DispatchError");
 		}
 	}
 }

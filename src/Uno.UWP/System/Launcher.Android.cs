@@ -60,9 +60,11 @@ namespace Windows.System
 				var intent = new Intent(Intent.ActionView, androidUri);
 
 				var manager = Uno.UI.ContextHelper.Current.PackageManager;
+#pragma warning disable CS0618 // Type or member is obsolete
 				var supportedResolvedInfos = manager.QueryIntentActivities(
 						intent,
 						PackageInfoFlags.MatchDefaultOnly);
+#pragma warning restore CS0618 // Type or member is obsolete
 				canOpenUri = supportedResolvedInfos.Any();
 			}
 			else

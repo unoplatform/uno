@@ -20,18 +20,26 @@ namespace Uno.ReferenceImplComparer
 
 			Console.WriteLine($"Validating package {args[0]}");
 
-			foreach(var assembly in Directory.GetFiles(Path.Combine(filePath, "lib", "netstandard2.0"), "*.dll"))
+			var referenceTargetFrameworks = new[] {
+				"netstandard2.0",
+				"net7.0"
+			};
+
+			foreach (var targetFramework in referenceTargetFrameworks)
 			{
-				var referenceAssemblyDefinition = ReadAssemblyDefinition(assembly);
-
-				foreach(var runtimeAssembly in Directory.GetFiles(Path.Combine(filePath, "uno-runtime"), Path.GetFileName(assembly), SearchOption.AllDirectories))
+				foreach (var assembly in Directory.GetFiles(Path.Combine(filePath, "lib", targetFramework), "*.dll"))
 				{
-					var identifier = $"{Path.GetFileName(runtimeAssembly)}/{Path.GetFileName(Path.GetDirectoryName(runtimeAssembly))}";
-					Console.WriteLine($"Validating {identifier}");
+					var referenceAssemblyDefinition = ReadAssemblyDefinition(assembly);
 
-					var runtimeAssemblyDefinition = ReadAssemblyDefinition(runtimeAssembly);
+					foreach (var runtimeAssembly in Directory.GetFiles(Path.Combine(filePath, "uno-runtime", targetFramework), Path.GetFileName(assembly), SearchOption.AllDirectories))
+					{
+						var identifier = $"{Path.GetFileName(runtimeAssembly)}/{Path.GetFileName(Path.GetDirectoryName(runtimeAssembly))}";
+						Console.WriteLine($"Validating {identifier} ({runtimeAssembly})");
 
-					hasErrors |= CompareAssemblies(referenceAssemblyDefinition, runtimeAssemblyDefinition, identifier);
+						var runtimeAssemblyDefinition = ReadAssemblyDefinition(runtimeAssembly);
+
+						hasErrors |= CompareAssemblies(referenceAssemblyDefinition, runtimeAssemblyDefinition, identifier);
+					}
 				}
 			}
 

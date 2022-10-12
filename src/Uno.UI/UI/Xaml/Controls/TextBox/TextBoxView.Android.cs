@@ -211,15 +211,15 @@ namespace Windows.UI.Xaml.Controls
 						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 						{
 							var drawables = new Drawable[2];
-							drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							drawables[0] = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
+							drawables[1] = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
 							drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 							drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
 							_cursorDrawableField.Set(editor, drawables);
 						}
 						else
 						{
-							var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+							var drawable = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
 							drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
 							_cursorDrawableField.Set(editor, drawable);
 						}

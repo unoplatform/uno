@@ -506,7 +506,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			Run(_transformGroupTestControl, skipInitialScreenshot: true);
 
 			var status = _app.Marked("Status");
-			var host = _app.GetRect(elementName);
+			var host = _app.GetPhysicalRect(elementName);
 			var scale = host.Height / elementVirtualSize;
 
 			// Capture the original rect (updated on WASM when the element moves)

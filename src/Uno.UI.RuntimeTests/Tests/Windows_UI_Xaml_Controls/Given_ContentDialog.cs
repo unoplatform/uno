@@ -327,6 +327,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Hide();
 			}
 		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Popup_Closed()
+		{
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				var showAsyncResult = SUT.ShowAsync().AsTask();
+
+				await openedEvent.WaitForDefault();
+
+				SUT._popup.IsOpen = false;
+
+				await closedEvent.WaitForDefault();
+
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+
+				if (await Task.WhenAny(showAsyncResult, Task.Delay(2000)) == showAsyncResult)
+				{
+					var dialogResult = showAsyncResult.Result;
+					VERIFY_ARE_EQUAL(ContentDialogResult.None, dialogResult);
+				}
+				else
+				{
+					Assert.Fail("Timed out waiting for ShowAsync");
+				}
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
 #endif
 
 #if __ANDROID__
@@ -378,6 +428,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				inputPane.Showing -= OnShowing;
 			}
+			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForIdle();
 		}
 

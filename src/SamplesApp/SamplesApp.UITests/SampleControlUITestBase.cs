@@ -435,7 +435,7 @@ namespace SamplesApp.UITests
 				return true;
 			}
 
-			var sampleRect = _app.GetRect(elementName);
+			var sampleRect = _app.GetPhysicalRect(elementName);
 			var b = sampleRect.Width > sampleRect.Height;
 			return b;
 		}

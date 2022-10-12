@@ -89,15 +89,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			{
 				var firstScreenShot = TakeScreenshot("FirstOrientation");
 
-				var firstCommandBarRect = _app.GetRect("TheCommandBar");
-				var firstYellowBorderRect = _app.GetRect("TheBorder");
+				var firstCommandBarRect = _app.GetPhysicalRect("TheCommandBar");
+				var firstYellowBorderRect = _app.GetPhysicalRect("TheBorder");
 				firstCommandBarRect.Bottom.Should().Be(firstYellowBorderRect.Y);
 
-				var firstCommandBarPhysicalRect = ToPhysicalRect(firstCommandBarRect);
-
-
-				var x1 = firstCommandBarPhysicalRect.X + (firstCommandBarPhysicalRect.Width * 0.75f);
-				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarPhysicalRect.Bottom - 1, Color.Red);
+				var x1 = firstCommandBarRect.X + (firstCommandBarRect.Width * 0.75f);
+				ImageAssert.HasColorAt(firstScreenShot, x1, firstCommandBarRect.Bottom - 1, Color.Red);
 
 				if (!supportsRotation)
 				{
@@ -108,27 +105,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 				var secondScreenShot = TakeScreenshot("SecondOrientation");
 
-				var secondCommandBarRect = _app.GetRect("TheCommandBar");
-				var secondYellowBorderRect = _app.GetRect("TheBorder");
+				var secondCommandBarRect = _app.GetPhysicalRect("TheCommandBar");
+				var secondYellowBorderRect = _app.GetPhysicalRect("TheBorder");
 				secondCommandBarRect.Bottom.Should().Be(secondYellowBorderRect.Y);
 
-				var secondCommandBarPhysicalRect = ToPhysicalRect(secondCommandBarRect);
-
-				var x2 = secondCommandBarPhysicalRect.X + (secondCommandBarPhysicalRect.Width * 0.75f);
-				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarPhysicalRect.Bottom - 1, Color.Red);
+				var x2 = secondCommandBarRect.X + (secondCommandBarRect.Width * 0.75f);
+				ImageAssert.HasColorAt(secondScreenShot, x2, secondCommandBarRect.Bottom - 1, Color.Red);
 
 				await ToggleOrientation();
 
 				var thirdScreenShot = TakeScreenshot("thirdOrientation");
 
-				var thirdCommandBarRect = _app.GetRect("TheCommandBar");
-				var thirdYellowBorderRect = _app.GetRect("TheBorder");
+				var thirdCommandBarRect = _app.GetPhysicalRect("TheCommandBar");
+				var thirdYellowBorderRect = _app.GetPhysicalRect("TheBorder");
 				thirdCommandBarRect.Bottom.Should().Be(thirdYellowBorderRect.Y);
 
-				var thirdCommandBarPhysicalRect = ToPhysicalRect(thirdCommandBarRect);
-
-				var x3 = thirdCommandBarPhysicalRect.X + (thirdCommandBarPhysicalRect.Width * 0.75f);
-				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarPhysicalRect.Bottom - 1, Color.Red);
+				var x3 = thirdCommandBarRect.X + (thirdCommandBarRect.Width * 0.75f);
+				ImageAssert.HasColorAt(thirdScreenShot, x3, thirdCommandBarRect.Bottom - 1, Color.Red);
 			}
 			finally
 			{

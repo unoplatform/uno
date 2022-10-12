@@ -14,7 +14,7 @@
 			<group targetFramework="MonoAndroid12.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="MonoAndroid11.0">
+			<group targetFramework="MonoAndroid13.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="Xamarin.iOS1.0">
@@ -42,15 +42,15 @@
 			</group>
 		</dependencies>
 		<frameworkAssemblies>
-			<frameworkAssembly assemblyName="Java.Interop" targetFramework="MonoAndroid11.0, MonoAndroid12.0" />
+			<frameworkAssembly assemblyName="Java.Interop" targetFramework="MonoAndroid13.0, MonoAndroid12.0" />
 		</frameworkAssemblies>
 	</metadata>
 
 	<files>
 		<file src="..\src\Common\uno.png" target="/" />
 
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid11.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid11.0" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid11.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid11.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid13.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid13.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid13.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid13.0" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid12.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid12.0" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid12.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid12.0" />
 
@@ -72,15 +72,24 @@
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.net6\Release\net6.0-android\Uno.UI.XamlHost.dll" target="lib\net6.0-android30.0" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.net6\Release\net6.0-android\Uno.UI.XamlHost.pdb" target="lib\net6.0-android30.0" />
 
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="lib\netstandard2.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="lib\netstandard2.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net7.0\Uno.UI.XamlHost.dll" target="lib\net7.0" />
 
 		<!-- netstandard2.0 WebAssembly -->
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\webassembly" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\webassembly" />
-		
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\netstandard2.0\webassembly" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\netstandard2.0\webassembly" />
+
 		<!-- netstandard2.0 Skia -->
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\skia" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\skia" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\netstandard2.0\skia" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\netstandard2.0\skia" />
+
+		<!-- net7.0 WebAssembly -->
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net7.0\webassembly" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net7.0\webassembly" />
+
+		<!-- net7.0 Skia -->
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net7.0skia" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net7.0\skia" />
 
 		<file src="..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="build" />
 	</files>
