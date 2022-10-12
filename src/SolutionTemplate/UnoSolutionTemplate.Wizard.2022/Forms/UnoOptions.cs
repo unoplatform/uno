@@ -25,6 +25,7 @@ namespace UnoSolutionTemplate.Wizard.Forms
 		public bool UseFramebuffer => checkLinux.Checked;
 		public bool UseWpf => checkWpf.Checked;
 		public bool UseWinUI => checkWinUI.Checked;
+		public bool UseServer => checkServer.Checked;
 		public string UseBaseTargetFramework => BaseTargetFramework.SelectedItem is TargetFrameworkOption option ? option.BaseValue : "invalid";
 
 		public class TargetFrameworkOption
@@ -110,29 +111,8 @@ namespace UnoSolutionTemplate.Wizard.Forms
 			CenterToParent();
 		}
 
-		private void checkBox3_CheckedChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void groupBox2_Enter(object sender, EventArgs e)
-		{
-
-		}
-
-		private void checkWinUI_CheckedChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void label2_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void checkWebAssembly_CheckedChanged(object sender, EventArgs e)
 		{
-
 		}
 	}
 }
