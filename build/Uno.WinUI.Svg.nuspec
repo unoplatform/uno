@@ -39,7 +39,7 @@
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
 			</group>
 			
-			<group targetFramework="MonoAndroid11.0">
+			<group targetFramework="MonoAndroid13.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Svg.Skia" version="0.5.16" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
@@ -106,7 +106,7 @@
 			<group targetFramework="xamarinmac20">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
-			<group targetFramework="MonoAndroid11.0">
+			<group targetFramework="MonoAndroid13.0">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
 			<group targetFramework="MonoAndroid12.0">
@@ -120,7 +120,7 @@
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net7.0\Uno.UI.Svg.dll" target="lib\net7.0" />
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\xamarinios10\Uno.UI.Svg.dll" target="lib\xamarinios10" />
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\xamarinmac20\Uno.UI.Svg.dll" target="lib\xamarinmac20" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\MonoAndroid11.0\Uno.UI.Svg.dll" target="lib\MonoAndroid11.0" />
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\MonoAndroid13.0\Uno.UI.Svg.dll" target="lib\MonoAndroid13.0" />
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\MonoAndroid12.0\Uno.UI.Svg.dll" target="lib\MonoAndroid12.0" />
 
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.net6\Release\net6.0-android\Uno.UI.Svg.dll" target="lib\net6.0-android" />
