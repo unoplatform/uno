@@ -1,0 +1,61 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: reference_package_build
+  displayName: 'Build Reference Package Binaries'
+  
+  dependsOn: winui_convert_tree
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+
+      WinUI:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/gitversion.yml
+
+  - template: templates/dotnet-install.yml
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Reference Binaries
+
+  - template: templates/copy-package-assets.yml
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/Reference-bin-$(XAML_FLAVOR_BUILD).zip'
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts
+      ArtifactType: Container

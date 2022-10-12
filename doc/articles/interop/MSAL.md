@@ -71,8 +71,6 @@ Particularities for WASM:
 
 - Token cache is _in-memory_ for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
 
-Important: when making HTTP requests from Wasm, don't forget to use the `WasmHttpHandler` on the `HttpClient`, or you'll get this error: `Operation is not supported on this platform.`. [More details here to fix that error](https://platform.uno/docs/articles/faq.html#is-it-possible-to-make-http-web-requests-using-the-wasm-target).
-
 ## Other things
 
 Take note of these 'do nots' in the MSAL Wiki:

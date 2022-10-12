@@ -3,7 +3,6 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>Uno.UI.SourceGenerators.Internal</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
-		<WarningsAsErrors>true</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 

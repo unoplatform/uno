@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml
 			_systemThemeChangesObserved = true;
 		}
 
-		private void SystemThemeChanged(object sender, EventArgs e) => OnSystemThemeChanged();
+		private void SystemThemeChanged(object? sender, EventArgs e) => OnSystemThemeChanged();
 	}
 
 	internal interface IApplicationEvents

@@ -1,13 +1,17 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net5.0-windows</TargetFrameworks>		
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>		
 		<!--
-		Enable implicit dotnet runtime forward rolling, as a net5
-		project may run with net6 only SDK installed
+		Enable implicit dotnet runtime forward rolling, as the specifed target framework
+		project may run with only a later version of the .NET runtime installed.
 		-->
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
+	</PropertyGroup>
+	
 	<ItemGroup Label="AssemblyInfo">
 		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
 			<_Parameter1>false</_Parameter1>
@@ -51,7 +55,14 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1-preview.79" />
-		<PackageReference Include="SkiaSharp.Views.Uno" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
 	</ItemGroup>
 
 	<ItemGroup>

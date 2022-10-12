@@ -28,6 +28,13 @@ namespace Uno.UI.Helpers
 		public static Page? GetInstance(PageStackEntry? entry) => entry?.Instance;
 
 		/// <summary>
+		/// Retrieves the current <see cref="Page"/> instance of the given <paramref name="entry"/>. If no instance exists, the <see cref="Page"/> will be created and properly initialized to the provided <paramref name="frame"/>.
+		/// </summary>
+		/// <param name="entry">The PageStackEntry from the Frame's BackStack.</param>
+		/// <returns><see cref="Page"/></returns>
+		public static Page? EnsurePageInitialized(Frame? frame, PageStackEntry? entry) => frame?.EnsurePageInitialized(entry);
+
+		/// <summary>
 		/// Creates a new instance of <see cref="NavigationEventArgs"/>
 		/// </summary>
 		/// <param name="content"></param>

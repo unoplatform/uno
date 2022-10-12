@@ -92,11 +92,11 @@ Here are some tips when building the Uno solution and failures happen:
 
 ### Building the reference assemblies for Skia and WebAssembly
 
-Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those reference assemblies are replaced by public API compatible assemblies located in the `uno-runtime` folder of nuget packages.
+Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `net7.0` and `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those reference assemblies are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder of nuget packages.
 
 When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overridden nuget cache to be unable to use those newly added APIs.
 
-In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`, then open either the android or iOS solution filters, then build the `Uno.UI` project (and only this one, the other projects in the solution will fail to build). Doing this will generate the proper assemblies with the new APIs to be used in application or libraries using the cache override.
+In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>...</UnoTargetFrameworkOverride>` to `net7.0` or `netstandard2.0`, then open the `Uno.UI-Reference-Only.slnf` filter. You can now build the `Uno.UI` project. Doing this will generate the proper assemblies with the new APIs to be used in application or libraries using the nuget cache override.
 
 ### Using the Package Diff tool
 

@@ -8,6 +8,6 @@ namespace Uno.UI.MSAL
 	{
 		public static readonly WasmHttpFactory Instance = new WasmHttpFactory();
 
-		public HttpClient GetHttpClient() => new HttpClient(new WasmHttpHandler());
+		public HttpClient GetHttpClient() => new HttpClient();
 	}
 }

@@ -54,10 +54,10 @@ namespace Windows.UI.Input
 
 					_isTranslateInertiaXEnabled = _owner._isTranslateXEnabled
 						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
-						&& Abs(velocities.Linear.X) > _owner._inertiaThresholds.TranslateX;
+						&& Math.Abs(velocities.Linear.X) > _owner._inertiaThresholds.TranslateX;
 					_isTranslateInertiaYEnabled = _owner._isTranslateYEnabled
 						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
-						&& Abs(velocities.Linear.Y) > _owner._inertiaThresholds.TranslateY;
+						&& Math.Abs(velocities.Linear.Y) > _owner._inertiaThresholds.TranslateY;
 					_isRotateInertiaEnabled = _owner._isRotateEnabled
 						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia)
 						&& Abs(velocities.Angular) > _owner._inertiaThresholds.Rotate;
@@ -93,7 +93,7 @@ namespace Windows.UI.Input
 					// As of 2021-07-21, according to test, Displacement takes over Deceleration.
 					if (!IsNaN(DesiredDisplacement))
 					{
-						var v0 = (Abs(_velocities0.Linear.X) + Abs(_velocities0.Linear.Y)) / 2;
+						var v0 = (Math.Abs(_velocities0.Linear.X) + Math.Abs(_velocities0.Linear.Y)) / 2;
 						DesiredDisplacementDeceleration = GetDecelerationFromDesiredDisplacement(v0, DesiredDisplacement);
 					}
 					if (!IsNaN(DesiredRotation))
@@ -184,14 +184,14 @@ namespace Windows.UI.Input
 				// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
 				private float GetValue(double v0, double d, double t)
 					=> v0 >= 0
-						? (float)(v0 * t - d * Pow(t, 2))
-						: -(float)(-v0 * t - d * Pow(t, 2));
+						? (float)(v0 * t - d * Math.Pow(t, 2))
+						: -(float)(-v0 * t - d * Math.Pow(t, 2));
 
 				private bool IsCompleted(double v0, double d, double t)
-					=> Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
+					=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
 
 				private double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
-					=> (v0 * durationMs - displacement) / Pow(_defaultDurationMs, 2);
+					=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
 
 				/// <inheritdoc />
 				public void Dispose()

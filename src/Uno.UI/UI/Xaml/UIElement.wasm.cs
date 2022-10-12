@@ -406,12 +406,12 @@ namespace Windows.UI.Xaml
 
 		public Func<Size, Size> DesiredSizeSelector { get; set; }
 
-		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newVisibility)
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			InvalidateMeasure();
 			UpdateHitTest();
 
-			WindowManagerInterop.SetVisibility(HtmlId, newVisibility == Visibility.Visible);
+			WindowManagerInterop.SetVisibility(HtmlId, newValue == Visibility.Visible);
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
