@@ -16,6 +16,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SplitViewTests
     {
         [Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moved when a equivalent of Screenshot will be available
+		[ActivePlatforms(Platform.Browser)]
 		public void When_RightPanne_Clipped()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.SplitView.SplitViewClip");

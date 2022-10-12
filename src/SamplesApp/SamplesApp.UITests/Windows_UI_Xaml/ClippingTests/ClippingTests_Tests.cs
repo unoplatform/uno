@@ -12,6 +12,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 	{
 		[Test]
 		[AutoRetry]
+		// Other platforms are tested in RuntimeTests:
+		// This UI Test can be deleted once we can test Wasm in RuntimeTests.
+		// This is currently blocked due to lack of support for RenderTargetBitmap on Wasm.
+		[ActivePlatforms(Platform.Browser)]
 		public void When_Clip_Is_Set_On_Container_Element()
 		{
 			Run("UITests.Windows_UI_Xaml.Clipping.Clipping652");
@@ -36,6 +40,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 
 		[Test]
 		[AutoRetry]
+		// Other platforms are tested in RuntimeTests:
+		// This UI Test can be deleted once we can test Wasm in RuntimeTests.
+		// This is currently blocked due to lack of support for RenderTargetBitmap on Wasm.
+		[ActivePlatforms(Platform.Browser)]
 		public void When_Clipped_Rounded_Corners()
 		{
 			Run("UITests.Windows_UI_Xaml.Clipping.Clipping4273");

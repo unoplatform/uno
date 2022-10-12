@@ -161,4 +161,16 @@ public static partial class ImageAssert
 		}
 	}
 	#endregion
+
+	#region NotEquals
+	public static void AreNotEqual(RawBitmap first, RawBitmap second)
+	{
+		if (RawBitmap.AreIdentical(first, second))
+		{
+			Assert.Fail($"RawBitmap ({first} and {second}) are Equals");
+		}
+	}
+
+	#endregion
+
 }

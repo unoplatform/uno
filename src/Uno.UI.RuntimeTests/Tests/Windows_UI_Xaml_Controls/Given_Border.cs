@@ -131,7 +131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var SUT = new Border_CornerRadius();
-			var result = await TakeScreenshot(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT);
 			var sample = SUT.GetRelativeCoords(SUT.Sample1);
 			var eighth = sample.Width / 8;
 			
@@ -211,7 +211,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Thickness t = new Thickness(expected.Thicknesses[0], expected.Thicknesses[1], expected.Thicknesses[2], expected.Thicknesses[3]);
 				SUT.MyBorder.BorderThickness = t;
 				await WindowHelper.WaitForIdle();
-				var snapshot = await TakeScreenshot(SUT);
+				var snapshot = await RawBitmap.TakeScreenshot(SUT);
 
 				var leftTarget = SUT.GetRelativeCoords(SUT.LeftTarget);
 				var topTarget = SUT.GetRelativeCoords(SUT.TopTarget);
@@ -260,7 +260,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var SUT = new Border_CornerRadius_Clipping();
-			var snapshot = await TakeScreenshot(SUT);
+			var snapshot = await RawBitmap.TakeScreenshot(SUT);
 
 			var topLeftTarget = SUT.GetRelativeCoords(SUT.TopLeftTarget);
 			var topRightTarget = SUT.GetRelativeCoords(SUT.TopRightTarget);
@@ -303,7 +303,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var SUT = new Border_LinearGradientBrush();
-			var screenshot = await TakeScreenshot(SUT);
+			var screenshot = await RawBitmap.TakeScreenshot(SUT);
 			var textBoxRect = SUT.GetRelativeCoords(SUT.MyTextBox);
 
 			ImageAssert.HasColorAt(screenshot, textBoxRect.CenterX + (float)(0.45 * textBoxRect.Width), textBoxRect.Y, "#1F00E0", tolerance: 20);
@@ -320,7 +320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
 			var SUT = new Border_CornerRadius_Gradient();
-			var result = await TakeScreenshot(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT);
 			var textBoxRect = SUT.GetRelativeCoords(SUT.RedBorder);
 			ImageAssert.HasColorAt(result, textBoxRect.CenterX, textBoxRect.CenterY, "#FF00FF00", tolerance: 10);
 		}
@@ -337,7 +337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new Border_AntiAlias();
 			WindowHelper.WindowContent = SUT;
-			var screenshot = await TakeScreenshot(SUT);
+			var screenshot = await RawBitmap.TakeScreenshot(SUT);
 
 			var firstBorderRect = SUT.GetRelativeCoords(SUT.FirstBorder);
 			var secondBorderRect = SUT.GetRelativeCoords(SUT.SecondBorder);
@@ -384,18 +384,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public string[] Colors { get; set; }
 
 			public override string ToString() => $"{Thicknesses[0]} {Thicknesses[1]} {Thicknesses[2]} {Thicknesses[3]}";
-		}
-
-		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
-		{
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			await WindowHelper.WaitForIdle();
-			return result;
 		}
 	}
 }

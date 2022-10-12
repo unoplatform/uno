@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
@@ -14,6 +15,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 	{
 		[Test]
 		[AutoRetry]
+		// Other tests are in runtime
+		// Cannot be totaly moved since there are no equivalent of TakeScreenshot for Wasm
+		[ActivePlatforms(Platform.Browser)] 
 		public void When_UseWriteablBitmapAsImageBrushSource()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrush_WriteableBitmap");

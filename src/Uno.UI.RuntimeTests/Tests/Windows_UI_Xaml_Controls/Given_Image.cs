@@ -6,19 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
-using Windows.UI;
+using NUnit.Framework;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Foundation.Metadata;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -172,61 +172,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
-		public async Task When_Image_Source_Nullify()
+		public async Task WriteableBitmap_Invalidate()
 		{
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
-
-			var parent = new Border()
-			{
-				Width = 100,
-				Height = 100,
-				Background = new SolidColorBrush(Colors.White)
-			};
-			
-			var SUT = new Image()
-			{
-				Width = 100,
-				Height = 100,
-				Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png")),
-				Stretch = Stretch.Fill
-			};
-
-			parent.Child = SUT;
-			WindowHelper.WindowContent = parent;
-			await WindowHelper.WaitForLoaded(parent);
-			var result = await TakeScreenshot(parent);
-						
-			var sample = SUT.GetRelativeCoords(parent);
-			var centerX = sample.X + sample.Width / 2;
-			var centerY = sample.Y + sample.Height / 2;
-
-			ImageAssert.HasPixels(
-				result,
-				ExpectedPixels.At(centerX, centerY).Named("center with image").Pixel(Colors.Blue));
-
-			SUT.Source = null;
+			var SUT = new ImageSourceWriteableBitmapInvalidate();
+			WindowHelper.WindowContent = SUT;
+			var screenshotBefore =  await RawBitmap.TakeScreenshot(SUT);
+			SUT.UpdateSource();
 			await WindowHelper.WaitForIdle();
-			result = await TakeScreenshot(parent);
+			
+			var screenshotAfter = await RawBitmap.TakeScreenshot(SUT);
 
-			ImageAssert.HasPixels(
-				result,
-				ExpectedPixels.At(centerX, centerY).Named("center without image").Pixel(Colors.White));
+			ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
 		}
 
-		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task WriteableBitmap_MultiInvalidate()
 		{
-			var renderer = new RenderTargetBitmap();
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+			var SUT = new WriteableBitmap_MultiInvalidate();
+			WindowHelper.WindowContent = SUT;
+			var before = await RawBitmap.TakeScreenshot(SUT);
+			SUT.UpdateSource();
 			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			await WindowHelper.WaitForIdle();
-			return result;
+			
+			var after = await RawBitmap.TakeScreenshot(SUT);
+
+			ImageAssert.AreNotEqual(before, after);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImageStretchNone()
+		{
+			var SUT = new Image_Stretch_None();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			using var _ = new AssertionScope();
+			SUT.image01.Width.Should().NotBe(0);
+			SUT.image01.Height.Should().NotBe(0);
+			SUT.image02.Width.Should().NotBe(0);
+			SUT.image02.Height.Should().NotBe(0);
+			SUT.image03.Width.Should().NotBe(0);
+			SUT.image03.Height.Should().NotBe(0);
+			SUT.image04.Width.Should().NotBe(0);
+			SUT.image04.Height.Should().NotBe(0);
 		}
 	}
 }

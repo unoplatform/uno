@@ -4,7 +4,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
+using Windows.UI.Xaml;
+using Uno.UI.RuntimeTests.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
@@ -31,7 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry = new RectangleGeometry
 			{
 				Rect = new Rect(0, 0, 100, 100),
-				Transform = new TranslateTransform { X=20, Y=40 }
+				Transform = new TranslateTransform { X = 20, Y = 40 }
 			};
 
 			geometry.Bounds.Should().Be(new Rect(20, 40, 100, 100));
@@ -106,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry2 = new RectangleGeometry
 			{
 				Rect = new Rect(200, 200, 100, 100),
-				Transform = new CompositeTransform { CenterX = 350, CenterY = 350, ScaleX=2, ScaleY = 0.5 }
+				Transform = new CompositeTransform { CenterX = 350, CenterY = 350, ScaleX = 2, ScaleY = 0.5 }
 			};
 
 			var geometry = new GeometryGroup();
@@ -131,6 +137,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public void EmptyGeometry_CheckBounds()
 		{
 			Console.WriteLine(Geometry.Empty.Bounds);
+		}
+
+		[TestMethod]
+		public async Task When_EllipseGeometry()
+		{
+#if __MACOS__
+			Assert.Inconclusive(); // Test was not implemented on that platforms
+#endif
+#if __IOS__
+			Assert.Inconclusive(); // Test was not implemented on that platforms
+#endif
+#if __ANDROID__
+			Assert.Inconclusive(); // Test was not implemented on that platforms
+#endif
+
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			const string Red = "#FFFF0000";
+			var SUT = new Path_Ellipse_Geometry();
+			
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			var scrn = await RawBitmap.TakeScreenshot(SUT);
+
+			var rect = SUT.GetRelativeCoords(SUT.HostBorder);
+			await WindowHelper.WaitForIdle();
+			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Red, tolerance: 10);
+		}
+
+		[TestMethod] 
+		public async Task When_LineGeometry()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			const string Green = "#FF008000";
+			var SUT = new Path_LineGeometry();
+			var scrn = await RawBitmap.TakeScreenshot(SUT);
+
+			var rect = SUT.GetRelativeCoords(SUT.HostBorder);
+			ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, Green, tolerance: 10);
 		}
 	}
 }

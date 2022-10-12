@@ -10,15 +10,15 @@
     d:DesignWidth="400">
 
     <Grid>
-		<StackPanel>
-			<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" Width="50" Height="50" />
-			<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" Foreground="Red" Width="50" Height="50" />
-			<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" Foreground="Red" ShowAsMonochrome="False" Width="50" Height="50" />
-			<BitmapIcon x:Name="icon1" UriSource="ms-appx:///Assets/Icons/search.png" Foreground="Red" ShowAsMonochrome="True" Width="50" Height="50" />
-			<ContentControl Foreground="Blue" HorizontalContentAlignment="Center">
-				<BitmapIcon x:Name="icon2" UriSource="ms-appx:///Assets/Icons/search.png" Width="50" Height="50" />
-			</ContentControl>
-			<Button Name="colorChange" Content="Change Color" Click="OnClick" />
-		</StackPanel>
+        <StackPanel>
+            <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" Width="50" Height="50" />
+            <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" Foreground="Red" Width="50" Height="50" />
+            <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" Foreground="Red" ShowAsMonochrome="False" Width="50" Height="50" />
+            <BitmapIcon x:Name="icon1" UriSource="ms-appx:///Assets/Icons/search.png" Foreground="Red" ShowAsMonochrome="True" Width="50" Height="50" />
+            <ContentControl Foreground="Blue" HorizontalContentAlignment="Center">
+                <BitmapIcon x:Name="icon2" UriSource="ms-appx:///Assets/Icons/search.png" Width="50" Height="50" />
+            </ContentControl>
+            <Button Name="colorChange" Content="Change Color" Click="OnClick" />
+        </StackPanel>
     </Grid>
 </UserControl>

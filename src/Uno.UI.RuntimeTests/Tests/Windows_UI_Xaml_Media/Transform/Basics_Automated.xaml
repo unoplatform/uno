@@ -33,8 +33,8 @@
 				Background="White"
 				BorderThickness="3" 
 				HorizontalAlignment="Center"
-				 VerticalAlignment="Center" 
-				 x:Name="RotateHost"
+				VerticalAlignment="Center" 
+				x:Name="RotateHost"
 				x:FieldModifier="Public">
 				<Rectangle Fill="#FF0000" Width="100" Height="100" RenderTransformOrigin="0,0">
 					<Rectangle.RenderTransform>

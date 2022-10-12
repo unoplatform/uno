@@ -26,8 +26,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			const string colored = "#FF0000";
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.RotateHost;
-			var result = await Arrange(SUT);
-			
+			var result = await RawBitmap.TakeScreenshot(SUT);
+
 			Assert(SUT, result, 50, 50, colored);
 
 			// Top left
@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.TranslateHost;
-			var result = await Arrange(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT);
 
 			// Top left
 			Assert(SUT, result, 14 - PixelIncertitude, 14 - PixelIncertitude, White);
@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.SkewHost;
-			var result = await Arrange(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT); ;
 
 			// Top left
 			Assert(SUT, result, 0, 0, colored);
@@ -108,7 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.ScaleHost;
-			var result = await Arrange(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT);
 
 			// Top left
 			Assert(SUT, result, 9 - PixelIncertitude, 9 - PixelIncertitude, White);
@@ -134,7 +134,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.CompositeHost;
-			var result = await Arrange(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT);
 
 			// Center
 			Assert(SUT, result, 50, 50, colored);
@@ -165,7 +165,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			
 			var grid = new Basics_Automated_Transformation();
 			FrameworkElement SUT = grid.GroupHost;
-			var result = await Arrange(SUT);
+			var result = await RawBitmap.TakeScreenshot(SUT);
 
 			// Center
 			Assert(SUT, result, 50, 50, colored);
@@ -189,17 +189,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert(SUT, result, 88 + PixelIncertitude, 99, White);
 		}
 
-		private async Task<RawBitmap> Arrange(FrameworkElement SUT)
-		{
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			await WindowHelper.WaitForIdle();
-			return result;
-		}
 
 		private void Assert(FrameworkElement SUT, RawBitmap result, float x, float y, string color)
 		{

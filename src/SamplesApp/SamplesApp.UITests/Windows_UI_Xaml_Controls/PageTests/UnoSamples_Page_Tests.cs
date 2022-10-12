@@ -15,6 +15,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 	{
 		[Test]
 		[AutoRetry()]
+		//For other platform the test have been moved to runtime
+		//It will be moved when a equivalent of Screenshot will be available
+		[ActivePlatforms(Platform.Browser)]
 		public void When_Background_Static()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.PageTests.Page_Automated");
@@ -35,6 +38,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 
 		[Test]
 		[AutoRetry()]
+		//For other platform the test have been moved to runtime
+		//It will be moved when a equivalent of Screenshot will be available
+		[ActivePlatforms(Platform.Browser)]
 		public void When_Background_Updated()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.PageTests.Page_Update_Background");

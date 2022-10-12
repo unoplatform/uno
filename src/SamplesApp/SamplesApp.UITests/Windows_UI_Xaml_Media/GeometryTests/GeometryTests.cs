@@ -15,7 +15,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Not implemented on other platforms
+		// The Skia test can be found in runtime. Not implemented on other platforms
+		[ActivePlatforms(Platform.Browser)] 
 		public void When_EllipseGeometry()
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_EllipseGeometry");
@@ -31,7 +32,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Not implemented on other platforms
+		// Fother platforms, the test can be found in runtime tests
+		[ActivePlatforms(Platform.Browser)] 
 		public void When_LineGeometry()
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_LineGeometry");

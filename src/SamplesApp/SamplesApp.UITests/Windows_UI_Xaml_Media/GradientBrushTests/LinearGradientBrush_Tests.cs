@@ -39,6 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]//Will be moved to runtime when it will have the equivalent of screenshot
 		public void When_Opacity_Is_Specified()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Opacity");

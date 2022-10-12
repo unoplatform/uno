@@ -17,6 +17,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 	{
 		[Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moved when a equivalent of Screenshot will be available
+		[ActivePlatforms(Platform.Browser)]
 		public void WriteableBitmap_Invalidate()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.ImageSourceWriteableBitmapInvalidate");
@@ -37,6 +40,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moved when a equivalent of Screenshot will be available
+		[ActivePlatforms(Platform.Browser)]
 		public void WriteableBitmap_MultiInvalidate()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.WriteableBitmap_MultiInvalidate");

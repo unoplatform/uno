@@ -8,11 +8,11 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<Grid Height ="300"
-			Width="400">
-		<Canvas>
-			<Border x:Name="BBorderInCanvas" Background="Red"  HorizontalAlignment="Left"  Height="50" Width="50" />
-		</Canvas>
-		<Border x:Name="BBorderOutCanvas" Background="Green" HorizontalAlignment="Center"  Height="50" Width="50"/>
-	</Grid>
+    <Grid Height ="300"
+          Width="400">
+        <Canvas>
+            <Border x:Name="BBorderInCanvas" x:FieldModifier="Public" Background="Red"  HorizontalAlignment="Left"  Height="50" Width="50" />
+        </Canvas>
+        <Border x:Name="BBorderOutCanvas" x:FieldModifier="Public" Background="Green" HorizontalAlignment="Center"  Height="50" Width="50"/>
+    </Grid>
 </UserControl>
