@@ -70,6 +70,15 @@ namespace Windows.UI.Xaml.Controls
 					that.UpdateVisualState();
 				}
 			};
+
+			_popup.Closed += (s, e) =>
+			{
+				if (thisRef.Target is ContentDialog that)
+				{
+					that.Hide();
+				}
+			};
+
 			this.KeyDown += OnPopupKeyDown;
 			var inputPane = InputPane.GetForCurrentView();
 			inputPane.Showing += (o, e) =>
