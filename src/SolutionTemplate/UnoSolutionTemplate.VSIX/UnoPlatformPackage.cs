@@ -188,12 +188,19 @@ namespace UnoSolutionTemplate
 				try
 				{
 					var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
+#pragma warning disable CS0618 // Type or member is obsolete - 'IVsPackageInstallerServices' is obsolete: Use INuGetProjectService in the NuGet.VisualStudio.Contracts package instead.
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
 					// GetInstalledPackages is not async, switch to the background
 					await TaskScheduler.Default;
 
+#pragma warning disable CS0618 // Type or member is obsolete -
+					// 'IVsPackageInstallerServices.GetInstalledPackages()' is obsolete:
+					// This method can cause UI delays if called on the UI thread.
+					// Use INuGetProjectService.GetInstalledPackagesAsync in the NuGet.VisualStudio.Contracts package instead, and iterate all projects in the solution
 					var installedPackages = installerServices.GetInstalledPackages();
+#pragma warning restore CS0618 // Type or member is obsolete
 
 					// Return to the UI thread for DTE uses
 					await this.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
