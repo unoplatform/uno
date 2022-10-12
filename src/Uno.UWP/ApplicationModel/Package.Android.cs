@@ -34,7 +34,9 @@ namespace Windows.ApplicationModel
 
 		private DateTimeOffset GetInstallDate()
 		{
+#pragma warning disable CS0618 // Type or member is obsolete
 			var packageInfo = ContextHelper.Current.PackageManager.GetPackageInfo(ContextHelper.Current.PackageName, 0);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			return DateTimeOffset.FromUnixTimeMilliseconds(packageInfo.FirstInstallTime);
 		}

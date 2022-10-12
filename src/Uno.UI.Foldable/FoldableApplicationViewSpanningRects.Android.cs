@@ -1,4 +1,5 @@
-﻿using Android.Views;
+﻿using Android.App;
+using Android.Views;
 using AndroidX.Window.Java.Layout;
 using AndroidX.Window.Layout;
 using System;
@@ -39,7 +40,7 @@ namespace Uno.UI.Foldable
 		}
 		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
 		{
-			windowInfoRepository = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
+			windowInfoTrackerCallbackAdapter = new WindowInfoTrackerCallbackAdapter(WindowInfoTracker.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
 			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(	
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -48,7 +49,7 @@ namespace Uno.UI.Foldable
 		}
 		private void OnStartEvent()
 		{
-			windowInfoRepository.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+			windowInfoTrackerCallbackAdapter.AddWindowLayoutInfoListener(ContextHelper.Current as Activity, runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnStartEvent");
@@ -56,7 +57,7 @@ namespace Uno.UI.Foldable
 		}
 		private void OnStopEvent()
 		{
-			windowInfoRepository.RemoveWindowLayoutInfoListener(this);
+			windowInfoTrackerCallbackAdapter.RemoveWindowLayoutInfoListener(this);
 		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
