@@ -2,9 +2,6 @@
 using System.Data.SqlTypes;
 using System.IO;
 using System.Threading.Tasks;
-using ShimSkiaSharp;
-using Svg.Skia;
-using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -12,24 +9,38 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
+using Windows.Graphics.Display;
+using System.Diagnostics.CodeAnalysis;
+
+#if !__NETSTD_REFERENCE__
+using ShimSkiaSharp;
+using Svg.Skia;
+using Uno.UI.Xaml.Media;
 using SkiaSharp;
 using SKCanvas = SkiaSharp.SKCanvas;
 using SKMatrix = SkiaSharp.SKMatrix;
-using Windows.Graphics.Display;
-using System.Diagnostics.CodeAnalysis;
+#else
+#pragma warning disable CS0067
+#endif
 
 namespace Uno.UI.Svg;
 
 public partial class SvgProvider : ISvgProvider
 {
+#if !__NETSTD_REFERENCE__
 	private readonly SvgImageSource _owner;
 	private readonly CompositeDisposable _disposables = new();
-	
+
 	private SKSvg? _skSvg;
 	private SKBitmap? _skBitmap;
+#endif
 
 	public SvgProvider(object owner)
 	{
+#if __NETSTD_REFERENCE__
+		throw new PlatformNotSupportedException();
+#else
+
 		if (owner is not SvgImageSource svgImageSource)
 		{
 			throw new InvalidOperationException("Owner must be a SvgImageSource instance.");
@@ -56,42 +67,63 @@ public partial class SvgProvider : ISvgProvider
 			
 			OnSourceOpened(imageData.ByteArray);
 		});
-#endif
-	}
-
-	private void SourcePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-	{
-		if (UpdateBitmap())
-		{
-			SourceUpdated?.Invoke(this, EventArgs.Empty);
-		}
+#endif // __SKIA__
+#endif // __NETSTD_REFERENCE__
 	}
 
 	public event EventHandler? SourceLoaded;
 	
+#if !__NETSTD_REFERENCE__
 	internal event EventHandler? SourceUpdated;
 
 	internal SKSvg? SkSvg => _skSvg;
 
 	internal SKBitmap? SkBitmap => _skBitmap;
+#endif
 
-	public bool IsParsed => _skSvg?.Picture is not null;
+	public bool IsParsed
+#if __NETSTD_REFERENCE__
+		=> throw new PlatformNotSupportedException();
+#else
+		=> _skSvg?.Picture is not null;
+#endif
 
 	public Size SourceSize
 	{
 		get
 		{
+#if __NETSTD_REFERENCE__
+			throw new PlatformNotSupportedException();
+#else
 			if (_skSvg?.Picture?.CullRect is { } rect)
 			{
 				return new Size(rect.Width, rect.Height);
 			}
 
 			return default;
+#endif
 		}
 	}
 
-	public UIElement GetCanvas() => new SvgCanvas(_owner, this);
+	public UIElement GetCanvas()
+#if __NETSTD_REFERENCE__
+		=> throw new PlatformNotSupportedException();
+#else
+		=> new SvgCanvas(_owner, this);
+#endif
 
+	// TODO: This is used by iOS/macOS/Android while Skia uses subscription. This behavior
+	// should be aligned in the future so only one of the approaches is applied.
+	public void NotifySourceOpened(byte[] svgBytes)
+	{
+#if __NETSTD_REFERENCE__
+		throw new PlatformNotSupportedException();
+#else
+		OnSourceOpened(svgBytes);
+#endif
+	}
+
+#if !__NETSTD_REFERENCE__
 	private async void OnSourceOpened(byte[] svgBytes)
 	{
 		try
@@ -187,7 +219,13 @@ public partial class SvgProvider : ISvgProvider
 		return changed;
 	}
 
-	// TODO: This is used by iOS/macOS/Android while Skia uses subscription. This behavior
-	// should be aligned in the future so only one of the approaches is applied.
-	public void NotifySourceOpened(byte[] svgBytes) => OnSourceOpened(svgBytes);
+	private void SourcePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+		if (UpdateBitmap())
+		{
+			SourceUpdated?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
+#endif
 }
