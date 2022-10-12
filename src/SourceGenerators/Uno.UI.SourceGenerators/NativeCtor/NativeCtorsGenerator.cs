@@ -141,7 +141,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					builder.AppendLine();
 					builder.AppendLineIndented("using System;");
 					builder.AppendLine();
-					var disposables = typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction: builder =>
+
+					Action<IIndentedStringBuilder> beforeClassHeaderAction = builder =>
 					{
 						// These will be generated just before `partial class ClassName {`
 						builder.Append("#if __IOS__ || __MACOS__");
@@ -149,61 +150,60 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						builder.AppendLineIndented("[global::Foundation.Register]");
 						builder.Append("#endif");
 						builder.AppendLine();
-					});
+					};
 
-					var syntacticValidSymbolName = SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name;
-
-					if (NeedsExplicitDefaultCtor(typeSymbol))
+					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction))
 					{
-						builder.AppendLineIndented("/// <summary>");
-						builder.AppendLineIndented("/// Initializes a new instance of the class.");
-						builder.AppendLineIndented("/// </summary>");
-						builder.AppendLineIndented($"public {syntacticValidSymbolName}() {{ }}");
+
+						var syntacticValidSymbolName = SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name;
+
+						if (NeedsExplicitDefaultCtor(typeSymbol))
+						{
+							builder.AppendLineIndented("/// <summary>");
+							builder.AppendLineIndented("/// Initializes a new instance of the class.");
+							builder.AppendLineIndented("/// </summary>");
+							builder.AppendLineIndented($"public {syntacticValidSymbolName}() {{ }}");
+							builder.AppendLine();
+						}
+
+						builder.Append("#if __ANDROID__");
 						builder.AppendLine();
-					}
-
-					builder.Append("#if __ANDROID__");
-					builder.AppendLine();
-					builder.AppendLineIndented("/// <summary>");
-					builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
-					builder.AppendLineIndented("/// </summary>");
-					builder.AppendLineIndented("/// <remarks>");
-					builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
-					builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
-					builder.AppendLineIndented("/// </remarks>");
-					builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}");
-					builder.Append("#endif");
-					builder.AppendLine();
-
-					builder.Append("#if __IOS__ || __MACOS__ || __MACCATALYST__");
-					builder.AppendLine();
-					builder.AppendLineIndented("/// <summary>");
-					builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
-					builder.AppendLineIndented("/// </summary>");
-					builder.AppendLineIndented("/// <remarks>");
-					builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
-					builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
-					builder.AppendLineIndented("/// </remarks>");
-					builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
-
-					if(_objcNativeHandleSymbol != null)
-					{
 						builder.AppendLineIndented("/// <summary>");
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
 						builder.AppendLineIndented("/// </summary>");
 						builder.AppendLineIndented("/// <remarks>");
-						builder.AppendLineIndented("/// Used by the .NET Runtime to materialize native ");
+						builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
 						builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
 						builder.AppendLineIndented("/// </remarks>");
-						builder.AppendLineIndented($"public {syntacticValidSymbolName}(global::ObjCRuntime.NativeHandle handle) : base (handle) {{ }}");
-					}
+						builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}");
+						builder.Append("#endif");
+						builder.AppendLine();
 
-					builder.Append("#endif");
-					builder.AppendLine();
+						builder.Append("#if __IOS__ || __MACOS__ || __MACCATALYST__");
+						builder.AppendLine();
+						builder.AppendLineIndented("/// <summary>");
+						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
+						builder.AppendLineIndented("/// </summary>");
+						builder.AppendLineIndented("/// <remarks>");
+						builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
+						builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
+						builder.AppendLineIndented("/// </remarks>");
+						builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
 
-					while (disposables.Count > 0)
-					{
-						disposables.Pop().Dispose();
+						if (_objcNativeHandleSymbol != null)
+						{
+							builder.AppendLineIndented("/// <summary>");
+							builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
+							builder.AppendLineIndented("/// </summary>");
+							builder.AppendLineIndented("/// <remarks>");
+							builder.AppendLineIndented("/// Used by the .NET Runtime to materialize native ");
+							builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
+							builder.AppendLineIndented("/// </remarks>");
+							builder.AppendLineIndented($"public {syntacticValidSymbolName}(global::ObjCRuntime.NativeHandle handle) : base (handle) {{ }}");
+						}
+
+						builder.Append("#endif");
+						builder.AppendLine();
 					}
 
 					return builder.ToString();
