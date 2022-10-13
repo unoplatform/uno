@@ -50,6 +50,7 @@ Key things to pay attention to:
 - breaking changes which have been blessed have been ~~struck out~~.
 - `Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()` is the breaking change which has not been blessed and thus the process failed the build.
 
+```md
 ## MonoAndroid80 Platform
 #### Uno.dll
 ##### 0 missing types:
@@ -416,3 +417,4 @@ Key things to pay attention to:
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 0 missing or changed properties in existing types:
+```
