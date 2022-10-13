@@ -94,8 +94,7 @@ jobs:
   steps:
   - checkout: none
     clean: true
-    
-  - template: templates/dotnet-install.yml
+
   - template: templates/optimize-roslyn-mono.yml
 
   - task: DownloadBuildArtifacts@0
@@ -147,8 +146,7 @@ jobs:
   steps:
   - checkout: none
     clean: true
-    
-  - template: templates/dotnet-install.yml
+
   - template: templates/optimize-roslyn-mono.yml
 
   - task: DownloadBuildArtifacts@0
