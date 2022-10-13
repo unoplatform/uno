@@ -335,7 +335,8 @@ namespace Windows.UI.Xaml.Data
 
 		private void ApplyFallbackValue(bool useTypeDefaultValue = true)
 		{
-			if (ParentBinding.FallbackValue != null)
+			if (ParentBinding.FallbackValue != null
+				|| (ParentBinding.CompiledSource != null && ParentBinding.IsFallbackValueSet))
 			{
 				SetTargetValue(ConvertToBoundPropertyType(ParentBinding.FallbackValue));
 			}
