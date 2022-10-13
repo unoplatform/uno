@@ -10,16 +10,17 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<StackPanel>
+	<StackPanel Spacing="20">
 		<controls:NumberBox x:Name="startNumber" Value="5" PlaceholderText="Start" />
 		<controls:NumberBox x:Name="lengthNumber" Value="12" PlaceholderText="Length" />
+		<TextBox x:Name="MyReadOnlyTextBox"
+                 Text="Text Uno Platform oui-readonly-textbox-for-selecction. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                 IsReadOnly="True" />
+		<Button Click="SelectReadOnly_OnClick" Content="Select ReadOnly"/>
+
 		<TextBox x:Name="myTextBox"
                  Text="Text Uno Platform non-readonly textbox. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
-        <Button Click="Select_OnClick" Content="Select"></Button>
-		<Button Click="SelectAll_OnClick" Content="Select all"></Button>
-        <TextBox x:Name="MyReadOnlyTextBox"
-                 Text="Text Uno Platform non-readonly textbox. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                 IsReadOnly="True" />
-		<Button Click="SelectReadOnly_OnClick" Content="Select ReadOnly"></Button>
+        <Button Click="Select_OnClick" Content="Select" />
+		<Button Click="SelectAll_OnClick" Content="Select all" />
 	</StackPanel>
 </UserControl>
