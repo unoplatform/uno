@@ -73,5 +73,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts
+      ArtifactName: NugetPackages-Artifacts-net6
       ArtifactType: Container
