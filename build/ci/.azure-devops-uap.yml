@@ -25,6 +25,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
 
   # Required until Uno.Xaml can build without all targets enabled
   - template: templates/jdk-setup.yml
