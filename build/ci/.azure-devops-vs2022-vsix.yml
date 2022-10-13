@@ -23,7 +23,7 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - template: templates/install-dotnet.yml
+  - template: templates/dotnet-install.yml
 
   - template: templates/nuget-cache.yml
     parameters:
