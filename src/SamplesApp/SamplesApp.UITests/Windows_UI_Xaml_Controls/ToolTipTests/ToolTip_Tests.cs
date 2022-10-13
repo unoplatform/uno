@@ -62,15 +62,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			const string BorderInsideToolTip = "BorderInsideToolTip";
 
 			_app.WaitForElement(ButtonWithTooltip);
-			var buttonRect = _app.GetRect(ButtonWithTooltip);
+			var buttonRectPhysical = _app.GetPhysicalRect(ButtonWithTooltip);
+			var buttonRectLogical = _app.GetLogicalRect(ButtonWithTooltip);
 
-			var upperRect = _app.GetRect("UpperLocator");
-			var lowerRect = _app.GetRect("LowerLocator");
+			var upperRect = _app.GetPhysicalRect("UpperLocator");
+			var lowerRect = _app.GetPhysicalRect("LowerLocator");
 
 			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
-			var lowerHoverY = buttonRect.Bottom - buttonRect.Height / 10;
-			_app.TapCoordinates(buttonRect.CenterX, lowerHoverY);
+			var lowerHoverY = buttonRectLogical.Bottom - buttonRectLogical.Height / 10;
+			_app.TapCoordinates(buttonRectLogical.CenterX, lowerHoverY);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
@@ -78,14 +79,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			ImageAssert.AreEqual(before, lowerToolTip, lowerRect);
 			ImageAssert.AreEqual(before, lowerToolTip, upperRect); // ToolTip should be just above mouse, shouldn't extend above Button bounds
-			ImageAssert.AreNotEqual(before, lowerToolTip, buttonRect);
+			ImageAssert.AreNotEqual(before, lowerToolTip, buttonRectPhysical);
 
 			_app.FastTap("DummyButton");
 
 			_app.WaitForNoElement(BorderInsideToolTip);
 
-			var upperHoverY = buttonRect.Y + buttonRect.Height / 10;
-			_app.TapCoordinates(buttonRect.CenterX, upperHoverY);
+			var upperHoverY = buttonRectLogical.Y + buttonRectLogical.Height / 10;
+			_app.TapCoordinates(buttonRectLogical.CenterX, upperHoverY);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
@@ -93,7 +94,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			ImageAssert.AreEqual(before, upperToolTip, lowerRect);
 			ImageAssert.AreNotEqual(before, upperToolTip, upperRect); // Mouse is close to top of button, ToolTip should extend above Button bounds
-			ImageAssert.AreNotEqual(before, upperToolTip, buttonRect);
+			ImageAssert.AreNotEqual(before, upperToolTip, buttonRectPhysical);
 		}
 
 		[Test]

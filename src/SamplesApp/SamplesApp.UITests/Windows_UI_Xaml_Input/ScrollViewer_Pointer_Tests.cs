@@ -21,7 +21,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			_app.WaitForElement("HostGrid");
 
-			var gridRect = _app.GetRect("HostGrid");
+			var gridRect = _app.GetPhysicalRect("HostGrid");
 
 			//Directly above host grid
 			var leftLow = gridRect.GetPointInRect(new PointF(0.15f, 0.8f));

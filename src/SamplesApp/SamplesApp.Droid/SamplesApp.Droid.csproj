@@ -15,7 +15,7 @@
     <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v13.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
@@ -48,6 +48,7 @@
     <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <BundleAssemblies>false</BundleAssemblies>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -67,6 +68,7 @@
     <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -99,10 +101,9 @@
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
-    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.5.1" />
+    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.5.2" />
+    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.1.7" />
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
     <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
