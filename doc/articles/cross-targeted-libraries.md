@@ -23,7 +23,7 @@ NuGet references that should be shared by all platforms can be added through the
 
 If you want to apply NuGet references only to specific platforms, you can do so by manually editing the `csproj` file and putting the `PackageReference` within a conditional `ItemGroup`, eg:
 ```xml
-	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid11.0'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid13.0'">
 		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="3.0.4" PrivateAssets="none" />
 		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 	</ItemGroup>
@@ -46,7 +46,7 @@ Example project reference:
 
 Example SDK reference:
 ```xml
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>

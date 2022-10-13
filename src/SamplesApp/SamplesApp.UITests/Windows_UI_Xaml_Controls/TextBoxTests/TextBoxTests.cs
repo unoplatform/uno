@@ -272,7 +272,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
 
 			var passwordBox = _app.Marked("MyPasswordBox");
-			var passwordBoxRect = _app.GetRect(passwordBox);
+			var passwordBoxRect = _app.GetPhysicalRect(passwordBox);
 			_app.Wait(TimeSpan.FromMilliseconds(500)); // Make sure to show the status bar
 			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 

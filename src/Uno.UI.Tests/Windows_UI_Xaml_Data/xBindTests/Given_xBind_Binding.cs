@@ -1299,6 +1299,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(42, SUT.tb1.Tag);
 		}
 
+		[TestMethod]
+		public async Task When_ValueType()
+		{
+			var SUT = new xBind_ValueType();
+			var date1 = new DateTime(2022, 10, 01);
+
+			SUT.VM.Model2 = new() { MyDateTime = date1 };
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(date1, SUT.tb1.Tag);
+
+			SUT.VM.Model2 = null;
+
+			Assert.IsNull(SUT.tb1.Tag);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);

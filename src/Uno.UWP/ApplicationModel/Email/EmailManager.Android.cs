@@ -75,7 +75,9 @@ namespace Windows.ApplicationModel.Email
 			var emailDummyIntent = new Intent(Intent.ActionSendto);
 			emailDummyIntent.SetData(Android.Net.Uri.Parse("mailto:dummy@email.com"));
 
+#pragma warning disable CS0618 // Type or member is obsolete
 			var emailActivities = packageManager.QueryIntentActivities(emailDummyIntent, 0);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			if (emailActivities == null)
 			{

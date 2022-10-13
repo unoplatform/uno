@@ -272,6 +272,8 @@
               href: features/windows-devices-haptics.md
             - name: Keeping Screen On
               href: features/windows-system-display.md
+            - name: Light Sensor
+              href: features/lightsensor.md
             - name: Magnetometer
               href: features/magnetometer.md   
             - name: MIDI

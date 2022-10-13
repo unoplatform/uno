@@ -75,6 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Server\Controllers\WeatherForecastController.cs" />
+    <None Include="Server\Program.cs" />
+    <None Include="Server\WeatherForecast.cs" />
+    <None Include="Server\appsettings.Development.json" />
+    <None Include="Server\appsettings.json" />
+    <None Include="Server\UnoQuickStart.Server.csproj" />
     <None Include="Skia.WPF\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
@@ -234,6 +240,9 @@
     <None Include="Mobile\macOS\Assets.xcassets\unologo.imageset\unoplatform.jpg" />
     <Content Include="Mobile\__PreviewImage.png" />
     <Content Include="Mobile\__TemplateIcon.png" />
+    <VSTemplate Include="Server\Server.net6.vstemplate" />
+    <Content Include="Server\__PreviewImage.png" />
+    <Content Include="Server\__TemplateIcon.png" />
     <Content Include="Skia.Gtk\__PreviewImage.png" />
     <Content Include="Skia.Gtk\__TemplateIcon.png" />
     <Content Include="Skia.Linux.FrameBuffer\__PreviewImage.png" />

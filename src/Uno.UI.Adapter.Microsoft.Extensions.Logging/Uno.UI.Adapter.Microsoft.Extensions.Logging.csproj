@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
 		<TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">

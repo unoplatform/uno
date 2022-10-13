@@ -41,7 +41,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.UIElement_Native_Child");
 
 			_app.WaitForElement("SpacerBorder");
-			var spacerRect = _app.GetRect("SpacerBorder");
+			var spacerRect = _app.GetPhysicalRect("SpacerBorder");
 
 			using var scrn = TakeScreenshot("Ready", ignoreInSnapshotCompare: true);
 

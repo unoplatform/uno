@@ -64,7 +64,6 @@ namespace Uno.UI.ViewManagement
 		event ActivityPostResumeHandler PostResume;
 		event ActivityPrepareNavigateUpTaskStackHandler PrepareNavigateUpTaskStack;
 		event ActivityPrepareOptionsMenuHandler PrepareOptionsMenu;
-		event ActivityPrepareOptionsPanelHandler PrepareOptionsPanel;
 		event ActivityPreparePanelHandler PreparePanel;
 		event ActivityProvideAssistDataHandler ProvideAssistData;
 		event ActivityRequestPermissionsResultWithResultsHandler RequestPermissionsResultWithResults;

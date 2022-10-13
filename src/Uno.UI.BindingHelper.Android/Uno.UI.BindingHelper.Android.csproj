@@ -1,13 +1,13 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid12.0;MonoAndroid11.0;net461;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
+		<TargetFrameworks>MonoAndroid12.0;MonoAndroid13.0;net461;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">true</IsBindingProject>
+		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 
 		<!--
@@ -26,7 +26,7 @@
 		<AndroidSdkBuildToolsVersion Condition="'$(AndroidSdkBuildToolsVersion)' == ''">28.0.3</AndroidSdkBuildToolsVersion>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
