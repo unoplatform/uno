@@ -298,7 +298,7 @@ Key things to pay attention to:
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 0 missing or changed properties in existing types:
-## `xamarinios10` Platform
+## xamarinios10 Platform
 #### Uno.dll
 ##### 0 missing types:
 ##### 8 missing or changed method in existing types:
@@ -367,7 +367,7 @@ Key things to pay attention to:
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 0 missing or changed properties in existing types:
-## `xamarinmac20` Platform
+## xamarinmac20 Platform
 #### Uno.dll
 ##### 0 missing types:
 ##### 2 missing or changed method in existing types:
