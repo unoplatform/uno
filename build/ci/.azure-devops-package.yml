@@ -58,6 +58,7 @@ jobs:
 
   - ${{ each artifact in parameters.artifactsToDownload }}:
       - task: DownloadBuildArtifacts@0
+        displayName: Download build artifact ${{ artifact }}
         inputs:
           artifactName: ${{ artifact }}
           downloadPath: '$(Agent.WorkFolder)' 
@@ -104,7 +105,7 @@ jobs:
       TargetFolder: $(build.artifactstagingdirectory)\vslatest
       CleanTargetFolder: false
       OverWrite: false
-      flattenFolders: false
+      flattenFolders: true
 
   - task: PowerShell@2
     displayName: Authenticode Sign Packages
