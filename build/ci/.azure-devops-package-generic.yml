@@ -66,6 +66,20 @@ jobs:
   - template: templates/install-windows-sdk.yml
   - template: templates/jdk-setup.yml
 
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - task: MSBuild@1
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m /v:m /nr:false /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD)-prepare.binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj

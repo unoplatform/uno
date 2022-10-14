@@ -51,6 +51,13 @@ jobs:
   - template: templates/dotnet6-install-windows.yml
   - template: templates/install-windows-sdk.yml
 
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - task: DotNetCoreCLI@2
+    inputs:
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-net6-prepare-$(UNO_UWP_BUILD).binlog
+
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
