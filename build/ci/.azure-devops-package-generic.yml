@@ -100,7 +100,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts
+      ArtifactName: NugetPackages-Artifacts-generic
       ArtifactType: Container
   
   # - task: PublishBuildArtifacts@1
