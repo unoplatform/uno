@@ -12,6 +12,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void DoesNotInterfereWithHorizontalDrag()
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests.RefreshContainerHorizontalScroll");
