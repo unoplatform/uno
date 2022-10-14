@@ -8,7 +8,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Metadata
 	public class Given_ApiInformation
     {
 		[TestMethod]
-		public async Task When_IsPropertyPresent_Called_Twice()
+		public void When_IsPropertyPresent_Called_Twice()
 		{
 			// Verifies fix for issue #4803
 			// SharedHelpers called IsPropertyPresent twice for an implemented property

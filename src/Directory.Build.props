@@ -5,7 +5,6 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <PropertyGroup>
-    <NoWarn>$(NoWarn);1998</NoWarn>
     <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
     <DebugType>portable</DebugType>
@@ -182,7 +181,7 @@
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
-    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618;CS1998</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>

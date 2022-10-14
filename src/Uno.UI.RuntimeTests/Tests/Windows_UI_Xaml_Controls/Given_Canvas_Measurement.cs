@@ -30,8 +30,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private const string Green = "#FF008000";
 		private const string Brown = "#FFA52A2A";
 
-	[TestMethod]
-		public async Task When_Measure_CanvasChildren()
+		[TestMethod]
+		public void When_Measure_CanvasChildren()
 		{
 			var canvas = new Measure_Children_In_Canvas();
 			WindowHelper.WindowContent = canvas;

@@ -21,26 +21,26 @@ public partial class Capture_Tests : SampleControlUITestBase
 	[ActivePlatforms(Platform.iOS, Platform.Android)] // This fails with unit test
 	[InjectedPointer(PointerDeviceType.Touch)]
 	public async Task TestSimple()
-		=> RunTest("Simple", TouchAndMoveOut);
+		=> await RunTest("Simple", TouchAndMoveOut);
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	public async Task TestVisibility()
-		=> RunTest("Visibility");
+		=> await RunTest("Visibility");
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	public async Task TestNestedVisibility()
-		=> RunTest("NestedVisibility");
+		=> await RunTest("NestedVisibility");
 
 	[Test]
 	[AutoRetry]
 	[Ignore("Inconsistent behavior between manual and unit test")]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	public async Task TestIsEnabled()
-		=> RunTest("IsEnabled");
+		=> await RunTest("IsEnabled");
 
 	[Test]
 	[AutoRetry]
@@ -48,7 +48,7 @@ public partial class Capture_Tests : SampleControlUITestBase
 	[ActivePlatforms(Platform.Browser)] // The IsEnabled property is not inherited on other platforms yet.
 	[InjectedPointer(PointerDeviceType.Touch)]
 	public async Task TestNestedIsEnabled()
-		=> RunTest("NestedIsEnabled");
+		=> await RunTest("NestedIsEnabled");
 
 
 	private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.FastTap();

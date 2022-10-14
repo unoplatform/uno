@@ -1,5 +1,4 @@
 #nullable enable
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Globalization;
@@ -19,7 +18,7 @@ namespace Windows.Storage
 	public sealed partial class StorageFile : IStorageFile, IStorageFile2, IStorageItem, IStorageItem2
 	{
 		public static IAsyncOperation<StorageFile> GetFileFromPathAsync(string path)
-			=> AsyncOperation.FromTask(async ct => new StorageFile(new Local(path)));
+			=> AsyncOperation.FromTask(ct => Task.FromResult(new StorageFile(new Local(path))));
 
 		internal static StorageFile GetFileFromPath(string path)
 			=> new StorageFile(new Local(path));

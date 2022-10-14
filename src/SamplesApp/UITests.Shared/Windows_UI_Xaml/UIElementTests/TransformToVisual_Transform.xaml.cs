@@ -229,7 +229,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		}
 
 		public void Run(params Expression<Action>[] tests) => Run(tests.Select(GetTest).ToArray());
-		public async Task Run(params Expression<Func<Task>>[] tests) => Run(tests.Select(GetTest).ToArray());
+		public void Run(params Expression<Func<Task>>[] tests) => Run(tests.Select(GetTest).ToArray());
 
 		private async void Run(params Test[] tests)
 		{

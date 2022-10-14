@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented()]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element, int scaledWidth, int scaledHeight)
-			=> AsyncAction.FromTask(async ct =>
+			=> AsyncAction.FromTask(ct =>
 			{
 				try
 				{
@@ -98,13 +98,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					this.Log().Error("Failed to render element to bitmap.", error);
 				}
+
+				return Task.CompletedTask;
 			});
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element)
-			=> AsyncAction.FromTask(async ct =>
+			=> AsyncAction.FromTask(ct =>
 			{
 				try
 				{
@@ -120,19 +122,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					this.Log().Error("Failed to render element to bitmap.", error);
 				}
+
+				return Task.CompletedTask;
 			});
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif
 		public IAsyncOperation<IBuffer> GetPixelsAsync()
-			=> AsyncOperation<IBuffer>.FromTask(async (op, ct) =>
+			=> AsyncOperation<IBuffer>.FromTask((op, ct) =>
 			{
 				if (_buffer is null)
 				{
-					return new Buffer(Array.Empty<byte>());
+					return Task.FromResult<IBuffer>(new Buffer(Array.Empty<byte>()));
 				}
-				return new Buffer(_buffer.AsMemory().Slice(0,_bufferSize));
+				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0,_bufferSize)));
 			});
 
 #if NOT_IMPLEMENTED

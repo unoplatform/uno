@@ -14,7 +14,7 @@ namespace Uno.AuthenticationBroker
 			throw new NotImplementedException();
 		}
 
-		protected virtual async Task<WebAuthenticationResult> AuthenticateAsyncCore(
+		protected virtual Task<WebAuthenticationResult> AuthenticateAsyncCore(
 			WebAuthenticationOptions options,
 			Uri requestUri,
 			Uri callbackUri,

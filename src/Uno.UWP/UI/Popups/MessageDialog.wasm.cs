@@ -23,7 +23,7 @@ public partial class MessageDialog
 		Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 
 		return AsyncOperation.FromTask<IUICommand>(
-			async ct => new UICommand("OK") // TODO: Localize (PBI 28711)
+			ct => Task.FromResult<IUICommand>(new UICommand("OK")) // TODO: Localize (PBI 28711)
 		);
 	}
 

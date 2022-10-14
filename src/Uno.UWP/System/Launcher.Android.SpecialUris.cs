@@ -73,16 +73,16 @@ namespace Windows.System
 			}
 		}
 
-		private static Task<bool> HandleSpecialUriAsync(Uri uri)
+		private static bool HandleSpecialUri(Uri uri)
 		{
 			switch (uri.Scheme.ToLowerInvariant())
 			{
-				case MicrosoftSettingsUri: return HandleSettingsUriAsync(uri);
+				case MicrosoftSettingsUri: return HandleSettingsUri(uri);
 				default: return LaunchUriActivityAsync(uri);
 			}
 		}
 
-		private static Task<bool> HandleSettingsUriAsync(Uri uri)
+		private static bool HandleSettingsUri(Uri uri)
 		{
 			var settingsString = uri.AbsolutePath.ToLowerInvariant();
 			//get exact match first
@@ -99,7 +99,7 @@ namespace Windows.System
 
 			var intent = new Intent(launchAction ?? Settings.ActionSettings);
 			StartActivity(intent);
-			return Task.FromResult(true);
+			return true;
 		}
 	}
 }

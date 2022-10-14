@@ -29,20 +29,22 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public string Scope => "hotreload";
 
-		public async Task ProcessFrame(Frame frame)
+		public Task ProcessFrame(Frame frame)
 		{
 			switch (frame.Name)
 			{
 				case ConfigureServer.Name:
-					await ProcessConfigureServer(JsonConvert.DeserializeObject<ConfigureServer>(frame.Content));
+					ProcessConfigureServer(JsonConvert.DeserializeObject<ConfigureServer>(frame.Content));
 					break;
 				case XamlLoadError.Name:
-					await ProcessXamlLoadError(JsonConvert.DeserializeObject<XamlLoadError>(frame.Content));
+					ProcessXamlLoadError(JsonConvert.DeserializeObject<XamlLoadError>(frame.Content));
 					break;
 			}
+
+			return Task.CompletedTask;
 		}
 
-		private async Task ProcessXamlLoadError(XamlLoadError xamlLoadError)
+		private void ProcessXamlLoadError(XamlLoadError xamlLoadError)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -53,7 +55,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task ProcessConfigureServer(ConfigureServer configureServer)
+		private void ProcessConfigureServer(ConfigureServer configureServer)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{

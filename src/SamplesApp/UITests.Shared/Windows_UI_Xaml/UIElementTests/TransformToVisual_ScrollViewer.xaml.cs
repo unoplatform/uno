@@ -23,9 +23,9 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 			Loaded += RunTest;
 		}
 
-		private async void RunTest(object sender, RoutedEventArgs e)
+		private void RunTest(object sender, RoutedEventArgs e)
 		{
-			await _tests.Run(
+			_tests.Run(
 				() => When_VerticalScrollViewer_NotScrolled_Top(),
 				() => When_VerticalScrollViewer_NotScrolled_Bottom(),
 				() => When_VerticalScrollViewer_Scrolled_Top(),

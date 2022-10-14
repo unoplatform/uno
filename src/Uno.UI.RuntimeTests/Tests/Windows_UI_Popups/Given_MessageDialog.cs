@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task Should_Close_Open_Flyouts()
+		public void Should_Close_Open_Flyouts()
 		{
 			var button = new Windows.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
@@ -42,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task Should_Not_Close_Open_ContentDialogs()
+		public void Should_Not_Close_Open_ContentDialogs()
 		{
 			Assert.AreEqual(0, GetNonMessageDialogPopupsCount());
 

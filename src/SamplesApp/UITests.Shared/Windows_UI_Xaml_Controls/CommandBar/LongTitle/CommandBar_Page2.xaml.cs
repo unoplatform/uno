@@ -33,10 +33,10 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
 	    public void OnBackButtonClicked(object sender, object args)
 	        => Frame.GoBack();
 
-        public async void OnButtonClicked(object sender, RoutedEventArgs e)
+        public void OnButtonClicked(object sender, RoutedEventArgs e)
 	        => Frame.Navigate(typeof(CommandBar_Page3));
 
-        public async void OnCalculateSizeClicked(object sender, RoutedEventArgs e)
+        public void OnCalculateSizeClicked(object sender, RoutedEventArgs e)
         {
 #if __IOS__
 	        UIView parent = this;
