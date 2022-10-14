@@ -50,13 +50,12 @@
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
 	</Target>
 	
-	<Target Name="BuildGeneric" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
+	<Target Name="BuildGeneric" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 
 		<CallTarget Targets="PublishVSIX2019" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 	</Target>
-
 
 	<Target Name="GeneratePackages" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
@@ -221,7 +220,7 @@
              BuildInParallel="true" />
 	</Target>
 
-	<Target Name="BuildCINet6" DependsOnTargets="PrepareBuildAssets">
+	<Target Name="BuildCINet6">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-net6;PackageVersion=$(GITVERSION_SemVer)"
              Projects="..\src\Uno.UI-net6-only.slnf"
@@ -231,7 +230,7 @@
 
 	</Target>
 
-	<Target Name="BuildCIWasm" DependsOnTargets="PrepareBuildAssets">
+	<Target Name="BuildCIWasm">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(GITVERSION_SemVer)"
              Projects="filters\Uno.UI-packages-wasm.slnf"
@@ -241,7 +240,7 @@
 
 	</Target>
 
-	<Target Name="BuildCISkia" DependsOnTargets="PrepareBuildAssets">
+	<Target Name="BuildCISkia">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
              Projects="filters\Uno.UI-packages-skia.slnf"
@@ -251,7 +250,7 @@
 
 	</Target>
 
-	<Target Name="BuildCIReference" DependsOnTargets="PrepareBuildAssets">
+	<Target Name="BuildCIReference">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
              Projects="filters\Uno.UI-packages-reference.slnf"
