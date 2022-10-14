@@ -58,9 +58,8 @@ namespace Windows.UI.Xaml.Controls
 				if (backgroundImage == null)
 				{
 					ImageData backgroundImageData = default;
-					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData);
-
-					if (backgroundImageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
+					if ((Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData) == true &&
+						backgroundImageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
 					{
 						backgroundImage = backgroundImageData.NativeImage;
 					}
