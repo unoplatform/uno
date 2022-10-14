@@ -37,8 +37,6 @@
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-
 	<Target Name="_UnoSvgOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
