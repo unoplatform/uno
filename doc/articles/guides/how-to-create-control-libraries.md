@@ -54,3 +54,24 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
    ```xml
    <myControlLib:MyTemplatedControl />
    ```
+
+## Library assets
+
+WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](../features/file-management.md#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx://[libraryname]/[assetname_file_name]` format.
+
+Library assets can be of any type.
+
+Library assets are supported in two configurations:
+- `ProjectReference`, where the library project is included in the solution with the application that uses it
+- `PackageReference`, where the library project is being packaged as a NuGet package, and used in a separate solution, from a NuGet feed.
+
+In both cases, for the build system to include the assets files, the following property must be set in the library's `.csproj`:
+
+```xml
+<PropertyGroup>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+</PropertyGroup>
+```
+
+> [!IMPORTANT]
+> WinAppSDK [does not support assets](https://github.com/microsoft/microsoft-ui-xaml/issues/6429) if the application is using the MSIX package mode. To use the unpackaged mode, [see this article](../features/winapp-sdk-specifics.md#unpackaged-application-support).

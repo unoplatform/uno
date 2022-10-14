@@ -325,17 +325,37 @@ namespace Uno.UI.RuntimeTests.Tests
 
 		[TestMethod]
 		public async Task When_Open_By_Encoded_URI_With_Space()
-		{ 
-			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg"); 
+		{
+			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg");
 
 			try
-			{				 
+			{
 				var file = await (await StorageFile.GetFileFromApplicationUriAsync(uri)).OpenReadAsync();
 				Assert.IsNotNull(file);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Assert.Fail("URI was not decoded " + ex.Message);
+			}
+		}
+
+		[TestMethod]
+#if __MACOS__ && !NET6_0_OR_GREATER
+		[Ignore] // Not supported for Xamarin.mac target
+#endif
+		public async Task When_Project_Transitive_Asset()
+		{
+			var uri = new Uri($"ms-appx://Uno.UI.RuntimeTests/Assets/TransientAsset01.txt");
+
+			try
+			{
+				var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+				Assert.AreEqual("My Transient Asset 01", (await FileIO.ReadLinesAsync(file))[0]);
+				Assert.IsNotNull(file);
+			}
+			catch (Exception ex)
+			{
+				Assert.Fail("Transitive asset could not be found: " + ex);
 			}
 		}
 

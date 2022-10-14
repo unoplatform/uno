@@ -105,12 +105,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Content Include="LinkerExclusions.xml" />
+    <None Include="LinkerExclusions.xml" />
     <BundleResource Include="Resources\sound.mp3" />
     <None Include="Resources\Default-568h%402x.png" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Entitlements.plist" />
+    <None Include="Entitlements.plist" />
     <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>

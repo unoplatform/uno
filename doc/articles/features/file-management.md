@@ -49,7 +49,7 @@ Note that you can view the content of the **IndexedDB** in the Application tab o
 
 ## Support for `StorageFile.GetFileFromApplicationUriAsync`
 
-Uno supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync`](https://docs.microsoft.com/en-us/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync).
+Uno Platform supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync`](https://docs.microsoft.com/en-us/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync).
 
 Support per platform may vary:
 - On non-WebAssembly targets, the file is available directly as it is a part of the installed package.
@@ -66,6 +66,15 @@ Given than in the project there's the following declaration:
 <ItemGroup>
     <Content Include="MyPackageFile.xml" />
 </ItemGroup>
+```
+
+### Support for Library provided assets
+Since Uno Platform 4.6, the `GetFileFromApplicationUriAsync` method supports reading assets provided by `ProjectReference` or `PackageReference` libraries, using the following syntax:
+
+Given a library or package named `MyLibray01`, the following can be used to read assets:
+```csharp
+var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx://MyLibray01/MyPackageFile.xml"));
+var content = await FileIO.ReadTextAsync(file);
 ```
 
 ## Support for `RandomAccessStreamReference.CreateFromUri`

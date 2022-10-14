@@ -135,6 +135,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Transitive_Asset_Loaded()
+		{
+			string url = "ms-appx://Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
+			var img = new Image();
+			var SUT = new BitmapImage(new Uri(url));
+			img.Source = SUT;
+
+			TestServices.WindowHelper.WindowContent = img;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(img.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Image_Is_Loaded_From_URL()
 		{
 			string decoded_url = "https://nv-assets.azurewebsites.net/tests/images/image with spaces.jpg";

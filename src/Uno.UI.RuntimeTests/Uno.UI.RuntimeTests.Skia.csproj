@@ -18,6 +18,9 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
+
+		<!-- Validation for project transient assets -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
 	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions. 
@@ -92,5 +95,16 @@
 	<ItemGroup>
 	  <PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Assets\**"/>
+	</ItemGroup>
+
+	<Target Name="ValidateLocalAssets"
+			AfterTargets="Build"
+			Condition="'$(TargetFramework)'!=''">
+		<Message Text="Validating local assets" Importance="high" />
+		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt" />
+	</Target>
 
 </Project>

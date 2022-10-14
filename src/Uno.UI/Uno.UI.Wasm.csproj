@@ -132,14 +132,25 @@
 			<_unoUIDTsFilePath>$(IntermediateOutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
 		</PropertyGroup>
 		<ItemGroup>
-			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedTSFiles)"
+			<_generatedJSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
+			<EmbeddedResource Include="@(_generatedJSFiles)"
 							LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 		<Copy SourceFiles="$(IntermediateOutputPath)/javascript/Uno.UI.d.ts"
 							DestinationFolder="$(OutputPath)"
 							Condition="exists('$(_unoUIDTsFilePath)')"/>
 	</Target>
+
+	<!--
+	REMOVE ME
+	<Target Name="AdjustOutputGroup"
+			BeforeTargets="GetTypeScriptOutputForPublishing">
+		<ItemGroup>
+			<_generatedJSFilesToRemove Include="@(GeneratedJavascript)" />
+			<GeneratedJavascript Remove="@(_generatedJSFilesToRemove)" />
+		</ItemGroup>
+	</Target>
+	-->
 	
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
@@ -181,11 +192,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="tsconfig.json" />
-	  <Content Include="tsconfig.json" />
 	</ItemGroup>
 
 	<Target Name="_UnoWasmOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

@@ -47,6 +47,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 					else if (UriSource.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 					{
 						var path = UriSource.PathAndQuery;
+
+						if (UriSource.Host is { Length: > 0 } host)
+						{
+							path = host + "/" + path.TrimStart('/');
+						}
+
 						var filePath = GetScaledPath(path);
 						using var fileStream = File.OpenRead(filePath);
 
