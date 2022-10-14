@@ -2,7 +2,7 @@
 <Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;xamarinios10;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworks>
-		<TargetFrameworksCI>netstandard2.0;xamarinios10;monoandroid11.0;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworksCI>
+		<TargetFrameworksCI>netstandard2.0;xamarinios10;MonoAndroid13.0;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworksCI>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>

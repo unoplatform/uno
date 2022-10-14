@@ -1,6 +1,12 @@
 parameters:
   poolName: ''
-
+  artifactsToDownload:
+    - "NugetPackages-Artifacts-generic"
+    - "NugetPackages-Artifacts-net6"
+    - "NugetPackages-Artifacts-reference"
+    - "NugetPackages-Artifacts-skia"
+    - "NugetPackages-Artifacts-wasm"
+    
 jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
@@ -50,15 +56,17 @@ jobs:
 
   - template: templates/install-windows-sdk.yml
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: NugetPackages-Artifacts
-      downloadPath: '$(Agent.WorkFolder)' 
+  - ${{ each artifact in parameters.artifactsToDownload }}:
+      - task: DownloadBuildArtifacts@0
+        displayName: Download build artifact ${{ artifact }}
+        inputs:
+          artifactName: ${{ artifact }}
+          downloadPath: '$(Agent.WorkFolder)' 
 
   - task: ExtractFiles@1
     displayName: Restore binaries structure
     inputs:
-      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip' 
       destinationFolder: $(build.sourcesdirectory)
       cleanDestinationFolder: false
       overwriteExistingFiles: true
@@ -90,40 +98,14 @@ jobs:
     displayName: Copy generic build packages
     condition: always()
     inputs:
-      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-generic
+      SourceFolder: $(Agent.WorkFolder)/
       Contents: |
-        *.nupkg
-        *.vsix
+        NugetPackages-Artifacts*/vslatest*/*.nupkg
+        NugetPackages-Artifacts*/vslatest*/*.vsix
       TargetFolder: $(build.artifactstagingdirectory)\vslatest
       CleanTargetFolder: false
       OverWrite: false
-      flattenFolders: false
-
-  - task: CopyFiles@2
-    displayName: Copy Skia build packages
-    condition: always()
-    inputs:
-      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-skia
-      Contents: |
-        *.nupkg
-        *.vsix
-      TargetFolder: $(build.artifactstagingdirectory)\vslatest
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-
-  - task: CopyFiles@2
-    displayName: Copy Wasm build packages
-    condition: always()
-    inputs:
-      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-wasm
-      Contents: |
-        *.nupkg
-        *.vsix
-      TargetFolder: $(build.artifactstagingdirectory)\vslatest
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
+      flattenFolders: true
 
   - task: PowerShell@2
     displayName: Authenticode Sign Packages

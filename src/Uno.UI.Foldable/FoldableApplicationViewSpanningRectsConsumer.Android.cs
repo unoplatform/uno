@@ -27,7 +27,7 @@ namespace Uno.UI.Foldable
 	public partial class FoldableApplicationViewSpanningRects : Java.Lang.Object, AndroidX.Core.Util.IConsumer
 	{
 		const string TAG = "DualScreen-JWM"; // Jetpack Window Manager
-		WindowInfoRepositoryCallbackAdapter windowInfoRepository;
+		WindowInfoTrackerCallbackAdapter windowInfoTrackerCallbackAdapter;
 		IWindowMetricsCalculator windowMetricsCalculator;
 
 		/// <summary>Rectangle that describes the coordinates of the hinge or fold on a dual-screen device</summary>	

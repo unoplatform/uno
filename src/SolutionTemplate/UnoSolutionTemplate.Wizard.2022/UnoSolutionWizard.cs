@@ -35,6 +35,7 @@ namespace UnoSolutionTemplate.Wizard
 		private bool _useFramebuffer;
 		private bool _useWpf;
 		private bool _useWinUI;
+		private bool _useServer;
 		private string? _baseTargetFramework;
 		private IDictionary<string, string>? _replacementDictionary;
 
@@ -80,6 +81,11 @@ namespace UnoSolutionTemplate.Wizard
 					if (_useWebAssembly)
 					{
 						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.net6.vstemplate");
+					}
+
+					if (_useServer)
+					{
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Server", "Server.net6.vstemplate");
 					}
 
 					if (_useiOS || _useCatalyst || _useAndroid || _useAppKit)
@@ -246,6 +252,7 @@ namespace UnoSolutionTemplate.Wizard
 						_useFramebuffer = targetPlatformWizardPicker.UseFramebuffer;
 						_useWpf = targetPlatformWizardPicker.UseWpf;
 						_useWinUI = targetPlatformWizardPicker.UseWinUI;
+						_useServer = targetPlatformWizardPicker.UseServer;
 						_baseTargetFramework = targetPlatformWizardPicker.UseBaseTargetFramework;
 
 						replacementsDictionary["$UseWebAssembly$"] = _useWebAssembly.ToString();
@@ -257,6 +264,7 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$UseFrameBuffer$"] = _useFramebuffer.ToString();
 						replacementsDictionary["$UseWPF$"] = _useWpf.ToString();
 						replacementsDictionary["$UseWinUI$"] = _useWinUI.ToString();
+						replacementsDictionary["$UseServer$"] = _useServer.ToString();
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
 						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
 

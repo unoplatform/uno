@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid12.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0</TargetFrameworksCI>
 		<!--<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>-->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
@@ -38,7 +38,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.3-beta02" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

@@ -60,7 +60,9 @@ public static partial class PhoneCallHistoryManager
 			throw new InvalidOperationException("Context.PackageName was null");
 		}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 		var packageInfo = packageManager.GetPackageInfo(packageName, PackageInfoFlags.Permissions);
+#pragma warning restore CS0618 // Type or member is obsolete
 		var requestedPermissions = packageInfo?.RequestedPermissions;
 		if (requestedPermissions is null)
 		{

@@ -30,12 +30,6 @@ steps:
       version: 6.0.4
       installationPath: '${{parameters.dotnetInstallationPath}}'
 
-  # Restore nuget.org to the list of existing sources, .NET 6 Pre 2 may somehow remove it
-  - powershell: |
-      dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org | Out-Null
-      $global:LASTEXITCODE = 0
-    displayName: Adjust nuget.org source
-
   - task: gitversion/setup@0
     retryCountOnTaskFailure: 3
     inputs:

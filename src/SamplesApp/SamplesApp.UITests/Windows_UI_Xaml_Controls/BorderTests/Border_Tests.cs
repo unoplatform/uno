@@ -91,7 +91,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			_app.WaitForElement("SubjectBorder");
 
-			var verificationRect = _app.GetRect("SnapshotBorder");
+			var verificationRect = _app.GetPhysicalRect("SnapshotBorder");
 
 			using var scrBefore = TakeScreenshot("No CornerRadius");
 

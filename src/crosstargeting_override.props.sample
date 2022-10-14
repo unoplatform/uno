@@ -23,7 +23,7 @@
         ├────────────────────────────┼─────────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
         │ uap10.0.18362              │ Windows                 │ Uno.UI-Windows-only.slnf                                                           │
         │ xamarinios10               │ iOS                     │ Uno.UI-iOS-only.slnf                                                               │
-        │ MonoAndroid12.0            │ Android 12.0            │ Uno.UI-Android-only.slnf                                                           │
+        │ MonoAndroid13.0            │ Android 13.0            │ Uno.UI-Android-only.slnf                                                           │
         │ netstandard2.0             │ WebAssembly, Skia       │ Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf                                       │
         │ net6.0-ios                 │ .NET 6 iOS              │ Uno.UI-net6-only.slnf                                                              │
         │ net6.0-android             │ .NET 6 Android          │ Uno.UI-net6-only.slnf                                                              │
