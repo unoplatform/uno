@@ -39,6 +39,13 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /nr:false /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-prepare-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Reference Binaries
+
   - powershell: |
       Set-PSDebug -Trace 1
       dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
