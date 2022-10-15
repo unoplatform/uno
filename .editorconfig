@@ -38,15 +38,6 @@ generated_code = true
 [CyclomaticComplexityWalker.cs]
 generated_code = true
 
-[**Java.Interop.__TypeRegistrations.cs]
-generated_code = true
-
-[**Uno.UI.UnoRecyclerView.cs]
-generated_code = true
-
-[**Uno.UI.UnoViewGroup.cs]
-generated_code = true
-
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true
