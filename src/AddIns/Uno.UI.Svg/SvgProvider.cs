@@ -50,24 +50,6 @@ public partial class SvgProvider : ISvgProvider
 
 		_disposables.Add(_owner.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelHeightProperty, SourcePropertyChanged));
 		_disposables.Add(_owner.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelWidthProperty, SourcePropertyChanged));
-#if __SKIA__
-		_owner.Subscribe(imageData =>
-		{
-			if (imageData.Kind == ImageDataKind.Empty)
-			{
-				// Empty image data is ignored.
-				CleanupSvg();
-				SourceUpdated?.Invoke(this, EventArgs.Empty);
-				return;
-			}
-			else if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
-			{
-				throw new InvalidOperationException("SVG image data are not available.");
-			}
-			
-			OnSourceOpened(imageData.ByteArray);
-		});
-#endif // __SKIA__
 #endif // __NETSTD_REFERENCE__
 	}
 
@@ -111,21 +93,10 @@ public partial class SvgProvider : ISvgProvider
 #else
 		=> new SvgCanvas(_owner, this);
 #endif
-
-	// TODO: This is used by iOS/macOS/Android while Skia uses subscription. This behavior
-	// should be aligned in the future so only one of the approaches is applied.
-	public void NotifySourceOpened(byte[] svgBytes)
+	
+	public async Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
 	{
-#if __NETSTD_REFERENCE__
-		throw new PlatformNotSupportedException();
-#else
-		OnSourceOpened(svgBytes);
-#endif
-	}
-
-#if !__NETSTD_REFERENCE__
-	private async void OnSourceOpened(byte[] svgBytes)
-	{
+		var succeeded = false;
 		try
 		{
 			CleanupSvg();
@@ -137,11 +108,13 @@ public partial class SvgProvider : ISvgProvider
 				_skBitmap = null;				
 				UpdateBitmap();
 				SourceLoaded?.Invoke(this, EventArgs.Empty);
+				succeeded = true;
 			}
 			else
 			{
 				CleanupSvg();
 				_owner.RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
+				succeeded = false;
 			}
 			SourceUpdated?.Invoke(this, EventArgs.Empty);
 		}
@@ -151,8 +124,11 @@ public partial class SvgProvider : ISvgProvider
 			{
 				this.Log().LogError("Failed to load SVG image.", ex);
 			}
-			CleanupSvg();	
+			CleanupSvg();
+			succeeded = false;
 		}
+		
+		return succeeded;
 	}
 
 	private void CleanupSvg()
@@ -169,10 +145,8 @@ public partial class SvgProvider : ISvgProvider
 			var skSvg = new SKSvg();
 			try
 			{
-				using (var memoryStream = new MemoryStream(svgBytes))
-				{
-					skSvg.Load(memoryStream);
-				}
+				using var memoryStream = new MemoryStream(svgBytes);
+				skSvg.Load(memoryStream);
 			}
 			catch (Exception)
 			{
@@ -227,5 +201,5 @@ public partial class SvgProvider : ISvgProvider
 		}
 	}
 
-#endif
+	public void Unload() => CleanupSvg();
 }

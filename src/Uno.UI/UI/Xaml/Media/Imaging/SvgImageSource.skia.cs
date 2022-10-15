@@ -9,13 +9,10 @@ namespace Windows.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
-	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
-	{
-		asyncImage = TryOpenSourceAsync(ct);
-		return true;
-	}
+	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage) =>
+		TryOpenSvgImageData(ct, out asyncImage);
 
-	private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
+	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)
 	{
 		try
 		{

@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml.Media.Imaging;
 /// </summary>
 public partial class SvgImageSource : ImageSource
 {
+	private protected CancellationTokenSource _currentOpenCancellationTokenSource;
 	private SvgImageSourceLoadStatus? _lastStatus;
 
 #if __NETSTD__
@@ -55,6 +56,8 @@ public partial class SvgImageSource : ImageSource
 	{
 		if (!object.Equals(e.OldValue, e.NewValue))
 		{
+			_currentOpenCancellationTokenSource?.Cancel();
+			_currentOpenTask = null;
 			UnloadImageData();
 		}
 		InitFromUri(e.NewValue as Uri);
@@ -73,9 +76,10 @@ public partial class SvgImageSource : ImageSource
 	/// </returns>
 	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 	{
-#if __IOS__ || __MACOS__
-		_imageData = ImageData.Empty;
-#endif
+		_currentOpenCancellationTokenSource?.Cancel();
+		_currentOpenTask = null;
+		UnloadImageData();
+		
 		async Task<SvgImageSourceLoadStatus> SetSourceAsync(
 			CancellationToken ct,
 			AsyncOperation<SvgImageSourceLoadStatus> _)
@@ -85,7 +89,7 @@ public partial class SvgImageSource : ImageSource
 				//Same behavior as windows, although the documentation does not mention it!!!
 				throw new ArgumentException(nameof(streamSource));
 			}
-
+			
 			_lastStatus = null;
 
 #if __NETSTD__

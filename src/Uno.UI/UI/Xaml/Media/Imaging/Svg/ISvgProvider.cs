@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
@@ -22,5 +23,7 @@ public interface ISvgProvider
 
 	event EventHandler? SourceLoaded;
 
-	void NotifySourceOpened(byte[] imageData);
+	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
+
+	void Unload();
 }

@@ -13,6 +13,7 @@ using Uno;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Helpers;
+using Uno.UI.Xaml.Media;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -26,6 +27,7 @@ namespace Windows.UI.Xaml.Media
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private protected static HttpClient _httpClient;
+		private protected ImageData _imageData;
 
 		public static class TraceProvider
 		{
@@ -229,6 +231,10 @@ namespace Windows.UI.Xaml.Media
 			_httpClient ??= new HttpClient();
 			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
 			return await response.Content.ReadAsStreamAsync();
+		}
+
+		private protected virtual void UnloadImageSourceData()
+		{
 		}
 	}
 }

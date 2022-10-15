@@ -38,8 +38,6 @@ namespace Windows.UI.Xaml.Media
 			_imageData = ImageData.FromNative(image);
 		}
 
-		private protected ImageData _imageData;
-
 		internal ImageData ImageData => _imageData;
 
 		internal string BundleName { get; private set; }

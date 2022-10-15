@@ -4,15 +4,11 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Provider;
-using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -93,8 +89,6 @@ namespace Windows.UI.Xaml.Media
 				|| ResourceId != null;
 		}
 
-		private ImageData _imageData;
-
 		internal BitmapDrawable BitmapDrawable { get; private set; }
 
 		internal int? ResourceId
@@ -144,7 +138,7 @@ namespace Windows.UI.Xaml.Media
 		/// Indicates that this ImageSource has enough information to be opened
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
-		
+
 		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageData image)
 		{
 			image = default;
@@ -430,25 +424,27 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		internal void UnloadImageData()
+		internal virtual void UnloadImageData()
 		{
-			if (_imageData.HasData)
-			{
-				if (_imageData.Bitmap is not null)
-				{
-					if (_imageData.Bitmap.Handle != IntPtr.Zero)
-					{
-						_imageData.Bitmap.Recycle();
-					}
-					else if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn($"Attempting to dispose {nameof(_imageData)} when the native bitmap has already been collected.");
-					}
-					_imageData.Bitmap.Dispose();
-				}				
-			}
-			
+			UnloadBitmapImageData();
+			UnloadImageSourceData();
 			_imageData = ImageData.Empty;
+		}
+
+		private void UnloadBitmapImageData()
+		{
+			if (_imageData.Bitmap is not null)
+			{
+				if (_imageData.Bitmap.Handle != IntPtr.Zero)
+				{
+					_imageData.Bitmap.Recycle();
+				}
+				else if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Attempting to dispose {nameof(_imageData)} when the native bitmap has already been collected.");
+				}
+				_imageData.Bitmap.Dispose();
+			}
 		}
 
 		public override string ToString()

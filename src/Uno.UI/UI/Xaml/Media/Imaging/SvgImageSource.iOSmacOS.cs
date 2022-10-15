@@ -25,27 +25,24 @@ partial class SvgImageSource
 {
 	private protected override bool IsSourceReady => true;
 
-	private protected override bool TryOpenSourceAsync(CancellationToken ct, out Task<ImageData> asyncImage)
-	{
-		asyncImage = TryOpenSourceAsync(ct);
-		return true;
-	}
+	private protected override bool TryOpenSourceAsync(CancellationToken ct, out Task<ImageData> asyncImage) =>
+		TryOpenSvgImageData(ct, out asyncImage);
 
 	private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
 	{
-		var imageData = await TryReadImageDataAsync(ct);
+		var imageData = await TryReadSvgImageDataAsync(ct);
 		if (imageData.Kind == ImageDataKind.ByteArray)
 		{
 			if (_svgProvider is null)
 			{
 				this.Log().LogWarning("Uno.UI.Svg package needs to be installed to use SVG on this platform.");
 			}
-			_svgProvider?.NotifySourceOpened(imageData.ByteArray);
+			await _svgProvider?.OnSourceOpenedAsync(imageData.ByteArray);
 		}
 		return imageData;
 	}
 
-	private async Task<ImageData> TryReadImageDataAsync(CancellationToken ct)
+	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)
 	{
 		try
 		{
@@ -190,14 +187,6 @@ partial class SvgImageSource
 #endif
 
 		return ImageData.Empty;
-	}
-
-	private async Task<ImageData> ReadFromStreamAsync(Stream stream)
-	{
-		var memoryStream = new MemoryStream();
-		await stream.CopyToAsync(memoryStream);
-		var data = memoryStream.ToArray();
-		return ImageData.FromBytes(data);
 	}
 
 	private static string GetApplicationPath(string rawPath)
