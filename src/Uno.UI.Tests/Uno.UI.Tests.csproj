@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net461</TargetFrameworks>
 		<IsPackable>false</IsPackable>
-		<NoWarn>1998;4014;67</NoWarn>
+		<NoWarn>67</NoWarn>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<UseUnoXamlParser>true</UseUnoXamlParser>

@@ -61,7 +61,7 @@ namespace Uno.UI.Controls
 			if (_frame.Content is Page startPage)
 			{
 				_stackUpdates.Enqueue((_frame.CurrentEntry, new NavigationEventArgs(_frame.Content, NavigationMode.New, null, null, null, null)));
-				InvalidateStack();
+				_ = InvalidateStack();
 			}
 		}
 
@@ -89,7 +89,7 @@ namespace Uno.UI.Controls
 		{
 			_stackUpdates.Enqueue((_frame.CurrentEntry, e));
 
-			InvalidateStack();
+			_ = InvalidateStack();
 		}
 
 		private async Task InvalidateStack()

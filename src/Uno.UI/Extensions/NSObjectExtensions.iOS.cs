@@ -40,7 +40,7 @@ namespace Foundation
 
 				// We cannot execute the content of the dispose actions off of the UI Thread.
 				// So we reschedule the dispose on the UI Thread to avoid concurrency issues.
-				CoreDispatcher.Main.RunIdleAsync(_ => {
+				_ = CoreDispatcher.Main.RunIdleAsync(_ => {
 
 					view.Dispose();
 				});

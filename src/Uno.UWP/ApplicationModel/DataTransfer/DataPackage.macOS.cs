@@ -244,9 +244,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			// See notes in Clipboard.Android.cs on async code usage here
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetToNativeAsync(content, pasteboard));
+				() => _ = SetToNativeAsync(content, pasteboard));
 
 			return;
 		}

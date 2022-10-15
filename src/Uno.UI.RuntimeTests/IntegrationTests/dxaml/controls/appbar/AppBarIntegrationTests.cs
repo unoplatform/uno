@@ -227,7 +227,7 @@ namespace Windows.UI.Tests.Enterprise
 			await openedEvent.WaitForDefault();
 
 			await RunOnUIThread(() => appBar.IsOpen = false);
-			closedEvent.WaitForDefault();
+			await closedEvent.WaitForDefault();
 
 			await RunOnUIThread(() => SetPageContent(null, page));
 		}
@@ -543,7 +543,7 @@ namespace Windows.UI.Tests.Enterprise
 			//UNO TODO: Implement Top/Bottom AppBars
 			//CanOpenMinimalAppBarUsingMouseHelper(topAppBar);
 			//CanOpenMinimalAppBarUsingMouseHelper(bottomAppBar);
-			CanOpenMinimalAppBarUsingMouseHelper(inlineAppBar);
+			await CanOpenMinimalAppBarUsingMouseHelper(inlineAppBar);
 		}
 
 		[TestMethod]
@@ -1479,7 +1479,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			CanCloseAppBarHelper((expectedHandledValue, appBar) =>
+			await CanCloseAppBarHelper((expectedHandledValue, appBar) =>
 			{
 				bool backButtonPressHandled = false;
 				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
@@ -1728,14 +1728,14 @@ namespace Windows.UI.Tests.Enterprise
 			});
 
 			LOG_OUTPUT("Validate that when set to On the AppBar's overlay is visible.");
-			RunOnUIThread(() =>
+			await RunOnUIThread(() =>
 			{
 				appBar.LightDismissOverlayMode = LightDismissOverlayMode.On;
 				ValidateVisibilityOfOverlayElement(appBar, true);
 			});
 
 			LOG_OUTPUT("Validate that when set to Off the AppBar's overlay is not visible.");
-			RunOnUIThread(() =>
+			await RunOnUIThread(() =>
 			{
 				appBar.LightDismissOverlayMode = LightDismissOverlayMode.Off;
 				ValidateVisibilityOfOverlayElement(appBar, false);
@@ -2163,7 +2163,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			CanCloseAppBarHelper(async (expectedHandledValue, appbar) =>
+			await CanCloseAppBarHelper(async (expectedHandledValue, appbar) =>
 			{
 				// We want to make sure the the key press gets handled/not handled as expected.
 				// We cannot listen to the Page.KeyDown event, because Page.TopAppBar/Page.BottomAppBar is not

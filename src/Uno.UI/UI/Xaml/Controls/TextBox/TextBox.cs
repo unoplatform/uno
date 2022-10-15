@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!_isTextChangedPending)
 			{
 				_isTextChangedPending = true;
-				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
 			}
 		}
 

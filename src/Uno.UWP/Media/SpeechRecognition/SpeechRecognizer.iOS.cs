@@ -134,15 +134,19 @@ namespace Windows.Media.SpeechRecognition
 
 		private void OnTimeout(object sender, ElapsedEventArgs e)
 		{
-			StopRecognitionAsync();
+			StopRecognition();
 		}
 
-		public IAsyncAction StopRecognitionAsync()
+		private void StopRecognition()
 		{
 			_recognitionRequest?.EndAudio();
 			_recognitionRequest?.Dispose();
 			_recognitionRequest = null;
+		}
 
+		public IAsyncAction StopRecognitionAsync()
+		{
+			StopRecognition();
 			return Task.CompletedTask.AsAsyncAction();
 		}
 

@@ -26,11 +26,11 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			}
 
 
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				button.Click += OnButtonOnClick;
 
-				InputHelper.Tap(button);
+				await InputHelper.Tap(button);
 
 			});
 

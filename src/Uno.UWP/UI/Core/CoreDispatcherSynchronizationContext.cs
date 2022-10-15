@@ -22,7 +22,7 @@ namespace Windows.UI.Core
 
         public override void Post(SendOrPostCallback d, object state)
         {
-            _dispatcher.RunAsync(_priority, () => d(state));
+            _ = _dispatcher.RunAsync(_priority, () => d(state));
         }
 
         public override void Send(SendOrPostCallback d, object state)

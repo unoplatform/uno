@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__
 					// Changing _progressBarIndicator.Width while in a layout phase doesn't reliably trigger a relayout on Android.
 					// Dispatching InvalidateMeasure appears to solve that problem.
-					Dispatcher.RunAnimation(() => _progressBarIndicator.InvalidateMeasure());
+					_ = Dispatcher.RunAnimation(() => _progressBarIndicator.InvalidateMeasure());
 #endif
 				}
 			}

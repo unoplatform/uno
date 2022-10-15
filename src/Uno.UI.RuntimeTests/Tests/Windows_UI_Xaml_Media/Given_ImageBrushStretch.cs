@@ -55,7 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Background = brush,
 			};
 			WindowHelper.WindowContent = SUT;
-			WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT);
 
 			var renderer = new RenderTargetBitmap();
 			const float BorderOffset = 8;

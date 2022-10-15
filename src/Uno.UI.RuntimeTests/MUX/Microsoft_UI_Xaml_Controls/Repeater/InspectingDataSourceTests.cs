@@ -207,15 +207,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 	[TestMethod]
-	public void ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
+	public async Task ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
 	{
-		ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
+		await ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
 	}
 
 	[TestMethod]
-	public void ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
+	public async Task ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
 	{
-		ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
+		await ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
 	}
 
 	[TestMethod]

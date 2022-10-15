@@ -42,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void Should_Not_Close_Open_ContentDialogs()
+		public async Task Should_Not_Close_Open_ContentDialogs()
 		{
 			Assert.AreEqual(0, GetNonMessageDialogPopupsCount());
 
@@ -52,7 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				Content = "My Dialog Content"
 			};
 
-			contentDialog.ShowAsync();
+			await contentDialog.ShowAsync();
 
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 

@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			_actionSheet.Clicked += handler;
 			_subscriptions.Disposable = Disposable.Create(() => _actionSheet.Clicked -= handler);
 			
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => 
 				{

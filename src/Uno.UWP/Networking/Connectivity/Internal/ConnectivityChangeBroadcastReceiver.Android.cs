@@ -16,7 +16,7 @@ namespace Uno.Networking.Connectivity.Internal
 				return;
 			}
 
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 	}
 }

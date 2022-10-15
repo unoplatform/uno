@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		public void VerifyItemsAreCreatedOnlyOnce()
 		{
 			TabView tabView = null;
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.Execute(async () =>
 			{
 				tabView = new TabView();
 				TestServices.WindowHelper.WindowContent = tabView;
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 				tabView.UpdateLayout();
 
-				TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				// Only one container should be generated for the first item.
 				Assert.AreEqual(1, containerContentChangingCounter);

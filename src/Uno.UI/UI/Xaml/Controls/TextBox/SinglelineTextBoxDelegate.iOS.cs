@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsKeyboardHiddenOnEnter)
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal,
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal,
 					async () =>
 					{
 						// Delay losing focus to avoid concurrent interactions when transferring focus to another control. See 101152

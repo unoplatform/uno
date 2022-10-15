@@ -489,7 +489,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 #if IS_UNIT_TESTS
 		[TestMethod]
-		public async Task When_Collection_Reset()
+		public void When_Collection_Reset()
 		{
 			var count = 0;
 			var panel = new StackPanel();

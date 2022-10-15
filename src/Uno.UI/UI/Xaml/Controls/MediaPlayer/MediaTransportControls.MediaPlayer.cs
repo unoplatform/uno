@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnBufferingProgressChanged(MediaPlaybackSession sender, object args)
 		{
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				_downloadProgressIndicator.Maybe(p => p.Value = (double)args);
 			});
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnNaturalDurationChanged(MediaPlaybackSession sender, object args)
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var duration = args as TimeSpan? ?? TimeSpan.Zero;
 				_progressSlider.Maybe(p => p.Minimum = 0);
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPositionChanged(MediaPlaybackSession sender, object args)
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
 				_timeElapsedElement.Maybe(p => p.Text = $"{elapsed.TotalHours:0}:{elapsed.Minutes:00}:{elapsed.Seconds:00}");

@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml
 #endif
 				!_window.Dispatcher.HasThreadAccess)
 			{
-				_window.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));
+				_ = _window.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));
 				return;
 			}
 
