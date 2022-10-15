@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
@@ -54,4 +53,3 @@ namespace SampleControl.Presentation
 			=> (400, 400, 1280, 800);
 	}
 }
-#endif

@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
@@ -59,4 +58,3 @@ namespace Windows.Services.Store
 		private static partial Regex TrackParser();
 	}
 }
-#endif

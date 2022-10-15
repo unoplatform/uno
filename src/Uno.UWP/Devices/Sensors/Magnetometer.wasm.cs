@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Uno;
@@ -68,4 +67,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

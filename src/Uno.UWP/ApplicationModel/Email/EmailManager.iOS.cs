@@ -1,4 +1,3 @@
-#if __IOS__
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,4 +80,3 @@ namespace Windows.ApplicationModel.Email
 #endif
 	}
 }
-#endif

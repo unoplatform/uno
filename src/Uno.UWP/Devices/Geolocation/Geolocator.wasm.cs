@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -280,4 +279,3 @@ namespace Uno.Devices.Geolocation
 
 	}
 }
-#endif

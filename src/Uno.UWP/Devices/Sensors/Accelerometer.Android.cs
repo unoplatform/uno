@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Hardware;
 using Android.Runtime;
@@ -136,4 +135,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

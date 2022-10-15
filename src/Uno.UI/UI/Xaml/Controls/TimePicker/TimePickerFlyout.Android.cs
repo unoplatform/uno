@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using Android.OS;
+﻿using Android.OS;
 using System;
 using Uno.UI;
 using Uno.UI.Extensions;
@@ -101,4 +100,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

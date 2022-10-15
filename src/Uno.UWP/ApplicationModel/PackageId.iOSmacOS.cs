@@ -1,5 +1,4 @@
-﻿#if __IOS__ || __MACOS__
-using Foundation;
+﻿using Foundation;
 using SystemVersion = global::System.Version;
 
 namespace Windows.ApplicationModel
@@ -45,4 +44,3 @@ namespace Windows.ApplicationModel
 		}
 	}
 }
-#endif

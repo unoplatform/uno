@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.Media.Midi;
+﻿using Android.Media.Midi;
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
@@ -10,4 +9,3 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		}
 	}
 }
-#endif

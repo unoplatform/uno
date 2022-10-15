@@ -1,4 +1,3 @@
-#if __ANDROID__
 #nullable enable
 using System;
 using Android.App;
@@ -338,4 +337,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

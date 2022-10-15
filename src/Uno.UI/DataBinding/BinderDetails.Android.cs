@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using Java.Interop;
+﻿using Java.Interop;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -118,4 +117,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

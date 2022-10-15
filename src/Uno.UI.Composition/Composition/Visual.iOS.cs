@@ -1,6 +1,5 @@
 #nullable enable
 
-#if __IOS__
 using CoreAnimation;
 using System.Numerics;
 using UIKit;
@@ -90,4 +89,3 @@ namespace Windows.UI.Composition
 		}
 	}
 }
-#endif

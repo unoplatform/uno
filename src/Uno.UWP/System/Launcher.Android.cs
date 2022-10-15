@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
@@ -92,4 +91,3 @@ namespace Windows.System
 		private static void StartActivity(Intent intent) => ((Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
 	}
 }
-#endif
