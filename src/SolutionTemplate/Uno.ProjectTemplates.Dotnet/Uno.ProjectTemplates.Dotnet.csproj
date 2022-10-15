@@ -12,6 +12,10 @@
 		
 		<!-- Disable package generation for WinUI converted build -->
 		<IsPackable Condition="'$(UNO_UWP_BUILD)'=='false'">false</IsPackable>
+
+		<!-- error NU5128: Some target frameworks declared in the dependencies group of the nuspec and the lib/ref folder do not have exact matches in the other location. Consult the list of actions below: [C:\a\1\s\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\Uno.ProjectTemplates.Dotnet.csproj] -->
+		<!-- error NU5128: - Add lib or ref assemblies for the netstandard2.0 target framework [C:\a\1\s\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\Uno.ProjectTemplates.Dotnet.csproj] -->
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
