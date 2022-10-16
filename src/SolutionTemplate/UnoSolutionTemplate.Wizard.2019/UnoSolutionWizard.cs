@@ -65,6 +65,7 @@ namespace UnoSolutionTemplate.Wizard
 			OpenWelcomePage();
 			SetStartupProject();
 			SetUWPAnyCPUBuildableAndDeployable();
+			SetiOSDeployable();
 			SetDefaultConfiguration();
 		}
 
@@ -183,17 +184,48 @@ namespace UnoSolutionTemplate.Wizard
 			}
 		}
 
+		private void SetiOSDeployable()
+		{
+			if (_dte?.Solution.SolutionBuild is SolutionBuild val)
+			{
+				try
+				{
+					var iOSConfigs = new[] {
+						GetSolutionConfiguration(val, "Debug", "iPhone"),
+						GetSolutionConfiguration(val, "Debug", "iPhoneSimulator")
+					}.Select(c => c.SolutionContexts);
+
+					foreach (SolutionConfiguration solutionConfiguration2 in val.SolutionConfigurations)
+					{
+						foreach (var iOSSolutionContext in iOSConfigs)
+						{
+							var iOSProject = iOSSolutionContext
+								.Cast<SolutionContext>()
+								.FirstOrDefault(c => c.ProjectName.EndsWith(".iOS.csproj"));
+							if (iOSProject != null)
+							{
+								iOSProject.ShouldDeploy = true;
+							}
+						}
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
+		}
+
 		private void SetDefaultConfiguration()
 		{
 			try
 			{
 				if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
 				{
-						var x86Config = val.SolutionConfigurations
-							.Cast<SolutionConfiguration2>()
-							.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
+					var x86Config = val.SolutionConfigurations
+						.Cast<SolutionConfiguration2>()
+						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
 
-						x86Config?.Activate();
+					x86Config?.Activate();
 				}
 				else
 				{

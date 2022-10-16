@@ -10,7 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.0-dev.195" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.Server" Version="7.0.0-dev.195" />
 	</ItemGroup>$endif$
 
 </Project>

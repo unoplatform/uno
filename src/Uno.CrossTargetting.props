@@ -23,27 +23,6 @@
 	<NoWarn>$(NoWarn);0105</NoWarn>
   </PropertyGroup>
 
-  <!---->
-
-  <Target Name="SetNoWarn"
-				  BeforeTargets="Build"
-				  Condition=" '$(TargetFramework)' == 'net461' ">
-
-	<!--
-		This target is the equivalent to this property group, until this
-		is fixed: https://github.com/NuGet/Home/issues/6662
-		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
-			<NoWarn>$(NoWarn);67;0649</NoWarn>
-		</PropertyGroup>
-		-->
-
-	<CreateProperty Value="$(NoWarn);67;0649">
-	  <Output
-			  TaskParameter="Value"
-			  PropertyName="NoWarn" />
-	</CreateProperty>
-  </Target>
-
   <!--
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
