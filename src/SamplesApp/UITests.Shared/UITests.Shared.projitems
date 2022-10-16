@@ -1801,6 +1801,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Invalid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageSourceWriteableBitmapInvalidate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6145,6 +6149,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_ImageSource_PixelSize.xaml.cs">
       <DependentUpon>Image_ImageSource_PixelSize.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Invalid.xaml.cs">
+      <DependentUpon>Image_Invalid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Margin.xaml.cs">
       <DependentUpon>Image_Margin.xaml</DependentUpon>
     </Compile>
@@ -8650,6 +8657,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient6.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient7.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient8.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\InvalidImage.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\LargeWisteria.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ListView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MakeButton.png" />
