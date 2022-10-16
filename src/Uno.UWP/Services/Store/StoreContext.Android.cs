@@ -13,18 +13,18 @@ namespace Windows.Services.Store
 	{
 		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
 		{
-			return AsyncOperation.FromTask(async ct =>
+			return AsyncOperation.FromTask(ct =>
 			{
 				var storeId = ContextHelper.Current.PackageName;
 
-				return new StoreProductResult
+				return Task.FromResult(new StoreProductResult
 				{
 					Product = new StoreProduct
 					{
 						StoreId = storeId,
 						LinkUri = new Uri($"https://play.google.com/store/apps/details?id={storeId}")
 					}
-				};
+				});
 			});
 		}
 	}

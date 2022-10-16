@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_xLoad_Literal()
+		public void When_xLoad_Literal()
 		{
 			var sut = new xLoad_Literal();
 
@@ -32,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_xLoad_xBind()
+		public void When_xLoad_xBind()
 		{
 			var sut = new xLoad_xBind();
 
@@ -80,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_xLoad_xBind_xLoad_Initial()
+		public void When_xLoad_xBind_xLoad_Initial()
 		{
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
@@ -98,7 +98,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_xLoad_xBind_xLoad_While_Loading()
+		public void When_xLoad_xBind_xLoad_While_Loading()
 		{
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;

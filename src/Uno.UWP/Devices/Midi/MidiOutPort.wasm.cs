@@ -41,9 +41,9 @@ namespace Windows.Devices.Midi
 			InvokeJS(command);
 		}
 
-		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
+		private static Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
 		{
-			return new MidiOutPort(identifier.ToString(), identifier.Id);
+			return Task.FromResult<IMidiOutPort>(new MidiOutPort(identifier.ToString(), identifier.Id));
 		}
 	}
 }

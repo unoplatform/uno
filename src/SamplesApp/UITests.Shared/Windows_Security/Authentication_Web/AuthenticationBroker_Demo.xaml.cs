@@ -77,7 +77,11 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 		}
 #endif
 
-		private async void SignIn_Clicked(object sender, RoutedEventArgs e)
+		private
+#if !NET6_0_OR_GREATER
+			async
+#endif
+			void SignIn_Clicked(object sender, RoutedEventArgs e)
 		{
 #if !NET6_0_OR_GREATER
 			var startUri = new Uri(_loginState.StartUrl);
@@ -114,7 +118,11 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 #endif
 		}
 
-		private async void SignOut_Clicked(object sender, RoutedEventArgs e)
+		private
+#if !NET6_0_OR_GREATER
+			async
+#endif
+			void SignOut_Clicked(object sender, RoutedEventArgs e)
 		{
 #if !NET6_0_OR_GREATER
 			var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _logoutUrl);

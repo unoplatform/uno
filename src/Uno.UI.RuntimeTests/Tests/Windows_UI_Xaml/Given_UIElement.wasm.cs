@@ -24,7 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_HTMLElement_InternalElement()
+		public void When_HTMLElement_InternalElement()
 		{
 			var SUT = new Line();
 
@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_HTMLElement_ExternalElement_NoOverride()
+		public void When_HTMLElement_ExternalElement_NoOverride()
 		{
 			var SUT = new MyLine();
 
@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_HTMLElement_ExternalElement_Override()
+		public void When_HTMLElement_ExternalElement_Override()
 		{
 			var SUT = new MyLineOverride();
 
@@ -66,7 +66,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_HTMLElement_ExternalElement_Override_Twice()
+		public void When_HTMLElement_ExternalElement_Override_Twice()
 		{
 			var SUT = new MyLine2();
 

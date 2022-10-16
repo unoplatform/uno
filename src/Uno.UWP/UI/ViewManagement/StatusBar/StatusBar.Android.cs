@@ -87,23 +87,25 @@ namespace Windows.UI.ViewManagement
 
 		public IAsyncAction ShowAsync()
 		{
-			return AsyncAction.FromTask(async ct =>
+			return AsyncAction.FromTask(ct =>
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = true;
 				UpdateSystemUiVisibility();
 				Showing?.Invoke(this, null);
+				return Task.CompletedTask;
 			});
 		}
 
 		public IAsyncAction HideAsync()
 		{
-			return AsyncAction.FromTask(async ct =>
+			return AsyncAction.FromTask(ct =>
 			{
 				CoreDispatcher.CheckThreadAccess();
 				_isShown = false;
 				UpdateSystemUiVisibility();
 				Hiding?.Invoke(this, null);
+				return Task.CompletedTask;
 			});
 		}
 

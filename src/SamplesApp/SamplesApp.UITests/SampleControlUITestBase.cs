@@ -337,8 +337,11 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		protected async Task RunAsync(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
-			=> Run(metadataName, waitForSampleControl, skipInitialScreenshot, sampleLoadTimeout);
+		protected Task RunAsync(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
+		{
+			Run(metadataName, waitForSampleControl, skipInitialScreenshot, sampleLoadTimeout);
+			return Task.CompletedTask;
+		}
 
 		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
 		{

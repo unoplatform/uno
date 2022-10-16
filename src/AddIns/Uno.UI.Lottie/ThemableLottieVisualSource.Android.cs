@@ -49,7 +49,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			_updateCallback = updateCallback;
 
-			var t = LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
+			LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
 
 			return Disposable.Create(() =>
 			{
@@ -58,7 +58,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
-		private async Task LoadAndUpdate(
+		private void LoadAndUpdate(
 			CancellationToken ct,
 			string sourceCacheKey,
 			IInputStream sourceJson)

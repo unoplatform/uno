@@ -30,7 +30,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 
 			Loaded += (s, e) =>
 			{
-				_ = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+				_ = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 				{
 					// this needs to be added on SizeChanged or on a delay
 					HollowCircle2.Data = GenerateHollowCircle(new Size(100, 100));

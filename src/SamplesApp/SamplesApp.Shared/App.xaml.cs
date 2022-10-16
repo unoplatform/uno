@@ -155,7 +155,7 @@ namespace SamplesApp
 		}
 #endif
 
-		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
+		private static bool HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
@@ -185,7 +185,11 @@ namespace SamplesApp
 			return false;
 		}
 
-		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
+		private static
+#if __SKIA__ || __MACOS__
+			async
+#endif
+			Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
@@ -207,8 +211,11 @@ namespace SamplesApp
 
 				return true;
 			}
-#endif
+
 			return false;
+#else
+			return Task.FromResult(false);
+#endif
 		}
 
 #if __IOS__
@@ -318,7 +325,7 @@ namespace SamplesApp
 		{
 			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
 
-			if (await HandleSkiaAutoScreenshots(launchActivatedEventArgs))
+			if (HandleSkiaAutoScreenshots(launchActivatedEventArgs))
 			{
 				return;
 			}
@@ -328,7 +335,7 @@ namespace SamplesApp
 				return;
 			}
 
-			if (await TryNavigateToLaunchSampleAsync(launchActivatedEventArgs))
+			if (TryNavigateToLaunchSample(launchActivatedEventArgs))
 			{
 				return;
 			}
@@ -340,7 +347,7 @@ namespace SamplesApp
 			}
 		}
 
-		private async Task<bool> TryNavigateToLaunchSampleAsync(LaunchActivatedEventArgs launchActivatedEventArgs)
+		private bool TryNavigateToLaunchSample(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
 			const string samplePrefix = "sample=";
 			try
@@ -363,7 +370,7 @@ namespace SamplesApp
 				var category = pathParts[0];
 				var sampleName = pathParts[1];
 
-				await SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+				SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
 				return true;
 			}
 			catch (Exception ex)

@@ -461,7 +461,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 		}
 
 		[TestMethod]
-		public async Task When_ItemsSource_Changes_Items_VectorChanged_Triggered()
+		public void When_ItemsSource_Changes_Items_VectorChanged_Triggered()
 		{
 			var listView = new ItemsControl();
 
@@ -532,7 +532,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 #endif
 
 		[TestMethod]
-		public async Task When_Collection_Append()
+		public void When_Collection_Append()
 		{
 			var count = 0;
 			var panel = new StackPanel();

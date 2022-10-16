@@ -129,7 +129,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private readonly Size CompositionSize = default;
 #pragma warning restore CA1805 // Do not initialize unnecessarily
 
-		private async Task InnerUpdate(CancellationToken ct)
+		private Task InnerUpdate(CancellationToken ct)
 		{
 			throw new NotSupportedException("Lottie on this platform is not supported yet.");
 		}
@@ -240,7 +240,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task<IInputStream?> TryLoadDownloadJson(Uri uri, CancellationToken ct)
 		{
-			if(await TryLoadEmbeddedJson(uri, ct) is {} json)
+			if (TryLoadEmbeddedJson(uri, ct) is { } json)
 			{
 				return json;
 			}
@@ -264,7 +264,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				: null;
 		}
 
-		private async Task<IInputStream?> TryLoadEmbeddedJson(Uri uri, CancellationToken ct)
+		private IInputStream? TryLoadEmbeddedJson(Uri uri, CancellationToken ct)
 		{
 			if (uri.Scheme != "embedded")
 			{

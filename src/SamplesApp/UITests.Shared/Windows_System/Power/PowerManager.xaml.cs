@@ -57,7 +57,7 @@ namespace UITests.Shared.Windows_System.Power
 
 		private async void UwpPowerManager_BatteryStatusChanged(object sender, object e)
 		{
-			await ExecuteOnUiThreadAsync(async () =>
+			await ExecuteOnUiThreadAsync(() =>
 				BatteryStatusOutput.Text = UwpPowerManager.BatteryStatus.ToString());
 		}
 

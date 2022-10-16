@@ -160,7 +160,7 @@ namespace Umbrella.UI.TestComparer
 
 		private static async Task TryPublishPRComments(List<CompareResult> results, string githubPAT, string sourceRepository, string githubPRid, int currentBuild)
 		{
-			var comment = await BuildPRComment(results, currentBuild);
+			var comment = BuildPRComment(results, currentBuild);
 
 			if (!int.TryParse(githubPRid, out _))
 			{
@@ -179,7 +179,7 @@ namespace Umbrella.UI.TestComparer
 			await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment);
 		}
 
-		private static async Task<string> BuildPRComment(List<CompareResult> results, int currentBuild)
+		private static string BuildPRComment(List<CompareResult> results, int currentBuild)
 		{
 			var comment = new StringBuilder();
 			var hasErrors = results.Any(r => r.TotalTests - r.UnchangedTests != 0);

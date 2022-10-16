@@ -6,7 +6,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<UseWPF>true</UseWPF>
-		<NoWarn>SYSLIB0014;CS1998</NoWarn>
+		<NoWarn>SYSLIB0014</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

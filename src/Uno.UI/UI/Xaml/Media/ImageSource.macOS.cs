@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Media
 				{
 					await CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
-						async () =>
+						() =>
 						{
 							_imageData = OpenBundle();
 						}
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Media
 
 					await CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
-						async () =>
+						() =>
 						{
 							var nativeImage = NSImage.ImageNamed(localFileUri.LocalPath);
 							if (nativeImage is not null)

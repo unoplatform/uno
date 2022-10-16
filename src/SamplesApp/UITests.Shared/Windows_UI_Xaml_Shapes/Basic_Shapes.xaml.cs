@@ -267,7 +267,11 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			await GenerateScreenshots();
 #endif
 		}
-		private async
+
+		private
+#if !__MACOS__
+		async
+#endif
 #if __SKIA__
 		void
 #else
@@ -309,6 +313,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			_root.Visibility = Visibility.Visible;
 			_testZone.Child = null;
+#elif !__SKIA__
+			return Task.CompletedTask;
 #endif
 		}
 		public string RunTests(string testNames)

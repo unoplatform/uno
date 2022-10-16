@@ -109,7 +109,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 		}
 
-		private async Task ForceLoad(CancellationToken ct)
+		private
+#if __NETSTD__
+			async
+#endif
+			Task ForceLoad(CancellationToken ct)
 		{
 #if __NETSTD__
 			var tcs = new TaskCompletionSource<object>();
@@ -124,6 +128,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				tcs.TrySetResult(null);
 			}
+#else
+			return Task.CompletedTask;
 #endif
 
 			StreamLoaded?.Invoke(this, EventArgs.Empty);

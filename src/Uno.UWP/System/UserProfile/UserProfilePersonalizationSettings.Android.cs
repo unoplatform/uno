@@ -34,12 +34,12 @@ namespace Windows.System.UserProfile
 			return WallpaperManager.GetInstance(ContextHelper.Current);
 		}
 
-		private async Task<bool> TrySetImageAsync(StorageFile imageFile, WallpaperManagerFlags target)
+		private Task<bool> TrySetImageAsync(StorageFile imageFile, WallpaperManagerFlags target)
 		{
 			using var wallpaperManager = GetWallpaperManager();
 			using var stream = File.OpenRead(imageFile.Path);
 			var id = wallpaperManager.SetStream(stream, null, true, target);
-			return id != 0; //as per docs - if 0 is returned, setting wallpaper failed			
+			return Task.FromResult(id != 0); //as per docs - if 0 is returned, setting wallpaper failed			
 		}
 	}
 }

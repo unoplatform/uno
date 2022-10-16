@@ -122,7 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task TargetNullValue_Is_Correctly_Applied()
+		public void TargetNullValue_Is_Correctly_Applied()
 		{
 			var SUT = new ImageSource_TargetNullValue();
 

@@ -14,16 +14,18 @@ namespace UITests.Windows_UI_Xaml.Clipping
 		{
 			this.InitializeComponent();
 
-			DumpTree();
-		}
-
-		private async void DumpTree()
-		{
 #if UNO_REFERENCE_API
-			await Task.Delay(1200);
-			var tree = this.ShowLocalVisualTree();
-			System.Diagnostics.Debug.WriteLine(tree);
+			DumpTree();
+
+			async void DumpTree()
+			{
+				await Task.Delay(1200);
+				var tree = this.ShowLocalVisualTree();
+				System.Diagnostics.Debug.WriteLine(tree);
+			}
 #endif
 		}
+
+
 	}
 }
