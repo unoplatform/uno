@@ -29,7 +29,7 @@ You can also explicitly use `SvgImageSource`:
   <Image.Source>
     <SvgImageSource UriSource="https://example.com/test.svg" />
   </Image.Source>
-<Image>
+</Image>
 ```
 
 ## When to use SVG
