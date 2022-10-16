@@ -386,6 +386,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Exclusive(12));
 		}
 
+		[Test]
+		[AutoRetry]
+		public void Image_Invalid()
+		{
+			Run("Uno.UI.Samples.UITests.ImageTests.Image_Invalid");
+
+			var panel = _app.Marked("ComparePanel");
+			var button = _app.Marked("HideButton");
+			var rect = panel.FirstResult().Rect;
+
+			using var beforeHide = TakeScreenshot("BeforeHide", true);
+
+			button.FastTap();
+			
+			using var afterHide = TakeScreenshot("AfterHide", true);
+			
+			ImageAssert.AreEqual(afterHide, beforeHide, rect);
+		}
+
 		private void WaitForBitmapOrSvgLoaded()
 		{
 			var isLoaded = _app.Marked("isLoaded");

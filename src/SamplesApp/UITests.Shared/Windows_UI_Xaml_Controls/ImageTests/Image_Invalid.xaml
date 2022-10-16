@@ -13,7 +13,7 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<Grid Padding="20" Background="White" RowSpacing="8">
+	<Grid Padding="20" Background="CornflowerBlue" RowSpacing="8">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
