@@ -396,13 +396,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var button = _app.Marked("HideButton");
 			var rect = _app.GetPhysicalRect(panel);
 
-			using var beforeHide = TakeScreenshot("BeforeHide", true);
+			using var beforeHide = TakeScreenshot("image_invalid_before_hide");
 
 			button.FastTap();
 			
-			using var afterHide = TakeScreenshot("AfterHide", true);
-			
-			ImageAssert.AreEqual(afterHide, beforeHide, rect);
+			using var afterHide = TakeScreenshot("image_invalid_after_hide");
+
+			ImageAssert.AreEqual(afterHide, beforeHide, rect, tolerance: PixelTolerance.Exclusive(1));
 		}
 
 		private void WaitForBitmapOrSvgLoaded()

@@ -14,8 +14,6 @@ using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-
-
 	partial class Image : FrameworkElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
