@@ -21,7 +21,7 @@ partial class SvgImageSource
 		"Uno.UI.Svg";
 #endif
 
-	private Task<ImageData> _currentOpenTask;
+	private Task<ImageData>? _currentOpenTask;
 
 	private ISvgProvider? _svgProvider;
 
@@ -79,6 +79,7 @@ partial class SvgImageSource
 
 	private protected override void UnloadImageSourceData()
 	{
+		_currentOpenTask = null;
 		Unload();
 	}
 

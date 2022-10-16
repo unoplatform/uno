@@ -18,7 +18,6 @@ namespace Windows.UI.Xaml.Media.Imaging;
 /// </summary>
 public partial class SvgImageSource : ImageSource
 {
-	private protected CancellationTokenSource _currentOpenCancellationTokenSource;
 	private SvgImageSourceLoadStatus? _lastStatus;
 
 #if __NETSTD__
@@ -56,8 +55,6 @@ public partial class SvgImageSource : ImageSource
 	{
 		if (!object.Equals(e.OldValue, e.NewValue))
 		{
-			_currentOpenCancellationTokenSource?.Cancel();
-			_currentOpenTask = null;
 			UnloadImageData();
 		}
 		InitFromUri(e.NewValue as Uri);
@@ -76,8 +73,6 @@ public partial class SvgImageSource : ImageSource
 	/// </returns>
 	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 	{
-		_currentOpenCancellationTokenSource?.Cancel();
-		_currentOpenTask = null;
 		UnloadImageData();
 		
 		async Task<SvgImageSourceLoadStatus> SetSourceAsync(
