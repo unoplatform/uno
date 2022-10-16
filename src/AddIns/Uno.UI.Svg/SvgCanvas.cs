@@ -85,11 +85,21 @@ internal partial class SvgCanvas : SkiaCanvas
 
 	private void SvgCanvas_Unloaded(object sender, RoutedEventArgs e) => _disposables.Dispose();
 
-	private void SourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs dp) => Invalidate();
-
 	private void SvgCanvas_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args) => Invalidate();
 
 	private void SvgProviderSourceOpened(object? sender, EventArgs e)
+	{
+		if (Dispatcher.HasThreadAccess)
+		{
+			InvalidateLayout();
+		}
+		else
+		{
+			_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => InvalidateLayout());
+		}
+	}
+
+	private void InvalidateLayout()
 	{
 		InvalidateMeasure();
 		InvalidateArrange();

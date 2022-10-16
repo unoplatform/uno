@@ -55,7 +55,7 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 		
-		var imageData = await GetSvgImageDataAsync(ct).ConfigureAwait(false);
+		var imageData = await GetSvgImageDataAsync(ct);
 		
 		if (imageData.Kind == ImageDataKind.ByteArray &&
 			imageData.ByteArray is not null &&
