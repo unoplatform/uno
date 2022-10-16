@@ -394,7 +394,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			var panel = _app.Marked("ComparePanel");
 			var button = _app.Marked("HideButton");
-			var rect = panel.FirstResult().Rect;
+			var rect = _app.GetPhysicalRect(panel);
 
 			using var beforeHide = TakeScreenshot("BeforeHide", true);
 

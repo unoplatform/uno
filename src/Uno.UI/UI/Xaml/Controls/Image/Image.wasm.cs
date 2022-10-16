@@ -14,12 +14,7 @@ using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class HtmlImage : UIElement
-	{
-		public HtmlImage() : base("img")
-		{
-		}
-	}
+
 
 	partial class Image : FrameworkElement
 	{
@@ -35,8 +30,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_htmlImage = new HtmlImage();
 
-			_htmlImage.SetAttribute("draggable", "false");
-
+			_htmlImage.SetStyle("visibility", "hidden");
+			
 			ImageOpened += OnImageOpened;
 			ImageFailed += OnImageFailed;
 
@@ -68,6 +63,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Image failed [{_currentImg.Source}]: {e.ErrorMessage}");
 			}
 
+			_htmlImage.SetStyle("visibility", "hidden");
+
 			_currentImg.Source?.ReportImageFailed(e.ErrorMessage);
 		}
 
@@ -77,6 +74,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.AbsoluteUri}]");
 			}
+
+			_htmlImage.SetStyle("visibility", "visible");
 
 			if (_lastMeasuredSize == _zeroSize)
 			{
