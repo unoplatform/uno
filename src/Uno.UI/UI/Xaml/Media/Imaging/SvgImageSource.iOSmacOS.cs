@@ -99,7 +99,11 @@ partial class SvgImageSource
 	{
 		if (ct.IsCancellationRequested)
 		{
+#if __IOS__
 			return ImageData.Empty;
+#else
+			return Task.FromResult(ImageData.Empty);
+#endif
 		}
 
 		using var url = new NSUrl(AbsoluteUri.AbsoluteUri);

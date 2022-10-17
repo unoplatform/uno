@@ -281,12 +281,7 @@ namespace Windows.UI.Xaml.Controls
 				//If a remote image is fetched a second time, it may be set synchronously (eg if the image is cached) within a layout pass (ie from OnLayoutPartial). In this case, we must dispatch RequestLayout for the image control to be measured correctly.
 				if (MustDispatchSetSource())
 				{
-					Dispatch(ct =>
-					{
-						RequestLayout();
-						return Task.CompletedTask;
-					});
-					Dispatch(async ct => RequestLayout(), token);
+					Dispatch(ct => RequestLayout(), token);
 				}
 			}
 			catch (Exception ex)

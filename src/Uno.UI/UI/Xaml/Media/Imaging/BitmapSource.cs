@@ -134,7 +134,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 		}
 
+#if !__NETSTD__
 		internal event EventHandler StreamLoaded;
+#endif
 
 		public override string ToString()
 		{
