@@ -32,10 +32,6 @@ You can also explicitly use `SvgImageSource`:
 </Image>
 ```
 
-## When to use SVG
-
-Because SVG requires to be parsed initially before rendering and its vector-based form needs to re-render each time the size of the image changes, it may not be suitable for all scenarios. For ideal performance we recommend using SVG for in-app vector graphics and icons, but prefer bitmap image formats in other cases. In case you run into performance issues, test switching from SVG to a bitmap image format to see if it alleviates the problem. You may also consider using SVG rasterization (see below).
-
 ## Supported features by platform
 
 SVG is supported on all Uno Platform targets. 
@@ -45,6 +41,12 @@ On Android, iOS, macOS, Mac Catalyst and Skia we are using SkiaSharp to render t
 On WebAssembly, the SVG images are rendered directly by the browser.
 
 On Windows, the OS is responsible for SVG rendering (and complex SVG files may not render properly).
+
+## When to use SVG
+
+Because SVG requires to be parsed initially before rendering and its vector-based form needs to re-render each time the size of the image changes, it may not be suitable for all scenarios. For ideal performance we recommend using SVG for in-app vector graphics and icons, but prefer bitmap image formats in other cases. In case you run into performance issues, test switching from SVG to a bitmap image format to see if it alleviates the problem. You may also consider using SVG rasterization (see below).
+
+If you need to keep your Android or iOS app package size as small as possible, it is also preferable to avoid using SVG, as the the package depends on SkiaSharp.
 
 ## SVG rasterization support
 
