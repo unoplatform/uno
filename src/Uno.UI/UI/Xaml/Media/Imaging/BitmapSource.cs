@@ -129,10 +129,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 				tcs.TrySetResult(null);
 			}
 #else
+			StreamLoaded?.Invoke(this, EventArgs.Empty);
 			return Task.CompletedTask;
 #endif
-
-			StreamLoaded?.Invoke(this, EventArgs.Empty);
 		}
 
 		internal event EventHandler StreamLoaded;

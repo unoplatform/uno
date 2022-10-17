@@ -74,8 +74,11 @@ public partial class SvgImageSource : ImageSource
 	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 	{
 		UnloadImageData();
-		
-		async Task<SvgImageSourceLoadStatus> SetSourceAsync(
+
+#if __NETSTD__
+		async
+#endif
+		Task<SvgImageSourceLoadStatus> SetSourceAsync(
 			CancellationToken ct,
 			AsyncOperation<SvgImageSourceLoadStatus> _)
 		{
@@ -107,7 +110,7 @@ public partial class SvgImageSource : ImageSource
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
 
-			return SvgImageSourceLoadStatus.Success;
+			return Task.FromResult(SvgImageSourceLoadStatus.Success);
 #endif
 		}
 

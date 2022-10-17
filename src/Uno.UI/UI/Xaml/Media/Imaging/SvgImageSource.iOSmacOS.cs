@@ -91,7 +91,11 @@ partial class SvgImageSource
 	/// <summary>
 	/// Opens the targetted image for this image use using the native iOS image downloader, using NSUrl.
 	/// </summary>
-	private async Task<ImageData> DownloadSvgAsync(CancellationToken ct)
+	private
+#if __IOS__
+		async
+#endif
+		Task<ImageData> DownloadSvgAsync(CancellationToken ct)
 	{
 		if (ct.IsCancellationRequested)
 		{
@@ -151,6 +155,8 @@ partial class SvgImageSource
 		}
 
 		bool IsSuccessful(nint status) => status < 300;
+		
+		return ImageData.Empty;
 #else
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
@@ -167,12 +173,11 @@ partial class SvgImageSource
 		else
 		{
 			var bytes = data.ToArray();
-			return ImageData.FromBytes(bytes);
+			return Task.FromResult(ImageData.FromBytes(bytes));
 		}
-
+		
+		return Task.FromResult(ImageData.Empty);
 #endif
-
-		return ImageData.Empty;
 	}
 
 	private static string GetApplicationPath(string rawPath)
