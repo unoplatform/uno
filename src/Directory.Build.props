@@ -197,7 +197,7 @@
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
       </PropertyGroup>
       <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22464.1" PrivateAssets="All" />
       </ItemGroup>
     </When>
     <Otherwise>
