@@ -130,6 +130,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
 		public async Task CanOpenFlyoutByTapping()
 		{
 			TestCleanupWrapper cleanup;
@@ -295,6 +296,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
 		public async Task CanCloseFlyoutBySelectingADate()
 		{
 			TestCleanupWrapper cleanup;
@@ -515,6 +517,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
 		public async Task PressingDoesNotOpenMenuFlyout()
 		{
 			TestCleanupWrapper cleanup;

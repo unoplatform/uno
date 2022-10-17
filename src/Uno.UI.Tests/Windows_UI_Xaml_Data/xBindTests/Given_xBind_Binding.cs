@@ -1073,6 +1073,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/10164")]
 		public async Task When_xLoad_StaticResource()
 		{
 			var SUT = new Binding_xLoad_StaticResources();
