@@ -12,7 +12,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 
 ## Create a Control Library
 
-1. In your solution, create a new **Uno Platform Library**, mame it `XamlControlLibrary`
+1. In your solution, create a new **Uno Platform Library**, name it `XamlControlLibrary`
 1. In each of your platform projects, add a reference to your new library.
    > [!NOTE] The shared project cannot contain project or packages references, see [Uno Platform App structure](../uno-app-solution-structure.md) for more details.
 
@@ -28,7 +28,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 1. In the new created file, paste the following:
    ```xml
    <ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:XamlControlLibrary">
 
@@ -43,7 +43,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
     </ResourceDictionary>
    ```
 

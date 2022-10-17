@@ -12,7 +12,7 @@ As WCF RIA Services is no longer available, and the general approach to web serv
 > * [IdentityServer4 Big Picture](https://identityserver4.readthedocs.io/en/latest/intro/big_picture.html)
 > * [Auth0 Get Started](https://auth0.com/docs/get-started)
 
-In the sample migration, ASP.NET Core Web APIs are used and secured using an app level client credential using IdentityServer4. The implementation of these server-side services is beyond the scope of this article, however the source can be reviewed in the sample project. This and the following tasks will walk-through the client-side implementation of authentication, with the intent to show how the baseline Silverlight capability can be replicated.
+In the sample migration, ASP.NET Core Web APIs are used and secured using an app level client credential using IdentityServer4. The implementation of these server-side services is beyond the scope of this article, however the source can be reviewed in the sample project. This and the following tasks will walk through the client-side implementation of authentication, with the intent to show how the baseline Silverlight capability can be replicated.
 
 ## IdentityServer4 Client-side service overview
 

@@ -17,7 +17,7 @@ As the UWP environment supports asynchronous operations, it is possible that dif
 
 ## Creating a dialog manager
 
-In this task, a **DialogManager** class will be created. The **DialogManager** uses the **SemaphoeSlim** class to ensure that only one show function at a time is executing.
+In this task, a **DialogManager** class will be created. The **DialogManager** uses the **SemaphoreSlim** class to ensure that only one show function at a time is executing.
 
 1. In the **Shared** project, within the **Helpers** folder, create a new class and name it **DialogManager**.
 
@@ -96,7 +96,7 @@ The next task introduces a series of extensions that assist with showing and con
 
 ## Dialog extensions
 
-The following steps will walk-through the creation of some extensions that simplify the use of the **ContentDialog** with the **DialogManager**.
+The following steps will walk through the creation of some extensions that simplify the use of the **ContentDialog** with the **DialogManager**.
 
 1. In the **Shared** project, within the **Helpers** folder, create a new class and name it **DialogExtensions**.
 

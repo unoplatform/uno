@@ -28,16 +28,16 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
 To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 13.3 or higher.
 Restart Visual Studio.
 1. You can now run on iOS, Android, macOS, and Skia.GTK projects by changing your startup project and starting the debugger.
-   
+
 > [!NOTE]
 > You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
-   
+
 > [!IMPORTANT]
 > As of .NET 6 Mobile RC3, the macOS head can fail to build with issues related to the AOT compiler. You can run the Catalyst app on a mac.
 
 ## Create other projects types using the command line
 
-You can create a new Uno Platfom solution with the following terminal command:
+You can create a new Uno Platform solution with the following terminal command:
     ```bash
     dotnet new unoapp -o MyProject --wasm=false
     ```
