@@ -5,6 +5,7 @@
 		<TargetFramework>tizen50</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
