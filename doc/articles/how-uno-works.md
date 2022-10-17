@@ -1,6 +1,6 @@
 # How Uno Platform works
 
-How does Uno Platform make the same application code run on all platforms? 
+How does Uno Platform make the same application code run on all platforms?
 
 #### On Windows
 
@@ -56,7 +56,7 @@ The compiled binaries also include the output of the XAML parser, as described i
 
 ### XAML files
 
-Uno.UI parses XAML files at build time. XAML markup is automatically converted into equivalent C# code, which is then compiled in the usual manner. This processs is normally transparent to the application developer.
+Uno.UI parses XAML files at build time. XAML markup is automatically converted into equivalent C# code, which is then compiled in the usual manner. This process is normally transparent to the application developer.
 
 ### Images, string resources, etc
 

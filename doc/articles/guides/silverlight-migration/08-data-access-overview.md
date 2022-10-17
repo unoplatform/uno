@@ -20,9 +20,9 @@ The following services related to authentication are included in the template by
 Unfortunately, WCF itself has been discontinued, although there are, of course, alternatives such as ASP.NET Core Web APIs, gRPC, an open source version of WCF, etc. There is no direct replacement for WCF RIA services, although some scaffolding solutions exist to reduce the amount of boilerplate code required for CRUD operations.
 
 > [!TIP]
-> In the sample migration of TimeEntryRIA to Uno, ASP.NET Core Web APIs were used. You can find a full article discussing how to consume a webservice with Uno below:
+> In the sample migration of TimeEntryRIA to Uno, ASP.NET Core Web APIs were used. You can find a full article discussing how to consume a web service with Uno below:
 >
-> * [How to consume a webservice](https://platform.uno/docs/articles/howto-consume-webservices.html)
+> * [How to consume a web service](https://platform.uno/docs/articles/howto-consume-webservices.html)
 
 > [!NOTE]
 > You can learn more about alternate service technologies here:

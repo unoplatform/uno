@@ -1,4 +1,4 @@
-# Using the Linux Framebuffer and libinput
+# Using the Linux Framebuffer and `libinput`
 
 Uno supports the [Linux Framebuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.
 
@@ -11,7 +11,7 @@ There are restrictions for the support for the Framebuffer:
 - Follow the [getting started guide for linux](../get-started-with-linux.md)
 - Install the [`dotnet new` templates](../get-started-dotnet-new.md)
 
-Create a new app using 
+Create a new app using
 ```
 dotnet new unoapp -o MyApp
 ```
@@ -51,7 +51,7 @@ Documentation on other hardware targets are [available here](https://github.com/
 ## DPI Scaling support
 Whenever possible, the `FrameBufferHost` will try to detect the actual DPI scale to use when rendering the UI, based on the physical information provided by the FrameBuffer driver. If the value cannot be determined, a scale of `1.0` is used.
 
-The automatic scaling can be overriden in two ways:
+The automatic scaling can be overridden in two ways:
 - Set a value using `FrameBufferHost.DisplayScale`
 - Set a value through the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. This value has precedence over the value specified in `FrameBufferHost.DisplayScale`
 

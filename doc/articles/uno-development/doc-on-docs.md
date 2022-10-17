@@ -8,7 +8,7 @@ For the DocFX tool used to build the docs website, see [more info here](docfx.md
 
 #### Key links
 
- * howto template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
+ * how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
  * WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
  * Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
 
@@ -21,11 +21,11 @@ Some useful resources on writing good technical documentation:
 
 ## Writing step-by-step guides
 
-Step-by-step guides that address a particular problem or use case that multiple developers are likely to encounter. 
+Step-by-step guides that address a particular problem or use case that multiple developers are likely to encounter.
 
  * For longer tutorials, it's fine to split the content over multiple pages.
  * Guides should always be accompanied by working code. Standalone applications should be added to the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) and linked to from the associated tutorial.
- * Use the [howto template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md) as a starting point.
+ * Use the [how-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md) as a starting point.
  * Structure guides as a series of clear, actionable steps. After carrying out every step as described, the user should end up with working code that demonstrates the objective of the guide (either a standalone sample, or a new feature in their existing app).
 
 ## Documenting features
@@ -46,7 +46,7 @@ What if the Uno behavior deviates from WinUI behavior?
 
 If it's just a case of part of the functionality not being implemented yet, **and** the developer using the corresponding type/method/event would discover that it's marked with the `[NotImplemented]` attribute, then that's fine - there's no need to document it further.
 
-But sometimes the functionality **can't** be supported, due to intrinsic limitations of the target platform. (This is more likely to be the case with non-UI features.) And/or part of the functionality may implicitly fail to work, even though none of the entry points are marked `NotImplemented`. 
+But sometimes the functionality **can't** be supported, due to intrinsic limitations of the target platform. (This is more likely to be the case with non-UI features.) And/or part of the functionality may implicitly fail to work, even though none of the entry points are marked `NotImplemented`.
 
 In those cases, it's important to add documentation. Copy the [WinUI feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) (or [controls directory](https://github.com/unoplatform/uno/tree/master/doc/articles/controls) for controls inheriting from `FrameworkElement`) and fill in the appropriate sections. Make sure to fill in the matrix describing which features are supported on which platforms.
 
