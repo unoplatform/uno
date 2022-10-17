@@ -42,11 +42,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.2.22472.3" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<PackageReference Include="System.Drawing.Common" Version="4.7.3" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.2.22472.3" />
 	</ItemGroup>
 
 	<ItemGroup>
