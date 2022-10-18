@@ -18,8 +18,11 @@ namespace SamplesApp.Droid
 			MainLauncher = true,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden,
+#if DEBUG	// Disabled because of https://github.com/xamarin/xamarin-android/issues/6463
+			Exported = true,
+#endif
 			Icon = "@mipmap/ic_launcher",
-			Label = "Uno Samples"
+			Label = "Uno Samples"			
 		)]
 	[IntentFilter(
 		new[] {
