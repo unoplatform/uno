@@ -314,6 +314,12 @@ namespace Windows.UI.Input
 					return false;
 				}
 
+				// For touch and pen, the release must occurs within a reasonable delay.
+				if (points.PointerType is not PointerDeviceType.Mouse && IsLongPress(points.Down, points.Up))
+				{
+					return false;
+				}
+
 				// For the pointer up, we check only the distance, as it's expected that the pressed button changed!
 				if (IsOutOfTapRange(points.Down.Position, points.Up.Position))
 				{
