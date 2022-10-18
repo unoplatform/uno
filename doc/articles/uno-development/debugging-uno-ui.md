@@ -56,6 +56,8 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 
 - The nuget override process only works on already installed versions. The best way to ensure that the override is successful is to build the debugged application once before overriding the Uno.UI version the app uses.
 
+- Make sure to close the application that uses the overriden nuget package, to avoid locked files issues on Windows.
+
 ### Troubleshooting
 
 It may happen that the package cache for the version you're debugging is corrupted, and the override is not working as intended.
