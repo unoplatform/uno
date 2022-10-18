@@ -4,7 +4,7 @@
 		Landscape = 1,
 		Portrait = 2,
 		LandscapeFlipped = 4,
-		PortraitFlipped = 8
+		PortraitFlipped = 8,
 	}
 
 	export class DisplayInformation {
@@ -43,8 +43,8 @@
 		}
 
 		public static async setOrientationAsync(uwpOrientations: DisplayOrientations): Promise<void> {
-			let oldOrientation = screen.orientation.type;
-			let orientations = DisplayInformation.parseUwpOrientation(uwpOrientations);
+			const oldOrientation = screen.orientation.type;
+			const orientations = DisplayInformation.parseUwpOrientation(uwpOrientations);
 
 			if (orientations.includes(oldOrientation)) {
 				return;
@@ -55,32 +55,32 @@
 			// setting the orientation, such as most desktop browsers.
 			// We therefore attempt to check for support, and do nothing if the feature is
 			// unavailable.
-			if (this.lockingSupported == null) {
+			if (DisplayInformation.lockingSupported == null) {
 				try {
 					await screen.orientation.lock(oldOrientation);
-					this.lockingSupported = true;
+					DisplayInformation.lockingSupported = true;
 				} catch (e) {
 					if (e instanceof DOMException && e.name === "NotSupportedError") {
-						this.lockingSupported = false;
+						DisplayInformation.lockingSupported = false;
 						console.log("This browser does not support setting the orientation.")
 					} else {
 						// On most mobile devices we should reach this line.
-						this.lockingSupported = true;
+						DisplayInformation.lockingSupported = true;
 					}
 				}
 			}
 
-			if (!this.lockingSupported) {
+			if (!DisplayInformation.lockingSupported) {
 				return;
 			}
 
-			let wasFullscreen = document.fullscreenElement != null;
+			const wasFullscreen = document.fullscreenElement != null;
 
 			if (!wasFullscreen) {
 				await document.body.requestFullscreen();
 			}
 
-			for (let orientation of orientations) {
+			for (const orientation of orientations) {
 				try {
 					// On success, screen.orientation should fire the 'change' event.
 					await screen.orientation.lock(orientation);
@@ -97,7 +97,7 @@
 		}
 
 		private static parseUwpOrientation(uwpOrientations: DisplayOrientations): OrientationLockType[] {
-			let orientations: OrientationLockType[] = [];
+			const orientations: OrientationLockType[] = [];
 
 			if (uwpOrientations & DisplayOrientations.Landscape) {
 				orientations.push("landscape-primary");
