@@ -27,8 +27,14 @@
 				Click="CheckBrushEquality_Click" />
 		<TextBlock x:Name="BrushEqualityText"
 				   Text="-" />
-		<TextBlock Text="Status" />
-		<TextBlock x:Name="StatusText" />
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Status: " />
+			<TextBlock x:Name="StatusText" />
+		</StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Storyboard state: " />
+			<TextBlock x:Name="StoryboardState" />
+		</StackPanel>
 		<Border Width="300"
 				Height="100"
 				Margin="5"
