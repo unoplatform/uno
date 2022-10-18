@@ -42,7 +42,12 @@
         "globalMetadata": {
             "_appLogoPath": "images/uno-logo.png",
             "_enableSearch": "true",
-            "_appFaviconPath": "images/UnoLogoSmall.png"
+            "_appFaviconPath": "images/UnoLogoSmall.png",
+            "_disableContribution": false,
+            "_gitContribute": {
+              "branch": "master"
+            },
+            "_gitUrlPattern": "github"
         }
     }
 }
