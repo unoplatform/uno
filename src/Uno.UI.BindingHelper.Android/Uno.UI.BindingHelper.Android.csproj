@@ -4,11 +4,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
 
-		<!-- generated\src\Java.Interop.__TypeRegistrations.cs(16,6): Error CA1825: Avoid unnecessary zero-length array allocations. -->
-		<!-- generated\src\Uno.UI.UnoRecyclerView.cs(168,25): Error CA1812: 'UnoRecyclerViewInvoker' is an internal class that is apparently never instantiated. -->
-		<!-- TODO: Figure out a way to enable these analyzers back and exclude those generated files only -->
-		<NoWarn>$(NoWarn);CA1825;CA1812</NoWarn>
-
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
