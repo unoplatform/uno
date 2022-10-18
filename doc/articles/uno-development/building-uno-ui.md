@@ -39,7 +39,9 @@ It involves two things - setting an override for the target framework that will 
 The step by step process is:
 
 1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.
-This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
+> [!NOTE]
+> This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
+1. By default the Uno.UI solution on the master branch is building using the UWP API set. If you want to build against the WinUI 3 API set, you can checkout the `generated/master/winui-autoconvert` branch. See [this section](winui-conversion.md) for details on this branch.
 1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
 1. Make a copy of the [`src/crosstargeting_override.props.sample`](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
