@@ -30,6 +30,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 		{
 			colorStoryboard.Completed += (o, e) =>
 			{
+				StoryboardState.Text = ((Windows.UI.Xaml.Media.Animation.Storyboard)o).State.ToString();
 				StatusText.Text = "Completed";
 			};
 			colorStoryboard.Begin();

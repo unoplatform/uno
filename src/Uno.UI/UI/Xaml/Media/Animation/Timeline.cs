@@ -102,6 +102,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		protected void OnCompleted()
 		{
+			State = TimelineState.Stopped;
+
 			if (_completedHandlers != null)
 			{
 				for (int i = 0; i < _completedHandlers.Count; i++)
