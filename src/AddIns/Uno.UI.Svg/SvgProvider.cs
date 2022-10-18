@@ -94,8 +94,15 @@ public partial class SvgProvider : ISvgProvider
 		=> new SvgCanvas(_owner, this);
 #endif
 	
-	public async Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
+	public 	
+#if !__NETSTD_REFERENCE__
+	async 
+#endif
+	Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
 	{
+#if __NETSTD_REFERENCE__
+		return Task.FromResult(false);
+#else
 		var succeeded = false;
 		try
 		{
@@ -129,16 +136,20 @@ public partial class SvgProvider : ISvgProvider
 		}
 		
 		return succeeded;
+#endif
 	}
 
 	private void CleanupSvg()
 	{
+#if !__NETSTD_REFERENCE__
 		_skSvg?.Dispose();
 		_skBitmap?.Dispose();
 		_skSvg = null;
 		_skBitmap = null;
+#endif
 	}
 
+#if !__NETSTD_REFERENCE__
 	private Task<SKSvg?> LoadSvgAsync(byte[] svgBytes) =>
 		Task.Run(() =>
 		{
@@ -200,6 +211,7 @@ public partial class SvgProvider : ISvgProvider
 			SourceUpdated?.Invoke(this, EventArgs.Empty);
 		}
 	}
+#endif
 
 	public void Unload() => CleanupSvg();
 }
