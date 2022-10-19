@@ -98,7 +98,9 @@ namespace UnoSolutionTemplate
 			// Do any initialization that requires the UI thread after switching to the UI thread.
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
+#pragma warning disable VSSDK006 // Check whether the result of GetService calls is null.
 			_dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+#pragma warning restore VSSDK006
 
 			_openedHandler = () => InvokeOnMainThread(() => OnOpenedAsync(CancellationToken.None));
 			_beforeClosingHandler = () => InvokeOnMainThread(() => OnBeforeClosingAsync());
@@ -122,6 +124,7 @@ namespace UnoSolutionTemplate
 
 		void InvokeOnMainThread(Func<Task> func)
 		{
+#pragma warning disable VSTHRD110 // Observe the awaitable result of this method call by awaiting it, assigning to a variable, or passing it to another method.
 			JoinableTaskFactory.RunAsync(async () =>
 			{
 				// When initialized asynchronously, the current thread may be a background thread at this point.
@@ -129,6 +132,7 @@ namespace UnoSolutionTemplate
 				await this.JoinableTaskFactory.SwitchToMainThreadAsync(CancellationToken.None);
 				await func();
 			});
+#pragma warning restore VSTHRD110
 		}
 
 		private void SetupOutputWindow()
@@ -188,7 +192,10 @@ namespace UnoSolutionTemplate
 			{
 				try
 				{
+#pragma warning disable VSSDK006 // Check whether the result of GetService calls is null.
 					var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
+#pragma warning restore VSSDK006
+
 #pragma warning disable CS0618 // Type or member is obsolete - 'IVsPackageInstallerServices' is obsolete: Use INuGetProjectService in the NuGet.VisualStudio.Contracts package instead.
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 #pragma warning restore CS0618 // Type or member is obsolete

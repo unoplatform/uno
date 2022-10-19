@@ -4,7 +4,7 @@ Uno can be used to build applications using authentication. A popular mechanism 
 
 > MSAL.NET is the successor of ADAL.NET library which shouldn't be used for new apps. If you are migrating an application to Uno using ADAL.NET, you should first [migrate it to MSAL.NET](https://docs.microsoft.com/azure/active-directory/develop/msal-net-migration).
 
-Quickstart for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
+Quick-start for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
 
 ## General usage
 

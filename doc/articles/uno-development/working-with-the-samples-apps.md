@@ -9,7 +9,7 @@ The SamplesApp in Uno.UI is an Uno application containing a large number of UI a
 
 This article details how to run SamplesApp and how to add a new sample.
 
-For instructions on working with automated UI tests, [go here](creating-ui-tests.md). 
+For instructions on working with automated UI tests, [go here](creating-ui-tests.md).
 
 ## Running SamplesApp
 
@@ -20,18 +20,18 @@ To run the SamplesApp locally:
 1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.
 2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
 3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
-4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimised for a tablet layout.
+4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
 5. Run SamplesApp.
 
-If everything builds successfully, the app will run. The app is a collection of samples, grouped into categories. You can navigate to a sample using the menu on the left. 
+If everything builds successfully, the app will run. The app is a collection of samples, grouped into categories. You can navigate to a sample using the menu on the left.
 
 ![SamplesApp main view](assets/SamplesApp.png)
 
-## Sample organization 
+## Sample organization
 
-Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature. 
+Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature.
 
-Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute` (or `SampleControlInfoAttribute`, for older samples), and the SamplesApp automatically picks up all samples using the attribute. 
+Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute` (or `SampleControlInfoAttribute`, for older samples), and the SamplesApp automatically picks up all samples using the attribute.
 
 ### SampleAttribute
 
@@ -61,7 +61,7 @@ namespace UITests.Windows_Devices.Haptics
 
 To add a new sample to the SamplesApp:
 
-1. Locate the folder corresponding to the control or class you want to create a sample for in the `UITests.Shared` project. The folder structure is typically `Namespace_In_Snake_Case/ControlNameTests`. 
+1. Locate the folder corresponding to the control or class you want to create a sample for in the `UITests.Shared` project. The folder structure is typically `Namespace_In_Snake_Case/ControlNameTests`.
 2. Create a new `UserControl` from the Visual Studio templates, with a meaningful name.
 3. Add your sample UI to the `UserControl`.
 4. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the class in the code-behind partial file.
@@ -76,7 +76,7 @@ The content of those tests must describe a scenario to follow, what to expect, a
 
 ## Sample snapshots on the CI
 
-Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught. 
+Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught.
 
 ### Running the snapshot taker locally on WebAssembly
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.

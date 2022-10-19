@@ -4,6 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
+		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>$endif$
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

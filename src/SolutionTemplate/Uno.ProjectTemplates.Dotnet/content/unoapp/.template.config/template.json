@@ -149,6 +149,12 @@
 	  "description": "If specified, skips the automatic restore of the project on create.",
 	  "defaultValue": "false"
 	},
+	"wasm-pwa-manifest": {
+	  "type": "parameter",
+	  "datatype": "bool",
+	  "description": "Enables the generation of a PWA manifest for WebAssembly",
+	  "defaultValue": "false"
+	},
 	"android": {
 	  "type": "generated",
 	  "generator": "constant",
@@ -291,6 +297,13 @@
 			"condition": "(!vscode)",
 			"exclude": [
 			  ".vscode/**/*"
+			]
+		  },
+		  {
+			"condition": "(!wasm-pwa-manifest)",
+			"exclude": [
+				"UnoWinUIQuickStart.Wasm/manifest.json",
+				"UnoWinUIQuickStart.Wasm/Assets/AppIcon-*"
 			]
 		  }
 		]

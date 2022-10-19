@@ -2,7 +2,7 @@
 > **IMPORTANT** \
 This is a breaking change on most platform the font needs to be changed or most control will display incorrectly.
 
-Uno has a new multiplatform font. The new font must be added manually to each platform to access the new symbols.
+Uno has a new multi-platform font. The new font must be added manually to each platform to access the new symbols.
 
 ## Font files
 The font is in this repository https://github.com/unoplatform/uno.fonts. The necessary files can be downloaded here: https://github.com/unoplatform/uno.fonts/tree/master/webfonts
@@ -27,7 +27,7 @@ Open the `.csproj` file (`YourApp.iOS.csproj` or `YourApp.macOS.csproj`). Replac
 
 ### Android
 ---
-Once Uno has been updated, it will start looking for a font file named uno-fluentui-assets.ttf in the assets folder: \
+Once Uno has been updated, it will start looking for a font file `named uno-fluentui-assets.ttf` in the assets folder: \
 \
 ![image](Assets/font-droid.png)
 \

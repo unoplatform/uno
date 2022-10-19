@@ -15,7 +15,7 @@
   ```
 
 ### Bug fixes
-- 
+-
 
 ## Release 2.1
 
@@ -72,7 +72,7 @@
 
 ### Breaking changes
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
-- `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fullfilled (was always 0)
+- `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fulfilled (was always 0)
 - `Thumb.Drag<Delta|Completed>.<Horizontal|Vertical>` are now relative to the last event (was cummulative / relative to the started)
 - On iOS, the parent of the `ListViwItem` is now the `NativeListViewBase` (was the `ListView` it self) as described here https://github.com/unoplatform/uno/blob/master/doc/articles/controls/ListViewBase.md#difference-in-the-visual-tree
 
@@ -86,7 +86,7 @@
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
 - [#2213] Fixed `ApplicationData` on macOS, added support for `LocalSettings`
-- Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added xamarinmacos20 to crosstargeting_override sample
+- Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added `xamarinmacos20` to `crosstargeting_override` sample
 - [#2230] `DisplayInformation` leaks memory
 - [WASM] Shapes now update when their Fill brush's Color changes
 - [WASM] Fix bug where changing `IsEnabled` from false to true on `Control` inside another `Control` didn't work
@@ -106,7 +106,7 @@
 - [iOS] Fix crash when using ComboBox template with native Picker and changing ItemsSource to null after SelectedItem was set
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
-- #2294 Fix TextBox text binding is updated by simply unfocusing
+- #2294 Fix TextBox text binding is updated by simply un-focusing
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
@@ -122,10 +122,10 @@
 - Add missing `ListView` resources
 - [WASM] Setting null to the Fill no longer fill shapes in black
 - Shapes was not able to receive pointer events
-- [WASM] Invisble Shapes no longer prevent sub-elements to receive the pointer events
-- `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fullfilled (was always 0)
+- [WASM] Invisible Shapes no longer prevent sub-elements to receive the pointer events
+- `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fulfilled (was always 0)
 - `Thumb.Drag<Delta|Completed>.<Horizontal|Vertical>` are now relative to the last event (was cummulative / relative to the started)
-- Thumb now handles the PointyerPressed event (like WinUI)
+- Thumb now handles the PointerPressed event (like WinUI)
 - [WASM] Inserting an element at index 0 was appending the element instead of prepending it.
 - #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
 - #2107 [iOS] fixed ContentDialog doesn't block touch for background elements
@@ -153,7 +153,7 @@
    * `ReportInterval`
 * Support for `Launcher.QueryUriSupportAsync` method on Android and iOS
 * [#1493](https://github.com/unoplatform/uno/pull/1493) - Implemented the `Windows.Input.PointerUpdateKind` Enum.
-*  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progressbars to `BindableProgressBar` on Android.
+*  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progress bars to `BindableProgressBar` on Android.
 * Add support for `Windows.Devices.Sensors.Magnetometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `ReportInterval`
@@ -226,9 +226,9 @@
 * Clipping to bounds of control is now more similar to UWP
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
-* Add support for GitPod Workspace and prebuilds
+* Add support for GitPod Workspace and pre-builds
 * #880 Added added implicit conversion for double to Thickness
-* Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
+* Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programmatically draw under the status bar
 * [WASM] `ScrollViewer.ChangeView` is now supported
 * [Wasm] Add the ability to focus a TextBox by clicking its header
 * Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
@@ -247,7 +247,7 @@
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 * [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
- * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
+ * [WASM] The transform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declared on a parent element (transform was only including translate components)
 
 ### Bug fixes
 * [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP
@@ -262,9 +262,9 @@
 * [#1767] Invalid `this` keyword generated for `Storyboard.SetTarget`
 * [#1781] WASM Images are no longer draggable and selectable by default to match UWP
 * [#1771](https://github.com/unoplatform/uno/pull/1771) Fix ".Uno" in project names resulted in build errors.
-* [#1531](https://github.com/unoplatform/uno/pull/1531) Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
+* [#1531](https://github.com/unoplatform/uno/pull/1531) Fix an issue with VirtualizePanelAdapter by adding a cache where the ItemSources length change and created a OutOfRangeException
 * [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
-* [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
+* [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML source generator now always uses the fully qualified type name to prevent type conflicts.
 * [#1392](https://github.com/unoplatform/uno/pull/1392) Resolved exceptions while changing cursor color on Android P.
 * [#1383](https://github.com/unoplatform/uno/pull/1383) resolve Android compilation errors related to Assets filenames: "Invalid file name: It must contain only"
 * [#1380](https://github.com/unoplatform/uno/pull/1380) iOS head generated by Uno Solution Template now specifies MinimumOSVersion, in line with XF so first compile is successful.
@@ -307,7 +307,7 @@
   - Using a `ThemeResource` on the wrong property type shouldn't raise compile-time error (to align with UWP)
 * Fix layout bug in Image control.
 * [#1387] `ComboBox`: Fix DataContext was propagated to `<ContentPresenter>` when there was no selected item, causing strange display behavior.
-* #1354 fixed Recycler.State desync issue
+* #1354 fixed Recycler.State de-sync issue
 * #1533 [Wasm] Fix measure caching for zero sized measure
 * [iOS(iPad)] `ComboBox` : the combobox wasn't fully expanding vertically on first opening.
 * `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
@@ -329,14 +329,14 @@
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
 * [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
-* 164480 [Android] fixed a text wrapping issue caused by layout height desync
+* 164480 [Android] fixed a text wrapping issue caused by layout height de-sync
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 * [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * #1708 Fix initial Flyout placement and window resize placement
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
-* [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
+* [Android] [Wasm] Recent clipping improvements were incomplete. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
 * [iOS] Fix negative result value of TimePicker. Now value range is limited from 0 to 1 day
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
 * #2147 Fix NRE in android-specific TextBox.ImeOptions
@@ -450,11 +450,11 @@
 * 140946 [Android] Upon modifying a list, incorrect/duplicated items appear
 * 150489 [Android] PointerCanceled not called on scrolling for views with a RenderTransform set
 * 150469 [iOS] Virtualized ListView items don't always trigger their multi-select VisualStates
-* 1580172 ToggleSwitch wasn't working after an unload/reload: caused by routedevent's unregistration not working.
+* 1580172 ToggleSwitch wasn't working after an unload/reload: caused by `routedevent`'s un-registration not working.
 * 145203 [Android] Fix overflow on LogicalToPhysicalPixels(double.MaxValue), allowing ScrollViewer.ChangeView(double.MaxValue,...) to work
 * 150679 [iOS] Fix path issue with Media Player not being able to play local files.
 * Adjust support for `StaticResource.ResourceKey`
-* 151081 [Android] Fix Keyboard not always dismissed when unfocusing a TextBox
+* 151081 [Android] Fix Keyboard not always dismissed when un-focusing a TextBox
 * [WASM] Support `not_wasm` prefix properly. (#784)
 * 151282 [iOS] Fixed Slider not responding on second navigation, fixed RemoveHandler for RoutedEvents removing all instances of handler
 * 151497 [iOS/Android] Fixed Slider not responding, by ^ RemoveHandler fix for RoutedEvents
@@ -474,7 +474,7 @@
 * [WASM] Dismissable popup & flyout is closing when tapping on content.
 * 145374 [Android] fixed android keyboard stays open on AppBarButton click
 * 152504 [Android] Pointer captures weren't informing gestures of capture, fixes Slider capture issue
-* 148896 [iOS] TextBlock CarriageReturns would continue past maxlines property
+* 148896 [iOS] TextBlock CarriageReturns would continue past `maxlines` property
 * 153594 [Android] EdgeEffect not showing up on listView that contain Headers and Footers
 * #881 [iOS] [Android] Support explicitly-defined ListViewItems in ListView.
 * #902 [Android] Resource generation now correctly escapes names starting with numbers and names containing a '-' character
@@ -490,7 +490,7 @@
 * Fix Grid.ColumnDefinitions.Clear exception (#1006)
 * [Wasm] Align Window.SizeChanged and ApplicationView.VisibleBoundsChanged ordering with UWP (#1015)
 * Add VS2019 Solution Filters for known developer tasks
-* #154969 [iOS] MediaPlayer ApplyStretch breaking mediaplayer- fixed
+* #154969 [iOS] MediaPlayer ApplyStretch breaking media player- fixed
 * 154815 [WASM] ItemClick event could be raised for wrong item
 * 155256 Fixed xaml generated enum value not being globalized
 * 155161 [Android] fixed keyboard flicker when backing from a page with CommandBar
@@ -576,12 +576,12 @@
  * #139 Update Uno.SourceGenerationTasks to improve build performance
  * Update `Uno.UI.Toolkit` base UWP sdk to 18362
  * [Wasm] Fixes items measured after being removed from their parent appear in the visual tree, on top of every other items.
- * [Wasm] Fixes lements may not be removed form the global active DOM elements tracking map
+ * [Wasm] Fixes elements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices
  * Fixed invalid iOS assets folder. `ImageAsset` nodes must not be `<Visible>false</Visible>` to be copied to the generated project.
  * Make CollectionViewSource.View a proper DependencyProperty (#697)
  * Fixed support for string support for `Path.Data` (#698)
- * 150018 Fix nullref in `Pivot` when using native style
+ * 150018 Fix null ref in `Pivot` when using native style
  * 149312 [Android] Added `FeatureConfiguration.NativeListViewBase.RemoveItemAnimator` to remove the ItemAnimator that crashes when under stress
  * 150156 Fix `ComboBox` not working when using `Popover`.
  * Restore missing ButtonBase.IsPointerOver property
@@ -599,10 +599,10 @@
 * Wasm `Image` logs Opened and Failed events
 * Add UpToDateCheckInput to avoid VS invalid incremental rebuilds
 * 35178 Added recipe for copying text to clipboard
-* Added ToogleSwitch documentation in Uno/Doc/Controls.
+* Added ToggleSwitch documentation in Uno/Doc/Controls.
 * Added new properties for ToggleSwitch Default Native Styles.
   [iOS] For BindableUISwitch : TintColorBrush property was added to be able to tint the outline of the switch when it is turned off.
-  [Android] For BindableSwitchCompat : - Text property was added in order to change the ToggleSwitch label.
+  [Android] For `BindableSwitchCompat` : - Text property was added in order to change the ToggleSwitch label.
                                        - TextColor property was added in order to change the ToggleSwitch label color.
                                        - ThumbTint property was added in order to change the Thumb color.
                                        - TrackTint property was added in order to change the Track color.
@@ -614,11 +614,11 @@
 * Add support for 1809 NavigationView
 * Add support for runtime conversion of global static resources unknown at compile time
 * Fixed fallback support for Style property set via ThemeResource
-* Add support for multiple resw folders with upri resource generation
+* Add support for multiple `resw` folders with `upri` resource generation
 * Add support for `ThicknessHelper`
 * ResourceLoader adjustments …
   * CurrentUICulture and CurrentCulture are set when setting ResourceLoader .DefaultCulture
-  * upri load now ignores resources not used by the current culture
+  * `upri` load now ignores resources not used by the current culture
 * Add BrushConverter support for Color input
 * Add SplitView support for PaneOpened and PaneOpening
 * Add CoreApplication.GetCurrentView() Dispatcher and TitleBar stubs support
@@ -655,7 +655,7 @@
 ### Breaking changes
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
   [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
-  [Android] BindableSwitch was renamed BindableSwitchCompat in order to avoid confusion with the Switch control.
+  [Android] BindableSwitch was renamed `BindableSwitchCompat` in order to avoid confusion with the Switch control.
 * Remove invalid Windows.UI.Xaml.Input.VirtualKeyModifiers
 * Time picker flyout default styles has been changed to include done and cancel buttons
 * DataTemplateSelector implementations are now called using the 2 parameters overload first with a fallback to the 1 parameter overload on null returned value.
@@ -663,7 +663,7 @@
 * Using "/n" directly in the XAML for a text/content property is not supported anymore in order to match the UWP behavior.
   You can use "&#x0a;" instead in the text/content properties or a carriage return where you need it in the localized resources.
 * The `ResourcesGeneration` msbuild target has been renamed to `UnoResourcesGeneration`
-  If your csproj is using this target explicily, change it to the new name.
+  If your csproj is using this target explicitly, change it to the new name.
 
 ### Bug fixes
  * MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
@@ -679,7 +679,7 @@
  * Adjust Microsoft.CodeAnalysis versions to avoid restore conflicts
  * Fix element name matching existing types fails to compile (e.g. ContentPresenter)
  * 138735 [Android] Fixed broken DatePicker
- * Multi-selection Check Boxes in ListViewItems are appearing brielfly (https://github.com/unoplatform/uno/issues/403)
+ * Multi-selection Check Boxes in ListViewItems are appearing briefly (https://github.com/unoplatform/uno/issues/403)
  * 140721 [Android] FlipView not visible when navigating back to page
  * 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
  * Fix invalid Border Content type for macOS
@@ -698,7 +698,7 @@
  * 143527 [Android] Fixed broken TimePicker Flyout on android devices.
  * 143598 [Wasm] Wasm Animation rotation center is incorrect
  * Fixes invalid parsing of custom types containing `{}` in their value (#455)
- * Add workaround for iOS stackoverflow during initialization.
+ * Add workaround for iOS stack overflow during initialization.
  * Improve the file locking issues of Uno.UI.Tasks MSBuild task
  * Fix `VisibleBoundsPadding` memory leak
  * [ios] Time picker missing "OK" confirmation button
@@ -707,7 +707,7 @@
  * Fix memory leak with defining event handlers in XAML documents
  * Fix memory leak in `CommandBar`
  * Fix memory leak when using `x:Name` in XAML documents
- * 143170 [iOS] [WatermarkedDatePicker] When the Maxyear boundary is reached the first time, the calendar goes back two days instead of one
+ * 143170 [iOS] [WatermarkedDatePicker] When the Max year boundary is reached the first time, the calendar goes back two days instead of one
  * #491 DataTemplateSelector.SelectTemplate is not called on iOS and Android. The behavior is now closer to UWP.
  * 144268 / #493 : Resources outside of 'en' folder not working
  * Support for duplicate XAML `AutomationProperties.Name`
@@ -765,7 +765,7 @@
  * 138297 [iOS][TextBlock] Measurement is always different since we use Math.Ceiling
  * 137204 [iOS] ListView - fix bug where item view is clipped
  * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
- * Now supports internal object in desource dictionaries
+ * Now supports internal object in resource dictionaries
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
  * #26 The explicit property <Style.Setters> does not initialize style setters properly
  * 104057 [Android] ListView shows overscroll effect even when it doesn't need to scroll
@@ -922,7 +922,7 @@ Here's the full change log:
     - Enable x:Name reference in x:Bind markup. This requires for a failed BindableMetadata lookup to fall through reflection lookup.
     - Assume ".Value" binding path on a primitive is equivalent to self, to enable nullable bindings.
     - Adjust unit tests logging
-    - Enables auto "LogicalChild" treatment to allow for DependencyObjectCollection members to be databound
+    - Enables auto "LogicalChild" treatment to allow for DependencyObjectCollection members to be data-bound
     - Enable parent reset for "LogicalChild" assignations
 - Implement the CoreWindow.Dispatcher property [#117](https://github.com/unoplatform/uno/pull/117)
 - Misc Fixes [#120](https://github.com/unoplatform/uno/pull/120)
@@ -970,7 +970,7 @@ Here's the full change log:
     - Adjust `MessageDialog` behavior for android
     - `ContentControl` Data Context is now properly unset
     - Add `EmailNameOrAddress` InputScope for `TextBox`
-    - Fixed duplicated resw entry support
+    - Fixed duplicated `resw` entry support
     - Fixed `ComboBox` popup touch issue
     - Add support for TextBlock.TextDecorations
     - TextBlock base class from UILabel to FrameworkElement

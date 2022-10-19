@@ -63,8 +63,6 @@ partial class ElevatedView
 			FilterBitmap = true
 		};
 
-		AndroidColor? solidColor = null;
-
 		if (_invalidateShadow)
 		{
 			var viewHeight = ActualHeight;

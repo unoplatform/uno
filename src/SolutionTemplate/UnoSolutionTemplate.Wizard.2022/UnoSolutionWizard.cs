@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.Utilities;
 using UnoSolutionTemplate.Wizard.Forms;
 
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
+
 namespace UnoSolutionTemplate.Wizard
 {
 	public class UnoSolutionWizard : IWizard
@@ -36,6 +38,7 @@ namespace UnoSolutionTemplate.Wizard
 		private bool _useWpf;
 		private bool _useWinUI;
 		private bool _useServer;
+		private bool _useWebAssemblyManifestJson;
 		private string? _baseTargetFramework;
 		private IDictionary<string, string>? _replacementDictionary;
 
@@ -75,12 +78,17 @@ namespace UnoSolutionTemplate.Wizard
 			if (_dte?.Solution is Solution2 solution)
 			{
 				var platforms = solution.Projects.OfType<Project>().FirstOrDefault(p => p.Name == "Platforms");
-
 				if (platforms.Object is SolutionFolder platformsFolder)
 				{
 					if (_useWebAssembly)
 					{
 						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.net6.vstemplate");
+
+						if (!_useWebAssemblyManifestJson)
+						{
+							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, $"{_projectName}.Wasm", "manifest.json");
+							File.Delete(webAssemblyManifestJsonPath);
+						}
 					}
 
 					if (_useServer)
@@ -268,8 +276,6 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
 						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
 
-						_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
-
 						var version = GetVisualStudioReleaseVersion();
 
 						if(version < new Version(17, 3) && (_useiOS || _useAndroid || _useCatalyst || _useAppKit))
@@ -282,11 +288,35 @@ namespace UnoSolutionTemplate.Wizard
 
 					case DialogResult.Abort:
 						MessageBox.Show("Aborted"/*targetPlatformWizardPicker.Error*/);
+						Directory.Delete(_targetPath, true);
 						throw new WizardCancelledException();
 
 					default:
 						throw new WizardBackoutException();
 				}
+
+				if (_useWebAssembly)
+				{
+					using UnoWasmOptions unoWasmOptionsPicker = new UnoWasmOptions(VisualStudioServiceProvider);
+
+					switch (unoWasmOptionsPicker.ShowDialog(owner))
+					{
+						case DialogResult.OK:
+							_useWebAssemblyManifestJson = unoWasmOptionsPicker.UseManifestJson;
+							replacementsDictionary["$UseWebAssemblyManifestJson$"] = _useWebAssemblyManifestJson.ToString();
+							break;
+
+						case DialogResult.Abort:
+							MessageBox.Show("Aborted"/*targetPlatformWizardPicker.Error*/);
+							Directory.Delete(_targetPath, true);
+							throw new WizardCancelledException();
+
+						default:
+							throw new WizardBackoutException();
+					}
+				}
+
+				_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
 			}
 		}
 

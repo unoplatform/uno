@@ -70,7 +70,7 @@ On Skia however, they are fully managed events.
 ### Pointers events and the ScrollViewer
 
 Like on WinUI as soon as the system detects that the user wants to scroll, a control gets a `PointerCancelled` and that control won't receive
-any other pointer event until the user releases the pointer. That behavior can be prevented by setting the `ManipulationMode` 
+any other pointer event until the user releases the pointer. That behavior can be prevented by setting the `ManipulationMode`
 to something else than `System` on a control nested in the `ScrollViewer`. (cf. [Manipulation events](#manipulation-events))
 
 Be aware that on iOS this will set `DelaysContentTouches` to `false` so it means that it will slightly reduce the performance
@@ -79,7 +79,7 @@ of the scrolling (cf. [documentation](https://developer.apple.com/documentation/
 ### Known limitations for pointer events
 
 As those events are tightly coupled to the native events, Uno has to make some compromises:
-* On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`), 
+* On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`),
   multiple managed events are raised from a single native event. These have multiple effects:
 	* On UWP if you have a control A and a nested control B, you will get:
 		```
@@ -98,24 +98,24 @@ As those events are tightly coupled to the native events, Uno has to make some c
 	* If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
 * On Android with a mouse or a pen, the `PointerEnter` and `PointerExit` are going to be raised without taking clipping in consideration.
   This means that you will get the enter earlier and the exit later than on other platform.
-* On Android if you have an element with a `RenderTransform` which overlaps one of its sibling element, 
+* On Android if you have an element with a `RenderTransform` which overlaps one of its sibling element,
   the element at the top will get the pointer events.
 * On WASM, iOS and Android, the `RoutedPointerEventArgs.FrameId` will be reset to 0 after 49 days of running time of the application.
 * Unlike on UWP, controls that are under a `Popup` won't receive the unhandled pointer events.
 * On non Skia-based platforms, unlike UWP, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before.
   (For instance if a child control handled the pressed event but not the released event).
-  > On WASM as `TextElement` inherits from `UIElement`, it means that unlike UWP `TextBlock` won't raise the 
+  > On WASM as `TextElement` inherits from `UIElement`, it means that unlike UWP `TextBlock` won't raise the
   > `PointerReleased` event when clicking on a `Hyperlink`.
 * Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
 * The property `PointerPointProperties.PointerUpdateKind` is not set on Android 5.x and lower (API level < 23)
-* On Firefox, pressed pointers are reported as fingers. This means you will receive events with `PointerDeviceType == Pen` only for hovering 
-  (i.e. `Pointer<Enter|Move|Exit>` - note that, as of 2019-11-28, once pressed `PointerMove` will be flagged as "touch") 
+* On Firefox, pressed pointers are reported as fingers. This means you will receive events with `PointerDeviceType == Pen` only for hovering
+  (i.e. `Pointer<Enter|Move|Exit>` - note that, as of 2019-11-28, once pressed `PointerMove` will be flagged as "touch")
   and you won't  be able to track the barrel button nor the eraser. (cf. https://bugzilla.mozilla.org/show_bug.cgi?id=1449660)
 * On WASM, if you touch the screen with the pen **then** you press the barrel button (still while touching the screen), the pointer events will
-  have the `IsRightButtonPressed` set (in addition of the `IsBarrelButtonPressed`). On WinUI and Android you get this flag only if the barrel 
+  have the `IsRightButtonPressed` set (in addition of the `IsBarrelButtonPressed`). On WinUI and Android you get this flag only if the barrel
   button was pressed at the moment where you touched the screen, otherwise you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
-* For pen and fingers, the `Holding` event is not raised after a given delay like on WinUI, 
-  but instead we rely on the fact that we usually get a lot of moves for those kind of pointers, 
+* For pen and fingers, the `Holding` event is not raised after a given delay like on WinUI,
+  but instead we rely on the fact that we usually get a lot of moves for those kind of pointers,
   so we raise the event only when we get a move that exceed defined thresholds for holding.
 * On WASM, Shapes must have a non null Fill to receive pointer events (setting the Stroke is not sufficient).
 * On WASM if the user scrolls in diagonal (e.g. with a Touchpad), but you mark as `Handled` pointer events only for vertical scrolling,
@@ -147,11 +147,11 @@ They are generated from the PointerXXX events (using the `Windows.UI.Input.Gestu
 
 Note that `Tapped` and `DoubleTapped` are not linked in any way to a native equivalent, but are fully interpreted in managed code.
 
-In order to match the WinUI behavior, on WASM the default "Context menu" of the browser is disabled (except for the `TextBox`), 
+In order to match the WinUI behavior, on WASM the default "Context menu" of the browser is disabled (except for the `TextBox`),
 no matter if you use / handle the `RightTapped` event or not.
 Be aware that on some browser (Firefox), user can still request to get the "Context menu" on right click.
 
-### Disabling browser context menu on `<input>-based` elements 
+### Disabling browser context menu on `<input>-based` elements
 
 While the browser context menu enabled on `TextBox` and `PasswordBox` by default, it will be disabled when `ContextFlyout` is set on the control.
 
@@ -186,10 +186,10 @@ The table and sections below describe supported functionality and limitations fo
 * "Link" may refer to WebLink, ApplicationLink or Uri formats
 
 #### Wasm Limitations
-1. When dragging content from external app to uno, you cannot retreive the content from the `DataPackage` before the `Drop` event.
+1. When dragging content from external app to uno, you cannot retrieve the content from the `DataPackage` before the `Drop` event.
    This a limitations of web browsers.
    Any attempt to read it before the `Drop` will result into a timeout exception after a hard coded delay of 10 seconds.
-2. When dragging some uris from external app to uno, only the first uri will be accessible throught the **WebLink** standard format ID.
+2. When dragging some uris from external app to uno, only the first uri will be accessible through the **WebLink** standard format ID.
 
 #### macOS Limitations
 
@@ -198,8 +198,8 @@ The table and sections below describe supported functionality and limitations fo
 
 #### Skia Limitations
 
-1. There is no standard type for **WebLink** (nor **ApplicationLink**) on this platform. 
-   They are copied to the external app as raw **Text**, and converted back as **WebLink** or **ApplicationLink**) from raw text from the external app 
+1. There is no standard type for **WebLink** (nor **ApplicationLink**) on this platform.
+   They are copied to the external app as raw **Text**, and converted back as **WebLink** or **ApplicationLink**) from raw text from the external app
    when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)](https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring) returns true.
 2. The image content seems to not being readable by common apps, only another Uno app is able to read it properly.
 
@@ -224,9 +224,9 @@ For full compatibility, the Uri format within a DataPackage should still be popu
 
 ### Known issues for drag and drop events
 
-1. If you have 2 nested drop targets (i.e. element flagged with `AllowDrop = true`), 
-   when the pointer leaves the deepest / top most element but not the parent, 
-   the parent element will also raise `DragLeave` and immediatly after raise `DragEnter`.
+1. If you have 2 nested drop targets (i.e. element flagged with `AllowDrop = true`),
+   when the pointer leaves the deepest / top most element but not the parent,
+   the parent element will also raise `DragLeave` and immediately after raise `DragEnter`.
 1. On UWP, the default UI will include a tooltip which indicates the accepted drop action,
    and a "screenshot" of the dragged element.
    Currently Uno will display only the tooltip.
