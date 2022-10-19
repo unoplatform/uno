@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.VisualStudio.Shell;
 
 namespace UnoSolutionTemplate.Wizard.Forms
 {
@@ -9,6 +10,8 @@ namespace UnoSolutionTemplate.Wizard.Forms
 		public UnoWasmOptions(IServiceProvider serviceProvider)
 			: base(serviceProvider)
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
 			InitializeComponent();
 
 			InitializeFont();

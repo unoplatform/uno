@@ -35,6 +35,8 @@ namespace UnoSolutionTemplate.Wizard.Forms
 		public UnoOptions(IServiceProvider serviceProvider)
 			: base(serviceProvider)
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
 			InitializeComponent();
 
 			InitializeFont();
