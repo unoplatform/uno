@@ -932,43 +932,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection");
 
-			var myTextBox = _app.WaitForElement("myTextBox").Single().Rect;
 			var readonlyTextBox = _app.WaitForElement("MyReadOnlyTextBox").Single().Rect;
 
-			var centerPointReadOnly = GetCenterPoint(readonlyTextBox);
+			var centerPointReadOnlyX = (int) readonlyTextBox.CenterX;
+			var centerPointReadOnlyY = (int) readonlyTextBox.CenterY;
 
 			// Attempt selection
-			_app.DoubleTapCoordinates(centerPointReadOnly.X, centerPointReadOnly.Y);
+			_app.DoubleTapCoordinates(centerPointReadOnlyX, centerPointReadOnlyY);
 
 			using (var readonlyTextBoxScreenShot = TakeScreenshot("MyReadOnlyTextBox", ignoreInSnapshotCompare: true))
 			{
 				ImageAssert.DoesNotHaveColorAt(readonlyTextBoxScreenShot,
-											   centerPointReadOnly.X,
-											   centerPointReadOnly.Y,
+											   centerPointReadOnlyX,
+											   centerPointReadOnlyY,
 											   Color.White);
 			}
-
-
-			var centerPoint = GetCenterPoint(myTextBox);
-
-			// Attempt selection
-			_app.DoubleTapCoordinates(centerPoint.X, centerPoint.Y);
-
-			using (var selectableScreenshot = TakeScreenshot("myTextBox", ignoreInSnapshotCompare: true))
-			{
-				ImageAssert.DoesNotHaveColorAt(selectableScreenshot,
-											   centerPoint.X,
-											   centerPoint.Y,
-											   Color.White);
-			}
-		}
-
-		private Point GetCenterPoint(IAppRect appRect)
-		{
-			var expanderAppRect = ToPhysicalRect(appRect);
-			var rectangle = expanderAppRect.ToRectangle();
-
-			return new Point(rectangle.Left + rectangle.Width / 2, rectangle.Top + rectangle.Height / 2);
 		}
 	}
 }
