@@ -126,3 +126,6 @@ This issue is caused by visual studio enforcing https connections for local cont
 In general, this error happens when the XAML parser detects a syntax error. Fixing the error generally fixes the build.
 
 This error may happen occasionally without any explicit error message, rebuilding the project may fix the issue.
+
+#### Error UNOB0002: Using Uno.WinUI in a WinAppSDK head project is not supported
+This This issue can arise when Uno.WinUI packages are included in a `.Windows` head project, which is not supported. You can fix this by removing the Uno.WinUI or the packages that transitively reference it. For example, including a reference to `Uno.CommunityToolkit.WinUI.*` will transitively include a reference to `Uno.WinUI`, and [the official community toolkit packages](uno-community-toolkit.md) must be used instead.
