@@ -1265,6 +1265,42 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public async Task When_TypeCast()
+		{
+			var SUT = new Binding_TypeCast();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("42", SUT.tb01.Text);
+			Assert.AreEqual("42", SUT.tb02.Text);
+			Assert.AreEqual("4242", SUT.tb03.Text);
+			Assert.AreEqual(2, SUT.tb04.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_TypeCast_DataTemplate()
+		{
+			var SUT = new Binding_TypeCast_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_TypeCast_DataTemplate_Data();
+			root.DataContext = dc;
+			
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var tb01 = SUT.FindName("tb01") as TextBlock;
+			var tb02 = SUT.FindName("tb02") as TextBlock;
+			var tb03 = SUT.FindName("tb03") as TextBlock;
+			var tb04 = SUT.FindName("tb04") as TextBlock;
+
+			Assert.AreEqual("42", tb01.Text);
+			Assert.AreEqual("42", tb02.Text);
+			Assert.AreEqual("4242", tb03.Text);
+			Assert.AreEqual(2, tb04.Tag);
+		}
+
+		[TestMethod]
 		public async Task When_PathLessCasting()
 		{
 			var SUT = new xBind_PathLessCasting();
