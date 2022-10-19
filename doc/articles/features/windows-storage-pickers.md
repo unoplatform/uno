@@ -265,9 +265,11 @@ The allowed values for the configuration are:
 
 ### Security considerations
 Browsers generally treat file opening/save operations as sensitive operations, and the following message may appear when using this APIs:
+
 ```
 SecurityError: Failed to execute 'showSaveFilePicker' on 'Window': Must be handling a user gesture to show a file picker.
 ```
+
 This generally means that the Uno file picking APIs have been invoked without an explicit user interaction, or have been rescheduled from the original user interaction callback (e.g. using `DispatcherQueue.TryRun()` inside a `Button.Click` handler to open a picker).
 
 ## Android
