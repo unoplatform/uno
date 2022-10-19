@@ -27,9 +27,9 @@ namespace Windows.Storage.Pickers
 			{
 				savePicker.NameFieldStringValue = SuggestedFileName;
 			}
-			if (savePicker.RunModal() == ModalResponseOk)
+			if (savePicker.RunModal() == ModalResponseOk && savePicker.Url.Path is { } savedPath)
 			{
-				return await StorageFile.GetFileFromPathAsync(savePicker.Url.Path);
+				return await StorageFile.GetFileFromPathAsync(savedPath);
 			}
 			else
 			{
@@ -50,7 +50,7 @@ namespace Windows.Storage.Pickers
 			};
 
 			var urls = NSFileManager.DefaultManager.GetUrls(specialFolder, NSSearchPathDomain.User);
-			return (urls.Length == 0) ? NSFileManager.HomeDirectory : urls[0].AbsoluteString;
+			return (urls.Length == 0) ? NSFileManager.HomeDirectory : urls[0].AbsoluteString!;
 		}
 
 		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart(new[] { '.' }))).ToArray();

@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 		[Pure]
 		private static bool IsCloseReal(double a, double b)
 		{
-			var x = Abs((a - b) / (b == 0d ? 1d : b));
+			var x = Math.Abs((a - b) / (b == 0d ? 1d : b));
 			return x < 1.85e-3d;
 		}
 
@@ -356,8 +356,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Apply the margin for framework elements, as if it were padding to the child.
 					slotSize = new Size(
-						Max(0, slotSize.Width - margin.Left - margin.Right),
-						Max(0, slotSize.Height - margin.Top - margin.Bottom)
+						Math.Max(0, slotSize.Width - margin.Left - margin.Right),
+						Math.Max(0, slotSize.Height - margin.Top - margin.Bottom)
 					);
 				}
 
@@ -376,22 +376,22 @@ namespace Windows.UI.Xaml.Controls
 				// over the explicit or maximum size of the child.
 				if (optionalMaxWidth != null || optionalWidth != null)
 				{
-					var constrainedWidth = Min(
+					var constrainedWidth = Math.Min(
 						optionalMaxWidth ?? double.PositiveInfinity,
 						optionalWidth ?? double.PositiveInfinity
 					);
 
-					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+					slotSize.Width = Math.Min(slotSize.Width, constrainedWidth);
 				}
 
 				if (optionalMaxHeight != null || optionalHeight != null)
 				{
-					var constrainedHeight = Min(
+					var constrainedHeight = Math.Min(
 						optionalMaxHeight ?? double.PositiveInfinity,
 						optionalHeight ?? double.PositiveInfinity
 					);
 
-					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+					slotSize.Height = Math.Min(slotSize.Height, constrainedHeight);
 				}
 			}
 
@@ -595,7 +595,7 @@ namespace Windows.UI.Xaml.Controls
 								case VerticalAlignment.Stretch:
 									// On UWP, when a control is taking more height than available from
 									// parent, it will be top-aligned when its alignment is Stretch
-									y = frame.Y + Max((frame.Height - actualHeight) / 2d, 0d);
+									y = frame.Y + Math.Max((frame.Height - actualHeight) / 2d, 0d);
 									break;
 								case VerticalAlignment.Center:
 									y = frame.Y + (frame.Height - actualHeight) / 2d;
@@ -645,7 +645,7 @@ namespace Windows.UI.Xaml.Controls
 								case HorizontalAlignment.Stretch:
 									// On UWP, when a control is taking more width than available from
 									// parent, it will be left-aligned when its alignment is Stretch
-									x = frame.X + Max((frame.Width - actualWidth) / 2d, 0d);
+									x = frame.X + Math.Max((frame.Width - actualWidth) / 2d, 0d);
 									break;
 								case HorizontalAlignment.Center:
 									x = frame.X + (frame.Width - actualWidth) / 2d;
@@ -683,8 +683,8 @@ namespace Windows.UI.Xaml.Controls
 				var layoutFrame = new Rect(
 					x: IsNaN(frame.X) ? 0 : frame.X,
 					y: IsNaN(frame.Y) ? 0 : frame.Y,
-					width: Max(0, IsNaN(frame.Width) ? 0 : frame.Width),
-					height: Max(0, IsNaN(frame.Height) ? 0 : frame.Height)
+					width: Math.Max(0, IsNaN(frame.Width) ? 0 : frame.Width),
+					height: Math.Max(0, IsNaN(frame.Height) ? 0 : frame.Height)
 				);
 
 				// Clipped frame & layout frame are the same for native elements

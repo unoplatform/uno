@@ -19,6 +19,7 @@ using Uno.Foundation.Logging;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
+#pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
 using nfloat = System.Double;
 using NMath = System.Math;

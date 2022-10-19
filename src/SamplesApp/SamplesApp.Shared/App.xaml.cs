@@ -94,7 +94,7 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !NET6_0
+#if __IOS__ && !NET6_0_OR_GREATER
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 

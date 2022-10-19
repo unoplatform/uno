@@ -52,7 +52,7 @@ namespace Windows.Storage.Pickers
 				{
 					var files = openPanel.Urls
 						.Where(url => url?.Path != null)
-						.Select(url => StorageFile.GetFileFromPath(url.Path))
+						.Select(url => StorageFile.GetFileFromPath(url.Path!))
 						.ToArray();
 					return new FilePickerSelectedFilesArray(files);
 				}

@@ -69,7 +69,7 @@ If you want to actually test that generated XAML produces correct behavior, whic
 
 ### Source generator tests
 
-These can be used to assert that a given input to a given source generator produces specific expected diagnostics. They infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`.UI.SourceGenerators.net6.Tests`](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators.net6.Tests).
+These can be used to assert that a given input to a given source generator produces specific expected diagnostics. They infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`.UI.SourceGenerators.netcoremobile.Tests`](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators.netcore.Tests).
 
 ### UI snapshot tests
 

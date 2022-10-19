@@ -44,7 +44,7 @@ namespace UITests.Msal
 				.WithTenantId(TENANT_ID)
 				.WithRedirectUri(REDIRECT_URI)
 				.WithUnoHelpers()
-#if __IOS__ && !NET6_0
+#if __IOS__ && !NET6_0_OR_GREATER
 				.WithIosKeychainSecurityGroup("com.companyname.SamplesApp")
 #endif
 				.Build();

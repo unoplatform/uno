@@ -2,16 +2,34 @@
 
   <PropertyGroup>
     <_IsAndroid>false</_IsAndroid>
-    <_IsAndroid Condition="$(IsMonoAndroid) or '$(TargetFramework)'=='net6.0-android'">true</_IsAndroid>
+    <_IsAndroid Condition="
+				$(IsMonoAndroid)
+				or '$(TargetFramework)'=='net6.0-android'
+				or '$(TargetFramework)'=='net7.0-android'
+				">true</_IsAndroid>
 
 	<_IsCatalyst>false</_IsCatalyst>
-	<_IsCatalyst Condition="$(_IsCatalyst) or '$(TargetFramework)'=='net6.0-maccatalyst'">true</_IsCatalyst>
+	<_IsCatalyst Condition="
+				 $(_IsCatalyst)
+				 or '$(TargetFramework)'=='net6.0-maccatalyst'
+				 or '$(TargetFramework)'=='net7.0-maccatalyst'
+				 ">true</_IsCatalyst>
 
 	<_IsIOS>false</_IsIOS>
-	<_IsIOS Condition="$(IsXamarinIOS) or '$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst'">true</_IsIOS>
+	<_IsIOS Condition="
+			$(IsXamarinIOS)
+			or '$(TargetFramework)'=='net6.0-ios'
+			or '$(TargetFramework)'=='net6.0-maccatalyst'
+			or '$(TargetFramework)'=='net7.0-ios'
+			or '$(TargetFramework)'=='net7.0-maccatalyst'
+			">true</_IsIOS>
 
 	<_IsMacOS>false</_IsMacOS>
-    <_IsMacOS Condition="'$(TargetFramework)'=='xamarinmac20' or '$(TargetFramework)'=='net6.0-macos'">true</_IsMacOS>
+    <_IsMacOS Condition="
+			  '$(TargetFramework)'=='xamarinmac20'
+			  or '$(TargetFramework)'=='net6.0-macos'
+			  or '$(TargetFramework)'=='net7.0-macos'
+			  ">true</_IsMacOS>
 
     <_IsNet>false</_IsNet>
     <_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>

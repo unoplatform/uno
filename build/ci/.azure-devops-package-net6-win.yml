@@ -2,8 +2,8 @@ parameters:
   poolName: ''
 
 jobs:
-- job: net6_win_build
-  displayName: 'Build net6 Binaries'
+- job: netcoremobile_win_build
+  displayName: 'Build .NET Mobile Binaries'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
@@ -52,7 +52,7 @@ jobs:
   - template: templates/install-windows-sdk.yml
 
   - powershell: |
-        cp $(build.sourcesdirectory)\src\global-net6.json $(build.sourcesdirectory)\src\global.json
+        cp $(build.sourcesdirectory)\src\global-netcoremobile.json $(build.sourcesdirectory)\src\global.json
     displayName: Change active .NET SDK
 
   # This task is required to run in separately to avoid hitting targets file
@@ -60,12 +60,12 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-net6-prepare-$(UNO_UWP_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-prepare-$(UNO_UWP_BUILD).binlog
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-net6-$(UNO_UWP_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(UNO_UWP_BUILD).binlog
 
   - template: templates/copy-package-assets.yml
 
@@ -74,11 +74,11 @@ jobs:
       rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-net6-bin-$(XAML_FLAVOR_BUILD).zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-bin-$(XAML_FLAVOR_BUILD).zip'
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-net6
+      ArtifactName: NugetPackages-Artifacts-netcoremobile
       ArtifactType: Container

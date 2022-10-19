@@ -123,9 +123,13 @@
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\MonoAndroid13.0\Uno.UI.Svg.dll" target="lib\MonoAndroid13.0" />
 		<file src="..\src\AddIns\Uno.UI.Svg\bin\Release\MonoAndroid12.0\Uno.UI.Svg.dll" target="lib\MonoAndroid12.0" />
 
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.net6\Release\net6.0-android\Uno.UI.Svg.dll" target="lib\net6.0-android" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.net6\Release\net6.0-ios\Uno.UI.Svg.dll" target="lib\net6.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.net6\Release\net6.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net6.0-maccatalyst" />
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net6.0-android\Uno.UI.Svg.dll" target="lib\net6.0-android" />
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net6.0-ios\Uno.UI.Svg.dll" target="lib\net6.0-ios" />
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net6.0-maccatalyst" />
+
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-android\Uno.UI.Svg.dll" target="lib\net7.0-android" />
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-ios\Uno.UI.Svg.dll" target="lib\net7.0-ios" />
+		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net7.0-maccatalyst" />
 
 		<!-- Build targets -->
 		<file src="..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />

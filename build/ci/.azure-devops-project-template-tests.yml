@@ -38,8 +38,8 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
 
-- job: Dotnet_Template_Tests_Net6
-  displayName: 'dotnet new net6 Templates Tests'
+- job: Dotnet_Template_Tests_NetCoreMobile
+  displayName: '.NET Mobile Templates Tests'
 
   pool: ${{ parameters.poolName }}
 
@@ -51,6 +51,11 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
+
+  # required to get the WinAppSdk build running, as it depends on
+  # msbuild (and not `dotnet`), and VS 17.3 only supports building for .NET 6.
+  - template: templates/dotnet-install.yml
+
   - template: templates/dotnet6-install-windows.yml
   - template: templates/update-vs-components.yml
 
@@ -64,7 +69,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - powershell: build\test-scripts\run-net6-mobile-template-tests.ps1
+  - powershell: build\test-scripts\run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)

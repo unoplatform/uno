@@ -82,7 +82,7 @@ namespace UnoSolutionTemplate.Wizard
 				{
 					if (_useWebAssembly)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.netcore.vstemplate");
 
 						if (!_useWebAssemblyManifestJson)
 						{
@@ -93,32 +93,32 @@ namespace UnoSolutionTemplate.Wizard
 
 					if (_useServer)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Server", "Server.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Server", "Server.netcore.vstemplate");
 					}
 
 					if (_useiOS || _useCatalyst || _useAndroid || _useAppKit)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Mobile", "Mobile.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Mobile", "Mobile.winui.netcore.vstemplate");
 					}
 
 					if (_useGtk)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Gtk", "SkiaGtk.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Gtk", "SkiaGtk.winui.netcore.vstemplate");
 					}
 
 					if (_useFramebuffer)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Linux.FrameBuffer", "SkiaLinuxFrameBuffer.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Linux.FrameBuffer", "SkiaLinuxFrameBuffer.winui.netcore.vstemplate");
 					}
 
 					if (_useWinUI)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Windows", "WinUI.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Windows", "WinUI.netcore.vstemplate");
 					}
 
 					if (_useWpf)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", "SkiaWpf.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", "SkiaWpf.winui.netcore.vstemplate");
 					}
 				}
 				else

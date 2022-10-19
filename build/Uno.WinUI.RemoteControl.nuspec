@@ -80,6 +80,38 @@
 		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
+	  <!-- net7.0-ios -->
+	  <group targetFramework="net7.0-ios">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
+
+	  <!-- net7.0-maccatalyst -->
+	  <group targetFramework="net7.0-maccatalyst">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
+
+	  <!-- net7.0-macos -->
+	  <group targetFramework="net7.0-macos">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
+
+	  <!-- net7.0-android -->
+	  <group targetFramework="net7.0-android">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
+
 	  <!-- .NET Standard 2.0 (Reference API) -->
 	  <group targetFramework="netstandard2.0">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
@@ -140,6 +172,16 @@
 		<reference file="Uno.UI.RemoteControl.dll" />
 	  </group>
 
+	  <!-- .NET 6 Android -->
+	  <group targetFramework="net7.0-android">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
+
+	  <!-- .NET 6 iOS -->
+	  <group targetFramework="net7.0-ios">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
+
 	</references>
   </metadata>
 
@@ -164,17 +206,29 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinmac20\Uno.UI.RemoteControl.pdb" target="lib\xamarinmac20" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-android\Uno.UI.RemoteControl.dll" target="lib\net6.0-android" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-android\Uno.UI.RemoteControl.pdb" target="lib\net6.0-android" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-android\Uno.UI.RemoteControl.dll" target="lib\net6.0-android" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-android\Uno.UI.RemoteControl.pdb" target="lib\net6.0-android" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-ios\Uno.UI.RemoteControl.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-ios\Uno.UI.RemoteControl.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net6.0-ios" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net6.0-maccatalyst" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-macos\Uno.UI.RemoteControl.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-macos\Uno.UI.RemoteControl.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net6.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net6.0-macos" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-android\Uno.UI.RemoteControl.dll" target="lib\net7.0-android" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-android\Uno.UI.RemoteControl.pdb" target="lib\net7.0-android" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-ios\Uno.UI.RemoteControl.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net7.0-ios" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net7.0-maccatalyst" />
+
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net7.0-macos" />
 
 	<!-- Processors -->
 	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.dll" target="tools\rc\processors\netcoreapp3.1" />

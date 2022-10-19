@@ -84,7 +84,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 
-#if !(__WASM__ || (__ANDROID__ && !NET6_0) || (__IOS__ && !NET6_0) || (__MACOS__ && !NET6_0) || HAS_SKOTTIE)
+#if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
 			throw new NotImplementedException();
