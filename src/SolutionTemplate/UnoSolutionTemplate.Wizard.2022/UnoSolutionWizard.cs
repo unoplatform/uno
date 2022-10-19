@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.Utilities;
 using UnoSolutionTemplate.Wizard.Forms;
 
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
+
 namespace UnoSolutionTemplate.Wizard
 {
 	public class UnoSolutionWizard : IWizard
@@ -76,7 +78,6 @@ namespace UnoSolutionTemplate.Wizard
 			if (_dte?.Solution is Solution2 solution)
 			{
 				var platforms = solution.Projects.OfType<Project>().FirstOrDefault(p => p.Name == "Platforms");
-
 				if (platforms.Object is SolutionFolder platformsFolder)
 				{
 					if (_useWebAssembly)
