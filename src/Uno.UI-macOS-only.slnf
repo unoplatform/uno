@@ -4,8 +4,9 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
-      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",     
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
+      "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\SamplesApp.macOS\\SamplesApp.macOS.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
