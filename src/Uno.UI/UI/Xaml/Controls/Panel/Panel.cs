@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnBackgroundSizingChangedInner(e);
 
-			_borderRenderer.UpdateLayer();
+			UpdateBorder();
 		}
 
 		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
