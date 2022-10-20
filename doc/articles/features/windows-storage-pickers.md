@@ -264,7 +264,7 @@ The allowed values for the configuration are:
 - `DownloadUpload` - uses download/upload pickers only.
 
 ### Security considerations
-Browsers generally treat file opening/save operations as sensitive operations, and the following message may appear when using this APIs:
+Browsers generally treat file opening/saving operations as sensitive operations, and the following message may appear when using this APIs:
 
 ```
 SecurityError: Failed to execute 'showSaveFilePicker' on 'Window': Must be handling a user gesture to show a file picker.
