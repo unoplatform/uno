@@ -27,6 +27,9 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "", "ctx")]
+
+		// Type Casts
+		[DataRow("ctx", "(FontFamily)Value", "(FontFamily)ctx.Value")]
 		[DataRow("ctx", "(FontFamily)a.Value", "(FontFamily)ctx.a.Value")]
 		[DataRow("ctx", "(global::System.Int32)a.Value", "(global::System.Int32)ctx.a.Value")]
 
@@ -41,7 +44,9 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "System.String.Format('{0:X8}', AdornerCanvas.(MyNamespace.FrameworkElementExtensions.ActualWidth))", "System.String.Format('{0:X8}', MyNamespace.FrameworkElementExtensions.GetActualWidth(ctx.AdornerCanvas))")]
 
 		// Not supported https://github.com/unoplatform/uno/issues/5061
-		// [DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
+		[DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
+		[DataRow("ctx", "MyFunction((global::System.Int32)MyProperty.Inner)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty.Inner)")]
+		[DataRow("ctx", "((MyClass)MyProperty).Test", "((MyClass)ctx.MyProperty).Test")]
 
 		// Main class (without context)
 		[DataRow("", "MyProperty.A", "MyProperty.A")]
