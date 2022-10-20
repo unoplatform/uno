@@ -28,9 +28,11 @@ First, you'll need to install, in the app you want to debug with, a published Un
 Then, here are the steps to use a local build of Uno.UI in another application:
 
 1. Configure Uno.UI to build for the target platform you wish to debug, [as detailed here](building-uno-ui.md).
-2. Close any instances of Visual Studio with Uno.UI open.
-3. Open the solution containing the application you wish to debug.
+1. By default the Uno.UI solution on the master branch is building using the UWP API set. If you want to build against the WinUI 3 API set, you can checkout the `generated/master/winui-autoconvert` branch. See [this section](winui-conversion.md) for details on this branch.
+2. Close any instances of Visual Studio with the Uno.UI solution opened.
+3. Open the solution containing the application you wish to debug to ensure the package is restored & cached.
 4. Note the NuGet version of Uno.UI (or Uno.UI.WebAssembly/Uno.UI.Skia) being used by the application (eg `3.10.0-dev.432`).
+1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
 5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->`.
 6. Replace the version number with the version being used by the application you wish to debug.
 7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). 
@@ -55,6 +57,8 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 - Building for Android requires the API level to match the version you specified in `UnoTargetFrameworkOverride`. A common issues is that the app being debugged uses Android10.0 and `Uno.UI` is built using Android11.0. You can change the API level in the debugged project's build properties.
 
 - The nuget override process only works on already installed versions. The best way to ensure that the override is successful is to build the debugged application once before overriding the Uno.UI version the app uses.
+
+- Make sure to close the application that uses the overridden nuget package, to avoid locked files issues on Windows.
 
 ### Troubleshooting
 
