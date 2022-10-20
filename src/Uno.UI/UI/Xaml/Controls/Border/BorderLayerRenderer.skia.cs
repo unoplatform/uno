@@ -373,16 +373,14 @@ internal partial class BorderLayerRenderer
 			BackgroundImage = backgroundImage;
 		}
 
-		public bool Equals(LayoutState other)
-		{
-			return other != null
-				&& other.Area == Area
-				&& other.Background == Background
-				&& other.BackgroundSizing == BackgroundSizing
-				&& other.BorderBrush == BorderBrush
-				&& other.BorderThickness == BorderThickness
-				&& other.CornerRadius == CornerRadius
-				&& other.BackgroundImage == BackgroundImage;
-		}
+		public bool Equals(LayoutState other) =>
+			other != null &&
+			other.Area == Area &&
+			other.Background == Background &&
+			other.BackgroundSizing == BackgroundSizing &&
+			other.BorderBrush == BorderBrush &&
+			other.BorderThickness == BorderThickness &&
+			other.CornerRadius == CornerRadius &&
+			other.BackgroundImage == BackgroundImage;
 	}
 }
