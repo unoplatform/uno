@@ -10,10 +10,10 @@ namespace Windows.UI.Xaml.Controls;
 /// </summary>
 internal partial class BorderLayerRenderer
 {
-	private readonly UIElement _owner;
+	private readonly FrameworkElement _owner;
 	private readonly IBorderInfoProvider? _borderInfoProvider;
 
-	public BorderLayerRenderer(UIElement owner)
+	public BorderLayerRenderer(FrameworkElement owner)
 	{
 		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		_borderInfoProvider = _owner as IBorderInfoProvider;
