@@ -109,7 +109,8 @@
 		"Talkin",
 		"UADO",
 		"Udemy",
-		"winui"
+	  "UNOB",
+	  "winui",
 	],
 	"patterns": [
 		{
@@ -157,6 +158,6 @@
 		"Multi-line code blocks"
 	],
 	"ignorePaths": [
-		"doc/index.md"
+		"../doc/index.md"
 	]
 }

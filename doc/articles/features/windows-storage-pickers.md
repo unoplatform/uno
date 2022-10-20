@@ -263,6 +263,15 @@ The allowed values for the configuration are:
 - `FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
 - `DownloadUpload` - uses download/upload pickers only.
 
+### Security considerations
+Browsers generally treat file opening/saving operations as sensitive operations, and the following message may appear when using this APIs:
+
+```
+SecurityError: Failed to execute 'showSaveFilePicker' on 'Window': Must be handling a user gesture to show a file picker.
+```
+
+This generally means that the Uno file picking APIs have been invoked without an explicit user interaction, or have been rescheduled from the original user interaction callback (e.g. using `DispatcherQueue.TryRun()` inside a `Button.Click` handler to open a picker).
+
 ## Android
 
 Files picked from file pickers on Android are provided by the *Storage Access Framework API*. Due to its limitations, it is not possible to write to existing file in-place. Instead, Uno Platform creates a copy of the file in temporary storage and your changes are applied to this temporary file instead. When your file stream is then flushed, closed, or disposed of, the changes are written to the source file and the temporary file is discarded.
