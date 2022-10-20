@@ -1,0 +1,23 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: spell_checking
+  displayName: 'Spell Checking Validation'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x'
+
+  - bash: npm install -g cspell
+    displayName: Install cSpell
+
+  - bash: cspell --config ./build/cSpell.json "doc/**/*.md" --no-progress
+    displayName: Run Spell Checking
