@@ -1,19 +1,15 @@
-﻿using Uno.Extensions;
-using Uno.Foundation.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
-using System.Text;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Uno;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -184,7 +180,11 @@ namespace Windows.UI.Xaml.Media
 
 		partial void DisposePartial();
 
-		public void Dispose() => DisposePartial();
+		public void Dispose()
+		{
+			UnloadImageData();
+			DisposePartial();
+		}
 
 		/// <summary>
 		/// Downloads an image from the provided Uri.
@@ -233,6 +233,19 @@ namespace Windows.UI.Xaml.Media
 			return await response.Content.ReadAsStreamAsync();
 		}
 
+		internal void UnloadImageData()
+		{
+			UnloadImageDataPlatform();
+			UnloadImageSourceData();
+			_imageData = ImageData.Empty;
+		}
+
+		partial void UnloadImageDataPlatform();
+
+		/// <summary>
+		/// Override in concrete ImageSource implementations
+		/// to provide source-specific cleanup of image data.
+		/// </summary>
 		private protected virtual void UnloadImageSourceData()
 		{
 		}

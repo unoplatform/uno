@@ -416,7 +416,6 @@ namespace Windows.UI.Xaml.Media
 
 		partial void DisposePartial()
 		{
-			UnloadImageData();
 			if (BitmapDrawable != null)
 			{
 				BitmapDrawable.Dispose();
@@ -424,11 +423,9 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		internal virtual void UnloadImageData()
+		internal virtual void UnloadImageDataPlatform()
 		{
 			UnloadBitmapImageData();
-			UnloadImageSourceData();
-			_imageData = ImageData.Empty;
 		}
 
 		private void UnloadBitmapImageData()

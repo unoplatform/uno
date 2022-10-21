@@ -8,5 +8,5 @@ public sealed partial class DownloadProgressEventArgs
 	/// <summary>
 	/// Gets download progress as a value that is between 0 and 100.
 	/// </summary>
-	public int Progress	{ get; set;	}
+	public int Progress { get; set; }
 }

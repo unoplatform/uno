@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		private readonly bool _isOriginalSourceUIImage;
-
 		static ImageSource()
 		{
 		}
@@ -43,51 +41,9 @@ namespace Windows.UI.Xaml.Media
 		internal string BundleName { get; private set; }
 		internal string BundlePath { get; private set; }
 
-		static public implicit operator ImageSource(NSImage image)
-		{
-			return new ImageSource(image);
-		}
+		static public implicit operator ImageSource(NSImage image) => new ImageSource(image);
 
-		public bool HasSource()
-		{
-			return IsSourceReady
-				|| Stream != null
-				|| AbsoluteUri != null
-				|| FilePath.HasValueTrimmed()
-				|| _imageData.HasData
-				|| HasBundle;
-		}
-
-		/// <summary>
-		/// Determines if the current instance references a local bundle resource.
-		/// </summary>
-		public bool HasBundle => BundlePath.HasValueTrimmed() || BundleName.HasValueTrimmed();
-
-		/// <summary>
-		/// Open the image from the app's main bundle.
-		/// </summary>
-		internal ImageData OpenBundle()
-		{
-			var image = OpenResourceFromString(BundlePath) ?? OpenResourceFromString(BundleName);
-
-			if (image is not null)
-			{
-				_imageData = ImageData.FromNative(image);
-			}
-			else
-			{
-				_imageData = ImageData.Empty;
-			}
-
-			if (!_imageData.HasData)
-			{
-				this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundlePath ?? BundleName);
-			}
-
-			return _imageData;
-		}
-
-		private static NSImage OpenResourceFromString(string name)
+		private static NSImage OpenBundleFromString(string name)
 		{
 			if (name.HasValueTrimmed())
 			{
@@ -99,146 +55,76 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
-		/// <summary>
-		/// Indicates that this ImageSource has enough information to be opened
-		/// </summary>
-		private protected virtual bool IsSourceReady => false;
-
-		private protected virtual bool TryOpenSourceSync(out ImageData image)
+		private ImageData OpenImageDataFromStream()
 		{
-			image = default;
-			return false;
-		}
+			Stream.Position = 0;
+			var nativeImage = NSImage.FromStream(Stream);
 
-		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, out Task<ImageData> asyncImage)
-		{
-			asyncImage = default;
-			return false;
-		}
-
-		/// <summary>
-		/// Retrieves the already loaded image, or for supported source (eg. WriteableBitmap, cf remarks),
-		/// create a native image from the data in memory.
-		/// </summary>
-		/// <remarks>
-		/// This is only intended to convert **uncompressed data already in memory**,
-		/// and should not be used to decompress a JPEG for instance, even if the already in memory.
-		/// </remarks>
-		internal bool TryOpenSync(out ImageData image)
-		{
-			if (_imageData.HasData)
+			if (nativeImage is not null)
 			{
-				image = _imageData;
-				return true;
+				return _imageData = ImageData.FromNative(nativeImage);
 			}
-
-			if (IsSourceReady && TryOpenSourceSync(out image))
+			else
 			{
-				return true;
+				return ImageData.Empty;
 			}
-
-			image = default;
-			return false;
 		}
 
-		internal async Task<ImageData> Open(CancellationToken ct)
+		private async Task<ImageData> OpenImageDataFromFilePathAsync()
 		{
-			using (
-			   _trace.WriteEventActivity(
-				   TraceProvider.ImageSource_SetImageDecodeStart,
-				   TraceProvider.ImageSource_SetImageDecodeStop,
-				   new object[] { this.GetDependencyObjectId() }
-			   )
-			)
+			await using var file = File.OpenRead(FilePath);
+			var nativeImage = NSImage.FromStream(file);
+
+			_imageData = nativeImage is not null ?
+				ImageData.FromNative(nativeImage) : ImageData.Empty;
+
+			return _imageData;
+		}
+
+		private async Task<ImageData> OpenImageDataFromBundleAsync()
+		{
+			await CoreDispatcher.Main.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() =>
+				{
+					_imageData = OpenBundle();
+				});
+
+			return _imageData;
+		}
+
+		private async Task<ImageData> DownloadAndOpenImageDataAsync()
+		{
+			if (Downloader == null)
 			{
-				if (ct.IsCancellationRequested)
+				await OpenUsingPlatformDownloader(ct);
+			}
+			else
+			{
+				var localFileUri = await Download(ct, AbsoluteUri);
+
+				if (localFileUri == null)
 				{
 					return ImageData.Empty;
 				}
 
-				if (IsSourceReady && TryOpenSourceSync(out var img))
-				{
-					return _imageData = img;
-				}
-
-				if (IsSourceReady && TryOpenSourceAsync(ct, out var asyncImg))
-				{
-					return _imageData = await asyncImg;
-				}
-
-				if (Stream != null)
-				{
-					Stream.Position = 0;
-					var nativeImage = NSImage.FromStream(Stream);
-
-					if (nativeImage is not null)
+				await CoreDispatcher.Main.RunAsync(
+					CoreDispatcherPriority.Normal,
+					() =>
 					{
-						return _imageData = ImageData.FromNative(nativeImage);
-					}
-					else
-					{
-						return ImageData.Empty;
-					}
-				}
-
-				if (FilePath.HasValue())
-				{
-					await using var file = File.OpenRead(FilePath);
-					var nativeImage = NSImage.FromStream(file);
-					if (nativeImage is not null)
-					{
-						return _imageData = ImageData.FromNative(nativeImage);
-					}
-					else
-					{
-						return _imageData = ImageData.Empty;
-					}
-				}
-
-				if (HasBundle)
-				{
-					await CoreDispatcher.Main.RunAsync(
-						CoreDispatcherPriority.Normal,
-						() =>
+						var nativeImage = NSImage.ImageNamed(localFileUri.LocalPath);
+						if (nativeImage is not null)
 						{
-							_imageData = OpenBundle();
+							_imageData = ImageData.FromNative(nativeImage);
 						}
-					);
-
-					return _imageData;
-				}
-
-				if (Downloader == null)
-				{
-					await OpenUsingPlatformDownloader(ct);
-				}
-				else
-				{
-					var localFileUri = await Download(ct, AbsoluteUri);
-
-					if (localFileUri == null)
-					{
-						return ImageData.Empty;
-					}
-
-					await CoreDispatcher.Main.RunAsync(
-						CoreDispatcherPriority.Normal,
-						() =>
+						else
 						{
-							var nativeImage = NSImage.ImageNamed(localFileUri.LocalPath);
-							if (nativeImage is not null)
-							{
-								_imageData = ImageData.FromNative(nativeImage);
-							}
-							else
-							{
-								_imageData = ImageData.Empty;
-							}
-						}).AsTask(ct);
-				}
-
-				return _imageData;
+							_imageData = ImageData.Empty;
+						}
+					}).AsTask(ct);
 			}
+
+			return _imageData;
 		}
 
 		/// <summary>
@@ -287,62 +173,6 @@ namespace Windows.UI.Xaml.Media
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Similar to Dispose, but the ImageSource can still be used in the future.
-		/// </summary>
-		internal void UnloadImageData()
-		{
-			// If the original source is a NSImage, we can't dispose it because we will
-			// not be able to restore it later (from a AbsoluteUri, BundleName, file path, etc.)
-			if (!_isOriginalSourceUIImage)
-			{
-				DisposeImageData();
-			}
-		}
-
-		partial void InitFromResource(Uri uri)
-		{
-			var path = uri
-				.PathAndQuery
-				.TrimStart(new[] { '/' })
-
-				// UWP supports backward slash in path for directory separators.
-				.Replace("\\", "/");
-
-			BundlePath = path;
-
-			BundleName = uri != null
-				? Path.GetFileName(uri.AbsolutePath)
-				: null;
-		}
-
-		partial void CleanupResource()
-		{
-			BundlePath = null;
-			BundleName = null;
-		}
-
-		partial void DisposePartial()
-		{
-			DisposeImageData();
-		}
-
-		private void DisposeImageData()
-		{
-			if (_imageData.Kind == ImageDataKind.NativeImage)
-			{
-				_imageData.NativeImage?.Dispose();
-			}
-
-			_imageData = ImageData.Empty;
-		}
-
-		public override string ToString()
-		{
-			var source = Stream ?? AbsoluteUri ?? FilePath ?? (object)_imageData.NativeImage ?? BundlePath ?? BundleName ?? "[No source]";
-			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
 	}
 }

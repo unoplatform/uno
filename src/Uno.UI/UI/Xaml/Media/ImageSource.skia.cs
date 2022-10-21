@@ -31,7 +31,5 @@ namespace Windows.UI.Xaml.Media
 		{
 			AbsoluteUri = null;
 		}
-
-		internal void UnloadImageData() { }
 	}
 }

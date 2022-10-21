@@ -35,16 +35,14 @@ partial class SvgImageSource
 			if (Stream != null)
 			{
 				Stream.Position = 0;
-				using (var data = NSData.FromStream(Stream))
-				{
-					var bytes = data.ToArray();
-					return ImageData.FromBytes(bytes);
-				}
+				using var data = NSData.FromStream(Stream)				
+				var bytes = data.ToArray();
+				return ImageData.FromBytes(bytes);				
 			}
 
 			if (FilePath.HasValue())
 			{
-				var data = NSData.FromFile(FilePath);
+				using var data = NSData.FromFile(FilePath);
 				var bytes = data.ToArray();
 				return ImageData.FromBytes(bytes);
 			}
@@ -83,7 +81,7 @@ partial class SvgImageSource
 		var fileExtension = global::System.IO.Path.GetExtension(bundlePath);
 
 		var resourcePathname = NSBundle.MainBundle.GetUrlForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
-		var data = NSData.FromUrl(resourcePathname);
+		using var data = NSData.FromUrl(resourcePathname);
 		var bytes = data.ToArray();
 		return ImageData.FromBytes(bytes);
 	}
