@@ -423,7 +423,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		internal virtual void UnloadImageDataPlatform()
+		partial void UnloadImageDataPlatform()
 		{
 			UnloadBitmapImageData();
 		}

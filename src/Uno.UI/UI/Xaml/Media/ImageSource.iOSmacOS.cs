@@ -1,7 +1,26 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading;
-using System;
+using System.Threading.Tasks;
+using Foundation;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
+using Windows.UI.Core;
+
+#if __IOS__
+using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml.Media;
 
@@ -188,10 +207,10 @@ public partial class ImageSource
 
 			if (HasBundle)
 			{
-				return await OpenImageDataFromBundleAsync();
+				return await OpenImageDataFromBundleAsync(ct);
 			}
 
-			return await DownloadAndOpenImageDataAsync();
+			return await DownloadAndOpenImageDataAsync(ct);
 		}
 	}
 

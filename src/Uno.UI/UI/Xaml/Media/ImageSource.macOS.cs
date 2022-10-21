@@ -81,19 +81,19 @@ namespace Windows.UI.Xaml.Media
 			return _imageData;
 		}
 
-		private async Task<ImageData> OpenImageDataFromBundleAsync()
+		private async Task<ImageData> OpenImageDataFromBundleAsync(CancellationToken ct)
 		{
 			await CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() =>
 				{
 					_imageData = OpenBundle();
-				});
+				}).AsTask(ct);
 
 			return _imageData;
 		}
 
-		private async Task<ImageData> DownloadAndOpenImageDataAsync()
+		private async Task<ImageData> DownloadAndOpenImageDataAsync(CancellationToken ct)
 		{
 			if (Downloader == null)
 			{

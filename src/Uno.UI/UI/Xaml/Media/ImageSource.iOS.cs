@@ -1,8 +1,16 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using Foundation;
+using UIKit;
+using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -83,7 +91,7 @@ namespace Windows.UI.Xaml.Media
 			return Task.FromResult(_imageData);
 		}
 
-		private async Task<ImageData> OpenImageDataFromBundleAsync()
+		private async Task<ImageData> OpenImageDataFromBundleAsync(CancellationToken ct)
 		{
 			if (SupportsAsyncFromBundle)
 			{
@@ -97,13 +105,13 @@ namespace Windows.UI.Xaml.Media
 					{
 						_imageData = OpenBundle();
 					}
-				);
+				).AsTask(ct);
 
 				return _imageData;
 			}
 		}
 
-		private async Task<ImageData> DownloadAndOpenImageDataAsync()
+		private async Task<ImageData> DownloadAndOpenImageDataAsync(CancellationToken ct)
 		{
 			if (Downloader == null)
 			{
