@@ -42,10 +42,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				sw.Write("OK !");
 			}
 
-			using (var sr = new StreamReader(await file.OpenStreamForReadAsync()))
-			{
-				Assert.AreEqual("OK !", sr.ReadToEnd());
-			}
+			using var sr = new StreamReader(await file.OpenStreamForReadAsync());
+			Assert.AreEqual("OK !", sr.ReadToEnd());
 		}
 
 		[TestMethod]

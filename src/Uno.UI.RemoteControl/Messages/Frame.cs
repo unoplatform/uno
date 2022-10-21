@@ -26,15 +26,13 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		public static Frame Read(Stream stream)
 		{
-			using (var reader = new BinaryReader(stream, Encoding.UTF8))
-			{
-				var version = reader.ReadInt16();
-				var scope = reader.ReadString();
-				var name = reader.ReadString();
-				var content = reader.ReadString();
+			using var reader = new BinaryReader(stream, Encoding.UTF8);
+			var version = reader.ReadInt16();
+			var scope = reader.ReadString();
+			var name = reader.ReadString();
+			var content = reader.ReadString();
 
-				return new Frame(version, scope, name, content);
-			}
+			return new Frame(version, scope, name, content);
 		}
 
 		public static Frame Create<T>(short version, string scope, string name, T content)

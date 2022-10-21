@@ -1046,13 +1046,11 @@ description: {sample.Description}";
 				{
 					var folder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path);
 					var file = await folder.OpenStreamForWriteAsync(SampleChooserFileAddress + key, CreationCollisionOption.ReplaceExisting);
-					using (var writer = new StreamWriter(file, encoding: System.Text.Encoding.UTF8))
-					using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(writer))
-					{
-						var ser = Newtonsoft.Json.JsonSerializer.CreateDefault();
-						ser.Serialize(jsonWriter, value);
-						jsonWriter.Flush();
-					}
+					using var writer = new StreamWriter(file, encoding: System.Text.Encoding.UTF8);
+					using var jsonWriter = new Newtonsoft.Json.JsonTextWriter(writer);
+					var ser = Newtonsoft.Json.JsonSerializer.CreateDefault();
+					ser.Serialize(jsonWriter, value);
+					jsonWriter.Flush();
 				}
 				catch (IOException e)
 				{
@@ -1166,22 +1164,20 @@ description: {sample.Description}";
 
 				var pixels = await targetBitmap.GetPixelsAsync().AsTask(ct);
 
-				using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct))
-				{
-					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
+				using var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct);
+				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
 
-					encoder.SetPixelData(
-						BitmapPixelFormat.Bgra8,
-						BitmapAlphaMode.Ignore,
-						(uint)targetBitmap.PixelWidth,
-						(uint)targetBitmap.PixelHeight,
-						DisplayInformation.GetForCurrentView().RawDpiX,
-						DisplayInformation.GetForCurrentView().RawDpiY,
-						pixels.ToArray()
-					);
+				encoder.SetPixelData(
+					BitmapPixelFormat.Bgra8,
+					BitmapAlphaMode.Ignore,
+					(uint)targetBitmap.PixelWidth,
+					(uint)targetBitmap.PixelHeight,
+					DisplayInformation.GetForCurrentView().RawDpiX,
+					DisplayInformation.GetForCurrentView().RawDpiY,
+					pixels.ToArray()
+				);
 
-					await encoder.FlushAsync().AsTask(ct);
-				}
+				await encoder.FlushAsync().AsTask(ct);
 			}
 			catch (Exception ex)
 			{

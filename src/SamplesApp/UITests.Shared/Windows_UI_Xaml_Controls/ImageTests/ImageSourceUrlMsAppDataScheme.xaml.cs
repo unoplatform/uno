@@ -69,14 +69,10 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 						.GetManifestResourceNames()
 						.First(n => n.IndexOf("MsAppDataUriTest.png", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
-				using (var stream = assembly.GetManifestResourceStream(resourceName))
-				{
-					Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-					using (var targetStream = File.Create(targetPath))
-					{
-						await stream.CopyToAsync(targetStream);
-					}
-				}
+				using var stream = assembly.GetManifestResourceStream(resourceName);
+				Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+				using var targetStream = File.Create(targetPath);
+				await stream.CopyToAsync(targetStream);
 			}
 		}
 	}

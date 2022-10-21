@@ -162,12 +162,10 @@ namespace SamplesApp.UITests
 					? Environment.CurrentDirectory
 					: _screenShotPath;
 
-				using (var logOutput = new StreamWriter(Path.Combine(outputPath, $"{fileName}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss.fff}.txt")))
+				using var logOutput = new StreamWriter(Path.Combine(outputPath, $"{fileName}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss.fff}.txt"));
+				foreach (var log in _app.GetSystemLogs(_startTime.ToUniversalTime()))
 				{
-					foreach (var log in _app.GetSystemLogs(_startTime.ToUniversalTime()))
-					{
-						logOutput.WriteLine($"{log.Timestamp}/{log.Level}: {log.Message}");
-					}
+					logOutput.WriteLine($"{log.Timestamp}/{log.Level}: {log.Message}");
 				}
 			}
 		}

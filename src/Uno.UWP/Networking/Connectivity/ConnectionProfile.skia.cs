@@ -22,11 +22,9 @@ namespace Windows.Networking.Connectivity
 			{
 				try
 				{
-					using (var ping = new Ping())
-					{
-						var reply = ping.Send(WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname);
-						return reply?.Status == IPStatus.Success ? NetworkConnectivityLevel.InternetAccess : NetworkConnectivityLevel.None;
-					}
+					using var ping = new Ping();
+					var reply = ping.Send(WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname);
+					return reply?.Status == IPStatus.Success ? NetworkConnectivityLevel.InternetAccess : NetworkConnectivityLevel.None;
 				}
 				catch
 				{

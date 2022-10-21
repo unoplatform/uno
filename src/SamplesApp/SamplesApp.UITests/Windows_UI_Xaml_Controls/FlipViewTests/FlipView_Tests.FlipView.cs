@@ -65,15 +65,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 
 			// check for selection index && content
 			Assert.AreEqual(expectedIndex, flipview.GetDependencyPropertyValue<int>("SelectedIndex"));
-			using (var screenshot = TakeScreenshot($"Post_{navigationContext}_Navigation", ignoreInSnapshotCompare: true))
-			{
-				ImageAssert.HasColorAt(
-					screenshot,
-					flipviewRect.X + previousButtonRect.Width + 2,
-					flipviewRect.CenterY,
-					ButtonColors.Split(',').ElementAtOrDefault(expectedIndex) ?? throw new IndexOutOfRangeException($"{nameof(expectedIndex)} is out of range")
-				);
-			}
+			using var screenshot = TakeScreenshot($"Post_{navigationContext}_Navigation", ignoreInSnapshotCompare: true);
+			ImageAssert.HasColorAt(
+				screenshot,
+				flipviewRect.X + previousButtonRect.Width + 2,
+				flipviewRect.CenterY,
+				ButtonColors.Split(',').ElementAtOrDefault(expectedIndex) ?? throw new IndexOutOfRangeException($"{nameof(expectedIndex)} is out of range")
+			);
 		}
 
 		[Test]

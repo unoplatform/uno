@@ -85,36 +85,28 @@ namespace Uno.UI.TestComparer
 						Console.WriteLine($"Getting artifact for build {build.Id}");
 						using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
 						{
-							using (var f = File.OpenWrite(tempFile))
-							{
-								await stream.CopyToAsync(f);
-							}
+							using var f = File.OpenWrite(tempFile);
+							await stream.CopyToAsync(f);
 						}
 
 						Console.WriteLine($"Extracting artifact for build {build.Id}");
 
 						fullPath = fullPath.Replace("\\\\", "\\");
 
-						using (var archive = ZipFile.OpenRead(tempFile))
+						using var archive = ZipFile.OpenRead(tempFile);
+						foreach (var entry in archive.Entries)
 						{
-							foreach (var entry in archive.Entries)
-							{
-								var outPath = Path.Combine(fullPath, entry.FullName.Replace("/", "\\"));
+							var outPath = Path.Combine(fullPath, entry.FullName.Replace("/", "\\"));
 
-								if (outPath.EndsWith("\\"))
-								{
-									Directory.CreateDirectory(@"\\?\" + outPath);
-								}
-								else
-								{
-									using (var stream = entry.Open())
-									{
-										using (var outStream = File.OpenWrite(@"\\?\" + outPath))
-										{
-											await stream.CopyToAsync(outStream);
-										}
-									}
-								}
+							if (outPath.EndsWith("\\"))
+							{
+								Directory.CreateDirectory(@"\\?\" + outPath);
+							}
+							else
+							{
+								using var stream = entry.Open();
+								using var outStream = File.OpenWrite(@"\\?\" + outPath);
+								await stream.CopyToAsync(outStream);
 							}
 						}
 					}

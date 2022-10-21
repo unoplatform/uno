@@ -40,12 +40,10 @@ namespace Windows.UI.Composition
 
 				// Generate stroke geometry for bounds that will be passed to a brush.
 				// - [Future]: This generated geometry should also be used for hit testing.
-				using (var strokeGeometry = strokePaint.GetFillPath(geometry))
-				{
-					StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+				using var strokeGeometry = strokePaint.GetFillPath(geometry);
+				StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
-					surface.Canvas.DrawPath(strokeGeometry, fillPaint);
-				}
+				surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 			}
 		}
 

@@ -89,22 +89,20 @@ namespace Windows.Storage
 
 					if (File.Exists(_filePath))
 					{
-						using (var reader = new BinaryReader(File.OpenRead(_filePath)))
+						using var reader = new BinaryReader(File.OpenRead(_filePath));
+						var count = reader.ReadInt32();
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							var count = reader.ReadInt32();
+							this.Log().Debug($"Reading {count} settings values");
+						}
 
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().Debug($"Reading {count} settings values");
-							}
+						for (int i = 0; i < count; i++)
+						{
+							var key = reader.ReadString();
+							var value = reader.ReadString();
 
-							for (int i = 0; i < count; i++)
-							{
-								var key = reader.ReadString();
-								var value = reader.ReadString();
-
-								_values[key] = value;
-							}
+							_values[key] = value;
 						}
 					}
 					else
@@ -135,15 +133,13 @@ namespace Windows.Storage
 						this.Log().Debug($"Writing {_values.Count} settings to {_filePath}");
 					}
 
-					using (var writer = new BinaryWriter(File.OpenWrite(_filePath)))
-					{
-						writer.Write(_values.Count);
+					using var writer = new BinaryWriter(File.OpenWrite(_filePath));
+					writer.Write(_values.Count);
 
-						foreach (var pair in _values)
-						{
-							writer.Write(pair.Key);
-							writer.Write(pair.Value ?? "");
-						}
+					foreach (var pair in _values)
+					{
+						writer.Write(pair.Key);
+						writer.Write(pair.Value ?? "");
 					}
 				}
 				catch (Exception e)

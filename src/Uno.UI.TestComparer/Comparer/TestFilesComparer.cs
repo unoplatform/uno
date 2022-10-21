@@ -213,36 +213,32 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private (string sha, int index) BuildSha1(string sample)
 		{
-			using (var sha1 = SHA1.Create())
+			using var sha1 = SHA1.Create();
+			using var file = File.OpenRead(@"\\?\" + sample);
+			var data = sha1.ComputeHash(file);
+
+			// Create a new Stringbuilder to collect the bytes
+			// and create a string.
+			var sBuilder = new StringBuilder();
+
+			// Loop through each byte of the hashed data 
+			// and format each one as a hexadecimal string.
+			for (int i = 0; i < data.Length; i++)
 			{
-				using (var file = File.OpenRead(@"\\?\" + sample))
+				sBuilder.Append(data[i].ToString("x2", CultureInfo.InvariantCulture));
+			}
+
+			var sha = sBuilder.ToString();
+
+			lock (_fileHashesTable)
+			{
+				if (!_fileHashesTable.TryGetValue(sha, out var index))
 				{
-					var data = sha1.ComputeHash(file);
-
-					// Create a new Stringbuilder to collect the bytes
-					// and create a string.
-					var sBuilder = new StringBuilder();
-
-					// Loop through each byte of the hashed data 
-					// and format each one as a hexadecimal string.
-					for (int i = 0; i < data.Length; i++)
-					{
-						sBuilder.Append(data[i].ToString("x2", CultureInfo.InvariantCulture));
-					}
-
-					var sha = sBuilder.ToString();
-
-					lock (_fileHashesTable)
-					{
-						if (!_fileHashesTable.TryGetValue(sha, out var index))
-						{
-							index = _fileHashesTable.Count;
-							_fileHashesTable[sha] = index;
-						}
-
-						return (sha, index);
-					}
+					index = _fileHashesTable.Count;
+					_fileHashesTable[sha] = index;
 				}
+
+				return (sha, index);
 			}
 		}
 
@@ -260,26 +256,24 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo, int stride)
 		{
-			using (var stream = new FileStream(diffPath, FileMode.Create))
-			{
-				var encoder = new PngBitmapEncoder();
+			using var stream = new FileStream(diffPath, FileMode.Create);
+			var encoder = new PngBitmapEncoder();
 
-				encoder.Interlace = PngInterlaceOption.On;
+			encoder.Interlace = PngInterlaceOption.On;
 
-				var frame = BitmapSource.Create(
-					pixelWidth: (int)frameInfo.PixelWidth,
-					pixelHeight: (int)frameInfo.PixelHeight,
-					dpiX: frameInfo.DpiX,
-					dpiY: frameInfo.DpiY,
-					pixelFormat: frameInfo.Format,
-					palette: frameInfo.Palette,
-					pixels: diff,
-					stride: stride
-				);
+			var frame = BitmapSource.Create(
+				pixelWidth: (int)frameInfo.PixelWidth,
+				pixelHeight: (int)frameInfo.PixelHeight,
+				dpiX: frameInfo.DpiX,
+				dpiY: frameInfo.DpiY,
+				pixelFormat: frameInfo.Format,
+				palette: frameInfo.Palette,
+				pixels: diff,
+				stride: stride
+			);
 
-				encoder.Frames.Add(BitmapFrame.Create(frame));
-				encoder.Save(stream);
-			}
+			encoder.Frames.Add(BitmapFrame.Create(frame));
+			encoder.Save(stream);
 		}
 
 		private byte[] DiffImages(byte[] currentImage, byte[] previousImage, int pixelSize)
@@ -303,20 +297,18 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
 		{
-			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
-			{
-				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+			using Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read);
+			var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-				var f = decoder.Frames[0];
-				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
-				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
-				sourceStride += (4 - sourceStride % 4);
+			var f = decoder.Frames[0];
+			var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
+			var sourceStride = f.PixelWidth * sourceBytesPerPixels;
+			sourceStride += (4 - sourceStride % 4);
 
-				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
-				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
+			var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
+			decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
 
-				return (decoder.Frames[0], image, sourceStride);
-			}
+			return (decoder.Frames[0], image, sourceStride);
 		}
 
 		private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)

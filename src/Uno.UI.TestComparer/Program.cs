@@ -112,33 +112,31 @@ namespace Umbrella.UI.TestComparer
 							RightPath = pair
 						};
 
-				using (var file = new StreamWriter(outputPath))
+				using var file = new StreamWriter(outputPath);
+				file.Write("<html><body>");
+				file.Write("<table>");
+
+				foreach (var pair in q)
 				{
-					file.Write("<html><body>");
-					file.Write("<table>");
+					var areValidFiles = pair.LeftPath != null && pair.RightPath != null;
+					var areEqual = areValidFiles ?
+						File.ReadAllBytes(pair.LeftPath).SequenceEqual(File.ReadAllBytes(pair.RightPath))
+						: false;
 
-					foreach (var pair in q)
+					if (!areEqual)
 					{
-						var areValidFiles = pair.LeftPath != null && pair.RightPath != null;
-						var areEqual = areValidFiles ?
-							File.ReadAllBytes(pair.LeftPath).SequenceEqual(File.ReadAllBytes(pair.RightPath))
-							: false;
-
-						if (!areEqual)
-						{
-							file.Write("<tr>");
-							file.Write("<td>");
-							file.Write($"<img src=\"file:///{pair.LeftPath}\" width=400 height=400 />");
-							file.Write("</td>");
-							file.Write("<td>");
-							file.Write($"<img src=\"file:///{pair.RightPath}\"  width=400 height=400 />");
-							file.Write("</td>");
-							file.Write("</tr>");
-						}
+						file.Write("<tr>");
+						file.Write("<td>");
+						file.Write($"<img src=\"file:///{pair.LeftPath}\" width=400 height=400 />");
+						file.Write("</td>");
+						file.Write("<td>");
+						file.Write($"<img src=\"file:///{pair.RightPath}\"  width=400 height=400 />");
+						file.Write("</td>");
+						file.Write("</tr>");
 					}
-					file.Write("</table>");
-					file.Write("</body></html>");
 				}
+				file.Write("</table>");
+				file.Write("</body></html>");
 			}
 		}
 
@@ -346,10 +344,8 @@ namespace Umbrella.UI.TestComparer
 				}
 			}
 
-			using (var file = XmlWriter.Create(File.OpenWrite(resultsFilePath), new XmlWriterSettings { Indent = true } ))
-			{
-				doc.WriteTo(file);
-			}
+			using var file = XmlWriter.Create(File.OpenWrite(resultsFilePath), new XmlWriterSettings { Indent = true });
+			doc.WriteTo(file);
 		}
 
 		private static string BuildSymlink(string basePath, string symlinksBasePath, int folderIndex, string originalFilePath)

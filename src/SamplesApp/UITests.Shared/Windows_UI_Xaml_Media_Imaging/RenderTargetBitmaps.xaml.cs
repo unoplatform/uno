@@ -87,23 +87,21 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 			await renderer.RenderAsync(this.border);
 
 			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-			using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
-			{
+			using var output = await file.OpenAsync(FileAccessMode.ReadWrite);
 #if WINDOWS_UWP || __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
-				var pixels = await renderer.GetPixelsAsync();
-				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
-				encoder.SetPixelData(BitmapPixelFormat.Bgra8
-					, BitmapAlphaMode.Premultiplied
-					, (uint)renderer.PixelWidth
-					, (uint)renderer.PixelHeight
-					, DisplayInformation.GetForCurrentView().RawDpiX
-					, DisplayInformation.GetForCurrentView().RawDpiY
-					, pixels.ToArray()
-					);
-				await encoder.FlushAsync();
-				await output.FlushAsync();
+			var pixels = await renderer.GetPixelsAsync();
+			var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
+			encoder.SetPixelData(BitmapPixelFormat.Bgra8
+				, BitmapAlphaMode.Premultiplied
+				, (uint)renderer.PixelWidth
+				, (uint)renderer.PixelHeight
+				, DisplayInformation.GetForCurrentView().RawDpiX
+				, DisplayInformation.GetForCurrentView().RawDpiY
+				, pixels.ToArray()
+				);
+			await encoder.FlushAsync();
+			await output.FlushAsync();
 #endif
-			}
 
 		}
 

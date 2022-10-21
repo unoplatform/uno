@@ -11,11 +11,9 @@ namespace System
 				return memory.ToArray();
 			}
 
-			using (var memoryStream = new MemoryStream())
-			{
-				instream.CopyTo(memoryStream);
-				return memoryStream.ToArray();
-			}
+			using var memoryStream = new MemoryStream();
+			instream.CopyTo(memoryStream);
+			return memoryStream.ToArray();
 		}
 	}
 }

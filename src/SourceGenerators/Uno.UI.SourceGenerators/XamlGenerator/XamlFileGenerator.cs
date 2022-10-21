@@ -3166,425 +3166,423 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(objectDefinition.Type));
 				}
 
-				using (var writer = CreateApplyBlock(outerwriter, useGenericApply ? null : objectDefinitionType, out closureName))
+				using var writer = CreateApplyBlock(outerwriter, useGenericApply ? null : objectDefinitionType, out closureName);
+				XamlMemberDefinition? uidMember = null;
+				XamlMemberDefinition? nameMember = null;
+				string? uiAutomationId = null;
+				string[]? extractionTargetMembers = null;
+
+				if (_isUiAutomationMappingEnabled)
 				{
-					XamlMemberDefinition? uidMember = null;
-					XamlMemberDefinition? nameMember = null;
-					string? uiAutomationId = null;
-					string[]? extractionTargetMembers = null;
+					// Look up any potential UI automation member mappings available for the current object definition
+					extractionTargetMembers = _uiAutomationMappings
+						?.FirstOrDefault(m => _metadataHelper.FindTypeByFullName(m.Key) is INamedTypeSymbol mappingKeySymbol && (IsType(objectDefinitionType, mappingKeySymbol) || IsImplementingInterface(objectDefinitionType, mappingKeySymbol)))
+						.Value
+						?.ToArray() ?? Array.Empty<string>();
+				}
 
-					if (_isUiAutomationMappingEnabled)
+				if (hasChildrenWithPhase)
+				{
+					writer.AppendIndented(GenerateRootPhases(objectDefinition, closureName) ?? "");
+				}
+
+				var lazyProperties = extendedProperties.Where(IsLazyVisualStateManagerProperty).ToArray();
+
+				foreach (var member in extendedProperties.Except(lazyProperties))
+				{
+					_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+
+					if (extractionTargetMembers != null)
 					{
-						// Look up any potential UI automation member mappings available for the current object definition
-						extractionTargetMembers = _uiAutomationMappings
-							?.FirstOrDefault(m => _metadataHelper.FindTypeByFullName(m.Key) is INamedTypeSymbol mappingKeySymbol && (IsType(objectDefinitionType, mappingKeySymbol) || IsImplementingInterface(objectDefinitionType, mappingKeySymbol)))
-							.Value
-							?.ToArray() ?? Array.Empty<string>();
+						TryExtractAutomationId(member, extractionTargetMembers, ref uiAutomationId);
 					}
 
-					if (hasChildrenWithPhase)
+					if (HasMarkupExtension(member))
 					{
-						writer.AppendIndented(GenerateRootPhases(objectDefinition, closureName) ?? "");
+						if (!IsXLoadMember(member))
+						{
+							TryValidateContentPresenterBinding(writer, objectDefinition, member);
+
+							BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
+						}
+						else
+						{
+							writer.AppendLineIndented($"/* Skipping x:Load attribute already applied to ElementStub */");
+						}
 					}
-
-					var lazyProperties = extendedProperties.Where(IsLazyVisualStateManagerProperty).ToArray();
-
-					foreach (var member in extendedProperties.Except(lazyProperties))
+					else if (HasCustomMarkupExtension(member))
 					{
-						_generatorContext.CancellationToken.ThrowIfCancellationRequested();
-
-						if (extractionTargetMembers != null)
+						if (IsAttachedProperty(member) && FindPropertyType(member.Member) != null)
 						{
-							TryExtractAutomationId(member, extractionTargetMembers, ref uiAutomationId);
+							BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: true);
 						}
-
-						if (HasMarkupExtension(member))
+						else
 						{
-							if (!IsXLoadMember(member))
-							{
-								TryValidateContentPresenterBinding(writer, objectDefinition, member);
-
-								BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
-							}
-							else
-							{
-								writer.AppendLineIndented($"/* Skipping x:Load attribute already applied to ElementStub */");
-							}
+							BuildCustomMarkupExtensionPropertyValue(writer, member, closureName);
 						}
-						else if (HasCustomMarkupExtension(member))
+					}
+					else if (member.Objects.Any())
+					{
+						if (member.Member.Name == "_UnknownContent") // So : FindType(member.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
 						{
-							if (IsAttachedProperty(member) && FindPropertyType(member.Member) != null)
+							foreach (var item in member.Objects)
 							{
-								BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: true);
-							}
-							else
-							{
-								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName);
-							}
-						}
-						else if (member.Objects.Any())
-						{
-							if (member.Member.Name == "_UnknownContent") // So : FindType(member.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
-							{
-								foreach (var item in member.Objects)
+								writer.AppendLineIndented($"{closureName}.Add(");
+								using (writer.Indent())
 								{
-									writer.AppendLineIndented($"{closureName}.Add(");
-									using (writer.Indent())
-									{
-										BuildChild(writer, member, item);
-									}
-									writer.AppendLineIndented(");");
+									BuildChild(writer, member, item);
 								}
+								writer.AppendLineIndented(");");
 							}
-							else if (!IsType(objectDefinition.Type, member.Member.DeclaringType))
+						}
+						else if (!IsType(objectDefinition.Type, member.Member.DeclaringType))
+						{
+							var ownerType = GetType(member.Member.DeclaringType!);
+
+							var propertyType = GetPropertyType(member.Member);
+
+							if (IsExactlyCollectionOrListType(propertyType))
 							{
-								var ownerType = GetType(member.Member.DeclaringType!);
+								// If the property is specifically an IList or an ICollection
+								// we can use C#'s collection initializer.
+								writer.AppendLineInvariantIndented(
+									"{0}.Set{1}({2}, ",
+									GetGlobalizedTypeName(ownerType.ToDisplayString()),
+									member.Member.Name,
+									closureName
+								);
 
-								var propertyType = GetPropertyType(member.Member);
-
-								if (IsExactlyCollectionOrListType(propertyType))
+								using (writer.BlockInvariant("new[]"))
 								{
-									// If the property is specifically an IList or an ICollection
-									// we can use C#'s collection initializer.
-									writer.AppendLineInvariantIndented(
-										"{0}.Set{1}({2}, ",
-										GetGlobalizedTypeName(ownerType.ToDisplayString()),
-										member.Member.Name,
-										closureName
-									);
-
-									using (writer.BlockInvariant("new[]"))
-									{
-										foreach (var inner in member.Objects)
-										{
-											BuildChild(writer, member, inner);
-											writer.AppendIndented(",");
-										}
-									}
-
-									writer.AppendLineIndented(");");
-								}
-								else if (IsCollectionOrListType(propertyType))
-								{
-									// If the property is a concrete type that implements an IList or
-									// an ICollection, we must get the property and call add explicitly
-									// on it.
-									var localCollectionName = $"{closureName}_collection_{_collectionIndex++}";
-
-									var getterMethod = $"Get{member.Member.Name}";
-
-									if (ownerType.GetFirstMethodWithName(getterMethod) is not null)
-									{
-										// Attached property
-										writer.AppendLineIndented(
-											$"var {localCollectionName} = {ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{getterMethod}({closureName});"
-										);
-									}
-									else
-									{
-										// Plain object
-										writer.AppendLineIndented(
-											$"var {localCollectionName} = {closureName}.{member.Member.Name};"
-										);
-									}
-
 									foreach (var inner in member.Objects)
 									{
-										writer.AppendIndented($"{localCollectionName}.Add(");
-
 										BuildChild(writer, member, inner);
-
-										writer.AppendLineIndented(");");
+										writer.AppendIndented(",");
 									}
+								}
+
+								writer.AppendLineIndented(");");
+							}
+							else if (IsCollectionOrListType(propertyType))
+							{
+								// If the property is a concrete type that implements an IList or
+								// an ICollection, we must get the property and call add explicitly
+								// on it.
+								var localCollectionName = $"{closureName}_collection_{_collectionIndex++}";
+
+								var getterMethod = $"Get{member.Member.Name}";
+
+								if (ownerType.GetFirstMethodWithName(getterMethod) is not null)
+								{
+									// Attached property
+									writer.AppendLineIndented(
+										$"var {localCollectionName} = {ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{getterMethod}({closureName});"
+									);
 								}
 								else
 								{
-									// If the property is specifically an IList or an ICollection
-									// we can use C#'s collection initializer.
-									writer.AppendLineInvariantIndented(
-										"{0}.Set{1}({2}, ",
-										GetGlobalizedTypeName(ownerType.ToDisplayString()),
-										member.Member.Name,
-										closureName
+									// Plain object
+									writer.AppendLineIndented(
+										$"var {localCollectionName} = {closureName}.{member.Member.Name};"
 									);
+								}
 
-									if (member.Objects.Count == 1)
-									{
-										BuildChild(writer, member, member.Objects.First());
-									}
-									else
-									{
-										throw new InvalidOperationException($"The property {member.Member.Name} of type {propertyType} does not support adding multiple objects.");
-									}
+								foreach (var inner in member.Objects)
+								{
+									writer.AppendIndented($"{localCollectionName}.Add(");
+
+									BuildChild(writer, member, inner);
 
 									writer.AppendLineIndented(");");
 								}
 							}
 							else
 							{
-								// GenerateWarning(writer, $"Unknown type {objectDefinition.Type} for property {member.Member.DeclaringType}");
+								// If the property is specifically an IList or an ICollection
+								// we can use C#'s collection initializer.
+								writer.AppendLineInvariantIndented(
+									"{0}.Set{1}({2}, ",
+									GetGlobalizedTypeName(ownerType.ToDisplayString()),
+									member.Member.Name,
+									closureName
+								);
+
+								if (member.Objects.Count == 1)
+								{
+									BuildChild(writer, member, member.Objects.First());
+								}
+								else
+								{
+									throw new InvalidOperationException($"The property {member.Member.Name} of type {propertyType} does not support adding multiple objects.");
+								}
+
+								writer.AppendLineIndented(");");
 							}
 						}
 						else
 						{
-							var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
-							var value = member.Value?.ToString();
-
-							if (
-								member.Member.Name == "Name"
-								&& !isMemberInsideResourceDictionary.isInside
-							)
-							{
-								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-								{
-									ValidateName(value);
-								}
-
-								writer.AppendLineIndented($@"nameScope.RegisterName(""{value}"", {closureName});");
-							}
-
-							if (
-								member.Member.Name == "Name"
-								&& !IsAttachedProperty(member)
-								&& !isMemberInsideResourceDictionary.isInside
-							)
-							{
-								nameMember = member;
-
-								var type = useChildTypeForNamedElement ?
-									GetImplicitChildTypeDisplayString(objectDefinition) :
-									FindType(objectDefinition.Type)?.ToDisplayString();
-
-								if (type == null)
-								{
-									throw new InvalidOperationException($"Unable to find type {objectDefinition.Type}");
-								}
-
-								writer.AppendLineInvariantIndented("this.{0} = {1};", value, closureName);
-								// value is validated as non-null in ValidateName call above.
-								RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
-							}
-							else if (member.Member.Name == "Name"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-							{
-								writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
-							}
-							else if (member.Member.Name == "Key")
-							{
-								writer.AppendLineInvariantIndented("// Key {0}", member.Value, member.Value);
-							}
-							else if (member.Member.Name == "DeferLoadStrategy"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-							{
-								writer.AppendLineInvariantIndented("// DeferLoadStrategy {0}", member.Value);
-							}
-							else if (IsXLoadMember(member))
-							{
-								writer.AppendLineInvariantIndented("// Load {0}", member.Value);
-							}
-							else if (member.Member.Name == "Uid")
-							{
-								uidMember = member;
-								writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
-							}
-							else if (member.Member.Name == "FieldModifier")
-							{
-								writer.AppendLineInvariantIndented("// FieldModifier {0}", member.Value);
-							}
-							else if (member.Member.Name == "Phase")
-							{
-								writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.FrameworkElementHelper.SetRenderPhase({closureName}, {member.Value});");
-							}
-							else if (member.Member.Name == "DefaultBindMode"
-								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-							{
-								writer.AppendLineInvariantIndented("// DefaultBindMode {0}", member.Value);
-							}
-							else if (member.Member.Name == "Class" && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-							{
-								writer.AppendLineInvariantIndented("// Class {0}", member.Value, member.Value);
-							}
-							else if (
-								member.Member.Name == "TargetName" &&
-								IsAttachedProperty(member) &&
-								member.Member.DeclaringType?.Name == "Storyboard"
-							)
-							{
-								if (member.Value == null)
-								{
-									throw new InvalidOperationException($"The TargetName property cannot be empty");
-								}
-
-								writer.AppendLineInvariantIndented(@"{0}.SetTargetName({2}, ""{1}"");",
-									GetGlobalizedTypeName(FindType(member.Member.DeclaringType)?.ToDisplayString() ?? member.Member.DeclaringType.Name),
-									this.RewriteAttachedPropertyPath(member.Value.ToString() ?? ""),
-									closureName);
-
-								writer.AppendLineInvariantIndented("{0}.SetTarget({2}, _{1}Subject);",
-												GetGlobalizedTypeName(FindType(member.Member.DeclaringType)?.ToDisplayString() ?? member.Member.DeclaringType.Name),
-												member.Value,
-												closureName);
-							}
-							else if (
-								member.Member.Name == "TargetName" &&
-								!IsAttachedProperty(member) &&
-								(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation") ?? false)
-							)
-							{
-								// Those special animations (xxxThemeAnimation) needs to resolve their target at runtime.
-								writer.AppendLineInvariantIndented(@"NameScope.SetNameScope({0}, nameScope);", closureName);
-							}
-							else if (
-								member.Member.Name == "TargetProperty" &&
-								IsAttachedProperty(member) &&
-								member.Member.DeclaringType?.Name == "Storyboard"
-							)
-							{
-								if (member.Value == null)
-								{
-									throw new InvalidOperationException($"The TargetProperty property cannot be empty");
-								}
-
-								writer.AppendLineInvariantIndented(@"{0}.SetTargetProperty({2}, ""{1}"");",
-									GetGlobalizedTypeName(FindType(member.Member.DeclaringType)?.ToDisplayString() ?? member.Member.DeclaringType.Name),
-									this.RewriteAttachedPropertyPath(member.Value.ToString() ?? ""),
-									closureName);
-							}
-							else if (
-								member.Member.DeclaringType?.Name == "RelativePanel" &&
-								IsAttachedProperty(member) &&
-								IsRelativePanelSiblingProperty(member.Member.Name)
-							)
-							{
-								writer.AppendLineInvariantIndented(@"{0}.Set{1}({2}, _{3}Subject);",
-									GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t?.ToDisplayString()!, member.Member.DeclaringType.Name)),
-									member.Member.Name,
-									closureName,
-									member.Value);
-							}
-							else
-							{
-								IEventSymbol? eventSymbol = null;
-
-								if (
-									!IsType(member.Member.DeclaringType!, objectDefinition.Type)
-									|| IsAttachedProperty(member)
-									|| (eventSymbol = FindEventType(member.Member)) != null
-								)
-								{
-									if (FindPropertyType(member.Member) != null)
-									{
-										BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: false);
-									}
-									else if (eventSymbol != null)
-									{
-										GenerateInlineEvent(closureName, writer, member, eventSymbol);
-									}
-									else
-									{
-										GenerateError(
-											writer,
-											$"Property {member.Member.PreferredXamlNamespace}:{member.Member} is not available on {member.Member.DeclaringType?.Name}, value is {member.Value}"
-										);
-									}
-								}
-							}
+							// GenerateWarning(writer, $"Unknown type {objectDefinition.Type} for property {member.Member.DeclaringType}");
 						}
 					}
-
-					var implicitContentChild = FindImplicitContentMember(objectDefinition);
-					var lazyContentProperty = FindLazyContentProperty(implicitContentChild, objectDefinition);
-
-					if (lazyProperties.Any() || lazyContentProperty != null)
+					else
 					{
-						// This block is used to generate lazy initializations of some
-						// inner VisualStateManager properties in VisualState and VisualTransition.
-						// This allows for faster materialization of controls, avoiding the construction
-						// of inferequently used objects graphs.
+						var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
+						var value = member.Value?.ToString();
 
-						using (writer.BlockInvariant($"global::Uno.UI.Helpers.MarkupHelper.Set{objectDefinition.Type.Name}Lazy({closureName}, () => "))
-						{
-							BuildLiteralLazyVisualStateManagerProperties(writer, objectDefinition, closureName);
-
-							if (implicitContentChild != null && lazyContentProperty != null)
-							{
-								writer.AppendLineIndented($"{closureName}.{lazyContentProperty.Name} = ");
-
-								var xamlObjectDefinition = implicitContentChild.Objects.First();
-								using (TryAdaptNative(writer, xamlObjectDefinition, lazyContentProperty.Type as INamedTypeSymbol))
-								{
-									BuildChild(writer, implicitContentChild, xamlObjectDefinition);
-								}
-								writer.AppendLineIndented($";");
-							}
-						}
-						writer.AppendLineIndented($");");
-					}
-
-					if (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition))
-					{
-						writer.AppendLineIndented($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
-						var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
-						if (!_isTopLevelDictionary || isInsideFrameworkTemplate)
-						{
-							writer.AppendLineIndented($"this._component_{CurrentScope.ComponentCount} = {closureName};");
-
-							if (HasMarkupExtensionNeedingComponent(objectDefinition)
-								&& IsDependencyObject(objectDefinition)
-								&& !IsUIElement(objectDefinition)
-								&& isInsideFrameworkTemplate)
-							{
-								// Ensure that the namescope is property propagated to instances
-								// that are not UIElements in order for ElementName to resolve properly
-								writer.AppendLineIndented($"global::Windows.UI.Xaml.NameScope.SetNameScope(this._component_{CurrentScope.ComponentCount}, nameScope);");
-							}
-
-							AddComponentForCurrentScope(objectDefinition);
-						}
-						else if (isFrameworkElement && HasMarkupExtensionNeedingComponent(objectDefinition))
-						{
-							// Register directly for binding updates on the resource referencer itself, since we're inside a top-level ResourceDictionary
-							using (writer.BlockInvariant("{0}.Loading += (obj, args) =>", closureName))
-							{
-								writer.AppendLineIndented("((DependencyObject)obj).UpdateResourceBindings();");
-							}
-							writer.AppendLineIndented(";");
-						}
-					}
-
-					if (_isDebug && IsFrameworkElement(objectDefinition.Type))
-					{
-						writer.AppendLineIndented($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
-					}
-
-					if (_isUiAutomationMappingEnabled)
-					{
-						// Prefer using the Uid or the Name if their value has been explicitly assigned
-						var assignedUid = uidMember?.Value?.ToString();
-						var assignedName = nameMember?.Value?.ToString();
-
-						if (assignedUid.HasValue())
-						{
-							uiAutomationId = assignedUid;
-						}
-						else if (assignedName.HasValue())
-						{
-							uiAutomationId = assignedName;
-						}
-
-						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
-					}
-
-					BuildStatementLocalizedProperties(writer, objectDefinition, closureName);
-
-					if (hasIsParsing
-							// If true then this apply block will be applied to the content of a UserControl, which will already have had CreationComplete() called in its own apply block.
-							&& !useChildTypeForNamedElement
+						if (
+							member.Member.Name == "Name"
+							&& !isMemberInsideResourceDictionary.isInside
 						)
-					{
-						// This should always be the last thing called when an element is parsed.
-						writer.AppendLineInvariantIndented("{0}.CreationComplete();", closureName);
+						{
+							if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+							{
+								ValidateName(value);
+							}
+
+							writer.AppendLineIndented($@"nameScope.RegisterName(""{value}"", {closureName});");
+						}
+
+						if (
+							member.Member.Name == "Name"
+							&& !IsAttachedProperty(member)
+							&& !isMemberInsideResourceDictionary.isInside
+						)
+						{
+							nameMember = member;
+
+							var type = useChildTypeForNamedElement ?
+								GetImplicitChildTypeDisplayString(objectDefinition) :
+								FindType(objectDefinition.Type)?.ToDisplayString();
+
+							if (type == null)
+							{
+								throw new InvalidOperationException($"Unable to find type {objectDefinition.Type}");
+							}
+
+							writer.AppendLineInvariantIndented("this.{0} = {1};", value, closureName);
+							// value is validated as non-null in ValidateName call above.
+							RegisterBackingField(type, value!, FindObjectFieldAccessibility(objectDefinition));
+						}
+						else if (member.Member.Name == "Name"
+							&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+						{
+							writer.AppendLineInvariantIndented("// x:Name {0}", member.Value, member.Value);
+						}
+						else if (member.Member.Name == "Key")
+						{
+							writer.AppendLineInvariantIndented("// Key {0}", member.Value, member.Value);
+						}
+						else if (member.Member.Name == "DeferLoadStrategy"
+							&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+						{
+							writer.AppendLineInvariantIndented("// DeferLoadStrategy {0}", member.Value);
+						}
+						else if (IsXLoadMember(member))
+						{
+							writer.AppendLineInvariantIndented("// Load {0}", member.Value);
+						}
+						else if (member.Member.Name == "Uid")
+						{
+							uidMember = member;
+							writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
+						}
+						else if (member.Member.Name == "FieldModifier")
+						{
+							writer.AppendLineInvariantIndented("// FieldModifier {0}", member.Value);
+						}
+						else if (member.Member.Name == "Phase")
+						{
+							writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.FrameworkElementHelper.SetRenderPhase({closureName}, {member.Value});");
+						}
+						else if (member.Member.Name == "DefaultBindMode"
+							&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+						{
+							writer.AppendLineInvariantIndented("// DefaultBindMode {0}", member.Value);
+						}
+						else if (member.Member.Name == "Class" && member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
+						{
+							writer.AppendLineInvariantIndented("// Class {0}", member.Value, member.Value);
+						}
+						else if (
+							member.Member.Name == "TargetName" &&
+							IsAttachedProperty(member) &&
+							member.Member.DeclaringType?.Name == "Storyboard"
+						)
+						{
+							if (member.Value == null)
+							{
+								throw new InvalidOperationException($"The TargetName property cannot be empty");
+							}
+
+							writer.AppendLineInvariantIndented(@"{0}.SetTargetName({2}, ""{1}"");",
+								GetGlobalizedTypeName(FindType(member.Member.DeclaringType)?.ToDisplayString() ?? member.Member.DeclaringType.Name),
+								this.RewriteAttachedPropertyPath(member.Value.ToString() ?? ""),
+								closureName);
+
+							writer.AppendLineInvariantIndented("{0}.SetTarget({2}, _{1}Subject);",
+											GetGlobalizedTypeName(FindType(member.Member.DeclaringType)?.ToDisplayString() ?? member.Member.DeclaringType.Name),
+											member.Value,
+											closureName);
+						}
+						else if (
+							member.Member.Name == "TargetName" &&
+							!IsAttachedProperty(member) &&
+							(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation") ?? false)
+						)
+						{
+							// Those special animations (xxxThemeAnimation) needs to resolve their target at runtime.
+							writer.AppendLineInvariantIndented(@"NameScope.SetNameScope({0}, nameScope);", closureName);
+						}
+						else if (
+							member.Member.Name == "TargetProperty" &&
+							IsAttachedProperty(member) &&
+							member.Member.DeclaringType?.Name == "Storyboard"
+						)
+						{
+							if (member.Value == null)
+							{
+								throw new InvalidOperationException($"The TargetProperty property cannot be empty");
+							}
+
+							writer.AppendLineInvariantIndented(@"{0}.SetTargetProperty({2}, ""{1}"");",
+								GetGlobalizedTypeName(FindType(member.Member.DeclaringType)?.ToDisplayString() ?? member.Member.DeclaringType.Name),
+								this.RewriteAttachedPropertyPath(member.Value.ToString() ?? ""),
+								closureName);
+						}
+						else if (
+							member.Member.DeclaringType?.Name == "RelativePanel" &&
+							IsAttachedProperty(member) &&
+							IsRelativePanelSiblingProperty(member.Member.Name)
+						)
+						{
+							writer.AppendLineInvariantIndented(@"{0}.Set{1}({2}, _{3}Subject);",
+								GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t?.ToDisplayString()!, member.Member.DeclaringType.Name)),
+								member.Member.Name,
+								closureName,
+								member.Value);
+						}
+						else
+						{
+							IEventSymbol? eventSymbol = null;
+
+							if (
+								!IsType(member.Member.DeclaringType!, objectDefinition.Type)
+								|| IsAttachedProperty(member)
+								|| (eventSymbol = FindEventType(member.Member)) != null
+							)
+							{
+								if (FindPropertyType(member.Member) != null)
+								{
+									BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: false);
+								}
+								else if (eventSymbol != null)
+								{
+									GenerateInlineEvent(closureName, writer, member, eventSymbol);
+								}
+								else
+								{
+									GenerateError(
+										writer,
+										$"Property {member.Member.PreferredXamlNamespace}:{member.Member} is not available on {member.Member.DeclaringType?.Name}, value is {member.Value}"
+									);
+								}
+							}
+						}
 					}
+				}
+
+				var implicitContentChild = FindImplicitContentMember(objectDefinition);
+				var lazyContentProperty = FindLazyContentProperty(implicitContentChild, objectDefinition);
+
+				if (lazyProperties.Any() || lazyContentProperty != null)
+				{
+					// This block is used to generate lazy initializations of some
+					// inner VisualStateManager properties in VisualState and VisualTransition.
+					// This allows for faster materialization of controls, avoiding the construction
+					// of inferequently used objects graphs.
+
+					using (writer.BlockInvariant($"global::Uno.UI.Helpers.MarkupHelper.Set{objectDefinition.Type.Name}Lazy({closureName}, () => "))
+					{
+						BuildLiteralLazyVisualStateManagerProperties(writer, objectDefinition, closureName);
+
+						if (implicitContentChild != null && lazyContentProperty != null)
+						{
+							writer.AppendLineIndented($"{closureName}.{lazyContentProperty.Name} = ");
+
+							var xamlObjectDefinition = implicitContentChild.Objects.First();
+							using (TryAdaptNative(writer, xamlObjectDefinition, lazyContentProperty.Type as INamedTypeSymbol))
+							{
+								BuildChild(writer, implicitContentChild, xamlObjectDefinition);
+							}
+							writer.AppendLineIndented($";");
+						}
+					}
+					writer.AppendLineIndented($");");
+				}
+
+				if (HasXBindMarkupExtension(objectDefinition) || HasMarkupExtensionNeedingComponent(objectDefinition))
+				{
+					writer.AppendLineIndented($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
+					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+					if (!_isTopLevelDictionary || isInsideFrameworkTemplate)
+					{
+						writer.AppendLineIndented($"this._component_{CurrentScope.ComponentCount} = {closureName};");
+
+						if (HasMarkupExtensionNeedingComponent(objectDefinition)
+							&& IsDependencyObject(objectDefinition)
+							&& !IsUIElement(objectDefinition)
+							&& isInsideFrameworkTemplate)
+						{
+							// Ensure that the namescope is property propagated to instances
+							// that are not UIElements in order for ElementName to resolve properly
+							writer.AppendLineIndented($"global::Windows.UI.Xaml.NameScope.SetNameScope(this._component_{CurrentScope.ComponentCount}, nameScope);");
+						}
+
+						AddComponentForCurrentScope(objectDefinition);
+					}
+					else if (isFrameworkElement && HasMarkupExtensionNeedingComponent(objectDefinition))
+					{
+						// Register directly for binding updates on the resource referencer itself, since we're inside a top-level ResourceDictionary
+						using (writer.BlockInvariant("{0}.Loading += (obj, args) =>", closureName))
+						{
+							writer.AppendLineIndented("((DependencyObject)obj).UpdateResourceBindings();");
+						}
+						writer.AppendLineIndented(";");
+					}
+				}
+
+				if (_isDebug && IsFrameworkElement(objectDefinition.Type))
+				{
+					writer.AppendLineIndented($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+				}
+
+				if (_isUiAutomationMappingEnabled)
+				{
+					// Prefer using the Uid or the Name if their value has been explicitly assigned
+					var assignedUid = uidMember?.Value?.ToString();
+					var assignedName = nameMember?.Value?.ToString();
+
+					if (assignedUid.HasValue())
+					{
+						uiAutomationId = assignedUid;
+					}
+					else if (assignedName.HasValue())
+					{
+						uiAutomationId = assignedName;
+					}
+
+					BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
+				}
+
+				BuildStatementLocalizedProperties(writer, objectDefinition, closureName);
+
+				if (hasIsParsing
+						// If true then this apply block will be applied to the content of a UserControl, which will already have had CreationComplete() called in its own apply block.
+						&& !useChildTypeForNamedElement
+					)
+				{
+					// This should always be the last thing called when an element is parsed.
+					writer.AppendLineInvariantIndented("{0}.CreationComplete();", closureName);
 				}
 			}
 
@@ -5838,12 +5836,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										writer.AppendLineIndented($"null)");
 
-										using (var applyWriter = CreateApplyBlock(writer, _setterSymbol, out var setterClosure))
-										{
-											applyWriter.AppendLineIndented($"{setterClosure}.");
-											BuildChild(applyWriter, valueNode, valueNode.Objects.First(), outerClosure: setterClosure);
-											applyWriter.AppendLineIndented($";");
-										}
+										using var applyWriter = CreateApplyBlock(writer, _setterSymbol, out var setterClosure);
+										applyWriter.AppendLineIndented($"{setterClosure}.");
+										BuildChild(applyWriter, valueNode, valueNode.Objects.First(), outerClosure: setterClosure);
+										applyWriter.AppendLineIndented($";");
 									}
 									else
 									{

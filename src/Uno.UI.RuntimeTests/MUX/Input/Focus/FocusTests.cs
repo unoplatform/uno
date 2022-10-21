@@ -422,31 +422,29 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await TestServices.WindowHelper.WaitForIdle();
 			await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
 
-			using (var eventTesterA = new EventTester<Button, RoutedEventArgs>(buttonA, "GotFocus", action))
-			using (var eventTesterB = new EventTester<Button, RoutedEventArgs>(buttonB, "GotFocus", action))
-			using (var eventTesterC = new EventTester<Button, RoutedEventArgs>(buttonC, "GotFocus", action))
-			using (var eventTesterD = new EventTester<Button, RoutedEventArgs>(buttonD, "GotFocus", action))
+			using var eventTesterA = new EventTester<Button, RoutedEventArgs>(buttonA, "GotFocus", action);
+			using var eventTesterB = new EventTester<Button, RoutedEventArgs>(buttonB, "GotFocus", action);
+			using var eventTesterC = new EventTester<Button, RoutedEventArgs>(buttonC, "GotFocus", action);
+			using var eventTesterD = new EventTester<Button, RoutedEventArgs>(buttonD, "GotFocus", action);
+			const int NUM_TAB = 4;
+
+			for (int count = 0; count < NUM_TAB + 1; count++)
 			{
-				const int NUM_TAB = 4;
+				await SimulateTabAsync(rootPanel);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 
-				for (int count = 0; count < NUM_TAB + 1; count++)
-				{
-					await SimulateTabAsync(rootPanel);
-					await TestServices.WindowHelper.WaitForIdle();
-				}
-
-				//Go in reverse order
-				for (int count = NUM_TAB - 1; count >= 0; count--)
-				{
-					await SimulateShiftTabAsync(rootPanel);
-					await TestServices.WindowHelper.WaitForIdle();
-				}
-
+			//Go in reverse order
+			for (int count = NUM_TAB - 1; count >= 0; count--)
+			{
 				await SimulateShiftTabAsync(rootPanel);
 				await TestServices.WindowHelper.WaitForIdle();
-
-				Verify.AreEqual(successString, eventOrder);
 			}
+
+			await SimulateShiftTabAsync(rootPanel);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Verify.AreEqual(successString, eventOrder);
 		}
 
 		private async Task SimulateTabAsync(UIElement container) => await SimulateNavigationDirectionAsync(container, FocusNavigationDirection.Next);
@@ -525,31 +523,29 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			using (var eventTesterA = new EventTester<Button, RoutedEventArgs>(buttonA, "GotFocus", action))
-			using (var eventTesterB = new EventTester<Button, RoutedEventArgs>(buttonB, "GotFocus", action))
-			using (var eventTesterC = new EventTester<Button, RoutedEventArgs>(buttonC, "GotFocus", action))
-			using (var eventTesterD = new EventTester<Button, RoutedEventArgs>(buttonD, "GotFocus", action))
+			using var eventTesterA = new EventTester<Button, RoutedEventArgs>(buttonA, "GotFocus", action);
+			using var eventTesterB = new EventTester<Button, RoutedEventArgs>(buttonB, "GotFocus", action);
+			using var eventTesterC = new EventTester<Button, RoutedEventArgs>(buttonC, "GotFocus", action);
+			using var eventTesterD = new EventTester<Button, RoutedEventArgs>(buttonD, "GotFocus", action);
+			const int NUM_TAB = 4;
+
+			for (int count = 0; count < NUM_TAB + 1; count++)
 			{
-				const int NUM_TAB = 4;
+				await SimulateTabAsync(rootPanel);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 
-				for (int count = 0; count < NUM_TAB + 1; count++)
-				{
-					await SimulateTabAsync(rootPanel);
-					await TestServices.WindowHelper.WaitForIdle();
-				}
-
-				//Go in reverse order
-				for (int count = NUM_TAB - 1; count >= 0; count--)
-				{
-					await SimulateShiftTabAsync(rootPanel);
-					await TestServices.WindowHelper.WaitForIdle();
-				}
-
+			//Go in reverse order
+			for (int count = NUM_TAB - 1; count >= 0; count--)
+			{
 				await SimulateShiftTabAsync(rootPanel);
 				await TestServices.WindowHelper.WaitForIdle();
-
-				Verify.AreEqual(successString, eventOrder);
 			}
+
+			await SimulateShiftTabAsync(rootPanel);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Verify.AreEqual(successString, eventOrder);
 		}
 
 		[TestMethod]
@@ -605,23 +601,21 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 
 			const string successString = "[btn][btnD][btn][btnD][btn][btnD]";
 
-			using (var eventTester = new EventTester<Button, RoutedEventArgs>(button, "GotFocus", action))
-			using (var eventTesterA = new EventTester<Button, RoutedEventArgs>(buttonA, "GotFocus", action))
-			using (var eventTesterB = new EventTester<Button, RoutedEventArgs>(buttonB, "GotFocus", action))
-			using (var eventTesterC = new EventTester<Button, RoutedEventArgs>(buttonC, "GotFocus", action))
-			using (var eventTesterD = new EventTester<Button, RoutedEventArgs>(buttonD, "GotFocus", action))
+			using var eventTester = new EventTester<Button, RoutedEventArgs>(button, "GotFocus", action);
+			using var eventTesterA = new EventTester<Button, RoutedEventArgs>(buttonA, "GotFocus", action);
+			using var eventTesterB = new EventTester<Button, RoutedEventArgs>(buttonB, "GotFocus", action);
+			using var eventTesterC = new EventTester<Button, RoutedEventArgs>(buttonC, "GotFocus", action);
+			using var eventTesterD = new EventTester<Button, RoutedEventArgs>(buttonD, "GotFocus", action);
+			await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
+			const int NUM_TAB = 5;
+
+			for (int count = 0; count < NUM_TAB; count++)
 			{
-				await FocusHelper.EnsureFocusAsync(button, FocusState.Keyboard);
-				const int NUM_TAB = 5;
-
-				for (int count = 0; count < NUM_TAB; count++)
-				{
-					await SimulateShiftTabAsync(rootPanel);
-					await TestServices.WindowHelper.WaitForIdle();
-				}
-
-				Verify.AreEqual(successString, eventOrder);
+				await SimulateShiftTabAsync(rootPanel);
+				await TestServices.WindowHelper.WaitForIdle();
 			}
+
+			Verify.AreEqual(successString, eventOrder);
 		}
 
 		[TestMethod]
@@ -1241,33 +1235,31 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 
 			FrameworkElement targetElement = shouldCancel ? element1 : element2;
 
-			using (var focusEventOrderTester = new FocusEventOrderingTester(elementList, eventOrder))
-			using (var element2GettingFocus = new EventTester<UIElement, GettingFocusEventArgs>(element2, "GettingFocus", element2GettingFocusHandler))
+			using var focusEventOrderTester = new FocusEventOrderingTester(elementList, eventOrder);
+			using var element2GettingFocus = new EventTester<UIElement, GettingFocusEventArgs>(element2, "GettingFocus", element2GettingFocusHandler);
+			await UIExecutor.ExecuteAsync(async () =>
 			{
-				await UIExecutor.ExecuteAsync(async () =>
+				FocusMovementResult result = null;
+
+				if (method == FocusAsyncMethod.TryFocusAsync)
 				{
-					FocusMovementResult result = null;
+					Log.Comment("calling TryFocusAsync");
+					result = await FocusManager.TryFocusAsync(element2, FocusState.Keyboard);
+				}
+				else if (method == FocusAsyncMethod.TryMoveFocusAsync)
+				{
+					Log.Comment("TryMoveFocusAsync in the down direction");
+					FindNextElementOptions options = new FindNextElementOptions();
+					options.SearchRoot = TestServices.WindowHelper.WindowContent as DependencyObject;
+					result = await FocusManager.TryMoveFocusAsync(FocusNavigationDirection.Down, options);
+				}
 
-					if (method == FocusAsyncMethod.TryFocusAsync)
-					{
-						Log.Comment("calling TryFocusAsync");
-						result = await FocusManager.TryFocusAsync(element2, FocusState.Keyboard);
-					}
-					else if (method == FocusAsyncMethod.TryMoveFocusAsync)
-					{
-						Log.Comment("TryMoveFocusAsync in the down direction");
-						FindNextElementOptions options = new FindNextElementOptions();
-						options.SearchRoot = TestServices.WindowHelper.WindowContent as DependencyObject;
-						result = await FocusManager.TryMoveFocusAsync(FocusNavigationDirection.Down, options);
-					}
+				Verify.AreEqual(result.Succeeded, !shouldCancel);
+				Verify.AreEqual(targetElement, FocusManager.GetFocusedElement(((UIElement)TestServices.WindowHelper.WindowContent).XamlRoot));
+			});
 
-					Verify.AreEqual(result.Succeeded, !shouldCancel);
-					Verify.AreEqual(targetElement, FocusManager.GetFocusedElement(((UIElement)TestServices.WindowHelper.WindowContent).XamlRoot));
-				});
-
-				await TestServices.WindowHelper.WaitForIdle();
-				Verify.AreEqual(expectedString, eventOrder.ToString());
-			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Verify.AreEqual(expectedString, eventOrder.ToString());
 		}
 
 		[TestMethod]
@@ -1360,18 +1352,16 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 				});
 			});
 
-			using (var buttonKeyDownEventTester = new EventTester<UIElement, KeyRoutedEventArgs>(button, "KeyDown", buttonKeyDownEventHandler))
-			using (var rootPanelKeyDownEventTester = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyDown", rootPanelKeyDownEventHandler))
+			using var buttonKeyDownEventTester = new EventTester<UIElement, KeyRoutedEventArgs>(button, "KeyDown", buttonKeyDownEventHandler);
+			using var rootPanelKeyDownEventTester = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyDown", rootPanelKeyDownEventHandler);
+			await SimulateUpAsync(rootPanel);
+
+			UIExecutor.Execute(() =>
 			{
-				await SimulateUpAsync(rootPanel);
+				Verify.AreEqual(button2, FocusManager.GetFocusedElement(rootPanel.XamlRoot));
+			});
 
-				UIExecutor.Execute(() =>
-				{
-					Verify.AreEqual(button2, FocusManager.GetFocusedElement(rootPanel.XamlRoot));
-				});
-
-				rootPanelKeyDownEventTester.Wait();
-			}
+			rootPanelKeyDownEventTester.Wait();
 		}
 
 		[TestMethod]
@@ -1404,15 +1394,13 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 
 			await FocusHelper.EnsureFocusAsync(collapsedButton, FocusState.Keyboard);
 
-			using (var notCollapsedButtonGotFocus = new EventTester<Button, RoutedEventArgs>(notCollapsedButton, "GotFocus"))
+			using var notCollapsedButtonGotFocus = new EventTester<Button, RoutedEventArgs>(notCollapsedButton, "GotFocus");
+			UIExecutor.Execute(() =>
 			{
-				UIExecutor.Execute(() =>
-				{
-					collapsedButton.Visibility = Visibility.Collapsed;
-				});
+				collapsedButton.Visibility = Visibility.Collapsed;
+			});
 
-				await notCollapsedButtonGotFocus.VerifyEventRaised();
-			}
+			await notCollapsedButtonGotFocus.VerifyEventRaised();
 		}
 
 		[TestMethod]
@@ -1447,16 +1435,14 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await TestServices.WindowHelper.WaitForIdle();
 
 			await FocusHelper.EnsureFocusAsync(outerBtn, FocusState.Keyboard);
-			using (var innerBtn2GotFocus = new EventTester<Button, RoutedEventArgs>(innerBtn2, "GotFocus"))
-			{
-				await SimulateShiftTabAsync(rootPanel);
-				innerBtn2GotFocus.Wait();
+			using var innerBtn2GotFocus = new EventTester<Button, RoutedEventArgs>(innerBtn2, "GotFocus");
+			await SimulateShiftTabAsync(rootPanel);
+			innerBtn2GotFocus.Wait();
 
-				UIExecutor.Execute(() =>
-				{
-					Verify.AreEqual(innerBtn2, FocusManager.GetFocusedElement(rootPanel.XamlRoot));
-				});
-			}
+			UIExecutor.Execute(() =>
+			{
+				Verify.AreEqual(innerBtn2, FocusManager.GetFocusedElement(rootPanel.XamlRoot));
+			});
 		}
 
 		[TestMethod]

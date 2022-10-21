@@ -302,13 +302,11 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					await renderer.RenderAsync(grid);
 
 					var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-					using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
-					{
-						var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
-						encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
-						await encoder.FlushAsync();
-						await output.FlushAsync();
-					}
+					using var output = await file.OpenAsync(FileAccessMode.ReadWrite);
+					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
+					encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
+					await encoder.FlushAsync();
+					await output.FlushAsync();
 				}
 
 			_root.Visibility = Visibility.Visible;

@@ -31,10 +31,8 @@ namespace Uno.UI.RemoteControl.Host
 
 					try
 					{
-						using (var server = new RemoteControlServer(context.RequestServices.GetService<IConfiguration>()))
-						{
-							await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
-						}
+						using var server = new RemoteControlServer(context.RequestServices.GetService<IConfiguration>());
+						await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
 					}
 					finally
 					{
