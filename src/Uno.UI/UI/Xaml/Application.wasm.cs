@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
 				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());
 
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
 			ObserveApplicationVisibility();
 		}

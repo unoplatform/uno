@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			_onLoadedisAnimating = true;
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() =>
 				{
@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			_onUpdatedIsAnimating = true;
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() =>
 				{

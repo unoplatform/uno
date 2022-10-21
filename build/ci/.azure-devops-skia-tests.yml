@@ -94,7 +94,7 @@ jobs:
 
 - job: Skia_Gtk_Runtime_Tests_Build
   displayName: 'Skia GTK Runtime Tests'
-  timeoutInMinutes: 30
+  timeoutInMinutes: 60
 
   pool:
     vmImage: ${{ parameters.vmMacImage }}
@@ -160,7 +160,7 @@ jobs:
 
 - job: Skia_Wpf_Runtime_Tests_Build
   displayName: 'Skia WPF Runtime Tests'
-  timeoutInMinutes: 30
+  timeoutInMinutes: 60
 
   pool:
     vmImage: ${{ parameters.vmImage }}

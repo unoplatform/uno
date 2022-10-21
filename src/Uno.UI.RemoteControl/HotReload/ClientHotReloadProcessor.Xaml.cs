@@ -32,7 +32,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private void ReloadFile(FileReload fileReload)
 		{
-			Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
 			{

@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				if (State == TimelineState.Active || State == TimelineState.Paused)
 				{
-					CoreDispatcher.Main.RunAsync(
+					_ = CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
 						() =>
 						{

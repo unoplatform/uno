@@ -28,9 +28,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			// 2. All async code is run in the same task to avoid potential threading concerns.
 			//    Otherwise, it would be possible to set the OS clipboard data (code at the end)
 			//    before one or more of the data formats is ready.
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				() => _ = SetContentAsync(content));
 		}
 
 		internal static async Task SetContentAsync(DataPackage content)

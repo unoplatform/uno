@@ -177,7 +177,7 @@ namespace Windows.Graphics.Display
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
-			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
 				Uno.UI.Dispatching.CoreDispatcherPriority.High,
 				(ct) => SetOrientationAsync(orientations, ct));
 		}

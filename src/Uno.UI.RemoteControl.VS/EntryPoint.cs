@@ -61,7 +61,7 @@ namespace Uno.UI.RemoteControl.VS
 				(s, a) => BuildEvents_OnBuildDone(s, a);
 
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin +=
-				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+				(string project, string projectConfig, string platform, string solutionConfig) => _ = BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
 
 			// Start the RC server early, as iOS and Android projects capture the globals early
 			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.

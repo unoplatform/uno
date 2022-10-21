@@ -37,7 +37,7 @@ namespace Windows.System
 
 		private void DispatchRaiseTick()
 		{
-			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(Uno.UI.Dispatching.CoreDispatcherPriority.Normal, () => RaiseTick());
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(Uno.UI.Dispatching.CoreDispatcherPriority.Normal, () => RaiseTick());
 		}
 
 		private void StopNative()

@@ -64,7 +64,7 @@ namespace Windows.System
 				_ => CoreDispatcherPriority.Normal
 			};
 
-			CoreDispatcher.Main.RunAsync(p, () => callback());
+			_ = CoreDispatcher.Main.RunAsync(p, () => callback());
 
 			return true;
 		}

@@ -706,7 +706,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				GC.ReRegisterForFinalize(this);
 
-				CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
+				_ = CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
 			}
 			else
 			{

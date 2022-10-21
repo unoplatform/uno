@@ -164,9 +164,9 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				throw new ArgumentNullException(nameof(content));
 			}
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				() => _ = SetContentAsync(content));
 		}
 
 		private async Task SetContentAsync(DataPackage content)

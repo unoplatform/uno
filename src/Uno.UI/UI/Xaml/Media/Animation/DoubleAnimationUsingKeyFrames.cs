@@ -66,9 +66,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				_wasBeginScheduled = true;
 #if !NET461
 #if __ANDROID__
-				Dispatcher.RunAnimation(() =>
+				_ = Dispatcher.RunAnimation(() =>
 #else
-				Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 #endif
 				{
 #endif
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (State == TimelineState.Active || State == TimelineState.Paused)
 			{
-				CoreDispatcher.Main.RunAsync(
+				_ = CoreDispatcher.Main.RunAsync(
 					CoreDispatcherPriority.Normal,
 					() =>
 					{

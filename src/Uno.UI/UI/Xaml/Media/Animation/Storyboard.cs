@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 			else
 			{
-				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					// No children, so we complete immediately
 					State = TimelineState.Stopped;

@@ -52,7 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				Content = "My Dialog Content"
 			};
 
-			contentDialog.ShowAsync();
+			_ = contentDialog.ShowAsync();
 
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 
