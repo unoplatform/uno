@@ -394,7 +394,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			var panel = _app.Marked("ComparePanel");
 			var button = _app.Marked("HideButton");
-			var rect = _app.GetPhysicalRect(panel);
+			var physicalRect = _app.GetPhysicalRect(panel);
+			
+			// Copy of the rect, as the panel will be hidden, so the the X & Y coords would become negative
+			var originalRect = new AppRect(physicalRect.X, physicalRect.Y, physicalRect.Width, physicalRect.Height);
 
 			using var beforeHide = TakeScreenshot("image_invalid_before_hide");
 
@@ -402,7 +405,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			
 			using var afterHide = TakeScreenshot("image_invalid_after_hide");
 
-			ImageAssert.AreEqual(afterHide, beforeHide, rect, tolerance: PixelTolerance.Exclusive(1));
+			ImageAssert.AreEqual(afterHide, beforeHide, originalRect, tolerance: PixelTolerance.Exclusive(1));
 		}
 
 		private void WaitForBitmapOrSvgLoaded()
