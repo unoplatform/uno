@@ -161,7 +161,7 @@ public partial class SvgProvider : ISvgProvider
 			}
 			catch (Exception)
 			{
-				skSvg?.Dispose();
+				skSvg.Dispose();
 				skSvg = null;
 			}
 
