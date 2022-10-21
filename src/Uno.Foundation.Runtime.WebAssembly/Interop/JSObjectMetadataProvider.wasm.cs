@@ -102,9 +102,9 @@ namespace Uno.Foundation.Interop
 						// We log only methods, which are not declared by Uno/WinUI directly.
 						var reportMethods = duplicateMethods
 							.Where(m =>
-								!m.DeclaringType.FullName.StartsWith("Windows.UI.Xaml") &&
-								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml") &&
-								!m.DeclaringType.FullName.StartsWith("Uno"))
+								!m.DeclaringType.FullName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal) &&
+								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal) &&
+								!m.DeclaringType.FullName.StartsWith("Uno", StringComparison.Ordinal))
 							.Select(m => m.Name)
 							.Distinct();
 

@@ -33,7 +33,7 @@ namespace Uno.UI.AssemblyComparer
                 var q = from targetType in targetTypes
                         where !sourceTypes.Any(t => t.FullName == targetType.FullName && IsImplemented(t.CustomAttributes))
                         where targetType.IsPublic
-						where targetType.Namespace.StartsWith("Windows.UI.Xaml")
+						where targetType.Namespace.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
                         group targetType by targetType.Namespace into namespaces
                         orderby namespaces.Key
                         select new {
@@ -68,7 +68,7 @@ namespace Uno.UI.AssemblyComparer
 
                 // New properties only in target
                 var q1 = from targetType in targetTypes
-						 where targetType.Namespace.StartsWith("Windows.UI.Xaml")
+						 where targetType.Namespace.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
 						 let sourceType = sourceTypes.FirstOrDefault(t => t.FullName == targetType.FullName)
                          where sourceType != null
                          where targetType.IsPublic
@@ -101,7 +101,7 @@ namespace Uno.UI.AssemblyComparer
 					return true;
 				}
 
-				if (name.EndsWith("Property"))
+				if (name.EndsWith("Property", StringComparison.Ordinal))
 				{
 					if (sourceType.Fields.Any(p => p.Name == name))
 					{
@@ -109,7 +109,7 @@ namespace Uno.UI.AssemblyComparer
 					}
 				}
 
-				if (!(sourceType.BaseType?.Scope.Name.StartsWith("Uno.UI,") ?? false))
+				if (!(sourceType.BaseType?.Scope.Name.StartsWith("Uno.UI,", StringComparison.Ordinal) ?? false))
 				{
 					return false;
 				}

@@ -169,7 +169,7 @@ namespace Uno.Roslyn
 						return type;
 					}
 				}
-				else if (fullName.StartsWith("System.Nullable`1["))
+				else if (fullName.StartsWith("System.Nullable`1[", StringComparison.Ordinal))
 				{
 					const int prefixLength = 18; // System.Nullable'1[
 					const int suffixLength = 1; // ]

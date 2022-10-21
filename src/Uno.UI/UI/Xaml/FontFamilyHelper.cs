@@ -36,7 +36,7 @@ public partial class FontFamilyHelper
 
 	public static string RemoveUri(string familyName)
 	{
-		var slashIndex = familyName.LastIndexOf("/");
+		var slashIndex = familyName.LastIndexOf("/", StringComparison.Ordinal);
 
 		if (slashIndex != -1)
 		{
@@ -47,7 +47,7 @@ public partial class FontFamilyHelper
 
 	public static string RemoveHashFamilyName(string familyName)
 	{
-		var hashIndex = familyName.IndexOf("#");
+		var hashIndex = familyName.IndexOf("#", StringComparison.Ordinal);
 
 		if (hashIndex != -1)
 		{

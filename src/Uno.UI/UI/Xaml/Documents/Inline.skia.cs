@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Documents
 			{
 				skTypeFace = SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
 			}
-			else if (name.StartsWith(XamlFilePathHelper.AppXIdentifier))
+			else if (name.StartsWith(XamlFilePathHelper.AppXIdentifier, StringComparison.Ordinal))
 			{
 				var path = new Uri(name).PathAndQuery;
 
