@@ -237,6 +237,11 @@ namespace Windows.UI.Xaml
 				this.Log().LogWarning("This platform does not support application exit.");
 			}
 		}
+#else
+		/// <summary>
+		/// Shuts down the app.
+		/// </summary>
+		public void Exit() => CoreApplication.Exit();
 #endif
 
 		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)

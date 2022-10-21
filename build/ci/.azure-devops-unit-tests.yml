@@ -47,7 +47,7 @@ jobs:
   - task: MSBuild@1
     inputs:
       solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /p:TargetFrameworksCI=net461 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
+      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /p:TargetFrameworksCI=net461 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
 
   - task: PublishBuildArtifacts@1
     condition: always()

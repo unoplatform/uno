@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 	public class When_DataWriter
 	{
 		[TestMethod]
-		public async Task When_WriteThenRead()
+		public void When_WriteThenRead()
 		{
 			bool saveBool = true;
 			byte saveByte = 10;

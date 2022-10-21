@@ -4,6 +4,7 @@ using Foundation;
 using AppKit;
 using Windows.Foundation;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 
 namespace Windows.Graphics.Imaging
 {
@@ -29,13 +30,13 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream)
-			=> AsyncOperation<BitmapEncoder>.FromTask(async (ct, _) =>
+			=> AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var encoder))
 				{
 					throw new NotImplementedException($"Encoder {encoderId} in not implemented.", new ArgumentException(nameof(encoderId)));
 				}
-				return new BitmapEncoder(encoder, stream);
+				return Task.FromResult(new BitmapEncoder(encoder, stream));
 			});
 
 		public global::Windows.Foundation.IAsyncAction FlushAsync()

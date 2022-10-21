@@ -31,6 +31,8 @@ using Uno.UI.Xaml.Core;
 using System.ComponentModel;
 using Uno.Disposables;
 using System.Collections.Generic;
+using Uno.Extensions.ApplicationModel.Core;
+using Windows.ApplicationModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -88,6 +90,7 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Application.Init();
 			SetupTheme();
 
+			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => new GtkApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
@@ -114,7 +117,6 @@ namespace Uno.UI.Runtime.Skia
 				_window.SetDefaultSize(1024, 800);
 			}
 			_window.SetPosition(Gtk.WindowPosition.Center);
-
 			_window.Realized += (s, e) =>
 			{
 				// Load the correct cursors before the window is shown
@@ -281,12 +283,9 @@ namespace Uno.UI.Runtime.Skia
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 			WUX.Application.StartWithArguments(CreateApp);
-
-			_window.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			UpdateWindowPropertiesFromPackage();
 
 			RegisterForBackgroundColor();
-
-			UpdateWindowPropertiesFromPackage();
 		}
 
 		private void TryReadRenderSurfaceTypeEnvironment()
@@ -465,6 +464,15 @@ namespace Uno.UI.Runtime.Skia
 					}
 
 					GtkHost.Window.SetIconFromFile(iconPath);
+				}
+				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+					}
+
+					GtkHost.Window.SetIconFromFile(scaledPath);
 				}
 				else
 				{

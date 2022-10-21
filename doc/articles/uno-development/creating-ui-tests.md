@@ -1,6 +1,6 @@
 # Creating automated UI tests
 
-Internally Uno.UI uses automated UI tests using the [Uno.UITest framework](https://github.com/unoplatform/Uno.UITest). These tests run out-of-process relative to the application itself. They can simulate user interaction, and can also record and verify on-screen pixels. 
+Internally Uno.UI uses automated UI tests using the [Uno.UITest framework](https://github.com/unoplatform/Uno.UITest). These tests run out-of-process relative to the application itself. They can simulate user interaction, and can also record and verify on-screen pixels.
 
 UI tests contribute significantly to the CI build time, and for many purposes a test in [Uno.UI.RuntimeTests](creating-runtime-tests.md) could be sufficient. You should write a `Uno.UITest`-based UI test if:
 
@@ -10,14 +10,14 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
  Conversely, you can use an in-process unit test in Uno.UI.RuntimeTests if:
 
   - you can put the app in the required state programmatically, and
-  - you can verify the correct behaviour programmatically (eg by checking DesiredSize, ActualWidth/ActualHeight etc).
+  - you can verify the correct behavior programmatically (eg by checking DesiredSize, ActualWidth/ActualHeight etc).
 
   For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](../contributing/guidelines/creating-tests.md).
 
 ## Running UI tests locally
 
 1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.
-1. Ensure `UnoTargetFrameworkOverride` is set to `MonoAndroid11.0` or `net6.0-android` for testing on Android, `xamarinios` or `net6.0-ios` for testing on iOS, and `netstandard2.0` for testing on Wasm.
+1. Ensure `UnoTargetFrameworkOverride` is set to `MonoAndroid13.0` or `net6.0-android` for testing on Android, `xamarinios` or `net6.0-ios` for testing on iOS, and `net7.0` or `netstandard2.0` for testing on Wasm.
 1. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
 1. [Build and run the SamplesApp](working-with-the-samples-apps.md) at least once.
 1. Only Android and WASM are supported from Visual Studio for Windows. (Running tests on iOS using a Mac is possible, see additional instructions below.)
@@ -28,7 +28,7 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 > [!IMPORTANT]
 > Running the UI tests won't automatically rebuild the SamplesApp. If you add or modify samples, make sure to re-deploy the SamplesApp before you try to run UI tests against your modifications.
 
-### Troubleshooting 
+### Troubleshooting
 - For Android, ensure that your system-level environment variables `JAVA_HOME` and `ANDROID_HOME` are set to the same values as the ones set in Visual Studio's Xamarin Android options panel. Note that you may need to restart Visual Studio once the variables have been set. You may need to set these values if you get this message when running tests:
    ```
    Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore
@@ -37,8 +37,8 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 
 ## Adding a new test
 
-1. Typically the first step is to [add a sample to the SamplesApp](working-with-the-samples-apps.md) that repros the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
-2. The UI test fixtures themselves are located in [SamplesApp.UITests](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests). Locate the test class corresponding to the control or class you want to create a test for. If you need to add a new test class, create the file as `Namespace_In_Snake_Case/ControlNameTests/ControlName_Tests.cs`. The class should inherit from `SampleControlUITestBase` and be marked with the `[TestFixture]` attribute. 
+1. Typically the first step is to [add a sample to the SamplesApp](working-with-the-samples-apps.md) that reproduces the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
+2. The UI test fixtures themselves are located in [SamplesApp.UITests](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests). Locate the test class corresponding to the control or class you want to create a test for. If you need to add a new test class, create the file as `Namespace_In_Snake_Case/ControlNameTests/ControlName_Tests.cs`. The class should inherit from `SampleControlUITestBase` and be marked with the `[TestFixture]` attribute.
 3. Add your test, making sure to include the `[Test]` and `[AutoRetry]` attributes. (The `[AutoRetry]` attributes indicates that the test should be retried if it fails. Currently it's required for all tests.)
 
 ## Selectively ignore tests per platform
@@ -58,7 +58,7 @@ This attribute can be placed at the test or class level.
 
 The basic structure of a UI test is to run one of the samples from the SamplesApp, issue instructions that mimic user interaction, and then verify the correct state of the program, either via programmatic properties or by inspecting the visible display.
 
-A simple complete test is presented below. 
+A simple complete test is presented below.
 
 The `[ActivePlatforms]` attribute restricts the test to only run on the listed platforms. In this case it's there because the bug in question still needs to be fixed on WebAssembly.
 
@@ -66,7 +66,7 @@ The `Run()` method launches the sample used for the test. The `_app` field, defi
 
 The `_app.WaitForElement(element)` method will wait until the designated element is loaded and available. It's always important to remember when writing UI tests that the interactions you program will not execute synchronously. You must explicitly wait for a condition that confirms that the expected change has occurred. `WaitForElement()` and `WaitForText()` are two common ways to do this.
 
-The `TakeScreenshot()` method, as the name suggests, takes a screenshot of the application in its current state. This can be visually analysed in the running test, and it will also be available as an attachment in the tests browser on the CI. 
+The `TakeScreenshot()` method, as the name suggests, takes a screenshot of the application in its current state. This can be visually analyzed in the running test, and it will also be available as an attachment in the tests browser on the CI.
 
 The `_app.FastTap()` method simulates the user tapping on an element in the app, in this case a button. (It's called `FastTap()` because it's more performant than the `_app.Tap()` method.)
 
@@ -104,7 +104,7 @@ Finally, we take another screenshot, and then use the `ImageAssert` class to ver
 	}
 ```
 
-## Running iOS UI Tests in a Simulator on macOS 
+## Running iOS UI Tests in a Simulator on macOS
 
 Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build and run the tests from the command line. Editing the Uno.UI solution is not a particularly stable experience yet.
 

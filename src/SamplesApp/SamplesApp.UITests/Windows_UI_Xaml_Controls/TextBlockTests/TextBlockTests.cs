@@ -98,7 +98,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
-		public async Task When_TextDecoration_Changed()
+		public void When_TextDecoration_Changed()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Decorations");
 

@@ -477,6 +477,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		[DataContract]
 		private struct DataEntry
 		{
+#pragma warning disable CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
 			[DataMember]
 			public int id;
 
@@ -485,6 +486,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 			[DataMember]
 			public string type;
+#pragma warning restore CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
 
 			/// <inheritdoc />
 			public override string ToString()

@@ -133,7 +133,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-		public static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
+		public new static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
 			"CornerRadius",
 			typeof(CornerRadius),
 			typeof(ElevatedView),
@@ -144,7 +144,7 @@ namespace Uno.UI.Toolkit
 #endif
 		);
 
-		public CornerRadius CornerRadius
+		public new CornerRadius CornerRadius
 		{
 			get => (CornerRadius)GetValue(CornerRadiusProperty);
 			set => SetValue(CornerRadiusProperty, value);

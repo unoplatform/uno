@@ -74,11 +74,12 @@ body:
     attributes:
       label: Affected platforms
       multiple: true
-      options:
-        - iOS
-        - Android
+      options:        
         - WebAssembly
-        - macOS
+        - Android
+        - iOS
+        - macOS (AppKit)
+        - Mac Catalyst
         - Skia (WPF)
         - Skia (GTK on Linux/macOS/Windows)
         - Skia (Linux Framebuffer)

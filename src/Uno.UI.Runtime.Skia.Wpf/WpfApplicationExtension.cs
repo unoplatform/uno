@@ -25,10 +25,6 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 		}
 
-		public bool CanExit => true;
-
-		public void Exit() => System.Windows.Application.Current.Shutdown();
-
 		public event EventHandler SystemThemeChanged;
 
 		private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)

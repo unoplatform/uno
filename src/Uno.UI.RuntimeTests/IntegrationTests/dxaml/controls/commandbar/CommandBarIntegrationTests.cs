@@ -252,11 +252,12 @@ namespace Windows.UI.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Func<CommandBar, Task> openFunc = async (cmdBar) => await RunOnUIThread(() => cmdBar.IsOpen = true);
-			Func<CommandBar, Task> closeFunc = async (cmdBar) =>
+			Func<CommandBar, Task> closeFunc = (cmdBar) =>
 			{
 				bool backButtonPressHandled = false;
 				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
 				VERIFY_IS_TRUE(backButtonPressHandled);
+				return Task.CompletedTask;
 			};
 
 			await ValidateOpenAndCloseWorker(openFunc, closeFunc);
@@ -501,7 +502,7 @@ namespace Windows.UI.Tests.Enterprise
 		[Description("Validates that the overflow's max height is 50% of the window height.")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("SetWindowSizeOverride not implemented")]
-		public async Task ValidateOverflowMaxHeight()
+		public void ValidateOverflowMaxHeight()
 		{
 			//	TestCleanupWrapper cleanup;
 
@@ -1006,7 +1007,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 		[TestProperty("Hosting:Mode", "UAP")]
 		[Ignore("MouseHelper not implemented.")] // CoreWindow pointer events no longering being raised from lifted Xaml
-		public async Task ValidateRightClickBehavior()
+		public void ValidateRightClickBehavior()
 		{
 			LOG_OUTPUT("Validating CommandBarRightClickBehavior with ClosedDisplayMode=Hidden.");
 			ValidateRightClickBehaviorWorker(AppBarClosedDisplayMode.Hidden);
@@ -1174,7 +1175,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		
 		[Ignore("ControlHelper.ValidateUIElementTree not implemented.")]
-		public async Task ValidateUIElementTreeBoth()
+		public void ValidateUIElementTreeBoth()
 		{
 			//TestCleanupWrapper cleanup;
 
@@ -1197,7 +1198,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		
 		[Ignore("ControlHelper.ValidateUIElementTree not implemented.")]
-		public async Task ValidateUIElementTreePrimaryOnly()
+		public void ValidateUIElementTreePrimaryOnly()
 		{
 			//TestCleanupWrapper cleanup;
 
@@ -1220,7 +1221,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		
 		[Ignore("ControlHelper.ValidateUIElementTree not implemented.")]
-		public async Task ValidateUIElementTreeSecondaryOnly()
+		public void ValidateUIElementTreeSecondaryOnly()
 		{
 			//TestCleanupWrapper cleanup;
 
@@ -1775,7 +1776,7 @@ namespace Windows.UI.Tests.Enterprise
 		
 		[Description("Validates that after clicking on an AppBarButton, the CommandBar closes before the button's click handlers execute.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-		public async Task DoesCloseBeforeButtonClickHandlersExecute()
+		public void DoesCloseBeforeButtonClickHandlersExecute()
 		{
 
 		}
@@ -3497,7 +3498,7 @@ namespace Windows.UI.Tests.Enterprise
 				CommonInputHelper.Left(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
-				await RunOnUIThread(async () =>
+				await RunOnUIThread(() =>
 				{
 					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be primary command ({cmdBar.PrimaryCommands.GetAt(0).GetHashCode()})");
@@ -3507,7 +3508,7 @@ namespace Windows.UI.Tests.Enterprise
 				CommonInputHelper.Left(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
-				await RunOnUIThread(async () =>
+				await RunOnUIThread(() =>
 				{
 					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.Content), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be content ({cmdBar.Content.GetHashCode()})");
@@ -5242,7 +5243,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 
-		private async Task<Panel> ValidateUIElementTestSetup(bool addPrimary, bool addSecondary)
+		private Panel ValidateUIElementTestSetup(bool addPrimary, bool addSecondary)
 		{
 			//      xaml_controls::Grid^ rootGrid = nullptr;
 			//      RunOnUIThread([&] ()
@@ -5322,7 +5323,7 @@ namespace Windows.UI.Tests.Enterprise
 			return new Grid();
 		}
 
-		private async Task ValidateRightClickBehaviorWorker(AppBarClosedDisplayMode closedDisplayMode)
+		private void ValidateRightClickBehaviorWorker(AppBarClosedDisplayMode closedDisplayMode)
 		{
 			//	// CoreWindow isn't agile, so we can't use the SafeEventRegistration utility,
 			//	// so we have to manage it manually.

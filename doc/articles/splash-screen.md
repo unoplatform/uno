@@ -143,13 +143,13 @@ This article covers how to add a splash screen to your application.
 
 1. In the `Toolbox` window, drag and drop a `View Controller` and then an `ImageView` inside the `View Controller`. Enable the `Is initial View Controller`-flag on the `View Controller`.
 
-    ![viewcontroller-imageview](Assets/viewcontroller-imageview.png)
+    ![`viewcontroller-imageview`](Assets/viewcontroller-imageview.png)
 
 1. To have an image fill the screen, set your constraints as below
 
-    ![ios-constraintes](Assets/ios-constraints.png)
+    ![ios-constraints](Assets/ios-constraints.png)
 
-1. Set the `Content Mode` to `Aspect Fit` 
+1. Set the `Content Mode` to `Aspect Fit`
 
     ![ios-content-fit](Assets/ios-content-fit.png)
 
@@ -172,7 +172,7 @@ This article covers how to add a splash screen to your application.
 
 ## Step 5 - WebAssembly
 
-1. In the `.WASM` project, navigate to `WasmScripts/AppManifest.js` 
+1. In the `.WASM` project, navigate to `WasmScripts/AppManifest.js`
 
 2. Add your splash screen image
 
@@ -195,12 +195,12 @@ If you use the theme-aware splash screen background, you can also set the `darkT
 
 | Scale | UWP         | iOS      | Android |
 |-------|:-----------:|:--------:|:-------:|
-| `100` | scale-100   | @1x      | mdpi    |
+| `100` | scale-100   | @1x      | `mdpi`    |
 | `125` | scale-125   | N/A      | N/A     |
-| `150` | scale-150   | N/A      | hdpi    |
-| `200` | scale-200   | @2x      | xhdpi   |
-| `300` | scale-300   | @3x      | xxhdpi  |
-| `400` | scale-400   | N/A      | xxxhdpi |
+| `150` | scale-150   | N/A      | `hdpi`    |
+| `200` | scale-200   | @2x      | `xhdpi`   |
+| `300` | scale-300   | @3x      | `xxhdpi`  |
+| `400` | scale-400   | N/A      | `xxxhdpi` |
 
 ## Get the complete code
 
@@ -214,6 +214,6 @@ See the completed sample on GitHub: [SplashScreenSample](https://github.com/unop
 
 > [!TIP]
 > If you ran into difficulties with any part of this guide, you can:
-> 
+>
 > * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
 > * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag

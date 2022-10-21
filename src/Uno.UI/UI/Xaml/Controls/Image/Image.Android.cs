@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else if (imageSource.ResourceId.HasValue)
 					{
-						var dummy = SetSourceResource(imageSource);
+						SetSourceResource(imageSource);
 					}
 					else if (imageSource.FilePath.HasValue() || imageSource.WebUri != null || imageSource.Stream != null)
 					{
@@ -280,7 +280,11 @@ namespace Windows.UI.Xaml.Controls
 				//If a remote image is fetched a second time, it may be set synchronously (eg if the image is cached) within a layout pass (ie from OnLayoutPartial). In this case, we must dispatch RequestLayout for the image control to be measured correctly.
 				if (MustDispatchSetSource())
 				{
-					Dispatch(async ct => RequestLayout());
+					Dispatch(ct =>
+					{
+						RequestLayout();
+						return Task.CompletedTask;
+					});
 				}
 			}
 			catch (Exception ex)
@@ -291,7 +295,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private async Task SetSourceResource(ImageSource newImageSource)
+		private void SetSourceResource(ImageSource newImageSource)
 		{
 			// The Jupiter behavior is to reset the visual right away, displaying nothing
 			// then show the new image. We're rescheduling the work below, so there is going
@@ -305,10 +309,11 @@ namespace Windows.UI.Xaml.Controls
 			int imageWidth = o.OutWidth;
 			int imageHeight = o.OutHeight;
 
-			Func<CancellationToken, Task> setResource = async (ct) =>
+			Func<CancellationToken, Task> setResource = (ct) =>
 			{
 				_native.SetImageResource(newImageSource.ResourceId.Value);
 				OnImageOpened(newImageSource);
+				return Task.CompletedTask;
 			};
 
 			if (
@@ -329,14 +334,18 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (MustDispatchSetSource())
 			{
-				Dispatch(ct => SetSourceDrawableAsync(ct, newImageSource));
+				Dispatch(ct =>
+				{
+					SetSourceDrawable(ct, newImageSource);
+					return Task.CompletedTask;
+				});
 			}
 			else
 			{
-				var unused = SetSourceDrawableAsync(CancellationToken.None, newImageSource);
+				SetSourceDrawable(CancellationToken.None, newImageSource);
 			}
 		}
-		private async Task SetSourceDrawableAsync(CancellationToken ct, ImageSource newImageSource)
+		private void SetSourceDrawable(CancellationToken ct, ImageSource newImageSource)
 		{
 			_native.SetImageDrawable(newImageSource.BitmapDrawable);
 			OnImageOpened(newImageSource);
@@ -346,15 +355,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (MustDispatchSetSource())
 			{
-				Dispatch(ct => SetSourceBitmapAsync(ct, image));
+				Dispatch(ct =>
+				{
+					SetSourceBitmapAsync(ct, image);
+					return Task.CompletedTask;
+				});
 			}
 			else
 			{
-				var unused = SetSourceBitmapAsync(CancellationToken.None, image);
+				SetSourceBitmapAsync(CancellationToken.None, image);
 			}
 		}
 
-		private async Task SetSourceBitmapAsync(CancellationToken ct, (ImageSource src, Bitmap data) image)
+		private void SetSourceBitmapAsync(CancellationToken ct, (ImageSource src, Bitmap data) image)
 		{
 			_native.SetImageBitmap(image.data);
 			OnImageOpened(image.src);

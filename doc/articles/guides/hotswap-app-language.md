@@ -134,19 +134,19 @@ This guide will walk you through the necessary steps for changing app language a
         ```
 1. Add a new folder fr under the Strings folder by: Right-click on String > Add > New Folder
 
-1. Add a new resource file Resources.resw under the fr folder by: Right-click on fr > Add > New Item ... > Visual C# > Xaml > Resources File
+1. Add a new resource file `Resources.resw` under the fr folder by: Right-click on fr > Add > New Item ... > Visual C# > Xaml > Resources File
 
 1. Add the localization strings for the new elements:
     Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.resw`, and add these:
 
-    |Name|Value in en\Resources.resw|Value in fr\Resources.resw|
+    |Name|Value in `en\Resources.resw`|Value in `fr\Resources.resw`|
     |-|-|-|
-    |MainPage_GotoNextPage.Content|Next Page|Page suivante|
-    |MainPage_GotoLanguageSettings.Content|Language Settings|Paramètres de langue|
-    |Page1_Title.Text|Page in english|Page en français
-    |Page1_GoBack.Content|Go back|Retourner|
-    |LanguageSettings_Title.Text|Language Settings|Paramètres de langue|
-    |LanguageSettings_GoBack.Content|Go back|Retourner|
+    |MainPage_GotoNextPage.Content|`Next Page`|`Page suivante`|
+    |MainPage_GotoLanguageSettings.Content|`Language Settings`|`Paramètres de langue`|
+    |Page1_Title.Text|`Page in english`|`Page en français`|
+    |Page1_GoBack.Content|`Go back`|`Retourner`|
+    |LanguageSettings_Title.Text|`Language Settings`|`Paramètres de langue`|
+    |LanguageSettings_GoBack.Content|`Go back`|`Retourner`|
 
 ## Get the complete code
 

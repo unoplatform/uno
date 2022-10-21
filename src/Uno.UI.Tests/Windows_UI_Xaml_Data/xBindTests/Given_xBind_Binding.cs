@@ -1264,6 +1264,94 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("42", SUT.tb1.Text);
 		}
 
+		[TestMethod]
+		public async Task When_TypeCast()
+		{
+			var SUT = new Binding_TypeCast();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("42", SUT.tb01.Text);
+			Assert.AreEqual("42", SUT.tb02.Text);
+			Assert.AreEqual("4242", SUT.tb03.Text);
+			Assert.AreEqual(2, SUT.tb04.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_TypeCast_DataTemplate()
+		{
+			var SUT = new Binding_TypeCast_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_TypeCast_DataTemplate_Data();
+			root.DataContext = dc;
+			
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var tb01 = SUT.FindName("tb01") as TextBlock;
+			var tb02 = SUT.FindName("tb02") as TextBlock;
+			var tb03 = SUT.FindName("tb03") as TextBlock;
+			var tb04 = SUT.FindName("tb04") as TextBlock;
+
+			Assert.AreEqual("42", tb01.Text);
+			Assert.AreEqual("42", tb02.Text);
+			Assert.AreEqual("4242", tb03.Text);
+			Assert.AreEqual(2, tb04.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_PathLessCasting()
+		{
+			var SUT = new xBind_PathLessCasting();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(SUT, SUT.tb1.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_PathLessCasting_Template()
+		{
+			var SUT = new xBind_PathLessCasting_Template();
+
+			SUT.ForceLoaded();
+
+			var rootData = new xBind_PathLessCasting_Template_Model();
+			SUT.root.Content = rootData;
+
+			var myObject = SUT.FindName("tb1") as TextBlock;
+
+			Assert.AreEqual(rootData, myObject.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_AttachedProperty()
+		{
+			var SUT = new xBind_AttachedProperty();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(42, SUT.tb1.Tag);
+		}
+
+		[TestMethod]
+		public async Task When_ValueType()
+		{
+			var SUT = new xBind_ValueType();
+			var date1 = new DateTime(2022, 10, 01);
+
+			SUT.VM.Model2 = new() { MyDateTime = date1 };
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(date1, SUT.tb1.Tag);
+
+			SUT.VM.Model2 = null;
+
+			Assert.IsNull(SUT.tb1.Tag);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);

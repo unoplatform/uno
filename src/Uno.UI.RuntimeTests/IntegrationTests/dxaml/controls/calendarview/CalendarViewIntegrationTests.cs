@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					cv.MaxDate = date;
 					cv.UpdateLayout();
 				});
-				await helper.VerifyNoSelectedDatesChanged();
+				helper.VerifyNoSelectedDatesChanged();
 			}
 
 			// remove the date
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				}
 				else
 				{
-					await helper.VerifyNoSelectedDatesChanged();
+					helper.VerifyNoSelectedDatesChanged();
 				}
 
 				TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "S"); //Selected
@@ -452,7 +452,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				else
 				{
 					// otherwise, no selected dates chagned event.
-					await helper.VerifyNoSelectedDatesChanged();
+					helper.VerifyNoSelectedDatesChanged();
 				}
 
 				// the item stays selected until the last time we remove the date from SelectedDates.
@@ -531,7 +531,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				cv.SelectedDates.SetAt(0, date); // no crash, no selected dates changed event.
 			});
-			await helper.VerifyNoSelectedDatesChanged();
+			helper.VerifyNoSelectedDatesChanged();
 		}
 
 		[TestMethod]
@@ -583,7 +583,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			LOG_OUTPUT("Release.");
 			TestServices.InputHelper.DynamicRelease(PointerFinger.Finger1);
 			await WindowHelper.WaitForIdle();
-			await helper.VerifyNoSelectedDatesChanged();
+			helper.VerifyNoSelectedDatesChanged();
 			await RunOnUIThread(() =>
 			{
 				VERIFY_IS_TRUE(cv.SelectedDates.Count == 0u);
@@ -852,7 +852,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await helper.WaitForLoaded();
 
-			await helper.WaitForCICEvent();
+			helper.WaitForCICEvent();
 
 			await helper.WaitForSelectedDatesChanged();
 
@@ -3068,9 +3068,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 		[TestMethod]
 		[Ignore("ControlHelper.ValidateUIElementTree() not supported yet.")]
-		public async Task ValidateUIElementTree()
+		public void ValidateUIElementTree()
 		{
-			await ControlHelper.ValidateUIElementTree(
+			ControlHelper.ValidateUIElementTree(
 					new Size(400, 600),
 					1, 
 				// Test setup.

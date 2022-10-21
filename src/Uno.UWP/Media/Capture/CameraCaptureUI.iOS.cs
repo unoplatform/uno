@@ -72,7 +72,7 @@ namespace Windows.Media.Capture
 					var image = result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) as UIImage;
 					var metadata = result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) as UIImage;
 
-					var correctedImage = await FixOrientation(ct, image);
+					var correctedImage = FixOrientation(ct, image);
 
 					(Stream data, string extension) GetImageStream()
 					{
@@ -157,7 +157,7 @@ namespace Windows.Media.Capture
 		/// <param name="ct">Cancellation token</param>
 		/// <param name="image">UI Image</param>
 		/// <returns>UI image</returns>
-		private async Task<UIImage> FixOrientation(CancellationToken ct, UIImage image)
+		private UIImage FixOrientation(CancellationToken ct, UIImage image)
 		{
 			if (image.Orientation == UIImageOrientation.Up)
 			{

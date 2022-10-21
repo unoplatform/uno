@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
+using Uno;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -43,24 +44,24 @@ namespace Microsoft.CodeAnalysis
 		/// Given an <see cref="INamedTypeSymbol"/>, add the symbol declaration (including parent classes/namespaces) to the given <see cref="IIndentedStringBuilder"/>.
 		/// </summary>
 		/// <remarks>
-		/// <para>IMPORTANT: The returned stack must be disposed after putting everything for the given <see cref="INamedTypeSymbol"/>.</para>
 		/// <para>Example usage:</para>
 		/// <code><![CDATA[
-		/// var stack = myClass.AddToIndentedStringBuilder(builder);
-		/// using (builder.BlockInvariant("public static void M()"))
+		/// using (myClass.AddToIndentedStringBuilder(builder))
 		/// {
-		///     builder.AppendLineInvariant("Console.WriteLine(\"Hello world\")");
-		/// }
-		/// 
-		/// while (disposables.Count > 0)
-		/// {
-		///     disposables.Pop().Dispose();
+		///		using (builder.BlockInvariant("public static void M()"))
+		///		{
+		///		  builder.AppendLineInvariant("Console.WriteLine(\"Hello world\")");
+		///		}
 		/// }
 		/// ]]></code>
 		/// <para>NOTE: Another possible implementation is to accept an <see cref="Action"/> as a parameter to generate the type members, execute the action here, and also dispose
 		/// the stack here. The advantage is that callers don't need to worry about disposing the stack.</para>
 		/// </remarks>
-		public static Stack<IDisposable> AddToIndentedStringBuilder(this INamedTypeSymbol namedTypeSymbol, IIndentedStringBuilder builder, Action<IIndentedStringBuilder>? beforeClassHeaderAction = null)
+		public static IDisposable AddToIndentedStringBuilder(
+			this INamedTypeSymbol namedTypeSymbol,
+			IIndentedStringBuilder builder,
+			Action<IIndentedStringBuilder>? beforeClassHeaderAction = null,
+			string afterClassHeader = "")
 		{
 			var stack = new Stack<string>();
 			ISymbol symbol = namedTypeSymbol;
@@ -77,7 +78,9 @@ namespace Microsoft.CodeAnalysis
 				}
 				else if (symbol is INamedTypeSymbol namedSymbol)
 				{
-					stack.Push(GetDeclarationHeaderFromNamedTypeSymbol(namedSymbol));
+					// When generating the class header for the originally given namedTypeSymbol, invoke afterClassHeaderAction.
+					// This is usually used to append the base types or interfaces.
+					stack.Push(GetDeclarationHeaderFromNamedTypeSymbol(namedSymbol, ReferenceEquals(namedSymbol, namedTypeSymbol) ? afterClassHeader : null));
 				}
 				else
 				{
@@ -99,10 +102,10 @@ namespace Microsoft.CodeAnalysis
 				outputDisposableStack.Push(builder.BlockInvariant(stack.Pop()));
 			}
 
-			return outputDisposableStack;
+			return new DisposableAction(() => outputDisposableStack.ForEach(d => d.Dispose()));
 		}
 
-		public static string GetDeclarationHeaderFromNamedTypeSymbol(this INamedTypeSymbol namedTypeSymbol)
+		public static string GetDeclarationHeaderFromNamedTypeSymbol(this INamedTypeSymbol namedTypeSymbol, string? afterClassHeader)
 		{
 			// Interfaces are implicitly abstract, but they can't explicitly have the abstract modifier.
 			var abstractKeyword = namedTypeSymbol.IsAbstract && !namedTypeSymbol.IsAbstract ? "abstract " : string.Empty;
@@ -119,7 +122,7 @@ namespace Microsoft.CodeAnalysis
 
 			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
 
-			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}";
+			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}{afterClassHeader}";
 		}
 
 		public static IEnumerable<IPropertySymbol> GetProperties(this INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IPropertySymbol>();

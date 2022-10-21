@@ -4,7 +4,7 @@ The [linker step](https://github.com/mono/linker/tree/master/docs) (also known a
 
 The linker is generally efficient at removing code but in some cases it may remove too much code, making some assemblies fail to work properly. In particular, assemblies or features that rely on reflection don't work by default with the linker enabled. `JSON.NET` is a good example of this, as it relies on reflection very heavily.
 
-To handle cases where the default linker behaviour removes too much code, the linker can be manually configured using the `LinkerConfig.xml` file in the Uno CrossPlatform project template.
+To handle cases where the default linker behavior removes too much code, the linker can be manually configured using the `LinkerConfig.xml` file in the Uno CrossPlatform project template.
 
 When parts of an application fail to work, you can:
 - Add full assembly names to the `LinkerConfig.xml` file:

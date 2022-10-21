@@ -45,7 +45,7 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
-  windowsScaledPool: 'Windows2022-20211130'
+  windowsScaledPool: 'Windows2022-20220925-1'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-11'
   macOSVMImage_UITests: 'macOS-11'
@@ -54,16 +54,21 @@ variables:
   xCodeRoot_iOS_UITests: '/Applications/Xcode_13.2.1.app'
   XamarinSDKVersion_iOS_UITests: 6_12_12
 
-  enable_package_cache: true
+  # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
+  #enable_package_cache: true
 
 jobs:
 - template: build/ci/.azure-devops-commitsar.yml
   parameters:
     vmImage: '$(linuxVMImage)'
 
+- template: build/ci/.azure-devops-spell-check.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-winui-convert.yml
   parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-pipeline-validations.yml
   parameters:
@@ -77,13 +82,25 @@ jobs:
   parameters:
     poolName: '$(windowsScaledPool)'
 
+- template: build/ci/.azure-devops-package-wasm.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
+- template: build/ci/.azure-devops-package-reference.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+    
+- template: build/ci/.azure-devops-package-skia.yml
+  parameters:
+    poolName: '$(windowsScaledPool)'
+
 - template: build/ci/.azure-devops-package.yml
   parameters:
     poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImageWindows: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
     vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
@@ -102,7 +119,7 @@ jobs:
 
 - template: build/ci/.azure-devops-docs.yml
   parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-samplesapp-uitests-build.yml
   parameters:

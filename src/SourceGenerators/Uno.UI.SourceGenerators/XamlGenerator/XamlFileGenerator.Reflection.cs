@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	internal partial class XamlFileGenerator
 	{
 		private Func<string, INamedTypeSymbol?>? _findType;
-		private Func<XamlType, INamedTypeSymbol?>? _findTypeByXamlType;
+		private Func<XamlType, bool, INamedTypeSymbol?>? _findTypeByXamlType;
 		private Func<string, string, INamedTypeSymbol?>? _findPropertyTypeByFullName;
 		private Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
@@ -41,7 +41,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findEventType = Funcs.Create<XamlMember, IEventSymbol?>(SourceFindEventType).AsLockedMemoized();
 			_findPropertyTypeByFullName = Funcs.Create<string, string, INamedTypeSymbol?>(SourceFindPropertyTypeByFullName).AsLockedMemoized();
 			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsLockedMemoized();
-			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
+			_findTypeByXamlType = Funcs.Create<XamlType, bool, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
 			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
 			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsLockedMemoized();
 
@@ -561,6 +561,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _getAttachedPropertyType(type, member.Member.Name);
 		}
 
+		/// <summary>
+		/// Get the type of the attached property.
+		/// </summary>
+		private INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol type, string propertyName)
+			=> _getAttachedPropertyType(type, propertyName);
+
 		private static INamedTypeSymbol SourceGetAttachedPropertyType(INamedTypeSymbol? type, string name)
 		{
 			do
@@ -742,10 +748,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private INamedTypeSymbol? FindType(string name)
 			=> _findType!(name);
 
-		private INamedTypeSymbol? FindType(XamlType? type)
-			=> type != null ? _findTypeByXamlType!(type) : null;
+		private INamedTypeSymbol? FindType(XamlType? type, bool strictSearch = false)
+			=> type != null ? _findTypeByXamlType!(type, strictSearch) : null;
 
-		private INamedTypeSymbol? SourceFindTypeByXamlType(XamlType type)
+		private INamedTypeSymbol? SourceFindTypeByXamlType(XamlType type, bool strictSearch)
 		{
 			if (type != null)
 			{
@@ -779,14 +785,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
-				var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
 
-				return _findType!(fullName);
+				if (strictSearch)
+				{
+					if(isKnownNamespace && ns != null)
+					{
+						var nsName = GetTrimmedNamespace(ns.Namespace);
+						return _metadataHelper.FindTypeByFullName(nsName + "." + type.Name) as INamedTypeSymbol;
+					}
+				}
+				else
+				{
+					var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
+
+					return _findType!(fullName);
+				}
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		private INamedTypeSymbol GetType(string name)
@@ -897,6 +913,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				type = type.BaseType;
+			}
+		}
+		private bool IsAttachedProperty(INamedTypeSymbol declaringType, string name)
+			=> _isAttachedProperty(declaringType, name);
+
+		private IEnumerable<(INamedTypeSymbol ownerType, string property)> FindLocalizableAttachedProperties(string uid)
+		{
+			foreach (var key in _resourceKeys.Where(k => k.StartsWith(uid + "/")))
+			{
+				// fullKey = $"{uidName}.[using:{ns}]{type}.{memberName}";
+				//
+				// Example:
+				// OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip
+
+				var firstDotIndex = key.IndexOf('/');
+
+				var propertyPath = key.Substring(firstDotIndex + 1);
+
+				const string usingPattern = "[using:";
+
+				if(propertyPath.StartsWith(usingPattern))
+				{
+					var lastDotIndex = propertyPath.LastIndexOf('.');
+
+					var propertyName = propertyPath.Substring(lastDotIndex + 1);
+					var typeName = propertyPath
+						.Substring(usingPattern.Length, lastDotIndex - usingPattern.Length)
+						.Replace("]", ".");
+
+					if(GetType(typeName) is { } typeSymbol)
+					{
+						yield return (typeSymbol, propertyName);
+					}
+					else
+					{
+						throw new Exception($"Unable to find the type {typeName} in key {key}");
+					}
+				}
 			}
 		}
 

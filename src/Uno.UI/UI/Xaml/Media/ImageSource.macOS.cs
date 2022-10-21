@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Media
 				{
 					await CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
-						async () =>
+						() =>
 						{
 							ImageData = OpenBundle();
 						}
@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml.Media
 
 					await CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
-						async () =>
+						() =>
 						{
 							ImageData = NSImage.ImageNamed(localFileUri.LocalPath);
 						}).AsTask(ct);

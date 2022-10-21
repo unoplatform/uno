@@ -634,7 +634,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						targetDictionary.Add(resourceKey ?? resourceTargetType, item);
+						if ((resourceKey ?? resourceTargetType) is { } key)
+						{
+							targetDictionary.Add(key, item);
+						}
 
 						if (HasAnyResourceMarkup(child) && item is IDependencyObjectStoreProvider provider)
 						{

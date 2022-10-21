@@ -6,8 +6,7 @@ jobs:
   displayName: 'Documentation WebSite'
   dependsOn: Pipeline_Validations
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -22,7 +21,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/install-windows-sdk.yml
+  - template: templates/dotnet-install.yml
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml

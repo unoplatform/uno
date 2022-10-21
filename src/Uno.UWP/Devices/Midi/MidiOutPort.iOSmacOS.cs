@@ -41,7 +41,7 @@ namespace Windows.Devices.Midi
 			_endpoint = null;
 		}
 
-		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
+		private static Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
 		{
 			var provider = new MidiOutDeviceClassProvider();
 			var nativeDeviceInfo = provider.GetNativeEndpoint(identifier.Id);
@@ -53,7 +53,7 @@ namespace Windows.Devices.Midi
 
 			var port = new MidiOutPort(identifier.ToString(), nativeDeviceInfo);
 			port.Open();
-			return port;
+			return Task.FromResult<IMidiOutPort>(port);
 		}
 
 		private void SendBufferInternal(IBuffer midiData, TimeSpan timestamp)

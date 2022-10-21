@@ -1,8 +1,8 @@
 # SkiaSharp support for WebAssembly via Uno Platform
 
-Today we are proud to announce that the Uno Platform now has initial support for Skia via the [Uno.SkiaSharp.Views](https://www.nuget.org/packages/Uno.SkiaSharp.Views) package which was published to NuGet moments ago. Skia is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. It serves as the graphics engine for Google Chrome and Chrome OS, Android, Mozilla Firefox and Firefox OS, and many other products. 
+Today we are proud to announce that the Uno Platform now has initial support for Skia via the [Uno.SkiaSharp.Views](https://www.nuget.org/packages/Uno.SkiaSharp.Views) package which was published to NuGet moments ago. Skia is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. It serves as the graphics engine for Google Chrome and Chrome OS, Android, Mozilla Firefox and Firefox OS, and many other products.
 
-Head on over [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) to see Skia, the Uno Platform and WebAssembly working together. For the best experience we recommend using a desktop computer and the latest canary version of your favourite browser as the [specification is under construction](https://github.com/WebAssembly/spec) and support for WebAssembly is rapidly improving.
+Head on over [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) to see Skia, the Uno Platform and WebAssembly working together. For the best experience we recommend using a desktop computer and the latest canary version of your favorite browser as the [specification is under construction](https://github.com/WebAssembly/spec) and support for WebAssembly is rapidly improving.
 
 ![SkiaSharp for WebAssembly](Assets/201906-skiasharp-demo.png)
 
@@ -47,7 +47,7 @@ private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
     };
 
     var coord = new SKPoint(
-        scaledSize.Width / 2, 
+        scaledSize.Width / 2,
         (scaledSize.Height + paint.TextSize) / 2);
     canvas.DrawText("SkiaSharp", coord, paint);
 }
@@ -65,9 +65,9 @@ Thankfully, Mono supports static linking pretty well out-of-the-box and it enabl
 
 ## The road ahead
 
-There are a few items outstanding before we will consider support for Skia as complete: 
+There are a few items outstanding before we will consider support for Skia as complete:
 
-**First**, we needed to fork SkiaSharp to enable WebAssembly support because of the specificities of the native interop layer, notable because [`Marshal.GetFunctionPointerForDelegate`](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.marshal.getfunctionpointerfordelegate?view=netframework-4.8) is not supported yet, and [emscripten's `addFunction`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) function pointers feature [needs to be used](https://github.com/unoplatform/Uno.SkiaSharp/blob/uno/binding/SkiaSharp.Wasm/ts/SkiaSharpCanvasKit.ts#L21-L32) for the time being. 
+**First**, we needed to fork SkiaSharp to enable WebAssembly support because of the specificities of the native interop layer, notable because [`Marshal.GetFunctionPointerForDelegate`](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.marshal.getfunctionpointerfordelegate?view=netframework-4.8) is not supported yet, and [emscripten's `addFunction`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) function pointers feature [needs to be used](https://github.com/unoplatform/Uno.SkiaSharp/blob/uno/binding/SkiaSharp.Wasm/ts/SkiaSharpCanvasKit.ts#L21-L32) for the time being.
 
 We're [working with the SkiaSharp team](https://github.com/mono/SkiaSharp/issues/876) to add an adjustable interop layer that would enable WebAssembly support to be plugged-in at runtime, allowing proper support for packages such as [`SkiaSharp.Extended`](https://www.nuget.org/packages/SkiaSharp.Extended) to be used without being forked to be supported by WebAssembly.
 

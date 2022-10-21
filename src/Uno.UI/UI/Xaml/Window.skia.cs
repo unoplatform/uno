@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml
 
 				Bounds = newBounds;
 				
-				_rootVisual?.XamlRoot.InvalidateMeasure();
+				_rootVisual?.XamlRoot?.InvalidateMeasure();
 				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 				ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 				CoreServices.Instance.PutVisualRoot(_rootBorder);
 				_rootVisual = CoreServices.Instance.MainRootVisual;
 
-				if (_rootVisual == null)
+				if (_rootVisual?.XamlRoot == null)
 				{
 					throw new InvalidOperationException("The root visual could not be created.");
 				}

@@ -153,7 +153,7 @@ namespace Private.Infrastructure
 				{
 					TaskCompletionSource<bool> cts = new();
 
-					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						try
 						{

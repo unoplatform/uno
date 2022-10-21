@@ -7,6 +7,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Windows.Foundation;
 using Uno.Foundation.Interop;
+using System.Net.WebSockets;
+using System.Diagnostics;
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
 
 namespace SamplesApp.UnitTests.TSBindings
 {
@@ -15,6 +21,34 @@ namespace SamplesApp.UnitTests.TSBindings
 
 	public class TSBindingsTests
 	{
+#if NET7_0_OR_GREATER
+		[TestMethod]
+		public void When_TestPerf()
+		{
+			var sw1 = Stopwatch.StartNew();
+			for (int i = 0; i < 1000; i++)
+			{
+				string r = TestImport.When_SingleStringNet7(i.ToString());
+			}
+
+			Console.WriteLine($"net7 interop: {sw1.Elapsed}");
+
+			var sw2 = Stopwatch.StartNew();
+			for (int i = 0; i < 1000; i++)
+			{
+				var param = new When_SingleStringParams()
+				{
+					MyString = "This is 42"
+				};
+
+				var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_SingleString", param, typeof(GenericReturn));
+
+			}
+
+			Console.WriteLine($"uno ts interop: {sw2.Elapsed}");
+		}
+#endif
+
 		[TestMethod]
 		public void When_IntPtr()
 		{
@@ -164,6 +198,14 @@ namespace SamplesApp.UnitTests.TSBindings
 			Assert.AreEqual("true;true;true;true", ret.Value);
 		}
 	}
+
+#if NET7_0_OR_GREATER
+	partial class TestImport
+	{
+		[JSImport("globalThis.When_SingleStringNet7")]
+		internal static partial string When_SingleStringNet7(string value);
+	}
+#endif
 
 	[TSInteropMessage]
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]

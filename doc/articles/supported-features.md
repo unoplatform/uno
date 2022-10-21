@@ -51,7 +51,7 @@
 - Text Character Spacing
 - Text Spans (Bold, Italic, Underline)
 - [Path & Shapes support](features/shapes-and-brushes.md)
-- Updateable Shapes support
+- Updatable Shapes support
 - Image Brush support in shapes
 - `FontIcon` support
 - Merged Dictionary support

@@ -27,13 +27,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		protected override bool IsPayloadNeedsToBeUpdated => true;
 
 #if NETFRAMEWORK
-		public Task LoadForTests(
+		public void LoadForTests(
 			IInputStream sourceJson,
 			string sourceCacheKey,
 			UpdatedAnimation updateCallback)
 		{
 			_updateCallback = updateCallback;
-			return LoadAndUpdate(default, sourceCacheKey, sourceJson);
+			LoadAndUpdate(default, sourceCacheKey, sourceJson);
 		}
 
 		public string? GetJson()
@@ -51,7 +51,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			_updateCallback = updateCallback;
 
-			var t = LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
+			LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
 
 			return Disposable.Create(() =>
 			{
@@ -60,7 +60,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
-		private async Task LoadAndUpdate(
+		private void LoadAndUpdate(
 			CancellationToken ct,
 			string sourceCacheKey,
 			IInputStream sourceJson)

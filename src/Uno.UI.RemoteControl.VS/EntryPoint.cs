@@ -55,10 +55,10 @@ namespace Uno.UI.RemoteControl.VS
 
 			SetupOutputWindow();
 
-			_dte.Events.SolutionEvents.BeforeClosing += () => SolutionEvents_BeforeClosingAsync();
+			_dte.Events.SolutionEvents.BeforeClosing += () => SolutionEvents_BeforeClosing();
 
 			_dte.Events.BuildEvents.OnBuildDone +=
-				(s, a) => BuildEvents_OnBuildDoneAsync(s, a);
+				(s, a) => BuildEvents_OnBuildDone(s, a);
 
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin +=
 				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
@@ -70,7 +70,7 @@ namespace Uno.UI.RemoteControl.VS
 			_ = UpdateProjectsAsync();
 		}
 
-		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+		private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
 		{
 			if (RemoteControlServerPort == 0)
 			{
@@ -79,9 +79,9 @@ namespace Uno.UI.RemoteControl.VS
 					$"Rebuilding the application may fix the issue.");
 			}
 
-			return new Dictionary<string, string> {
+			return Task.FromResult(new Dictionary<string, string> {
 				{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
-			};
+			});
 		}
 
 		private void SetupOutputWindow()
@@ -162,7 +162,7 @@ namespace Uno.UI.RemoteControl.VS
 		{
 			try
 			{
-				await StartServerAsync();
+				StartServer();
 				var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
 				foreach (var p in await GetProjectsAsync())
 				{
@@ -190,12 +190,12 @@ namespace Uno.UI.RemoteControl.VS
 			}
 		}
 
-		private async Task BuildEvents_OnBuildDoneAsync(vsBuildScope Scope, vsBuildAction Action)
+		private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
 		{
-			await StartServerAsync();
+			StartServer();
 		}
 
-		private async Task SolutionEvents_BeforeClosingAsync()
+		private void SolutionEvents_BeforeClosing()
 		{
 			if (_process != null)
 			{
@@ -237,7 +237,7 @@ namespace Uno.UI.RemoteControl.VS
 			throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
 		}
 
-		private async Task StartServerAsync()
+		private void StartServer()
 		{
 			if (_process?.HasExited ?? true)
 			{

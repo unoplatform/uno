@@ -27,7 +27,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 
 			// Delay to refresh the content
 			_ = Dispatcher.RunIdleAsync(
-				async _ =>
+				_ =>
 				{
 					DataContext = "InitialDataContext";
 				}
@@ -45,7 +45,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls
 			// DataContext changed ?
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				async () =>
+				() =>
 				{
 					var dobj = (FrameworkElement)sender;
 					var change = dobj.DataContext?.ToString() ?? "null";

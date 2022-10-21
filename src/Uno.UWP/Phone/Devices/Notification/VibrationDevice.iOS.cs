@@ -26,7 +26,7 @@ namespace Windows.Phone.Devices.Notification
 		/// we can produce only very short vibration and one second vibration
 		/// </summary>
 		/// <param name="duration"></param>
-		public async void Vibrate(TimeSpan duration)
+		public void Vibrate(TimeSpan duration)
 		{
 			if (duration.TotalMilliseconds < 200)
 			{

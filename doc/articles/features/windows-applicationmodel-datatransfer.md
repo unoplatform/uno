@@ -22,7 +22,7 @@ To set up the `DataTransferManager` use the following snippet:
 ```
 var dataTransferManager = DataTransferManager.GetForCurrentView();
 dataTransferManager.DataRequested += DataRequested;
-dataTransferManager.ShowShareUI();
+DataTransferManager.ShowShareUI();
 ```
 
 Make sure to unregister the `DataRequested` event after finished sharing.

@@ -1,6 +1,12 @@
 parameters:
   poolName: ''
-
+  artifactsToDownload:
+    - "NugetPackages-Artifacts-generic"
+    - "NugetPackages-Artifacts-net6"
+    - "NugetPackages-Artifacts-reference"
+    - "NugetPackages-Artifacts-skia"
+    - "NugetPackages-Artifacts-wasm"
+    
 jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
@@ -9,6 +15,9 @@ jobs:
   dependsOn:
   - generic_win_build
   - net6_win_build
+  - skia_package_build
+  - wasm_package_build
+  - reference_package_build
 
   pool: ${{ parameters.poolName }}
 
@@ -28,7 +37,7 @@ jobs:
 
     # Disable .NET 5 build on CI for package generation
     # Build validation is performed on other jobs
-    UnoUIDisableNetCoreBuild: true
+    UnoUIDisableNet7Build: true
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
@@ -44,33 +53,20 @@ jobs:
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
-   
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
-
-  # Required to run the api comparison tool
-  - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 2.2.x'
-    inputs:
-      packageType: runtime
-      version: 2.2.x
-
-  # Required for the Wasm uitests project
-  - task: NodeTool@0
 
   - template: templates/install-windows-sdk.yml
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: NugetPackages-Artifacts
-      downloadPath: '$(Agent.WorkFolder)' 
+  - ${{ each artifact in parameters.artifactsToDownload }}:
+      - task: DownloadBuildArtifacts@0
+        displayName: Download build artifact ${{ artifact }}
+        inputs:
+          artifactName: ${{ artifact }}
+          downloadPath: '$(Agent.WorkFolder)' 
 
   - task: ExtractFiles@1
     displayName: Restore binaries structure
     inputs:
-      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip' 
       destinationFolder: $(build.sourcesdirectory)
       cleanDestinationFolder: false
       overwriteExistingFiles: true
@@ -81,7 +77,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-packages.binlog
+      msbuildArguments: /r /m /v:m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -102,14 +98,14 @@ jobs:
     displayName: Copy generic build packages
     condition: always()
     inputs:
-      SourceFolder: $(Agent.WorkFolder)/NugetPackages-Artifacts/vslatest-generic
+      SourceFolder: $(Agent.WorkFolder)/
       Contents: |
-        *.nupkg
-        *.vsix
+        NugetPackages-Artifacts*/vslatest*/*.nupkg
+        NugetPackages-Artifacts*/vslatest*/*.vsix
       TargetFolder: $(build.artifactstagingdirectory)\vslatest
       CleanTargetFolder: false
       OverWrite: false
-      flattenFolders: false
+      flattenFolders: true
 
   - task: PowerShell@2
     displayName: Authenticode Sign Packages

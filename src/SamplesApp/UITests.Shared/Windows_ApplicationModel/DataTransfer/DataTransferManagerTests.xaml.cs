@@ -180,7 +180,9 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 
 			if (!string.IsNullOrEmpty(UriText) && Uri.TryCreate(UriText, UriKind.RelativeOrAbsolute, out var uri))
 			{
+#pragma warning disable CS0618 // Type or member is obsolete
 				args.Request.Data.SetUri(uri);
+#pragma warning restore CS0618 // Type or member is obsolete
 			}
 
 			if (!string.IsNullOrEmpty(WebLink) && Uri.TryCreate(WebLink, UriKind.RelativeOrAbsolute, out var webLink))

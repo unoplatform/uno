@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -267,6 +270,115 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[DataTestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
+		{
+			var closeButtonClickEvent = new Event();
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+			var closeButtonClickRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogButtonClickEventArgs>>("CloseButtonClick");
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			if (!isCloseButtonEnabled)
+			{
+				var disabledStyle = new Style(typeof(Button));
+				disabledStyle.Setters.Add(new Setter(FrameworkElement.IsEnabledProperty, false));
+
+				SUT.CloseButtonStyle = disabledStyle;
+			}
+
+
+			closeButtonClickRegistration.Attach(SUT, (s, e) => closeButtonClickEvent.Set());
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				await openedEvent.WaitForDefault();
+				VERIFY_IS_TRUE(SUT._popup.IsOpen);
+
+				SystemNavigationManager.GetForCurrentView().RequestBack();
+
+				await closeButtonClickEvent.WaitForDefault();
+				await closedEvent.WaitForDefault();
+
+				Assert.AreEqual(isCloseButtonEnabled, closeButtonClickEvent.HasFired());
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Popup_Closed()
+		{
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				var showAsyncResult = SUT.ShowAsync().AsTask();
+
+				await openedEvent.WaitForDefault();
+
+				SUT._popup.IsOpen = false;
+
+				await closedEvent.WaitForDefault();
+
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+
+				if (await Task.WhenAny(showAsyncResult, Task.Delay(2000)) == showAsyncResult)
+				{
+					var dialogResult = showAsyncResult.Result;
+					VERIFY_ARE_EQUAL(ContentDialogResult.None, dialogResult);
+				}
+				else
+				{
+					Assert.Fail("Timed out waiting for ShowAsync");
+				}
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+#endif
+
 #if __ANDROID__
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
 		[Ignore()]
@@ -316,6 +428,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				inputPane.Showing -= OnShowing;
 			}
+			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForIdle();
 		}
 

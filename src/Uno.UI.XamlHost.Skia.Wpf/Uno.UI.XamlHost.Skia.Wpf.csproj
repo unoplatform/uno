@@ -4,6 +4,10 @@
 		<TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0-windows</TargetFrameworks>
+	</PropertyGroup>
+
 	<Import Project="../netcore-build-windows.props" />
 
 	<PropertyGroup>

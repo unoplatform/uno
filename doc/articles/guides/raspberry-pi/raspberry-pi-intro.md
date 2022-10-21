@@ -7,7 +7,7 @@
 
 For this guide, you'll need various pieces of hardware and an Azure Account;
 
-- Raspberry Pi 3b+ and above (I'll be using a [4Gb Pi 4](https://shop.pimoroni.com/products/raspberry-pi-4?variant=29157087445075)) 
+- Raspberry Pi 3b+ and above (I'll be using a [4Gb Pi 4](https://shop.pimoroni.com/products/raspberry-pi-4?variant=29157087445075))
 - [Raspberry Pi Power Supply](https://shop.pimoroni.com/products/universal-usb-c-power-supply-5-1v-3a)
 - [16GB SD Card](https://amzn.to/2YAI07e)
 - SSH Client like [PuTTY](https://putty.org/)(Both Windows and Mac have a built in ssh client)
@@ -117,7 +117,7 @@ You should now find yourself in the solution directory for your new Uno App. If 
 
 ![Uno Templates Installed](images/07_uno-app-directory.png)
 
-In the solution we've just created we have several files, including a global.json file which enforces that we use at least .NET Core 3.1.100. 
+In the solution we've just created we have several files, including a global.json file which enforces that we use at least .NET Core 3.1.100.
 
 We also have the main solution files that we can open in Visual Studio on Windows or Mac.
 
@@ -125,10 +125,10 @@ Then we have four directories;
 
 | Directory | Purpose |
 | :--- | :--- |
-| unoapp1.Shared | Contains the main XAML page  |
-| unoapp1.Skia.Gtk | Contains the Linux / Raspberry Pi Version |
-| unoapp1.Skia.Linux.FrameBuffer | Provides Access to a Window Manager and the Cursor  |
-| unoapp1.UWP | Contains the Windows UWP version |
+| `unoapp1.Shared` | Contains the main XAML page  |
+| `unoapp1.Skia.Gtk` | Contains the Linux / Raspberry Pi Version |
+| `unoapp1.Skia.Linux.FrameBuffer` | Provides Access to a Window Manager and the Cursor  |
+| `unoapp1.UWP` | Contains the Windows UWP version |
 
 The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 

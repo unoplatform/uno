@@ -366,7 +366,7 @@ namespace Uno.UI.Controls
 				.Where(entry => entry != null)
 				.Distinct()
 				.OfType<PageStackEntry>()
-				.Select(entry => entry.Instance.FindViewController() ?? new PageViewController(entry.Instance))
+				.Select(FindOrCreateViewController)
 				.ToArray();
 
 			if (!viewControllers.SequenceEqual(NavigationController.ViewControllers))
@@ -387,8 +387,18 @@ namespace Uno.UI.Controls
 				{
 					NavigationController.SetViewControllers(viewControllers, animated: true);
 				}
-				
 			}
+		}
+
+		private UIViewController FindOrCreateViewController(PageStackEntry entry)
+		{
+			if (entry.Instance is { } pageInstance)
+			{
+				return pageInstance.FindViewController() ?? new PageViewController(pageInstance);
+			}
+
+			var page = _frame.EnsurePageInitialized(entry);
+			return new PageViewController(page);
 		}
 
 		private bool GetIsAnimated(NavigationTransitionInfo transitionInfo)

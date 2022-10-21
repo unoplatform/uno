@@ -2,7 +2,6 @@
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
 		<IsPackable>false</IsPackable>
-		<NoWarn>1998</NoWarn>
 		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>
 
 		<CodeAnalysisVersionForAnalyzersTests>3.8.0</CodeAnalysisVersionForAnalyzersTests>

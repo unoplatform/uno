@@ -35,11 +35,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 
 		private static async Task<IRandomAccessStream> GetStream(string url)
 		{
-#if __WASM__
-			using var httpClient = new HttpClient(new Uno.UI.Wasm.WasmHttpHandler());
-#else
 			using var httpClient = new HttpClient();
-#endif
 			var data = await httpClient.GetByteArrayAsync(url);
 
 			return new MemoryStream(data).AsRandomAccessStream();

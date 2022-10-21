@@ -108,4 +108,4 @@
 	.Build();
 #>
 
-<#@include file="..\UI\Xaml\DependencyPropertiesImplementation.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/DependencyPropertiesImplementation.tt"#>

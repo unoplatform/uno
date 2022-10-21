@@ -10,7 +10,6 @@ namespace Uno.UI.Tests.Helpers
 {
 	internal static class ThemeHelper
 	{
-
 		internal static async Task<bool> SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;

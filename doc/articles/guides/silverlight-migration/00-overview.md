@@ -71,7 +71,7 @@ This guide to migration will refer to a Silverlight 5 application called **TimeE
 * **ReportViewer** - can view some simple charts
 * **Admin** - includes the capabilities of **Consultant** and **ReportViewer** and can maintain the list of projects.
 
-The guide will discuss the major aspects of migration as they arise during the course of creating the **TimeEntryUno** version of the application. The typical approach to writing an Uno application is the start with the UWP target, and then test with each of the other targeted platforms. As the current migration scopw is only UWP and WASM, it makes sense to test the WASM version frequently as well.
+The guide will discuss the major aspects of migration as they arise during the course of creating the **TimeEntryUno** version of the application. The typical approach to writing an Uno application is the start with the UWP target, and then test with each of the other targeted platforms. As the current migration scope is only UWP and WASM, it makes sense to test the WASM version frequently as well.
 
 > [!NOTE]
 > The Silverlight **TimeEntryRIA** sample app as well as the sample migrated app **TimeEntryUno** are available for review - checkout the **TimeEntry Samples** article for details.

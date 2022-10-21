@@ -49,7 +49,7 @@ the implemented views. To test DocFx and break on error run the `npm run strict`
 
 # Deploy
 
-DocFx will use the content of the `styles` folder when building. When working locally, sourcemaps are generated to help
+DocFx will use the content of the `styles` folder when building. When working locally, source-maps are generated to help
 debugging the site; the javascript and css are not minified for the same reason. It's very important that the
 build command is ran just before committing your work; this will minify the code, clean up the `styles` and `_site`
 folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
@@ -60,7 +60,7 @@ the `styles` folder.
 ## Start
 
 With browsersync and gulp watch, any changes in the sass, js and Docfx templates should be rebuilt automatically.
-This command starts the project with the debug flag. This prevents the js from being minified and generates sourcemaps
+This command starts the project with the debug flag. This prevents the js from being minified and generates source-maps
 (easier debugging). It will concatenate all the js into one `docfx.js` file.
 
 ```
@@ -79,7 +79,7 @@ npm run build
 
 ## Prod
 
-This command is similar to start, but it will minify the js and the sass and won't generate any sourcemaps.
+This command is similar to start, but it will minify the js and the sass and won't generate any source-maps.
 
 ```
 npm run prod
@@ -116,6 +116,15 @@ The `docfx.vendor.*` files in the vendor folder are there to freeze the dependen
 and copy the newly generated files from the `_site/style` folder.
 
 Every file in the `styles` folder is automatically generated and should not be modified manually.
+
+## Spell-checking the docs
+
+Spell-checking for the docs is done as part of a GitHub Action.
+
+If you'd like to perform the same check locally, you can run:
+
+* `npm install -g cspell` to install the cSpell CLI
+* `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
 
 # Notes
 

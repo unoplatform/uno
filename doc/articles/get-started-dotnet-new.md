@@ -4,7 +4,7 @@ The Uno Platform provides a set of command-line templates to create cross-platfo
 
 To install the templates, type the following:
 ```
-dotnet new -i Uno.ProjectTemplates.Dotnet
+dotnet new install Uno.ProjectTemplates.Dotnet
 ```
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.

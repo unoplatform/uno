@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -9,6 +10,7 @@ using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
+using Uno.Extensions.ApplicationModel.Core;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Uno.Extensions.Networking.Connectivity;
 using Uno.Extensions.Storage.Pickers;
@@ -80,6 +82,7 @@ namespace Uno.UI.Skia.Platform
 				return;
 			}
 
+			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
 			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
@@ -152,6 +155,43 @@ namespace Uno.UI.Skia.Platform
 			RegisterForBackgroundColor();
 		}
 
+		private void UpdateWindowPropertiesFromPackage()
+		{
+			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
+			{
+				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
+				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path, basePath);
+
+				if (File.Exists(iconPath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
+					}
+
+					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(iconPath));
+				}
+				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+					}
+
+					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(scaledPath));
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
+					}
+				}
+			}
+
+			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+
 		private void RegisterForBackgroundColor()
 		{
 			void Update()
@@ -197,7 +237,7 @@ namespace Uno.UI.Skia.Platform
 			InvalidateVisual();
 		}
 
-		private void MainWindow_Closing(object sender, CancelEventArgs e)
+		private void MainWindow_Closing(object? sender, CancelEventArgs e)
 		{
 			var manager = SystemNavigationManagerPreview.GetForCurrentView();
 			if (!manager.HasConfirmedClose)
@@ -235,7 +275,7 @@ namespace Uno.UI.Skia.Platform
 			WinUI.Application.StartWithArguments(CreateApp);
 			_hostPointerHandler = new HostPointerHandler(this);
 
-			WpfApplication.Current.MainWindow.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			UpdateWindowPropertiesFromPackage();
 		}
 
 		private void MainWindow_StateChanged(object? sender, EventArgs e)

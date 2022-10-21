@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 	{
 #if HAS_UNO || !WINDOWS_UWP // the signatures are present from winui, uno\uwp and uno\winui, just not uwp
 		[TestMethod]
-		public async Task When_MarkupExtension_Default()
+		public void When_MarkupExtension_Default()
 		{
 			var page = new MarkupExtension_ParserContext();
 
@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
-		public async Task When_MarkupExtension_Nested()
+		public void When_MarkupExtension_Nested()
 		{
 			var page = new MarkupExtension_ParserContext();
 

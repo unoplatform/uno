@@ -181,12 +181,12 @@
 	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!='' and '$(_AndroidApiLevel)'!=''">
 
 		<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
-			<UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
+			<UnoUIMinAndroidSDKVersion>31</UnoUIMinAndroidSDKVersion>
 			<_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
 		</PropertyGroup>
 
 		<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
-			<UnoUIMinAndroidSDKVersion>11.0</UnoUIMinAndroidSDKVersion>
+			<UnoUIMinAndroidSDKVersion>12.0</UnoUIMinAndroidSDKVersion>
 			<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
 		</PropertyGroup>
 

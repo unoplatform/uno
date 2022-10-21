@@ -45,10 +45,15 @@ namespace Private.Infrastructure
 #endif
 		}
 
-		internal static async Task RunOnUIThread(Action action)
+		internal static
+#if !__WASM__
+			async
+#endif
+			Task RunOnUIThread(Action action)
 		{
 #if __WASM__
 			action();
+			return Task.CompletedTask;
 #else
 			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
 #endif

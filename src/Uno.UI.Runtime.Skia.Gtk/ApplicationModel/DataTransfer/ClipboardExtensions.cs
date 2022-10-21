@@ -45,35 +45,35 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 
 			if (_clipboard.WaitIsImageAvailable())
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Bitmap, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Bitmap, ct =>
 				{
 					var image = _clipboard.WaitForImage();
 					var data = image.SaveToBuffer("bmp");
 					var stream = new MemoryStream(data);
-					return RandomAccessStreamReference.CreateFromStream(stream.AsRandomAccessStream());
+					return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(stream.AsRandomAccessStream()));
 				});
 			}
 			if (_clipboard.WaitIsTargetAvailable(HtmlContent))
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Html, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Html, ct =>
 				{
 					var selectionData = _clipboard.WaitForContents(HtmlContent);
-					return Encoding.UTF8.GetString(selectionData.Data);
+					return Task.FromResult<object>(Encoding.UTF8.GetString(selectionData.Data));
 				});
 			}
 			if (_clipboard.WaitIsTargetAvailable(RtfContent))
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Rtf, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Rtf, ct =>
 				{
 					var selectionData = _clipboard.WaitForContents(RtfContent);
-					return Encoding.UTF8.GetString(selectionData.Data);
+					return Task.FromResult<object>(Encoding.UTF8.GetString(selectionData.Data));
 				});
 			}
 			if (_clipboard.WaitIsTextAvailable())
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Text, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Text, ct =>
 				{
-					return _clipboard.WaitForText();
+					return Task.FromResult<object>(_clipboard.WaitForText());
 				});
 			}
 			if (_clipboard.WaitIsUrisAvailable())
@@ -166,10 +166,10 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 
 			CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				() => SetContentCore(content));
 		}
 
-		private async Task SetContentAsync(DataPackage content)
+		private void SetContentCore(DataPackage content)
 		{
 			var data = content?.GetView();
 			var targetList = new TargetList();

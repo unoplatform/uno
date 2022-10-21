@@ -5,19 +5,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-
+using System.Text;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 
 namespace Windows.ApplicationModel.Resources
 {
 	public sealed partial class ResourceLoader
 	{
-		private const int UPRIVersion = 2;
+		private const int UPRIVersion = 3;
 		private const string DefaultResourceLoaderName = "Resources";
 		private static readonly Logger _log = typeof(ResourceLoader).Log();
 
@@ -259,7 +260,14 @@ namespace Windows.ApplicationModel.Resources
 					throw new InvalidOperationException($"The file {fileName} is not a resource file");
 				}
 
+				bool adjustKeyTransformationForV2 = false;
 				var version = reader.ReadInt32();
+				if(version == 2)
+				{
+					version = UPRIVersion;
+					adjustKeyTransformationForV2 = true;
+				}
+
 				if (version != UPRIVersion)
 				{
 					throw new InvalidOperationException($"The resource file {fileName} has an invalid version (got {version}, expecting {UPRIVersion})");
@@ -278,10 +286,28 @@ namespace Windows.ApplicationModel.Resources
 					}
 
 					var resourceCount = reader.ReadInt32();
+					StringBuilder sb = new();
 					for (var i = 0; i < resourceCount; i++)
 					{
 						var key = reader.ReadString();
 						var value = reader.ReadString();
+
+						if (adjustKeyTransformationForV2)
+						{
+							// Restore the original format
+							key = key.Replace("/", ".");
+
+							var firstDotIndex = key.IndexOf('.');
+							if(firstDotIndex != -1)
+							{
+								sb.Clear();
+								sb.Append(key);
+
+								sb[firstDotIndex] = '/';
+
+								key = sb.ToString();
+							}
+						}
 
 						if (_log.IsEnabled(LogLevel.Debug))
 						{

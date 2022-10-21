@@ -64,7 +64,7 @@ public partial sealed class MyDivControl : FrameworkElement
     }
 }
 
-[HtmlElement("input")] 
+[HtmlElement("input")]
 public partial sealed class MyInputControl : FrameworkElement
 {
     public MyInputControl() // Will create an <input> HTML element
@@ -90,7 +90,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Setting only one CSS style
   this.SetCssStyle("text-shadow", "2px 2px red");
-  
+
   // Setting many CSS styles at once using C# tuples
   this.SetCssStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
   ```
@@ -110,13 +110,13 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Set the "href" attribute of an <a> element
   this.SetHtmlAttribute("href", "#section2");
-  
+
   // Set many attributes at once (less interop)
   this.SetHtmlAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
-  
+
   // Remove attribute from DOM element
   this.ClearHtmlAttribute("href");
-  
+
   // Get the value of an attribute of a DOM element
   var href = this.GetHtmlAttribute("href");
   ```
@@ -126,13 +126,13 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   ``` csharp
   // Add the class to element
   this.SetCssClass("warning");
-  
+
   // Add many classes at once (less interop)
   this.SetCssClass("warning", "level2");
-  
+
   // Remove class from element
   this.UnsetCssClass("paused");
-  
+
   // You can also set one class from a list of possible values.
   // Like a radio-button, like non-selected values will be unset
   var allClasses = new [] { "Small", "Medium", "Large"};
@@ -145,7 +145,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
   this.SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
   ```
 
-  > **IMPORTANT**: This method should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of desynchronized visual tree.
+  > **IMPORTANT**: This method should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of de-synchronized visual tree.
 
 * Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
 
@@ -183,7 +183,7 @@ await MyControl.ExecuteJavascriptAsync("element.requestFullScreen();"); // async
 * Remember to always use `InvariantCulture` when generating JavaScript for numbers. There's also a helper in [`Uno.Core`](https://www.nuget.org/packages/Uno.Core) called `.ToStringInvariant()`: this dependency is already present in any Uno projects in the namespace `Uno.Extensions`.
 * Calling the javascript `document.getElementById()` with the element's `HtmlId` will only work when the element is actually loaded in the DOM. So it's better to call the extensions `<element>.ExecuteJavascript()` or `<element>.ExecuteJavascriptAsync()`: they will work all the time.
 
-## Invoke C# code From JavaScipt
+## Invoke C# code From JavaScript
 
 There's 2 ways to _callback_ to managed C# code from JavaScript:
 
@@ -226,7 +226,7 @@ There's 2 ways to _callback_ to managed C# code from JavaScript:
    ```
 
    More details [on this page](https://platform.uno/docs/articles/wasm-custom-events.html).
-   
+
    > Note: current there's no easy way to asynchronously call managed (dotnet) code from JavaScript in the current version of Uno.
 
 ## 🔬 Going further

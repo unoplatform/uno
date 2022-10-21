@@ -2,11 +2,16 @@
 
 	MonoSupport.jsCallDispatcher.registerScope("TSBindingsUnitTests", new TSBindingsTests());
 
+	(<any>globalThis).When_SingleStringNet7 = TSBindingsTests.When_SingleStringNet7
 });
 
 class TSBindingsTests {
 	public TSBindingsTests() {
+		// https://github.com/dotnet/runtime/blob/a919d611e832bfee46fc34762f5ded2006c9f16d/src/mono/wasm/runtime/invoke-js.ts
+	}
 
+	public static When_SingleStringNet7(value: string): string {
+		return value;
 	}
 
 	public When_IntPtr(pParams: number, pReturn: number): boolean {

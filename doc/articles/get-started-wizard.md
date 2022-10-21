@@ -5,7 +5,7 @@
 Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!
 
 * You can give the [Single Page app getting started guide](https://platform.uno/docs/articles/getting-started-tutorial-1.html) a try
-* Next you can try our [Bug Tracker sample walk-through](https://platform.uno/docs/articles/getting-started-tutorial-2.html)
+* Next you can try our [Bug Tracker sample walkthrough](https://platform.uno/docs/articles/getting-started-tutorial-2.html)
 * More advanced examples in our [Uno.Samples repository](https://github.com/unoplatform/uno.samples)
 * Fork a fully-fledged [Ch9 application and source code ](https://platform.uno/code-samples/#ch9)
 * You can find detailed documentation on Uno topics [on our web site](https://platform.uno/docs/articles/intro.html).
@@ -27,7 +27,7 @@ To test if CORS is really the issue, you can use [CORS Anywhere](https://cors-an
 See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
 #### The XAML editor shows `The type 'page' does not support direct content` message
-XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one. 
+XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
 
 To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
@@ -39,13 +39,13 @@ Visual Studio [does not refresh the intellisense cache](https://developercommuni
 
 To fix this issue, build your project once, close the solution and reopen it.
 
-It is also important to note that Uno uses a multi-project structure, for which each project has to be build individually for errors to disapear from the **Error List** window (notice the **Project** column values).
+It is also important to note that Uno uses a multi-project structure, for which each project has to be build individually for errors to disappear from the **Error List** window (notice the **Project** column values).
 
 In order to clear the **Error List** window, build the whole solution completely once. Thereafter, build a specific project and prefer the use of the **Output** tool window (in the menu **View** -> **Output**), taking build messages by order of appearance.
 
 #### Event handler cannot be added automatically
 
-Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issues/1348#issuecomment-520300471) added using the XAML editor. 
+Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issues/1348#issuecomment-520300471) added using the XAML editor.
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
 
@@ -107,7 +107,7 @@ It is a good practice to use Roslyn analyzers to validate your code during compi
 
 #### XAML Hot Reload troubleshooting
 
-The XAML Hot reload provides a Visual Studio for Windows output window name "Uno Platform" with diagnotics messages. You can find additional information there in case XAML Hot Reload does not work properly.
+The XAML Hot reload provides a Visual Studio for Windows output window name "Uno Platform" with diagnostics messages. You can find additional information there in case XAML Hot Reload does not work properly.
 
 Some common troubleshooting steps:
 - Make sure to rebuild your application if the XAML changes are not applied
@@ -126,3 +126,6 @@ This issue is caused by visual studio enforcing https connections for local cont
 In general, this error happens when the XAML parser detects a syntax error. Fixing the error generally fixes the build.
 
 This error may happen occasionally without any explicit error message, rebuilding the project may fix the issue.
+
+#### Error UNOB0002: Using Uno.WinUI in a WinAppSDK head project is not supported
+This This issue can arise when Uno.WinUI packages are included in a `.Windows` head project, which is not supported. You can fix this by removing the Uno.WinUI or the packages that transitively reference it. For example, including a reference to `Uno.CommunityToolkit.WinUI.*` will transitively include a reference to `Uno.WinUI`, and [the official community toolkit packages](uno-community-toolkit.md) must be used instead.

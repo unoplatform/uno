@@ -1,16 +1,14 @@
 using System;
-using Windows.System;
+using System.ComponentModel;
+using System.Threading;
+using Uno.Extensions.ApplicationModel.Core;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Core;
+using Uno.WinUI.Runtime.Skia.LinuxFB;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
-using Windows.UI.Core;
-using Uno.Foundation.Extensibility;
-using System.ComponentModel;
-using Uno.UI.Xaml.Core;
-using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
-using Uno.Extensions;
-using System.Threading;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -19,12 +17,13 @@ namespace Uno.UI.Runtime.Skia
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
 
-		private Func<Application> _appBuilder;
 		private readonly EventLoop _eventLoop;
+		private readonly CoreApplicationExtension? _coreApplicationExtension;
+		
+		private Func<Application> _appBuilder;
 		private Renderer? _renderer;
 		private DisplayInformationExtension? _displayInformationExtension;
-		private ApplicationExtension? _applicationExtension;
-		private Thread _consoleInterceptionThread;
+		private Thread? _consoleInterceptionThread;
 		private ManualResetEvent _terminationGate = new(false);
 
 		/// <summary>
@@ -46,6 +45,7 @@ namespace Uno.UI.Runtime.Skia
 			_appBuilder = appBuilder;
 
 			_eventLoop = new EventLoop();
+			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 		}
 
 		/// <summary>
@@ -70,10 +70,11 @@ namespace Uno.UI.Runtime.Skia
 
 		private void StartConsoleInterception()
 		{
-			_consoleInterceptionThread = new(() => {
+			_consoleInterceptionThread = new(() =>
+			{
 
 				// Loop until Application.Current.Exit() is invoked
-				while (!_applicationExtension?.ShouldExit ?? true)
+				while (!_coreApplicationExtension!.ExitRequested)
 				{
 					// Read the console keys without showing them on screen.
 					// The keyboard input is handled by libinput. 
@@ -86,17 +87,18 @@ namespace Uno.UI.Runtime.Skia
 
 			// The thread must not block the process from exiting
 			_consoleInterceptionThread.IsBackground = true;
-			
+
 			_consoleInterceptionThread.Start();
 		}
 
 		private void Initialize()
 		{
 			_isDispatcherThread = true;
-
+			
+			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension);
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
-			ApiExtensibility.Register<Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => _applicationExtension = new ApplicationExtension(o));
+			ApiExtensibility.Register<Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => new ApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
 			void Dispatch(System.Action d)
@@ -118,20 +120,6 @@ namespace Uno.UI.Runtime.Skia
 						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
 						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
 						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
-				}
-
-				if (_applicationExtension is not null)
-				{
-					// Register the exit handler to terminate the app gracefully
-					_applicationExtension.ExitRequested += (s, e) => {
-
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug($"Application has requested an exit");
-						}
-						
-						_terminationGate.Set();
-					};
 				}
 			}
 
