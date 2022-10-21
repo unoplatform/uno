@@ -55,12 +55,12 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 			public Test(XamlFile[] xamlFiles, string globalConfig = "")
 			{
-				var globalConfigBuilder = new StringBuilder(@"
-is_global = true
-# For now, there is no need to customize these for each test.
-build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
-build_property.RootNamespace = MyProject
-");
+				var globalConfigBuilder = new StringBuilder("""
+					is_global = true
+					# For now, there is no need to customize these for each test.
+					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
+					build_property.RootNamespace = MyProject
+					""");
 				globalConfigBuilder.AppendLine(globalConfig);
 
 				foreach (var xamlFile in xamlFiles)

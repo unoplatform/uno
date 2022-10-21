@@ -1243,11 +1243,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_Collection_Implicit_Add_Item()
 		{
-			var SUT = LoadXaml<SwipeItems>(@"
+			var SUT = LoadXaml<SwipeItems>("""
 				<SwipeItems>
-					<SwipeItem Text='asd' />
+					<SwipeItem Text="asd" />
 				</SwipeItems>
-			");
+				""");
 
 			Assert.AreEqual(1, SUT.Count);
 			Assert.AreEqual("asd", SUT[0].Text);
@@ -1256,15 +1256,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_Collection_Property_Nest_Collection()
 		{
-			var SUT = LoadXaml<SwipeControl>(@"
+			var SUT = LoadXaml<SwipeControl>("""
 				<SwipeControl>
 					<SwipeControl.LeftItems>
-						<SwipeItems Mode='Execute'>
-							<SwipeItem Text='asd' />
+						<SwipeItems Mode="Execute">
+							<SwipeItem Text="asd" />
 						</SwipeItems>
 					</SwipeControl.LeftItems>
 				</SwipeControl>
-			");
+				""");
 
 			Assert.IsNotNull(SUT.LeftItems);
 			Assert.AreEqual(SwipeMode.Execute, SUT.LeftItems.Mode); // check we are using the very same collection in the xaml, and not a new instance
@@ -1275,19 +1275,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_Collection_Property_Nest_Multiple_Collections()
 		{
-			var SUT = LoadXaml<SwipeControl>(@"
+			var SUT = LoadXaml<SwipeControl>("""
 				<SwipeControl>
 					<SwipeControl.LeftItems>
 						<!-- This is actually allowed, however only the last will be kept -->
 						<SwipeItems>
-							<SwipeItem Text='asd' />
+							<SwipeItem Text="asd" />
 						</SwipeItems>
-						<SwipeItems Mode='Execute'>
-							<SwipeItem Text='qwe' />
+						<SwipeItems Mode="Execute">
+							<SwipeItem Text="qwe" />
 						</SwipeItems>
 					</SwipeControl.LeftItems>
 				</SwipeControl>
-			");
+				""");
 
 			Assert.IsNotNull(SUT.LeftItems);
 			Assert.AreEqual(SwipeMode.Execute, SUT.LeftItems.Mode); // check we are using the very same collection in the xaml, and not a new instance
@@ -1475,11 +1475,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var injection = " " + string.Join(" ", xmlnses
 				.Where(x => x.Value != null)
-				.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}='{x.Value}'")
+				.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}=\"{x.Value}\"")
 			);
 
 			xaml = new Regex(@"(?=\\?>)").Replace(xaml, injection, 1);
-			xaml = xaml.Replace('\'', '"');
 
 			var result = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
 			Assert.IsNotNull(result, "XamlReader.Load returned null");

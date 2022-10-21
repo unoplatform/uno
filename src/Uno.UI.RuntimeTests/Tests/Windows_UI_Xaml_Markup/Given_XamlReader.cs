@@ -22,10 +22,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_Enum_HasNumericalValue()
 		{
-			XamlReader.Load(@"
-				<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-					Orientation='0' />
-			".Replace('\'', '"'));
+			XamlReader.Load("""
+				<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					Orientation="0" />
+				""");
 		}
 	}
 }

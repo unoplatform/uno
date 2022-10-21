@@ -9,7 +9,7 @@ using System.Text;
 namespace Uno.UI.SourceGenerators.Tests.DependencyObjectGeneratorTests;
 
 [TestClass]
-public class Given_DependenyObjectGenerator
+public class Given_DependencyObjectGenerator
 {
 	private static readonly ImmutableArray<PackageIdentity> _unoPackage = ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"));
 	private static readonly ReferenceAssemblies _Net60AndroidWithUno = ReferenceAssemblies.Net.Net60Android.AddPackages(_unoPackage);
@@ -32,26 +32,27 @@ public class Given_DependenyObjectGenerator
 	[TestMethod]
 	public async Task TestAndroidViewImplementingDependencyObject()
 	{
-		await TestAndroid(@"
-using Android.Content;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
+		await TestAndroid("""
+			using Android.Content;
+			using Windows.UI.Core;
+			using Windows.UI.Xaml;
 
-public class C : Android.Views.View, DependencyObject
-{
-	public C(Context context) : base(context)
-	{
-	}
+			public class C : Android.Views.View, DependencyObject
+			{
+				public C(Context context) : base(context)
+				{
+				}
 
-	public CoreDispatcher Dispatcher { get; }
-	public object GetValue(DependencyProperty dp) => null;
-	public void SetValue(DependencyProperty dp, object value) { }
-	public void ClearValue(DependencyProperty dp) { }
-	public object ReadLocalValue(DependencyProperty dp) => null;
-	public object GetAnimationBaseValue(DependencyProperty dp) => null;
-	public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
-	public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
-}",
+				public CoreDispatcher Dispatcher { get; }
+				public object GetValue(DependencyProperty dp) => null;
+				public void SetValue(DependencyProperty dp, object value) { }
+				public void ClearValue(DependencyProperty dp) { }
+				public object ReadLocalValue(DependencyProperty dp) => null;
+				public object GetAnimationBaseValue(DependencyProperty dp) => null;
+				public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
+				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
+			}
+			""",
 		// /0/Test0.cs(6,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
 		DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
 	}
