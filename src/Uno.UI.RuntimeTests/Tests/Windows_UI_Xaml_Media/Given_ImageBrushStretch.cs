@@ -25,7 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow(Stretch.Uniform)]
 		#endif
 		[DataRow(Stretch.None)]
-
 		[TestMethod]
 		public async Task When_Stretch(Stretch stretch)
 		{
@@ -43,7 +42,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var brush = new ImageBrush
 			{
-				ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/colored-ellipse.jpg"))
+				ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/colored-ellipse.jpg")),
+				Stretch = stretch,
 			};
 
 			var SUT = new Border
@@ -61,7 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			const float BorderOffset = 8;
 			float width = (float)SUT.Width, height = (float)SUT.Height;
 			float centerX = width / 2, centerY = height / 2;
-
 			var expectations = stretch switch
 			{
 				// All edges are red-ish
@@ -76,21 +75,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				_ => throw new ArgumentOutOfRangeException($"unexpected stretch: {stretch}"),
 			};
 
-			var bitmap = await UpdateStretchAndScreenshot(stretch);
+			await renderer.RenderAsync(SUT);
+			var bitmap = await RawBitmap.From(renderer, SUT);
+
 			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 5);
 			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 5);
 			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 5);
 			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 5);
-
-			async Task<RawBitmap> UpdateStretchAndScreenshot(Stretch stretch)
-			{
-				brush.Stretch = stretch;
-
-				await WindowHelper.WaitForIdle();
-				await renderer.RenderAsync(SUT);
-
-				return await RawBitmap.From(renderer, SUT);
-			}
 		}
 	}
 }
