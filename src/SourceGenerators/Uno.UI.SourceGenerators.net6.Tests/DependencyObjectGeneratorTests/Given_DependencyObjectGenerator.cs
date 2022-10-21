@@ -53,8 +53,8 @@ public class Given_DependencyObjectGenerator
 				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 			}
 			""",
-		// /0/Test0.cs(6,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
+		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
+		DiagnosticResult.CompilerError("Uno0003").WithSpan(5, 14, 6, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
