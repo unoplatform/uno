@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
-	
+
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
 		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
@@ -22,14 +22,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="buildTransitive\Uno.UI.Svg.targets" />
+		<None Remove="buildTransitive\Uno.UI.Svg.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="buildTransitive\Uno.UI.Svg.targets">
-	    <PackagePath>build</PackagePath>
-	    <Pack>true</Pack>
-	  </Content>
+		<Content Include="buildTransitive\Uno.UI.Svg.targets">
+			<PackagePath>build</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,7 +64,7 @@
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.net6.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.net6.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -74,7 +74,7 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Svg\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>

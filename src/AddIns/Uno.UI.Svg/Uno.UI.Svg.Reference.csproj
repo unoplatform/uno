@@ -18,13 +18,13 @@
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
 		<LangVersion>10.0</LangVersion>
-		
+
 		<AssemblyName>Uno.UI.Svg</AssemblyName>
 		<RootNamespace>Uno.UI.Svg</RootNamespace>
-		
+
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
@@ -33,8 +33,8 @@
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
-	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
 	</ItemGroup>
 
 	<Target Name="_UnoSvgOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
@@ -42,7 +42,7 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Svg\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
