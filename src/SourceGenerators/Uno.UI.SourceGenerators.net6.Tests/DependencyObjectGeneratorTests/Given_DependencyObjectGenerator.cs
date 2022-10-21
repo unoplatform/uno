@@ -54,7 +54,7 @@ public class Given_DependencyObjectGenerator
 			}
 			""",
 		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(5, 14, 6, 15).WithArguments("Android.Views.View"));
+		DiagnosticResult.CompilerError("Uno0003").WithSpan(5, 14, 5, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
