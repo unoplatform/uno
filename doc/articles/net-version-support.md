@@ -5,7 +5,7 @@ This page lists supported .NET versions and [C# language versions](https://docs.
 ### Table of supported versions
 
 | Platform                                   | Default .NET version | Default C# version |  Max .NET version | Max C# version |
-|--------------------------------------------|:--------------------:|:------------------:|:-----------------:|----------------|
+|--------------------------------------------|:--------------------:|:------------------:|:-----------------:|:--------------:|
 | WebAssembly                                | .NET 6               | 10                 | .NET 7            | 11             |
 | Skia (Gtk, Framebufffer, WPF)              | .NET 6               | 10                 | .NET 7            | 11             |
 | WinAppSDK                                  | .NET 6               | 10                 | .NET 7            | 11             |
