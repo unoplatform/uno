@@ -27,6 +27,7 @@
     <StartAction>Program</StartAction>
     <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
+    <LangVersion>10.0</LangVersion>
     <!-- See https://github.com/NuGet/Home/issues/12164 -->
     <NoWarn>$(NoWarn);NU1603</NoWarn>
   </PropertyGroup>
