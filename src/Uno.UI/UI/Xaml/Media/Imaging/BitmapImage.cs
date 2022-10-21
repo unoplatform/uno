@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		internal BitmapImage(string stringSource) : base(stringSource)
 		{
-			UriSource = WebUri ?? TryCreateUriFromString(stringSource);
+			UriSource = AbsoluteUri ?? TryCreateUriFromString(stringSource);
 		}
 
 		public BitmapImage() { }

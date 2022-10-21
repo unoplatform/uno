@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
@@ -128,13 +129,18 @@ namespace Windows.UI.Xaml.Media.Imaging
 				tcs.TrySetResult(null);
 			}
 #else
+			StreamLoaded?.Invoke(this, EventArgs.Empty);
 			return Task.CompletedTask;
 #endif
 		}
 
+#if !__NETSTD__
+		internal event EventHandler StreamLoaded;
+#endif
+
 		public override string ToString()
 		{
-			if (WebUri is { } uri)
+			if (AbsoluteUri is { } uri)
 			{
 				return $"{GetType().Name}/{uri}";
 			}

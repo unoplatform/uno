@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 			// Checking for Window avoids re-creating the layer until it is actually used.
 			if (IsLoaded)
 			{
-				backgroundImage = backgroundImage ?? (Background as ImageBrush)?.ImageSource?.ImageData;
+				backgroundImage = backgroundImage ?? (Background as ImageBrush)?.ImageSource?.ImageData.NativeImage;
 
 				_borderRenderer.UpdateLayer(
 					this,
@@ -139,10 +139,10 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBackground();
 		}
 
-		/// <summary>        
+		/// <summary>
 		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Panel 
+		/// Allows items to be added like this
+		/// new Panel
 		/// {
 		///    new Border()
 		/// }

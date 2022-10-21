@@ -9,15 +9,12 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.ComponentModel;
 
-namespace Windows.UI.Xaml.Media
-{
-	public partial class ImageSource
-	{
-		public ImageSource()
-		{
-			InitializeBinder();
-		}
+namespace Windows.UI.Xaml.Media;
 
-		internal void UnloadImageData() { }
+public partial class ImageSource
+{
+	public ImageSource()
+	{
+		InitializeBinder();
 	}
 }

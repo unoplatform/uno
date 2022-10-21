@@ -331,6 +331,7 @@
 			<_NuspecFiles Include=".\Uno.WinUI.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Lottie.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.MSAL.nuspec" />
+			<_NuspecFiles Include=".\Uno.WinUI.Svg.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.RemoteControl.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Gtk.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" />
@@ -380,6 +381,7 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix)" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Lottie" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MSAL.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).MSAL" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Svg" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.RemoteControl.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).RemoteControl" Namespaces="$(NugetNamespace)" />
@@ -393,6 +395,7 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix)" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Lottie" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MSAL.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).MSAL" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Svg" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.RemoteControl.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).RemoteControl" Namespaces="$(NugetNamespace)" />
@@ -414,6 +417,7 @@
 
 		<!-- Rename skiasharp references for WinUI -->
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='SkiaSharp.Views.Uno']/@id" Value="SkiaSharp.Views.Uno.WinUI" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='SkiaSharp.Views.Uno']/@id" Value="SkiaSharp.Views.Uno.WinUI" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<!-- Adjust build targets file to match WinUI / UWP-->
 		<Move SourceFiles=".\uno.winui.targets" DestinationFiles=".\$(PackageNamePrefix).targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
@@ -468,6 +472,9 @@
 		<!-- MSAL move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\Uno.UI.MSAL.targets" DestinationFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\$(PackageNamePrefix).MSAL.targets" />
 		
+		<!-- Svg move file -->
+		<Move SourceFiles="..\src\AddIns\Uno.UI.Svg\buildTransitive\Uno.UI.Svg.targets" DestinationFiles="..\src\AddIns\Uno.UI.Svg\buildTransitive\$(PackageNamePrefix).Svg.targets" />
+		
 		<!-- XamlHost move file -->
 		<Move SourceFiles="..\src\Uno.UI.XamlHost\buildTransitive\Uno.UI.XamlHost.props" DestinationFiles="..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" />
 		
@@ -504,6 +511,7 @@
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.MSAL.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Linux.FrameBuffer.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

@@ -1,5 +1,5 @@
 parameters:
-  vmImage: ''
+  poolName: ''
 
 jobs:
 - job: Documentation

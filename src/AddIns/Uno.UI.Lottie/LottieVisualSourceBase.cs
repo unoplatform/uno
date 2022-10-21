@@ -23,6 +23,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
+		private static HttpClient? _httpClient;
+
 		private AnimatedVisualPlayer? _player;
 
 		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
@@ -296,9 +298,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
 		{
-			using var client = new HttpClient();
+			_httpClient ??= new HttpClient();
 
-			using var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
+			using var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
 
 			if (!response.IsSuccessStatusCode)
 			{

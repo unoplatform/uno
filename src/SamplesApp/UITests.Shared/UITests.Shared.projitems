@@ -1853,6 +1853,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromStream.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_MultiLoad.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_NoSize.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ItemsControl\ItemsControl_AppendItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6156,6 +6176,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\WriteableBitmap_MultiInvalidate.xaml.cs">
       <DependentUpon>WriteableBitmap_MultiInvalidate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Basic.xaml.cs">
+      <DependentUpon>SvgImageSource_Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromStream.xaml.cs">
+      <DependentUpon>SvgImageSource_FromStream.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Icons.xaml.cs">
+      <DependentUpon>SvgImageSource_Icons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_MultiLoad.xaml.cs">
+      <DependentUpon>SvgImageSource_MultiLoad.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_NoSize.xaml.cs">
+      <DependentUpon>SvgImageSource_NoSize.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SampleSvgSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSourceHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ItemsControl\ItemsControl_AppendItem.xaml.cs">
       <DependentUpon>ItemsControl_AppendItem.xaml</DependentUpon>
     </Compile>
@@ -8722,10 +8759,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\couch.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\heart.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\heliocentric.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.webp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.heic" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.pdf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\bookstack.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\chef.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\czcalendar.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\home.svg" />
     <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Uno.Foundation;
 using Windows.UI.Composition;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -18,10 +19,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			_surface.CopyPixels(PixelWidth, PixelHeight, _buffer.AsReadOnlyMemory());
 
-			image = new ImageData
-			{
-				Value = _surface
-			};
+			image = ImageData.FromCompositionSurface(_surface);
 
 			return true;
 		}

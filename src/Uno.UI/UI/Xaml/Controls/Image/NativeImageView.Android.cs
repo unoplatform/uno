@@ -8,7 +8,7 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class NativeImage : ImageView
+	internal partial class NativeImageView : ImageView
 	{
 		private bool _skipLayoutRequest;
 		private bool _skipRecolor;
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Image Owner => Parent as Image;
 
-		public NativeImage() : base(ContextHelper.Current) { }
+		public NativeImageView() : base(ContextHelper.Current) { }
 
 		public override void SetImageDrawable(Drawable drawable)
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_skipLayoutRequest = true;
 
-				if (NeedsRecolor)
+				if (NeedsRecolor && bm is not null)
 				{
 					bm = RecolorBitmapMonochrome(bm, Owner.MonochromeColor);
 				}
@@ -123,14 +123,17 @@ namespace Windows.UI.Xaml.Controls
 			if (NeedsRecolor && Drawable is BitmapDrawable)
 			{
 				Bitmap source = ((BitmapDrawable)Drawable).Bitmap;
-				Bitmap target = RecolorBitmapMonochrome(source, Owner.MonochromeColor);
+				if (source is not null)
+				{
+					Bitmap target = RecolorBitmapMonochrome(source, Owner.MonochromeColor);
 
-				int actualWidth = Drawable.IntrinsicWidth, actualHeight = Drawable.IntrinsicHeight;
-				Bitmap rescaled = Bitmap.CreateScaledBitmap(target, actualWidth, actualHeight, false);
+					int actualWidth = Drawable.IntrinsicWidth, actualHeight = Drawable.IntrinsicHeight;
+					Bitmap rescaled = Bitmap.CreateScaledBitmap(target, actualWidth, actualHeight, false);
 
-				_skipRecolor = true;
-				SetImageBitmap(rescaled);
-				_skipRecolor = false;
+					_skipRecolor = true;
+					SetImageBitmap(rescaled);
+					_skipRecolor = false;
+				}
 			}
 		}
 

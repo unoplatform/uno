@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -36,15 +37,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				if (UriSource != null)
 				{
-					if (UriSource.Scheme == "http" || UriSource.Scheme == "https")
+					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
-						var client = new HttpClient();
-						var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
-						var imageStream = await response.Content.ReadAsStreamAsync();
+						using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
 
 						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
 					}
-					else if (UriSource.Scheme == "ms-appx")
+					else if (UriSource.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 					{
 						var path = UriSource.PathAndQuery;
 						var filePath = GetScaledPath(path);
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
 					}
-					else if (UriSource.Scheme == "ms-appdata")
+					else if (UriSource.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
 					{
 						using var fileStream = File.OpenRead(FilePath);
 
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 			catch (Exception e)
 			{
-				return new ImageData() { Error = e };
+				return ImageData.FromError(e);
 			}
 
 			return default;
@@ -79,13 +79,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 			if (result.success)
 			{
 				RaiseImageOpened();
-				return new ImageData { Value = surface };
+				return ImageData.FromCompositionSurface(surface);
 			}
 			else
 			{
 				var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
 				RaiseImageFailed(exception);
-				return new ImageData { Error = exception };
+				return ImageData.FromError(exception);
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				var surface = new SkiaCompositionSurface();
 				image = OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
-				return image.Value != null;
+				return image.CompositionSurface != null;
 			}
 
 			return base.TryOpenSourceSync(targetWidth, targetHeight, out image);

@@ -24,16 +24,12 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri)
 		{
-			WebUri = uri;
+			AbsoluteUri = uri;
 		}
 
-		internal void UnloadImageData() { }
-
-		// Must be implemented by sub-classes in TryOpenSource<Sync|Async> overloads!
-		private bool TryOpenSourceLegacy(out ImageData img)
+		partial void CleanupResource()
 		{
-			img = default;
-			return false;
+			AbsoluteUri = null;
 		}
 	}
 }

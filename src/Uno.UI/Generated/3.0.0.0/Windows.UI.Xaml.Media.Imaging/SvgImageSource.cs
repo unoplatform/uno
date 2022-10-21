@@ -8,50 +8,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 	public  partial class SvgImageSource : global::Windows.UI.Xaml.Media.ImageSource
 	{
 		// Skipping already declared property UriSource
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double RasterizePixelWidth
-		{
-			get
-			{
-				return (double)this.GetValue(RasterizePixelWidthProperty);
-			}
-			set
-			{
-				this.SetValue(RasterizePixelWidthProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double RasterizePixelHeight
-		{
-			get
-			{
-				return (double)this.GetValue(RasterizePixelHeightProperty);
-			}
-			set
-			{
-				this.SetValue(RasterizePixelHeightProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RasterizePixelHeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RasterizePixelHeight), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RasterizePixelWidthProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RasterizePixelWidth), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
+		// Skipping already declared property RasterizePixelWidth
+		// Skipping already declared property RasterizePixelHeight
+		// Skipping already declared property RasterizePixelHeightProperty
+		// Skipping already declared property RasterizePixelWidthProperty
 		// Skipping already declared property UriSourceProperty
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
