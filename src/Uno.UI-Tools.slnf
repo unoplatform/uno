@@ -4,7 +4,6 @@
     "projects": [
       "..\\build\\Uno.UI.Build.csproj",
       "ResourceConverter\\ResourceConverter.csproj",
-      "UWPUsageStatsGenerator\\UWPUsageStatsGenerator.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
