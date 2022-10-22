@@ -35,7 +35,6 @@
       "Uno.NUnitTransformTool\\Uno.NUnitTransformTool.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
-      "Uno.UI.AssemblyComparer\\Uno.UI.AssemblyComparer.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.csproj",

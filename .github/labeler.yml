@@ -21,8 +21,6 @@ area/build:
   - build/*
   - build/**/*
   - '**/*.yml'
-  - src/Uno.UI.AssemblyComparer/*
-  - src/Uno.UI.AssemblyComparer/**/*
   - src/Uno.UI.TestComparer/*
   - src/Uno.UI.TestComparer/**/*
 
