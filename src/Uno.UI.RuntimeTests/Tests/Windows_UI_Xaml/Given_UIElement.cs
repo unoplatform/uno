@@ -294,7 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(0.001d)]
 		[DataRow(0.1d)]
 		[DataRow(100d)]
-		public async Task When_InvalidatingMeasureThenMeasure(double size)
+		public void When_InvalidatingMeasureThenMeasure(double size)
 		{
 			var sut = new MeasureAndArrangeCounter();
 
@@ -320,7 +320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(0.001d)]
 		[DataRow(0.1d)]
 		[DataRow(100d)]
-		public async Task When_InvalidatingArrangeThenMeasureAndArrange(double size)
+		public void When_InvalidatingArrangeThenMeasureAndArrange(double size)
 		{
 			var sut = new MeasureAndArrangeCounter();
 

@@ -8,6 +8,7 @@ using CoreGraphics;
 using Foundation;
 using Uno.UI;
 using AppKit;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -17,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out NSImage? image)
+		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out ImageData image)
 		{
 			image = default;
 			if (_buffer is null)
@@ -39,11 +40,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 					}
 				}
 			}
+
+			NSImage? nativeImage = null;
 			if (data is { })
 			{
-				image = new NSImage(data);
+				nativeImage = new NSImage(data);
 			}
-			return image != null;
+			if (nativeImage is not null)
+			{
+				image = ImageData.FromNative(nativeImage);
+			}
+			return image.HasData;
 		}
 
 		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)

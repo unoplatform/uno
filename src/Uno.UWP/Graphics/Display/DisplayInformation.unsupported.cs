@@ -5,13 +5,13 @@ namespace Windows.Graphics.Display
 {
 	public partial class DisplayInformation
 	{
-#if __WASM__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__
+#if NET461 || __SKIA__ || __NETSTD_REFERENCE__
 		/// <summary>
 		//// Gets the native orientation of the display monitor, 
 		///  which is typically the orientation where the buttons
 		///  on the device match the orientation of the monitor.
 		/// </summary>
-		[NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
 #endif
 

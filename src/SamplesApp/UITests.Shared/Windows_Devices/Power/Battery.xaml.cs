@@ -29,7 +29,7 @@ namespace UITests.Windows_Devices.Power
             this.InitializeComponent();
 		}
 
-		private async void getBatteryInfo_Click(object sender, RoutedEventArgs e)
+		private void getBatteryInfo_Click(object sender, RoutedEventArgs e)
 		{
 			uiErrorMsg.Text = "";
 			uiOkMsg.Text = "";

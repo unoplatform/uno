@@ -82,9 +82,50 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
   public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
-- Type casts
+- [Attached Properties](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#attached-properties)
   ```xml
-  <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />
+  <Button x:Name="Button22" Content="Click me!" Grid.Row="42" />
+  <TextBlock Text="{x:Bind Button22.(Grid.Row)}" />
+  ```
+
+- Type casts
+  - ```xml
+    <TextBox FontFamily="{x:Bind (FontFamily)MyComboBox.SelectedValue}" />
+    ```
+  - ```xml
+    <TextBox Text="{x:Bind (x:String)MyObject}" />
+    ```
+  - ```xml
+    <TextBox Text="{x:Bind MyFunction((x:String)MyObject, (x:String)MyObject)}" />
+    ```
+  - ```xml
+    <TextBox Tag="{x:Bind ((x:String)MyObject).Length}" />
+    ```
+  where this methods is available in the code behind:
+  ```csharp
+  public void MyFunction(string p1, string p2) { }
+  ```
+
+- [Pathless casting](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#pathless-casting)
+  ```xml
+  <Page
+    x:Class="AppSample.MainPage"
+    ...
+    xmlns:local="using:AppSample">
+
+    <Grid>
+        <ListView ItemsSource="{x:Bind Songs}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:SongItem">
+                    <TextBlock
+                        Margin="12"
+                        FontSize="40"
+                        Text="{x:Bind local:MainPage.GenerateSongTitle((local:SongItem))}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+  </Page>
   ```
 
 - `x:Load` binding

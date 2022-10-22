@@ -9,8 +9,8 @@ If you need to have a custom design, you can just update the Pivot UWP default s
 ## Pivot Native Default Style
 
 With the 'NativeDefaultPivot' style on Android and iOS, however, the Pivot uses the native implementations of each platform.
-Of course you can still bind to its properties in XAML as you normally would. 
-This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others it's desirable to have a rich, customised UI.
+Of course you can still bind to its properties in XAML as you normally would.
+This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others it's desirable to have a rich, customized UI.
 You may even want to mix and match different approaches for different screens in your app.
 
 ### Native Pivot Style for Android and iOS
@@ -37,13 +37,13 @@ Note that this one is written in C# rather than XAML because of the `SlidingTabL
 ```csharp
 var style = new Style(typeof(NativePivotPresenter))
 {
-    Setters = 
+    Setters =
     {
         new Setter<NativePivotPresenter>("Template", pb => pb
             .Template = new ControlTemplate(() =>
                 new Grid
                 {
-                    RowDefinitions = 
+                    RowDefinitions =
                     {
                         new RowDefinition(){ Height = GridLength.Auto},
                         new RowDefinition(){ Height = new GridLength(1, GridUnitType.Star)},

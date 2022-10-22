@@ -6,7 +6,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 
-<#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
 		"Windows.UI.Xaml.Controls.NativeListViewBase",
@@ -30,5 +30,5 @@
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView", derivesFromFrameworkElement: false);
 #> 
-<#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
+<#@include file="../Uno.UI/UI/Xaml/IFrameworkElementImplementation.Android.tt"#>
 #endif

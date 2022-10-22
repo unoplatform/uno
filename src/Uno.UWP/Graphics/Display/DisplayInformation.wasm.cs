@@ -1,8 +1,10 @@
 ﻿#if __WASM__
-using Uno;
-using Uno.Foundation;
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno;
+using Uno.Foundation;
 
 namespace Windows.Graphics.Display
 {
@@ -40,6 +42,45 @@ namespace Windows.Graphics.Display
 			{
 				var jsOrientation = ReadJsString("window.screen.orientation.type");
 				return ParseJsOrientation(jsOrientation);
+			}
+		}
+
+		/// <summary>
+		/// Gets the native orientation of the display monitor, 
+		/// which is typically the orientation where the buttons
+		/// on the device match the orientation of the monitor.
+		/// </summary>
+		public DisplayOrientations NativeOrientation
+		{
+			get
+			{
+				if (TryReadJsInt("window.screen.orientation.angle", out var angle))
+				{
+					var jsOrientation = ReadJsString("window.screen.orientation.type");
+
+					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait");
+					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape");
+
+					if (!isCurrentlyLandscape && !isCurrentlyPortrait)
+					{
+						// JavaScript returned some unexpected string.
+						return DisplayOrientations.None;
+					}
+
+					switch (angle)
+					{
+						case 0:
+						case 180:
+							return isCurrentlyPortrait ? DisplayOrientations.Portrait : DisplayOrientations.Landscape;
+						case 90:
+						case 270:
+							return isCurrentlyPortrait ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+						default:
+							return DisplayOrientations.None;
+					}
+				}
+
+				return DisplayOrientations.None;
 			}
 		}
 
@@ -134,8 +175,18 @@ namespace Windows.Graphics.Display
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
+		static partial void SetOrientationPartial(DisplayOrientations orientations)
+		{
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+				Uno.UI.Dispatching.CoreDispatcherPriority.High,
+				(ct) => SetOrientationAsync(orientations, ct));
+		}
+
 		private static bool TryReadJsFloat(string property, out float value) =>
 			float.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+
+		private static bool TryReadJsInt(string property, out int value) =>
+			int.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
 
 		private static string ReadJsString(string property) => WebAssemblyRuntime.InvokeJS(property);
 
@@ -151,6 +202,11 @@ namespace Windows.Graphics.Display
 				"landscape-secondary" => DisplayOrientations.LandscapeFlipped,
 				_ => DisplayOrientations.None,
 			};
+		}
+
+		private static Task SetOrientationAsync(DisplayOrientations orientations, CancellationToken ct)
+		{
+			return WebAssemblyRuntime.InvokeAsync($"{JsType}.setOrientationAsync({(int)orientations})", ct);
 		}
 	}
 }

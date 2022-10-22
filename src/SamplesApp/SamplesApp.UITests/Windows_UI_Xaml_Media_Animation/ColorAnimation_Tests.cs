@@ -34,9 +34,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			_app.WaitForText("BrushEqualityText", "false");
 
-			var targetRect = _app.GetRect("TargetBorder");
+			var targetRect = _app.GetPhysicalRect("TargetBorder");
 
-			var indepRect = _app.GetRect("IndependentBorder");
+			var indepRect = _app.GetPhysicalRect("IndependentBorder");
 
 			using var bmp = TakeScreenshot("Completed");
 
@@ -58,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			_app.WaitForText("StatusText", "Completed");
 
-			var targetRect = _app.GetRect("TargetRectangle");
+			var targetRect = _app.GetPhysicalRect("TargetRectangle");
 
 			using var bmp = TakeScreenshot("Completed");
 

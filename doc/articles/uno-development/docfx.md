@@ -92,7 +92,7 @@ Sometimes you may want to run DocFX locally to validate that changes you've made
 
 To run DocFX locally and check the resulting html:
 
-1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio. 
+1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
 4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.'
@@ -105,7 +105,7 @@ To run DocFX locally and check the resulting html:
 
 You can use `dotnet-serve` as a simple command-line HTTP server for example.
 
-1. Install `dotnet-serve` using the following command: `dotnet tool install --global dotnet-serve`. For more info about its usage and options, 
+1. Install `dotnet-serve` using the following command: `dotnet tool install --global dotnet-serve`. For more info about its usage and options,
 [please refer to the documentation](https://github.com/natemcmaster/dotnet-serve).
 2. Using the command prompt, navigate to `C:\src\Uno.UI\docs-local-dist\_site` (replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository) and run the following command `dotnet serve -o -S`. This will start a simple server with HTTPS and open the browser directly.
 
@@ -114,7 +114,7 @@ You can use `dotnet-serve` as a simple command-line HTTP server for example.
 If needed, you can also run a script that will give you a performance summary for the documentation generation.
 
 To run the script on Windows:
-1. Make sure crosstargeting_override.props is not defininig UnoTargetFrameworkOverride
+1. Make sure `crosstargeting_override.props` is not defining UnoTargetFrameworkOverride
 2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
 3. Go the the uno\build folder (not the uno\src\build folder)
 4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions

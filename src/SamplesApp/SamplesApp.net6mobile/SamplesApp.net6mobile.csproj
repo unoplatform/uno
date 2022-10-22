@@ -39,6 +39,11 @@
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<!-- Shows applied capabilities in a new VS project node -->
+		<ProjectCapability Include="DiagnoseCapabilities" />
+	</ItemGroup>
+
 	<Choose>
 
 		<When Condition="'$(TargetFramework)'=='net6.0-ios'">
@@ -79,7 +84,7 @@
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 	</PropertyGroup>
-
+	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -154,6 +159,7 @@
 		<ProjectReference Include="..\..\Uno.UWP\Uno.net6.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.net6.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.net6.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.net6.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.net6.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.net6.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.net6.csproj" />

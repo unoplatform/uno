@@ -9,42 +9,19 @@
 	<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 	<Version>255.255.255.255</Version>
 
-	<NoWarn>$(NoWarn),1998,4014,VSX1000,NU1701</NoWarn>
+	<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 	<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
 	<Copyright>nventive</Copyright>
 	<Author>nventive</Author>
 
-	<WarningsAsErrors>all</WarningsAsErrors>
-
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
 	<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
-	<NoWarn>$(NoWarn),1998,0105,4014,VSX1000,NU1701</NoWarn>
+	<NoWarn>$(NoWarn);0105</NoWarn>
   </PropertyGroup>
-
-  <!---->
-
-  <Target Name="SetNoWarn"
-				  BeforeTargets="Build"
-				  Condition=" '$(TargetFramework)' == 'net461' ">
-
-	<!--
-		This target is the equivalent to this property group, until this
-		is fixed: https://github.com/NuGet/Home/issues/6662
-		<PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
-			<NoWarn>$(NoWarn);67;0649</NoWarn>
-		</PropertyGroup>
-		-->
-
-	<CreateProperty Value="$(NoWarn);67;0649">
-	  <Output
-			  TaskParameter="Value"
-			  PropertyName="NoWarn" />
-	</CreateProperty>
-  </Target>
 
   <!--
   List of known constants:

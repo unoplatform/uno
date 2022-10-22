@@ -8,6 +8,9 @@
     "mobile": {
       "longName": "mobile",
       "shortName": "mobile"
+    },
+    "Framework": {
+      "longName": "framework"
     }
   }
 }

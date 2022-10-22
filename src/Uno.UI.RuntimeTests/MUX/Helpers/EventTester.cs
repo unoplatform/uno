@@ -411,7 +411,8 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					{
 						this.RemoveEvent();
 					});
-					TestServices.WindowHelper.WaitForIdle();
+
+					_ = TestServices.WindowHelper.WaitForIdle();
 
 					//if (XamlTestsBase.IsBVT)
 					//{

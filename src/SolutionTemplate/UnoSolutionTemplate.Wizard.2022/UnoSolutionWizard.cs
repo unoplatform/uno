@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.Utilities;
 using UnoSolutionTemplate.Wizard.Forms;
 
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
+
 namespace UnoSolutionTemplate.Wizard
 {
 	public class UnoSolutionWizard : IWizard
@@ -35,6 +37,9 @@ namespace UnoSolutionTemplate.Wizard
 		private bool _useFramebuffer;
 		private bool _useWpf;
 		private bool _useWinUI;
+		private bool _useServer;
+		private bool _useWebAssemblyManifestJson;
+		private string? _baseTargetFramework;
 		private IDictionary<string, string>? _replacementDictionary;
 
 		public UnoSolutionWizard(bool enableNuGetConfig, string vsSuffix)
@@ -73,12 +78,22 @@ namespace UnoSolutionTemplate.Wizard
 			if (_dte?.Solution is Solution2 solution)
 			{
 				var platforms = solution.Projects.OfType<Project>().FirstOrDefault(p => p.Name == "Platforms");
-
 				if (platforms.Object is SolutionFolder platformsFolder)
 				{
 					if (_useWebAssembly)
 					{
 						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.net6.vstemplate");
+
+						if (!_useWebAssemblyManifestJson)
+						{
+							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, $"{_projectName}.Wasm", "manifest.json");
+							File.Delete(webAssemblyManifestJsonPath);
+						}
+					}
+
+					if (_useServer)
+					{
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Server", "Server.net6.vstemplate");
 					}
 
 					if (_useiOS || _useCatalyst || _useAndroid || _useAppKit)
@@ -115,13 +130,13 @@ namespace UnoSolutionTemplate.Wizard
 
 		private void GenerateProject(Solution2 solution, SolutionFolder platformsFolder, string projectFullName, string templateName)
 		{
-			if(_projectName.Contains(" "))
-			{
-				throw new Exception("The project name should not contain spaces");
-			}
-
 			if (_projectName != null)
 			{
+				if (_projectName.Contains(' '))
+				{
+					throw new Exception("The project name should not contain spaces");
+				}
+
 				var targetPath = Path.Combine(_targetPath, projectFullName);
 
 				// Duplicate the template to add custom parameters
@@ -245,6 +260,8 @@ namespace UnoSolutionTemplate.Wizard
 						_useFramebuffer = targetPlatformWizardPicker.UseFramebuffer;
 						_useWpf = targetPlatformWizardPicker.UseWpf;
 						_useWinUI = targetPlatformWizardPicker.UseWinUI;
+						_useServer = targetPlatformWizardPicker.UseServer;
+						_baseTargetFramework = targetPlatformWizardPicker.UseBaseTargetFramework;
 
 						replacementsDictionary["$UseWebAssembly$"] = _useWebAssembly.ToString();
 						replacementsDictionary["$UseIOS$"] = _useiOS.ToString();
@@ -255,9 +272,9 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$UseFrameBuffer$"] = _useFramebuffer.ToString();
 						replacementsDictionary["$UseWPF$"] = _useWpf.ToString();
 						replacementsDictionary["$UseWinUI$"] = _useWinUI.ToString();
+						replacementsDictionary["$UseServer$"] = _useServer.ToString();
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
-
-						_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
+						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
 
 						var version = GetVisualStudioReleaseVersion();
 
@@ -271,11 +288,35 @@ namespace UnoSolutionTemplate.Wizard
 
 					case DialogResult.Abort:
 						MessageBox.Show("Aborted"/*targetPlatformWizardPicker.Error*/);
+						Directory.Delete(_targetPath, true);
 						throw new WizardCancelledException();
 
 					default:
 						throw new WizardBackoutException();
 				}
+
+				if (_useWebAssembly)
+				{
+					using UnoWasmOptions unoWasmOptionsPicker = new UnoWasmOptions(VisualStudioServiceProvider);
+
+					switch (unoWasmOptionsPicker.ShowDialog(owner))
+					{
+						case DialogResult.OK:
+							_useWebAssemblyManifestJson = unoWasmOptionsPicker.UseManifestJson;
+							replacementsDictionary["$UseWebAssemblyManifestJson$"] = _useWebAssemblyManifestJson.ToString();
+							break;
+
+						case DialogResult.Abort:
+							MessageBox.Show("Aborted"/*targetPlatformWizardPicker.Error*/);
+							Directory.Delete(_targetPath, true);
+							throw new WizardCancelledException();
+
+						default:
+							throw new WizardBackoutException();
+					}
+				}
+
+				_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
 			}
 		}
 

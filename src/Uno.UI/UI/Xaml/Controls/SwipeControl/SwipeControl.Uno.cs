@@ -328,7 +328,7 @@ namespace Windows.UI.Xaml.Controls
 				// When that happens, the content can open using the previous stackpanel size, causing an invalid behavior.
 				if (m_swipeContentStackPanel.IsMeasureDirty || m_swipeContentStackPanel.IsArrangeDirty)
 				{
-					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SimulateInertia(v));
+					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = SimulateInertia(v));
 					return;
 				}
 

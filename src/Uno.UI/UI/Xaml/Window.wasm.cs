@@ -25,11 +25,8 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private static Window _current;
-		private RootVisual _rootVisual;
 		private ScrollViewer _rootScrollViewer;
 		private Border _rootBorder;
-		private UIElement _content;
 		private bool _invalidateRequested;
 
 		public Window()
@@ -68,7 +65,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug("DispatchInvalidateMeasure scheduled");
 				}
 
-				CoreDispatcher.Main.RunAsync(
+				_ = CoreDispatcher.Main.RunAsync(
 					CoreDispatcherPriority.Normal,
 					() =>
 					{
@@ -186,12 +183,6 @@ namespace Windows.UI.Xaml
 
 			_rootBorder.Child = _content = content;
 		}
-
-		private UIElement InternalGetContent() => _content;
-
-		private UIElement InternalGetRootElement() => _rootVisual!;
-
-		private static Window InternalGetCurrentWindow() => _current ??= new Window();
 
 		internal void UpdateRootAttributes()
 		{

@@ -1,5 +1,3 @@
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,7 +34,7 @@ namespace Windows.Storage
 		internal ImplementationBase Implementation { get; }
 
 #if !__WASM__
-		private static async Task TryInitializeStorage() { }
+		private static Task TryInitializeStorage() => Task.CompletedTask;
 #endif
 
 		public bool IsOfType(StorageItemTypes type) =>

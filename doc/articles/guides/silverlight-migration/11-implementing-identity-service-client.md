@@ -6,7 +6,7 @@ In the preceding task, the code was created to allow the application to retrieve
 
 As mentioned earlier, the server-side of this service is out-of-scope for the article, however, here is the high-level definition for the identity service operations:
 
-* **/identity/getusers** - GET
+* **`/identity/getusers`** - GET
   * No parameters
   * Returns a JSON array containing a list of user names:
     ```json
@@ -25,7 +25,7 @@ As mentioned earlier, the server-side of this service is out-of-scope for the ar
         }
     ]
     ```
-* **/identity/validateuser** - POST
+* **`/identity/validateuser`** - POST
   * Request body:
     ```json
     {
@@ -35,7 +35,7 @@ As mentioned earlier, the server-side of this service is out-of-scope for the ar
     ```
   * Returns OK
     * "true" or "false"
-* **/identity/getauthenticateduser** - POST
+* **`/identity/getauthenticateduser`** - POST
   * Request body:
     ```json
     {
@@ -60,7 +60,7 @@ As mentioned earlier, the server-side of this service is out-of-scope for the ar
 
 > [!NOTE]
 > The implementation of the identity client API will be based heavily on the code discussed in the article below:
-> * [How to consume a webservice](https://platform.uno/docs/articles/howto-consume-webservices.html)
+> * [How to consume a web service](https://platform.uno/docs/articles/howto-consume-webservices.html)
 
 ## Adding a WebApiBase class
 
@@ -70,7 +70,7 @@ This class is an abstract base class that every web service API class inherits f
 
 1. Add a class to the **WebServices** folder and name it **WebApiBase**.
 
-1. Replace the **WebApiBase.cs** file contet with a copy of the **WebApiBase** class from the **Uno.Samples** GitHub repo. Update the namespace to reflect the one for this app.
+1. Replace the **WebApiBase.cs** file content with a copy of the **WebApiBase** class from the **Uno.Samples** GitHub repo. Update the namespace to reflect the one for this app.
 
     > [!TIP]
     > The **WebApiBase** source can be found below:

@@ -5,6 +5,7 @@
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<UseWPF>true</UseWPF>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup Label="AssemblyInfo">

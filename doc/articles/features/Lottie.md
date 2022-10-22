@@ -54,12 +54,12 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-On WASM, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the following packages:
-  * `Uno.UI.Lottie` (for the `LottieVisualSource`)
+On WebAssembly, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the following packages:
+  * `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
 
 On Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
-  * `Uno.UI.Lottie` (for the `LottieVisualSource`)
-  * `SkiaSharp.Views.Uno` version 2.88.1-preview.79 or later
+  * `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
+  * `SkiaSharp.Views.Uno.WinUI` or `SkiaSharp.Views.Uno` version 2.88.1-preview.79 or later
   * `SkiaSharp.Skottie` version 2.88.1-preview.79 or later
 
 On UWP, you'll need to reference the following packages in your head project:
@@ -74,7 +74,7 @@ Documentation: <https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.contr
 
 On WASM, iOS and macOS, you can put the Lottie .json files directly in a folder of the shared project (for example "Lottie/myanimation.json") and set their Build action as Content.
 
-On Android, Lottie .json files need to be added into the Assets folder. To match the same path as for the other platforms, the file could be stored at "Assets/Lottie/myanimation.json". Set its Build action to AndroidAsset.
+On Android, Lottie .json files need to be added into the Assets folder. To match the same path as for the other platforms, the file could be stored at `Assets/Lottie/myanimation.json`. Set its Build action to AndroidAsset.
 
 To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-appx:///Lottie/myanimation.json`.
 
@@ -115,7 +115,7 @@ Here's how to use this feature:
    <winui:AnimatedVisualPlayer
        x:Name="player"
        AutoPlay="true">
-   
+
        <lottie:ThemableLottieVisualSource
            x:Name="animation"
            UriSource="ms-appx:///Assets/Lottie/CheckBoxAnimation.json" />

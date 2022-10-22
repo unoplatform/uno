@@ -84,17 +84,17 @@ namespace SamplesApp.UITests
 		/// Get bounds rect for an element.
 		/// </summary>
 		[Obsolete("Use _app.GetPhysicalRect() or _app.GetLogicalRect() to clarify your needs.")]
-		public static IAppRect GetRect(this IApp app, string elementName)
+		private static IAppRect GetRect(this IApp app, string elementName)
 		{
 			return app.WaitForElement(elementName).Single().Rect;
 		}
 		[Obsolete("Use _app.GetPhysicalRect() or _app.GetLogicalRect() to clarify your needs.")]
-		public static IAppRect GetRect(this IApp app, QueryEx query)
+		private static IAppRect GetRect(this IApp app, QueryEx query)
 		{
 			return app.WaitForElement(query).Single().Rect;
 		}
 		[Obsolete("Use _app.GetPhysicalRect() or _app.GetLogicalRect() to clarify your needs.")]
-		public static IAppRect GetRect(this IApp app, Func<IAppQuery, IAppQuery> query)
+		private static IAppRect GetRect(this IApp app, Func<IAppQuery, IAppQuery> query)
 		{
 			return app.WaitForElement(query).Single().Rect;
 		}
@@ -172,19 +172,19 @@ namespace SamplesApp.UITests
 
 		public static void FastTap(this IApp app, string elementName)
 		{
-			var tapPosition = app.GetRect(elementName);
+			var tapPosition = app.GetLogicalRect(elementName);
 			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
 		}
 
 		public static void FastTap(this IApp app, QueryEx query)
 		{
-			var tapPosition = app.GetRect(query);
+			var tapPosition = app.GetLogicalRect(query);
 			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
 		}
 
 		public static void FastTap(this IApp app, Func<IAppQuery, IAppQuery> query)
 		{
-			var tapPosition = app.GetRect(query);
+			var tapPosition = app.GetLogicalRect(query);
 			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
 		}
 

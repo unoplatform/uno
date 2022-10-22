@@ -10,7 +10,7 @@ namespace Uno.UI.Xaml
 	/// <summary>
 	/// Attribute to control the automatic generation of dependency property generation
 	/// </summary>
-	[System.AttributeUsage(AttributeTargets.Property|AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
+	[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 	internal sealed class GeneratedDependencyPropertyAttribute : Attribute
 	{
 		// This is a positional argument

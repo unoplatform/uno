@@ -40,6 +40,16 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		private object _source;
 
+		/// <summary>
+		/// Storage for the FallbackValue property
+		/// </summary>
+		private object _fallbackValue;
+
+		/// <summary>
+		/// A set of flags for this instance
+		/// </summary>
+		private BindingFlags _flags;
+
 		public Binding()
 		{
 
@@ -61,9 +71,9 @@ namespace Windows.UI.Xaml.Data
 			Mode = BindingMode.OneWay;
 		}
 
-		public static implicit operator Binding (string path)
+		public static implicit operator Binding(string path)
 		{
-			return new Binding (path);
+			return new Binding(path);
 		}
 
 		/// <summary>
@@ -100,7 +110,18 @@ namespace Windows.UI.Xaml.Data
 		/// Gets or sets the value to use when the binding is unable to return a value.
 		/// </summary>
 		/// <value>The fallback value.</value>
-		public object FallbackValue { get; set; }
+		public object FallbackValue
+		{
+			get => _fallbackValue;
+			set
+			{
+				_fallbackValue = value;
+
+				// Mark the value as set, regardless of the value itself
+				// so x:Bind can set that value to the target.
+				_flags |= BindingFlags.FallbackValueSet;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets a value that indicates the direction of the data flow in the binding.
@@ -202,6 +223,24 @@ namespace Windows.UI.Xaml.Data
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
 			XBindBack = xBindBack;
+		}
+
+		/// <summary>
+		/// Determines if the FallbackValue has been set
+		/// </summary>
+		/// <remarks>To be used for x:Bind only</remarks>
+		internal bool IsFallbackValueSet
+			=> _flags.HasFlag(BindingFlags.FallbackValueSet);
+
+		[Flags]
+		private enum BindingFlags
+		{
+			None = 0,
+
+			/// <summary>
+			/// Determines if the FallbackValue has been set.
+			/// </summary>
+			FallbackValueSet = 1,
 		}
 	}
 }

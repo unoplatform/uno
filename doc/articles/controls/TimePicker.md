@@ -28,7 +28,7 @@ There might be differences in the time picker on different platform since it wra
 #### Android
 
 - Native time picker is wrapped in the flyout.
-- Timepicker flyout appear centered to screen.
+- `Timepicker` flyout appear centered to screen.
 - You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
 - You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
 - If 'MinuteIncrement` is more than 1, `TimePicker` will show in "spinner mode"
@@ -50,7 +50,7 @@ IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}"
 ```
 If you want to show a dimmed overlay underneath the picker, set the `TimePicker.LightDismissOverlayMode` property to `On`.
 
-If you wish to customise the overlay color, add the following to your top-level `App.Resources`:
+If you wish to customize the overlay color, add the following to your top-level `App.Resources`:
 ```xml
 <SolidColorBrush x:Key="TimePickerLightDismissOverlayBackground"
 		Color="Pink" />

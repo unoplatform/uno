@@ -71,14 +71,14 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     - > NU1605: Detected package downgrade: Uno.UI from 3.6.0-dev.275 to 3.5.1. Reference the package directly from the project to select a different version.
 
         The app may not compile, crash at runtime, or behave strangely as a result of this.
-        solution: You need to update the version of `Uno.UI` packages for all project heads that you are using to the higher version.
-        > note: By `Uno.UI` packages, it includes:
-        > - Uno.UI
-        > - Uno.UI.RemoteControl
-        > - Uno.UI.WebAssembly
-        > - Uno.UI.Skia.Gtk
-        > - Uno.UI.Skia.Tizen
-        > - Uno.UI.Skia.Wpf
+        solution: You need to update the version of `Uno.WinUI` packages for all project heads that you are using to the higher version.
+        > note: By `Uno.WinUI` (or `Uno.UI`) packages, it includes:
+        > - Uno.WinUI
+        > - Uno.WinUI.RemoteControl
+        > - Uno.WinUI.WebAssembly
+        > - Uno.WinUI.Skia.Gtk
+        > - Uno.WinUI.Skia.Tizen
+        > - Uno.WinUI.Skia.Wpf
 
     - When building the `.Droid` project, the project failed to build with:
         ```

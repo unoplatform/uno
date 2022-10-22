@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -55,7 +56,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				var borderRadiusCssString = $"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
+				var borderRadiusCssString = $"min(50%,{cornerRadius.TopLeft.ToStringInvariant()}px) min(50%,{cornerRadius.TopRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomLeft.ToStringInvariant()}px)";
 				element.SetStyle(
 					("border-radius", borderRadiusCssString),
 					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.

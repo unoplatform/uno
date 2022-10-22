@@ -26,7 +26,7 @@ jobs:
 
     # Disable .NET 5 build on CI for package generation
     # Build validation is performed on other jobs
-    UnoUIDisableNetCoreBuild: true
+    UnoUIDisableNet7Build: true
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
@@ -66,17 +66,40 @@ jobs:
   - template: templates/install-windows-sdk.yml
   - template: templates/jdk-setup.yml
 
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /t:BuildGeneric "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+      msbuildArguments: /r /m /v:m /nr:false /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD)-prepare.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
+
+  - task: MSBuild@1
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m /v:m /t:BuildGeneric "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  # - task: CmdLine@2
+  #   inputs:
+  #     workingDirectory: $(build.artifactstagingdirectory)
+  #     script: |
+  #       dotnet tool install --global Basic.CompilerLog
+  #       # Adjust project name for the project you want to get compiler log for.
+  #       complog create --projectName=Uno.UI build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+  #   condition: always()
 
   - template: templates/copy-package-assets.yml
 
@@ -91,7 +114,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts
+      ArtifactName: NugetPackages-Artifacts-generic
       ArtifactType: Container
   
   # - task: PublishBuildArtifacts@1

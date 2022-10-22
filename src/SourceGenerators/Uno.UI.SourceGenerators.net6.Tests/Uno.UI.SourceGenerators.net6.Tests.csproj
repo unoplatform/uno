@@ -28,12 +28,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.1.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0-2.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
+		<ProjectReference Include="..\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

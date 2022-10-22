@@ -148,7 +148,7 @@ internal class FontFamilyLoader
 			return; // already loading
 		}
 
-		LoadFontAsync();
+		_ = LoadFontAsync();
 	}
 
 	/// <summary>
@@ -206,8 +206,8 @@ internal class FontFamilyLoader
 
 	private class FontFamilyComparer : IEqualityComparer<FontFamily>
 	{
-		public bool Equals(FontFamily x, FontFamily y)
-			=> string.Equals(x.CssFontName, y.CssFontName, StringComparison.OrdinalIgnoreCase);
+		public bool Equals(FontFamily? x, FontFamily? y)
+			=> string.Equals(x!.CssFontName, y!.CssFontName, StringComparison.OrdinalIgnoreCase);
 
 		public int GetHashCode(FontFamily obj)
 			=> obj.CssFontName.GetHashCode();

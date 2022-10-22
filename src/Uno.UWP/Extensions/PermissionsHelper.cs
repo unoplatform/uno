@@ -36,7 +36,9 @@ namespace Windows.Extensions
 		public static bool IsDeclaredInManifest(string permission)
 		{
 			var context = Application.Context;
+#pragma warning disable CS0618 // Type or member is obsolete
 			var packageInfo = context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.Permissions);
+#pragma warning restore CS0618 // Type or member is obsolete
 			var requestedPermissions = packageInfo?.RequestedPermissions;
 
 			return requestedPermissions?.Any(r => r.Equals(permission, StringComparison.OrdinalIgnoreCase)) ?? false;

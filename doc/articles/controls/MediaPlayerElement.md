@@ -24,7 +24,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 * Uno's MediaPlayerElement relies on AVPlayer for iOS and AndroidMediaPlayer for Android. Please refer to those native players documentation for more information about supported audio and video formats
 * If you need to set source programmatically (i.e., using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported
 
-## Features 
+## Features
 
 | Section				| Feature    											| iOS	| Android	| Remarks										|
 |-----------------------|-------------------------------------------------------|-------|-----------|-----------------------------------------------|
@@ -49,7 +49,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 |						| Skip backward											| X     | X  		|												|
 |						| Show buffering progress						  		| X     | X  		|												|
 |						| Zoom mode												| X     | X  		| 												|
-|						| Fullscreen mode								  		| X     | X  		|												|
+|						| Full-screen mode								  		| X     | X  		|												|
 |						| Playlists support		  								| X     | X  		|												|
 |						| Change playback rate									| -     | -  		|												|
 |						| Player controls on locked screen support  			| -     | -  		|												|
@@ -90,7 +90,7 @@ Add the following to your AndroidManifest.xml
 - Playback rate support
 - React to audio focus changes (pause/stop playback or reduce audio volume)
 - Subtitles support
-- Languages support	
+- Languages support
 - Display poster for audio media
 - Buffering of next playlist element when using MediaPlaybackList
 

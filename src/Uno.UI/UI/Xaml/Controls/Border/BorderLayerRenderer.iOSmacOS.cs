@@ -13,6 +13,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Media;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -77,7 +78,7 @@ namespace Windows.UI.Xaml.Shapes
 				return updatedBoundsPath;
 			}
 
-			
+
 			return null; // no change
 		}
 
@@ -150,7 +151,10 @@ namespace Windows.UI.Xaml.Shapes
 				else if (background is ImageBrush imgBackground)
 				{
 					var imgSrc = imgBackground.ImageSource;
-					if (imgSrc != null && imgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
+					if (imgSrc != null &&
+						imgSrc.TryOpenSync(out var imageData) &&
+						imageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage &&
+						imageData.NativeImage.Size != CGSize.Empty)
 					{
 						var fillMask = new CAShapeLayer()
 						{
@@ -255,7 +259,7 @@ namespace Windows.UI.Xaml.Shapes
 					Brush.AssignAndObserveBrush(scbBackground, c => backgroundLayer.FillColor = c)
 						.DisposeWith(disposables);
 
-					// This is required because changing the CornerRadius changes the background drawing 
+					// This is required because changing the CornerRadius changes the background drawing
 					// implementation and we don't want a rectangular background behind a rounded background.
 					Disposable.Create(() => parent.BackgroundColor = null)
 						.DisposeWith(disposables);
@@ -263,7 +267,11 @@ namespace Windows.UI.Xaml.Shapes
 				else if (background is ImageBrush imgBackground)
 				{
 					var bgSrc = imgBackground.ImageSource;
-					if (bgSrc != null && bgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
+					if (bgSrc != null &&
+						bgSrc.TryOpenSync(out var imageData) &&
+						imageData.Kind == ImageDataKind.NativeImage &&
+						imageData.NativeImage is _Image uiImage &&
+						uiImage.Size != CGSize.Empty)
 					{
 						CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
 					}
@@ -496,7 +504,14 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
 		private static void CreateImageBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, ImageBrush imageBrush, CAShapeLayer fillMask)
 		{
-			imageBrush.ImageSource.TryOpenSync(out var uiImage);
+			imageBrush.ImageSource.TryOpenSync(out var imageData);
+
+			if (imageData.Kind != Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
+			{
+				return;
+			}
+
+			var uiImage = imageData.NativeImage;
 
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var imageContainerLayer = new CALayer

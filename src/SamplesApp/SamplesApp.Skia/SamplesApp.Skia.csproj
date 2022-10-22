@@ -3,6 +3,10 @@
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -11,11 +15,13 @@
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-  </PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />

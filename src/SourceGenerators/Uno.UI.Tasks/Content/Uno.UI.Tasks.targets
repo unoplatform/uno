@@ -110,13 +110,18 @@
 
 	</Target>
 
+	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CoreCompile" />
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="_UnoLinkerHintsSubstitutionsMerge" />
+	</ItemGroup>
+
 	<Target Name="_UnoEmbeddedResourcesInjection"
 	  Condition="
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''
 		and '$(SkipCompilerExecution)' == ''
 		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')"
-		AfterTargets="CoreCompile;_UnoLinkerHintsSubstitutionsMerge;CompileTypeScriptWithTSConfig">
+		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
@@ -158,6 +163,8 @@
 			OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 			ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
 			ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
+			TargetFramework="$(TargetFramework)"
+			TargetFrameworkVersion="$(TargetFrameworkVersion.Substring(1))"
 			UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier)">
 			<Output TaskParameter="OutputFeatures"

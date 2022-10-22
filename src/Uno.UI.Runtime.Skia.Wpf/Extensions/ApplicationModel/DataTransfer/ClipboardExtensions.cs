@@ -95,7 +95,7 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 
 			if (Clipboard.ContainsImage())
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Bitmap, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Bitmap, ct =>
 				{
 					var bitmap = Clipboard.GetImage();
 					var bitmapStream = new MemoryStream();
@@ -106,30 +106,30 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 
 					// Letting a MemoryStream run around does not cause problems.
 					// The GC will take care of it, just like a byte[].
-					return RandomAccessStreamReference.CreateFromStream(bitmapStream.AsRandomAccessStream());
+					return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(bitmapStream.AsRandomAccessStream()));
 				});
 			}
 			if (Clipboard.ContainsText())
 			{
 				// Copying significant amounts of text still makes Clipboard.GetText() slow, so
 				// we'll still use the SetDataProvider
-				dataPackage.SetDataProvider(StandardDataFormats.Text, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Text, ct =>
 				{
-					return Clipboard.GetText();
+					return Task.FromResult<object>(Clipboard.GetText());
 				});
 			}
 			if (Clipboard.ContainsData(DataFormats.Html))
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Html, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Html, ct =>
 				{
-					return Clipboard.GetData(DataFormats.Html);
+					return Task.FromResult<object>(Clipboard.GetData(DataFormats.Html));
 				});
 			}
 			if (Clipboard.ContainsData(DataFormats.Rtf))
 			{
-				dataPackage.SetDataProvider(StandardDataFormats.Rtf, async ct =>
+				dataPackage.SetDataProvider(StandardDataFormats.Rtf, ct =>
 				{
-					return Clipboard.GetData(DataFormats.Rtf);
+					return Task.FromResult<object>(Clipboard.GetData(DataFormats.Rtf));
 				});
 			}
 			if (Clipboard.ContainsFileDropList())
@@ -164,9 +164,9 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				throw new ArgumentNullException(nameof(content));
 			}
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				() => _ = SetContentAsync(content));
 		}
 
 		private async Task SetContentAsync(DataPackage content)

@@ -103,7 +103,9 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			if (args.DataView.Contains(StandardDataFormats.StorageItems)) { standardDataFormats += nameof(StandardDataFormats.StorageItems) + sep; }
 			if (args.DataView.Contains(StandardDataFormats.Text)) { standardDataFormats += nameof(StandardDataFormats.Text) + sep; }
 			if (args.DataView.Contains(StandardDataFormats.UserActivityJsonArray)) { standardDataFormats += nameof(StandardDataFormats.UserActivityJsonArray) + sep; }
+#pragma warning disable CS0618 // Type or member is obsolete
 			if (args.DataView.Contains(StandardDataFormats.Uri)) { standardDataFormats += nameof(StandardDataFormats.Uri) + sep; }
+#pragma warning restore CS0618 // Type or member is obsolete
 			if (args.DataView.Contains(StandardDataFormats.WebLink)) { standardDataFormats += nameof(StandardDataFormats.WebLink) + sep; }
 
 			if (standardDataFormats.EndsWith(sep))
@@ -254,11 +256,14 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				details = text;
 			}
 			// URI is deprecated so last in priority
+#pragma warning disable CS0618 // Type or member is obsolete
 			else if (args.DataView.Contains(StandardDataFormats.Uri))
+#pragma warning restore CS0618 // Type or member is obsolete
 			{
 				title += " (Uri)";
-
+#pragma warning disable CS0618 // Type or member is obsolete
 				var uri = await args.DataView.GetUriAsync();
+#pragma warning restore CS0618 // Type or member is obsolete
 				details = uri.ToString();
 			}
 

@@ -419,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			_needsVisualStateUpdate = true;
 
-			Dispatcher.RunAsync(
+			_ = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{

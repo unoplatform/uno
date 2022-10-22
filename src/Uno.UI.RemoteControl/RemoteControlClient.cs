@@ -63,7 +63,7 @@ namespace Uno.UI.RemoteControl
 			}
 
 			RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
-			StartConnection();
+			_ = StartConnection();
 		}
 
 		private void RegisterProcessor(IRemoteControlProcessor processor)
@@ -185,7 +185,7 @@ namespace Uno.UI.RemoteControl
 						connection.cts.Cancel();
 						if (connection.task.Status == TaskStatus.RanToCompletion)
 						{
-							connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+							_ = connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
 						}
 					}
 
@@ -235,7 +235,7 @@ namespace Uno.UI.RemoteControl
 
 		private async Task ProcessMessages()
 		{
-			InitializeServerProcessors();
+			_ = InitializeServerProcessors();
 
 			foreach(var processor in _processors)
 			{
@@ -291,7 +291,7 @@ namespace Uno.UI.RemoteControl
 						this.Log().Trace($"Sending Keepalive frame");
 					}
 
-					SendMessage(keepAlive);
+					_ = SendMessage(keepAlive);
 				}
 				catch(Exception)
 				{

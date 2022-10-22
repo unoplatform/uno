@@ -102,13 +102,21 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static async Task ExecuteAsync(Action action) =>
-			await ExecuteAsync(CoreApplication.MainView, async () => action());
+			await ExecuteAsync(CoreApplication.MainView, () =>
+			{
+				action();
+				return Task.CompletedTask;
+			});
 
 		public static async Task ExecuteAsync(Func<Task> task) =>
 			await ExecuteAsync(CoreApplication.MainView, task);
 
 		public static async Task ExecuteAsync(CoreApplicationView whichView, Action action) =>
-			await ExecuteAsync(whichView, async () => action());
+			await ExecuteAsync(whichView, () =>
+			{
+				action();
+				return Task.CompletedTask;
+			});
 
 		public static async Task ExecuteAsync(CoreApplicationView whichView, Func<Task> task)
 		{

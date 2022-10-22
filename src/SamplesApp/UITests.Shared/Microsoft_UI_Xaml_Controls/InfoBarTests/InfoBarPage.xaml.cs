@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference InfoBarPage.xaml.cs, commit b424312
+#pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
 
 using System;
 using Windows.UI;

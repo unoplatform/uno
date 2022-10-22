@@ -386,6 +386,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreEqual(screenshotDirect, screenshotStream, rect, tolerance: PixelTolerance.Exclusive(12));
 		}
 
+		[Test]
+		[AutoRetry]
+		public void Image_Invalid()
+		{
+			Run("Uno.UI.Samples.UITests.ImageTests.Image_Invalid");
+
+			var panel = _app.Marked("ComparePanel");
+			var button = _app.Marked("HideButton");
+			var physicalRect = _app.GetPhysicalRect(panel);
+			
+			// Copy of the rect, as the panel will be hidden, so the the X & Y coords would become negative
+			var originalRect = new AppRect(physicalRect.X, physicalRect.Y, physicalRect.Width, physicalRect.Height);
+
+			using var beforeHide = TakeScreenshot("image_invalid_before_hide");
+
+			button.FastTap();
+			
+			using var afterHide = TakeScreenshot("image_invalid_after_hide");
+
+			ImageAssert.AreEqual(afterHide, beforeHide, originalRect, tolerance: PixelTolerance.Exclusive(1));
+		}
+
 		private void WaitForBitmapOrSvgLoaded()
 		{
 			var isLoaded = _app.Marked("isLoaded");

@@ -4,7 +4,7 @@ The Uno Platform provides a set of command-line templates to create cross-platfo
 
 To install the templates, type the following:
 ```
-dotnet new -i Uno.ProjectTemplates.Dotnet
+dotnet new install Uno.ProjectTemplates.Dotnet
 ```
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
@@ -16,7 +16,7 @@ If you need to determine the parameters available for a template use `dotnet new
 
 [!include[getting-help](use-uno-check-inline.md)]
 
-## Uno Platform Blank Application for WinAppSDK - WinUI 3 (Preview)
+## Uno Platform Blank Application for WinAppSDK - WinUI 3
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
@@ -28,6 +28,9 @@ A basic example:
 ```
 dotnet new unoapp -o MyApp
 ```
+
+> [!NOTE]
+> It is possible to create a .NET 7 template by using `-framework net7.0` parameter.
 
 More articles on WinUI 3:
 

@@ -15,10 +15,7 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private static Window _current;
-		private RootVisual _rootVisual;
 		private bool _isActive;
-		private UIElement _content;
 
 		public Window()
 		{
@@ -56,20 +53,6 @@ namespace Windows.UI.Xaml
 			{
 				(_content as FrameworkElement)?.ForceLoaded();
 			}
-		}
-
-		private UIElement InternalGetContent() => _content;
-
-		private UIElement InternalGetRootElement() => _content;
-
-		private static Window InternalGetCurrentWindow()
-		{
-			if (_current == null)
-			{
-				_current = new Window();
-			}
-
-			return _current;
 		}
 
 		internal void SetWindowSize(Size size)

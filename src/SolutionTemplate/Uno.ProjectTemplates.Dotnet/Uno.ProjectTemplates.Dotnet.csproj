@@ -12,6 +12,10 @@
 		
 		<!-- Disable package generation for WinUI converted build -->
 		<IsPackable Condition="'$(UNO_UWP_BUILD)'=='false'">false</IsPackable>
+
+		<!-- error NU5128: Some target frameworks declared in the dependencies group of the nuspec and the lib/ref folder do not have exact matches in the other location. Consult the list of actions below: [C:\a\1\s\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\Uno.ProjectTemplates.Dotnet.csproj] -->
+		<!-- error NU5128: - Add lib or ref assemblies for the netstandard2.0 target framework [C:\a\1\s\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\Uno.ProjectTemplates.Dotnet.csproj] -->
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -88,7 +92,7 @@
 
 	<ItemGroup>
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\__*.png" />
+		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\__*.png" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
 		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
@@ -98,19 +102,30 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\__*.png" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
-		<_UnoAppnet6TemplateFilesExclude Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.csproj" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\__*.png" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.csproj" />
 
-		<_UnoAppnet6TemplateFiles Include="..\UnoSolutionTemplate.net6\**" Exclude="@(_UnoAppnet6TemplateFilesExclude)" />
+		<_UnoAppnet6UWPTemplateFiles Include="..\UnoSolutionTemplate.net6\**" Exclude="@(_UnoAppnet6UWPTemplateFilesExclude)" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\*.vstemplate" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\__*.png" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\obj\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\bin\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\Properties\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj" />
+
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.net6\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\*.vstemplate" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\__*.png" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\**\__*.png" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\obj\**" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\bin\**" />
 		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\Properties\**" />
@@ -121,7 +136,7 @@
 	
 	<ItemGroup>
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\*.vstemplate" />
-		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\__*.png" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\**\__*.png" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\obj\**" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\bin\**" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\Properties\**" />
@@ -171,7 +186,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_UnoAppnet6TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(_UnoAppnet6UWPTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="False" />
 
@@ -248,7 +263,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_UnoAppnet6TemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(_UnoAppnet6WinUITemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
 		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
@@ -280,19 +295,22 @@
 		<Task>
 			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
+			<Using Namespace="System.Text.RegularExpressions" />
 			<Using Namespace="System.Linq" />
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.json" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{
 						Log.LogMessage("Converting file: " + file);
 
 						var s = File.ReadAllText(file);
+						var fileExtension = Path.GetExtension(file).ToLower();
 
-						if(Path.GetExtension(file).ToLower() == ".cs")
+						if(fileExtension == ".cs"
+							&& !file.EndsWith("Server\\Program.cs"))
 						{
 							// Disable conditionals for all imported files
 							s = "//-:cnd:noEmit\r\n" + s;
@@ -301,7 +319,27 @@
 						s = s
 							.Replace("$ext_safeprojectname$", SafeProjectName)
 							.Replace("$safeprojectname$", SafeProjectName)
+							.Replace("UseAndroid", "android")
+							.Replace("UseIOS", "ios")
+							.Replace("UseAppKit", "macos")
+							.Replace("UseCatalyst", "maccatalyst")
+							.Replace("UseServer", "hosted")
+							.Replace("UseWebAssemblyManifestJson", "wasm-pwa-manifest")
+							.Replace("$basetargetframework$", "net6.0")
 							;
+
+		
+						if(fileExtension == ".csproj" || fileExtension == ".cs")
+						{
+							// Avoid value replacement with msbuild's CodeTaskFactory expansion
+							string pattern = string.Format("^{0}\\$if\\$\\(\\${0}\\${0} == True\\)", "(.*?)");
+
+							s = Regex.Replace(s, pattern, @"$1<!--#if ($2)" + Environment.NewLine + "$1", RegexOptions.Multiline);
+
+							s = s
+								.Replace("$endif$", "\n#endif -->");
+								;
+						}
 
 						if(IsWinUI)
 						{
@@ -348,7 +386,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Server", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
 
 					foreach(var platform in platforms)
 					{
@@ -377,7 +415,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{
@@ -430,6 +468,6 @@
 	</UsingTask>
 
 	<ItemGroup>
-		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visble="false"/>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visble="false" />
 	</ItemGroup>
 </Project>

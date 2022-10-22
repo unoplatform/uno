@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 		}
 
 		[TestMethod]
-		public async void When_ModificationEvent()
+		public void When_ModificationEvent()
 		{
 
 			// .Add

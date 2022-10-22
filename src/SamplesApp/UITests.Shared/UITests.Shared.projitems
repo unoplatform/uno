@@ -269,6 +269,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RefreshContainerTests\RefreshContainerHorizontalScroll.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RefreshContainerTests\RefreshContainerScrollTop.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1797,6 +1801,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Invalid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageSourceWriteableBitmapInvalidate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1846,6 +1854,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\WriteableBitmap_MultiInvalidate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromStream.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_MultiLoad.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_NoSize.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5067,6 +5095,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RefreshContainerTests\RefreshContainerTheming.xaml.cs">
       <DependentUpon>RefreshContainerTheming.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RefreshContainerTests\RefreshContainerHorizontalScroll.xaml.cs">
+      <DependentUpon>RefreshContainerHorizontalScroll.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RefreshContainerTests\RefreshContainerScrollTop.xaml.cs">
       <DependentUpon>RefreshContainerScrollTop.xaml</DependentUpon>
     </Compile>
@@ -6118,6 +6149,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_ImageSource_PixelSize.xaml.cs">
       <DependentUpon>Image_ImageSource_PixelSize.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Invalid.xaml.cs">
+      <DependentUpon>Image_Invalid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Margin.xaml.cs">
       <DependentUpon>Image_Margin.xaml</DependentUpon>
     </Compile>
@@ -6149,6 +6183,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\WriteableBitmap_MultiInvalidate.xaml.cs">
       <DependentUpon>WriteableBitmap_MultiInvalidate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Basic.xaml.cs">
+      <DependentUpon>SvgImageSource_Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromStream.xaml.cs">
+      <DependentUpon>SvgImageSource_FromStream.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Icons.xaml.cs">
+      <DependentUpon>SvgImageSource_Icons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_MultiLoad.xaml.cs">
+      <DependentUpon>SvgImageSource_MultiLoad.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_NoSize.xaml.cs">
+      <DependentUpon>SvgImageSource_NoSize.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SampleSvgSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSourceHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ItemsControl\ItemsControl_AppendItem.xaml.cs">
       <DependentUpon>ItemsControl_AppendItem.xaml</DependentUpon>
     </Compile>
@@ -8606,6 +8657,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient6.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient7.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient8.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\InvalidImage.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\LargeWisteria.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ListView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MakeButton.png" />
@@ -8715,10 +8767,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\couch.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\heart.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\heliocentric.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.webp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.heic" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.pdf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\bookstack.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\chef.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\czcalendar.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\home.svg" />
     <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
   </ItemGroup>
   <ItemGroup>

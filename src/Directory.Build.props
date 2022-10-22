@@ -5,7 +5,6 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <PropertyGroup>
-    <NoWarn>$(NoWarn);1998</NoWarn>
     <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
     <DebugType>portable</DebugType>
@@ -64,43 +63,57 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.net6.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Skia.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.net6.csproj</_AdjustedOutputProjects>	
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Reference.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Reference.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Reference.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.net6.csproj</_AdjustedOutputProjects>
 	
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Reference.csproj</_AdjustedOutputProjects>
 
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Wasm.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Skia.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.net6.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Reference.csproj</_AdjustedOutputProjects>
 
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Wasm.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Skia.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.net6.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Reference.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.Reference.csproj</_AdjustedOutputProjects>
 	
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.net6.csproj</_AdjustedOutputProjects>
@@ -112,16 +125,19 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.net6.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Reference.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.net6.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Reference.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.net6.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Wasm.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Reference.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -168,6 +184,7 @@
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618;CS1998;CS4014</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -181,6 +198,7 @@
         <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" PrivateAssets="All" />

@@ -4,6 +4,7 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
+      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
@@ -16,7 +17,6 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
-      "T4Generator\\T4Generator.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",

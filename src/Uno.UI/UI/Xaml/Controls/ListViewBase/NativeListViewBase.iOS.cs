@@ -762,7 +762,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			_isReloadDataDispatched = true;
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.High, setNeedsReloadData);
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, setNeedsReloadData);
 
 			void setNeedsReloadData()
 			{

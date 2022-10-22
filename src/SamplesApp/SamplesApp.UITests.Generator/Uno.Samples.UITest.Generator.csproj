@@ -5,26 +5,10 @@
 		<DebugSymbols>true</DebugSymbols>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<LangVersion>10.0</LangVersion>
-
-		<!-- Required to get roslyn workspaces files to be present -->
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.CodeAnalysis">
-
-			<!--
-			This version needs to be aligned with the CI build override MicrosoftNetCompilerVersionOverride, as long as
-			SnapShotTestGenerator uses an inner Roslyn Workspace to generate the snapshots test.
-			-->
-			<Version>4.0.1</Version>
-			
-			<!-- Workspaces need to be included (and without ExcludeAssets) to allow for SnapShotTestGenerator to run properly -->
-			<!--<ExcludeAssets>runtime</ExcludeAssets>-->
-		</PackageReference>
-
-		<PackageReference Include="System.ValueTuple" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-2.final" PrivateAssets="all" />
 	</ItemGroup>
 	
 	<Import Project="..\..\SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />

@@ -105,6 +105,8 @@
               href: howto-use-uno-in-xamarin-forms.md
             - name: Samples
               topicHref: uno-samples.md
+            - name: Community Tutorials
+              topicHref: guides/community-tutorials.md
 
     - name: Development
       items:
@@ -270,6 +272,8 @@
               href: features/windows-devices-haptics.md
             - name: Keeping Screen On
               href: features/windows-system-display.md
+            - name: Light Sensor
+              href: features/lightsensor.md
             - name: Magnetometer
               href: features/magnetometer.md   
             - name: MIDI
@@ -338,6 +342,8 @@
               href: uno-fluent-assets.md
             - name: Lottie animations
               href: features/Lottie.md
+            - name: Using SVG images
+              href: features/svg.md
             - name: Working with XAML Trimming
               href: features/resources-trimming.md
             - name: Working with cookies

@@ -25,7 +25,9 @@ public sealed partial class HitTest_Clipping : Page
 	}
 	private void PrepareScroller(object sender, RoutedEventArgs e)
 	{
+#pragma warning disable CS0618 // Type or member is obsolete
 		The_Scroller.ScrollToVerticalOffset(100);
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 
 	private void OnTargetClicked(object sender, RoutedEventArgs e)

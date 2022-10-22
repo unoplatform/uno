@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Windows.Storage.Helpers
@@ -17,6 +18,7 @@ namespace Windows.Storage.Helpers
 		/// <summary>
 		/// Builds an actual asset path
 		/// </summary>
+		[return: NotNullIfNotNull("contentRelativePath")]
 		public static string? BuildAssetUri(string? contentRelativePath)
 			=> !string.IsNullOrEmpty(UNO_BOOTSTRAP_APP_BASE)
 				// Concatenates the app's base path (used to support deep-linking), with the generated app based content folder name.

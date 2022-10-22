@@ -14,6 +14,7 @@ using Windows.System;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
+using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -69,6 +70,15 @@ namespace Windows.UI.Xaml.Controls
 					that.UpdateVisualState();
 				}
 			};
+
+			_popup.Closed += (s, e) =>
+			{
+				if (thisRef.Target is ContentDialog that)
+				{
+					that.Hide();
+				}
+			};
+
 			this.KeyDown += OnPopupKeyDown;
 			var inputPane = InputPane.GetForCurrentView();
 			inputPane.Showing += (o, e) =>
@@ -345,7 +355,36 @@ namespace Windows.UI.Xaml.Controls
 				window.SizeChanged -= WindowSizeChanged;
 			});
 
+			// Here we are relying on the BackRequested event to be able to close the ContentDialog on back button pressed.
+			// This diverges from Windows behaviour as they do not allow BackRequested to be raised if the back button was pressed
+			// while a ContentDialog was open.
+			if (SystemNavigationManager.GetForCurrentView() is { } navManager)
+			{
+				navManager.BackRequested += OnBackRequested;
+
+				d.Add(() =>
+				{
+					navManager.BackRequested -= OnBackRequested;
+				});
+			}
+
 			_subscriptions.Disposable = d;
+		}
+		private void OnBackRequested(object sender, BackRequestedEventArgs e)
+		{
+			// Match Windows behavior:
+			// If we have a clickable close button, then invoke it, otherwise just
+			// return a result of None.
+			if (m_tpCloseButtonPart is { IsEnabled: true } closeButton)
+			{
+				closeButton.RaiseClick();
+			}
+			else
+			{
+				Hide();
+			}
+
+			e.Handled = true;
 		}
 
 		private void OnCloseButtonClicked(object sender, RoutedEventArgs e)

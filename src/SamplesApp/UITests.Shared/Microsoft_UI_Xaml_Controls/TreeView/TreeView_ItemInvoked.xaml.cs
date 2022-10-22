@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

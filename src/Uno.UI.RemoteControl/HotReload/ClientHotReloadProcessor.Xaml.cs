@@ -30,9 +30,9 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private async Task ReloadFile(FileReload fileReload)
+		private void ReloadFile(FileReload fileReload)
 		{
-			Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
 			{

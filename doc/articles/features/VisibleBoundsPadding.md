@@ -5,6 +5,9 @@ The `ApplicationView.VisibleBounds` is the rectangular area of the screen which 
 
 In some cases it's acceptable for visible content to be partially obscured (a page background for example) and it should extend to fill the entire window. Other types of content should be restricted to the visible bounds (for instance readable text, or interactive controls). VisibleBoundsPadding enables this kind of fine-grained control over responsiveness to the visible bounds.
 
+> [!IMPORTANT]
+> The [`SafeArea`](../external/uno.toolkit.ui/doc/controls/SafeArea.md) control is now preferred to `VisibleBoundsPadding`.
+
 ## Using the behavior
 The behavior can be placed on any control that provides a Padding property (e.g. Grid, StackPanel, ListView, ScrollViewer, Control, ContentPresenter or Border), and will be automatically adjusted based on the control's absolute position inside the `ApplicationView.VisibleBounds` rectangle.
 

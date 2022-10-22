@@ -122,23 +122,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task TargetNullValue_Is_Correctly_Applied()
+		public void TargetNullValue_Is_Correctly_Applied()
 		{
 			var SUT = new ImageSource_TargetNullValue();
 
 			var nameIsAppliedSource = SUT.NameIsApplied.Source as BitmapImage;
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("mypanel", nameIsAppliedSource.UriSource.ToString());
-#else
 			Assert.AreEqual("ms-appx:///mypanel", nameIsAppliedSource.UriSource.ToString());
-#endif
 
 			var targetNullValueSource = SUT.TargetNullValueIsApplied.Source as BitmapImage;
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
-#else
 			Assert.AreEqual("ms-appx:///Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
-#endif
 		}
 
 		[TestMethod]

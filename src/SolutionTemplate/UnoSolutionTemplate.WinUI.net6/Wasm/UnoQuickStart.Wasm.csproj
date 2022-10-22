@@ -2,8 +2,9 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
+		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>$endif$
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -49,14 +50,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.3.0" />
 		<PackageReference Include="Uno.WinUI.WebAssembly" Version="4.2.6" />
 		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="3.3.1" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.3.1" />
-		<PackageReference Include="Uno.UI.Lottie" Version="4.5.9" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.0-dev.195" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.0-dev.195" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />

@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	{
 		[Test]
 		[AutoRetry]
-		public async Task When_Target_Is_Set_After_Start()
+		public void When_Target_Is_Set_After_Start()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Media_Animation.SetTargetProperty");
 			var playBtn = _app.Marked("playButton");

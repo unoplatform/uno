@@ -38,7 +38,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.18362 /p:UnoDisableTargetFrameworksCIOverride=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.18362 /p:UnoDisableTargetFrameworksCIOverride=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

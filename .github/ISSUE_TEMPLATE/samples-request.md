@@ -12,14 +12,15 @@ labels: kind/contributor-experience, kind/documentation, triage/untriaged, diffi
 
 ## For which Platform:
 
-- [ ] iOS
-- [ ] Android
 - [ ] WebAssembly
-- [ ] WebAssembly renderers for Xamarin.Forms
-- [ ] macOS
+- [ ] Android
+- [ ] iOS
+- [ ] macOS (AppKit)
+- [ ] Mac Catalyst
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Linux Framebuffer
   - [ ] Tizen
 - [ ] Windows
 

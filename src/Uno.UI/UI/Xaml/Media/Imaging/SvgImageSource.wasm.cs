@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -22,29 +23,25 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if (WebUri is { } webUri)
+			if (AbsoluteUri is { } absoluteUri)
 			{
 				image = default;
 
-				var hasFileScheme = webUri.IsAbsoluteUri && webUri.Scheme == "file";
+				var hasFileScheme = absoluteUri.IsAbsoluteUri && absoluteUri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
 				// Local files are assumed as coming from the remote server
 				var uri = hasFileScheme switch
 				{
-					true => new Uri(webUri.PathAndQuery.TrimStart('/'), UriKind.Relative),
-					_ => webUri
+					true => new Uri(absoluteUri.PathAndQuery.TrimStart('/'), UriKind.Relative),
+					_ => absoluteUri
 				};
 
 				if (uri.IsAbsoluteUri)
 				{
-					if (uri.Scheme == "http" || uri.Scheme == "https")
+					if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+						uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
-						image = new ImageData
-						{
-							Kind = ImageDataKind.Url,
-							Value = uri.AbsoluteUri,
-							Source = this
-						};
+						image = ImageData.FromUrl(uri.AbsoluteUri, this);
 					}
 
 					// TODO: Implement ms-appdata
@@ -52,12 +49,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				else
 				{
 					var path = AssetsPathBuilder.BuildAssetUri(uri.OriginalString);
-					image = new ImageData
-					{
-						Kind = ImageDataKind.Url,
-						Value = path,
-						Source = this
-					};
+					image = ImageData.FromUrl(path, this);
 				}
 
 				return image.Kind != default;
@@ -93,7 +85,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public override string ToString()
 		{
-			if (WebUri is { } uri)
+			if (AbsoluteUri is { } uri)
 			{
 				return $"{GetType().Name}/{uri}";
 			}

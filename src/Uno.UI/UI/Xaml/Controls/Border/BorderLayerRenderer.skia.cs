@@ -288,9 +288,9 @@ namespace Windows.UI.Xaml.Shapes
 
 				if (imageData.Error is null)
 				{
-					var surfaceBrush = compositor.CreateSurfaceBrush(imageData.Value);
+					var surfaceBrush = compositor.CreateSurfaceBrush(imageData.CompositionSurface);
 
-					var sourceImageSize = new Size(imageData.Value.Image.Width, imageData.Value.Image.Height);
+					var sourceImageSize = new Size(imageData.CompositionSurface.Image.Width, imageData.CompositionSurface.Image.Height);
 
 					// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
 					var imageArea = adjustedArea.DeflateBy(borderThickness);

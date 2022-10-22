@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -84,7 +84,7 @@
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
@@ -106,7 +106,7 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 

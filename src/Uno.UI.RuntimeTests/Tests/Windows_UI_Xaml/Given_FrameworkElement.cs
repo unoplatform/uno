@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -574,7 +572,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Add_Native_Child_To_ElementCollection()
+		public void When_Add_Native_Child_To_ElementCollection()
 		{
 			var panel = new Grid();
 			var tbNativeTyped = (_View)new TextBlock();
@@ -585,7 +583,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Set_Name()
+		public void When_Set_Name()
 		{
 			var SUT = new Border();
 			SUT.Name = "Test";
@@ -595,7 +593,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Set_NameProperty()
+		public void When_Set_NameProperty()
 		{
 			var SUT = new Border();
 			SUT.SetValue(FrameworkElement.NameProperty, "Test");

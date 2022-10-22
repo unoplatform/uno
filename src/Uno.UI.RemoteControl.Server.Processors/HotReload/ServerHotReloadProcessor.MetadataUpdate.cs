@@ -1,4 +1,6 @@
-﻿#if NET6_0_OR_GREATER
+﻿#nullable enable
+
+#if NET6_0_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -30,7 +32,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private Solution _currentSolution;
 		private WatchHotReloadService _hotReloadService;
 		private IReporter _reporter = new Reporter();
-		private IDeltaApplier _deltaApplier;
 
 		private bool _useRoslynHotReload;
 
@@ -64,7 +65,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				.Distinct()
 				.Select(p => new FileSystemWatcher
 				{
-					Path = p,
+					Path = p!,
 					Filter = "*.*",
 					NotifyFilter = NotifyFilters.LastWrite |
 						NotifyFilters.Attributes |
@@ -134,7 +135,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			var sw = Stopwatch.StartNew();
 
-			Solution updatedSolution = null;
+			Solution? updatedSolution = null;
 			ProjectId updatedProjectId;
 
 			if (_currentSolution.Projects.SelectMany(p => p.Documents).FirstOrDefault(d => string.Equals(d.FilePath, file, StringComparison.OrdinalIgnoreCase)) is Document documentToUpdate)

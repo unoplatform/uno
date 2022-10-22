@@ -21,13 +21,15 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged, difficul
 
 ## For which Platform:
 
-- [ ] iOS
-- [ ] Android
 - [ ] WebAssembly
-- [ ] macOS
+- [ ] Android
+- [ ] iOS
+- [ ] macOS (AppKit)
+- [ ] Mac Catalyst
 - [ ] Skia
   - [ ] WPF
   - [ ] GTK (Linux)
+  - [ ] Linux Framebuffer
   - [ ] Tizen
 - [ ] Windows
 

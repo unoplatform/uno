@@ -232,7 +232,7 @@ namespace Private.Infrastructure
 				m_selectedDatesChangedRegistration.Detach();
 			}
 
-			internal async Task VerifyNoSelectedDatesChanged()
+			internal void VerifyNoSelectedDatesChanged()
 			{
 				// we expect no event here, so below statement will timeout and throw WEX.Common.Exception.
 				TestServices.VERIFY_THROWS_WINRT<Exception>(
@@ -244,7 +244,7 @@ namespace Private.Infrastructure
 
 			internal async Task WaitForCICEvent()
 			{
-				m_cicEvent.WaitForDefault();
+				await m_cicEvent.WaitForDefault();
 				TestServices.VERIFY_IS_TRUE(m_cicEvent.HasFired());
 				m_cicEvent.Reset();
 				m_cicRegistration.Detach();

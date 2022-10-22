@@ -244,9 +244,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			// See notes in Clipboard.Android.cs on async code usage here
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetToNativeAsync(content, pasteboard));
+				() => _ = SetToNativeAsync(content, pasteboard));
 
 			return;
 		}
@@ -354,7 +354,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					// Therefore, create a data provider used to asynchronously fetch the image.
 					dataPackage.SetDataProvider(
 						StandardDataFormats.Bitmap,
-						async cancellationToken =>
+						cancellationToken =>
 						{
 							NSImage? image = null;
 
@@ -409,22 +409,22 @@ namespace Windows.ApplicationModel.DataTransfer
 									var imgRep = NSBitmapImageRep.ImageRepFromData(imageData!) as NSBitmapImageRep;
 									var data = imgRep!.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png, null);
 
-									return new RandomAccessStreamReference(async ct =>
+									return Task.FromResult<object>(new RandomAccessStreamReference(ct =>
 									{
-										return data.AsStream().AsRandomAccessStream().TrySetContentType("image/png");
-									});
+										return Task.FromResult(data.AsStream().AsRandomAccessStream().TrySetContentType("image/png"));
+									}));
 								}
 							}
 							else
 							{
 								// Return an empty image
-								return new RandomAccessStreamReference(async ct =>
+								return Task.FromResult<object>(new RandomAccessStreamReference(ct =>
 								{
 									var stream = new MemoryStream();
 									stream.Position = 0;
 
-									return stream.AsRandomAccessStream().TrySetContentType("image/png");
-								});
+									return Task.FromResult(stream.AsRandomAccessStream().TrySetContentType("image/png"));
+								}));
 							}
 						});
 				}

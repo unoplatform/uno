@@ -1,13 +1,27 @@
-﻿namespace Windows.UI.Xaml.Media.Imaging
+﻿namespace Windows.UI.Xaml.Media.Imaging;
+
+/// <summary>
+/// Defines constants that specify the result of loading an SvgImageSource.
+/// </summary>
+public enum SvgImageSourceLoadStatus
 {
-#if !(__ANDROID__ || __WASM__)
-[global::Uno.NotImplemented]
-#endif
-	public enum SvgImageSourceLoadStatus
-	{
-		Success,
-		NetworkError,
-		InvalidFormat,
-		Other,
-	}
+	/// <summary>
+	/// The SVG loaded.
+	/// </summary>
+	Success,
+
+	/// <summary>
+	/// The SVG did not load due to a network error.
+	/// </summary>
+	NetworkError,
+
+	/// <summary>
+	/// The SVG did not load because the SVG format is invalid.
+	/// </summary>
+	InvalidFormat,
+
+	/// <summary>
+	/// The SVG did not load for some other reason.
+	/// </summary>
+	Other,
 }

@@ -164,44 +164,27 @@ using Uno.Diagnostics.Eventing;
 using AppKit;
 #endif
 ");
-
-					using (typeSymbol.ContainingNamespace.IsGlobalNamespace ? NullDisposable.Instance : builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
+					Action<IIndentedStringBuilder> beforeClassHeaderAction = builder =>
 					{
-						using (GenerateNestingContainers(builder, typeSymbol))
+						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
 						{
-							if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
-							{
-								builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
-							}
-
-							AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
-
-							var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
-
-							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
-							{
-								GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
-								GenerateIBinderImplementation(typeSymbol, builder);
-							}
+							builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
 						}
+
+						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+					};
+
+					var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
+					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: $" : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
+					{
+						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+
+						GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
+						GenerateIBinderImplementation(typeSymbol, builder);
 					}
 
 					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 				}
-			}
-
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
-			{
-				var disposables = new List<IDisposable>();
-
-				while (typeSymbol?.ContainingType != null)
-				{
-					disposables.Add(builder.BlockInvariant($"partial class {typeSymbol?.ContainingType.Name}"));
-
-					typeSymbol = typeSymbol?.ContainingType;
-				}
-
-				return new DisposableAction(() => disposables.ForEach(d => d.Dispose()));
 			}
 
 			private void GenerateIBinderImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
@@ -702,7 +685,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
 							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
 #endif
-							Dispatcher.RunIdleAsync(_ => Dispose());
+							_ = Dispatcher.RunIdleAsync(_ => Dispose());
 						}}
 					}}
 #endif

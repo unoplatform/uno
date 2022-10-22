@@ -3,7 +3,7 @@
 
 # Credentials storage
 
-<!-- Leave the infotip below in place, and add a link to the UWP documentation for the feature or control you're documenting. If the feature has no UWP equivalent, you should be using the Uno-only feature template: .feature-template-uno-only.md -->
+<!-- Leave the info tip below in place, and add a link to the UWP documentation for the feature or control you're documenting. If the feature has no UWP equivalent, you should be using the Uno-only feature template: .feature-template-uno-only.md -->
 
 > [!TIP]
 > This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordvault

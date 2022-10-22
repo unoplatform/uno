@@ -23,7 +23,7 @@ Here's what to do to, only once:
   ```
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys    3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
   echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-  sudo apt update 
+  sudo apt update
   ```
   - Install python, mono and msbuild
   ```bash
@@ -65,7 +65,7 @@ For each shell you're opening afterwards, you'll have to do the following:
     ```xml
     <WasmShellEnableAOT Condition="$([MSBuild]::IsOsUnixLike()) and '$(Configuration)'=='Release'">true</WasmShellEnableAOT>
     ```
-- Navigate to the Wasm folder of your application using the [wslpath](https://blogs.msdn.microsoft.com/commandline/2018/03/07/windows10v1803/) utility:
+- Navigate to the Wasm folder of your application using the [`wslpath`](https://blogs.msdn.microsoft.com/commandline/2018/03/07/windows10v1803/) utility:
   ```bash
   cd `wslpath "C:\Users\my_user\source\repos\MyApp\MyApp.Wasm"`
   ```
@@ -84,6 +84,6 @@ You'll notice that the `mono.wasm` is roughly between 20MB and 30MB, depending o
 
 You'll also probably notice that the build time can get pretty long, and the most time consuming step is Emscripten. This is known by the Mono team and will certainly be worked on in the future.
 
-We'll be discussing the use of the Mixed mode runtime in a next blog post, so we can get a performance/size balance for the generated binary. 
+We'll be discussing the use of the Mixed mode runtime in a next blog post, so we can get a performance/size balance for the generated binary.
 
 Let us know what you think!

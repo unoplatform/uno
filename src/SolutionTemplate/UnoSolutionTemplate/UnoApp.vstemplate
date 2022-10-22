@@ -1,7 +1,7 @@
 <VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
 	<TemplateData>
-		<Name>Uno Platform App (Xamarin|UWP)</Name>
-		<Description>Template for creating a multi-platform C# &amp; XAML application targeting UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
+		<Name>Uno Platform App (Xamarin, UWP)</Name>
+		<Description>Template for creating a multi-platform C# &amp; XAML application that targets UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType />
 		<SortOrder>300</SortOrder>

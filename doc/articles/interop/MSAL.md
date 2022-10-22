@@ -4,13 +4,13 @@ Uno can be used to build applications using authentication. A popular mechanism 
 
 > MSAL.NET is the successor of ADAL.NET library which shouldn't be used for new apps. If you are migrating an application to Uno using ADAL.NET, you should first [migrate it to MSAL.NET](https://docs.microsoft.com/azure/active-directory/develop/msal-net-migration).
 
-Quickstart for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
+Quick-start for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
 
 ## General usage
 
 To use MSAL into a Uno project, follow the following steps:
 
-1. Add a reference to [`Uno.UI.MSAL`](https://www.nuget.org/packages/Uno.UI.MSAL) package to all your heads - including UWP.
+1. Add a reference to [`Uno.WinUI.MSAL`](https://www.nuget.org/packages/Uno.UI.MSAL) (or `Uno.UI.MSAL` for UWP) package to all your heads - including UWP.
 
 2. Follow [Microsoft Documentation](https://docs.microsoft.com/azure/active-directory/develop/msal-net-initializing-client-applications) to integrate with your app.
 
@@ -70,8 +70,6 @@ Particularities for WASM:
   - Optionally, a file in the Wasm project `wwwroot/authentication/login-callback.htm` with empty content (you could display a message like « _Please wait while the authentication process completes_ » for slower browsers).
 
 - Token cache is _in-memory_ for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
-
-Important: when making HTTP requests from Wasm, don't forget to use the `WasmHttpHandler` on the `HttpClient`, or you'll get this error: `Operation is not supported on this platform.`. [More details here to fix that error](https://platform.uno/docs/articles/faq.html#is-it-possible-to-make-http-web-requests-using-the-wasm-target).
 
 ## Other things
 

@@ -20,7 +20,7 @@ namespace Uno.Extensions.Storage.Pickers
 			_picker = owner ?? throw new ArgumentNullException(nameof(owner));
 		}
 
-		public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
+		public Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
 		{
 			SuggestedStartLocation = _picker.SuggestedStartLocation switch
 			{
@@ -50,7 +50,7 @@ namespace Uno.Extensions.Storage.Pickers
                 {
 					var path = NativeMethods.SHGetPathFromIDListLong(pidl);
 					if (!string.IsNullOrEmpty(path))
-						return new StorageFolder(path);
+						return Task.FromResult<StorageFolder?>(new StorageFolder(path!));
                 }
 				finally
                 {
@@ -58,7 +58,7 @@ namespace Uno.Extensions.Storage.Pickers
 				}
 			}
 
-			return null;
+			return Task.FromResult<StorageFolder?>(null);
 		}
 
 		private uint FolderBrowserDialog_BrowseCallbackProc(IntPtr hwnd, uint msg, IntPtr lParam, IntPtr lpData)

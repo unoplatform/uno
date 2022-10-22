@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
+		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		
+		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Reference.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.Reference.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.Reference.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	<Import Project="FluentMerge.targets" />
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+</Project>

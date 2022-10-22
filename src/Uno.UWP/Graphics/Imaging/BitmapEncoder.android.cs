@@ -4,6 +4,7 @@ using Windows.Foundation;
 using System.IO;
 using Android.Graphics;
 using Java.Nio;
+using System.Threading.Tasks;
 
 namespace Windows.Graphics.Imaging
 {
@@ -28,21 +29,22 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream) =>
-			AsyncOperation<BitmapEncoder>.FromTask(async (ct, _) =>
+			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{
 					throw new NotImplementedException($"Encoder {encoderId} in not implemented.", new ArgumentException(nameof(encoderId)));
 				}
-				return new BitmapEncoder(imageFormat, stream);
+				return Task.FromResult(new BitmapEncoder(imageFormat, stream));
 			});
 
 
 		public IAsyncAction FlushAsync() =>
-			AsyncAction.FromTask(async ct =>
+			AsyncAction.FromTask(ct =>
 			{
 				 _softwareBitmap?.Bitmap?
 				.Compress(_imageFormat, 100, _stream.AsStream());
+				return Task.CompletedTask;
 			});
 
 		public void SetSoftwareBitmap(Windows.Graphics.Imaging.SoftwareBitmap bitmap)

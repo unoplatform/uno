@@ -67,56 +67,48 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					var isDesignTime = DesignTimeHelper.IsDesignTime(context);
 					var isApplication = PlatformHelper.IsApplication(context);
 
-					if (validPlatform
-						&& !isDesignTime)
+					if (validPlatform && !isDesignTime && isApplication)
 					{
-						if (isApplication)
-						{
-							_cancellationToken = context.CancellationToken;
+						_cancellationToken = context.CancellationToken;
 
-							_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
-							_projectDirectory = Path.GetDirectoryName(_projectFullPath)
-								?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
+						_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
+						_projectDirectory = Path.GetDirectoryName(_projectFullPath)
+							?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
-							// Defaults to 'false'
-							_ = bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out _xamlResourcesTrimming);
+						// Defaults to 'false'
+						_ = bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out _xamlResourcesTrimming);
 
-							_intermediateOutputPath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
-							_intermediatePath = Path.Combine(
-								_projectDirectory,
-								_intermediateOutputPath
-							);
-							_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
+						_intermediateOutputPath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
+						_intermediatePath = Path.Combine(
+							_projectDirectory,
+							_intermediateOutputPath
+						);
+						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 
-							_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
-							_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
+						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
+						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
 
-							_bindableAttributeSymbol = FindBindableAttributes();
-							_dependencyPropertySymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyProperty);
-							_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
+						_bindableAttributeSymbol = FindBindableAttributes();
+						_dependencyPropertySymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyProperty);
+						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
 
-							_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
-							_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
-							_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.NonBindableAttribute");
-							_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
-							_currentModule = context.Compilation.SourceModule;
+						_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
+						_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
+						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.NonBindableAttribute");
+						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
+						_currentModule = context.Compilation.SourceModule;
 
-							var modules = from ext in context.Compilation.ExternalReferences
-										  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-										  where sym != null
-										  from module in sym.Modules
-										  select module;
+						var modules = from ext in context.Compilation.ExternalReferences
+									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+									  where sym != null
+									  from module in sym.Modules
+									  select module;
 
-							modules = modules.Concat(context.Compilation.SourceModule);
+						modules = modules.Concat(context.Compilation.SourceModule);
 
-							context.AddSource("BindableMetadata", GenerateTypeProviders(modules));
+						context.AddSource("BindableMetadata.g.cs", GenerateTypeProviders(modules));
 
-							GenerateLinkerSubstitutionDefinition();
-						}
-						else
-						{
-							context.AddSource("BindableMetadata", $"// validPlatform: {validPlatform} designTime:{isDesignTime} isApplication:{isApplication}");
-						}
+						GenerateLinkerSubstitutionDefinition();
 					}
 				}
 				catch (OperationCanceledException)
@@ -173,6 +165,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("#pragma warning disable 618  // Ignore obsolete members warnings");
 				writer.AppendLineIndented("#pragma warning disable 1591 // Ignore missing XML comment warnings");
 				writer.AppendLineIndented("#pragma warning disable Uno0001 // Ignore not implemented members");
+				AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, AnalyzerSuppressions);
 				writer.AppendLineIndented("using System;");
 				writer.AppendLineIndented("using System.Linq;");
 				writer.AppendLineIndented("using System.Diagnostics;");

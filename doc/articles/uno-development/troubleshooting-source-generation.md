@@ -50,18 +50,24 @@ It is possible to step into the XAML generator by adding the following property:
 ```
 Setting this property will popup a Debugger window allowing the selection of a visual studio instance, giving the ability to set breakpoints and trace the generator.
 
-## Historical dumping of generated XAML files
-In the context of hot reload, troubleshooting the generator's state may be useful. In this case, the generator maintains a state in order to work around the current edition limitations (e.g. editing lambdas is not possible in .NET 6).
+## Dumping the XAML Source Generator state
+In the context of hot reload or otherwise, troubleshooting the generator's state may be useful.
 
-In order to see all the generated files historically, set the following property in the project:
+Using this feature, the generator will dump the following for **each** run:
+- CommandLine arguments
+- MSBuild properties
+- MSBuild items
+- Generated source files
+
+To enable this feature, add the following property:
 ```xml
 <PropertyGroup>
-    <UnoXamlHistoricalOutputGenerationPath>$(MSBuildThisFileDirectory)obj\generation-history</UnoXamlHistoricalOutputGenerationPath>
+  <XamlSourceGeneratorTracingFolder>path_to_folder</XamlSourceGeneratorTracingFolder>
 </PropertyGroup>
 ```
 
 > [!WARNING]
-> Setting this property will generate a lot of data, particularly when editing files in the editor, as most key strokes invoke the source generators.
+> A lot of data may be generated in some cases, make sure to disable this feature once it is no longer needed and don't forget to cleanup.
 
 ## Troubleshooting Uno.SourceGeneration based generation
 
@@ -82,7 +88,7 @@ The Source Generation tooling diagnostics can be enabled as follows:
 ```
 - Make to update or add the `Uno.SourceGenerationTasks` to the latest version
 - When building, in the inner `obj` folders, a set of `.binlog` files are generated that can be opened with the [msbuild log viewer](http://msbuildlog.com/) and help the troubleshooting of the generation errors.
-- Once you've reviewed the files, you may provide those as a reference for troubleshooting to the Uno maintainers. 
+- Once you've reviewed the files, you may provide those as a reference for troubleshooting to the Uno maintainers.
 - The best way to provide those file for troubleshooting is to make a zip archive of the whole solution folder without cleaning it, so it contains the proper diagnostics `.binlog` files.
 
 **Make sure to remove the `UnoSourceGeneratorUnsecureBinLogEnabled` property once done.**
@@ -90,10 +96,10 @@ The Source Generation tooling diagnostics can be enabled as follows:
 If ever the need arises to view the generated source code of a *failing* CI build, you can perform the following steps:
 
 1. In your local branch, locate the one of build yaml files (located in the root Uno folder):
-     - .azure-devops-android-tests.yml
-     - .azure-devops-macos.yml
-     - .azure-devops-wasm-uitests.yml
-    
+     - `.azure-devops-android-tests.yml`
+     - `.azure-devops-macos.yml`
+     - `.azure-devops-wasm-uitests.yml`
+
 2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:
 
        - bash: cp -r $(build.sourcesdirectory)<YourProjectDirectory>/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)

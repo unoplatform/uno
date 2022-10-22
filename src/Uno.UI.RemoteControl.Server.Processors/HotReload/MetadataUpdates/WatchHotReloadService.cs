@@ -14,13 +14,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	public class WatchHotReloadService
 	{
-		private HostWorkspaceServices services;
 		private Func<Solution, CancellationToken, Task> _startSessionAsync;
 		private Func<Solution, CancellationToken, Task<ITuple>> _emitSolutionUpdateAsync;
 		private Action _endSession;
 		private object _targetInstance;
 
-		public readonly struct Update
+		public readonly record struct Update
 		{
 			public readonly Guid ModuleId;
 			public readonly ImmutableArray<byte> ILDelta;
