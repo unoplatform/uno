@@ -3,7 +3,6 @@
     "path": "Uno.UI.sln",
     "projects": [
       "..\\build\\Uno.UI.Build.csproj",
-      "ResourceConverter\\ResourceConverter.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
