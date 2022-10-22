@@ -1,8 +1,6 @@
 name: "Pull Request Labeler"
 
-on:
-  schedule:
-  - cron: "*/30 * * * *"
+on: pull_request
 
 jobs:
   triage:
