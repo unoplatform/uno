@@ -16,6 +16,7 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -23,10 +24,6 @@
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<WarningsAsErrors />
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
