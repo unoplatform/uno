@@ -29,6 +29,19 @@ kind/documentation:
   - '**/*.MD'
   - '**/*.txt'
 
+area/skia:
+  - '**/*.skia.cs'
+  - src/Uno.UI.Runtime.Skia.Gtk/*
+  - src/Uno.UI.Runtime.Skia.Gtk/**/*
+  - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/*
+  - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
+  - src/Uno.UI.Runtime.Skia.Tizen/*
+  - src/Uno.UI.Runtime.Skia.Tizen/**/*
+  - src/Uno.UI.Runtime.Skia.Wpf/*
+  - src/Uno.UI.Runtime.Skia.Wpf/**/*
+  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
+  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
+
 area/solution-templates:
   - src/SolutionTemplate/*
   - src/SolutionTemplate/**/*
@@ -61,16 +74,3 @@ platform/macos:
   - '**/*.macOS.cs'
   - '**/*.iOSmacOS.cs'
   - '**/*.Xamarin.cs'
-
-platform/skia:
-  - '**/*.skia.cs'
-  - src/Uno.UI.Runtime.Skia.Gtk/*
-  - src/Uno.UI.Runtime.Skia.Gtk/**/*
-  - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/*
-  - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
-  - src/Uno.UI.Runtime.Skia.Tizen/*
-  - src/Uno.UI.Runtime.Skia.Tizen/**/*
-  - src/Uno.UI.Runtime.Skia.Wpf/*
-  - src/Uno.UI.Runtime.Skia.Wpf/**/*
-  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
-  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
