@@ -336,7 +336,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				var currentNode = node.Parent;
 
-				if (node.GetText().ToString().EndsWith("."))
+				if (node.GetText().ToString().EndsWith(".", StringComparison.Ordinal))
 				{
 					do
 					{
@@ -361,7 +361,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				{
 					if (currentNode is InvocationExpressionSyntax arg
 						&& arg.Expression is MemberAccessExpressionSyntax memberAccess
-						&& memberAccess.ToString().EndsWith("."))
+						&& memberAccess.ToString().EndsWith(".", StringComparison.Ordinal))
 					{
 						return (true, arg);
 					}

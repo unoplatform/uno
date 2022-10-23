@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 			SetNeedsLayout();
 			//We need to schedule the scrolling on the dispatcher so that we wait for the whole UI to be done before scrolling.
 			//Because the multiline must have its height set so we can set properly the scrollviewer insets
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => ScrollToCursor()
 			);

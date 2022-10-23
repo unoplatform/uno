@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_isInteractive = true;
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				VisualStateManager.GoToState(this, "ControlPanelFadeIn", false);
 			});
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_isInteractive = false;
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 				{

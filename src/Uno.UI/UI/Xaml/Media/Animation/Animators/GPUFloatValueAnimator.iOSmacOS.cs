@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			var animatedItem = _bindingPath.LastOrDefault();
 			switch (animatedItem.DataContext)
 			{
-				case _View view when animatedItem.PropertyName.EndsWith("Opacity"):
+				case _View view when animatedItem.PropertyName.EndsWith("Opacity", StringComparison.Ordinal):
 					_coreAnimation = InitializeOpacityCoreAnimation(view);
 					return;
 

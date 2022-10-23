@@ -40,7 +40,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_SetSourceAsync_Then_StreamClonedSynchronously()
+		public async Task When_SetSourceAsync_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
 			var stream = new Given_BitmapSource_Stream();
@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var success = false;
 			try
 			{
-				sut.SetSourceAsync(raStream);
+				await sut.SetSourceAsync(raStream);
 			}
 			catch (Given_BitmapSource_Exception ex) when (ex.Caller is nameof(Given_BitmapSource_Stream.Read))
 			{

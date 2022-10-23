@@ -52,7 +52,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 					gotFocus = gotFocus == false ? eventTester.HasFired : true;
 				}
 
-				TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 
 			//if (!gotFocus)

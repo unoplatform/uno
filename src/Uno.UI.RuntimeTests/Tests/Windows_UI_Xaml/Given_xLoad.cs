@@ -32,12 +32,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_xLoad_xBind()
+		public async Task When_xLoad_xBind()
 		{
 			var sut = new xLoad_xBind();
 
 			TestServices.WindowHelper.WindowContent = sut;
-			TestServices.WindowHelper.WaitForLoaded(sut);
+			await TestServices.WindowHelper.WaitForLoaded(sut);
 
 			var loadBorder = sut.LoadBorder;
 			Assert.IsNull(sut.LoadBorder);

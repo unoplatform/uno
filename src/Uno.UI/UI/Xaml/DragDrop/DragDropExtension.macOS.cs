@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		}
 
 		public void StartNativeDrag(CoreDragInfo info)
-			=> CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.High, async () =>
+			=> _ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				try
 				{

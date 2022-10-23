@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 			_watch.Start();
 
 #if !NET461
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 		}
 
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 
 			await Task.Delay(TimeSpan.FromSeconds(30));
 
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 		}
 
 		internal Page DequeuePage(Type pageType)

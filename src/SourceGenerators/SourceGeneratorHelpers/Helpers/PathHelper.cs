@@ -21,7 +21,7 @@ namespace Uno.MsBuildTasks.Utils
 			var pathUri = new Uri(Path.GetFullPath(filespec));
 
 			// Folders must end in a slash
-			if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
 			{
 				folder += Path.DirectorySeparatorChar;
 			}

@@ -3,6 +3,7 @@
 
 # Remove everything beginning with a dot
 .*/
+!.config/
 !.github/
 !.devcontainer/
 

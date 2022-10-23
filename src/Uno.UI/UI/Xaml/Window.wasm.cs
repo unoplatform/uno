@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug("DispatchInvalidateMeasure scheduled");
 				}
 
-				CoreDispatcher.Main.RunAsync(
+				_ = CoreDispatcher.Main.RunAsync(
 					CoreDispatcherPriority.Normal,
 					() =>
 					{

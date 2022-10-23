@@ -64,7 +64,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Only prefix if it isn't already prefixed and if the type is fully qualified with a namespace
 			// as opposed to, for instance, "double" or "Style"
-			if (!fullTargetType.StartsWith(GlobalPrefix)
+			if (!fullTargetType.StartsWith(GlobalPrefix, StringComparison.Ordinal)
 				&& fullTargetType.Contains(QualifiedNamespaceMarker))
 			{
 				return string.Format(CultureInfo.InvariantCulture, "{0}{1}", GlobalPrefix, fullTargetType);
@@ -77,7 +77,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var fullTypeName = type.Name;
 			var knownType = FindType(type);
-			if (knownType == null && type.PreferredXamlNamespace.StartsWith("using:"))
+			if (knownType == null && type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 			{
 				fullTypeName = type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
 			}
@@ -833,7 +833,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var originalName = name;
 
-			if (name.StartsWith(GlobalPrefix))
+			if (name.StartsWith(GlobalPrefix, StringComparison.Ordinal))
 			{
 				name = name.TrimStart(GlobalPrefix);
 			}
@@ -893,7 +893,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var nsName = nsNamespace.TrimStart("using:");
 
-			if (nsName.StartsWith("clr-namespace:"))
+			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
 			}
@@ -920,7 +920,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private IEnumerable<(INamedTypeSymbol ownerType, string property)> FindLocalizableAttachedProperties(string uid)
 		{
-			foreach (var key in _resourceKeys.Where(k => k.StartsWith(uid + "/")))
+			foreach (var key in _resourceKeys.Where(k => k.StartsWith(uid + "/", StringComparison.Ordinal)))
 			{
 				// fullKey = $"{uidName}.[using:{ns}]{type}.{memberName}";
 				//
@@ -933,7 +933,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				const string usingPattern = "[using:";
 
-				if(propertyPath.StartsWith(usingPattern))
+				if(propertyPath.StartsWith(usingPattern, StringComparison.Ordinal))
 				{
 					var lastDotIndex = propertyPath.LastIndexOf('.');
 

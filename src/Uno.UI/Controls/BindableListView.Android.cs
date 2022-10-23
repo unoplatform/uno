@@ -118,7 +118,7 @@ namespace Uno.UI.Controls
 			{
 				if (list.IsResetScrollOnItemsSourceChanged)
 				{
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => list.SetSelection(0));
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => list.SetSelection(0));
 				}
 				list.BindableAdapter.ItemsSource = e.NewValue as IEnumerable;
 			}

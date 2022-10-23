@@ -84,7 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _defaultNamespace == "Uno.UI";
 
 		private bool IsUnoFluentAssembly
-			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v");
+			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v", StringComparison.Ordinal);
 
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
@@ -481,7 +481,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						where sym.Name != "Uno.UI.FluentTheme" && !sym.Name.StartsWith("Uno.UI.FluentTheme.v", StringComparison.InvariantCulture)
 
 						from typeName in sym.GlobalNamespace.GetNamespaceTypes()
-						where typeName.Name.EndsWith("GlobalStaticResources")
+						where typeName.Name.EndsWith("GlobalStaticResources", StringComparison.Ordinal)
 						select typeName;
 
 			_ambientGlobalResources = query.Distinct().ToArray();

@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				TogglePosterImage(true);
 			});
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer session, object args)
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				TogglePosterImage(false);
 			});

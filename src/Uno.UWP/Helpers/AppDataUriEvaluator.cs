@@ -82,13 +82,13 @@ namespace Uno.Helpers
 
 			// relative path is now either empty (URI points to the folder itself) or must start with separator to be valid
 			if (appDataFolderPath == null ||
-				(relativePath != string.Empty && !relativePath.StartsWith(directorySeparator)))
+				(relativePath != string.Empty && !relativePath.StartsWith(directorySeparator, StringComparison.Ordinal)))
 			{
 				throw new ArgumentOutOfRangeException(nameof(appdataUri), "URI must point to local, roaming or temp folder");
 			}
 
 			// Path.Combine recognizes leading / as root - it needs to be removed first
-			if (relativePath.StartsWith(directorySeparator))
+			if (relativePath.StartsWith(directorySeparator, StringComparison.Ordinal))
 			{
 				relativePath = relativePath.Substring(1);
 			}

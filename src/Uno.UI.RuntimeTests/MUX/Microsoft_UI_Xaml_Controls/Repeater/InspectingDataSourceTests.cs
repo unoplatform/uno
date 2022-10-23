@@ -207,15 +207,17 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 	[TestMethod]
-	public void ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
+	[Ignore("https://github.com/unoplatform/uno/issues/10167")]
+	public async Task ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
 	{
-		ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
+		await ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: false);
 	}
 
 	[TestMethod]
-	public void ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
+	[Ignore("https://github.com/unoplatform/uno/issues/10167")]
+	public async Task ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
 	{
-		ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
+		await ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
 	}
 
 	[TestMethod]

@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				uri = new Uri(source, UriKind.RelativeOrAbsolute);
 
-				if (!uri.IsAbsoluteUri || source.StartsWith("/"))
+				if (!uri.IsAbsoluteUri || source.StartsWith("/", StringComparison.Ordinal))
 				{
 					// Support for implicit ms-appx resolution
 					var assetUri = AssetsPathBuilder.BuildAssetUri(Uri.EscapeDataString(source.TrimStart('/')));

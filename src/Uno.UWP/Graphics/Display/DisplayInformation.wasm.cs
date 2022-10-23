@@ -58,8 +58,8 @@ namespace Windows.Graphics.Display
 				{
 					var jsOrientation = ReadJsString("window.screen.orientation.type");
 
-					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait");
-					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape");
+					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait", StringComparison.Ordinal);
+					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape", StringComparison.Ordinal);
 
 					if (!isCurrentlyLandscape && !isCurrentlyPortrait)
 					{
@@ -177,7 +177,7 @@ namespace Windows.Graphics.Display
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
-			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
 				Uno.UI.Dispatching.CoreDispatcherPriority.High,
 				(ct) => SetOrientationAsync(orientations, ct));
 		}

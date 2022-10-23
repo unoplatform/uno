@@ -1330,7 +1330,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			Dispatcher.RunIdleAsync(e =>
+			_ = Dispatcher.RunIdleAsync(e =>
 			{
 				if (_hasPendingUpdate)
 				{

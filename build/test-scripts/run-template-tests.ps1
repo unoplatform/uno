@@ -43,7 +43,7 @@ function Get-TemplateConfiguration(
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
-$default = @('/ds', '/r', "/p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/r', '/p:PackageCertificateKeyFile=')
 
 $debug = $default + '/p:Configuration=Debug'
 

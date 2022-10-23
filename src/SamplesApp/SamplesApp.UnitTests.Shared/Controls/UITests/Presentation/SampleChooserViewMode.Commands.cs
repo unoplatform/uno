@@ -41,20 +41,16 @@ namespace SampleControl.Presentation
 	{
 		private void InitializeCommands()
 		{
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-			LogViewDumpCommand = new DelegateCommand(() => LogViewDump(CancellationToken.None));
+			LogViewDumpCommand = new DelegateCommand(() => _ = LogViewDump(CancellationToken.None));
 			ShowPreviousSectionCommand = new DelegateCommand(() => ShowPreviousSection(CancellationToken.None));
 			ShowNewSectionCommand = new DelegateCommand<string>(section => ShowNewSection(CancellationToken.None, ConvertSectionEnum(section)));
-			ToggleFavoriteCommand = new DelegateCommand<SampleChooserContent>(sample => ToggleFavorite(CancellationToken.None, sample));
-			RecordAllTestsCommandCommand = new DelegateCommand(() => RecordAllTests(CancellationToken.None));
-			LoadPreviousTestCommand = new DelegateCommand(() => LoadPreviousTest(CancellationToken.None)) { CanExecuteEnabled = false };
-			ReloadCurrentTestCommand = new DelegateCommand(() => ReloadCurrentTest(CancellationToken.None)) { CanExecuteEnabled = false };
-			LoadNextTestCommand = new DelegateCommand(() => LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
-			ShowTestInformationCommand = new DelegateCommand(() => ShowTestInformation(CancellationToken.None)) { CanExecuteEnabled = false };
-			OpenRuntimeTestsCommand = new DelegateCommand(() => OpenRuntimeTests(CancellationToken.None));
-
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+			ToggleFavoriteCommand = new DelegateCommand<SampleChooserContent>(sample => _ = ToggleFavorite(CancellationToken.None, sample));
+			RecordAllTestsCommandCommand = new DelegateCommand(() => _ = RecordAllTests(CancellationToken.None));
+			LoadPreviousTestCommand = new DelegateCommand(() => _ = LoadPreviousTest(CancellationToken.None)) { CanExecuteEnabled = false };
+			ReloadCurrentTestCommand = new DelegateCommand(() => _ = ReloadCurrentTest(CancellationToken.None)) { CanExecuteEnabled = false };
+			LoadNextTestCommand = new DelegateCommand(() => _ = LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
+			ShowTestInformationCommand = new DelegateCommand(() => _ = ShowTestInformation(CancellationToken.None)) { CanExecuteEnabled = false };
+			OpenRuntimeTestsCommand = new DelegateCommand(() => _ = OpenRuntimeTests(CancellationToken.None));
 		}
 
 		public ICommand LogViewDumpCommand { get; private set; }
