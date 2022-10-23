@@ -74,6 +74,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+		public async Task When_Add_MenuFlyoutSeparator_To_MenuBarItem()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				var menuBarItem = new MenuBarItem
+				{
+					Title = "File",
+				};
+
+				var flyoutItem1 = new MenuFlyoutItem { Text = "Open..." };
+				var flyoutItem2 = new MenuFlyoutItem { Text = "Save..." };
+				var flyoutSeparator = new MenuFlyoutSeparator();
+
+				var menuBar = new MenuBar
+				{
+					Items =
+				{
+					menuBarItem
+				}
+				};
+
+				var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
+				Grid.SetRow(contentSpacer, 1);
+
+				var hostPanel = new Grid
+				{
+					Children =
+				{
+					menuBar,
+					contentSpacer
+				},
+					RowDefinitions =
+				{
+					new RowDefinition {Height = GridLength.Auto},
+					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
+				}
+				};
+
+				WindowHelper.WindowContent = hostPanel;
+				await WindowHelper.WaitForLoaded(hostPanel);
+
+				menuBarItem.Items.Add(flyoutItem1);
+				menuBarItem.Items.Add(flyoutSeparator);
+				menuBarItem.Items.Add(flyoutItem2);
+
+				var peer = new MenuBarItemAutomationPeer(menuBarItem);
+				try
+				{
+					peer.Invoke();
+
+					await WindowHelper.WaitForLoaded(flyoutItem1);
+					await WindowHelper.WaitForLoaded(flyoutSeparator);
+					await WindowHelper.WaitForLoaded(flyoutItem2);
+
+					var flyoutItem1Bounds = flyoutItem1.GetRelativeBounds(menuBarItem);
+					var flyoutSeparatorBounds = flyoutSeparator.GetRelativeBounds(menuBarItem);
+					var flyoutItem2Bounds = flyoutItem2.GetRelativeBounds(menuBarItem);
+
+					Assert.IsTrue(flyoutItem1Bounds.Height > 0);
+					Assert.IsTrue(flyoutSeparatorBounds.Height > 0);
+					Assert.IsTrue(flyoutItem2Bounds.Height > 0);
+
+					Assert.IsTrue(flyoutItem1Bounds.Y < flyoutSeparatorBounds.Y);
+					Assert.IsTrue(flyoutSeparatorBounds.Y < flyoutItem2Bounds.Y);
+				}
+				finally
+				{
+					peer.Collapse();
+				}
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Verify_MenuBarItem_Bounds()
 		{
 			using (StyleHelper.UseFluentStyles())
