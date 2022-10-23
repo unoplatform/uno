@@ -11,6 +11,7 @@ area/automation:
   - src/Uno.UI.Wasm.Tests/**/*
 
 area/build:
+  - .github/**
   - build/*
   - build/**/*
   - '**/*.yml'
