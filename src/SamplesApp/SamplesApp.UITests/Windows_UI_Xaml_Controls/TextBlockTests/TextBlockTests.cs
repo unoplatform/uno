@@ -532,10 +532,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			// Attempt selection
 			_app.DoubleTapCoordinates(selectableTextBlock.CenterX, selectableTextBlock.CenterY);
 
-			using (var selectableScreenshot = TakeScreenshot("SelectableTextBlock", ignoreInSnapshotCompare: true))
-			{
-				ImageAssert.DoesNotHaveColorAt(selectableScreenshot, selectableTextBlock.CenterX, selectableTextBlock.CenterY, Color.White);
-			}
+			using var selectableScreenshot = TakeScreenshot("SelectableTextBlock", ignoreInSnapshotCompare: true);
+			ImageAssert.DoesNotHaveColorAt(selectableScreenshot, selectableTextBlock.CenterX, selectableTextBlock.CenterY, Color.White);
 		}
 
 		[Test]

@@ -236,10 +236,8 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 		{
 			try
 			{
-				using (Stream stream = File.OpenWrite(Path.Combine(StorageFolder, file)))
-				{
-					await StorageTransmission.SaveAsync(transmission, stream).ConfigureAwait(false);
-				}
+				using Stream stream = File.OpenWrite(Path.Combine(StorageFolder, file));
+				await StorageTransmission.SaveAsync(transmission, stream).ConfigureAwait(false);
 			}
 			catch (UnauthorizedAccessException)
 			{
@@ -256,12 +254,10 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 		{
 			try
 			{
-				using (Stream stream = File.OpenRead(Path.Combine(StorageFolder, file)))
-				{
-					StorageTransmission storageTransmissionItem =
-						await StorageTransmission.CreateFromStreamAsync(stream, file).ConfigureAwait(false);
-					return storageTransmissionItem;
-				}
+				using Stream stream = File.OpenRead(Path.Combine(StorageFolder, file));
+				StorageTransmission storageTransmissionItem =
+					await StorageTransmission.CreateFromStreamAsync(stream, file).ConfigureAwait(false);
+				return storageTransmissionItem;
 			}
 			catch (Exception e)
 			{
@@ -305,10 +301,8 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 		/// </summary>
 		private long GetSize(string file)
 		{
-			using (FileStream stream = File.OpenRead(Path.Combine(StorageFolder, file)))
-			{
-				return stream.Length;
-			}
+			using FileStream stream = File.OpenRead(Path.Combine(StorageFolder, file));
+			return stream.Length;
 		}
 
 		/// <summary>

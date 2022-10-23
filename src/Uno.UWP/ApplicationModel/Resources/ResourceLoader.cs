@@ -252,77 +252,75 @@ namespace Windows.ApplicationModel.Resources
 
 		private static void ProcessResourceFile(string fileName, Stream input, string[] currentCultures)
 		{
-			using (var reader = new BinaryReader(input))
+			using var reader = new BinaryReader(input);
+			// "Magic" sequence to ensure we're reading a proper resource file
+			if (!reader.ReadBytes(3).SequenceEqual(new byte[] { 0x75, 0x6E, 0x6F }))
 			{
-				// "Magic" sequence to ensure we're reading a proper resource file
-				if (!reader.ReadBytes(3).SequenceEqual(new byte[] { 0x75, 0x6E, 0x6F }))
+				throw new InvalidOperationException($"The file {fileName} is not a resource file");
+			}
+
+			bool adjustKeyTransformationForV2 = false;
+			var version = reader.ReadInt32();
+			if (version == 2)
+			{
+				version = UPRIVersion;
+				adjustKeyTransformationForV2 = true;
+			}
+
+			if (version != UPRIVersion)
+			{
+				throw new InvalidOperationException($"The resource file {fileName} has an invalid version (got {version}, expecting {UPRIVersion})");
+			}
+
+			var name = reader.ReadString();
+			var culture = reader.ReadString().ToLowerInvariant();
+
+			// Currently only load the resources for the current culture.
+			if (currentCultures.Contains(culture))
+			{
+				var loader = GetNamedResourceLoader(name);
+				if (!loader._resources.TryGetValue(culture, out var resources))
 				{
-					throw new InvalidOperationException($"The file {fileName} is not a resource file");
+					loader._resources[culture] = resources = new Dictionary<string, string>();
 				}
 
-				bool adjustKeyTransformationForV2 = false;
-				var version = reader.ReadInt32();
-				if(version == 2)
+				var resourceCount = reader.ReadInt32();
+				StringBuilder sb = new();
+				for (var i = 0; i < resourceCount; i++)
 				{
-					version = UPRIVersion;
-					adjustKeyTransformationForV2 = true;
-				}
+					var key = reader.ReadString();
+					var value = reader.ReadString();
 
-				if (version != UPRIVersion)
-				{
-					throw new InvalidOperationException($"The resource file {fileName} has an invalid version (got {version}, expecting {UPRIVersion})");
-				}
-
-				var name = reader.ReadString();
-				var culture = reader.ReadString().ToLowerInvariant();
-
-				// Currently only load the resources for the current culture.
-				if (currentCultures.Contains(culture))
-				{
-					var loader = GetNamedResourceLoader(name);
-					if (!loader._resources.TryGetValue(culture, out var resources))
+					if (adjustKeyTransformationForV2)
 					{
-						loader._resources[culture] = resources = new Dictionary<string, string>();
+						// Restore the original format
+						key = key.Replace("/", ".");
+
+						var firstDotIndex = key.IndexOf('.');
+						if (firstDotIndex != -1)
+						{
+							sb.Clear();
+							sb.Append(key);
+
+							sb[firstDotIndex] = '/';
+
+							key = sb.ToString();
+						}
 					}
 
-					var resourceCount = reader.ReadInt32();
-					StringBuilder sb = new();
-					for (var i = 0; i < resourceCount; i++)
-					{
-						var key = reader.ReadString();
-						var value = reader.ReadString();
-
-						if (adjustKeyTransformationForV2)
-						{
-							// Restore the original format
-							key = key.Replace("/", ".");
-
-							var firstDotIndex = key.IndexOf('.');
-							if(firstDotIndex != -1)
-							{
-								sb.Clear();
-								sb.Append(key);
-
-								sb[firstDotIndex] = '/';
-
-								key = sb.ToString();
-							}
-						}
-
-						if (_log.IsEnabled(LogLevel.Debug))
-						{
-							_log.Debug($"[{name}, {fileName}, {culture}] Adding resource {key}={value}");
-						}
-
-						resources[key] = value;
-					}
-				}
-				else
-				{
 					if (_log.IsEnabled(LogLevel.Debug))
 					{
-						_log.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {CultureInfo.CurrentUICulture.IetfLanguageTag})");
+						_log.Debug($"[{name}, {fileName}, {culture}] Adding resource {key}={value}");
 					}
+
+					resources[key] = value;
+				}
+			}
+			else
+			{
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {CultureInfo.CurrentUICulture.IetfLanguageTag})");
 				}
 			}
 		}

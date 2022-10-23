@@ -59,34 +59,32 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
 			}
 
-			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
+			using var surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
+			surface.Canvas.Clear(SKColors.White);
+
+			surface.Canvas.Scale((float)scale);
+
+			WUX.Window.Current.Compositor.Render(surface);
+
+			_fbDev.VSync();
+
+			if (_needsScanlineCopy)
 			{
-				surface.Canvas.Clear(SKColors.White);
+				var pixels = _bitmap.GetPixels(out _);
+				var bitmapRowBytes = _bitmap.RowBytes;
+				var bitmapBytesPerPixel = _bitmap.BytesPerPixel;
 
-				surface.Canvas.Scale((float)scale);
-
-				WUX.Window.Current.Compositor.Render(surface);
-
-				_fbDev.VSync();
-
-				if (_needsScanlineCopy)
+				for (int line = 0; line < height; line++)
 				{
-					var pixels = _bitmap.GetPixels(out _);
-					var bitmapRowBytes = _bitmap.RowBytes;
-					var bitmapBytesPerPixel = _bitmap.BytesPerPixel;
-
-					for (int line = 0; line < height; line++)
-					{
-						Libc.memcpy(
-							_fbDev.BufferAddress + line * _fbDev.RowBytes,
-							pixels + line * bitmapRowBytes,
-							new IntPtr(width * bitmapBytesPerPixel));
-					}
+					Libc.memcpy(
+						_fbDev.BufferAddress + line * _fbDev.RowBytes,
+						pixels + line * bitmapRowBytes,
+						new IntPtr(width * bitmapBytesPerPixel));
 				}
-				else
-				{
-					Libc.memcpy(_fbDev.BufferAddress, _bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
-				}
+			}
+			else
+			{
+				Libc.memcpy(_fbDev.BufferAddress, _bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
 			}
 		}
 	}

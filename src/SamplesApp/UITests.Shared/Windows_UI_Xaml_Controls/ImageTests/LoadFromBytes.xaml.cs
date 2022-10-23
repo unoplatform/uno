@@ -28,10 +28,8 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 						where name.EndsWith("mslug.png")
 						select assembly.GetManifestResourceStream(name);
 
-			using (var stream = query.First())
-			{
-				MyImage.Source = await CreateImageSource(stream);
-			}
+			using var stream = query.First();
+			MyImage.Source = await CreateImageSource(stream);
 		}
 
 		private async Task<ImageSource> CreateImageSource(Stream stream)

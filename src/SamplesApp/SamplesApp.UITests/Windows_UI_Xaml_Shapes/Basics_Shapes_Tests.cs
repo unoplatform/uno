@@ -154,11 +154,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 							Assert.Fail($"Test failed: {error.Message}");
 						}
 
-						using (var actual = (Bitmap)testResult)
-						{
-							var scale = 1d;
-							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);
-						}
+						using var actual = (Bitmap)testResult;
+						var scale = 1d;
+						ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);
 					}
 					catch(IgnoreException e)
 					{

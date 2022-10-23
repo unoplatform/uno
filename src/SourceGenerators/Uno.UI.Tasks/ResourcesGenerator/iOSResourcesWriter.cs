@@ -11,18 +11,16 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 		{
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-			using (var streamWriter = new StreamWriter(path, false, Encoding.UTF8))
+			using var streamWriter = new StreamWriter(path, false, Encoding.UTF8);
+			if (comment != null)
 			{
-				if (comment != null)
-				{
-					streamWriter.WriteLine($"/* {comment} */");
-				}
-
-				resources
-					.Select(resource => $"\"{resource.Key}\" = \"{Sanitize(resource.Value)}\";")
-					.ToList()
-					.ForEach(streamWriter.WriteLine);
+				streamWriter.WriteLine($"/* {comment} */");
 			}
+
+			resources
+				.Select(resource => $"\"{resource.Key}\" = \"{Sanitize(resource.Value)}\";")
+				.ToList()
+				.ForEach(streamWriter.WriteLine);
 		}
 
 		private static string Sanitize(string value)

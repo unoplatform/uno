@@ -69,16 +69,14 @@ namespace UITests.Msal
 
 			try
 			{
-				using (var stream = await client.Me.Photo.Content.Request().GetAsync())
-				{
-					var bitmap = new BitmapImage();
+				using var stream = await client.Me.Photo.Content.Request().GetAsync();
+				var bitmap = new BitmapImage();
 #if HAS_UNO
-					bitmap.SetSource(new MemoryStream(stream.ReadBytes()));
+				bitmap.SetSource(new MemoryStream(stream.ReadBytes()));
 #else
-					await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
+				await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
 #endif
-					thumbnail.Source = bitmap;
-				}
+				thumbnail.Source = bitmap;
 			}
 			catch (Exception exception)
 			{

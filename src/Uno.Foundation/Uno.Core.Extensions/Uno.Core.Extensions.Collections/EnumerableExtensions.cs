@@ -55,11 +55,9 @@ namespace Uno.Extensions
 		{
 			if (items != null)
 			{
-				using (var enumerator = items.GetEnumerator())
+				using var enumerator = items.GetEnumerator();
+				while (enumerator.MoveNext())
 				{
-					while (enumerator.MoveNext())
-					{
-					}
 				}
 			}
 
@@ -99,10 +97,8 @@ namespace Uno.Extensions
 				return collection.Count == 0;
 			}
 
-			using (var enumerator = source.GetEnumerator())
-			{
-				return !enumerator.MoveNext();
-			}
+			using var enumerator = source.GetEnumerator();
+			return !enumerator.MoveNext();
 		}
 
 		public static bool Empty<T>(this IEnumerable<T> items)
@@ -119,10 +115,8 @@ namespace Uno.Extensions
 				return collection.Count == 0;
 			}
 
-			using (var enumerator = items.GetEnumerator())
-			{
-				return !enumerator.MoveNext();
-			}
+			using var enumerator = items.GetEnumerator();
+			return !enumerator.MoveNext();
 		}
 
 		/// <summary>
@@ -922,45 +916,41 @@ namespace Uno.Extensions
 
 			IEnumerable<T> Skip1(IEnumerable<T> src)
 			{
-				using (var enumerator = src.GetEnumerator())
+				using var enumerator = src.GetEnumerator();
+				if (!enumerator.MoveNext())
 				{
-					if (!enumerator.MoveNext())
-					{
-						yield break;
-					}
+					yield break;
+				}
 
-					var buffer = enumerator.Current;
+				var buffer = enumerator.Current;
 
-					while (enumerator.MoveNext())
-					{
-						yield return buffer;
-						buffer = enumerator.Current;
-					}
+				while (enumerator.MoveNext())
+				{
+					yield return buffer;
+					buffer = enumerator.Current;
 				}
 			}
 
 			IEnumerable<T> SkipN(IEnumerable<T> src, int n)
 			{
-				using (var enumerator = src.GetEnumerator())
+				using var enumerator = src.GetEnumerator();
+				var buffer = new Queue<T>(n);
+				for (var i = 0; i < n; i++)
 				{
-					var buffer = new Queue<T>(n);
-					for (var i = 0; i < n; i++)
+					if (enumerator.MoveNext())
 					{
-						if (enumerator.MoveNext())
-						{
-							buffer.Enqueue(enumerator.Current);
-						}
-						else
-						{
-							yield break;
-						}
-					}
-
-					while (enumerator.MoveNext())
-					{
-						yield return buffer.Dequeue();
 						buffer.Enqueue(enumerator.Current);
 					}
+					else
+					{
+						yield break;
+					}
+				}
+
+				while (enumerator.MoveNext())
+				{
+					yield return buffer.Dequeue();
+					buffer.Enqueue(enumerator.Current);
 				}
 			}
 		}

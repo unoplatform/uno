@@ -66,11 +66,9 @@ namespace UITests.Shared.Windows_Storage.StorageFolderTests
 		{
 			try
 			{
-				using (var stream = await folder.OpenStreamForReadAsync("uno-samples-persistence.txt"))
-				using (var reader = new StreamReader(stream))
-				{
-					return $"{folder.Name}:\r\n{new string('*', folder.Name.Length + 1)}\r\n{reader.ReadToEnd()}";
-				}
+				using var stream = await folder.OpenStreamForReadAsync("uno-samples-persistence.txt");
+				using var reader = new StreamReader(stream);
+				return $"{folder.Name}:\r\n{new string('*', folder.Name.Length + 1)}\r\n{reader.ReadToEnd()}";
 			}
 			catch (Exception e)
 			{
@@ -84,14 +82,10 @@ namespace UITests.Shared.Windows_Storage.StorageFolderTests
 		{
 			try
 			{
-				using (var stream = await folder.OpenStreamForWriteAsync("uno-samples-persistence.txt", CreationCollisionOption.OpenIfExists))
-				{
-					stream.Seek(0, SeekOrigin.End);
-					using (var writer = new StreamWriter(stream){AutoFlush = true})
-					{
-						await writer.WriteLineAsync(text);
-					}
-				}
+				using var stream = await folder.OpenStreamForWriteAsync("uno-samples-persistence.txt", CreationCollisionOption.OpenIfExists);
+				stream.Seek(0, SeekOrigin.End);
+				using var writer = new StreamWriter(stream) { AutoFlush = true };
+				await writer.WriteLineAsync(text);
 			}
 			catch (Exception e)
 			{

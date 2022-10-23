@@ -67,10 +67,8 @@ namespace Windows.UI.Composition
 		{
 			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 
-			using (var pData = data.Pin())
-			{
-				_image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
-			}
+			using var pData = data.Pin();
+			_image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
 		}
 	}
 }

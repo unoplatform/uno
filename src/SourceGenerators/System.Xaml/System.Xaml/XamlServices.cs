@@ -31,8 +31,8 @@ namespace Uno.Xaml
 	{
 		public static Object Load (string fileName)
 		{
-			using (var xr = XmlReader.Create (fileName))
-				return Load (xr);
+			using var xr = XmlReader.Create(fileName);
+			return Load(xr);
 		}
 
 		public static Object Load (Stream stream)
@@ -73,20 +73,20 @@ namespace Uno.Xaml
 
 		public static void Save (string fileName, object instance)
 		{
-			using (var xw = XmlWriter.Create (fileName, new XmlWriterSettings () { OmitXmlDeclaration = true, Indent = true }))
-				Save (xw, instance);
+			using var xw = XmlWriter.Create(fileName, new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true });
+			Save(xw, instance);
 		}
 
 		public static void Save (Stream stream, object instance)
 		{
-			using (var xw = XmlWriter.Create (stream, new XmlWriterSettings () { OmitXmlDeclaration = true, Indent = true }))
-				Save (xw, instance);
+			using var xw = XmlWriter.Create(stream, new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true });
+			Save(xw, instance);
 		}
 
 		public static void Save (TextWriter writer, object instance)
 		{
-			using (var xw = XmlWriter.Create (writer, new XmlWriterSettings () { OmitXmlDeclaration = true, Indent = true }))
-				Save (xw, instance);
+			using var xw = XmlWriter.Create(writer, new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true });
+			Save(xw, instance);
 		}
 
 		public static void Save (XmlWriter writer, object instance)

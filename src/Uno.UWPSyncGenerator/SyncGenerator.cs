@@ -21,19 +21,17 @@ namespace Uno.UWPSyncGenerator
 			// if (type.Name == "BrushCollection" || type.Name == "StringMap")
 			// if (type.Name == "StatusBar")
 			{
-				using (var typeWriter = new StreamWriter(Path.Combine(folder, type.Name) + ".cs"))
+				using var typeWriter = new StreamWriter(Path.Combine(folder, type.Name) + ".cs");
+				var b = new IndentedStringBuilder();
+
+				b.AppendLineInvariant($"#pragma warning disable 108 // new keyword hiding");
+				b.AppendLineInvariant($"#pragma warning disable 114 // new keyword hiding");
+				using (b.BlockInvariant($"namespace {ns}"))
 				{
-					var b = new IndentedStringBuilder();
-
-					b.AppendLineInvariant($"#pragma warning disable 108 // new keyword hiding");
-					b.AppendLineInvariant($"#pragma warning disable 114 // new keyword hiding");
-					using (b.BlockInvariant($"namespace {ns}"))
-					{
-						WriteType(type, b);
-					}
-
-					typeWriter.Write(b.ToString());
+					WriteType(type, b);
 				}
+
+				typeWriter.Write(b.ToString());
 			}
 		}
 		private void WriteType(INamedTypeSymbol type, IndentedStringBuilder b)
