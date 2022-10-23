@@ -287,7 +287,7 @@ namespace Uno.UI.Tasks.BatchMerge
                 // If this node has a key and a conditional-inclusion namespace, we'll attach a prefix
                 // to the key corresponding to the condition we checked in order to allow multiple such nodes
                 // with the same key to exist.
-                int indexOfContractPresent = node.NamespaceURI.IndexOf("IsApiContract");
+                int indexOfContractPresent = node.NamespaceURI.IndexOf("IsApiContract", StringComparison.Ordinal);
 
                 if (indexOfContractPresent >= 0)
                 {
@@ -328,7 +328,7 @@ namespace Uno.UI.Tasks.BatchMerge
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
-                        if (att.Name.StartsWith("xmlns:"))
+                        if (att.Name.StartsWith("xmlns:", StringComparison.Ordinal))
                         {
                             string name = att.Name.Substring(6); // exclude "xmlns:"
                             string stardardName = GetStandardNamespace(name, att.Value);

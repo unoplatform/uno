@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml
 			{
 				return new GridLength(0, GridUnitType.Auto);
 			}
-			else if (trimmed.EndsWith("*"))
+			else if (trimmed.EndsWith("*", StringComparison.Ordinal))
 			{
 				var stringValue = trimmed.Substring(0, trimmed.Length - 1);
 

@@ -228,7 +228,7 @@ namespace UnoSolutionTemplate.Wizard
 		}
 
 		private string FindManifestFileName(string fileName)
-			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName))
+			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName, StringComparison.Ordinal))
 				?? throw new InvalidOperationException($"Unable to find [{fileName}] in the assembly");
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
@@ -442,7 +442,7 @@ namespace UnoSolutionTemplate.Wizard
 					{
 						foreach (SolutionContext solutionContext in anyCpuConfig.SolutionContexts)
 						{
-							if (solutionContext.ProjectName.EndsWith(projectSuffix))
+							if (solutionContext.ProjectName.EndsWith(projectSuffix, StringComparison.Ordinal))
 							{
 								solutionContext.ShouldBuild = true;
 								solutionContext.ShouldDeploy = true;

@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Resources
 			// "/[file]/[name]" format support
 			if (resource.ElementAtOrDefault(0) == '/')
 			{
-				var separatorIndex = resource.IndexOf("/", 1);
+				var separatorIndex = resource.IndexOf("/", 1, StringComparison.Ordinal);
 				if (separatorIndex < 1)
 				{
 					return "";
@@ -243,7 +243,7 @@ namespace Windows.ApplicationModel.Resources
 		{
 			foreach (var name in assembly.GetManifestResourceNames())
 			{
-				if (name.EndsWith(".upri"))
+				if (name.EndsWith(".upri", StringComparison.Ordinal))
 				{
 					ProcessResourceFile(name, assembly.GetManifestResourceStream(name), currentCultures);
 				}

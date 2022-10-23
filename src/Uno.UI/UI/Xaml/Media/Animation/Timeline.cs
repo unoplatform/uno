@@ -390,8 +390,8 @@ namespace Windows.UI.Xaml.Media.Animation
 					//https://msdn.microsoft.com/en-uS/office/office365/jj819807.aspx#dependent
 					//TODO Projection, Clip, Canvas.Left or Canvas.Top
 
-					if (boundProperty.PropertyName.EndsWith("Opacity")
-						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color"))
+					if (boundProperty.PropertyName.EndsWith("Opacity", StringComparison.Ordinal)
+						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
 						|| (boundProperty.DataContext is Transform transform && transform.View != null)
 					)
 					{

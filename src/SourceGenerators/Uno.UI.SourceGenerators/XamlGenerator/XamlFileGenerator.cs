@@ -772,7 +772,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using var stream = File.OpenRead(referenceFilePath);
 				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
 
-				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
+				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri", StringComparison.Ordinal)))
 				{
 					if (asm.Name.Name == "Uno.UI")
 					{
@@ -1787,7 +1787,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isAttachedProperty = property.Contains(".");
 			if (isAttachedProperty)
 			{
-				var separatorIndex = property.IndexOf(".");
+				var separatorIndex = property.IndexOf('.');
 
 				var target = property.Remove(separatorIndex);
 				property = property.Substring(separatorIndex + 1);
@@ -3428,7 +3428,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (
 								member.Member.Name == "TargetName" &&
 								!IsAttachedProperty(member) &&
-								(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation") ?? false)
+								(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation", StringComparison.Ordinal) ?? false)
 							)
 							{
 								// Those special animations (xxxThemeAnimation) needs to resolve their target at runtime.
@@ -4238,7 +4238,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var formattedPaths = propertyPaths
 				.properties
-				.Where(p => !p.StartsWith("global::"))  // Don't include paths that start with global:: (e.g. Enums)
+				.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
 				.Select(p => $"\"{p}\"");
 
 			var pathsArray = formattedPaths.Any()
@@ -4388,7 +4388,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsStaticMember(string fullMemberName)
 		{
 			fullMemberName = fullMemberName.TrimStart("global::");
-			var lastDotIndex = fullMemberName.LastIndexOf(".");
+			var lastDotIndex = fullMemberName.LastIndexOf(".", StringComparison.Ordinal);
 
 			var isTopLevelMember = lastDotIndex == -1;
 
@@ -4430,7 +4430,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var ns in _fileDefinition.Namespaces)
 			{
-				if (ns.Namespace.StartsWith("using:"))
+				if (ns.Namespace.StartsWith("using:", StringComparison.Ordinal))
 				{
 					// Replace namespaces with their fully qualified namespace.
 					// Add global:: so that qualified paths can be expluded from binding
@@ -4438,7 +4438,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					xamlString = Regex.Replace(
 						xamlString,
 						$@"(^|[^\w])({ns.Prefix}:)",
-						"$1global::" + ns.Namespace.TrimStart("using:") + ".");
+						"$1global::" + ns.Namespace.TrimStart("using:", StringComparison.Ordinal) + ".");
 				}
 				else if (ns.Namespace == XamlConstants.XamlXmlNamespace)
 				{
@@ -4772,7 +4772,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case "System.Uri":
 						var uriValue = GetMemberValue();
 
-						if (uriValue.StartsWith("/"))
+						if (uriValue.StartsWith("/", StringComparison.Ordinal))
 						{
 							return "new System.Uri(\"ms-appx://" + uriValue + "\")";
 						}
@@ -4935,7 +4935,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			(string? resourceFileName, string uidName) parseXUid()
 			{
-				if (objectUid.StartsWith("/"))
+				if (objectUid.StartsWith("/", StringComparison.Ordinal))
 				{
 					var separator = objectUid.IndexOf('/', 1);
 
@@ -5206,9 +5206,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var fullTypeName = converterObjectDefinition.Type.Name;
 					var knownType = FindType(converterObjectDefinition.Type);
-					if (knownType == null && converterObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:"))
+					if (knownType == null && converterObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 					{
-						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + converterObjectDefinition.Type.Name;
+						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:", StringComparison.Ordinal) + "." + converterObjectDefinition.Type.Name;
 					}
 					if (knownType != null)
 					{
@@ -5688,9 +5688,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var knownType = FindType(xamlObjectDefinition.Type);
 
-			if (knownType == null && xamlObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:"))
+			if (knownType == null && xamlObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 			{
-				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + xamlObjectDefinition.Type.Name;
+				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:", StringComparison.Ordinal) + "." + xamlObjectDefinition.Type.Name;
 			}
 
 			if (knownType != null)
@@ -5803,7 +5803,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else if (target != null)
 					{
 						// This builds property setters for specified member setter.
-						var separatorIndex = target.IndexOf(".");
+						var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
 						var elementName = target.Substring(0, separatorIndex);
 						var propertyName = target.Substring(separatorIndex + 1);
 
@@ -6359,7 +6359,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
 			var subClassPrefix = _scopeStack.Aggregate("", (val, scope) => val + scope.Name);
 
-			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD") ? "__Resources." : "";
+			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal) ? "__Resources." : "";
 
 			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
@@ -6492,15 +6492,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return "{0}.NaN".InvariantCultureFormat(isDouble ? "double" : "float");
 			}
-			else if (memberValue.ToLowerInvariant().EndsWith("positiveinfinity"))
+			else if (memberValue.EndsWith("positiveinfinity", StringComparison.OrdinalIgnoreCase))
 			{
 				return "{0}.PositiveInfinity".InvariantCultureFormat(isDouble ? "double" : "float");
 			}
-			else if (memberValue.ToLowerInvariant().EndsWith("negativeinfinity"))
+			else if (memberValue.EndsWith("negativeinfinity", StringComparison.OrdinalIgnoreCase))
 			{
 				return "{0}.NegativeInfinity".InvariantCultureFormat(isDouble ? "double" : "float");
 			}
-			else if (memberValue.ToLowerInvariant().EndsWith("px"))
+			else if (memberValue.EndsWith("px", StringComparison.OrdinalIgnoreCase))
 			{
 #if DEBUG
 				Console.WriteLine($"The value [{memberValue}] is specified in pixel and is not yet supported. ({owner?.LineNumber}, {owner?.LinePosition} in {_fileDefinition.FilePath})");

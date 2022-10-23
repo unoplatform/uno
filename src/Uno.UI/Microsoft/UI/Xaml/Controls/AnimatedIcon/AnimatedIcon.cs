@@ -394,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 							foreach (var marker in markers)
 							{
 								string value = marker.Key;
-								if (value.IndexOf(fragment) > -1)
+								if (value.IndexOf(fragment, StringComparison.Ordinal) > -1)
 								{
 									m_lastAnimationSegmentStart = "";
 									m_lastAnimationSegmentEnd = marker.Key;

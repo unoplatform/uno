@@ -58,8 +58,8 @@ namespace Windows.Graphics.Display
 				{
 					var jsOrientation = ReadJsString("window.screen.orientation.type");
 
-					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait");
-					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape");
+					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait", StringComparison.Ordinal);
+					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape", StringComparison.Ordinal);
 
 					if (!isCurrentlyLandscape && !isCurrentlyPortrait)
 					{

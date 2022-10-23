@@ -137,7 +137,7 @@ namespace Uno.UWPSyncGenerator
 								.GetMembers()
 								.OfType<IMethodSymbol>()
 								.Where(m => m.MethodKind == MethodKind.Ordinary &&
-									!(m.Name.StartsWith("add_") || m.Name.StartsWith("remove_")) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
+									!(m.Name.StartsWith("add_", StringComparison.Ordinal) || m.Name.StartsWith("remove_", StringComparison.Ordinal)) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
 								)
 								.Select(m => GetAllMatchingMethods(view, m))
 								.ToArray();

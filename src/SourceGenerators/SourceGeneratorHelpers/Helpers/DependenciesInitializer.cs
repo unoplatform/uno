@@ -28,7 +28,7 @@ namespace Uno.UI.SourceGenerators
 
 					var files = from file in Directory.EnumerateFiles(basePath, "*.dll")
 								let fileName = Path.GetFileName(file)
-								where fileName.StartsWith("Uno.")
+								where fileName.StartsWith("Uno.", StringComparison.Ordinal)
 
 								// Starting from net 6.0.200, avoids "System.IO.FileLoadException: Assembly with same name is already loaded"
 								where !fileName.Equals(Path.GetFileName(baseAnalyzer), StringComparison.OrdinalIgnoreCase)

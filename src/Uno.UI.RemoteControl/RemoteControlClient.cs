@@ -100,7 +100,7 @@ namespace Uno.UI.RemoteControl
 						else if (port == 443)
 						{
 #if __WASM__
-							if (endpoint.EndsWith("gitpod.io"))
+							if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
 							{
 								var originParts = endpoint.Split('-');
 

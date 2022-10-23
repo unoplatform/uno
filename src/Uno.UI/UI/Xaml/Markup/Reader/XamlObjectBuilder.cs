@@ -495,7 +495,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value is string targetPath)
 			{
 				// This builds property setters for specified member setter.
-				var separatorIndex = targetPath.IndexOf(".");
+				var separatorIndex = targetPath.IndexOf(".", StringComparison.Ordinal);
 				var elementName = targetPath.Substring(0, separatorIndex);
 				var propertyName = targetPath.Substring(separatorIndex + 1);
 
@@ -1190,7 +1190,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				var methodName = createFromString.MethodName;
 				if (createFromString.MethodName.Contains("."))
 				{
-					var splitIndex = createFromString.MethodName.LastIndexOf(".");
+					var splitIndex = createFromString.MethodName.LastIndexOf(".", StringComparison.Ordinal);
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);
 					sourceType = TypeResolver.FindType(typeName);
 					methodName = createFromString.MethodName.Substring(splitIndex + 1);
