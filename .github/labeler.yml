@@ -23,8 +23,7 @@ area/code-generation:
 
 kind/documentation:
   - README.*
-  - docs/*
-  - docs/**/*
+  - doc/**
   - '**/*.md'
   - '**/*.MD'
   - '**/*.txt'
