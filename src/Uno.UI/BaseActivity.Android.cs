@@ -289,7 +289,7 @@ namespace Uno.UI
 
 				if (isFinalizer)
 				{
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, notify);
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, notify);
 				}
 				else
 				{

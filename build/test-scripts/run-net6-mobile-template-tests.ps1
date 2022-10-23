@@ -10,7 +10,7 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
-$default = @('/ds', '/p:UseDotNetNativeToolchain=false', "/p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
 $debug = $default + '/p:Configuration=Debug' + '/r'

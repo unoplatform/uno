@@ -509,7 +509,6 @@ namespace SamplesApp
 		}
 
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		private static ImmutableHashSet<int> _doneTests = ImmutableHashSet<int>.Empty;
 		private static int _testIdCounter = 0;
 
@@ -527,7 +526,7 @@ namespace SamplesApp
 
 				var testId = Interlocked.Increment(ref _testIdCounter);
 
-				Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+				_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
@@ -537,7 +536,7 @@ namespace SamplesApp
 							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 							if (statusBar != null)
 							{
-								Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+								_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 									Windows.UI.Core.CoreDispatcherPriority.Normal,
 									async () => await statusBar.HideAsync()
 								);

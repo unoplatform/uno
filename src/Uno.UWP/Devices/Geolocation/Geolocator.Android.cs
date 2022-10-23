@@ -221,7 +221,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 	private void CoreApplication_Resuming(object? sender, object? e)
 	{
-		CoreDispatcher.Main.RunAsync(
+		_ = CoreDispatcher.Main.RunAsync(
 			priority: CoreDispatcherPriority.Normal,
 			handler: InitializeIfPermissionIsGranted
 		);

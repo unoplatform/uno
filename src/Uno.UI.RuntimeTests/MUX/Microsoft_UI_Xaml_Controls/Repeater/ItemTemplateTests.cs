@@ -523,7 +523,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				ValidateTemplateSwitchingRefreshesElements(new StackLayout());
+				_ = ValidateTemplateSwitchingRefreshesElements(new StackLayout());
 			});
 		}
 
@@ -532,7 +532,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
+				_ = ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
 			});
 		}
 

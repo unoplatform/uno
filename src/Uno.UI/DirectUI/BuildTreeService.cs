@@ -9,7 +9,7 @@ namespace DirectUI
 		public void RegisterWork(ITreeBuilder treeBuilder)
 		{
 			treeBuilder.IsRegisteredForCallbacks = true;
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.High, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.High, () =>
 			{
 				if (treeBuilder.IsBuildTreeSuspended)
 				{

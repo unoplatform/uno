@@ -257,7 +257,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await loadedEvent.Task;
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			return datePicker;
 		}
@@ -290,7 +290,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
 
 			var datePicker = await SetupDatePickerTest();
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -516,7 +516,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.CalendarIdentifier = cid;
 				datePicker.SelectedDate = (calendar.GetDateTime());
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			TextBlock dayTextBlock;
 			TextBlock monthTextBlock;
@@ -556,7 +556,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.SelectedDate = (date);
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			TextBlock dayTextBlock;
 			TextBlock monthTextBlock;
@@ -584,7 +584,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.MonthFormat = monthFormat;
 				datePicker.YearFormat = yearFormat;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -640,7 +640,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			{
 				datePicker.DayVisible = false;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.IsTrue(dayTextBlock.Visibility == Visibility.Collapsed);
@@ -649,7 +649,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.DayVisible = true;
 				datePicker.MonthVisible = false;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.IsTrue(dayTextBlock.Visibility == Visibility.Visible);
@@ -661,7 +661,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				datePicker.MonthVisible = true;
 				datePicker.YearVisible = false;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Assert.IsTrue(monthTextBlock.Visibility == Visibility.Visible);
@@ -737,9 +737,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				rootPanel.Children.Add(datePicker);
 				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
 			button = await GetFlyoutButtonFromDatePicker(datePicker);
 
@@ -769,7 +769,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				Assert.IsTrue(AreClose(flyoutPopup.HorizontalOffset, rightEdgeOfDatePicker, 1.0));
 			});
 
-			ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
+			await ControlHelper.ClickFlyoutCloseButton(datePicker, true /* isAccept */);
 		}
 
 #if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
@@ -907,7 +907,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 				TestServices.WindowHelper.WindowContent = rootPanel;
 			});
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				using var _ = new AssertionScope();
@@ -944,7 +944,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				Assert.IsNull(datePicker.SelectedDate);
 			});
 
-			VerifyHasPlaceholder(datePicker);
+			await VerifyHasPlaceholder(datePicker);
 		}
 
 #if LOOPING_SELECTOR_AVAILABLE // TODO: Remove this when LoopingSelector is available https://github.com/unoplatform/uno/issues/4880
@@ -1019,21 +1019,21 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			var datePicker = await SetupDatePickerTest();
 
-			VerifyHasPlaceholder(datePicker);
+			await VerifyHasPlaceholder(datePicker);
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				datePicker.SelectedDate = (CreateDate(1, 1, 2018));
 			});
 
-			VerifyDoesNotHavePlaceholder(datePicker);
+			await VerifyDoesNotHavePlaceholder(datePicker);
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				datePicker.SelectedDate = null;
 			});
 
-			VerifyHasPlaceholder(datePicker);
+			await VerifyHasPlaceholder(datePicker);
 		}
 
 		private async Task<Button> GetFlyoutButtonFromDatePicker(DatePicker datePicker)

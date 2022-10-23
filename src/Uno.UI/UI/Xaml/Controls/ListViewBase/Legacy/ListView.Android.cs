@@ -487,7 +487,7 @@ namespace Uno.UI.Controls.Legacy
 			{
 				if (IsResetScrollOnItemsSourceChanged)
 				{
-					Dispatcher.RunAsync(
+					_ = Dispatcher.RunAsync(
 						Windows.UI.Core.CoreDispatcherPriority.Normal,
 						() =>
 					{

@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 				))
 				.ForEach(_alertController.AddAction);
 
-			Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
 				switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
 				{

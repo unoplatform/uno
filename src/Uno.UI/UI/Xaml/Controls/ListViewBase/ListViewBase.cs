@@ -948,7 +948,7 @@ namespace Windows.UI.Xaml.Controls
 		private void TryLoadMoreItemsInner(int count)
 		{
 			_isIncrementalLoadingInFlight = true;
-			LoadMoreItemsAsync(GetItems(), (uint)count);
+			_ = LoadMoreItemsAsync(GetItems(), (uint)count);
 		}
 
 		private async Task LoadMoreItemsAsync(object incrementalSource, uint count)

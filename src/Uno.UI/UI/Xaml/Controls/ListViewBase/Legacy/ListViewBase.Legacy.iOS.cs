@@ -367,7 +367,7 @@ namespace Uno.UI.Controls.Legacy
 
 			SetItemSourceAndReload();
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSuperviewNeedsLayout());
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => SetSuperviewNeedsLayout());
 		}
 
 		private void SetItemSourceAndReload()

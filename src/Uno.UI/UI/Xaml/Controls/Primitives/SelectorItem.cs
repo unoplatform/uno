@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
 					await Task.Delay(delay);
 

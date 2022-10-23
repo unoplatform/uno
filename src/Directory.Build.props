@@ -184,7 +184,7 @@
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
-    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618;CS1998</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618;CS1998;CS4014</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>

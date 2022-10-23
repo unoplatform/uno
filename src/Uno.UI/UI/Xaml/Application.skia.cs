@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 
 			ApiExtensibility.CreateInstance(this, out _applicationExtension);
 
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
 		private void SetCurrentLanguage()

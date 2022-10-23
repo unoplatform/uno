@@ -14,37 +14,37 @@ namespace Windows.Networking.Connectivity.Internal
 		public override void OnAvailable(Network network)
 		{
 			base.OnAvailable(network);
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 
 		public override void OnCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities)
 		{
 			base.OnCapabilitiesChanged(network, networkCapabilities);
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 
 		public override void OnLinkPropertiesChanged(Network network, LinkProperties linkProperties)
 		{
 			base.OnLinkPropertiesChanged(network, linkProperties);
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 
 		public override void OnLosing(Network network, int maxMsToLive)
 		{
 			base.OnLosing(network, maxMsToLive);
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 
 		public override void OnLost(Network network)
 		{
 			base.OnLost(network);
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 
 		public override void OnUnavailable()
 		{
 			base.OnUnavailable();
-			NetworkInformation.OnDelayedNetworkStatusChanged();
+			_ = NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 	}
 }

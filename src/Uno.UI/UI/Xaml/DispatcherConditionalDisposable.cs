@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				Uno.UI.Dispatching.CoreDispatcher.Main.RunIdleAsync(
+				_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunIdleAsync(
 					delegate
 					{
 						DispatchedTargetFinalized();

@@ -9,7 +9,7 @@
 	<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 	<Version>255.255.255.255</Version>
 
-	<NoWarn>$(NoWarn);4014;VSX1000;NU1701</NoWarn>
+	<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 	<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
