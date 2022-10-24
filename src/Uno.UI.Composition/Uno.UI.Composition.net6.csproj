@@ -20,9 +20,7 @@
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-		
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
@@ -31,16 +29,16 @@
 		assembly, for non-fully qualified types in System and Windows.System
 		-->
 		<AndroidResgenNamespace>Uno.UI.Composition</AndroidResgenNamespace>
-		
+
 		<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>

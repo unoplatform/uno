@@ -11,9 +11,9 @@
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
+		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MSAL</AssemblyName>
@@ -36,7 +36,7 @@
 
 		<PackageId>Uno.UI.MSAL</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
-		
+
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 

@@ -12,7 +12,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
 		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
@@ -22,7 +21,7 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
-		
+
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
