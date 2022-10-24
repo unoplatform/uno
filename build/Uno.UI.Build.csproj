@@ -49,7 +49,7 @@
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
-	
+
 	<Target Name="BuildGeneric" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
@@ -60,10 +60,10 @@
 	<Target Name="GeneratePackages" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	</Target>
-	
+
 	<Target Name="Build2022VSIX" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<CallTarget Targets="UpdateFileVersions" Condition="$(_isWindows)" />
-		
+
 		<MSBuild Properties="Configuration=Release"
              Projects="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\UnoSolutionTemplate.VSIX.2022.csproj"
              Targets="Restore;Build"
@@ -119,7 +119,7 @@
 							 Value="$(GitVersion_SemVer)"
 							 Namespaces="$(MSBuildDeveloperNamespace)"
 							 />
-		
+
 		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
 							 Query="//x:PackageReference[@Include='Uno.UI']/@Version"
 							 Value="$(GitVersion_SemVer)"
@@ -212,7 +212,6 @@
 	</Target>
 
 	<Target Name="BuildCI">
-		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
 		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-generic;PackageVersion=$(GITVERSION_SemVer)"
              Projects="filters\Uno.UI-packages-no-net6.slnf"
              Targets="Restore;Build"
@@ -267,7 +266,7 @@
 				 Targets="Restore"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
-		
+
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
 
 		<ItemGroup>
@@ -285,7 +284,7 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
-		
+
 		<MSBuild Properties="Configuration=Debug"
 				 Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
 				 Targets="Restore;Build"
@@ -298,7 +297,7 @@
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
-	
+
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
@@ -306,7 +305,7 @@
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2019\bin\Release\UnoSolutionTemplate.VSIX.vsix"
 					DestinationFiles="$(OutputDir)\vslatest-generic\UnoPlatform-$(GITVERSION_SemVer).x86.vsix" />
 	</Target>
-	
+
 	<Target Name="PublishVSIX2022">
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\bin\Release\UnoSolutionTemplate.VSIX.2022.vsix"
 					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_SemVer).x64.vsix" />
@@ -341,7 +340,7 @@
 
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
-		
+
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
@@ -463,16 +462,16 @@
 
 		<!-- Lottie move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\Uno.UI.Lottie.targets" DestinationFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\$(PackageNamePrefix).Lottie.targets" />
-		
+
 		<!-- MSAL move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\Uno.UI.MSAL.targets" DestinationFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\$(PackageNamePrefix).MSAL.targets" />
-		
+
 		<!-- Svg move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.Svg\buildTransitive\Uno.UI.Svg.targets" DestinationFiles="..\src\AddIns\Uno.UI.Svg\buildTransitive\$(PackageNamePrefix).Svg.targets" />
-		
+
 		<!-- XamlHost move file -->
 		<Move SourceFiles="..\src\Uno.UI.XamlHost\buildTransitive\Uno.UI.XamlHost.props" DestinationFiles="..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" />
-		
+
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:files/x:file[@src='..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props']/@src" Value="..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Runtime package move files -->
@@ -528,7 +527,7 @@
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.14" IgnoreExitCode="true" />
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_SemVer).md" />
 	</Target>
-	
+
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>

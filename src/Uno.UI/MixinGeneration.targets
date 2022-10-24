@@ -10,7 +10,7 @@
 
 	<IsXamarinMac>false</IsXamarinMac>
 	<IsXamarinMac Condition="$(TargetFramework.ToLower().StartsWith('xamarinmac')) or '$(TargetFramework)'=='net6.0-macos'">true</IsXamarinMac>
-	
+
 	<IsReferenceAPI>false</IsReferenceAPI>
 	<IsReferenceAPI Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">true</IsReferenceAPI>
 
@@ -79,11 +79,11 @@
 
   <ItemGroup>
 	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsMonoAndroid)" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsMonoAndroid)" />	
+	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsMonoAndroid)" />
 	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt" />
 	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.tt" />
 	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.Android.tt" Condition="$(IsMonoAndroid)" />
-	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsXamarinIOS)" />	
+	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsXamarinIOS)" />
 	<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt" Condition="$(IsXamarinMac)" />
 	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsXamarinIOS)" />
 	<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsXamarinMac)" />
@@ -91,26 +91,18 @@
 	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsMonoAndroid)" />
 	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsMonoAndroid)" />
 	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />	
-	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />	
+	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinIOS)" />
+	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />
   </ItemGroup>
 
-	<Target Name="UnoInstallDotnetT4"
-			BeforeTargets="BeforeBuild">
-
-		<Exec Command="dotnet tool restore --add-source PackageCache" 
-	    	WorkingDirectory="$(MSBuildThisFileDirectory)..\" />
-	</Target>
-
 	<!--
-	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
+	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for
 	project dependency induced builds.
 	-->
-  <Target Name="GenerateMixins" 
-        Inputs="@(MixinInput)" 
-		Outputs="@(MixinOutput)" 
+  <Target Name="GenerateMixins"
+        Inputs="@(MixinInput)"
+		Outputs="@(MixinOutput)"
 		BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
-		DependsOnTargets="UnoInstallDotnetT4"
 		Condition="'$(DesignTimeBuild)' != 'true'">
 
     <PropertyGroup>
@@ -136,11 +128,15 @@
 	  </MixinDefinition>
 	</ItemGroup>
 
+	<Message Text="Restore dotnet tools" Importance="high" />
+	<Exec Command="dotnet tool restore --add-source PackageCache"
+		  WorkingDirectory="$(MSBuildThisFileDirectory)..\" />
+
 	<Message Text="Generating mixins" Importance="high" />
 
 	<!-- This allows for the mixins to generate in parallel -->
 	<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
-	
+
 	<ItemGroup>
 	  <!--
 	  Restore the compile items for projects using globbing
