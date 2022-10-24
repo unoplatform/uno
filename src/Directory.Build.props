@@ -46,6 +46,11 @@
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!--This override is used to validate the use of specific version of the C# Compiler-->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.4.0-2.final" PrivateAssets="all" />
+  </ItemGroup>
+
   <PropertyGroup>
     <LangVersion>11.0</LangVersion>
 

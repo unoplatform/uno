@@ -14,180 +14,180 @@ using Verify = CSharpIncrementalSourceGeneratorVerifier<DependencyPropertyGenera
 [TestClass]
 public class Given_DependencyPropertyGenerator
 {
-	private const string AttributeStub = @"
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+	private const string AttributeStub = """
+		using System;
+		using System.Collections.Generic;
+		using System.Text;
+		using Windows.UI.Xaml;
+		using Windows.UI.Xaml.Data;
 
 
-namespace Uno.UI.Xaml
-{
-	[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-	internal sealed class GeneratedDependencyPropertyAttribute : Attribute
-	{
-		public GeneratedDependencyPropertyAttribute()
+		namespace Uno.UI.Xaml
 		{
+			[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+			internal sealed class GeneratedDependencyPropertyAttribute : Attribute
+			{
+				public GeneratedDependencyPropertyAttribute()
+				{
+				}
+
+				public FrameworkPropertyMetadataOptions Options { get; set; }
+				public object DefaultValue { get; set; }
+				public bool CoerceCallback { get; set; }
+				public bool ChangedCallback { get; set; }
+				public bool LocalCache { get; set; } = true;
+				public bool Attached { get; set; }
+				public Type AttachedBackingFieldOwner { get; set; }
+				public string ChangedCallbackName { get; set; }
+			}
 		}
 
-		public FrameworkPropertyMetadataOptions Options { get; set; }
-		public object DefaultValue { get; set; }
-		public bool CoerceCallback { get; set; }
-		public bool ChangedCallback { get; set; }
-		public bool LocalCache { get; set; } = true;
-		public bool Attached { get; set; }
-		public Type AttachedBackingFieldOwner { get; set; }
-		public string ChangedCallbackName { get; set; }
-	}
-}
-
-namespace Windows.UI.Xaml
-{
-	internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue);
-	internal delegate void BackingFieldUpdateCallback(DependencyObject dependencyObject, object newValue);
-
-	public class FrameworkPropertyMetadata : PropertyMetadata
-	{
-		private bool _isDefaultUpdateSourceTriggerSet;
-		private UpdateSourceTrigger _defaultUpdateSourceTrigger;
-
-		public FrameworkPropertyMetadata(
-			object defaultValue
-		) : base(null)
+		namespace Windows.UI.Xaml
 		{
+			internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue);
+			internal delegate void BackingFieldUpdateCallback(DependencyObject dependencyObject, object newValue);
+
+			public class FrameworkPropertyMetadata : PropertyMetadata
+			{
+				private bool _isDefaultUpdateSourceTriggerSet;
+				private UpdateSourceTrigger _defaultUpdateSourceTrigger;
+
+				public FrameworkPropertyMetadata(
+					object defaultValue
+				) : base(null)
+				{
+				}
+
+				public FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					CoerceValueCallback coerceValueCallback
+				) : base(null)
+				{
+				}
+
+				public FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					PropertyChangedCallback propertyChangedCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(PropertyChangedCallback propertyChangedCallback)
+					: base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					PropertyChangedCallback propertyChangedCallback,
+					BackingFieldUpdateCallback backingFieldUpdateCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					BackingFieldUpdateCallback backingFieldUpdateCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					BackingFieldUpdateCallback backingFieldUpdateCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					PropertyChangedCallback propertyChangedCallback,
+					CoerceValueCallback coerceValueCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					PropertyChangedCallback propertyChangedCallback,
+					CoerceValueCallback coerceValueCallback,
+					BackingFieldUpdateCallback backingFieldUpdateCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					PropertyChangedCallback propertyChangedCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					PropertyChangedCallback propertyChangedCallback,
+					BackingFieldUpdateCallback backingFieldUpdateCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					PropertyChangedCallback propertyChangedCallback,
+					CoerceValueCallback coerceValueCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					PropertyChangedCallback propertyChangedCallback,
+					CoerceValueCallback coerceValueCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					BackingFieldUpdateCallback backingFieldUpdateCallback,
+					CoerceValueCallback coerceValueCallback
+				) : base(null)
+				{
+				}
+
+				internal FrameworkPropertyMetadata(
+					object defaultValue,
+					FrameworkPropertyMetadataOptions options,
+					PropertyChangedCallback propertyChangedCallback,
+					CoerceValueCallback coerceValueCallback,
+					UpdateSourceTrigger defaultUpdateSourceTrigger
+				) : base(null)
+				{
+				}
+
+				public FrameworkPropertyMetadataOptions Options { get; set; }
+
+				public UpdateSourceTrigger DefaultUpdateSourceTrigger { get; private set; }
+
+				internal bool IsLogicalChild { get; set; }
+
+				public bool HasWeakStorage { get; set; }
+			}
+
 		}
-
-		public FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			CoerceValueCallback coerceValueCallback
-		) : base(null)
-		{
-		}
-
-		public FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(PropertyChangedCallback propertyChangedCallback)
-			: base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			BackingFieldUpdateCallback backingFieldUpdateCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			BackingFieldUpdateCallback backingFieldUpdateCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			BackingFieldUpdateCallback backingFieldUpdateCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback,
-			BackingFieldUpdateCallback backingFieldUpdateCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			PropertyChangedCallback propertyChangedCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			PropertyChangedCallback propertyChangedCallback,
-			BackingFieldUpdateCallback backingFieldUpdateCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			BackingFieldUpdateCallback backingFieldUpdateCallback,
-			CoerceValueCallback coerceValueCallback
-		) : base(null)
-		{
-		}
-
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback,
-			UpdateSourceTrigger defaultUpdateSourceTrigger
-		) : base(null)
-		{
-		}
-
-		public FrameworkPropertyMetadataOptions Options { get; set; }
-
-		public UpdateSourceTrigger DefaultUpdateSourceTrigger { get; private set; }
-
-		internal bool IsLogicalChild { get; set; }
-
-		public bool HasWeakStorage { get; set; }
-	}
-
-}
-";
+		""";
 
 	[TestMethod]
 	public async Task TestInStaticClass()
