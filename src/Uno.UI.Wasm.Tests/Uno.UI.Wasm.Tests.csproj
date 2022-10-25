@@ -64,21 +64,30 @@
 
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
-			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)/javascript/UnitTests.js</TypeScriptConfigFileAdditionalFlags>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(OutputPath)/javascript/UnitTests.js</TypeScriptConfigFileAdditionalFlags>
 		</PropertyGroup>
 		<ItemGroup>
 			<_UnoTSDefinitions Include="..\Uno.UI\bin\Uno.UI.Wasm\$(Configuration)\$(TargetFramework)\*.d.ts" />
 		</ItemGroup>
 		<Copy SourceFiles="@(_UnoTSDefinitions)" DestinationFolder="ts" />
-		<MakeDir Directories="$(IntermediateOutputPath)/javascript" />
+		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
 
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
 			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
 			BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
-			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
+			<_generatedTSFiles Include="$(OutputPath)/javascript/*.js" />
 			<EmbeddedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_AdjustTypeScriptOutputForPublishing"
+			AfterTargets="GetTypeScriptOutputForPublishing">
+		<ItemGroup>
+			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
+			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
+			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
 		</ItemGroup>
 	</Target>
 

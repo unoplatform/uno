@@ -96,3 +96,27 @@ Assert-ExitCodeIsZero
 
 & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
 Assert-ExitCodeIsZero
+
+# Uno Library
+dotnet new unolib -n MyUnoLib
+& $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj
+Assert-ExitCodeIsZero
+
+#
+# Uno Library with assets, Validate assets count
+#
+dotnet new unolib -n MyUnoLib2
+mkdir MyUnoLib2\Assets
+echo "Test file" > MyUnoLib2\Assets\MyTestAsset01.txt
+& $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl
+Assert-ExitCodeIsZero
+
+mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
+Expand-Archive -LiteralPath MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip -DestinationPath MyUnoLib2Extract
+
+$assetsCount = Get-ChildItem MyUnoLib2Extract\ -Filter MyTestAsset01.txt -Recurse -File | Measure-Object | %{$_.Count}
+
+if ($assetsCount -ne 6)
+{
+    throw "Not enough assets in the package."
+}

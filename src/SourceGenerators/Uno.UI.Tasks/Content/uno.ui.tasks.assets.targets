@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
+			   TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0" />
+
+	<Target Name="_DefineUnoPriProperties">
+		<!-- Generate Library Layout when generating NuGet packages -->
+		<PropertyGroup Condition="'$(UnoSkipLibraryLayout)' != 'true'">
+			<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_UnoIncludeLibraryAssets</TargetsForTfmSpecificContentInPackage>
+		
+			<UnoPriInitialPath>$(AssemblyName.ToLowerInvariant())</UnoPriInitialPath>
+			<ProjectUnoPriFileName Condition="'$(ProjectUnoPriFileName)' == '' and '$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath).uprimarker</ProjectUnoPriFileName>
+			<ProjectUnoPriFullPath Condition="'$(ProjectUnoPriFullPath)' == ''">$(TargetDir)$(ProjectUnoPriFileName)</ProjectUnoPriFullPath>
+		</PropertyGroup>
+	</Target>
+
+	<!--
+	Local marker declaration, used when project outputs are determined transitively
+	-->
+	<Target Name="_UnoDeclarePriMarker"
+			AfterTargets="_UnoGeneratePriMarker"
+			DependsOnTargets="_DefineUnoPriProperties"
+			BeforeTargets="GetCopyToOutputDirectoryItems">
+		
+		<ItemGroup Condition="exists('$(ProjectUnoPriFullPath)')">
+			<_AllChildProjectItemsWithTargetPath Include="$(ProjectUnoPriFullPath)">
+				<TargetPath>$(ProjectUnoPriFileName)</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			</_AllChildProjectItemsWithTargetPath>
+		</ItemGroup>
+
+	</Target>
+	
+	<!--
+	Marker generation to ensure that assets are only copied for uno-enabled targets
+	-->
+	<Target Name="_UnoGeneratePriMarker"
+			Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(SDKIdentifier)' != 'Windows'"
+			BeforeTargets="PrepareForRun"
+			DependsOnTargets="_DefineUnoPriProperties">
+		
+		<WriteLinesToFile File="$(ProjectUnoPriFullPath)"
+						  Lines="@(ContentWithTargetPath)"
+						  Condition="'@(ContentWithTargetPath)'!=''"
+						  Overwrite="true" />
+
+	</Target>
+	
+	<!--
+	Assign NuGet metadata for generated nuget packages to contain
+	assets next to each target framework assemblies
+	-->
+	<Target Name="_UnoIncludeLibraryAssets"
+			Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(SDKIdentifier)' != 'Windows'"
+			DependsOnTargets="_DefineUnoPriProperties">
+		<PropertyGroup>
+			<_UnoTargetPlatformVersion
+				Condition="
+					'$(TargetPlatformIdentifier)'=='android'
+					or '$(TargetPlatformIdentifier)'=='ios'
+					or '$(TargetPlatformIdentifier)'=='macos'
+					or '$(TargetPlatformIdentifier)'=='maccatalyst'
+					">$(TargetPlatformVersion)</_UnoTargetPlatformVersion>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_filteredContentWithTargetPath
+				Include="@(ContentWithTargetPath)" />
+
+			<TfmSpecificPackageFile Include="@(_filteredContentWithTargetPath)"
+									PackagePath="lib\$(TargetFramework)$(_UnoTargetPlatformVersion)\$(UnoPriInitialPath)\%(_filteredContentWithTargetPath.TargetPath)" />
+			<TfmSpecificPackageFile Condition="'@(ContentWithTargetPath)'!=''"
+									Include="$(ProjectUnoPriFullPath)"
+									PackagePath="lib\$(TargetFramework)$(_UnoTargetPlatformVersion)\$(ProjectUnoPriFileName)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- 
+	Avoid the generation of the AAR file on android as we're already
+	packing the files ourselves.
+	-->
+	<Target Name="_UnoCleanupAar"
+			Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(TargetPlatformIdentifier)'=='android'"
+			BeforeTargets="_CreateAarCache">
+		<ItemGroup>
+			<AndroidAsset Remove="@(Content)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+	Populate output groups when building heads
+	-->
+	<Target Name="_UnoAddLibraryAssets"
+			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
+			DependsOnTargets="_UnoFindPackageAssetMarkers"
+			BeforeTargets="GetCopyToOutputDirectoryItems">
+
+		<ExpandPackageAssets_v0 MarkerFiles="@(_UnoPriFiles)">
+			<Output TaskParameter="Assets" ItemName="_UnoAssetsFilesExpanded" />
+		</ExpandPackageAssets_v0>
+	
+		<ItemGroup>
+			<_AllChildProjectItemsWithTargetPath Include="@(_UnoAssetsFilesExpanded)" KeepMetadata="TargetPath">
+				<TargetPath Condition="'$(PriInitialPath)' != ''">$(PriInitialPath)\%(_UnoAssetsFilesExpanded.TargetPath)</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			</_AllChildProjectItemsWithTargetPath>
+		</ItemGroup>
+	</Target>
+
+	<!--
+	Determines the marker location for project references
+	-->
+	<Target Name="_UnoFindPackageAssetMarkers" 
+			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
+			AfterTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<_UnoPriFiles Include="@(RuntimeCopyLocalItems->'%(RootDir)%(Directory)%(Filename).uprimarker')"
+						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+			<ReferenceCopyLocalPaths Include="@(_UnoPriFiles)"/>
+		</ItemGroup>
+	</Target>
+
+	<!--
+	Project references assets copy local support
+	-->
+	<PropertyGroup>
+		<_UnoAddAssetsFilesToCopyLocalDependsOn>
+			ContentFilesProjectOutputGroup;
+			AssignTargetPaths;
+			_DefineUnoPriProperties;
+			$(_UnoAddAssetsFilesToCopyLocalDependsOn)
+		</_UnoAddAssetsFilesToCopyLocalDependsOn>
+	</PropertyGroup>
+
+	<!--
+	Target executed by every project onto its references to determine copy local assets.
+	Since this target renames assets to include the project name, it must not be executed
+	on the project head. On iOS, it can cause the creation of an invalid app-named
+	folder, breaking the build.
+	-->
+	<Target Name="_UnoAddAssetsFilesToCopyLocal"
+			DependsOnTargets="$(_UnoAddAssetsFilesToCopyLocalDependsOn)"
+			Condition="'$(IsUnoHead)'!='true' and '$(AndroidApplication)'!='true' and '$(ProjectTypeGuids)'==''"
+			BeforeTargets="GetCopyToOutputDirectoryItems">
+
+		<ItemGroup>
+			<_AllChildProjectItemsWithTargetPath Include="@(ContentFilesProjectOutputGroupOutput)">
+				<TargetPath Condition="'$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath)\%(ContentFilesProjectOutputGroupOutput.TargetPath)</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			</_AllChildProjectItemsWithTargetPath>
+
+			<ContentFilesProjectOutputGroupOutput Remove="@(_AllChildProjectItemsWithTargetPath)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+	Adjust support for build output for Uno.Wasm.Bootstrap, because earlier
+	versions (3.x) don't support TargetPath metadata.
+	-->
+	<Target Name="_UnoWasmContentAdjust"
+			Condition="'$(WasmShellSupportsBuildOutputGroups)'!='true'"
+			BeforeTargets="BuildDist">
+		<ItemGroup>
+			<Content Include="@(_SourceItemsToCopyToOutputDirectory)"
+					 Condition="'%(_SourceItemsToCopyToOutputDirectory.TargetPath)'!=''"
+					 Link="%(_SourceItemsToCopyToOutputDirectory.TargetPath)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

@@ -29,7 +29,14 @@ namespace Windows.Storage
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
-			var path = AndroidResourceNameEncoder.EncodeResourcePath(Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' }));
+			var originalPath = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
+
+			if (uri.Host is { Length: > 0 } host)
+			{
+				originalPath = host.ToLowerInvariant() + "/" + originalPath.TrimStart('/');
+			}
+
+			var path = AndroidResourceNameEncoder.EncodeResourcePath(originalPath);
 
 			// Read the contents of our asset
 			var outputCachePath = global::System.IO.Path.Combine(Android.App.Application.Context.CacheDir.AbsolutePath, path);

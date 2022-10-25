@@ -18,7 +18,14 @@ namespace Windows.UI.Xaml.Media
 	{
 		partial void InitFromResource(Uri uri)
 		{
-			AbsoluteUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
+			var path = uri.PathAndQuery.TrimStart("/");
+
+			if (uri.Host is { Length: > 0 } host)
+			{
+				path = host.ToLowerInvariant() + "/" + path;
+			}
+
+			AbsoluteUri = new Uri(path, UriKind.Relative);
 		}
 
 		partial void CleanupResource()

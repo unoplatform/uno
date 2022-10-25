@@ -50,13 +50,14 @@
 		</Compile>
 	</ItemGroup>
 
-	<Import Project="UnitTestsImport.props"/>
+	<Import Project="UnitTestsImport.props" />
 
 	<ItemGroup>
 		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
+		<Content Include="Assets\**" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(_IsNetStd) or $(IsXamarinMac)">

@@ -48,7 +48,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<Import Project="UnitTestsImport.props"/>
+	<Import Project="UnitTestsImport.props" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj" />
@@ -64,6 +64,8 @@
 		<Page Remove="@(Page)" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+		
+		<Content Include="Assets\**" />
 	</ItemGroup>
 
 	<ItemGroup>
