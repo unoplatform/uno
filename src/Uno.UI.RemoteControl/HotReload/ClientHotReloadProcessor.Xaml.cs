@@ -169,16 +169,14 @@ namespace Uno.UI.RemoteControl.HotReload
 				newPage.Frame.Content = newPage;
 			}
 
-			if(newView is FrameworkElement fe
-				&& fe.DataContext is null
-				&& oldView is FrameworkElement oldFe
-				&& oldView is not null)
+			if(newView.DataContext is null
+				&& oldView.DataContext is not null)
 			{
 				// If the DataContext is not provided by the page itself, it may
 				// have been provided by an external actor. Copy the value as is
 				// in the DataContext of the new element.
 
-				newView.DataContext = oldFe.DataContext;
+				newView.DataContext = oldView.DataContext;
 			}
 		}
 	}
