@@ -120,7 +120,7 @@
     </PropertyGroup>
 
 	<ItemGroup>
-		<_t4Path Include="$(NuGetPackageRoot)dotnet-t4/$(_T4ToolVersion)/**/t4.dll" />
+		<_t4Path Include="$(NuGetPackageRoot)/dotnet-t4/$(_T4ToolVersion)/**/t4.dll" />
 		
 	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsMonoAndroid)">
 		<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework)</Properties>
