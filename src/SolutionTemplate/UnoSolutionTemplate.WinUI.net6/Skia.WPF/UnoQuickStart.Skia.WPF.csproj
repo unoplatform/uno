@@ -25,8 +25,8 @@
 		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.1-preview.79" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.1-preview.79" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 	</ItemGroup>
 
 	<ItemGroup>
