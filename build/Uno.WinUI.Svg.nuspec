@@ -31,51 +31,51 @@
 			<group targetFramework="xamarinios10">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 			</group>
 			<group targetFramework="xamarinmac20">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 			</group>
 			
 			<group targetFramework="MonoAndroid13.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 			</group>
 			
 			<group targetFramework="MonoAndroid12.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 			</group>
 
 			<group targetFramework="net6.0-android">
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
+				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net6.0-ios">
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
+				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net6.0-maccatalyst">
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
+				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net6.0-macos">
 				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.1-preview.79" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
+				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>

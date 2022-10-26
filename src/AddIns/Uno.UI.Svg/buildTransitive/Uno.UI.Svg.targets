@@ -25,7 +25,7 @@
 			<_SvgSkiaRefs Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == 'Svg.Skia'" />
 		</ItemGroup>
 
-		<Error Condition="'@(_SkiaSharpViewsRefs)'==''" Text="In order to use Uno Svg support, the '$(_SkiaSharpPackageName)' NuGet Package (2.88.1-preview.79 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;$(_SkiaSharpPackageName)&quot; Version=&quot;2.88.1-preview.79&quot; /> to your project." />
+		<Error Condition="'@(_SkiaSharpViewsRefs)'==''" Text="In order to use Uno Svg support, the '$(_SkiaSharpPackageName)' NuGet Package (2.88.3 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;$(_SkiaSharpPackageName)&quot; Version=&quot;2.88.3&quot; /> to your project." />
 		<Error Condition="'@(_SvgSkiaRefs)'==''" Text="In order to use Uno Svg support, the 'Svg.Skia' NuGet Package (0.5.16 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;Svg.Skia&quot; Version=&quot;0.5.16&quot; /> to your project." />
 	</Target>
 </Project>
