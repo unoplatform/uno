@@ -21,7 +21,7 @@
 		<Deterministic>true</Deterministic>
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
-
+		
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
