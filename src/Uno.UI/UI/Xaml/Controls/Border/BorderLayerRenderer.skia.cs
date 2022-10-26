@@ -99,22 +99,7 @@ namespace Windows.UI.Xaml.Shapes
 				: area;
 
 			if (cornerRadius != CornerRadius.None)
-			{
-				var maxOuterRadius = Math.Max(0, Math.Min(halfWidth - widthOffset, halfHeight - heightOffset));
-				var maxInnerRadius = Math.Max(0, Math.Min(halfWidth, halfHeight));
-
-				cornerRadius = new CornerRadius(
-					Math.Min(cornerRadius.TopLeft, maxOuterRadius),
-					Math.Min(cornerRadius.TopRight, maxOuterRadius),
-					Math.Min(cornerRadius.BottomRight, maxOuterRadius),
-					Math.Min(cornerRadius.BottomLeft, maxOuterRadius));
-
-				var innerCornerRadius = new CornerRadius(
-					Math.Min(cornerRadius.TopLeft, maxInnerRadius),
-					Math.Min(cornerRadius.TopRight, maxInnerRadius),
-					Math.Min(cornerRadius.BottomRight, maxInnerRadius),
-					Math.Min(cornerRadius.BottomLeft, maxInnerRadius));
-
+			{				
 				var borderShape = compositor.CreateSpriteShape();
 				var backgroundShape = compositor.CreateSpriteShape();
 				var outerShape = compositor.CreateSpriteShape();
@@ -135,7 +120,9 @@ namespace Windows.UI.Xaml.Shapes
 						.DisposeWith(disposables);
 				}
 
-				var outerRadii = GetOuterRadii(cornerRadius);
+				var maxOuterRadius = Math.Max(0, Math.Min(halfWidth, halfHeight));
+
+				var outerRadii = GetOuterRadii(cornerRadius, borderThickness, maxOuterRadius);
 				var innerRadii = GetInnerRadii(cornerRadius, borderThickness);
 
 				var borderPath = GetRoundedRect(outerRadii, innerRadii, borderThickness, area, adjustedArea);
@@ -345,34 +332,22 @@ namespace Windows.UI.Xaml.Shapes
 			return new CompositionPath(geometrySource);
 		}
 
-		internal static SKPoint[] GetOuterRadii(CornerRadius cornerRadius) => new SKPoint[]
+		internal static SKPoint[] GetOuterRadii(CornerRadius cornerRadius, Thickness borderThickness, float maxOuterRadius) => new SKPoint[]
 			{
-				new SKPoint((float)cornerRadius.TopLeft, (float)cornerRadius.TopLeft),
-				new SKPoint((float)cornerRadius.TopRight, (float)cornerRadius.TopRight),
-				new SKPoint((float)cornerRadius.BottomRight, (float)cornerRadius.BottomRight),
-				new SKPoint((float)cornerRadius.BottomLeft, (float)cornerRadius.BottomLeft)
+				new SKPoint((float)Math.Min(maxOuterRadius, cornerRadius.TopLeft + borderThickness.Top / 2), (float)Math.Min(maxOuterRadius, cornerRadius.TopLeft + borderThickness.Left / 2)),
+				new SKPoint((float)Math.Min(maxOuterRadius, cornerRadius.TopRight + borderThickness.Top / 2), (float)Math.Min(maxOuterRadius, cornerRadius.TopRight + borderThickness.Right / 2)),
+				new SKPoint((float)Math.Min(maxOuterRadius, cornerRadius.BottomRight + borderThickness.Bottom / 2), (float)Math.Min(maxOuterRadius, cornerRadius.BottomRight + borderThickness.Right / 2)),
+				new SKPoint((float)Math.Min(maxOuterRadius, cornerRadius.BottomLeft + borderThickness.Bottom / 2), (float)Math.Min(maxOuterRadius, cornerRadius.BottomLeft + borderThickness.Left / 2))
 			};
 
-		internal static SKPoint[] GetInnerRadii(CornerRadius cornerRadius, Thickness borderThickness)
-		{
-			// For most cases :
-			// ICR: Inner CornerRadius
-			// OCR: Outer CornerRadius
-			// BT: BorderThickness
-			// ICR = OCR - BT
-
-			// TODO : Manage the case where BorderThickness >= CornerRadius
-			// See https://github.com/unoplatform/uno/issues/6891 for more details
-
-			return new SKPoint[]
+		internal static SKPoint[] GetInnerRadii(CornerRadius cornerRadius, Thickness borderThickness) => new SKPoint[]
 			{
-				new SKPoint((float)Math.Max(0, cornerRadius.TopLeft - borderThickness.Top / 2), (float)Math.Max(cornerRadius.TopLeft - borderThickness.Left / 2)),
-				new SKPoint((float)Math.Max(cornerRadius.TopRight - borderThickness.Top / 2), (float)Math.Max(cornerRadius.TopRight - borderThickness.Right / 2)),
-				new SKPoint((float)Math.Max(cornerRadius.BottomRight - borderThickness.Bottom / 2), (float)Math.Max(cornerRadius.BottomRight - borderThickness.Right / 2)),
-				new SKPoint((float)Math.Max(cornerRadius.BottomLeft - borderThickness.Bottom / 2), (float)Math.Max(cornerRadius.BottomLeft - borderThickness.Left / 2))
+				new SKPoint((float)Math.Max(0, cornerRadius.TopLeft - borderThickness.Top / 2), (float)Math.Max(0, cornerRadius.TopLeft - borderThickness.Left / 2)),
+				new SKPoint((float)Math.Max(0, cornerRadius.TopRight - borderThickness.Top / 2), (float)Math.Max(0, cornerRadius.TopRight - borderThickness.Right / 2)),
+				new SKPoint((float)Math.Max(0, cornerRadius.BottomRight - borderThickness.Bottom / 2), (float)Math.Max(0, cornerRadius.BottomRight - borderThickness.Right / 2)),
+				new SKPoint((float)Math.Max(0, cornerRadius.BottomLeft - borderThickness.Bottom / 2), (float)Math.Max(0, cornerRadius.BottomLeft - borderThickness.Left / 2))
 			};
-		}
-
+		
 		private static CompositionPath GetRoundedRect(SKPoint[] outerRadii, SKPoint[] innerRadii, Thickness borderThickness, Rect area, Rect insetArea)
 		{
 			var geometrySource = new SkiaGeometrySource2D();
