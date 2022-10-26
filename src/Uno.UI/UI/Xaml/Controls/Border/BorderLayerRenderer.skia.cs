@@ -118,6 +118,7 @@ namespace Windows.UI.Xaml.Shapes
 				var borderShape = compositor.CreateSpriteShape();
 				var backgroundShape = compositor.CreateSpriteShape();
 				var outerShape = compositor.CreateSpriteShape();
+				var clipShape = compositor.CreateSpriteShape();
 
 				// Border brush
 				Brush.AssignAndObserveBrush(borderBrush, compositor, brush => borderShape.FillBrush = brush)
@@ -134,9 +135,16 @@ namespace Windows.UI.Xaml.Shapes
 						.DisposeWith(disposables);
 				}
 
-				var borderPath = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
-				var backgroundPath = GetRoundedPath(cornerRadius, adjustedArea);
-				var outerPath = GetRoundedPath(cornerRadius, area);
+				var outerRadii = GetOuterRadii(cornerRadius);
+				var innerRadii = GetInnerRadii(cornerRadius, borderThickness);
+
+				var borderPath = GetRoundedRect(outerRadii, innerRadii, borderThickness, area, adjustedArea);
+				
+				var backgroundPath = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge ?
+					GetRoundedPath(adjustedArea.ToSKRect(), innerRadii) :
+					GetRoundedPath(adjustedArea.ToSKRect(), outerRadii);
+
+				var outerPath = GetRoundedPath(area.ToSKRect(), outerRadii);
 
 				backgroundShape.Geometry = compositor.CreatePathGeometry(backgroundPath);
 				borderShape.Geometry = compositor.CreatePathGeometry(borderPath);
@@ -321,7 +329,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <summary>
 		/// Creates a rounded-rectangle path from the nominated bounds and corner radius.
 		/// </summary>
-		private static CompositionPath GetRoundedPath(CornerRadius cornerRadius, Rect area, SkiaGeometrySource2D geometrySource = null)
+		private static CompositionPath GetRoundedPath(SKRect area, SKPoint[] radii, SkiaGeometrySource2D geometrySource = null)
 		{
 			geometrySource ??= new SkiaGeometrySource2D();
 			var geometry = geometrySource.Geometry;
@@ -329,23 +337,48 @@ namespace Windows.UI.Xaml.Shapes
 			// How ArcTo works:
 			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
 
-			geometry.MoveTo((float)area.GetMidX(), (float)area.Y);
-			geometry.ArcTo((float)area.Right, (float)area.Top, (float)area.Right, (float)area.GetMidY(), (float)cornerRadius.TopRight);
-			geometry.ArcTo((float)area.Right, (float)area.Bottom, (float)area.GetMidX(), (float)area.Bottom, (float)cornerRadius.BottomRight);
-			geometry.ArcTo((float)area.Left, (float)area.Bottom, (float)area.Left, (float)area.GetMidY(), (float)cornerRadius.BottomLeft);
-			geometry.ArcTo((float)area.Left, (float)area.Top, (float)area.GetMidX(), (float)area.Top, (float)cornerRadius.TopLeft);
-
+			var roundRect = new SKRoundRect();
+			roundRect.SetRectRadii(area, radii);
+			geometry.AddRoundRect(roundRect);
 			geometry.Close();
 
 			return new CompositionPath(geometrySource);
 		}
 
-		private static CompositionPath GetRoundedRect(CornerRadius cornerRadius, CornerRadius innerCornerRadius, Rect area, Rect insetArea)
+		internal static SKPoint[] GetOuterRadii(CornerRadius cornerRadius) => new SKPoint[]
+			{
+				new SKPoint((float)cornerRadius.TopLeft, (float)cornerRadius.TopLeft),
+				new SKPoint((float)cornerRadius.TopRight, (float)cornerRadius.TopRight),
+				new SKPoint((float)cornerRadius.BottomRight, (float)cornerRadius.BottomRight),
+				new SKPoint((float)cornerRadius.BottomLeft, (float)cornerRadius.BottomLeft)
+			};
+
+		internal static SKPoint[] GetInnerRadii(CornerRadius cornerRadius, Thickness borderThickness)
+		{
+			// For most cases :
+			// ICR: Inner CornerRadius
+			// OCR: Outer CornerRadius
+			// BT: BorderThickness
+			// ICR = OCR - BT
+
+			// TODO : Manage the case where BorderThickness >= CornerRadius
+			// See https://github.com/unoplatform/uno/issues/6891 for more details
+
+			return new SKPoint[]
+			{
+				new SKPoint((float)Math.Max(0, cornerRadius.TopLeft - borderThickness.Top / 2), (float)Math.Max(cornerRadius.TopLeft - borderThickness.Left / 2)),
+				new SKPoint((float)Math.Max(cornerRadius.TopRight - borderThickness.Top / 2), (float)Math.Max(cornerRadius.TopRight - borderThickness.Right / 2)),
+				new SKPoint((float)Math.Max(cornerRadius.BottomRight - borderThickness.Bottom / 2), (float)Math.Max(cornerRadius.BottomRight - borderThickness.Right / 2)),
+				new SKPoint((float)Math.Max(cornerRadius.BottomLeft - borderThickness.Bottom / 2), (float)Math.Max(cornerRadius.BottomLeft - borderThickness.Left / 2))
+			};
+		}
+
+		private static CompositionPath GetRoundedRect(SKPoint[] outerRadii, SKPoint[] innerRadii, Thickness borderThickness, Rect area, Rect insetArea)
 		{
 			var geometrySource = new SkiaGeometrySource2D();
 
-			GetRoundedPath(cornerRadius, area, geometrySource);
-			GetRoundedPath(innerCornerRadius, insetArea, geometrySource);
+			GetRoundedPath(area.ToSKRect(), outerRadii, geometrySource);
+			GetRoundedPath(insetArea.ToSKRect(), innerRadii, geometrySource);
 			geometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
 			return new CompositionPath(geometrySource);
 		}
