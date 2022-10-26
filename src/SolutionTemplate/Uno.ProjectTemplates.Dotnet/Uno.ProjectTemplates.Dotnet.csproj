@@ -124,14 +124,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.net6\*.vstemplate" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.net6\**\__*.png" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.net6\obj\**" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.net6\bin\**" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.net6\Properties\**" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.net6\UnoLibraryTemplate.net6.csproj" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\*.vstemplate" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\**\__*.png" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\obj\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\bin\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\Properties\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\UnoLibraryTemplate.netcore.csproj" />
 
-		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate.net6\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
+		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate.netcore\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
 	</ItemGroup>
 	
 	<ItemGroup>
