@@ -300,7 +300,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.json" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.json", "*.props" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{
@@ -415,7 +415,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.props" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{

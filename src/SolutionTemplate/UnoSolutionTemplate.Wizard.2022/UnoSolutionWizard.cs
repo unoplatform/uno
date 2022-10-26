@@ -262,6 +262,7 @@ namespace UnoSolutionTemplate.Wizard
 						_useWinUI = targetPlatformWizardPicker.UseWinUI;
 						_useServer = targetPlatformWizardPicker.UseServer;
 						_baseTargetFramework = targetPlatformWizardPicker.UseBaseTargetFramework;
+						_useWebAssemblyManifestJson = targetPlatformWizardPicker.UseWebAssemblyManifestJson;
 
 						replacementsDictionary["$UseWebAssembly$"] = _useWebAssembly.ToString();
 						replacementsDictionary["$UseIOS$"] = _useiOS.ToString();
@@ -275,6 +276,7 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$UseServer$"] = _useServer.ToString();
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
 						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
+						replacementsDictionary["$UseWebAssemblyManifestJson$"] = _useWebAssemblyManifestJson.ToString();
 
 						var version = GetVisualStudioReleaseVersion();
 
@@ -293,27 +295,6 @@ namespace UnoSolutionTemplate.Wizard
 
 					default:
 						throw new WizardBackoutException();
-				}
-
-				if (_useWebAssembly)
-				{
-					using UnoWasmOptions unoWasmOptionsPicker = new UnoWasmOptions(VisualStudioServiceProvider);
-
-					switch (unoWasmOptionsPicker.ShowDialog(owner))
-					{
-						case DialogResult.OK:
-							_useWebAssemblyManifestJson = unoWasmOptionsPicker.UseManifestJson;
-							replacementsDictionary["$UseWebAssemblyManifestJson$"] = _useWebAssemblyManifestJson.ToString();
-							break;
-
-						case DialogResult.Abort:
-							MessageBox.Show("Aborted"/*targetPlatformWizardPicker.Error*/);
-							Directory.Delete(_targetPath, true);
-							throw new WizardCancelledException();
-
-						default:
-							throw new WizardBackoutException();
-					}
 				}
 
 				_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
