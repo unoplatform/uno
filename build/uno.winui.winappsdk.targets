@@ -4,7 +4,7 @@
 	<Target Name="_UnoRemoveReferences"
 			BeforeTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
-			<_UnoReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.UI' or %(ReferencePath.NuGetPackageId)'=='Uno.WinUI'" />
+			<_UnoReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.UI' or '%(ReferencePath.NuGetPackageId)'=='Uno.WinUI'" />
 			<ReferencePath Remove="@(_UnoReferencePathToRemove)" />
 
 			<!-- Clear items -->
