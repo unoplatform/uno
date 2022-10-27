@@ -12,7 +12,7 @@
 
 	<StackPanel Spacing="20">
 		<TextBox x:Name="MyReadOnlyTextBox"
-                 Text="Text Uno Platform oui-readonly-textbox-for-selecction. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                 Text="Text Uno Platform readonly-textbox-for-selection. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
                  IsReadOnly="True" />
 		<Button Click="SelectReadOnly_OnClick" Content="Select ReadOnly"/>
 
