@@ -117,10 +117,6 @@ jobs:
     vmMacImage: '$(macOSVMImage)'
     poolName: '$(windows2022HostedVMImage)'
 
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
-
 - template: build/ci/.azure-devops-samplesapp-uitests-build.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
