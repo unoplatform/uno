@@ -109,7 +109,9 @@ Assert-ExitCodeIsZero
 dotnet new unolib -n MyUnoLib2
 mkdir MyUnoLib2\Assets
 echo "Test file" > MyUnoLib2\Assets\MyTestAsset01.txt
-& $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl
+
+# WinAppSDK is removed for now, until we can get net7 supported by msbuild/VS 17.4
+& $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl /p:TargetFrameworks="netstandard2.0;net6.0-ios;net6.0-macos;net6.0-maccatalyst;net6.0-android"
 Assert-ExitCodeIsZero
 
 mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip
@@ -117,7 +119,8 @@ Expand-Archive -LiteralPath MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip -Destination
 
 $assetsCount = Get-ChildItem MyUnoLib2Extract\ -Filter MyTestAsset01.txt -Recurse -File | Measure-Object | %{$_.Count}
 
-if ($assetsCount -ne 6)
+#if ($assetsCount -ne 6) # Restore when WinAppSDK validation is available
+if ($assetsCount -ne 5)
 {
     throw "Not enough assets in the package."
 }
