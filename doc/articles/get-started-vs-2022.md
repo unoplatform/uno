@@ -66,6 +66,9 @@ To create an Uno Platform app:
 1. To run the **WebAssembly** (Wasm) head:
     - Right click on the `MyApp.Wasm` project, select **Set as startup project**
     - Press the `MyApp.Wasm` button to deploy the app
+1. To run the ASP.NET Hosted **WebAssembly** (Server) head:
+    - Right click on the `MyApp.Server` project, select **Set as startup project**
+    - Press the `MyApp.Server` button to deploy the app
 1. To debug for **iOS**:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`:

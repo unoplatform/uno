@@ -120,25 +120,34 @@
 	
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
-			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(IntermediateOutputPath)/javascript/Uno.UI.js</TypeScriptConfigFileAdditionalFlags>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(OutputPath)/javascript/Uno.UI.js</TypeScriptConfigFileAdditionalFlags>
 		</PropertyGroup>
-		<MakeDir Directories="$(IntermediateOutputPath)/javascript" />
+		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
 	
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
 			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
 			BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<PropertyGroup>
-			<_unoUIDTsFilePath>$(IntermediateOutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
+			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
 		</PropertyGroup>
 		<ItemGroup>
-			<_generatedTSFiles Include="$(IntermediateOutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedTSFiles)"
+			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
+			<EmbeddedResource Include="@(_generatedJSFiles)"
 							LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
-		<Copy SourceFiles="$(IntermediateOutputPath)/javascript/Uno.UI.d.ts"
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts"
 							DestinationFolder="$(OutputPath)"
 							Condition="exists('$(_unoUIDTsFilePath)')"/>
+	</Target>
+
+	<Target Name="_AdjustTypeScriptOutputForPublishing"
+			AfterTargets="GetTypeScriptOutputForPublishing">
+		<ItemGroup>
+			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
+			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
+			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
+		</ItemGroup>
 	</Target>
 	
 	<ItemGroup>
@@ -181,11 +190,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="tsconfig.json" />
-	  <Content Include="tsconfig.json" />
 	</ItemGroup>
 
 	<Target Name="_UnoWasmOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

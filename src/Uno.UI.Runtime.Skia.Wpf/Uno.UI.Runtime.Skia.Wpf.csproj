@@ -23,9 +23,6 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<UseWPF>true</UseWPF>
-
-		<!-- 9.0 to work around a VS 2019 build issue -->
-		<LangVersion>9.0</LangVersion>
 		
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>

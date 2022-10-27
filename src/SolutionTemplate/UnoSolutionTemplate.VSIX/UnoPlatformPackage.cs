@@ -143,6 +143,7 @@ namespace UnoSolutionTemplate
 			{
 				if (owP == null)
 				{
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 					OutputWindow ow = _dte.ToolWindows.OutputWindow;
 						// Add a new pane to the Output window.
 						owP = ow
@@ -159,8 +160,10 @@ namespace UnoSolutionTemplate
 				}
 
 				return owP;
+#pragma warning restore VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 			};
 
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 			_infoAction = s => pane().OutputString("[INFO] " + s + "\r\n");
 			_verboseAction = s => pane().OutputString("[VERBOSE] " + s + "\r\n");
 			_warningAction = s => pane().OutputString("[WARNING] " + s + "\r\n");
@@ -175,6 +178,7 @@ namespace UnoSolutionTemplate
 					pane().OutputString("[ERROR] " + e.Message + "\r\n");
 				}
 			};
+#pragma warning restore VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 		}
 		
 

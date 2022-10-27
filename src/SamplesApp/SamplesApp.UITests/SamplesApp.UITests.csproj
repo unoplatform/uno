@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup> 

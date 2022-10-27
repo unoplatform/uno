@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
-	
+
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
 		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701;Uno0001</NoWarn>
+		<NoWarn>$(NoWarn);Uno0001</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
@@ -33,7 +33,7 @@
 	    <Pack>true</Pack>
 	  </Content>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
@@ -49,7 +49,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 
 		<PackageReference Include="SkiaSharp.Skottie" />
-		
+
 		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 

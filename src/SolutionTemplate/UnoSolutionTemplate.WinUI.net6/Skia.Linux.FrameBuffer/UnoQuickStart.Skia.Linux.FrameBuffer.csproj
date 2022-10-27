@@ -9,6 +9,9 @@
 	<ItemGroup Condition="exists('..\$ext_safeprojectname$.Windows')">
 		<EmbeddedResource Include="..\$ext_safeprojectname$.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 		<Content Include="..\$ext_safeprojectname$.Windows\Images\StoreLogo.png" Link="Assets\StoreLogo.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 	</ItemGroup>
 
@@ -22,8 +25,8 @@
 		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.1-preview.79" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.1-preview.79" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />

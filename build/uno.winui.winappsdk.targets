@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="_UnoRemoveReferences"
+			BeforeTargets="FindReferenceAssembliesForReferences">
+		<ItemGroup>
+			<_UnoReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.UI' or '%(ReferencePath.NuGetPackageId)'=='Uno.WinUI'" />
+			<ReferencePath Remove="@(_UnoReferencePathToRemove)" />
+
+			<!-- Clear items -->
+			<_UnoReferencePathToRemove Remove="@(_UnoReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

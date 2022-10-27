@@ -41,7 +41,7 @@ Now let's run the application:
 },
 ```
 - Start the debugger session
-- Visual Studio may ask you to install **.NET Core 3.1** and the Linux debugger, press OK and let the installation finish, then restart the debugging session.
+- Visual Studio may ask you to install **.NET 6** and the Linux debugger, press OK and let the installation finish, then restart the debugging session.
 
 ## Setting up for Linux
 
@@ -51,18 +51,7 @@ Now let's run the application:
     sudo apt update
     sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
-- Install dotnet core 3.1
-    ```
-    echo "Installing .NET Core"
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
-
-    sudo dpkg -i packages-microsoft-prod.deb
-    sudo add-apt-repository universe
-    sudo apt-get -y install apt-transport-https
-    sudo apt-get update
-    sudo apt-get -y install dotnet-sdk-3.1
-    sudo apt-get -y install dotnet-sdk-5.0
-    ```
+- [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**Ubuntu 20.04**](#tab/ubuntu2004)
 - Install GTK3:
@@ -70,18 +59,7 @@ Now let's run the application:
     sudo apt update
     sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
-- Install dotnet core 3.1 and 5.0
-    ```
-    echo "Installing .NET Core"
-    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-
-    sudo apt-get update; \
-      sudo apt-get install -y apt-transport-https && \
-      sudo apt-get update && \
-      sudo apt-get install -y dotnet-sdk-3.1 && \
-      sudo apt-get install -y dotnet-sdk-5.0
-    ```
+- [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
 

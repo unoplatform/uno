@@ -24,6 +24,7 @@ namespace UnoSolutionTemplate.Wizard.Forms
 		public bool UseWpf => checkWpf.Checked;
 		public bool UseWinUI => checkWinUI.Checked;
 		public bool UseServer => checkServer.Checked;
+		public bool UseWebAssemblyManifestJson => checkPWA.Checked;
 		public string UseBaseTargetFramework => BaseTargetFramework.SelectedItem is TargetFrameworkOption option ? option.BaseValue : "invalid";
 
 		public class TargetFrameworkOption
@@ -54,6 +55,12 @@ namespace UnoSolutionTemplate.Wizard.Forms
 
 		private void checkWebAssembly_CheckedChanged(object sender, EventArgs e)
 		{
+			checkPWA.Enabled = checkWebAssembly.Checked;
+
+			if(!checkPWA.Enabled)
+			{
+				checkPWA.Checked = false;
+			}
 		}
 	}
 }

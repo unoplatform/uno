@@ -46,6 +46,11 @@
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!--This override is used to validate the use of specific version of the C# Compiler-->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.4.0-2.final" PrivateAssets="all" />
+  </ItemGroup>
+
   <PropertyGroup>
     <LangVersion>11.0</LangVersion>
 
@@ -195,9 +200,10 @@
   <Choose>
     <When Condition="'$(UnoDisableNetAnalyzers)'=='false'">
       <PropertyGroup>
-        <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
+        <!-- Enable some CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+        <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
       </PropertyGroup>
       <ItemGroup>

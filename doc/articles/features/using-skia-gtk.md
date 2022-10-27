@@ -9,6 +9,8 @@ Note that for Linux, the [framebuffer rendering](using-linux-framebuffer.md) hea
 ## Get started with the Skia+GTK head
 Follow the getting started guide [for Linux](../get-started-with-linux.md) or [Windows](../get-started-vs-2022.md)
 
+You will also need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) to run a GTK+3 based app on Windows.
+
 Once done, you can create a new app using:
 ```
 dotnet new unoapp -o MyApp

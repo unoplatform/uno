@@ -55,7 +55,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				}
 				else
 				{
-					if (!diag.Diagnostic.ToString().StartsWith("[Failure] Found invalid data while decoding"))
+					if (!diag.Diagnostic.ToString().StartsWith("[Failure] Found invalid data while decoding", StringComparison.Ordinal))
 					{
 						taskCompletionSource.TrySetException(new InvalidOperationException($"Failed to create MSBuildWorkspace: {diag.Diagnostic}"));
 					}
@@ -137,7 +137,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 				// Ignore resource assemblies for now, we'll have to adjust this
 				// when adding globalization.
-				if (assembly.Name.EndsWith(".resources"))
+				if (assembly.Name.EndsWith(".resources", StringComparison.Ordinal))
 				{
 					return null;
 				}

@@ -11,16 +11,16 @@
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
     	<RootNamespace>Windows.Foundation</RootNamespace>
-		<NoWarn>$(NoWarn);NU1701;1572;1712;1711;1574</NoWarn>
+		<NoWarn>$(NoWarn);1572;1712;1711;1574</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
@@ -42,7 +42,7 @@
 	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
 		<PackageReference Include="System.Memory" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>

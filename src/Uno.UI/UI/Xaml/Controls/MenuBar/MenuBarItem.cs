@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 				switch (e.CollectionChange)
 				{
 					case CollectionChange.ItemInserted:
-						m_flyout.Items.Insert((int)index, (MenuFlyoutItem)Items[(int)index]);
+						m_flyout.Items.Insert((int)index, Items[(int)index]);
 						break;
 					case CollectionChange.ItemRemoved:
 						m_flyout.Items.RemoveAt((int)index);

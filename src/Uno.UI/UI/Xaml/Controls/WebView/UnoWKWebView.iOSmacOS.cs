@@ -543,7 +543,7 @@ namespace Windows.UI.Xaml.Controls
 			var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			var appRootPath = directFileParentPath.Substring(0, documentsPath.LastIndexOf('/'));
 
-			if (directFileParentPath.StartsWith(appRootPath))
+			if (directFileParentPath.StartsWith(appRootPath, StringComparison.Ordinal))
 			{
 				var relativePath = directFileParentPath.Substring(appRootPath.Length, directFileParentPath.Length - appRootPath.Length);
 				var topFolder = relativePath.Split(separator: new char[] { '/' }, options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();

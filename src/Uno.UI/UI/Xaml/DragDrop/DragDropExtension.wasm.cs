@@ -283,7 +283,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
 						.Split(new[]{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
-						.Where(line => !line.StartsWith("#"))
+						.Where(line => !line.StartsWith("#", StringComparison.Ordinal))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
 				"text/html" => (StandardDataFormats.Html, async ct => await RetrieveText(ct, id)),

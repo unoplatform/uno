@@ -56,12 +56,8 @@
     <Compile Include="Forms\UnoOptions.Designer.cs">
       <DependentUpon>UnoOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\UnoOptionsBaseForm.cs" />
-    <Compile Include="Forms\UnoWasmOptions.cs">
+    <Compile Include="Forms\UnoOptionsBaseForm.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\UnoWasmOptions.Designer.cs">
-      <DependentUpon>UnoWasmOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="NetCoreUnoSolutionWizard.cs" />
     <Compile Include="UnoSolutionWizard.cs" />
@@ -76,9 +72,6 @@
     <EmbeddedResource Include=".vsconfig.vs17" />
     <EmbeddedResource Include="Forms\UnoOptions.resx">
       <DependentUpon>UnoOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UnoWasmOptions.resx">
-      <DependentUpon>UnoWasmOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NuGet-netcore.config" />
   </ItemGroup>

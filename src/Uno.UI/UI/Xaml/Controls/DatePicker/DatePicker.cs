@@ -1742,9 +1742,9 @@ namespace Windows.UI.Xaml.Controls
 				isRTL = szDate[0] == DATEPICKER_RTL_CHARACTER_CODE;
 
 				// We do string search to determine the order of the fields.
-				dayOccurence = szDate.IndexOf("{day");
-				monthOccurence = szDate.IndexOf("{month");
-				yearOccurence = szDate.IndexOf("{year");
+				dayOccurence = szDate.IndexOf("{day", StringComparison.Ordinal);
+				monthOccurence = szDate.IndexOf("{month", StringComparison.Ordinal);
+				yearOccurence = szDate.IndexOf("{year", StringComparison.Ordinal);
 
 				if (dayOccurence < monthOccurence)
 				{

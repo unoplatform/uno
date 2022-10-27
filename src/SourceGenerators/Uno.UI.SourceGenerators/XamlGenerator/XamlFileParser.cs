@@ -189,8 +189,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			else
 			{
 				// No existing Ignorable node, create one
-				var targetLine = sourceText.Lines.Select(l => sourceText.ToString(l.Span)).First(l => !l.IsNullOrWhiteSpace() && !l.Trim().StartsWith("<!"))!;
-				if (targetLine.EndsWith(">"))
+				var targetLine = sourceText.Lines.Select(l => sourceText.ToString(l.Span)).First(l => !l.IsNullOrWhiteSpace() && !l.Trim().StartsWith("<!", StringComparison.Ordinal))!;
+				if (targetLine.EndsWith(">", StringComparison.Ordinal))
 				{
 					targetLine = targetLine.TrimEnd(">");
 				}
@@ -235,7 +235,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var originalPrefix = document.DocumentElement.GetNamespaceOfPrefix(n);
 
-					if (!originalPrefix.StartsWith("using:"))
+					if (!originalPrefix.StartsWith("using:", StringComparison.Ordinal))
 					{
 						adjusted
 							.Replace(

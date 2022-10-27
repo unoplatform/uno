@@ -9,11 +9,5 @@
 	<Import Project="uno.winui.cross-runtime.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
 	<Import Project="uno.winui.single-project.targets" />
 	<Import Project="uno.winui.runtime-replace.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
-
-	<Target Name="_WinAppSDKNotSupported"
-			BeforeTargets="BeforeBuild"
-			Condition="'$(WindowsAppSDKWinUI)'=='True'">
-		<Error Code="UNOB0002"
-			   Text="Using Uno.WinUI in a WinAppSDK head project is not supported. You may be including a package that references Uno.WinUI indirectly and it must be removed. See https://aka.platform.uno/UNOB0002 for more details." />
-	</Target>
+	<Import Project="uno.winui.winappsdk.targets" Condition="'$(WindowsAppSDKWinUI)'=='true'" />
 </Project>

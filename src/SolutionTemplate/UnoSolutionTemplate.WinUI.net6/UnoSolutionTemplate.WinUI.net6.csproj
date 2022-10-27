@@ -81,6 +81,7 @@
     <None Include="Server\appsettings.Development.json" />
     <None Include="Server\appsettings.json" />
     <None Include="Server\UnoQuickStart.Server.csproj" />
+    <None Include="Shared\UnoQuickStart.Shared.globs.props" />
     <None Include="Skia.WPF\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </None>

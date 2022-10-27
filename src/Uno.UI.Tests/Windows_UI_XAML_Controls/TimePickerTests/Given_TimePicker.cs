@@ -57,22 +57,24 @@ SelectedTimeChanged changed from 08:17:00 to <null>
 TimeChanged changed from 08:17:49 to 08:17:00
 SelectedTimeChanged changed from 08:17:49 to 08:17:00
 			 */
-			Assert.AreEqual(@"
-TimeChanged changed from -00:00:00.0000001 to 08:13:00
-SelectedTimeChanged changed from <null> to 08:13:00
+			Assert.AreEqual("""
 
-TimeChanged changed from 08:13:00 to -00:00:00.0000001
-SelectedTimeChanged changed from 08:13:00 to <null>
+				TimeChanged changed from -00:00:00.0000001 to 08:13:00
+				SelectedTimeChanged changed from <null> to 08:13:00
 
-TimeChanged changed from -00:00:00.0000001 to 08:17:00
-SelectedTimeChanged changed from <null> to 08:17:00
+				TimeChanged changed from 08:13:00 to -00:00:00.0000001
+				SelectedTimeChanged changed from 08:13:00 to <null>
 
-TimeChanged changed from 08:17:00 to -00:00:00.0000001
-SelectedTimeChanged changed from 08:17:00 to <null>
+				TimeChanged changed from -00:00:00.0000001 to 08:17:00
+				SelectedTimeChanged changed from <null> to 08:17:00
 
-TimeChanged changed from -00:00:00.0000001 to 08:17:49
-SelectedTimeChanged changed from <null> to 08:17:49
-", log);
+				TimeChanged changed from 08:17:00 to -00:00:00.0000001
+				SelectedTimeChanged changed from 08:17:00 to <null>
+
+				TimeChanged changed from -00:00:00.0000001 to 08:17:49
+				SelectedTimeChanged changed from <null> to 08:17:49
+
+				""", log);
 
 			void TimePicker_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
 			{
