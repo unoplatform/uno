@@ -931,22 +931,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void TextBox_Selection_IsReadOnly()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection");
+			
+			var readonlyTextBoxRect = _app.WaitForElement("MyReadOnlyTextBox").Single().Rect;
+			var readonlyTextBox = _app.Marked("MyReadOnlyTextBox");
+			
+			var centerPointReadOnlyX = (int)readonlyTextBoxRect.CenterX;
+			var centerPointReadOnlyY = (int)readonlyTextBoxRect.CenterY;
 
-			var readonlyTextBox = _app.WaitForElement("MyReadOnlyTextBox").Single().Rect;
-
-			var centerPointReadOnlyX = (int) readonlyTextBox.CenterX;
-			var centerPointReadOnlyY = (int) readonlyTextBox.CenterY;
+			// Initial verification			
+			Assert.IsTrue(readonlyTextBox.GetDependencyPropertyValue<bool>("IsReadOnly"));
+			Assert.IsNull(readonlyTextBox.GetDependencyPropertyValue("SelectedText")?.ToString());
 
 			// Attempt selection
 			_app.DoubleTapCoordinates(centerPointReadOnlyX, centerPointReadOnlyY);
 
-			using (var readonlyTextBoxScreenShot = TakeScreenshot("MyReadOnlyTextBox", ignoreInSnapshotCompare: true))
-			{
-				ImageAssert.DoesNotHaveColorAt(readonlyTextBoxScreenShot,
-											   centerPointReadOnlyX,
-											   centerPointReadOnlyY,
-											   Color.White);
-			}
+			// Final verification of SelectedText
+			Assert.IsNotEmpty(readonlyTextBox.GetDependencyPropertyValue("SelectedText")?.ToString());
 		}
 	}
 }
