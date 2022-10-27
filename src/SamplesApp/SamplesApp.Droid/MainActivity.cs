@@ -15,12 +15,14 @@ using Android.OS;
 namespace SamplesApp.Droid
 {
 	[Activity(
+			MainLauncher = true,
+			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
+			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden,
 #if DEBUG	// Disabled because of https://github.com/xamarin/xamarin-android/issues/6463
 			Exported = true,
 #endif
-			MainLauncher = true,
-			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
-			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
+			Icon = "@mipmap/ic_launcher",
+			Label = "Uno Samples"			
 		)]
 	[IntentFilter(
 		new[] {

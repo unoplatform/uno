@@ -126,6 +126,21 @@
     <None Include="SamplesApp.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\square44x44logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\square44x44logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\square44x44logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\square44x44logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\square44x44logo.altform-lightunplated_targetsize-48.png" />
+    <Content Include="Assets\square44x44logo.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\square44x44logo.altform-unplated_targetsize-24.png" />
+    <Content Include="Assets\square44x44logo.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\square44x44logo.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\square44x44logo.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\square44x44logo.targetsize-16.png" />
+    <Content Include="Assets\square44x44logo.targetsize-24.png" />
+    <Content Include="Assets\square44x44logo.targetsize-256.png" />
+    <Content Include="Assets\square44x44logo.targetsize-32.png" />
+    <Content Include="Assets\square44x44logo.targetsize-48.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
