@@ -13,7 +13,7 @@ partial struct CornerRadius
 	/// <param name="borderThickness">Border thickness.</param>
 	/// <param name="outer">True to return outer corner radii, false for inner.</param>
 	/// <returns>Radii.</returns>
-	internal SKPoint[] GetRadii(Size elementSize, Thickness borderThickness, bool outer)
+	internal void GetRadii(ref SKPoint[] radii, Size elementSize, Thickness borderThickness, bool outer)
 	{
 		var halfLeft = borderThickness.Left * 0.5;
 		var halfTop = borderThickness.Top * 0.5;
@@ -94,12 +94,9 @@ partial struct CornerRadius
 			topLeft = elementSize.Height - bottomLeft;
 		}
 
-		return new SKPoint[]
-		{
-			new((float)leftTop, (float)topLeft),
-			new((float)rightTop, (float)topRight),
-			new((float)rightBottom, (float)bottomRight),
-			new((float)leftBottom, (float)bottomLeft),
-		};
+		radii[0] = new((float)leftTop, (float)topLeft);
+		radii[1] = new((float)rightTop, (float)topRight);
+		radii[2] = new((float)rightBottom, (float)bottomRight);
+		radii[3] = new((float)leftBottom, (float)bottomLeft);
 	}
 }

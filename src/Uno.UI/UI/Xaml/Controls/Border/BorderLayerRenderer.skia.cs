@@ -18,6 +18,9 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{
+		private static SKPoint[] _outerRadiiStore = new SKPoint[4];
+		private static SKPoint[] _innerRadiiStore = new SKPoint[4];
+
 		private LayoutState _currentState;
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
@@ -120,16 +123,17 @@ namespace Windows.UI.Xaml.Shapes
 						.DisposeWith(disposables);
 				}
 
-				var outerRadii = cornerRadius.GetRadii(new Size(area.Width, area.Height), borderThickness, true);
-				var innerRadii = cornerRadius.GetRadii(new Size(area.Width, area.Height), borderThickness, false);
+				// This needs to be adjusted if multiple UI threads are used in the future for multi-window
+				cornerRadius.GetRadii(ref _outerRadiiStore, new Size(area.Width, area.Height), borderThickness, true);
+				cornerRadius.GetRadii(ref _innerRadiiStore, new Size(area.Width, area.Height), borderThickness, false);
 
-				var borderPath = GetRoundedRect(outerRadii, innerRadii, borderThickness, area, adjustedArea);
+				var borderPath = GetRoundedRect(_outerRadiiStore, _innerRadiiStore, borderThickness, area, adjustedArea);
 
 				var backgroundPath = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge ?
-					GetRoundedPath(adjustedArea.ToSKRect(), innerRadii) :
-					GetRoundedPath(adjustedArea.ToSKRect(), outerRadii);
+					GetRoundedPath(adjustedArea.ToSKRect(), _innerRadiiStore) :
+					GetRoundedPath(adjustedArea.ToSKRect(), _outerRadiiStore);
 
-				var outerPath = GetRoundedPath(area.ToSKRect(), outerRadii);
+				var outerPath = GetRoundedPath(area.ToSKRect(), _outerRadiiStore);
 
 				backgroundShape.Geometry = compositor.CreatePathGeometry(backgroundPath);
 				borderShape.Geometry = compositor.CreatePathGeometry(borderPath);
@@ -319,8 +323,6 @@ namespace Windows.UI.Xaml.Shapes
 			geometrySource ??= new SkiaGeometrySource2D();
 			var geometry = geometrySource.Geometry;
 
-			// How ArcTo works:
-			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
 			var roundRect = new SKRoundRect();
 			roundRect.SetRectRadii(area, radii);
 			geometry.AddRoundRect(roundRect);
