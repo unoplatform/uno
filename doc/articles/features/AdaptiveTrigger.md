@@ -87,7 +87,7 @@ This example demonstrates why developers must consider the order of their adapti
 The following demonstrates the same code, but re-written in a sequential order to generate the expected output:
 
 
-```XAML
+```xml
 <Page
     x:Class="UnoTutorial1.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
