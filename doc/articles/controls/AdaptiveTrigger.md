@@ -21,7 +21,7 @@ Each `<VisualState>` block has an adaptive trigger with a `MinWindowWidth` prope
 Example:
 
 
-```XAML
+```xml
 <Page
     x:Class="UnoTutorial1.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
