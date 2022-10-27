@@ -100,7 +100,8 @@ popd
 
 # Uno Library
 dotnet new unolib -n MyUnoLib
-& $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj
+# WinAppSDK is removed for now, until we can get net7 supported by msbuild/VS 17.4
+& $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj /p:TargetFrameworks="netstandard2.0;net6.0-ios;net6.0-macos;net6.0-maccatalyst;net6.0-android"
 Assert-ExitCodeIsZero
 
 #
