@@ -119,9 +119,9 @@ namespace Windows.UI.Xaml.Shapes
 					Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
 						.DisposeWith(disposables);
 				}
-								
-				var outerRadii = GetOuterRadii(cornerRadius, borderThickness, halfWidth, halfHeight);
-				var innerRadii = GetInnerRadii(cornerRadius, borderThickness);
+
+				var outerRadii = cornerRadius.GetRadii(new Size(area.Width, area.Height), borderThickness, true);
+				var innerRadii = cornerRadius.GetRadii(new Size(area.Width, area.Height), borderThickness, false);
 
 				var borderPath = GetRoundedRect(outerRadii, innerRadii, borderThickness, area, adjustedArea);
 
@@ -321,84 +321,13 @@ namespace Windows.UI.Xaml.Shapes
 
 			// How ArcTo works:
 			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
-
 			var roundRect = new SKRoundRect();
 			roundRect.SetRectRadii(area, radii);
 			geometry.AddRoundRect(roundRect);
 			geometry.Close();
 
 			return new CompositionPath(geometrySource);
-		}
-
-		internal static SKPoint[] GetOuterRadii(CornerRadius cornerRadius, Thickness borderThickness, float maxHorizontalRadius, float maxVerticalRadius)
-		{
-			var topLeft = cornerRadius.TopLeft > 0 ?
-				new SKPoint(
-					(float)Math.Min(maxHorizontalRadius, cornerRadius.TopLeft + borderThickness.Left / 2),
-					(float)Math.Min(maxVerticalRadius, cornerRadius.TopLeft + borderThickness.Top / 2)) :
-				new();
-
-			var topRight = cornerRadius.TopRight > 0 ?
-				new SKPoint(
-					(float)Math.Min(maxHorizontalRadius, cornerRadius.TopRight + borderThickness.Right / 2),
-					(float)Math.Min(maxVerticalRadius, cornerRadius.TopRight + borderThickness.Top / 2)) :
-				new();
-
-			var bottomRight = cornerRadius.BottomRight > 0 ?
-				new SKPoint(
-					(float)Math.Min(maxHorizontalRadius, cornerRadius.BottomRight + borderThickness.Right / 2),
-					(float)Math.Min(maxVerticalRadius, cornerRadius.BottomRight + borderThickness.Bottom / 2)) :
-				new();
-
-			var bottomLeft = cornerRadius.BottomLeft > 0 ?
-				new SKPoint(
-					(float)Math.Min(maxHorizontalRadius, cornerRadius.BottomLeft + borderThickness.Left / 2),
-					(float)Math.Min(maxVerticalRadius, cornerRadius.BottomLeft + borderThickness.Bottom / 2)) :
-				new();
-
-			return new[]
-			{
-				topLeft,
-				topRight,
-				bottomRight,
-				bottomLeft
-			};
-		}
-
-		internal static SKPoint[] GetInnerRadii(CornerRadius cornerRadius, Thickness borderThickness)
-		{
-			var topLeft = cornerRadius.TopLeft > 0 ?
-				new SKPoint(
-					(float)Math.Max(0, cornerRadius.TopLeft - borderThickness.Left / 2),
-					(float)Math.Max(0, cornerRadius.TopLeft - borderThickness.Top / 2)) :
-				new();
-
-			var topRight = cornerRadius.TopRight > 0 ?
-				new SKPoint(
-					(float)Math.Max(0, cornerRadius.TopRight - borderThickness.Right / 2),
-					(float)Math.Max(0, cornerRadius.TopRight - borderThickness.Top / 2)) :
-				new();
-
-			var bottomRight = cornerRadius.BottomRight > 0 ?
-				new SKPoint(
-					(float)Math.Max(0, cornerRadius.BottomRight - borderThickness.Right / 2),
-					(float)Math.Max(0, cornerRadius.BottomRight - borderThickness.Bottom / 2)) :
-				new();
-
-			var bottomLeft = cornerRadius.BottomLeft > 0 ?
-				new SKPoint(
-					(float)Math.Max(0, cornerRadius.BottomLeft - borderThickness.Left / 2),
-					(float)Math.Max(0, cornerRadius.BottomLeft - borderThickness.Bottom / 2)) :
-				new();
-
-			return new[]
-			{
-				topLeft,
-				topRight,
-				bottomRight,
-				bottomLeft
-			};
-		}
+		}		
 
 		private static CompositionPath GetRoundedRect(SKPoint[] outerRadii, SKPoint[] innerRadii, Thickness borderThickness, Rect area, Rect insetArea)
 		{
