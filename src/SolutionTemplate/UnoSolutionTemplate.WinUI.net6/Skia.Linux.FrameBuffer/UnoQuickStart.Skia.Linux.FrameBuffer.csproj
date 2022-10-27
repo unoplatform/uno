@@ -9,6 +9,9 @@
 	<ItemGroup Condition="exists('..\$ext_safeprojectname$.Windows')">
 		<EmbeddedResource Include="..\$ext_safeprojectname$.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 		<Content Include="..\$ext_safeprojectname$.Windows\Images\StoreLogo.png" Link="Assets\StoreLogo.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 	</ItemGroup>
 
