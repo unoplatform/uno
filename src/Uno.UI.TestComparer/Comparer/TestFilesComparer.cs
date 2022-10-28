@@ -149,20 +149,27 @@ namespace Uno.UI.TestComparer.Comparer
                             var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
                             if (hasChangedFromPrevious && previousFolderInfo != null)
                             {
-								var currentImage = DecodeImage(folderInfo.Path);
-								var previousImage = DecodeImage(previousFolderInfo.Path);
-
-								if (currentImage.pixels.Length == previousImage.pixels.Length)
+								try
 								{
-									var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
+									var currentImage = DecodeImage(folderInfo.Path);
+									var previousImage = DecodeImage(previousFolderInfo.Path);
 
-									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-									WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+									if (currentImage.pixels.Length == previousImage.pixels.Length)
+									{
+										var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
-									compareResultFileRun.DiffResultImage = diffFilePath;
+										var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+										WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+
+										compareResultFileRun.DiffResultImage = diffFilePath;
+									}
+
+									changedList.Add(testFile);
 								}
-
-								changedList.Add(testFile);
+								catch(Exception ex)
+								{
+									Console.WriteLine($"[ERROR] Failed to process [{folderInfo.Path}] and [{previousFolderInfo.Path}]\n({ex})");
+								}
                             }
 
 							GC.Collect(2, GCCollectionMode.Forced);
@@ -303,19 +310,26 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
 		{
-			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
+			try
 			{
-				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+				using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
+				{
+					var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-				var f = decoder.Frames[0];
-				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
-				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
-				sourceStride += (4 - sourceStride % 4);
+					var f = decoder.Frames[0];
+					var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
+					var sourceStride = f.PixelWidth * sourceBytesPerPixels;
+					sourceStride += (4 - sourceStride % 4);
 
-				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
-				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
+					var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
+					decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
 
-				return (decoder.Frames[0], image, sourceStride);
+					return (decoder.Frames[0], image, sourceStride);
+				}
+			}
+			catch(Exception ex)
+			{
+				throw new InvalidOperationException($"Unable to decode image {path1}", ex);
 			}
 		}
 
