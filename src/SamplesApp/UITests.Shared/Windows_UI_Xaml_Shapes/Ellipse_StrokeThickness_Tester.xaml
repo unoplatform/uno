@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Shapes.Ellipse_StrokeThickness_Tester"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d"
+			 d:DesignHeight="300"
+			 d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="8"
+					Width="400">
+			<Grid x:Name="MyBackgroundUnderneath"
+				  Width="{x:Bind ElementWidth, Mode=OneWay}"
+				  Height="{x:Bind ElementHeight, Mode=OneWay}"
+				  Background="White">
+				<!-- Using Red with 50% Opacity for the BorderBrush and Blue with 50% Opacity for the Background here -->
+				<!-- Easier to catch specific issues for the Background and Border that way compare to using opaque colors for this test -->
+				<Ellipse
+						Width="{x:Bind ElementWidth, Mode=OneWay}"
+						Height="{x:Bind ElementHeight, Mode=OneWay}"
+						x:Name="MyEllipse"
+						Fill="#800000FF"
+						Stroke="#80FF0000"
+						StrokeThickness="{x:Bind StrokeThickness, Mode=OneWay}" />
+				<Border BorderBrush="Yellow"
+						x:Name="LeftTarget"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="TopTarget"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Top"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="RightTarget"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Center"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="BottomTarget"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Bottom"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="CenterTarget"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="TopLeftTarget"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="TopRightTarget"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="BottomLeftTarget"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Bottom"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+				<Border BorderBrush="Yellow"
+						x:Name="BottomRightTarget"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Bottom"
+						BorderThickness="1"
+						Height="10"
+						Width="10" />
+			</Grid>
+
+			<!-- Stroke thickness -->
+			<StackPanel Orientation="Horizontal"
+						Spacing="10">
+				<TextBlock Text="Stroke thickness:" FontWeight="Bold" VerticalAlignment="Center" />
+			</StackPanel>
+			<Slider Minimum="0"
+					Maximum="100"
+					x:Name="StrokeThicknessSlider"
+					Value="{x:Bind StrokeThickness, Mode=TwoWay}" />
+
+			<!-- Element size -->
+			<StackPanel Orientation="Horizontal"
+						Spacing="8">
+				<TextBlock Text="Size:" FontWeight="Bold" VerticalAlignment="Center" />
+				<CheckBox Content="Lock"
+						  VerticalAlignment="Center"
+						  x:Name="LockSizeCheck"
+						  IsChecked="{x:Bind LockSize, Mode=TwoWay}" />
+			</StackPanel>
+			<Slider Header="Width:"
+					Minimum="0"
+					Maximum="200"
+					x:Name="WidthSlider"
+					Value="{x:Bind ElementWidth, Mode=TwoWay}" />
+			<Slider Header="Height:"
+					Minimum="0"
+					Maximum="200"
+					x:Name="HeightSlider"
+					Value="{x:Bind ElementHeight, Mode=TwoWay}" />	
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
