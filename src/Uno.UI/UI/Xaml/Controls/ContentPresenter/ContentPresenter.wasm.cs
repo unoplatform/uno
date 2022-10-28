@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCornerRadius(CornerRadius radius)
 		{
-			SetCornerRadius(radius);
+			SetCornerRadius(radius, BorderThickness);
 		}
 
 		private void UpdateBorder()

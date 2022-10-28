@@ -218,8 +218,8 @@ namespace Windows.UI.Xaml
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		protected void SetCornerRadius(CornerRadius cornerRadius)
-			=> BorderLayerRenderer.SetCornerRadius(this, cornerRadius);
+		protected void SetCornerRadius(CornerRadius cornerRadius, Thickness thickness)
+			=> BorderLayerRenderer.SetCornerRadius(this, cornerRadius, thickness);
 
 		protected void SetBorder(Thickness thickness, Brush brush)
 			=> BorderLayerRenderer.SetBorder(this, thickness, brush);

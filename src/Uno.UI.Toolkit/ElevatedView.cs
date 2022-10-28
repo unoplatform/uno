@@ -191,7 +191,7 @@ namespace Uno.UI.Toolkit
 			{
 #if __WASM__
 				this.SetElevationInternal(Elevation, ShadowColor);
-				this.SetCornerRadius(CornerRadius);
+				this.SetCornerRadius(CornerRadius, default);
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__

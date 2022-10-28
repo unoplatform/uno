@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			SetCornerRadius(newValue);
+			SetCornerRadius(newValue, BorderThickness);
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)

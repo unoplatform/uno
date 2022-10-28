@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			SetCornerRadius(newValue);
+			SetCornerRadius(newValue, BorderThicknessInternal);
 		}
 
 		/// <summary>        

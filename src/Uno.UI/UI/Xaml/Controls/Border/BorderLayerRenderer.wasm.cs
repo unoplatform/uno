@@ -6,6 +6,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -35,20 +36,21 @@ namespace Windows.UI.Xaml.Shapes
 				subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, background);
 			}
 
+			bool borderThicknessChanged = _border.Item2 != borderThickness;
 			if (_border != (borderBrush, borderThickness))
 			{
 				_border = (borderBrush, borderThickness);
 				SetBorder(element, borderThickness, borderBrush);
 			}
 
-			if (_cornerRadius != cornerRadius)
+			if (_cornerRadius != cornerRadius || borderThicknessChanged)
 			{
 				_cornerRadius = cornerRadius;
-				SetCornerRadius(element, cornerRadius);
+				SetCornerRadius(element, cornerRadius, borderThickness);
 			}
 		}
 
-		public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
+		public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius, Thickness borderThickness)
 		{
 			if (cornerRadius == CornerRadius.None)
 			{
@@ -56,7 +58,16 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				var borderRadiusCssString = $"min(50%,{cornerRadius.TopLeft.ToStringInvariant()}px) min(50%,{cornerRadius.TopRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomLeft.ToStringInvariant()}px)";
+				var outerRadii = cornerRadius.GetRadii(new Size(100000, 100000), borderThickness, true);
+
+				var borderRadiusCssString =
+					$"{outerRadii.TopLeft.X.ToStringInvariant()}px {outerRadii.TopRight.X.ToStringInvariant()}px " +
+					$"{outerRadii.BottomRight.X.ToStringInvariant()}px {outerRadii.BottomLeft.X.ToStringInvariant()}px / " +
+					$"{outerRadii.TopLeft.Y.ToStringInvariant()}px {outerRadii.TopRight.Y.ToStringInvariant()}px " +
+					$"{outerRadii.BottomRight.Y.ToStringInvariant()}px {outerRadii.BottomLeft.Y.ToStringInvariant()}px";
+				global::System.Diagnostics.Debug.WriteLine(borderRadiusCssString);
+				global::System.Console.WriteLine(borderRadiusCssString);
+				
 				element.SetStyle(
 					("border-radius", borderRadiusCssString),
 					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
