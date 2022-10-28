@@ -47,6 +47,9 @@ A complete set of instructions for authoring UI tests is available [here](../../
 
 Although only a subset of the samples in the SamplesApp are covered by automated UI tests, _all_ samples are screen-shotted on every build, and a reporting tool (currently WASM-only) reports any screenshots that differ from the previous build. Currently the build isn't gated on these checks, but this may be adjusted in the future.
 
+> [!NOTE]
+> Platform runtime unit tests are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
+
 ### .NET Framework unit tests (`Uno.UI.Tests`)
 
 These are 'classic' unit tests which are built against a mocked version of the `Uno.UI` assembly targeting .NET Framework.
