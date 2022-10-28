@@ -1,7 +1,7 @@
 parameters:
-  DotNetVersion: '6.0.401'
-  UnoCheck_Version: '1.5.4'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
+  DotNetVersion: '7.0.100-rc.2.22477.23'
+  UnoCheck_Version: '1.6.0-dev.40'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/834e09137443e3afcd3cc90f55cb405dd26831bf/manifests/uno.ui-preview.manifest.json'
 
 steps:
 

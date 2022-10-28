@@ -3,13 +3,27 @@
 
   <PropertyGroup>
 	<IsMonoAndroid>false</IsMonoAndroid>
-	<IsMonoAndroid Condition="'$(TargetFramework)'=='net6.0-android' or $(TargetFramework.ToLower().StartsWith('monoandroid'))">true</IsMonoAndroid>
+	<IsMonoAndroid Condition="
+				   '$(TargetFramework)'=='net6.0-android'
+				   or '$(TargetFramework)'=='net7.0-android'
+				   or $(TargetFramework.ToLower().StartsWith('monoandroid'))
+				   ">true</IsMonoAndroid>
 
 	<IsXamarinIOS>false</IsXamarinIOS>
-	<IsXamarinIOS Condition="'$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst' or $(TargetFramework.ToLower().StartsWith('xamarinios'))">true</IsXamarinIOS>
+	<IsXamarinIOS Condition="
+				  '$(TargetFramework)'=='net6.0-ios'
+				  or '$(TargetFramework)'=='net6.0-maccatalyst'
+				  or '$(TargetFramework)'=='net7.0-ios'
+				  or '$(TargetFramework)'=='net7.0-maccatalyst'
+				  or $(TargetFramework.ToLower().StartsWith('xamarinios'))
+				  ">true</IsXamarinIOS>
 
 	<IsXamarinMac>false</IsXamarinMac>
-	<IsXamarinMac Condition="$(TargetFramework.ToLower().StartsWith('xamarinmac')) or '$(TargetFramework)'=='net6.0-macos'">true</IsXamarinMac>
+	<IsXamarinMac Condition="
+				  $(TargetFramework.ToLower().StartsWith('xamarinmac'))
+				  or '$(TargetFramework)'=='net6.0-macos'
+				  or '$(TargetFramework)'=='net7.0-macos'
+				  ">true</IsXamarinMac>
 	
 	<IsReferenceAPI>false</IsReferenceAPI>
 	<IsReferenceAPI Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">true</IsReferenceAPI>

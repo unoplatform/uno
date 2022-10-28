@@ -30,7 +30,9 @@
 		</Otherwise>
 	</Choose>
 
-	<Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android'">
+	<Target Name="AndroidResourceGenWorkaround"
+			BeforeTargets="Build"
+			Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android' and '$(TargetFramework)'!='net7.0-android'">
 	<MakeDir Directories="obj\$(TargetFramework)\Resources" />
 	<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
@@ -106,21 +108,28 @@
 	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.5.2" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
-	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-	  <!-- <PackageReference Include="xamarin.androidx.vectordrawable" Version="1.1.0" excludeAssets="buildTransitive" />-->
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
 	<PackageReference Update="Xamarin.Build.Download" Version="0.11.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
+	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
+	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
   </ItemGroup>
 
   <Target Name="ValidateSolutionPath" BeforeTargets="Build">
