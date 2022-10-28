@@ -165,6 +165,7 @@
 	-->
 	<Target Name="_UnoWasmContentAdjust"
 			Condition="'$(WasmShellSupportsBuildOutputGroups)'!='true'"
+			DependsOnTargets="GetCopyToOutputDirectoryItems"
 			BeforeTargets="BuildDist">
 		<ItemGroup>
 			<Content Include="@(_SourceItemsToCopyToOutputDirectory)"
