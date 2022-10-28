@@ -870,6 +870,10 @@
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-ios" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-macos" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-android30.0" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-ios" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-macos" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
