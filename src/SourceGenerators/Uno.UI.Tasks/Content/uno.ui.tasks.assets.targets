@@ -4,6 +4,11 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
 			   TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0" />
 
+	<PropertyGroup>
+		<_UnoDirectorySeparator Condition="'$(OS)' == 'Unix'">/</_UnoDirectorySeparator>
+		<_UnoDirectorySeparator Condition="'$(OS)' == 'Windows_NT'">\</_UnoDirectorySeparator>
+	</PropertyGroup>
+
 	<Target Name="_DefineUnoPriProperties">
 		<!-- Generate Library Layout when generating NuGet packages -->
 		<PropertyGroup Condition="'$(UnoSkipLibraryLayout)' != 'true'">
@@ -146,7 +151,7 @@
 
 		<ItemGroup>
 			<_AllChildProjectItemsWithTargetPath Include="@(ContentFilesProjectOutputGroupOutput)">
-				<TargetPath Condition="'$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath)\%(ContentFilesProjectOutputGroupOutput.TargetPath)</TargetPath>
+				<TargetPath Condition="'$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentFilesProjectOutputGroupOutput.TargetPath)</TargetPath>
 				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			</_AllChildProjectItemsWithTargetPath>
 
