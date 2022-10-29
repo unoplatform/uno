@@ -12,4 +12,5 @@ This page lists links our community provided tutorials.
 - [Uno Platform on Surface Duo](https://devblogs.microsoft.com/surface-duo/tag/uno-platform/), by Craig Dunn
 - [Introduction to Uno Platform](https://ronicasingh.hashnode.dev/introduction-to-uno-platform), by Ronica Singh
 - [Creating your First Uno Platform Application](https://ronicasingh.hashnode.dev/creating-your-first-uno-platform-application), by Ronica Singh
+- [Uno Platform and its Fluent app design](https://ronicasingh.hashnode.dev/uno-platform-and-its-fluent-app-design), by Ronica Singh
 - _Create a PR tp add yours here!_
