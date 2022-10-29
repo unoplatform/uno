@@ -112,7 +112,7 @@
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net7.0\webassembly" />
 
 		<!-- net7.0 Skia -->
-		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net7.0skia" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net7.0\skia" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net7.0\skia" />
 
 		<file src="..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="build" />

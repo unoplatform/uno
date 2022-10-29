@@ -29,7 +29,6 @@
 				</Folder>
 			</Folder>
 
-			<ProjectItem TargetFileName="$ext_safeprojectname$.Shared.globs.props" ReplaceParameters="true" ItemType="None">UnoQuickStart.Shared.globs.props</ProjectItem>
 			<ProjectItem TargetFileName="$ext_safeprojectname$.Shared.projitems" ReplaceParameters="true">UnoQuickStart.Shared.projitems</ProjectItem>
 			<ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">app.xaml</ProjectItem>
 			<ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">app.xaml.cs</ProjectItem>

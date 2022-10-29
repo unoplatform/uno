@@ -33,6 +33,9 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<UseWPF>true</UseWPF>
+
+		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net472'">
