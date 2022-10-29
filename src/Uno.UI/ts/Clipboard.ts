@@ -125,6 +125,14 @@ namespace Uno.Utils {
 			return null;
 		}
 
+		public static async getDataAsJson(mime: string): Promise<string> {
+			var result = await Clipboard.getData(mime);
+			if (!result) {
+				return null;
+			}
+			return JSON.stringify(result);
+		}
+
 		private static onClipboardChanged() {
 			if (!Clipboard.dispatchContentChanged) {
 				Clipboard.dispatchContentChanged =
