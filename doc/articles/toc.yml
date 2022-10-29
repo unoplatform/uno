@@ -317,7 +317,7 @@
                 - name: ElevatedView
                   href: features/ElevatedView.md
                 - name: AdaptiveTrigger
-                  href: AdaptiveTrigger.md
+                  href: features/AdaptiveTrigger.md
                 - name: Other features
                   href: Uno.UI.Toolkit.md
             - name: Uno Material
