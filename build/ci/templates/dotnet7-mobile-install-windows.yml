@@ -17,6 +17,7 @@ steps:
   #  retryCountOnTaskFailure: 3
   - task: UseDotNet@2
     displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
+    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
     retryCountOnTaskFailure: 3
     inputs:
       packageType: sdk
@@ -30,5 +31,6 @@ steps:
       & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
     errorActionPreference: continue
+    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3

@@ -1,0 +1,50 @@
+parameters:
+  DotNetVersion: '6.0.401'
+  UnoCheck_Version: '1.5.4'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
+  Dotnet_Root: '/usr/local/share/dotnet/'
+  Dotnet_Tools: '~/.dotnet/tools'
+
+steps:
+  - task: UseDotNet@2
+    displayName: install .NET 5
+    retryCountOnTaskFailure: 3
+    inputs:
+      version: 5.x
+      installationPath: ${{ parameters.Dotnet_Root }}
+
+  - task: UseDotNet@2
+    displayName: install .NET 3.1
+    retryCountOnTaskFailure: 3
+    inputs:
+      version: 3.1.x
+      installationPath: ${{ parameters.Dotnet_Root }}
+
+  # Required until .NET 6 installs properly using UseDotnet
+  # using preview builds
+  #- bash: |
+  #    export PATH="${{ parameters.Dotnet_Root }}:${{ parameters.Dotnet_Tools }}:$PATH"
+  #    curl -L https://raw.githubusercontent.com/dotnet/install-scripts/11b4eebe23d871c074364940d301c3eb53e7c7ec/src/dotnet-install.sh > dotnet-install.sh
+  #    sh dotnet-install.sh --version ${{ parameters.DotNetVersion }} --install-dir $DOTNET_ROOT --verbose
+  #    dotnet --list-sdks
+  #    echo "##vso[task.setvariable variable=PATH]$PATH"
+  #  displayName: install .NET ${{ parameters.DotNetVersion }}
+  #  retryCountOnTaskFailure: 3
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
+    retryCountOnTaskFailure: 3
+    condition: and(succeeded(), ne(variables.UnoDisableNet6Mobile, 'true'))
+    inputs:
+      packageType: sdk
+      version: ${{ parameters.DotNetVersion }}
+      includePreviewVersions: true
+
+  - template: jdk-setup.yml
+
+  - bash: |
+      dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      uno-check --ci --non-interactive --fix --skip androidsdk --skip gtk3 --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
+    displayName: Install .NET Workloads
+    condition: and(succeeded(), ne(variables.UnoDisableNet6Mobile, 'true'))
+    retryCountOnTaskFailure: 3

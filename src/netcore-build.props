@@ -1,8 +1,9 @@
 <Project ToolsVersion="15.0">
 
-  <PropertyGroup Condition="'$(UnoUIDisableNet7Build)'=='' and '$(MSBuildRuntimeType)'=='Core'">
-	<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
-	<TargetFrameworksCI>$(TargetFrameworks);net7.0</TargetFrameworksCI>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(UnoUIDisableNet7Build)'=='' and '$(MSBuildRuntimeType)'=='Core'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworksCI>$(TargetFrameworks);net7.0</TargetFrameworksCI>
+	</PropertyGroup>
 
+	<Import Project="uno.mobile-cross-targeting-disable.props" />
 </Project>

@@ -56,7 +56,7 @@ jobs:
   # msbuild (and not `dotnet`), and VS 17.3 only supports building for .NET 6.
   - template: templates/dotnet-install.yml
 
-  - template: templates/dotnet6-install-windows.yml
+  - template: templates/dotnet7-mobile-install-windows.yml
   - template: templates/update-vs-components.yml
 
   - template: templates/install-windows-sdk.yml
