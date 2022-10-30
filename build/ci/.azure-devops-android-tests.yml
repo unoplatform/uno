@@ -35,7 +35,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet6-install-mac.yml
+  - template: templates/dotnet7-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
