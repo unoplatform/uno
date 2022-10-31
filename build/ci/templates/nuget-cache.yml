@@ -33,3 +33,6 @@ steps:
     inputs:
       artifactName: 'nuget-packages-cache'
       targetPath: $(NUGET_PACKAGES)
+      itemPattern: |
+        **
+        !**/*.nupkg
