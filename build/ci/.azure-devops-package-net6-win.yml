@@ -37,6 +37,9 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
+    # Enable nuget package cache restoration
+    enable_package_cache_restore: true
+
   steps:
   - checkout: self
     clean: true

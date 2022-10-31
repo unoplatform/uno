@@ -14,8 +14,22 @@ steps:
     displayName: Compress nuget package cache folder
 
   - task: Cache@2
-    condition: eq(variables['enable_package_cache'], 'true')
+    condition: eq(variables['enable_azdo_package_cache'], 'true')
     inputs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
       path: ${{ parameters.nugetPackages }}
     displayName: Restore NuGet packages cache
+
+  - task: Cache@2
+    condition: eq(variables['enable_azdo_package_cache'], 'true')
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
+      path: ${{ parameters.nugetPackages }}
+    displayName: Restore NuGet packages cache
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring NuGet package cache
+    condition: eq(variables['enable_package_cache_restore'], 'true')
+    inputs:
+      artifactName: 'nuget-packages-cache'
+      targetPath: $(NUGET_PACKAGES)

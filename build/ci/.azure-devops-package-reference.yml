@@ -25,6 +25,9 @@ jobs:
     CI_Build: true
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
+    # Enable nuget package cache restoration
+    enable_package_cache_restore: true
+
   steps:
   - checkout: self
     clean: true

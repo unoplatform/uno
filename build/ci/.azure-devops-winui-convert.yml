@@ -16,6 +16,8 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
+    enable_package_cache: true
+
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI 
 
@@ -71,3 +73,11 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts
       ArtifactType: Container
+
+  - task: PublishPipelineArtifact@1
+    condition: eq(variables['enable_package_cache'], 'true')
+    displayName: Publish nuget cache
+    inputs:
+      targetPath: '$(NUGET_PACKAGES)'
+      artifactName: 'nuget-packages-cache'
+      parallel: true

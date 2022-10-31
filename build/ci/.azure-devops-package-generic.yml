@@ -24,6 +24,9 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
+    # Enable nuget package cache restoration
+    enable_package_cache_restore: true
+
     # Disable .NET 5 build on CI for package generation
     # Build validation is performed on other jobs
     UnoUIDisableNet7Build: true
