@@ -1,8 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<PropertyGroup>
+		<_UnoRemoveReferences_BeforeTargets>
+			$(_UnoRemoveReferences_BeforeTargets);
+			FindReferenceAssembliesForReferences;
+			MarkupCompilePass1;
+		</_UnoRemoveReferences_BeforeTargets>
+	</PropertyGroup>
+
 	<Target Name="_UnoRemoveReferences"
-			BeforeTargets="FindReferenceAssembliesForReferences">
+			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
 		<ItemGroup>
 			<_UnoReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.UI' or '%(ReferencePath.NuGetPackageId)'=='Uno.WinUI'" />
 			<ReferencePath Remove="@(_UnoReferencePathToRemove)" />
