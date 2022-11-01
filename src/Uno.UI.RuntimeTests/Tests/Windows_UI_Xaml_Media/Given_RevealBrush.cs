@@ -4,10 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -55,5 +60,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.AreEqual(43, siblingBorder.ActualWidth, delta);
 			Assert.AreEqual(22, siblingBorder.ActualHeight);
 		}
+
+		[TestMethod]
+		public async Task When_FallbackColor_Set()
+		{
+#if __MACOS__
+			Assert.Inconclusive(); //Currently fails on macOS, part of #9282 epic. Coodinates outside of image.
+#endif
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			const string Orange = "#FFFFA500";
+			const string ForestGreen = "#FF228B22";
+
+			var SUT = new RevealBrush_Fallback();
+			var initial = await TakeScreenshot(SUT);
+
+			var grid = SUT.RevealGrid;
+			var gridCR = SUT.RevealGridCR;
+			var border = SUT.RevealBorder;
+			var borderCR = SUT.RevealBorderCR;
+			await WindowHelper.WaitForIdle();
+
+			var views = new FrameworkElement[]
+			{
+				grid,
+				gridCR,
+				border,
+				borderCR,
+			};
+
+			foreach (var view in views)
+			{
+				AssertHasColor(view, initial, Orange);
+			}
+
+			WindowHelper.WindowContent = SUT;
+			SUT.MakeItGreen();
+			await WindowHelper.WaitForIdle();
+
+			var after = await TakeScreenshot(SUT);
+
+			foreach (var view in views)
+			{
+				AssertHasColor(view, after, ForestGreen);
+			}
+		}
+
+		private void AssertHasColor(FrameworkElement element, RawBitmap screenshot, string expectedColor)
+		{
+			ImageAssert.HasColorAtChild(screenshot, element, (float)element.Width / 2, (float)element.Height / 2, expectedColor);
+		}
+
+		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+		{
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			var renderer = new RenderTargetBitmap();
+			await WindowHelper.WaitForIdle();
+			await renderer.RenderAsync(SUT);
+			var result = await RawBitmap.From(renderer, SUT);
+			await WindowHelper.WaitForIdle();
+			return result;
+		}
 	}
 }
+

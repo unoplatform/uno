@@ -200,7 +200,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			await WindowHelper.WaitForIdle();
 			return result;
 		}
-
 		private void Assert(FrameworkElement SUT, RawBitmap result, float x, float y, string color)
 		{
 			float border = 3; 
