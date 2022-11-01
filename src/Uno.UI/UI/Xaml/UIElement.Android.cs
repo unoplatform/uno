@@ -1,4 +1,4 @@
-﻿using Uno.UI;
+using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
@@ -180,9 +180,7 @@ namespace Windows.UI.Xaml
 		{
 			if (cornerRadius != CornerRadius.None)
 			{
-				var rect = new RectF(canvas.ClipBounds);
-				var clipPath = cornerRadius.GetOutlinePath(rect);
-				canvas.ClipPath(clipPath);
+				UIElementNative.AdjustCornerRadius(canvas, cornerRadius.GetRadii());
 			}
 		}
 
