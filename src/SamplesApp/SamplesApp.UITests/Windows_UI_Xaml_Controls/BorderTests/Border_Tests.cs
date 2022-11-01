@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using SamplesApp.UITests._Utils;
 using SamplesApp.UITests.TestFramework;
 using SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests;
@@ -33,31 +34,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			ImageAssert.AreEqual(before, after);
 		}
-
+		
 		[Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moves to when an equivalent of TakesScreenshot exist for that target
+		[ActivePlatforms(Platform.Browser)]
 		public void Check_CornerRadius_Border_Basic()
 		{
 			const string white = "#FFFFFF";
 
 			// Verify that border is drawn with CornerRadius
 			Run("Uno.UI.Samples.UITests.BorderTestsControl.Border_CornerRadius", skipInitialScreenshot: true);
-
+			
+			using var result = TakeScreenshot("sample");
 			var sample = _app.GetPhysicalRect("Sample1");
 			var eighth = sample.Width / 8;
-
-			using var result = TakeScreenshot("sample");
+			
 
 			ImageAssert.HasPixels(
 				result,
 				ExpectedPixels.At(sample.X + eighth, sample.Y + eighth).Named("top left corner").Pixel(white),
 				ExpectedPixels.At(sample.Right - eighth, sample.Y + eighth).Named("top right corner").Pixel(white),
-				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").WithPixelTolerance(1, 1).Pixel(white),
 				ExpectedPixels.At(sample.X + eighth, sample.Bottom - eighth).Named("bottom left corner").Pixel(white)
 			);
 
-#if __WASM__
-			// See https://github.com/unoplatform/uno/issues/5440 for the scenario being tested.
+#if __WASM__ // See https://github.com/unoplatform/uno/issues/5440 for the scenario being tested.
 			var sample2 = _app.GetPhysicalRect("Sample2");
 
 			var top = sample2.Y + 1;
@@ -106,6 +109,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 		[Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moves to when an equivalent of TakesScreenshot exist for that target
+		[ActivePlatforms(Platform.Browser)]
 		public void Border_CornerRadius_BorderThickness()
 		{
 			// White Background color underneath
@@ -180,6 +186,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 		[Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moves to when an equivalent of TakesScreenshot exist for that target
+		[ActivePlatforms(Platform.Browser)]
 		public void Border_CornerRadius_Clipping()
 		{
 			const string red = "#FF0000";
@@ -218,7 +227,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
+		//For other platform the test have been moved to runtime
+		//It will be moves to when an equivalent of TakesScreenshot exist for that target
+		[ActivePlatforms(Platform.Browser)] 
 		public void Border_LinearGradient()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_LinearGradientBrush");
@@ -236,6 +247,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 		[Test]
 		[AutoRetry]
+		//For other platform the test have been moved to runtime
+		//It will be moves to when an equivalent of TakesScreenshot exist for that target
+		[ActivePlatforms(Platform.Browser)]
 		public void Border_CornerRadius_GradientBrush()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Gradient");
