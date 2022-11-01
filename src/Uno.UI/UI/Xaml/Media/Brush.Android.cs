@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Graphics;
 using Uno.Extensions;
 using Uno.Disposables;
+using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Rect = Windows.Foundation.Rect;
@@ -191,11 +192,9 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			var drawable = new PaintDrawable();
-			drawable.Shape = new PathShape(maskingPath, (float)drawArea.Width, (float)drawArea.Height);
-			var paint = drawable.Paint;
-			paint.Color = fillPaint.Color;
-			paint.SetShader(fillPaint.Shader);
-			paint.AntiAlias = antiAlias;
+
+			BrushNative.BuildBackgroundCornerRadius(drawable, maskingPath, fillPaint, antiAlias, (float)drawArea.Width, (float)drawArea.Height);
+
 			return drawable;
 		}
 	}
