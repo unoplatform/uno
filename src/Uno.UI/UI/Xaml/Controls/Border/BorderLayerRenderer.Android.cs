@@ -1,4 +1,4 @@
-﻿#pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
+#pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
 
 using Android.Graphics;
 using Android.Graphics.Drawables;
@@ -336,13 +336,11 @@ namespace Windows.UI.Xaml.Controls
 				if (borderPath != null)
 				{
 					borderPath.SetFillType(Path.FillType.EvenOdd);
+
 					var drawable = new PaintDrawable();
-					drawable.Shape = new PathShape(borderPath, viewSize.Width, viewSize.Height);
-					var paint = drawable.Paint;
-					paint.Color = strokePaint.Color;
-					paint.SetShader(strokePaint.Shader);
-					paint.SetStyle(Paint.Style.FillAndStroke);
-					paint.Alpha = strokePaint.Alpha;
+
+					BorderLayerRendererNative.BuildBorderCornerRadius(drawable, borderPath, strokePaint, viewSize.Width, viewSize.Height);
+
 					return drawable;
 				}
 				else if (!viewSize.IsEmpty)
