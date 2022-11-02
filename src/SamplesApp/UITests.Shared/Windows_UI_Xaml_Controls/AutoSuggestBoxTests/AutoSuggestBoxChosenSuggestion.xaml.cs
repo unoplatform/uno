@@ -6,39 +6,12 @@ using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 {
-	public class Author
-	{
-		public static Author[] All = new Author[]
-											{
-														new Author { Name = "A0" },
-														new Author { Name = "A1" },
-														new Author { Name = "A2" },
-														new Author { Name = "A3" },
-														new Author { Name = "B0" },
-														new Author { Name = "B1" },
-														new Author { Name = "B2" },
-														new Author { Name = "B3" },
-														new Author { Name = "a0" },
-														new Author { Name = "a1" },
-														new Author { Name = "a2" },
-														new Author { Name = "a3" },
-											};
-
-		public string Name { get; set; } = string.Empty;
-
-		public override string ToString() => Name;
-	}
-
-	public class Book
-	{	
-		public Author Author { get; set; }		
-	}   
-
 	[SampleControlInfo("AutoSuggestBox", nameof(AutoSuggestBoxChosenSuggestion))]
 	public sealed partial class AutoSuggestBoxChosenSuggestion : UserControl
 	{
