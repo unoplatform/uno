@@ -2,7 +2,7 @@
 
 This article details the migration steps required to migrate from one version to the next.
 
-### Uno Platform 4.5
+### Uno 4.5
 
 #### ElevatedView
 
@@ -10,7 +10,7 @@ The built-in `ElevatedView` control has undergone a visual unification, which me
 
 ### Uno 4.1
 
-### Android 12 support
+#### Android 12 support
 Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
 
 Additionally, here are some specific hints about the migration to Android 12:
