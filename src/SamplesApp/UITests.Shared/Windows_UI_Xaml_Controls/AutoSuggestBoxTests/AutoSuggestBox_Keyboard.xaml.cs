@@ -35,7 +35,9 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 	{
 		this.InitializeComponent();
 
-		Book.PropertyChanged += (s, e) =>
+		((AutoSuggestConverter)Resources["AutoSuggestConverter"]).AutoSuggestBox = TestAutoSuggestBox;
+
+		Book.AuthorChanged += (s, e) =>
 		{
 			OutputTextBlock.Text = $"New author = '{Book.Author}'";
 		};
@@ -53,7 +55,7 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 
 	private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox s, AutoSuggestBoxQuerySubmittedEventArgs e)
 	{
-		s.Text = e.ChosenSuggestion?.ToString();
+		s.Text = e.ChosenSuggestion?.ToString() ?? "";
 		s.ItemsSource = null;
 
 		await new ContentDialog
@@ -68,6 +70,8 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 
 public class AutoSuggestConverter : IValueConverter
 {
+	public AutoSuggestBox AutoSuggestBox { get; set; }
+
 	public object Convert(object value, Type targetType, object parameter, string language)
 	{
 		if (value == null)
@@ -78,7 +82,7 @@ public class AutoSuggestConverter : IValueConverter
 
 	public object ConvertBack(object value, Type targetType, object parameter, string language)
 	{
-		var result = ((parameter as AutoSuggestBox)?.ItemsSource as IList)?.Cast<object>().FirstOrDefault(i => i.ToString() == (value as string));
+		var result = (AutoSuggestBox?.ItemsSource as IList)?.Cast<object>().FirstOrDefault(i => i.ToString() == (value as string));
 		return result;
 	}
 }

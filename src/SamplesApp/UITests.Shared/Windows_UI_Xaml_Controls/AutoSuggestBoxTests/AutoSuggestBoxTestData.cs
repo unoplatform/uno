@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using SamplesApp;
 
 namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
@@ -29,7 +30,7 @@ public class Author
 	}
 }
 
-public class Book : INotifyPropertyChanged
+public class Book
 {
 	private Author author;
 
@@ -40,9 +41,9 @@ public class Book : INotifyPropertyChanged
 		{
 			author = value;
 
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Author)));
+			AuthorChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
-	public event PropertyChangedEventHandler PropertyChanged;
+	public event EventHandler AuthorChanged;
 }
