@@ -459,6 +459,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			Assert.AreEqual(button, focused);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Focus_Shifts_Between_Children()
+		{
+			var button1 = new Button() { Content = "First button" };
+			var button2 = new Button() { Content = "Second button" };
+			var stackPanel = new StackPanel();
+			stackPanel.Children.Add(button1);
+			stackPanel.Children.Add(button2);
+			FocusLostTestControl control = new FocusLostTestControl();
+			control.Content = stackPanel;
+			TestServices.WindowHelper.WindowContent = control;
+
+			bool gotFocus = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			control.GettingFocus += (s, e) => gotFocus = true;
+			button1.Focus(FocusState.Programmatic);
+
+			Assert.IsTrue(gotFocus);
+
+			bool fail = true;
+
+			button2.Focus(FocusState.Programmatic);
+
+			await Task.Delay(1000);
+			Assert.IsFalse(control.DidLoseFocus);
+		}
+
+		internal partial class FocusLostTestControl : ContentControl
+		{
+			public bool DidLoseFocus { get; set; } = false;
+
+			protected override void OnLostFocus(RoutedEventArgs e)
+			{
+				DidLoseFocus = true;
+			}
+		}
+
 		private async Task WaitForLoadedEvent(FocusNavigationPage page)
 		{
 			await TestServices.WindowHelper.WaitFor(() => page.LoadedEventFinished);

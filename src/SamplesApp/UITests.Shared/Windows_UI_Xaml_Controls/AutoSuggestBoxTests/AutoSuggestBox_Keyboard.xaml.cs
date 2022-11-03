@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using MUXControlsTestApp.Utilities;
 using SamplesApp;
 using UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -34,6 +37,10 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 	public AutoSuggestBox_Keyboard()
 	{
 		this.InitializeComponent();
+		FocusManager.GettingFocus += FocusManager_GettingFocus;
+		FocusManager.LosingFocus += FocusManager_LosingFocus;
+		TestAutoSuggestBox.LosingFocus += TestAutoSuggestBox_LosingFocus;
+		TestAutoSuggestBox.LostFocus += TestAutoSuggestBox_LostFocus;
 
 		((AutoSuggestConverter)Resources["AutoSuggestConverter"]).AutoSuggestBox = TestAutoSuggestBox;
 
@@ -41,6 +48,49 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 		{
 			OutputTextBlock.Text = $"New author = '{Book.Author}'";
 		};
+
+		Loaded += AutoSuggestBox_Keyboard_Loaded;
+	}
+
+	private void AutoSuggestBox_Keyboard_Loaded(object sender, RoutedEventArgs e)
+	{
+		var list = GetListView();
+		list.SelectionChanged += AutoSuggestBox_Keyboard_SelectionChanged;
+	}
+
+	private ListViewBase GetListView()
+	{
+		var popupControl = (Windows.UI.Xaml.Controls.Primitives.Popup)VisualTreeUtils.FindVisualChildByName(TestAutoSuggestBox, "SuggestionsPopup");
+		
+		return popupControl.Child.FindFirstChild<ListViewBase>();
+	}
+
+	private void AutoSuggestBox_Keyboard_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
+		var list = GetListView();
+		if (list is not null)
+		{
+			Debug.WriteLine($"Selection changed to {list.SelectedItem}");
+		}
+	}
+
+	private void TestAutoSuggestBox_LosingFocus(UIElement sender, LosingFocusEventArgs e)
+	{
+		Debug.WriteLine($"AutoSuggestBox Losing focus: {e.OldFocusedElement}, new: {e.NewFocusedElement}");
+	}
+
+	private void TestAutoSuggestBox_LostFocus(object sender, RoutedEventArgs e)
+	{
+		Debug.WriteLine("AutoSuggestBox lost focus");
+	}
+
+	private void FocusManager_LosingFocus(object sender, LosingFocusEventArgs e)
+	{
+		Debug.WriteLine($"Losing focus: {e.OldFocusedElement}, new: {e.NewFocusedElement}");
+	}
+	private void FocusManager_GettingFocus(object sender, GettingFocusEventArgs e)
+	{
+		Debug.WriteLine($"Getting focus: {e.OldFocusedElement}, new: {e.NewFocusedElement}");
 	}
 
 	public Book Book { get; } = new Book { Author = new Author { Name = "A0" } };
@@ -51,7 +101,7 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 		{
 			s.ItemsSource = Author.All.Where(a => a.Name.StartsWith(s.Text?.Trim())).ToArray();
 		}
-	}	
+	}
 
 	private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox s, AutoSuggestBoxQuerySubmittedEventArgs e)
 	{
