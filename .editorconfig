@@ -233,7 +233,7 @@ dotnet_style_qualification_for_property = false:suggestion
 # https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
 dotnet_diagnostic.RS0030.severity = error
 
-dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
+dotnet_analyzer_diagnostic.category-Performance.severity = error
 
 # CA1805: Do not initialize unnecessarily
 dotnet_diagnostic.CA1805.severity = error
