@@ -4,7 +4,6 @@ root = true
 tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
-end_of_line = crlf
 
 [*.{xaml,xml,targets,props,csproj}]
 indent_style = tab
