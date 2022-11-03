@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 					string result = GetFirstFullCharacter(firstName);
 					result += GetFirstFullCharacter(lastName);
 
-					return result.ToUpper(CultureInfo.InvariantCulture);
+					return result.ToUpperInvariant();
 				}
 				else
 				{
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 
 					string result = GetFirstFullCharacter(firstWord);
 
-					return result.ToUpper(CultureInfo.InvariantCulture);
+					return result.ToUpperInvariant();
 				}
 				else if (words.Length > 1)
 				{
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 					string result = GetFirstFullCharacter(firstWord);
 					result += GetFirstFullCharacter(lastWord);
 
-					return result.ToUpper(CultureInfo.InvariantCulture);
+					return result.ToUpperInvariant();
 				}
 				else
 				{
