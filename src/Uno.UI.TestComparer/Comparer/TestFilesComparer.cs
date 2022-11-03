@@ -189,7 +189,7 @@ namespace Uno.UI.TestComparer.Comparer
 		{
 			if(ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
 			{
-				if(options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.ToLower() == "true")
+				if(options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.Equals("true", StringComparison.OrdinalIgnoreCase))
 				{
 					return false;
 				}

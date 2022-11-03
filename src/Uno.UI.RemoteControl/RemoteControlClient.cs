@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -76,7 +77,7 @@ namespace Uno.UI.RemoteControl
 			try
 			{
 #if __WASM__
-				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").ToLower() == "true";
+				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").ToLower(CultureInfo.InvariantCulture) == "true";
 #else
 				const bool isHttps = false;
 #endif

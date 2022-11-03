@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Contacts;
@@ -88,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 					string result = GetFirstFullCharacter(firstName);
 					result += GetFirstFullCharacter(lastName);
 
-					return result.ToUpper();
+					return result.ToUpper(CultureInfo.InvariantCulture);
 				}
 				else
 				{
@@ -128,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 
 					string result = GetFirstFullCharacter(firstWord);
 
-					return result.ToUpper();
+					return result.ToUpper(CultureInfo.InvariantCulture);
 				}
 				else if (words.Length > 1)
 				{
@@ -142,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 					string result = GetFirstFullCharacter(firstWord);
 					result += GetFirstFullCharacter(lastWord);
 
-					return result.ToUpper();
+					return result.ToUpper(CultureInfo.InvariantCulture);
 				}
 				else
 				{
