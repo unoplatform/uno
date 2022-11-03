@@ -77,7 +77,7 @@ namespace Uno.UI.RemoteControl
 			try
 			{
 #if __WASM__
-				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").ToLower(CultureInfo.InvariantCulture) == "true";
+				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
 #else
 				const bool isHttps = false;
 #endif
