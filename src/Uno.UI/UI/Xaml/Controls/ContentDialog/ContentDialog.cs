@@ -15,6 +15,7 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -31,6 +32,8 @@ namespace Windows.UI.Xaml.Controls
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 		private readonly SerialDisposable _templateSubscriptions = new SerialDisposable();
+
+		private ManagedWeakReference _previouslyFocusedElementWeak;
 		private bool _hiding;
 		private bool _templateApplied;
 
@@ -66,6 +69,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (thisRef.Target is ContentDialog that)
 				{
+					that.SetDialogFocus();
+
 					that.Opened?.Invoke(that, new ContentDialogOpenedEventArgs());
 					that.UpdateVisualState();
 				}
@@ -117,6 +122,61 @@ namespace Windows.UI.Xaml.Controls
 			if (m_placementMode != PlacementMode.InPlace)
 			{
 				SizeAndPositionContentInPopup();
+			}
+		}
+
+		private void SetDialogFocus()
+		{
+			bool focusSet = false;
+
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			var focused = focusManager.FocusedElement;
+			if (focused is UIElement focusedElement)
+			{
+				_previouslyFocusedElementWeak = WeakReferencePool.RentWeakReference(this, focusedElement);
+			}
+				
+			if (m_tpContentPart is not null)
+			{
+				if (focusManager.GetFirstFocusableElement(m_tpContentPart) is UIElement focusableElement)
+				{
+					focusSet = focusableElement.Focus(FocusState.Programmatic);
+				}
+			}
+
+			if (!focusSet)
+			{
+				switch (DefaultButton)
+				{
+					case ContentDialogButton.Primary:
+						if (m_tpPrimaryButtonPart is not null)
+						{
+							focusSet = m_tpPrimaryButtonPart.Focus(FocusState.Programmatic);
+						}
+						break;
+
+					case ContentDialogButton.Secondary:
+						if (m_tpSecondaryButtonPart is not null)
+						{
+							focusSet = m_tpSecondaryButtonPart.Focus(FocusState.Programmatic);
+						}
+						break;
+					case ContentDialogButton.Close:
+						if (m_tpCloseButtonPart is not null)
+						{
+							focusSet = m_tpCloseButtonPart.Focus(FocusState.Programmatic);
+						}
+						break;
+				}
+			}
+
+			// If not set, try to focus the first focusable command button.
+			if (!focusSet && m_tpCommandSpacePart is not null)
+			{
+				if (focusManager.GetFirstFocusableElement(m_tpCommandSpacePart) is UIElement focusableCommandElement)
+				{
+					focusableCommandElement.Focus(FocusState.Programmatic);
+				}
 			}
 		}
 
