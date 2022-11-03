@@ -430,6 +430,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		public void ListViewItem_Click_Focus()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListViewItem_Click_Focus");
+
+			var clearButton = _app.Marked("ClearButton");
+			var outputTextBlock = _app.Marked("OutputTextBlock");
+			var listViewItem = _app.Marked("TestListViewItem");
+
+			_app.WaitForElement(clearButton);
+
+			_app.Tap(clearButton);
+
+			_app.DragAndDrop(listViewItem, outputTextBlock);
+
+			Assert.AreNotEqual("F", outputTextBlock.GetText());
+
+			_app.Tap(listViewItem);
+			
+			Assert.AreEqual("F", outputTextBlock.GetText());
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Browser, Platform.iOS)]
 		public void ListView_ObservableCollection_Creation_Count()
 		{

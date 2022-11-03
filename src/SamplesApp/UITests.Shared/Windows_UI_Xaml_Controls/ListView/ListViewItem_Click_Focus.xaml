@@ -15,7 +15,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Button x:Name="ClearButton">Clear</Button>
-		<TextBlock x:Name="OutputTextBlock" Grid.Row="1" />
+		<TextBlock x:Name="OutputTextBlock" Grid.Row="1" Text="?" />
 		<ListView IsItemClickEnabled="True" Grid.Row="2">
 			<ListViewItem x:Name="TestListViewItem">
 				<TextBlock Text="Click me" />
