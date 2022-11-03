@@ -22,7 +22,7 @@ namespace SkiaSharpExample
 			};
 
 			var host = new GtkHost(() => new SamplesApp.App());
-
+			host.RenderSurfaceType = RenderSurfaceType.Software;
 			host.Run();
 		}
 	}

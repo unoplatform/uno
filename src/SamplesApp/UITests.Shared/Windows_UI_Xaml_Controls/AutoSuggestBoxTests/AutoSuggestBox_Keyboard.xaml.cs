@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -34,6 +35,8 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 	public AutoSuggestBox_Keyboard()
 	{
 		this.InitializeComponent();
+		FocusManager.GettingFocus += FocusManager_GettingFocus;
+		FocusManager.LosingFocus += FocusManager_LosingFocus;
 
 		((AutoSuggestConverter)Resources["AutoSuggestConverter"]).AutoSuggestBox = TestAutoSuggestBox;
 
@@ -43,12 +46,24 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 		};
 	}
 
+	private void FocusManager_LosingFocus(object sender, LosingFocusEventArgs e)
+	{
+		global::System.Console.WriteLine($"Losing focus: {e.OldFocusedElement}, new: {e.NewFocusedElement}");
+	}
+	private void FocusManager_GettingFocus(object sender, GettingFocusEventArgs e)
+	{
+		global::System.Console.WriteLine($"Getting focus: {e.OldFocusedElement}, new: {e.NewFocusedElement}");
+	}
+
 	public Book Book { get; } = new Book { Author = new Author { Name = "A0" } };
 	
 	private void AutoSuggestBox_TextChanged(AutoSuggestBox s, AutoSuggestBoxTextChangedEventArgs e)
 	{
+
 		if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 		{
+			global::System.Console.WriteLine($"TextChanged: {e.Reason} {new System.Diagnostics.StackTrace()}");
+
 			s.ItemsSource = Author.All.Where(a => a.Name.StartsWith(s.Text?.Trim())).ToArray();
 		}
 	}	
