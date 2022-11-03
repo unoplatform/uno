@@ -12,7 +12,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 		public ListViewItem_Click_Focus()
 		{
 			this.InitializeComponent();
-			ClearButton.Click += (s, e) => OutputTextBlock.Text = "";
+			ClearButton.Click += (s, e) => OutputTextBlock.Text = "?";
 			TestListViewItem.GettingFocus += (s, e) => OutputTextBlock.Text = "F";
 		}
 	}
