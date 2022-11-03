@@ -3,7 +3,7 @@ using Uno.UI.Runtime.Skia;
 
 namespace $ext_safeprojectname$
 {
-	class Program
+	public sealed class Program
 	{
 		static void Main(string[] args)
 		{
