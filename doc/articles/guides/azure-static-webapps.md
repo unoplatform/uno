@@ -33,7 +33,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
     - name: Setup dotnet
     uses: actions/setup-dotnet@v1.7.2
     with:
-        dotnet-version: '5.0.103'
+        dotnet-version: '6.0.402'
             
     - run: |
         cd src/MyApp.Wasm
