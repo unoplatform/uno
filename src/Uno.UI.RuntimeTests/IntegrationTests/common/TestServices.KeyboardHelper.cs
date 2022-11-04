@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
@@ -162,7 +163,7 @@ namespace Private.Infrastructure
 						{
 							var key = keyInstruction.Substring(i, 1);
 							bool shouldShift = char.IsUpper(key[0]);
-							key = char.ToLower(key[0]).ToString();
+							key = char.ToLower(key[0], CultureInfo.InvariantCulture).ToString();
 
 							if (shouldShift)
 							{

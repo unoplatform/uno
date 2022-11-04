@@ -314,7 +314,7 @@ namespace Uno.Extensions
 			}
 
 			// Return char and concat substring.
-			return char.ToUpper(firstChar) + s.Substring(1);
+			return char.ToUpper(firstChar, CultureInfo.InvariantCulture) + s.Substring(1);
 		}
 
 		/// <summary>
