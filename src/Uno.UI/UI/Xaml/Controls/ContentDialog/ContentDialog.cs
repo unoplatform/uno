@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Uno.Client;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -135,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_previouslyFocusedElementWeak = WeakReferencePool.RentWeakReference(this, focusedElement);
 			}
-				
+
 			if (m_tpContentPart is not null)
 			{
 				if (focusManager.GetFirstFocusableElement(m_tpContentPart) is UIElement focusableElement)
@@ -427,6 +426,15 @@ namespace Windows.UI.Xaml.Controls
 					navManager.BackRequested -= OnBackRequested;
 				});
 			}
+
+
+			d.Add(_popup.PopupPanel.RegisterDisposablePropertyChangedCallback(Popup.VisibilityProperty, (s, e) =>
+			{
+				if (_popup.PopupPanel.Visibility == Visibility.Visible)
+				{
+					this.SetDialogFocus();
+				}
+			}));
 
 			_subscriptions.Disposable = d;
 		}
