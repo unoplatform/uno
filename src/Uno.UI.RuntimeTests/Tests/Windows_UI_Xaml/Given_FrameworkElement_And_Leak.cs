@@ -137,6 +137,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var activeControls = 0;
 			var maxActiveControls = 0;
 
+			// Ensure Holder counter is reset between individual control tests.
+			Holder.Reset();
+
 			var rootContainer = new ContentControl();
 
 			TestServices.WindowHelper.WindowContent = rootContainer;
@@ -335,6 +338,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				_update(--_counter);
 			}
+
+			public static void Reset() => _counter = 0;
 		}
 	}
 }
