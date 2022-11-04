@@ -279,7 +279,7 @@ namespace Uno.Foundation
 			string command;
 			if (formattable.ArgumentCount == 0)
 			{
-				command = formattable.ToString();
+				command = formattable.ToString(CultureInfo.InvariantCulture);
 			}
 			else
 			{
@@ -308,7 +308,7 @@ namespace Uno.Foundation
 							}
 
 							mappedParameters[jsObject] = parameterReference = $"__parameter_{i}";
-							commandBuilder.AppendLine($"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
+							commandBuilder.AppendLine(CultureInfo.InvariantCulture, $"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
 						}
 
 						parameters[i] = parameterReference;
@@ -472,7 +472,7 @@ namespace Uno.Foundation
 					else
 					{
 						r.Append("\\u");
-						r.Append(((ushort)c).ToString("X4"));
+						r.Append(((ushort)c).ToString("X4", CultureInfo.InvariantCulture));
 					}
 				}
 

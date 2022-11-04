@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			=> new KeyTime() { TimeSpan = timeSpan };
 
 		public static implicit operator KeyTime(string timeSpan)
-			=> FromTimeSpan(TimeSpan.Parse(timeSpan));
+			=> FromTimeSpan(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture));
 
 		public static implicit operator KeyTime(TimeSpan timeSpan)
 			=> FromTimeSpan(timeSpan);

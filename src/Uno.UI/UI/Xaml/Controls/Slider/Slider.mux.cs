@@ -3,6 +3,7 @@
 // MUX reference Slider_Partial.cpp
 
 using System;
+using System.Globalization;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI;
@@ -1534,7 +1535,7 @@ public partial class Slider
 
 			roundedValue = DoubleUtil.Round(originalValue, numPlacesPastDecimalPoint);
 
-			return string.Format(szFormat, roundedValue);
+			return string.Format(CultureInfo.InvariantCulture, szFormat, roundedValue);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();

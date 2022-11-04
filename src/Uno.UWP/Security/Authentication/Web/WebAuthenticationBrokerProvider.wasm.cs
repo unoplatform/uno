@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 using Uno.Foundation;
+using System.Globalization;
 
 namespace Uno.AuthenticationBroker
 {
@@ -35,7 +36,7 @@ namespace Uno.AuthenticationBroker
 			var urlRedirect = WebAssemblyRuntime.EscapeJs(callbackUri.OriginalString);
 			string js;
 
-			var timeout = ((long) Timeout.TotalMilliseconds).ToString();
+			var timeout = ((long) Timeout.TotalMilliseconds).ToString(CultureInfo.InvariantCulture);
 
 			var useIframe =
 				options.HasFlag(WebAuthenticationOptions.SilentMode) ||

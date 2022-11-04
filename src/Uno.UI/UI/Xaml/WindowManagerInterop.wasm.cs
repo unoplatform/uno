@@ -125,7 +125,7 @@ namespace Uno.UI.Xaml
 					"classes:[" + classesParam + "]" +
 					"});");
 
-				return int.Parse(ret);
+				return int.Parse(ret, CultureInfo.InvariantCulture);
 			}
 			else
 			{
@@ -1142,7 +1142,7 @@ namespace Uno.UI.Xaml
 			{
 				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(" + htmlId + ");");
 				var sizeParts = sizeString.Split(';');
-				return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+				return new Rect(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture), double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture));
 			}
 			else
 			{
@@ -1298,8 +1298,8 @@ namespace Uno.UI.Xaml
 				var sizeParts = sizeString.Split(';');
 
 				return (
-					clientSize: new Size(double.Parse(sizeParts[0]), double.Parse(sizeParts[1])),
-					offsetSize: new Size(double.Parse(sizeParts[2]), double.Parse(sizeParts[3]))
+					clientSize: new Size(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture)),
+					offsetSize: new Size(double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture))
 				);
 			}
 			else

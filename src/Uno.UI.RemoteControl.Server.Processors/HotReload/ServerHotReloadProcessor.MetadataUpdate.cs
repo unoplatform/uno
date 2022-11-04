@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -186,7 +187,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				_reporter.Output("Unable to apply hot reload because of a rude edit. Rebuilding the app...");
 				foreach (var diagnostic in hotReloadDiagnostics)
 				{
-					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic));
+					_reporter.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);
@@ -261,7 +262,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (item.Severity == DiagnosticSeverity.Error)
 					{
-						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item);
+						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
 						_reporter.Output(diagnostic);
 						projectDiagnostics = projectDiagnostics.Add(diagnostic);
 					}

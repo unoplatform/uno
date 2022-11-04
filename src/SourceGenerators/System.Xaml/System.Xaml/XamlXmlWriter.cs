@@ -289,7 +289,7 @@ namespace Uno.Xaml
 				var state = object_states.Pop ();
 
 				if (!CurrentMember.Type.IsCollection)
-					throw new InvalidOperationException (String.Format ("WriteGetObject method can be invoked only when current member '{0}' is of collection type", CurrentMember));
+					throw new InvalidOperationException (String.Format (CultureInfo.InvariantCulture, "WriteGetObject method can be invoked only when current member '{0}' is of collection type", CurrentMember));
 
 				object_states.Push (state);
 			}
@@ -471,7 +471,7 @@ namespace Uno.Xaml
 				break;
 			default:
 				if (inside_toplevel_positional_parameter)
-					throw new XamlXmlWriterException (String.Format ("The XAML reader input has more than one positional parameter values within a top-level object {0} because it tries to write all of the argument values as an attribute value of the first argument. While XamlObjectReader can read such an object, XamlXmlWriter cannot write such an object to XML.", state.Type));
+					throw new XamlXmlWriterException (String.Format (CultureInfo.InvariantCulture, "The XAML reader input has more than one positional parameter values within a top-level object {0} because it tries to write all of the argument values as an attribute value of the first argument. While XamlObjectReader can read such an object, XamlXmlWriter cannot write such an object to XML.", state.Type));
 
 				state.PositionalParameterIndex++;
 				w.WriteString (", ");

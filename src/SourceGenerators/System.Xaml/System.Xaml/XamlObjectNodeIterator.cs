@@ -32,6 +32,7 @@ using Uno.Xaml;
 using Uno.Xaml.Schema;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Globalization;
 
 namespace Uno.Xaml
 {
@@ -175,7 +176,7 @@ namespace Uno.Xaml
 						// The object appeared in the xaml tree for the first time. So we store the reference with a unique name so that it could be referenced later.
 						refName = GetReferenceName (xobj);
 						if (NameResolver.IsCollectingReferences && NameResolver.Contains (refName))
-							throw new InvalidOperationException (String.Format ("There is already an object of type {0} named as '{1}'. Object names must be unique.", val.GetType (), refName));
+							throw new InvalidOperationException (String.Format (CultureInfo.InvariantCulture, "There is already an object of type {0} named as '{1}'. Object names must be unique.", val.GetType (), refName));
 						NameResolver.SetNamedObject (refName, val, true); // probably fullyInitialized is always true here.
 					}
 				}

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
@@ -4150,12 +4151,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private double GetPaneToggleButtonWidth()
 		{
-			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonWidth", c_paneToggleButtonWidth));
+			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonWidth", c_paneToggleButtonWidth), CultureInfo.InvariantCulture);
 		}
 
 		private double GetPaneToggleButtonHeight()
 		{
-			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonHeight", c_paneToggleButtonHeight));
+			return Convert.ToDouble(SharedHelpers.FindInApplicationResources("PaneToggleButtonHeight", c_paneToggleButtonHeight), CultureInfo.InvariantCulture);
 		}
 
 		private void UpdateTopNavigationWidthCache()

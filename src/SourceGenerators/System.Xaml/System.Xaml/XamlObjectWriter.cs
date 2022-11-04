@@ -235,12 +235,12 @@ namespace Uno.Xaml
 			if (object_states.Count > 0) {
 				var pstate = object_states.Peek ();
 				if (CurrentMemberState.Value != null)
-					throw new XamlDuplicateMemberException (String.Format ("Member '{0}' is already written to current type '{1}'", CurrentMember, pstate.Type));
+					throw new XamlDuplicateMemberException (String.Format (CultureInfo.InvariantCulture, "Member '{0}' is already written to current type '{1}'", CurrentMember, pstate.Type));
 			} else {
 				var obj = source.Settings.RootObjectInstance;
 				if (obj != null) {
 					if (state.Type.UnderlyingType != null && !state.Type.UnderlyingType.IsAssignableFrom (obj.GetType ()))
-						throw new XamlObjectWriterException (String.Format ("RootObjectInstance type '{0}' is not assignable to '{1}'", obj.GetType (), state.Type));
+						throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "RootObjectInstance type '{0}' is not assignable to '{1}'", obj.GetType (), state.Type));
 					state.Value = obj;
 					state.IsInstantiated = true;
 				}
@@ -260,7 +260,7 @@ namespace Uno.Xaml
 			var xm = CurrentMember;
 			var instance = xm.Invoker.GetValue (object_states.Peek ().Value);
 			if (instance == null)
-				throw new XamlObjectWriterException (String.Format ("The value  for '{0}' property is null", xm.Name));
+				throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "The value  for '{0}' property is null", xm.Name));
 			state.Value = instance;
 			state.IsInstantiated = true;
 			object_states.Push (state);
@@ -345,7 +345,7 @@ namespace Uno.Xaml
 					var contents = (List<object>) state.Value;
 					var mi = state.Type.UnderlyingType.GetMethods (static_flags).FirstOrDefault (mii => mii.Name == state.FactoryMethod && mii.GetParameters ().Length == contents.Count);
 					if (mi == null)
-						throw new XamlObjectWriterException (String.Format ("Specified static factory method '{0}' for type '{1}' was not found", state.FactoryMethod, state.Type));
+						throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Specified static factory method '{0}' for type '{1}' was not found", state.FactoryMethod, state.Type));
 					state.Value = mi.Invoke (null, contents.ToArray ());
 				}
 				else
@@ -368,14 +368,14 @@ namespace Uno.Xaml
 		void SetEvent (XamlMember member, string value)
 		{
 			if (member.UnderlyingMember == null)
-				throw new XamlObjectWriterException (String.Format ("Event {0} has no underlying member to attach event", member));
+				throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Event {0} has no underlying member to attach event", member));
 
 			int idx = value.LastIndexOf ('.');
 			var xt = idx < 0 ? root_state.Type : ResolveTypeFromName (value.Substring (0, idx));
 			if (xt == null)
-				throw new XamlObjectWriterException (String.Format ("Referenced type {0} in event {1} was not found", value, member));
+				throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Referenced type {0} in event {1} was not found", value, member));
 			if (xt.UnderlyingType == null)
-				throw new XamlObjectWriterException (String.Format ("Referenced type {0} in event {1} has no underlying type", value, member));
+				throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Referenced type {0} in event {1} has no underlying type", value, member));
 			string mn = idx < 0 ? value : value.Substring (idx + 1);
 			var ev = (EventInfo) member.UnderlyingMember;
 			// get an appropriate MethodInfo overload whose signature matches the event's handler type.
@@ -385,7 +385,7 @@ namespace Uno.Xaml
 			var target = root_state.Value;
 			var mi = target.GetType().GetMethod (mn, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, (from pi in eventMethodParams select pi.ParameterType).ToArray (), null);
 			if (mi == null)
-				throw new XamlObjectWriterException (String.Format ("Referenced value method {0} in type {1} indicated by event {2} was not found", mn, value, member));
+				throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Referenced value method {0} in type {1} indicated by event {2} was not found", mn, value, member));
 			var obj = object_states.Peek ().Value;
 			ev.AddEventHandler (obj, Delegate.CreateDelegate (ev.EventHandlerType, target, mi));
 		}
@@ -426,7 +426,7 @@ namespace Uno.Xaml
 		protected override void OnWriteValue (object value)
 		{
 			if (CurrentMemberState.Value != null)
-				throw new XamlDuplicateMemberException (String.Format ("Member '{0}' is already written to current type '{1}'", CurrentMember, object_states.Peek ().Type));
+				throw new XamlDuplicateMemberException (String.Format (CultureInfo.InvariantCulture, "Member '{0}' is already written to current type '{1}'", CurrentMember, object_states.Peek ().Type));
 			StoreAppropriatelyTypedValue (value, null);
 		}
 
@@ -494,7 +494,7 @@ namespace Uno.Xaml
 				throw;
 			} catch (Exception ex) {
 				// For + ex.Message, the runtime should print InnerException message like .NET does.
-				throw new XamlObjectWriterException (String.Format ("Could not convert object \'{0}' (of type {1}) to {2}: ", value, value != null ? (object) value.GetType () : "(null)", xt)  + ex.Message, ex);
+				throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Could not convert object \'{0}' (of type {1}) to {2}: ", value, value != null ? (object) value.GetType () : "(null)", xt)  + ex.Message, ex);
 			}
 		}
 
@@ -540,7 +540,7 @@ namespace Uno.Xaml
 				return value;
 			}
 
-			throw new XamlObjectWriterException (String.Format ("Value '{0}' (of type {1}) is not of or convertible to type {0} (member {3})", value, value != null ? (object) value.GetType () : "(null)", xt, xm));
+			throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Value '{0}' (of type {1}) is not of or convertible to type {0} (member {3})", value, value != null ? (object) value.GetType () : "(null)", xt, xm));
 		}
 
 		XamlType ResolveTypeFromName (string name)
@@ -598,7 +598,7 @@ namespace Uno.Xaml
 					// FIXME: sort out relationship between name_scope and name_resolver. (unify to name_resolver, probably)
 					var obj = name_scope.FindName (name) ?? name_resolver.Resolve (name, out isFullyInitialized);
 					if (obj == null)
-						throw new XamlObjectWriterException (String.Format ("Unresolved object reference '{0}' was found", name));
+						throw new XamlObjectWriterException (String.Format (CultureInfo.InvariantCulture, "Unresolved object reference '{0}' was found", name));
 					if (!AddToCollectionIfAppropriate (fixup.ParentType, fixup.ParentMember, fixup.ParentValue, obj, null)) // FIXME: is keyObj always null?
 						SetValue (fixup.ParentMember, fixup.ParentValue, obj);
 				}

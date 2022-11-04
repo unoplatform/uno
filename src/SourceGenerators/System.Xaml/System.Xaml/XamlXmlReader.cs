@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -780,7 +781,7 @@ namespace Uno.Xaml
 					yield return Node (XamlNodeType.EndObject, xm.Type);
 				}
 				else
-					throw new XamlParseException (String.Format ("Read-only member '{0}' showed up in the source XML, and the xml contains element content that cannot be read.", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
+					throw new XamlParseException (String.Format (CultureInfo.InvariantCulture, "Read-only member '{0}' showed up in the source XML, and the xml contains element content that cannot be read.", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
 			} else {
 				if (xm.Type.IsCollection || xm.Type.IsDictionary) {
 					foreach (var ni in ReadCollectionItems (parentType, xm))

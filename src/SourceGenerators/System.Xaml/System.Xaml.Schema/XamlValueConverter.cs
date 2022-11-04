@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace Uno.Xaml.Schema
 {
@@ -88,7 +89,7 @@ namespace Uno.Xaml.Schema
 				return null;
 
 			if (!typeof (TConverterBase).IsAssignableFrom (ConverterType))
-				throw new XamlSchemaException (String.Format ("ConverterType '{0}' is not derived from '{1}' type", ConverterType, typeof (TConverterBase)));
+				throw new XamlSchemaException (String.Format (CultureInfo.InvariantCulture, "ConverterType '{0}' is not derived from '{1}' type", ConverterType, typeof (TConverterBase)));
 
 			if (TargetType != null && TargetType.UnderlyingType != null) {
 				// special case: Enum

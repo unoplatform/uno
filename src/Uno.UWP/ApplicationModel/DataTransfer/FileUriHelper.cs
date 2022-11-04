@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					var bytes = Encoding.UTF8.GetBytes(new[] { ch });
 					foreach (var b in bytes)
 					{
-						uri.Append($"%{b:X2}");
+						uri.Append(CultureInfo.InvariantCulture, $"%{b:X2}");
 					}
 				}
 			}

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.Extensions;
 
 namespace Uno.UI.Xaml
@@ -48,7 +45,7 @@ namespace Uno.UI.Xaml
 		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.Ordinal)
 			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.Ordinal);
 
-		internal static string GetWinUIThemeResourceUrl(int version) => string.Format(WinUIThemeResourceURLFormatString, version);
+		internal static string GetWinUIThemeResourceUrl(int version) => string.Format(CultureInfo.InvariantCulture, WinUIThemeResourceURLFormatString, version);
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{

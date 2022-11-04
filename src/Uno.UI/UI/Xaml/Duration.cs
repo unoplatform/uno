@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 		public TimeSpan TimeSpan { get; private set; }
 
 		public static implicit operator Duration(string timeSpan)
-			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan)) : new Duration(TimeSpan.Zero);
+			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture)) : new Duration(TimeSpan.Zero);
 
 		public bool HasTimeSpan
 		{

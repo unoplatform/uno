@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using DirectUI;
 using Uno.Disposables;
@@ -794,7 +795,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
-					this.SetValue(ToolTipService.ToolTipProperty, string.Format(toolTipFormatString, labelText, keyboardAcceleratorText));
+					this.SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.InvariantCulture, toolTipFormatString, labelText, keyboardAcceleratorText));
 				}
 				else
 				{

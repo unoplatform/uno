@@ -237,6 +237,9 @@ dotnet_analyzer_diagnostic.category-Performance.severity = error
 # CA1304: Specify CultureInfo
 dotnet_diagnostic.CA1304.severity = error
 
+# CA1305: Specify IFormatProvider
+dotnet_diagnostic.CA1305.severity = error
+
 # CA1805: Do not initialize unnecessarily
 dotnet_diagnostic.CA1805.severity = error
 
@@ -313,9 +316,6 @@ dotnet_code_quality.CA1822.api_surface = private, internal
 
 # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1303.severity = none
-
-# CA1305: Specify IFormatProvider
-dotnet_diagnostic.CA1305.severity = none
 
 # CA1307: Specify StringComparison for clarity
 dotnet_diagnostic.CA1307.severity = none

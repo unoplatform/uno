@@ -1,6 +1,7 @@
 // MUX Reference PersonPicture.cpp, commit de78834
 
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Contacts;
@@ -292,7 +293,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (badgeNumber <= 99)
 			{
-				m_badgeNumberTextBlock.Text = badgeNumber.ToString();
+				m_badgeNumberTextBlock.Text = badgeNumber.ToString(CultureInfo.InvariantCulture);
 			}
 			else
 			{

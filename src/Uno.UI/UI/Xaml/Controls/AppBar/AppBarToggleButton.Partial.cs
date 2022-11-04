@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using AppBarToggleButtonAutomationPeer = Windows.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer;
 using AppBarToggleButtonTemplateSettings = Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
-
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -491,7 +491,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
-					SetValue(ToolTipService.ToolTipProperty, string.Format(toolTipFormatString, labelText, keyboardAcceleratorText));
+					SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.InvariantCulture, toolTipFormatString, labelText, keyboardAcceleratorText));
 				}
 				else
 				{

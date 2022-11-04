@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Uno.Xaml.Schema
@@ -32,7 +33,7 @@ namespace Uno.Xaml.Schema
 		{
 			XamlTypeName n;
 			if (!TryParse (typeName, namespaceResolver, out n))
-				throw new FormatException (String.Format ("Invalid typeName: '{0}'", typeName));
+				throw new FormatException (String.Format (CultureInfo.InvariantCulture, "Invalid typeName: '{0}'", typeName));
 			return n;
 		}
 
@@ -99,7 +100,7 @@ namespace Uno.Xaml.Schema
 		{
 			IList<XamlTypeName> list;
 			if (!TryParseList (typeNameList, namespaceResolver, out list))
-				throw new FormatException (String.Format ("Invalid type name list: '{0}'", typeNameList));
+				throw new FormatException (String.Format (CultureInfo.InvariantCulture, "Invalid type name list: '{0}'", typeNameList));
 			return list;
 		}
 
@@ -245,7 +246,7 @@ namespace Uno.Xaml.Schema
 			else {
 				string p = prefixLookup.LookupPrefix (Namespace);
 				if (p == null)
-					throw new InvalidOperationException (String.Format ("Could not lookup prefix for namespace '{0}'", Namespace));
+					throw new InvalidOperationException (String.Format (CultureInfo.InvariantCulture, "Could not lookup prefix for namespace '{0}'", Namespace));
 				ret = p.Length == 0 ? Name : p + ":" + Name;
 			}
 			string arr = null;

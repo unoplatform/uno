@@ -956,7 +956,7 @@ namespace Uno.UI.DataBinding
 			while (!s.IsEmpty)
 			{
 				var length = NextDoubleLength(s);
-				list.Add(double.Parse(s.Slice(0, length).ToString(), NumberStyles.Float));
+				list.Add(double.Parse(s.Slice(0, length).ToString(), NumberStyles.Float, CultureInfo.InvariantCulture));
 				s = s.Slice(length);
 				s = EatSeparator(s);
 			}
@@ -971,7 +971,7 @@ namespace Uno.UI.DataBinding
 			while (!s.IsEmpty)
 			{
 				var length = NextDoubleLength(s);
-				list.Add(float.Parse(s.Slice(0, length).ToString(), NumberStyles.Float));
+				list.Add(float.Parse(s.Slice(0, length).ToString(), NumberStyles.Float, CultureInfo.InvariantCulture));
 				s = s.Slice(length);
 				s = EatSeparator(s);
 			}
