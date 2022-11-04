@@ -5,10 +5,6 @@
 		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Content Include="..\src\global.json" Link="global.json" />
-	</ItemGroup>
-
 	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)'==''">
 		<AppVersion>$(GITVERSION_SemVer)</AppVersion>
 
