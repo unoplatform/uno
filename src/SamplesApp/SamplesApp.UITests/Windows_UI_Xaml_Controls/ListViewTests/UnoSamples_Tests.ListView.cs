@@ -2,6 +2,7 @@
 using System.Globalization;
 using FluentAssertions;
 using NUnit.Framework;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -437,12 +438,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var clearButton = _app.Marked("ClearButton");
 			var outputTextBlock = _app.Marked("OutputTextBlock");
 			var listViewItem = _app.Marked("TestListViewItem");
-
+			
+			var listViewItemRect = listViewItem.FirstResult().Rect;
+			
 			_app.WaitForElement(clearButton);
 
 			_app.Tap(clearButton);
 
-			_app.DragAndDrop(listViewItem, outputTextBlock);
+			_app.DragCoordinates(listViewItemRect.CenterX, listViewItemRect.CenterY, listViewItemRect.CenterX, listViewItemRect.Bottom + 50);
 
 			Assert.AreNotEqual("F", outputTextBlock.GetText());
 
