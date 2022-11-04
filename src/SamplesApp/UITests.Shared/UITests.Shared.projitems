@@ -1893,6 +1893,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewItem_Click_Focus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewTemplateRootIsContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6212,6 +6216,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\CounterGrid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewItem_IsEnabled.xaml.cs">
       <DependentUpon>ListViewItem_IsEnabled.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewItem_Click_Focus.xaml.cs">
+      <DependentUpon>ListViewItem_Click_Focus.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListViewTemplateRootIsContainer.xaml.cs">
       <DependentUpon>ListViewTemplateRootIsContainer.xaml</DependentUpon>
