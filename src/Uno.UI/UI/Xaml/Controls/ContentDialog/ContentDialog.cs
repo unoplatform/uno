@@ -32,7 +32,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 		private readonly SerialDisposable _templateSubscriptions = new SerialDisposable();
 
-		private ManagedWeakReference _previouslyFocusedElementWeak;
 		private bool _hiding;
 		private bool _templateApplied;
 
@@ -129,11 +128,6 @@ namespace Windows.UI.Xaml.Controls
 			bool focusSet = false;
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			var focused = focusManager.FocusedElement;
-			if (focused is UIElement focusedElement)
-			{
-				_previouslyFocusedElementWeak = WeakReferencePool.RentWeakReference(this, focusedElement);
-			}
 
 			if (m_tpContentPart is not null)
 			{
@@ -145,31 +139,16 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!focusSet)
 			{
-				switch (DefaultButton)
+				ButtonBase button = DefaultButton switch				
 				{
-					case ContentDialogButton.Primary:
-						if (m_tpPrimaryButtonPart is not null)
-						{
-							focusSet = m_tpPrimaryButtonPart.Focus(FocusState.Programmatic);
-						}
-						break;
-
-					case ContentDialogButton.Secondary:
-						if (m_tpSecondaryButtonPart is not null)
-						{
-							focusSet = m_tpSecondaryButtonPart.Focus(FocusState.Programmatic);
-						}
-						break;
-					case ContentDialogButton.Close:
-						if (m_tpCloseButtonPart is not null)
-						{
-							focusSet = m_tpCloseButtonPart.Focus(FocusState.Programmatic);
-						}
-						break;
-				}
+					ContentDialogButton.Primary => m_tpPrimaryButtonPart,
+					ContentDialogButton.Secondary => m_tpSecondaryButtonPart,
+					ContentDialogButton.Close => m_tpCloseButtonPart,
+					_ => null,
+				};
+				focusSet = button?.Focus(FocusState.Programmatic) ?? false;
 			}
 
-			// If not set, try to focus the first focusable command button.
 			if (!focusSet && m_tpCommandSpacePart is not null)
 			{
 				if (focusManager.GetFirstFocusableElement(m_tpCommandSpacePart) is UIElement focusableCommandElement)
