@@ -92,7 +92,7 @@ Some common troubleshooting steps:
 More troubleshooting information is available [in this section](features/working-with-xaml-hot-reload.md).
 
 #### C# Hot Reload troubleshooting
-C# Hot Reload is provided by Viual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
+C# Hot Reload is provided by Visual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
 
 If that is the case:
 - Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
