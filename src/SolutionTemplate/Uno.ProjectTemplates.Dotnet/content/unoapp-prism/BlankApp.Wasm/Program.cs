@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace BlankApp.Wasm
 {
-	public class Program
+	public sealed class Program
 	{
 		private static App _app;
 
