@@ -36,7 +36,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			await ConfigureServer();
 		}
 
-		public async Task ProcessFrame(Messages.Frame frame)
+		public Task ProcessFrame(Messages.Frame frame)
 		{
 			switch (frame.Name)
 			{
@@ -57,6 +57,8 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 					break;
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private async Task ConfigureServer()

@@ -11,6 +11,7 @@ using Uno.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
+using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -27,9 +28,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			if (WebUri is {} uri)
+			if (AbsoluteUri is {} uri)
 			{
-				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme == "file";
+				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
 				// Local files are assumed as coming from the remote server
 				var newUri = hasFileScheme switch
@@ -85,34 +86,25 @@ namespace Windows.UI.Xaml.Media.Imaging
 					// ms-appx comes in as a relative path
 					if (uri.IsAbsoluteUri)
 					{
-						if (uri.Scheme == "http" || uri.Scheme == "https")
+						if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+							uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 						{
-							return new ImageData
-							{
-								Kind = ImageDataKind.Url,
-								Value = uri.AbsoluteUri,
-								Source = source
-							};
+							return ImageData.FromUrl(uri, source);
 						}
 
 						// TODO: Implement ms-appdata
-						return new ImageData();
+						return ImageData.Empty;
 					}
 
 					// POTENTIAL BUG HERE: if the "fetch" failed, the application
 					// will never retry to fetch it again.
 					var assets = await _assets.Value;
 
-					return new ImageData
-					{
-						Kind = ImageDataKind.Url,
-						Value = GetScaledPath(uri.OriginalString, assets, scaleOverride),
-						Source = source
-					};
+					return ImageData.FromUrl(GetScaledPath(uri.OriginalString, assets, scaleOverride), source);
 				}
 				catch (Exception e)
 				{
-					return new ImageData { Kind = ImageDataKind.Error, Error = e };
+					return ImageData.FromError(e);
 				}
 			}
 

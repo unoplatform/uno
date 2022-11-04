@@ -4,7 +4,9 @@ parameters:
 jobs:
 - job: Pipeline_Validations
   displayName: 'Pipeline Validations'
-  dependsOn: Commitsar
+  dependsOn:
+  - Commitsar
+  - spell_checking
 
   strategy:
     matrix:

@@ -95,7 +95,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 						{
 							CodeGeneration.Enabled => true,
 							CodeGeneration.Disabled => false,
-							_ => message.type.Name.EndsWith("Params") || message.type.Name.EndsWith("EventArgs"),
+							_ => message.type.Name.EndsWith("Params", StringComparison.Ordinal) || message.type.Name.EndsWith("EventArgs", StringComparison.Ordinal),
 						};
 						if (needsUnMarshaller)
 						{
@@ -106,7 +106,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 						{
 							CodeGeneration.Enabled => true,
 							CodeGeneration.Disabled => false,
-							_ => message.type.Name.EndsWith("Return") || message.type.Name.EndsWith("EventArgs"),
+							_ => message.type.Name.EndsWith("Return", StringComparison.Ordinal) || message.type.Name.EndsWith("EventArgs", StringComparison.Ordinal),
 						};
 						if (needsMarshaller)
 						{

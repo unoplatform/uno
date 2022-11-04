@@ -4,7 +4,7 @@ Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform
 
 ## Refactoring
 
-Pure refactoring for its own sake should generally be done in a separate, refactoring-only pull request, and you should generally open an issue to initiate discussion with the core team before you start such a refactoring, to determine if it's really appropriate. See [this blog post on Open Source Contribution Etiquette](https://tirania.org/blog/archive/2010/Dec-31.html) for some explanation of the reasons why. Consistently-observed conventions are essential to the longterm health of the codebase.
+Pure refactoring for its own sake should generally be done in a separate, refactoring-only pull request, and you should generally open an issue to initiate discussion with the core team before you start such a refactoring, to determine if it's really appropriate. See [this blog post on Open Source Contribution Etiquette](https://tirania.org/blog/archive/2010/Dec-31.html) for some explanation of the reasons why. Consistently-observed conventions are essential to the long-term health of the codebase.
 
 Within a bugfix or enhancement PR, refactoring should be restricted to the relevant files, and it should respect the conventions of existing Uno code.
 
@@ -14,7 +14,7 @@ This section describes some recurring patterns and practices you'll see in Uno c
 
 ### Partial classes
 
-[Partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) are used extensively in Uno. The two main use cases for partial classes are [platform-specific code](../../platform-specific-csharp.md) and [generated code](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs). 
+[Partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) are used extensively in Uno. The two main use cases for partial classes are [platform-specific code](../../platform-specific-csharp.md) and [generated code](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs).
 
 However, in some cases where it makes sense, partial class files are also used for logical separation of code. If you're implementing a type that owns a lot of dependency properties, consider putting these in a separate partial, to avoid cluttering up the file where the actual business logic is with DP boilerplate. Another use case for a partial is a nested class with a large definition.
 
@@ -45,7 +45,7 @@ else
 {
     // use braces even for single line conditions
 }
-```            
+```
 
 ## Integration Tests
 

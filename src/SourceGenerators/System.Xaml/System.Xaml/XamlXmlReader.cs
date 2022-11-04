@@ -405,7 +405,7 @@ namespace Uno.Xaml
 		}
 
 		private static string CleanupBindingEscape(string value)
-			=> value.StartsWith("{}") ? value.Substring(2) : value;
+			=> value.StartsWith("{}", StringComparison.Ordinal) ? value.Substring(2) : value;
 
 		IEnumerable<XamlXmlNodeInfo> ReadMembers (XamlType parentType, XamlType xt)
 		{
@@ -517,7 +517,7 @@ namespace Uno.Xaml
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
-						if (r.NamespaceURI.StartsWith("using:")) {
+						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal)) {
 							atts.Add (r.Name, r.Value);
 							continue;
 						}

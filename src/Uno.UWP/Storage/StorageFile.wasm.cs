@@ -1,5 +1,3 @@
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
 using System;
 using System.Globalization;
 using System.IO;
@@ -23,6 +21,11 @@ namespace Windows.Storage
 			}
 
 			var path = Uri.UnescapeDataString(uri.PathAndQuery);
+
+			if(uri.Host is { Length: > 0 } host)
+			{
+				path = host + "/" + path.TrimStart("/");
+			}
 
 			return await StorageFile.GetFileFromPathAsync(await AssetsManager.DownloadAsset(ct, path));
 		}

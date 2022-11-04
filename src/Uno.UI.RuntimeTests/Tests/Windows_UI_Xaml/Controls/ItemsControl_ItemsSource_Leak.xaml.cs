@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 			InitializeComponent();
 		}
 
-		public async Task WaitForTestToComplete()
+		public Task WaitForTestToComplete()
 		{
 			control1.ItemsSource = _staticObservableCollection;
 			control3.ItemsSource = _staticCollectionViewSource;
@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 #if HAS_UNO
 			control2.ItemsSource = _staticObservableVector;
 #endif
+			return Task.CompletedTask;
 		}
 	}
 }

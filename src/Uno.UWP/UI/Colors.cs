@@ -39,7 +39,7 @@ namespace Windows.UI
 		/// <returns></returns>
 		public static Color Parse(string colorCode)
 		{
-			if (colorCode?.StartsWith("#") ?? false)
+			if (colorCode?.StartsWith("#", StringComparison.Ordinal) ?? false)
 			{
 				return FromARGB(colorCode);
 			}

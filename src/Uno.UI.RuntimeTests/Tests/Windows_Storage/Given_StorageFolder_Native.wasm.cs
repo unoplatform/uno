@@ -19,8 +19,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			return folder!;
 		}
 
-		protected override async Task CleanupRootFolderAsync()
+		protected override Task CleanupRootFolderAsync()
 		{
+			return Task.CompletedTask;
 		}
 	}
 }

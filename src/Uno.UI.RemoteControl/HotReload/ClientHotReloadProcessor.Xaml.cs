@@ -30,9 +30,9 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private async Task ReloadFile(FileReload fileReload)
+		private void ReloadFile(FileReload fileReload)
 		{
-			Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
 			{
@@ -162,6 +162,21 @@ namespace Uno.UI.RemoteControl.HotReload
 			if (oldView is Page oldPage && newView is Page newPage)
 			{
 				newPage.Frame = oldPage.Frame;
+
+				// If we've replaced the Page in its frame, we may need to
+				// swap the content property as well. If may be required
+				// if the frame is handled by a (native) FramePresenter.
+				newPage.Frame.Content = newPage;
+			}
+
+			if(newView.DataContext is null
+				&& oldView.DataContext is not null)
+			{
+				// If the DataContext is not provided by the page itself, it may
+				// have been provided by an external actor. Copy the value as is
+				// in the DataContext of the new element.
+
+				newView.DataContext = oldView.DataContext;
 			}
 		}
 	}

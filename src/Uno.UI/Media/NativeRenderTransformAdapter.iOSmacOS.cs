@@ -48,7 +48,7 @@ namespace Uno.UI.Media
 					element.Loaded -= DeferredInitialize;
 
 					// Note: Deferring to the loaded is not enough ... we must wait for the next dispatcher loop to set the Transform!
-					element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, CompleteInitialization);
+					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, CompleteInitialization);
 				}
 
 				void CompleteInitialization()

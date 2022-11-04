@@ -8873,14 +8873,14 @@
 			<Member fullName="Uno.Xaml.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
-			<Member fullName="Uno.UI.BindingHelper.Android.net6.Resource" reason="Unused public member, performance improvement" />
+			<Member fullName="Uno.UI.BindingHelper.Android.netcoremobile.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Dispatching.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.FluentTheme.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.FluentTheme.v1.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Toolkit.Resource" reason="Unused public member, performance improvement" />
-			<Member fullName="Uno.Xaml.net6.Resource" reason="Unused public member, performance improvement" />
+			<Member fullName="Uno.Xaml.netcoremobile.Resource" reason="Unused public member, performance improvement" />
 			<!-- END Android Resources ignore -->
 		</Types>
 		<Methods>

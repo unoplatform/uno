@@ -14,7 +14,7 @@ Also, the point of this exercise is to walk through a migration process from a S
 ## Importing the Silverlight TreeView control source
 
 To migrate a control from Silverlight, there are a few things to do:
-- Create a cross targeted project using the **Cross-Platform library** template from the [Uno Platform VS Addin](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+- Create a cross targeted project using the **Cross-Platform library** template from the [Uno Platform VS Add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
 - Replace Silverlight namespaces with UWP namespaces and selectively import the `TreeView` source files and dependencies
 - Adjust the code for slightly changed APIs
 - Temporarily comment out code for APIs that have significantly changed.
@@ -22,7 +22,7 @@ To migrate a control from Silverlight, there are a few things to do:
 
 ### Cross targeted project creation
 
-To be able to build the control in a reusable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
+To be able to build the control in a reusable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Add-in**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
 
 This project will contain all the XAML files and C# source files required for the `TreeView` to function properly. It uses the excellent [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) msbuild extensions to cross targeted library with minimal efforts, using the new and improved _sdk-style_ project format, and simplifies the creation of NuGet packages.
 
@@ -63,7 +63,7 @@ There's one significant change with `ItemsControl.OnItemsChanged` where the meth
 This method can be replaced by the `ItemsControl.Items.VectorChanged` event, but not completely. `ItemsControl` in Silverlight was based on `ObservableCollection` which provided the `NotifyCollectionChangedAction` property, whereas the `ItemsCollection` in UWP is based on `ObservableVector`. This new implementation notably does not provide the `Replace`
 action and it's raising `ItemRemoved` then `ItemInserted` instead.
 
-In this case, we must remove the part that dealt with `NotifyCollectionChangedAction.Replace`, keeping 
+In this case, we must remove the part that dealt with `NotifyCollectionChangedAction.Replace`, keeping
 only `Remove`, `Reset` and `Insert`. The new API also does not provide the items being notified for, which means we
 have to use the `Items` property directly instead.
 
@@ -85,7 +85,7 @@ We'll also comment out the support for `Cursor` adjustments, as the property is 
 
 ## Creating the sample app
 
-To be able to test the imported code, we can create a sample application using [the Uno Platform VS Addin](), reference our imported project and add a simple sample like this one:
+To be able to test the imported code, we can create a sample application using [the Uno Platform VS add-in](), reference our imported project and add a simple sample like this one:
 
 ```xml
 <controls:TreeView Margin="5">
@@ -113,7 +113,7 @@ and test it first on Windows, then iOS, Android and WebAssembly.
 
 ## Next steps
 
-When running the sample, a few things stand out: 
+When running the sample, a few things stand out:
 - The `TreeView` is displaying content properly
 - The nodes expand and collapse properly
 - The glyph next to the nodes changes state once, but does not animate back

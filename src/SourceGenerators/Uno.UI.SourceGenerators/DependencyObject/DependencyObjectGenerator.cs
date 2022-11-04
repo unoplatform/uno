@@ -685,7 +685,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
 							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
 #endif
-							Dispatcher.RunIdleAsync(_ => Dispose());
+							_ = Dispatcher.RunIdleAsync(_ => Dispose());
 						}}
 					}}
 #endif

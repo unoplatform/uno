@@ -65,11 +65,12 @@ namespace UnoSolutionTemplate.Wizard
 			OpenWelcomePage();
 			SetStartupProject();
 			SetUWPAnyCPUBuildableAndDeployable();
+			SetiOSDeployable();
 			SetDefaultConfiguration();
 		}
 
 		private string FindManifestFileName(string fileName)
-			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName))
+			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName, StringComparison.Ordinal))
 				?? throw new InvalidOperationException($"Unable to find [{fileName}] in the assembly");
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
@@ -169,10 +170,41 @@ namespace UnoSolutionTemplate.Wizard
 					{
 						foreach (SolutionContext solutionContext in anyCpuConfig.SolutionContexts)
 						{
-							if (solutionContext.ProjectName.EndsWith(".UWP.csproj"))
+							if (solutionContext.ProjectName.EndsWith(".UWP.csproj", StringComparison.Ordinal))
 							{
 								solutionContext.ShouldBuild = true;
 								solutionContext.ShouldDeploy = true;
+							}
+						}
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
+		}
+
+		private void SetiOSDeployable()
+		{
+			if (_dte?.Solution.SolutionBuild is SolutionBuild val)
+			{
+				try
+				{
+					var iOSConfigs = new[] {
+						GetSolutionConfiguration(val, "Debug", "iPhone"),
+						GetSolutionConfiguration(val, "Debug", "iPhoneSimulator")
+					}.Select(c => c.SolutionContexts);
+
+					foreach (SolutionConfiguration solutionConfiguration2 in val.SolutionConfigurations)
+					{
+						foreach (var iOSSolutionContext in iOSConfigs)
+						{
+							var iOSProject = iOSSolutionContext
+								.Cast<SolutionContext>()
+								.FirstOrDefault(c => c.ProjectName.EndsWith(".iOS.csproj", StringComparison.Ordinal));
+							if (iOSProject != null)
+							{
+								iOSProject.ShouldDeploy = true;
 							}
 						}
 					}
@@ -189,11 +221,11 @@ namespace UnoSolutionTemplate.Wizard
 			{
 				if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
 				{
-						var x86Config = val.SolutionConfigurations
-							.Cast<SolutionConfiguration2>()
-							.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
+					var x86Config = val.SolutionConfigurations
+						.Cast<SolutionConfiguration2>()
+						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
 
-						x86Config?.Activate();
+					x86Config?.Activate();
 				}
 				else
 				{

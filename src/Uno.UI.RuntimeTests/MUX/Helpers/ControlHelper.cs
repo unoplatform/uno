@@ -26,11 +26,11 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			}
 
 
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				button.Click += OnButtonOnClick;
 
-				InputHelper.Tap(button);
+				await InputHelper.Tap(button);
 
 			});
 
@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			await DoClickUsingAP(button);
 		}
 
-		public static async Task ValidateUIElementTree(
+		public static void ValidateUIElementTree(
 			Size windowSizeOverride,
 			double scale,
 			Func<Task<Panel>> setup,

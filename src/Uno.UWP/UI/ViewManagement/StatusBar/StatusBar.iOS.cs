@@ -1,7 +1,7 @@
-﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using UIKit;
 using Windows.Foundation;
 using Windows.UI;
@@ -56,21 +56,23 @@ namespace Windows.UI.ViewManagement
 
 		public IAsyncAction ShowAsync()
 		{
-			return AsyncAction.FromTask(async ct =>
+			return AsyncAction.FromTask(ct =>
 			{
 				CoreDispatcher.CheckThreadAccess();
 				UIApplication.SharedApplication.StatusBarHidden = false;
-			   Showing?.Invoke(this, null);
+				Showing?.Invoke(this, null);
+				return Task.CompletedTask;
 			});
 		}
 
 		public IAsyncAction HideAsync()
 		{
-			return AsyncAction.FromTask(async ct =>
+			return AsyncAction.FromTask(ct =>
 			{
 				CoreDispatcher.CheckThreadAccess();
 				UIApplication.SharedApplication.StatusBarHidden = true;
 				Hiding?.Invoke(this, null);
+				return Task.CompletedTask;
 			});
 		}
 	}

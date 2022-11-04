@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		private void ParseUriAndLauchMailto(Uri mailtoUri)
 		{
-			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
 				Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 				async (ct) =>
 				{
@@ -252,7 +252,11 @@ namespace Windows.UI.Xaml.Controls
 				});
 		}
 
-		public async Task LaunchMailto(CancellationToken ct, string subject = null, string body = null, string[] to = null, string[] cc = null, string[] bcc = null)
+		public
+#if !__MACCATALYST__
+		async
+#endif
+		Task LaunchMailto(CancellationToken ct, string subject = null, string body = null, string[] to = null, string[] cc = null, string[] bcc = null)
 		{
 #if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 			if (!MFMailComposeViewController.CanSendMail)
@@ -292,6 +296,8 @@ namespace Windows.UI.Xaml.Controls
 					})
 					.AsTask(CancellationToken.None);
 			}
+#else
+			return Task.CompletedTask;
 #endif
 		}
 #endif

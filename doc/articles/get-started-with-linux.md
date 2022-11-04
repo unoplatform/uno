@@ -11,7 +11,7 @@ It is possible to develop :
 Using VS 2019 16.6 or later:
 - Install [WSL Ubuntu 18.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 - Install the prerequisites for Linux mentioned in the next section, in your installed distribution using the Ubuntu shell
-- On Windows 10, Install [vcXsrv](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
+- On Windows 10, Install [`vcXsrv`](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
     - You'll need to start the server in "Multiple windows" mode, starting with "no client" mode.
 - On Windows 11, [Wayland](https://github.com/microsoft/wslg) is supported and nothing needs to be installed
 - Install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
@@ -41,7 +41,7 @@ Now let's run the application:
 },
 ```
 - Start the debugger session
-- Visual Studio may ask you to install **.NET Core 3.1** and the Linux debugger, press OK and let the installation finish, then restart the debugging session.
+- Visual Studio may ask you to install **.NET 6** and the Linux debugger, press OK and let the installation finish, then restart the debugging session.
 
 ## Setting up for Linux
 
@@ -51,18 +51,7 @@ Now let's run the application:
     sudo apt update
     sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
-- Install dotnet core 3.1
-    ```
-    echo "Installing .NET Core"
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
-
-    sudo dpkg -i packages-microsoft-prod.deb
-    sudo add-apt-repository universe
-    sudo apt-get -y install apt-transport-https
-    sudo apt-get update
-    sudo apt-get -y install dotnet-sdk-3.1
-    sudo apt-get -y install dotnet-sdk-5.0
-    ```
+- [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**Ubuntu 20.04**](#tab/ubuntu2004)
 - Install GTK3:
@@ -70,18 +59,7 @@ Now let's run the application:
     sudo apt update
     sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
-- Install dotnet core 3.1 and 5.0
-    ```
-    echo "Installing .NET Core"
-    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-
-    sudo apt-get update; \
-      sudo apt-get install -y apt-transport-https && \
-      sudo apt-get update && \
-      sudo apt-get install -y dotnet-sdk-3.1 && \
-      sudo apt-get install -y dotnet-sdk-5.0
-    ```
+- [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
 
@@ -91,7 +69,7 @@ Now let's run the application:
     ```
 - Install the necessary dependencies
     ```bash
-    sudo pacman -S gtk3 dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime mono python mono-msbuild ninja gn aspnet-runtime 
+    sudo pacman -S gtk3 dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime mono python mono-msbuild ninja gn aspnet-runtime
     ```
 - Install the `dotnet new` templates:
     ```bash
@@ -123,7 +101,7 @@ Now let's run the GTK based application:
     ```
 And run the WebAssembly head with:
     ```bash
-    cd .. 
+    cd ..
     cd MyUnoApp.Wasm
     dotnet run
     ```

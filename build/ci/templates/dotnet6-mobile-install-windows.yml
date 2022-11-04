@@ -1,0 +1,18 @@
+parameters:
+  UnoCheck_Version: '1.5.4'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
+
+steps:
+
+  - template: dotnet-install.yml
+
+  - template: jdk-setup.yml
+
+  - powershell: |
+      & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
+    displayName: Install .NET Workloads
+    errorActionPreference: continue
+    condition: and(succeeded(), ne(variables.UnoDisableNet6Mobile, 'true'))
+    ignoreLASTEXITCODE: true
+    retryCountOnTaskFailure: 3

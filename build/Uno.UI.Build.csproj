@@ -46,8 +46,8 @@
 	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
-		<CallTarget Targets="BuildT4Generator" />
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA;PrepareNuGetPackage" Condition="$(_isWindows)" />
+		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
+		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
 	
 	<Target Name="BuildGeneric" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
@@ -108,8 +108,8 @@
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.net6\CrossTargetedLibrary.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.net6\CrossTargetedLibrary.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.netcore\CrossTargetedLibrary.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.netcore\CrossTargetedLibrary.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoUITestTemplate\UnoUITestTemplate.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>
 		</ItemGroup>
@@ -201,7 +201,7 @@
 		<ItemGroup>
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\**\*.cs" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
-			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 		</ItemGroup>
 
     <WriteLinesToFile
@@ -212,9 +212,8 @@
 	</Target>
 
 	<Target Name="BuildCI">
-		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
 		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-generic;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-packages-no-net6.slnf"
+             Projects="filters\Uno.UI-packages-no-netcoremobile.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
@@ -222,8 +221,8 @@
 
 	<Target Name="BuildCINet6">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-net6;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="..\src\Uno.UI-net6-only.slnf"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
+             Projects="..\src\Uno.UI-netcoremobile-only.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
@@ -260,10 +259,10 @@
 
 	</Target>
 
-	<Target Name="BuildSyncGenerator" DependsOnTargets="BuildT4Generator">
+	<Target Name="BuildSyncGenerator">
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;UnoUIDisableNet7Build=true"
-				 Projects="filters\Uno.UI-packages-no-net6.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
+				 Projects="filters\Uno.UI-packages-no-netcoremobile.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
 				 Targets="Restore"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
@@ -282,10 +281,6 @@
 						 Targets="GenerateMixins"
 						 RebaseOutputs="false"
 						 BuildInParallel="true" />
-	</Target>
-
-	<Target Name="BuildT4Generator">
-		<MSBuild Projects="..\src\Uno.UI\Uno.UI.csproj" Targets="UnoInstallDotnetT4" />
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
@@ -330,6 +325,7 @@
 			<_NuspecFiles Include=".\Uno.WinUI.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Lottie.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.MSAL.nuspec" />
+			<_NuspecFiles Include=".\Uno.WinUI.Svg.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.RemoteControl.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Gtk.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" />
@@ -379,6 +375,7 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix)" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Lottie" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MSAL.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).MSAL" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Svg" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.RemoteControl.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).RemoteControl" Namespaces="$(NugetNamespace)" />
@@ -392,6 +389,7 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix)" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Lottie" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MSAL.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).MSAL" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Svg" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.RemoteControl.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).RemoteControl" Namespaces="$(NugetNamespace)" />
@@ -413,6 +411,7 @@
 
 		<!-- Rename skiasharp references for WinUI -->
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='SkiaSharp.Views.Uno']/@id" Value="SkiaSharp.Views.Uno.WinUI" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='SkiaSharp.Views.Uno']/@id" Value="SkiaSharp.Views.Uno.WinUI" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<!-- Adjust build targets file to match WinUI / UWP-->
 		<Move SourceFiles=".\uno.winui.targets" DestinationFiles=".\$(PackageNamePrefix).targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
@@ -424,39 +423,39 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.nuspec" Query="/x:package/x:files/x:file[@target='buildTransitive\net5.0-windows\uno.winui.targets']/@target" Value="buildTransitive\net5.0-windows\$(PackageNamePrefix).targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia GTK targets/props-->
-		<Move SourceFiles=".\uno.winui.Skia.Gtk.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<Move SourceFiles=".\uno.winui.Skia.Gtk.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Gtk.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Gtk.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Gtk.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Gtk.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Gtk.targets']/@src" Value="$(PackageNamePrefix).Skia.Gtk.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Gtk.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Gtk.props']/@src" Value="$(PackageNamePrefix).Skia.Gtk.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Gtk.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Gtk.targets']/@src" Value="$(PackageNamePrefix).Skia.Gtk.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Gtk.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Gtk.props']/@src" Value="$(PackageNamePrefix).Skia.Gtk.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia Linux FrameBuffer targets/props-->
-		<Move SourceFiles=".\uno.winui.Skia.Linux.FrameBuffer.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<Move SourceFiles=".\uno.winui.Skia.Linux.FrameBuffer.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Linux.FrameBuffer.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Linux.FrameBuffer.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.targets']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.props']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.targets']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Linux.FrameBuffer.props']/@src" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia Tizen targets/props-->
-		<Move SourceFiles=".\uno.winui.Skia.Tizen.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<Move SourceFiles=".\uno.winui.Skia.Tizen.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Tizen.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Tizen.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Tizen.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Tizen.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Tizen.targets']/@src" Value="$(PackageNamePrefix).Skia.Tizen.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Tizen.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Tizen.props']/@src" Value="$(PackageNamePrefix).Skia.Tizen.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Tizen.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Tizen.targets']/@src" Value="$(PackageNamePrefix).Skia.Tizen.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Tizen.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Tizen.props']/@src" Value="$(PackageNamePrefix).Skia.Tizen.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Skia Wpf targets/props-->
-		<Move SourceFiles=".\uno.winui.Skia.Wpf.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Wpf.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<Move SourceFiles=".\uno.winui.Skia.Wpf.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Wpf.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Wpf.targets" DestinationFiles=".\$(PackageNamePrefix).Skia.Wpf.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.Skia.Wpf.props" DestinationFiles=".\$(PackageNamePrefix).Skia.Wpf.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Wpf.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Wpf.targets']/@src" Value="$(PackageNamePrefix).Skia.Wpf.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<XmlPoke XmlInputPath=".\uno.winui.Skia.Wpf.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Wpf.props']/@src" Value="$(PackageNamePrefix).Skia.Wpf.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Wpf.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Wpf.targets']/@src" Value="$(PackageNamePrefix).Skia.Wpf.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.Skia.Wpf.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.Skia.Wpf.props']/@src" Value="$(PackageNamePrefix).Skia.Wpf.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Wasm targets/props-->
-		<Move SourceFiles=".\uno.winui.WebAssembly.targets" DestinationFiles=".\$(PackageNamePrefix).WebAssembly.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<Move SourceFiles=".\uno.winui.WebAssembly.props" DestinationFiles=".\$(PackageNamePrefix).WebAssembly.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.WebAssembly.targets" DestinationFiles=".\$(PackageNamePrefix).WebAssembly.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<Move SourceFiles=".\Uno.WinUI.WebAssembly.props" DestinationFiles=".\$(PackageNamePrefix).WebAssembly.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
-		<XmlPoke XmlInputPath=".\uno.winui.WebAssembly.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.targets']/@src" Value="$(PackageNamePrefix).WebAssembly.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<XmlPoke XmlInputPath=".\uno.winui.WebAssembly.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.props']/@src" Value="$(PackageNamePrefix).WebAssembly.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.WebAssembly.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.targets']/@src" Value="$(PackageNamePrefix).WebAssembly.targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\Uno.WinUI.WebAssembly.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.props']/@src" Value="$(PackageNamePrefix).WebAssembly.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- remote control -->
 		<Move SourceFiles="..\src\Uno.UI.RemoteControl\buildTransitive\Uno.UI.RemoteControl.targets" DestinationFiles="..\src\Uno.UI.RemoteControl\buildTransitive\$(PackageNamePrefix).RemoteControl.targets" Condition="'$(UNO_UWP_BUILD)'!='true'"/>
@@ -466,6 +465,9 @@
 		
 		<!-- MSAL move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\Uno.UI.MSAL.targets" DestinationFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\$(PackageNamePrefix).MSAL.targets" />
+		
+		<!-- Svg move file -->
+		<Move SourceFiles="..\src\AddIns\Uno.UI.Svg\buildTransitive\Uno.UI.Svg.targets" DestinationFiles="..\src\AddIns\Uno.UI.Svg\buildTransitive\$(PackageNamePrefix).Svg.targets" />
 		
 		<!-- XamlHost move file -->
 		<Move SourceFiles="..\src\Uno.UI.XamlHost\buildTransitive\Uno.UI.XamlHost.props" DestinationFiles="..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" />
@@ -503,6 +505,7 @@
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.MSAL.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Linux.FrameBuffer.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

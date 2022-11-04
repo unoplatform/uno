@@ -2,23 +2,39 @@ parameters:
   poolName: ''
 
 jobs:
-- job: net6_win_build
-  displayName: 'Build net6 Binaries'
+- job: netcoremobile_win_build
+  displayName: 'Build .NET Mobile Binaries'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
-  
+
   dependsOn: winui_convert_tree
 
   strategy:
     matrix:
-      UWP:
+      UWP_NET6:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
+        UnoDisableNet7Mobile: true
+        ZipFileTargetFramework: net6
 
-      WinUI:
+      WinUI_NET6:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
+        UnoDisableNet7Mobile: true
+        ZipFileTargetFramework: net6
+
+      UWP_NET7:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+        UnoDisableNet6Mobile: true
+        ZipFileTargetFramework: net7
+
+      WinUI_NET7:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+        UnoDisableNet6Mobile: true
+        ZipFileTargetFramework: net7
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -48,7 +64,10 @@ jobs:
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet6-install-windows.yml
+
+  - template: templates/dotnet6-mobile-install-windows.yml
+  - template: templates/dotnet7-mobile-install-windows.yml
+
   - template: templates/install-windows-sdk.yml
 
   # This task is required to run in separately to avoid hitting targets file
@@ -56,12 +75,12 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-net6-prepare-$(UNO_UWP_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-prepare-$(UNO_UWP_BUILD).binlog
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-net6-$(UNO_UWP_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(UNO_UWP_BUILD).binlog
 
   - template: templates/copy-package-assets.yml
 
@@ -70,11 +89,11 @@ jobs:
       rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-net6-bin-$(XAML_FLAVOR_BUILD).zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-$(ZipFileTargetFramework)-bin-$(XAML_FLAVOR_BUILD).zip'
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-net6
+      ArtifactName: NugetPackages-Artifacts-netcoremobile
       ArtifactType: Container

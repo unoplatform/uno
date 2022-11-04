@@ -10,8 +10,11 @@ namespace Uno.UI.Tests.Helpers
 {
 	internal static class ThemeHelper
 	{
-
-		internal static async Task<bool> SwapSystemTheme()
+		internal static
+#if NETFX_CORE		
+		async
+#endif
+		Task<bool> SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;
 			var targetTheme = currentTheme == ApplicationTheme.Light ?
@@ -30,7 +33,12 @@ namespace Uno.UI.Tests.Helpers
 			Application.Current.SetExplicitRequestedTheme(targetTheme);
 #endif
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
+
+#if NETFX_CORE
 			return true;
+#else
+			return Task.FromResult(true);
+#endif
 		}
 	}
 }

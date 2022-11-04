@@ -45,12 +45,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-
+#if IS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_LoadedAndUnloaded_Check_Binding()
 		{
-#if IS_UNO
+
 			var (flyout, content) = CreateFlyoutWithBindingMultipleChildren();
 
 			const double MarginValue = 105;
@@ -105,8 +105,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("A New Context", (stackPanel.Children[0] as TextBlock).Text);
 
 			flyout.Hide();
+
+	}
 #endif
-		}
 
 		[TestMethod]
 #if __MACOS__
@@ -451,11 +452,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if IS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Test_Flyout_Binding()
 		{
-#if IS_UNO
+
 			var (flyout, content) = CreateFlyoutWithBinding();
 
 			var buttonA = new Button()
@@ -475,8 +477,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var stackPanel = content as StackPanel;
 			Assert.AreEqual("My Data Context", (stackPanel.Children[0] as TextBlock).Text);
-#endif
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

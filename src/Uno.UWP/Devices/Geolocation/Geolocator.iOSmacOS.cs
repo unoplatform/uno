@@ -180,9 +180,9 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public static async Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime) { return new List<Geoposition>(); }
+		public static Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime) { return Task.FromResult<IList<Geoposition>>(new List<Geoposition>()); }
 
-		public static async Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime, TimeSpan duration) { return new List<Geoposition>(); }
+		public static Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime, TimeSpan duration) { return Task.FromResult<IList<Geoposition>>(new List<Geoposition>()); }
 
 		private static GeolocationAccessStatus TranslateStatus(CLAuthorizationStatus status)
 		{

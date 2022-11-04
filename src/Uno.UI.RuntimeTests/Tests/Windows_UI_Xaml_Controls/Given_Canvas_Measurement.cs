@@ -30,12 +30,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private const string Green = "#FF008000";
 		private const string Brown = "#FFA52A2A";
 
-	[TestMethod]
+		[TestMethod]
 		public async Task When_Measure_CanvasChildren()
 		{
 			var canvas = new Measure_Children_In_Canvas();
 			WindowHelper.WindowContent = canvas;
-			WindowHelper.WaitForLoaded(canvas);
+			await WindowHelper.WaitForLoaded(canvas);
 			var inBorder = canvas.Get_InBorder();
 			var outBorder = canvas.Get_OutBorder();
 			using var _ = new AssertionScope();
@@ -57,7 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var canvas = new Canvas_With_Outer_Clip();
 			WindowHelper.WindowContent = canvas;
-			WindowHelper.WaitForLoaded(canvas);
+			await WindowHelper.WaitForLoaded(canvas);
 
 			var renderer = new RenderTargetBitmap();
 			await WindowHelper.WaitForIdle();
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var canvas = new CanvasZIndex();
 			WindowHelper.WindowContent = canvas;
-			WindowHelper.WaitForLoaded(canvas);
+			await WindowHelper.WaitForLoaded(canvas);
 
 			var renderer = new RenderTargetBitmap();
 			await WindowHelper.WaitForIdle();
@@ -132,7 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var canvas = new Canvas_In_Canvas();
 			WindowHelper.WindowContent = canvas;
-			WindowHelper.WaitForLoaded(canvas);
+			await WindowHelper.WaitForLoaded(canvas);
 
 			var renderer = new RenderTargetBitmap();
 			await WindowHelper.WaitForIdle();

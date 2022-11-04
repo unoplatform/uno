@@ -28,4 +28,4 @@ If your API implementation is for a specific platform:
 
 When implementing a feature, try to place as much code as possible in a common source file (a non-suffixed file), so that it is reused across platforms. Make sure to follow [partial classes coding guidelines](code-style.md).
 
-Note that the generated files may be overriden at any point, and placing custom code (aside from changing the `NotImplemented` values) will be overwritten.
+Note that the generated files may be overridden at any point, and placing custom code (aside from changing the `NotImplemented` values) will be overwritten.

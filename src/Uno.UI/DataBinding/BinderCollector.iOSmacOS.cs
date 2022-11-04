@@ -27,7 +27,7 @@ namespace Uno.UI.DataBinding
 
                 // Dispatch first on the idle dispatcher to improve the 
                 // odds of the user not using the UI
-                CoreDispatcher.Main.RunIdleAsync(
+                _ = CoreDispatcher.Main.RunIdleAsync(
                     async _ => {
 
                         try

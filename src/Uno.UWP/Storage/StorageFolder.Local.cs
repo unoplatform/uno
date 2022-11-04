@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Collections.Generic;
@@ -39,7 +38,7 @@ namespace Windows.Storage
 			{
 				if (string.IsNullOrEmpty(name))
 				{
-					if (!path.EndsWith("/"))
+					if (!path.EndsWith("/", StringComparison.Ordinal))
 					{
 						// Intentionally use GetFileName here, as the directory name
 						// may be a "file-like name" e.g. myfolder.txt, in which case

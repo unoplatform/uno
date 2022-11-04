@@ -1,6 +1,6 @@
 # ListViewBase internals for contributors
 
-This document describes the internal operations of Uno's `ListViewBase` implementation(s) in detail, aimed at contributors. 
+This document describes the internal operations of Uno's `ListViewBase` implementation(s) in detail, aimed at contributors.
 
 Before reading it, you should first read the documentation of [ListViewBase aimed at Uno app developers](../controls/ListViewBase.md), which covers the high-level differences between Uno's implementation and UWP's implementation.
 
@@ -19,7 +19,7 @@ Other important features of `ListView`:
 
 ## Platform-specific implementations of `ListView`
 
-On Android and iOS, `ListView` uses a platform-specific implementation that maps the XAML API to an inner instance of the native list control on each platform, being [RecyclerView](https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView) and [UICollectionView](https://developer.apple.com/documentation/uikit/uicollectionview) respectively. Using the native list control brings the advantage of getting advanced features like item animations 'for free', along with the disadvantage of added maintenance burden, the possibility of platform-specific differences in behaviour, and the additional complexity of having non-`FrameworkElement` views in the visual tree.
+On Android and iOS, `ListView` uses a platform-specific implementation that maps the XAML API to an inner instance of the native list control on each platform, being [RecyclerView](https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView) and [UICollectionView](https://developer.apple.com/documentation/uikit/uicollectionview) respectively. Using the native list control brings the advantage of getting advanced features like item animations 'for free', along with the disadvantage of added maintenance burden, the possibility of platform-specific differences in behavior, and the additional complexity of having non-`FrameworkElement` views in the visual tree.
 
 Other platforms (WebAssembly, Skia, and macOS at time of writing) use a purely managed implementation of `ListView`. This implementation is closer to UWP in its comportment, for example it actually uses the items panel (`ItemsStackPanel`) to host items. However, it's not a direct port of the UWP control.
 
@@ -38,7 +38,7 @@ The managed ListView implementation is newer and lacks some features that are su
 
 ### Android and iOS ListViews in detail
 
-Although the Android and iOS implementations are quite different, they share some high-level similarities. Both platforms expose a `NativeListViewBase` class, which inherits from the native list view for the platform. 
+Although the Android and iOS implementations are quite different, they share some high-level similarities. Both platforms expose a `NativeListViewBase` class, which inherits from the native list view for the platform.
 
 Architecturally, the Android and iOS implementations share a similar high-level 'division of labor', reflecting the underlying platform API. Aside from the view type itself, both implementations implement a class, `VirtualizingPanelLayout`, whose responsibility is to determine what items are visible, what size they should take, and how they should be positioned within the list. Additionally, both Android and iOS implement an 'adapter' or 'source' class with the responsibility of materializing item containers for a given list index and binding them to the appropriate item from the items source.
 
@@ -72,7 +72,7 @@ The 'life cycle' of view creation and positioning of the `ListView` largely take
     2. `UpdateLayout()` does _not_ call `ScrapLayout()` from within the arrange pass. This is because item dimensions should not have changed since the measure. It does however call `FillLayout()` and `UnfillLayout()` again. This is because the dimensions available to the list itself _might_ be different from the ones it was measured with.
 3. List is scrolled.
     1. Android framework => `VirtualizingPanelLayout.ScrollVerticallyBy()` (or `ScrollHorizontallyBy()`).
-    1. `ScrollVerticallyBy()` => `ScrollBy()`. 
+    1. `ScrollVerticallyBy()` => `ScrollBy()`.
     1. `ScrollBy()` => `ScrollByInner()`. `ScrollByInner()` essentially moves the viewport 'window' according to the supplied offset, and calls `FillLayout()` and `UnfillLayout()` to add the views visible within that window and remove the ones not visible within it. For large scrolls, `ScrollBy()` will `ScrollByInner()` multiple times with increasingly larger offsets: the purpose of this is to have `FillLayout()` not add multiple views in a single call, because that uses the pool of recycled views inefficiently and will cause new views to be created unnecessarily, which in turn degrades performance.
 
         At some point the end of the items will be reached, meaning for large requested scrolls, it may not actually be possible to scroll as far as requested. Consequently, `ScrollBy()` returns the actual offset that was possible to scroll.
@@ -80,22 +80,22 @@ The 'life cycle' of view creation and positioning of the `ListView` largely take
 
 #### iOS
 
-On iOS, `NativeListViewBase` inherits from the `UICollectionView` native control. `UICollectionView` is special in that it expects to be given dimensions and positions for the item containers in the list **before** those containers have been materialized. This poses a challenge, because if the individual containers have not been materialized, then they have not been databound, and depending on the specific item template, the bound data may change the measured size. (Eg, for databound text wrapped to multiple lines, panel elements `Visibility={Binding SomeVMProperty}` ... etc.)
+On iOS, `NativeListViewBase` inherits from the `UICollectionView` native control. `UICollectionView` is special in that it expects to be given dimensions and positions for the item containers in the list **before** those containers have been materialized. This poses a challenge, because if the individual containers have not been materialized, then they have not been data-bound, and depending on the specific item template, the bound data may change the measured size. (Eg, for data-bound text wrapped to multiple lines, panel elements `Visibility={Binding SomeVMProperty}` ... etc.)
 
 The measuring logic for iOS' `ListView` makes an initial guess for the size of each item based on the dimensions of the unbound `ItemTemplate`. Then, once the container for the item is actually materialized and bound, `UICollectionView` offers a chance to update the measured dimensions for the item, via the method `UICollectionViewCell.PreferredLayoutAttributesFittingAttributes()`. This method is implemented by the `ListViewBaseInternalContainer` derived type. This approach to supporting dynamic item container sizes works for the most part, but can be brittle and throws up a number of edge cases.
 
 ##### Layouting 'life cycle' summary
 
-1. Upon measure, `VirtualizingPanelLayout.SizeThatFits()` is called, and in turn calls `PrepareLayoutIfNeeded()`. (`SizeThatFits()` is called from Uno's layouting code. `SizeThatFits()` is an overridden virtual method that's defined in UIKit, but it's mostly not used by UIKit itself.) `PrepareLayoutIfNeeded()` determines the `DirtyState` of the list. A `DirtyState` of `None` indicates that the existing internal layout state is still valid. `NeedsRelayout` indicates that the layout should be completely rebuilt, which may be the case if the available size changed, or if `InvalidateLayout()` was called. Other `DirtyState` values indicate more specific reasons for updating the layout state. 
+1. Upon measure, `VirtualizingPanelLayout.SizeThatFits()` is called, and in turn calls `PrepareLayoutIfNeeded()`. (`SizeThatFits()` is called from Uno's layouting code. `SizeThatFits()` is an overridden virtual method that's defined in UIKit, but it's mostly not used by UIKit itself.) `PrepareLayoutIfNeeded()` determines the `DirtyState` of the list. A `DirtyState` of `None` indicates that the existing internal layout state is still valid. `NeedsRelayout` indicates that the layout should be completely rebuilt, which may be the case if the available size changed, or if `InvalidateLayout()` was called. Other `DirtyState` values indicate more specific reasons for updating the layout state.
 2. If `PrepareLayoutIfNeeded()` determines that a layout rebuild is required, it calls `PrepareLayoutInternal()`. `PrepareLayoutInternal()` calculates the sizes and positions of every item in the list, as well as non-item elements like header, footer, and group headers. Note that during measure, these sizes and values are not actually persisted (governed by the `createLayoutInfo` parameter), just used to calculate the total dimensions of the list contents.
 3. On arrange, `UICollectionView` calls the `VirtualizingPanelLayout.PrepareLayout()` method, which also calls `PrepareLayoutIfNeeded()`=>`PrepareLayoutInternal()`. This time, `PrepareLayoutInternal()` will persist the calculated sizes and offsets of the items, as `UICollectionViewLayoutAttributes` objects.
 4. `UICollectionView` calls `VirtualizingPanelLayout.LayoutAttributesForElementsInRect()` with the current viewport bounds, to determine what elements should be shown. `LayoutAttributesForElementsInRect()` checks the cached layout attributes, and returns all those that intersect with the passed viewport bounds.
 5. For each element returned by `LayoutAttributesForElementsInRect()`, `UICollectionView` materializes a container by calling `ListViewBaseSource.GetCell()`. `GetCell()` returns a `ListViewBaseInternalContainer`, which has a `ListViewItem` (or a `ContentControl` in the case of a header, footer, or group header element) in its visual subtree.
-6. For each container, `UICollectionView` calls `ListViewBaseInternalContainer.PreferredLayoutAttributesFittingAttributes()`. Here we are able to actually measure the databound item, and determine the final size it needs. If the size differs from the un-databound size, we: 
-    1. Return updated layout attributes from the method; 
+6. For each container, `UICollectionView` calls `ListViewBaseInternalContainer.PreferredLayoutAttributesFittingAttributes()`. Here we are able to actually measure the data-bound item, and determine the final size it needs. If the size differs from the un-data-bound size, we:
+    1. Return updated layout attributes from the method;
     2. Update the cached layout attributes for that item, for future use;
     3. Update the positions of subsequent items in the cached layout info, since if an item is larger/smaller than initially estimated, the offsets of the remaining items must be modified accordingly.
-7. Whenever the list is scrolled, `UICollectionView` will call `LayoutAttributesForElementsInRect()` with the new visible viewport. Steps 5. and 6. will occur for each newly-visible item. 
+7. Whenever the list is scrolled, `UICollectionView` will call `LayoutAttributesForElementsInRect()` with the new visible viewport. Steps 5. and 6. will occur for each newly-visible item.
 
 
 ### Android and iOS internal classes
@@ -104,7 +104,7 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
 | --- | --- | --- | --- |
 | NativeListViewBase | AndroidX.RecyclerView.Widget.RecyclerView | UIKit.UICollectionView | Native list view, parent of item views. |
 | VirtualizingPanelLayout† | RecyclerView.LayoutManager | UIKit.UICollectionViewLayout | Tells NativeListViewBase how to lay out its items. Bridge for ItemsStackPanel/ItemsWrapGrid. |
-| NativeListViewBaseAdapter(Android), ListViewBaseSource(iOS) | RecyclerView.Adapter | UIKit.UICollectionViewSource | Handles creation and binding of item views. 
+| NativeListViewBaseAdapter(Android), ListViewBaseSource(iOS) | RecyclerView.Adapter | UIKit.UICollectionViewSource | Handles creation and binding of item views.
 | ListViewBaseInternalContainer | - | UICollectionViewCell | Implements the native container type - one is created for every `ListViewItem`/`GridViewItem` |
 | ScrollingViewCache | RecyclerView.ViewCacheExtension | - | Additional virtualization handling on Android which optimizes scroll performance. |
 
@@ -127,6 +127,6 @@ Consistent with the other platforms, the managed `ListView` delegates layouting 
 2. `VirtualizingPanelLayout.MeasureOverride()` 'scraps' the existing layout. The 'scrap' concept is borrowed from Android: existing containers are returned to the item generator, but marked as able to be reused without rebinding during the current pass, if they are still needed (which will often be the case).
 3. `VirtualizingPanelLayout.MeasureOverride()` => `UpdateLayout()`. `UpdateLayout()` calls `UnfillLayout()` and `FillLayout()`, which respectively dematerialize containers that are no longer visible within the current viewport, and materialize containers for newly-visible items.
 4. `FillLayout()` calls `CreateLine()` for every missing 'line', which in turn calls `AddView()` for the view(s) in the line. `AddView()` measures the view, adds it to the panel, and stores its planned `Bounds` (size and offset) in `VirtualizationInformation` attached to the view.
-5. `MeasureOverride()` returns an estimate of the panel size, based on the current extent of materialized items, the number of unmaterialized items and the best guess of their size. (This estimate is potentially inaccurate, in the case that the unmaterialized items have a different databound size or use a template with a different size; this is a fundamental limitation of the `ListView` that's also present on UWP/WinUI.)
+5. `MeasureOverride()` returns an estimate of the panel size, based on the current extent of materialized items, the number of unmaterialized items and the best guess of their size. (This estimate is potentially inaccurate, in the case that the unmaterialized items have a different data-bound size or use a template with a different size; this is a fundamental limitation of the `ListView` that's also present on UWP/WinUI.)
 6. `ArrangeOverride()` calls `ArrangeElements()` which arranges each child view according to its stored Bounds, adjusted for the actual arranged size of the panel itself and also the parent `ScrollViewer`.
 7. The panel listens to the `ViewChanged` event of its parent `ScrollViewer`. `VirtualizingPanelLayout.OnScrollChanged()` calls `UpdateLayout()`, in small increments to ensure that vanished views are recycled at the same rate as appearing views are materialized. `OnScrollChanged()` then calls `ArrangeElements()` to ensure newly-added views are arranged.

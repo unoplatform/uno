@@ -4,7 +4,6 @@ root = true
 tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
-end_of_line = crlf
 
 [*.{xaml,xml,targets,props,csproj}]
 indent_style = tab
@@ -27,6 +26,7 @@ indent_size = 2
 
 [*.{yml,yaml}]
 indent_style = space
+indent_size = 2
 
 [*.md]
 indent_style = space
@@ -307,3 +307,11 @@ dotnet_diagnostic.CA1848.severity = none
 dotnet_diagnostic.CA1849.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal
+
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.CA1307.severity = none
+dotnet_diagnostic.CA1308.severity = none
+dotnet_diagnostic.CA1309.severity = none
+dotnet_diagnostic.CA2101.severity = none

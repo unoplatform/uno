@@ -39,7 +39,7 @@ For complete instructions on using Uno Material in your projects, check out this
 ## Migrating From Previous Resource Initialization Method
 Prior to the `1.0` release, the initialization of Material resources was required to be done through code-behind within the `App.xaml.cs` file. Resource initialization has now been moved to XAML-only. Follow the steps below to migrate from the old method of initialization to the new one:
 
-1. Remove the following code from `App.xaml.cs` 
+1. Remove the following code from `App.xaml.cs`
     ```diff
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
@@ -115,7 +115,7 @@ Control|Resource Key
 The colors used in the material styles are part of the color palette system, which can be customized to suit the theme of your application. Since this is decoupled from the styles, the application theme can be changed, without having to make a copy of every style and edit each of them.
 
 ### Leading Icon for Button Control
-Many of the styles* above for the `Button` control support specifying an icon that is displayed adjacent to standard content: 
+Many of the styles* above for the `Button` control support specifying an icon that is displayed adjacent to standard content:
 ```xml
 xmlns:extensions="using:Uno.Material.Extensions"
 ...

@@ -117,7 +117,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private void RaisePointerEvent(Action<PointerEventArgs> raisePointerEvent, PointerEventArgs args)
 		{
-			_owner.Dispatcher.RunAsync(
+			_ = _owner.Dispatcher.RunAsync(
 				CoreDispatcherPriority.High,
 				() => raisePointerEvent(args));
 		}

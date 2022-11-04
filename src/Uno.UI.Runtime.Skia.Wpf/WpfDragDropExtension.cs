@@ -139,7 +139,7 @@ namespace Uno.UI.Skia.Platform
 
 			if (src.GetData(DataFormats.Bitmap) is BitmapSource bitmap)
 			{
-				dst.SetBitmap(new RandomAccessStreamReference(async ct =>
+				dst.SetBitmap(new RandomAccessStreamReference(ct =>
 				{
 					var copy = new MemoryStream();
 					var encoder = new BmpBitmapEncoder();
@@ -147,7 +147,7 @@ namespace Uno.UI.Skia.Platform
 					encoder.Save(copy);
 					copy.Position = 0;
 
-					return copy.AsRandomAccessStream().TrySetContentType("image/bmp");
+					return Task.FromResult(copy.AsRandomAccessStream().TrySetContentType("image/bmp"));
 				}));
 			}
 

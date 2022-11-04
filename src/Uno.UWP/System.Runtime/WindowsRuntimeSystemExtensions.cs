@@ -78,7 +78,7 @@ namespace System
 		public static Task AsTask<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken cancellationToken)
 			=> source.AsTaskCore(cancellationToken);
 
-		public static async Task AsTask<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken cancellationToken, IProgress<TProgress> progress)
+		public static Task AsTask<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken cancellationToken, IProgress<TProgress> progress)
 			=> source.AsTaskCore(cancellationToken, progress);
 
 		private static async Task AsTaskCore<TProgress>(this IAsyncActionWithProgress<TProgress> source, CancellationToken ct, IProgress<TProgress>? progress = null)

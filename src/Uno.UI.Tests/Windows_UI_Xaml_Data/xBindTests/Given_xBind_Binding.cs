@@ -1014,7 +1014,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public void When_xLoad_FallbackValue_Converter()
+		public async Task When_xLoad_FallbackValue_Converter()
 		{
 			var SUT = new Binding_xLoad_FallbackValue_Converter();
 
@@ -1030,8 +1030,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.Model = null;
 
-			AssertIsNullAsync(() => SUT.topLevelContent);
-			AssertIsNullAsync(() => SUT.innerTextBlock);
+			await AssertIsNullAsync(() => SUT.topLevelContent);
+			await AssertIsNullAsync(() => SUT.innerTextBlock);
 		}
 
 		[TestMethod]
@@ -1073,6 +1073,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/10164")]
 		public async Task When_xLoad_StaticResource()
 		{
 			var SUT = new Binding_xLoad_StaticResources();
@@ -1088,8 +1089,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.IsTestGridLoaded = false;
 
-			AssertIsNullAsync(() => SUT.TestGrid);
-			AssertIsNullAsync(() => SUT.contentControl);
+			await AssertIsNullAsync(() => SUT.TestGrid);
+			await AssertIsNullAsync(() => SUT.contentControl);
 
 			SUT.IsTestGridLoaded = true;
 
@@ -1112,19 +1113,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 
 			SUT.IsEllipseLoaded = false;
 
-			AssertIsNullAsync(() => SUT.ellipse);
+			await AssertIsNullAsync(() => SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
 
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 		}
 
@@ -1143,24 +1144,24 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 
 			SUT.IsEllipseLoaded = false;
 
-			AssertIsNullAsync(() => SUT.ellipse);
+			await AssertIsNullAsync(() => SUT.ellipse);
 			Assert.IsNotNull(SUT.square);
 			Assert.AreEqual(4, SUT.square.StrokeThickness);
 
 			SUT.IsEllipseLoaded = true;
 
 			Assert.IsNotNull(SUT.ellipse);
-			AssertIsNullAsync(() => SUT.square);
+			await AssertIsNullAsync(() => SUT.square);
 			Assert.AreEqual(4, SUT.ellipse.StrokeThickness);
 		}
 
 		[TestMethod]
-		public async Task When_xLoad_xBind_xLoad_Initial()
+		public void When_xLoad_xBind_xLoad_Initial()
 		{
 			var grid = new Grid();
 			grid.ForceLoaded();
@@ -1228,13 +1229,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			{
 				SUT.TopLevelVisiblity = false;
 
-				AssertIsNullAsync(() => SUT.tb01);
-				AssertIsNullAsync(() => SUT.tb02);
+				await AssertIsNullAsync(() => SUT.tb01);
+				await AssertIsNullAsync(() => SUT.tb02);
 			}
 		}
 
 		[TestMethod]
-		public async Task When_Binding_xNull()
+		public void When_Binding_xNull()
 		{
 			var SUT = new Binding_xNull();
 
@@ -1251,7 +1252,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public async Task When_NullableRecordStruct()
+		public void When_NullableRecordStruct()
 		{
 			var SUT = new xBind_NullableRecordStruct();
 
@@ -1265,7 +1266,43 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public async Task When_PathLessCasting()
+		public void When_TypeCast()
+		{
+			var SUT = new Binding_TypeCast();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("42", SUT.tb01.Text);
+			Assert.AreEqual("42", SUT.tb02.Text);
+			Assert.AreEqual("4242", SUT.tb03.Text);
+			Assert.AreEqual(2, SUT.tb04.Tag);
+		}
+
+		[TestMethod]
+		public void When_TypeCast_DataTemplate()
+		{
+			var SUT = new Binding_TypeCast_DataTemplate();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			var dc = new Binding_TypeCast_DataTemplate_Data();
+			root.DataContext = dc;
+			
+			SUT.ForceLoaded();
+			root.ForceLoaded();
+
+			var tb01 = SUT.FindName("tb01") as TextBlock;
+			var tb02 = SUT.FindName("tb02") as TextBlock;
+			var tb03 = SUT.FindName("tb03") as TextBlock;
+			var tb04 = SUT.FindName("tb04") as TextBlock;
+
+			Assert.AreEqual("42", tb01.Text);
+			Assert.AreEqual("42", tb02.Text);
+			Assert.AreEqual("4242", tb03.Text);
+			Assert.AreEqual(2, tb04.Tag);
+		}
+
+		[TestMethod]
+		public void When_PathLessCasting()
 		{
 			var SUT = new xBind_PathLessCasting();
 
@@ -1275,7 +1312,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public async Task When_PathLessCasting_Template()
+		public void When_PathLessCasting_Template()
 		{
 			var SUT = new xBind_PathLessCasting_Template();
 
@@ -1290,7 +1327,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public async Task When_AttachedProperty()
+		public void When_AttachedProperty()
 		{
 			var SUT = new xBind_AttachedProperty();
 
@@ -1300,7 +1337,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		public async Task When_ValueType()
+		public void When_ValueType()
 		{
 			var SUT = new xBind_ValueType();
 			var date1 = new DateTime(2022, 10, 01);

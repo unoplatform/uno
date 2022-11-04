@@ -284,7 +284,7 @@ namespace Windows.Devices.Radios
 		}
 
 
-		private async static Task<IReadOnlyList<Radio>> GetRadiosAsyncTask()
+		private static Task<IReadOnlyList<Radio>> GetRadiosAsyncTask()
 		{
 			var radios = new List<Radio>();
 
@@ -306,7 +306,7 @@ namespace Windows.Devices.Radios
 				radios.Add(radio); // yield oRadio;
 			}
 
-			return radios;
+			return Task.FromResult<IReadOnlyList<Radio>>(radios);
 		}
 
 		/// <summary>

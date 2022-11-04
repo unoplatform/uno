@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.Utilities;
 using UnoSolutionTemplate.Wizard.Forms;
 
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
+
 namespace UnoSolutionTemplate.Wizard
 {
 	public class UnoSolutionWizard : IWizard
@@ -36,6 +38,7 @@ namespace UnoSolutionTemplate.Wizard
 		private bool _useWpf;
 		private bool _useWinUI;
 		private bool _useServer;
+		private bool _useWebAssemblyManifestJson;
 		private string? _baseTargetFramework;
 		private IDictionary<string, string>? _replacementDictionary;
 
@@ -75,42 +78,47 @@ namespace UnoSolutionTemplate.Wizard
 			if (_dte?.Solution is Solution2 solution)
 			{
 				var platforms = solution.Projects.OfType<Project>().FirstOrDefault(p => p.Name == "Platforms");
-
 				if (platforms.Object is SolutionFolder platformsFolder)
 				{
 					if (_useWebAssembly)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", "Wasm.winui.netcore.vstemplate");
+
+						if (!_useWebAssemblyManifestJson)
+						{
+							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, $"{_projectName}.Wasm", "manifest.json");
+							File.Delete(webAssemblyManifestJsonPath);
+						}
 					}
 
 					if (_useServer)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Server", "Server.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Server", "Server.netcore.vstemplate");
 					}
 
 					if (_useiOS || _useCatalyst || _useAndroid || _useAppKit)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Mobile", "Mobile.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Mobile", "Mobile.winui.netcore.vstemplate");
 					}
 
 					if (_useGtk)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Gtk", "SkiaGtk.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Gtk", "SkiaGtk.winui.netcore.vstemplate");
 					}
 
 					if (_useFramebuffer)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Linux.FrameBuffer", "SkiaLinuxFrameBuffer.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Linux.FrameBuffer", "SkiaLinuxFrameBuffer.winui.netcore.vstemplate");
 					}
 
 					if (_useWinUI)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Windows", "WinUI.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Windows", "WinUI.netcore.vstemplate");
 					}
 
 					if (_useWpf)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", "SkiaWpf.winui.net6.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", "SkiaWpf.winui.netcore.vstemplate");
 					}
 				}
 				else
@@ -220,7 +228,7 @@ namespace UnoSolutionTemplate.Wizard
 		}
 
 		private string FindManifestFileName(string fileName)
-			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName))
+			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName, StringComparison.Ordinal))
 				?? throw new InvalidOperationException($"Unable to find [{fileName}] in the assembly");
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
@@ -254,6 +262,7 @@ namespace UnoSolutionTemplate.Wizard
 						_useWinUI = targetPlatformWizardPicker.UseWinUI;
 						_useServer = targetPlatformWizardPicker.UseServer;
 						_baseTargetFramework = targetPlatformWizardPicker.UseBaseTargetFramework;
+						_useWebAssemblyManifestJson = targetPlatformWizardPicker.UseWebAssemblyManifestJson;
 
 						replacementsDictionary["$UseWebAssembly$"] = _useWebAssembly.ToString();
 						replacementsDictionary["$UseIOS$"] = _useiOS.ToString();
@@ -267,8 +276,7 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$UseServer$"] = _useServer.ToString();
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
 						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
-
-						_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
+						replacementsDictionary["$UseWebAssemblyManifestJson$"] = _useWebAssemblyManifestJson.ToString();
 
 						var version = GetVisualStudioReleaseVersion();
 
@@ -282,11 +290,14 @@ namespace UnoSolutionTemplate.Wizard
 
 					case DialogResult.Abort:
 						MessageBox.Show("Aborted"/*targetPlatformWizardPicker.Error*/);
+						Directory.Delete(_targetPath, true);
 						throw new WizardCancelledException();
 
 					default:
 						throw new WizardBackoutException();
 				}
+
+				_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
 			}
 		}
 
@@ -412,7 +423,7 @@ namespace UnoSolutionTemplate.Wizard
 					{
 						foreach (SolutionContext solutionContext in anyCpuConfig.SolutionContexts)
 						{
-							if (solutionContext.ProjectName.EndsWith(projectSuffix))
+							if (solutionContext.ProjectName.EndsWith(projectSuffix, StringComparison.Ordinal))
 							{
 								solutionContext.ShouldBuild = true;
 								solutionContext.ShouldDeploy = true;

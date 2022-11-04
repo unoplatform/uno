@@ -776,7 +776,11 @@ namespace Uno.UI.Samples.Tests
 									{
 										var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
 
-										cleanupActions.Add(async _ => ptSubscription.Dispose());
+										cleanupActions.Add(_ =>
+										{
+											ptSubscription.Dispose();
+											return Task.CompletedTask;
+										});
 									}
 
 									sw.Start();
@@ -790,7 +794,11 @@ namespace Uno.UI.Samples.Tests
 								if (testCase.Pointer is { } pt)
 								{
 									var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
-									cleanupActions.Add(async _ => ptSubscription.Dispose());
+									cleanupActions.Add(_ =>
+									{
+										ptSubscription.Dispose();
+										return Task.CompletedTask;
+									});
 								}
 
 								sw.Start();

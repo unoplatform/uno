@@ -430,7 +430,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 			else
 			{
-				Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, DoStop);
+				_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, DoStop);
 			}
 		}
 

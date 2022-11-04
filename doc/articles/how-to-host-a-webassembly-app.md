@@ -6,7 +6,7 @@
   - [Apache](#apache)
 
 
-Regardless of the webserver (or reverse proxy) software used, the support the following Content (MIME) types are always needed:
+Regardless of the web server (or reverse proxy) software used, the support the following Content (MIME) types are always needed:
 
 -   `application/wasm`
 -   `application/octet-stream`
@@ -185,4 +185,4 @@ Here are some steps:
 - Add MIME type `application/woff2 .woff2` to IIS
 - Add MIME type `application/pdb .pdb` to IIS
 
-Run http:localhost/Myapp for testing
+Run `http:localhost/Myapp` for testing

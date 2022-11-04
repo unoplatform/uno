@@ -4,8 +4,9 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
-      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",     
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
+      "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\SamplesApp.macOS\\SamplesApp.macOS.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
@@ -14,7 +15,9 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
@@ -27,12 +30,10 @@
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
-      "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.csproj",
+      "Uno.UI\\Uno.UI.csproj",      
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
-      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
-      "Uno.UI.Adapter.Microsoft.Logging.Extensions\\Uno.UI.Adapter.Microsoft.Logging.Extensions.csproj"
+      "Uno.UWP\\Uno.csproj"
     ]
   }
 }

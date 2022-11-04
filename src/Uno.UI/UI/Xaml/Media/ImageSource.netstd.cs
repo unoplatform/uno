@@ -17,6 +17,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Devices.Enumeration;
+using Uno.UI.Xaml.Media;
 
 
 #if !IS_UNO
@@ -31,8 +32,6 @@ namespace Windows.UI.Xaml.Media
 		private readonly SerialDisposable _opening = new SerialDisposable();
 		private readonly List<Action<ImageData>> _subscriptions = new List<Action<ImageData>>();
 
-		private ImageData? _cache;
-
 		/// <summary>
 		/// Subscribes to this image source
 		/// </summary>
@@ -46,9 +45,9 @@ namespace Windows.UI.Xaml.Media
 		{
 			_subscriptions.Add(onSourceOpened);
 
-			if (_cache.HasValue)
+			if (_imageData.HasData)
 			{
-				onSourceOpened(_cache.Value);
+				onSourceOpened(_imageData);
 			}
 			else if (_subscriptions.Count == 1)
 			{
@@ -62,7 +61,7 @@ namespace Windows.UI.Xaml.Media
 		/// Indicates that this source has already been opened
 		/// (So the onSourceOpened callback of Subscribe will be invoked synchronously!)
 		/// </summary>
-		internal bool IsOpened => _cache.HasValue;
+		internal bool IsOpened => _imageData.HasData;
 
 		#region Implementers API
 		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
@@ -80,8 +79,8 @@ namespace Windows.UI.Xaml.Media
 
 		private protected void InvalidateSource()
 		{
-			_cache = null;
-			if (_subscriptions.Count > 0)
+			_imageData = default;
+			if (_subscriptions.Count > 0 || this is SvgImageSource)
 			{
 				RequestOpen();
 			}
@@ -102,17 +101,13 @@ namespace Windows.UI.Xaml.Media
 
 					_opening.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
 						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
-						ct => Open(ct, targetWidth, targetHeight));
+						ct => _ = Open(ct, targetWidth, targetHeight));
 				}
 			}
 			catch (Exception error)
 			{
 				this.Log().Error($"Error loading image: {error}");
-				OnOpened(new ImageData
-				{
-					Kind = ImageDataKind.Error,
-					Error = error
-				});
+				OnOpened(ImageData.FromError(error));
 			}
 		}
 
@@ -135,17 +130,13 @@ namespace Windows.UI.Xaml.Media
 			}
 			catch (Exception error)
 			{
-				OnOpened(new ImageData
-				{
-					Kind = ImageDataKind.Error,
-					Error = error
-				});
+				OnOpened(ImageData.FromError(error));
 			}
 		}
 
 		private void OnOpened(ImageData data)
 		{
-			_cache = data; // We should also cache the targetWidth and targetHeight
+			_imageData = data; // We should also cache the targetWidth and targetHeight
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{

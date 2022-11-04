@@ -23,6 +23,10 @@ jobs:
   parameters:
     vmImage: '$(linuxVMImage)'
 
+- template: build/ci/.azure-devops-spell-check.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-pipeline-validations.yml
   parameters:
     vmImage: '$(linuxVMImage)'

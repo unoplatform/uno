@@ -97,35 +97,39 @@ namespace Windows.UI.Xaml.Documents
 			var skWidth = SKFontStyleWidth.Normal;
 			var skSlant = style.ToSkiaSlant();
 
-			SKTypeface skTypeFace;
+			SKTypeface? skTypeFace;
+
+			SKTypeface GetDefaultTypeFace()
+				=> SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
 
 			if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
 			{
-				skTypeFace = SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
+				skTypeFace = GetDefaultTypeFace();
 			}
-			else if (name.StartsWith(XamlFilePathHelper.AppXIdentifier))
+			else if (name.StartsWith(XamlFilePathHelper.AppXIdentifier, StringComparison.Ordinal))
 			{
 				var path = new Uri(name).PathAndQuery;
 
 				var filePath = global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path, path.TrimStart('/')
 					.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
 
+				// SKTypeface.FromFile may return null if the file is not found (SkiaSharp is not yet nullable attributed)
 				skTypeFace = SKTypeface.FromFile(filePath);
 			}
 			else
 			{
-				skTypeFace = SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
-
 				// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-				if (skTypeFace == null)
-				{
-					if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
-					{
-						typeof(Inline).Log().LogWarning($"The font {name} could not be found, using system default");
-					}
+				skTypeFace = SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+			}
 
-					skTypeFace = SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
+			if (skTypeFace == null)
+			{
+				if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(Inline).Log().LogWarning($"The font {name} could not be found, using system default");
 				}
+
+				skTypeFace = GetDefaultTypeFace();
 			}
 
 			Blob? GetTable(Face face, Tag tag)

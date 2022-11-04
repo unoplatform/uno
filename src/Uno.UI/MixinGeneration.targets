@@ -3,20 +3,43 @@
 
   <PropertyGroup>
 	<IsMonoAndroid>false</IsMonoAndroid>
-	<IsMonoAndroid Condition="'$(TargetFramework)'=='net6.0-android' or $(TargetFramework.ToLower().StartsWith('monoandroid'))">true</IsMonoAndroid>
+	<IsMonoAndroid Condition="
+				   '$(TargetFramework)'=='net6.0-android'
+				   or '$(TargetFramework)'=='net7.0-android'
+				   or $(TargetFramework.ToLower().StartsWith('monoandroid'))
+				   ">true</IsMonoAndroid>
 
 	<IsXamarinIOS>false</IsXamarinIOS>
-	<IsXamarinIOS Condition="'$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst' or $(TargetFramework.ToLower().StartsWith('xamarinios'))">true</IsXamarinIOS>
+	<IsXamarinIOS Condition="
+				  '$(TargetFramework)'=='net6.0-ios'
+				  or '$(TargetFramework)'=='net6.0-maccatalyst'
+				  or '$(TargetFramework)'=='net7.0-ios'
+				  or '$(TargetFramework)'=='net7.0-maccatalyst'
+				  or $(TargetFramework.ToLower().StartsWith('xamarinios'))
+				  ">true</IsXamarinIOS>
 
 	<IsXamarinMac>false</IsXamarinMac>
-	<IsXamarinMac Condition="$(TargetFramework.ToLower().StartsWith('xamarinmac')) or '$(TargetFramework)'=='net6.0-macos'">true</IsXamarinMac>
+	<IsXamarinMac Condition="
+				  $(TargetFramework.ToLower().StartsWith('xamarinmac'))
+				  or '$(TargetFramework)'=='net6.0-macos'
+				  or '$(TargetFramework)'=='net7.0-macos'
+				  ">true</IsXamarinMac>
 	
 	<IsReferenceAPI>false</IsReferenceAPI>
 	<IsReferenceAPI Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">true</IsReferenceAPI>
 
 	<!-- Required because links don't work in actual folder structure -->
 	<_IsUnoUIProjectForMixins Condition="'$(MSBuildProjectName)'=='Uno.UI'">true</_IsUnoUIProjectForMixins>
+
+	<_T4ToolVersion>2.3.0-preview-0041-g0bb7f1d477</_T4ToolVersion>
   </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="dotnet-t4"
+						  Version="$(_T4ToolVersion)"
+						  IncludeAssets="none"
+						  PrivateAssets="all" />
+	</ItemGroup>
 
   <ItemGroup>
 	<Compile Remove="$(MSBuildThisFileDirectory)Mixins\**\*.cs"/>
@@ -95,30 +118,6 @@
 	<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsXamarinMac)" />	
   </ItemGroup>
 
-	<Target Name="UnoDefineInstallDotnetT4"
-			  BeforeTargets="BeforeBuild;_InnerGenerateMixins">
-		<!--
-		Needs to be defined for _InnerGenerateMixins to work, but also
-		executed late for IntermediateOutputPath to be defined
-		-->
-		<PropertyGroup>
-			<_UnoDotnetT4ToolBasePath>$(MSBuildProjectDirectory)/$(IntermediateOutputPath)dotnet-tools</_UnoDotnetT4ToolBasePath>
-		</PropertyGroup>
-	</Target>
-
-	<Target Name="UnoInstallDotnetT4"
-			BeforeTargets="BeforeBuild"
-			DependsOnTargets="UnoDefineInstallDotnetT4">
-
-		<!-- Avoid dotnet tool to find multiple target projects-->
-		<MakeDir Directories="$(MSBuildProjectDirectory)/$(IntermediateOutputPath)"/>
-
-		<Exec Command="dotnet tool install dotnet-t4 --version 2.3.0-preview-0041-g0bb7f1d477 --tool-path $(_UnoDotnetT4ToolBasePath)"
-			  StandardOutputImportance="Low"
-			  WorkingDirectory="$(MSBuildProjectDirectory)/$(IntermediateOutputPath)"
-			  Condition="!exists($(_UnoDotnetT4ToolBasePath))" />
-	</Target>
-
 	<!--
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
@@ -127,24 +126,30 @@
         Inputs="@(MixinInput)" 
 		Outputs="@(MixinOutput)" 
 		BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
-		DependsOnTargets="UnoInstallDotnetT4"
 		Condition="'$(DesignTimeBuild)' != 'true'">
 
+    <PropertyGroup>
+      <FirstTargetFramework Condition=" '$(TargetFrameworks)' == '' ">$(TargetFramework)</FirstTargetFramework>
+      <FirstTargetFramework Condition=" '$(FirstTargetFrameworks)' == '' ">$(TargetFrameworks.Split(';')[0])</FirstTargetFramework>
+    </PropertyGroup>
+
 	<ItemGroup>
+		<_t4Path Include="$(NuGetPackageRoot)/dotnet-t4/$(_T4ToolVersion)/**/t4.dll" />
+		
 	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsMonoAndroid)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.cs;Configuration=$(Configuration);Platform=$(Platform);IntermediateOutputPath=$(IntermediateOutputPath)</Properties>
+		<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework)</Properties>
 	  </MixinDefinition>
 	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsMonoAndroid)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);IntermediateOutputPath=$(IntermediateOutputPath)</Properties>
+		<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework)</Properties>
 	  </MixinDefinition>
 	  <MixinDefinition Include="$(MSBuildThisFileFullPath)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.cs;Configuration=$(Configuration);Platform=$(Platform);IntermediateOutputPath=$(IntermediateOutputPath)</Properties>
+		<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework)</Properties>
 	  </MixinDefinition>
 	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsXamarinIOS)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);IntermediateOutputPath=$(IntermediateOutputPath)</Properties>
+		<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework)</Properties>
 	  </MixinDefinition>
 	  <MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsXamarinMac)">
-		<Properties>InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);IntermediateOutputPath=$(IntermediateOutputPath)</Properties>
+		<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework)</Properties>
 	  </MixinDefinition>
 	</ItemGroup>
 
@@ -169,6 +174,6 @@
   </Target>
 
   <Target Name="_InnerGenerateMixins">
-	  <Exec Command="$(_UnoDotnetT4ToolBasePath)\t4 $(InputFile) -o $(OutputPath)" />
+	<Exec Command="dotnet &quot;$(_t4Path)&quot; $(InputFile) -o $(OutputPath)" />
   </Target>
 </Project>

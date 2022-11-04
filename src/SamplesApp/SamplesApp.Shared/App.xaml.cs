@@ -94,7 +94,7 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !NET6_0
+#if __IOS__ && !NET6_0_OR_GREATER
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 
@@ -155,7 +155,7 @@ namespace SamplesApp
 		}
 #endif
 
-		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
+		private static bool HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
@@ -185,7 +185,11 @@ namespace SamplesApp
 			return false;
 		}
 
-		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
+		private static
+#if __SKIA__ || __MACOS__
+			async
+#endif
+			Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
@@ -207,8 +211,11 @@ namespace SamplesApp
 
 				return true;
 			}
-#endif
+
 			return false;
+#else
+			return Task.FromResult(false);
+#endif
 		}
 
 #if __IOS__
@@ -318,7 +325,7 @@ namespace SamplesApp
 		{
 			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
 
-			if (await HandleSkiaAutoScreenshots(launchActivatedEventArgs))
+			if (HandleSkiaAutoScreenshots(launchActivatedEventArgs))
 			{
 				return;
 			}
@@ -328,7 +335,7 @@ namespace SamplesApp
 				return;
 			}
 
-			if (await TryNavigateToLaunchSampleAsync(launchActivatedEventArgs))
+			if (TryNavigateToLaunchSample(launchActivatedEventArgs))
 			{
 				return;
 			}
@@ -340,7 +347,7 @@ namespace SamplesApp
 			}
 		}
 
-		private async Task<bool> TryNavigateToLaunchSampleAsync(LaunchActivatedEventArgs launchActivatedEventArgs)
+		private bool TryNavigateToLaunchSample(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
 			const string samplePrefix = "sample=";
 			try
@@ -363,7 +370,7 @@ namespace SamplesApp
 				var category = pathParts[0];
 				var sampleName = pathParts[1];
 
-				await SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+				SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
 				return true;
 			}
 			catch (Exception ex)
@@ -502,7 +509,6 @@ namespace SamplesApp
 		}
 
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		private static ImmutableHashSet<int> _doneTests = ImmutableHashSet<int>.Empty;
 		private static int _testIdCounter = 0;
 
@@ -520,7 +526,7 @@ namespace SamplesApp
 
 				var testId = Interlocked.Increment(ref _testIdCounter);
 
-				Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+				_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
@@ -530,7 +536,7 @@ namespace SamplesApp
 							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 							if (statusBar != null)
 							{
-								Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+								_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 									Windows.UI.Core.CoreDispatcherPriority.Normal,
 									async () => await statusBar.HideAsync()
 								);

@@ -30,7 +30,9 @@
 		</Otherwise>
 	</Choose>
 
-	<Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android'">
+	<Target Name="AndroidResourceGenWorkaround"
+			BeforeTargets="Build"
+			Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android' and '$(TargetFramework)'!='net7.0-android'">
 	<MakeDir Directories="obj\$(TargetFramework)\Resources" />
 	<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
@@ -42,16 +44,16 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.2.0-dev.6" />
-	<PackageReference Update="Uno.SourceGeneration" Version="4.2.0-dev.6" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.2.0" />
+	<PackageReference Update="Uno.SourceGeneration" Version="4.2.0" />
 	<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
 	<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-	<PackageReference Update="Uno.Wasm.Bootstrap" Version="7.0.0-dev.180" />
-	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="7.0.0-dev.180" />
+	<PackageReference Update="Uno.Wasm.Bootstrap" Version="7.0.3" />
+	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="7.0.3" />
 	<PackageReference Update="xamarin.build.download" Version="0.11.3" PrivateAssets="all" />
 	<PackageReference Update="MSTest.TestAdapter" Version="2.2.10" />
 	<PackageReference Update="MSTest.TestFramework" Version="2.2.8" />
@@ -60,7 +62,7 @@
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 	<PackageReference Update="NUnit" Version="3.13.3" />
-	<PackageReference Update="NUnit3TestAdapter" Version="4.2.1" />
+	<PackageReference Update="NUnit3TestAdapter" Version="4.3.0-alpha-net7.4" />
 	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.32" />
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
@@ -70,22 +72,23 @@
 	<PackageReference Update="Xamarin.UITest" Version="3.2.9" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
-	<PackageReference Update="SkiaSharp.Views" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.Skottie" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.1-preview.79" />
+	<PackageReference Update="SkiaSharp.Views" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.Skottie" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" />
+	<PackageReference Update="Svg.Skia" Version="0.5.16" />
 
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.1-preview.79" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.1-preview.79" />
-	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.1-preview.79" />
+	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
+	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.3" />
+	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
 	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
 	<PackageReference Update="FluentAssertions" Version="5.10.3" />
@@ -105,15 +108,6 @@
 	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.5.2" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
-	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-	  <!-- <PackageReference Include="xamarin.androidx.vectordrawable" Version="1.1.0" excludeAssets="buildTransitive" />-->
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
@@ -122,14 +116,26 @@
 	<PackageReference Update="Xamarin.Build.Download" Version="0.11.3" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
+	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
+	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+  </ItemGroup>
+
   <Target Name="ValidateSolutionPath" BeforeTargets="Build">
 	<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
 		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
   </Target>
-
-  <PropertyGroup>
-	  <MicrosoftNetCompilerVersionOverride>4.4.0-2.final</MicrosoftNetCompilerVersionOverride>
-  </PropertyGroup>
 
   <PropertyGroup>
 	<!--
@@ -138,14 +144,6 @@
 	-->
     <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!--This override is used to validate the use of specific version of the C# Compiler-->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilerVersionOverride)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 
   <Target Name="WorkaroundMissingWinAppSDKDLL"
 				  BeforeTargets="BinPlaceBootstrapDll">

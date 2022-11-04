@@ -10,9 +10,9 @@ While working on triaging issues, you may not have the privilege to assign a spe
 
 Here are a few predetermined searches on issues for convenience:
 
-* [Longest untriaged issues](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acreated-asc) (sorted by age)
+* [Longest un-triaged issues](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acreated-asc) (sorted by age)
 * [Newest incoming issues](https://github.com/unoplatform/uno/issues?q=is%3Aopen+is%3Aissue)
-* [Busy untriaged issues](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-desc) (sorted by number of comments)
+* [Busy un-triaged issues](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-desc) (sorted by number of comments)
 * [Issues that need more attention](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-asc)
 
 ## Scope
@@ -132,7 +132,7 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 >
 > Specific things I'd like to learn about are what Android API level you are using and if you are testing in a simulator or on a device.
 >
-> Could you please provide a test case that reproduces the issue and provide [logs from logcat](https://docs.microsoft.com/en-us/xamarin/android/deploy-test/debugging/android-debug-log?tabs=windows)?
+> Could you please provide a test case that reproduces the issue and provide [logs from `logcat`](https://docs.microsoft.com/en-us/xamarin/android/deploy-test/debugging/android-debug-log?tabs=windows)?
 
 ### needs template
 

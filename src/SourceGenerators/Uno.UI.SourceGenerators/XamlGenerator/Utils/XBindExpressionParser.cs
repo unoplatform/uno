@@ -104,8 +104,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var isPathLessCast = Helpers.IsPathLessCast(node);
 				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
 				var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
+                var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
 
-				if (e != null && isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
+                if (e!= null
+					&& isValidParent
+					&& !_isStaticMember(node.Expression.ToFullString())
+					&& !isParentMemberStatic
+					&& !isParenthesizedExpression)
 				{
 					if (isPathLessCast.result)
 					{
@@ -145,9 +150,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
 			{
 				var isInsideCast = Helpers.IsInsideCast(node);
-				var isValidParent = !Helpers.IsInsideMethod(node).result
-					&& !Helpers.IsInsideMemberAccessExpression(node).result
-					&& !isInsideCast.result;
+				var isValidParent =
+					(
+						!Helpers.IsInsideMethod(node).result
+						&& !Helpers.IsInsideMemberAccessExpression(node).result
+						&& !isInsideCast.result
+					)
+					|| Helpers.IsInsideCastWithParentheses(node).result
+					|| Helpers.IsInsideCastAsArrowClause(node).result
+					|| Helpers.IsInsideCastAsMethodArgument(node).result;
 
 				if (isValidParent && !_isStaticMember(node.ToFullString()))
 				{
@@ -231,22 +242,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					.Expression;
 
 			internal static (bool result, MemberAccessExpressionSyntax? memberAccess) IsInsideMemberAccessExpression(SyntaxNode node)
-			{
-				var currentNode = node.Parent;
-
-				do
-				{
-					if (currentNode is MemberAccessExpressionSyntax memberAccess)
-					{
-						return (true, memberAccess);
-					}
-
-					currentNode = currentNode?.Parent;
-				}
-				while (currentNode != null);
-
-				return (false, null);
-			}
+				=> IsInside(node, n => n as MemberAccessExpressionSyntax);
 
 			internal static (bool result, InvocationExpressionSyntax? expression) IsInsideMethod(SyntaxNode node)
 			{
@@ -270,12 +266,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			}
 
 			internal static (bool result, CastExpressionSyntax? expression) IsInsideCast(SyntaxNode node)
+				=> IsInside(node, n => n as CastExpressionSyntax);
+
+			internal static (bool result, CastExpressionSyntax? expression) IsInsideCastWithParentheses(SyntaxNode node)
+				=> IsInside(
+					node,
+					n => n is CastExpressionSyntax cast
+						&& cast.Parent is ParenthesizedExpressionSyntax
+						&& cast.Expression == node ? cast : null);
+
+			internal static (bool result, CastExpressionSyntax? expression) IsInsideCastAsMethodArgument(SyntaxNode node)
+				=> IsInside(
+					node,
+					n => n is CastExpressionSyntax cast
+						&& cast.Parent is ArgumentSyntax
+						&& cast.Expression == node ? cast : null);
+
+			internal static (bool result, CastExpressionSyntax? expression) IsInsideCastAsArrowClause(SyntaxNode node)
+				=> IsInside(
+					node,
+					n => n is CastExpressionSyntax cast
+						&& cast.Parent is ArrowExpressionClauseSyntax
+						&& cast.Expression == node ? cast : null);
+
+			internal static (bool result, T? expression) IsInside<T>(SyntaxNode node, Func<SyntaxNode?, T?> predicate) where T: SyntaxNode
 			{
 				var currentNode = node.Parent;
 
 				do
 				{
-					if (currentNode is CastExpressionSyntax cast)
+					if (predicate(currentNode) is { } cast)
 					{
 						return (true, cast);
 					}
@@ -316,7 +336,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				var currentNode = node.Parent;
 
-				if (node.GetText().ToString().EndsWith("."))
+				if (node.GetText().ToString().EndsWith(".", StringComparison.Ordinal))
 				{
 					do
 					{
@@ -341,7 +361,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				{
 					if (currentNode is InvocationExpressionSyntax arg
 						&& arg.Expression is MemberAccessExpressionSyntax memberAccess
-						&& memberAccess.ToString().EndsWith("."))
+						&& memberAccess.ToString().EndsWith(".", StringComparison.Ordinal))
 					{
 						return (true, arg);
 					}

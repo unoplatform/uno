@@ -5,6 +5,7 @@
 		<TargetFramework>tizen50</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,7 +24,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="SkiaSharp.Views" Version="2.88.1-preview.79" />
+		<PackageReference Include="SkiaSharp.Views" Version="2.88.3" />
 		<PackageReference Include="Uno.UI.Skia.Tizen" Version="3.0.0-dev.1447" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />

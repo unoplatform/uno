@@ -30,7 +30,7 @@ Loading and building the Uno.UI solution is a resource intensive task. As a resu
 
 ## Building Uno.UI for a single target platform
 
-This is the **recommended** approach to building the Uno.UI solution. It will build a single set of binaries for a particular platform (eg Android, iOS, WebAssembly, etc). 
+This is the **recommended** approach to building the Uno.UI solution. It will build a single set of binaries for a particular platform (eg Android, iOS, WebAssembly, etc).
 
 Building for a single target platform is considerably faster, much less RAM-intensive, and generally more reliable.
 
@@ -38,15 +38,17 @@ It involves two things - setting an override for the target framework that will 
 
 The step by step process is:
 
-1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.  
-This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
+1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.
+> [!NOTE]
+> This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
+1. By default the Uno.UI solution on the master branch is building using the UWP API set. If you want to build against the WinUI 3 API set, you can checkout the `generated/master/winui-autoconvert` branch. See [this section](winui-conversion.md) for details on this branch.
 1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
-1. Make a copy of the [src/crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
+1. Make a copy of the [`src/crosstargeting_override.props.sample`](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
 1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for (Identifiers for each platform are listed in the `crosstargeting_override.props` file), then save the file.
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
-   - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'. 
+   - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'.
    - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
@@ -88,13 +90,13 @@ Here are some tips when building the Uno solution and failures happen:
 - Make sure to have a valid `UnoTargetFrameworkOverride` which matches your solution filter
 - Make sure to have the Windows SDK `18362` installed
 
-## Other build-related topics 
+## Other build-related topics
 
 ### Building the reference assemblies for Skia and WebAssembly
 
-Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `net7.0` and `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those referene assemblies are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder of nuget packages.
+Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `net7.0` and `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those reference assemblies are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder of nuget packages.
 
-When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overriden nuget cache to be unable to use those newly added APIs.
+When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overridden nuget cache to be unable to use those newly added APIs.
 
 In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>...</UnoTargetFrameworkOverride>` to `net7.0` or `netstandard2.0`, then open the `Uno.UI-Reference-Only.slnf` filter. You can now build the `Uno.UI` project. Doing this will generate the proper assemblies with the new APIs to be used in application or libraries using the nuget cache override.
 

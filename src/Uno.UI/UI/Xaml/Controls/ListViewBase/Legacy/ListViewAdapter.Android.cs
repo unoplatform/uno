@@ -237,7 +237,7 @@ namespace Uno.UI.Controls.Legacy
 			}
 
 			_needsRefresh = true;
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() =>
 			{

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Android.Graphics;
 using Uno.UI;
 using Uno.UI.Controls;
@@ -9,10 +9,9 @@ namespace Windows.UI.Xaml
 	{
 		internal Path GetOutlinePath(RectF rect)
 		{
-			var radii = GetRadii();
-
 			var path = new Path();
-			path.AddRoundRect(rect, radii, Path.Direction.Cw);
+
+			path.AddRoundRect(rect, GetRadii(), Path.Direction.Cw);
 
 			return path;
 		}
@@ -29,16 +28,21 @@ namespace Windows.UI.Xaml
 
 		internal float[] GetRadii()
 		{
+			var topLeft = ViewHelper.LogicalToPhysicalPixels(TopLeft);
+			var topRight = ViewHelper.LogicalToPhysicalPixels(TopRight);
+			var bottomRight = ViewHelper.LogicalToPhysicalPixels(BottomRight);
+			var bottomLeft = ViewHelper.LogicalToPhysicalPixels(BottomLeft);
+
 			return new float[]
 			{
-				ViewHelper.LogicalToPhysicalPixels(TopLeft),
-				ViewHelper.LogicalToPhysicalPixels(TopLeft),
-				ViewHelper.LogicalToPhysicalPixels(TopRight),
-				ViewHelper.LogicalToPhysicalPixels(TopRight),
-				ViewHelper.LogicalToPhysicalPixels(BottomRight),
-				ViewHelper.LogicalToPhysicalPixels(BottomRight),
-				ViewHelper.LogicalToPhysicalPixels(BottomLeft),
-				ViewHelper.LogicalToPhysicalPixels(BottomLeft)
+				topLeft,
+				topLeft,
+				topRight,
+				topRight,
+				bottomRight,
+				bottomRight,
+				bottomLeft,
+				bottomLeft
 			};
 		}
 

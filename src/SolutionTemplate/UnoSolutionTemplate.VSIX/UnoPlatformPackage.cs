@@ -98,7 +98,9 @@ namespace UnoSolutionTemplate
 			// Do any initialization that requires the UI thread after switching to the UI thread.
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
+#pragma warning disable VSSDK006 // Check whether the result of GetService calls is null.
 			_dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+#pragma warning restore VSSDK006
 
 			_openedHandler = () => InvokeOnMainThread(() => OnOpenedAsync(CancellationToken.None));
 			_beforeClosingHandler = () => InvokeOnMainThread(() => OnBeforeClosingAsync());
@@ -114,13 +116,15 @@ namespace UnoSolutionTemplate
 			}
 		}
 
-		private async Task OnBeforeClosingAsync()
+		private Task OnBeforeClosingAsync()
 		{
 			_currentCts?.Cancel();
+			return Task.CompletedTask;
 		}
 
 		void InvokeOnMainThread(Func<Task> func)
 		{
+#pragma warning disable VSTHRD110 // Observe the awaitable result of this method call by awaiting it, assigning to a variable, or passing it to another method.
 			JoinableTaskFactory.RunAsync(async () =>
 			{
 				// When initialized asynchronously, the current thread may be a background thread at this point.
@@ -128,6 +132,7 @@ namespace UnoSolutionTemplate
 				await this.JoinableTaskFactory.SwitchToMainThreadAsync(CancellationToken.None);
 				await func();
 			});
+#pragma warning restore VSTHRD110
 		}
 
 		private void SetupOutputWindow()
@@ -138,6 +143,7 @@ namespace UnoSolutionTemplate
 			{
 				if (owP == null)
 				{
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 					OutputWindow ow = _dte.ToolWindows.OutputWindow;
 						// Add a new pane to the Output window.
 						owP = ow
@@ -154,8 +160,10 @@ namespace UnoSolutionTemplate
 				}
 
 				return owP;
+#pragma warning restore VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 			};
 
+#pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 			_infoAction = s => pane().OutputString("[INFO] " + s + "\r\n");
 			_verboseAction = s => pane().OutputString("[VERBOSE] " + s + "\r\n");
 			_warningAction = s => pane().OutputString("[WARNING] " + s + "\r\n");
@@ -170,6 +178,7 @@ namespace UnoSolutionTemplate
 					pane().OutputString("[ERROR] " + e.Message + "\r\n");
 				}
 			};
+#pragma warning restore VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 		}
 		
 
@@ -187,7 +196,10 @@ namespace UnoSolutionTemplate
 			{
 				try
 				{
+#pragma warning disable VSSDK006 // Check whether the result of GetService calls is null.
 					var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
+#pragma warning restore VSSDK006
+
 #pragma warning disable CS0618 // Type or member is obsolete - 'IVsPackageInstallerServices' is obsolete: Use INuGetProjectService in the NuGet.VisualStudio.Contracts package instead.
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 #pragma warning restore CS0618 // Type or member is obsolete

@@ -91,7 +91,7 @@ namespace Uno.AuthenticationBroker
 			var callbackUrl = callbackUri.OriginalString;
 
 			var schemes = GetApplicationCustomSchemes().ToArray();
-			if (!schemes.Any(s => callbackUrl.StartsWith(s)))
+			if (!schemes.Any(s => callbackUrl.StartsWith(s, StringComparison.Ordinal)))
 			{
 				var message = schemes.Length == 0
 					? "No schemes defined in info.plist. You must define a custom scheme (CFBundleURLSchemes) for your callback url."

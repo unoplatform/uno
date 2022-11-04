@@ -213,8 +213,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 		private Action Dispatch(Func<CancellationToken, Task> action) => () =>
 		{
-#pragma warning disable CS4014 // Async call not awaited : Safe here (try/catch)
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 			{
 				try
 				{
@@ -225,7 +224,6 @@ namespace Uno.UI.Samples.Content.UITests
 					_log.Error("Failed", e);
 				}
 			});
-#pragma warning restore CS4014
 		};
 
 		private void Reset()

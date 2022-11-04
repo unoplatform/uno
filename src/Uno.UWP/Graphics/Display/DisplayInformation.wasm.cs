@@ -45,6 +45,45 @@ namespace Windows.Graphics.Display
 			}
 		}
 
+		/// <summary>
+		/// Gets the native orientation of the display monitor, 
+		/// which is typically the orientation where the buttons
+		/// on the device match the orientation of the monitor.
+		/// </summary>
+		public DisplayOrientations NativeOrientation
+		{
+			get
+			{
+				if (TryReadJsInt("window.screen.orientation.angle", out var angle))
+				{
+					var jsOrientation = ReadJsString("window.screen.orientation.type");
+
+					var isCurrentlyPortrait = jsOrientation.StartsWith("portrait", StringComparison.Ordinal);
+					var isCurrentlyLandscape = jsOrientation.StartsWith("landscape", StringComparison.Ordinal);
+
+					if (!isCurrentlyLandscape && !isCurrentlyPortrait)
+					{
+						// JavaScript returned some unexpected string.
+						return DisplayOrientations.None;
+					}
+
+					switch (angle)
+					{
+						case 0:
+						case 180:
+							return isCurrentlyPortrait ? DisplayOrientations.Portrait : DisplayOrientations.Landscape;
+						case 90:
+						case 270:
+							return isCurrentlyPortrait ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+						default:
+							return DisplayOrientations.None;
+					}
+				}
+
+				return DisplayOrientations.None;
+			}
+		}
+
 		public uint ScreenHeightInRawPixels
 		{
 			get
@@ -138,13 +177,16 @@ namespace Windows.Graphics.Display
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
-			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
 				Uno.UI.Dispatching.CoreDispatcherPriority.High,
 				(ct) => SetOrientationAsync(orientations, ct));
 		}
 
 		private static bool TryReadJsFloat(string property, out float value) =>
 			float.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+
+		private static bool TryReadJsInt(string property, out int value) =>
+			int.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
 
 		private static string ReadJsString(string property) => WebAssemblyRuntime.InvokeJS(property);
 

@@ -63,7 +63,7 @@ Setting this property does the following:
 - On **macOS**, it sets the [`NSView.AccessibilityIdentifier`](https://developer.apple.com/documentation/appkit/nsaccessibility/1535023-accessibilityidentifier) property
 - On **WebAssembly**, it sets [`aria-label`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) and the `xamlautomationid` property on the HTML element. The [`role`](https://www.w3.org/WAI/PF/HTML/wiki/RoleAttribute) HTML Attribute is also set based on the XAML view type whose `AutomationProperties.AutomationId` was set.
 
-This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using databound identifiers.
+This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using data-bound identifiers.
 
 ## Windows.UI.ViewManagement.AccessibilitySettings
 

@@ -32,13 +32,13 @@ public partial class PhoneCallHistoryEntryReader
 	/// <returns></returns>
 	public IAsyncOperation<IReadOnlyList<PhoneCallHistoryEntry>> ReadBatchAsync() => ReadBatchAsyncTask().AsAsyncOperation();
 
-	private async Task<IReadOnlyList<PhoneCallHistoryEntry>> ReadBatchAsyncTask()
+	private Task<IReadOnlyList<PhoneCallHistoryEntry>> ReadBatchAsyncTask()
 	{
 		var entriesList = new List<PhoneCallHistoryEntry>();
 
 		if (_cursor is null)
 		{
-			return entriesList;
+			return Task.FromResult<IReadOnlyList<PhoneCallHistoryEntry>>(entriesList);
 		}
 
 		try
@@ -95,7 +95,7 @@ public partial class PhoneCallHistoryEntryReader
 			CleanupCursor();
 		}
 
-		return entriesList;
+		return Task.FromResult<IReadOnlyList<PhoneCallHistoryEntry>>(entriesList);
 	}
 
 	private void InitializeCursor()

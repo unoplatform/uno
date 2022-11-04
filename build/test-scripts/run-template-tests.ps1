@@ -43,7 +43,7 @@ function Get-TemplateConfiguration(
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
-$default = @('/ds', '/r', "/p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/r', '/p:PackageCertificateKeyFile=')
 
 $debug = $default + '/p:Configuration=Debug'
 
@@ -101,11 +101,6 @@ Assert-ExitCodeIsZero
 
 dotnet new unoapp-uwp -n MyApp.Android (Get-TemplateConfiguration -android 1)
 & $msbuild $debug MyApp.Android\MyApp.Android.sln
-Assert-ExitCodeIsZero
-
-# Uno Library
-dotnet new unolib -n MyUnoLib
-& $msbuild $debug /t:Pack MyUnoLib\MyUnoLib.csproj
 Assert-ExitCodeIsZero
 
 # Uno Cross-Runtime Library

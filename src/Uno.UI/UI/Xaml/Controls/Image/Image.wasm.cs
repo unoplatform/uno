@@ -9,18 +9,11 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
-
+using Uno.UI.Xaml.Media;
 using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class HtmlImage : UIElement
-	{
-		public HtmlImage() : base("img")
-		{
-		}
-	}
-
 	partial class Image : FrameworkElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
@@ -35,12 +28,30 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_htmlImage = new HtmlImage();
 
-			_htmlImage.SetAttribute("draggable", "false");
-
+			_htmlImage.SetStyle("visibility", "hidden");
+			
 			ImageOpened += OnImageOpened;
 			ImageFailed += OnImageFailed;
 
 			AddChild(_htmlImage);
+		}
+
+		/// <summary>
+		/// Occurs when the image source is downloaded and decoded with no failure. You can use this event to determine the natural size of the image source.
+		/// </summary>
+		public event RoutedEventHandler ImageOpened
+		{
+			add => _htmlImage.RegisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
+			remove => _htmlImage.UnregisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
+		}
+
+		/// <summary>
+		/// Occurs when there is an error associated with image retrieval or format.
+		/// </summary>		
+		public event ExceptionRoutedEventHandler ImageFailed
+		{
+			add => _htmlImage.RegisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler, payloadConverter: ImageFailedConverter);
+			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
 		private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
@@ -50,6 +61,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Image failed [{_currentImg.Source}]: {e.ErrorMessage}");
 			}
 
+			_htmlImage.SetStyle("visibility", "hidden");
+
 			_currentImg.Source?.ReportImageFailed(e.ErrorMessage);
 		}
 
@@ -57,8 +70,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.WebUri}]");
+				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.AbsoluteUri}]");
 			}
+
+			_htmlImage.SetStyle("visibility", "visible");
 
 			if (_lastMeasuredSize == _zeroSize)
 			{
@@ -69,22 +84,10 @@ namespace Windows.UI.Xaml.Controls
 			_currentImg.Source?.ReportImageLoaded();
 		}
 
-		public event RoutedEventHandler ImageOpened
-		{
-			add => _htmlImage.RegisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
-			remove => _htmlImage.UnregisterEventHandler("load", value, GenericEventHandlers.RaiseRoutedEventHandler);
-		}
-
 		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
 			=> new ExceptionRoutedEventArgs(sender, e);
-
-		public event ExceptionRoutedEventHandler ImageFailed
-		{
-			add => _htmlImage.RegisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler, payloadConverter: ImageFailedConverter);
-			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
-		}
-
-		partial void OnSourceChanged(ImageSource newValue)
+		
+		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
 			UpdateHitTest();
 

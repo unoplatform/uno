@@ -2,7 +2,7 @@
 
 Per the WinUI contract, Uno Platform provides support for [routed events](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/events-and-routed-events-overview), events which are 'bubbled' from a child object to each of its successive parents in the XAML object tree. In most cases, you can expect routed events to behave the same way on Windows and non-Windows platforms.
 
-This article covers some of the finer technical details of Uno Platform's routed events implementation that may be relevant in advanced scenarios, eg those involving custom native (non-WinUI) views in your visual tree. 
+This article covers some of the finer technical details of Uno Platform's routed events implementation that may be relevant in advanced scenarios, eg those involving custom native (non-WinUI) views in your visual tree.
 
 ## Event Bubbling Flow
 
@@ -117,7 +117,7 @@ implementation of RoutedEvents:
 
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
-In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null` 
+In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
 or referencing the element where the event crossed the _native-to-managed_ boundary.
 
 This property is however always accurate for "Pointers", "Manipulation", "Gesture" and "Drag and drop" events.

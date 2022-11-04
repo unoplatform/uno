@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 
 using System;
 using System.Collections.Generic;
@@ -38,10 +37,11 @@ namespace Windows.Storage
 
 		public IRandomAccessStream Stream { get; private set; } = null!;
 
-		public IAsyncAction CommitAsync() => AsyncAction.FromTask(async ct =>
+		public IAsyncAction CommitAsync() => AsyncAction.FromTask(ct =>
 		{
 			ct.ThrowIfCancellationRequested();
 			Commit();
+			return Task.CompletedTask;
 		});
 
 		private void Commit()

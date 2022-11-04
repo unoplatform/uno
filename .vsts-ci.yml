@@ -62,6 +62,10 @@ jobs:
   parameters:
     vmImage: '$(linuxVMImage)'
 
+- template: build/ci/.azure-devops-spell-check.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-winui-convert.yml
   parameters:
     poolName: '$(windowsScaledPool)'
@@ -112,10 +116,6 @@ jobs:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
     poolName: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-samplesapp-uitests-build.yml
   parameters:

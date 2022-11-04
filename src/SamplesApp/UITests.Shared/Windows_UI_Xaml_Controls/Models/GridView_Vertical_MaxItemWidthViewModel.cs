@@ -17,7 +17,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		public object SampleItems { get; } = Enumerable.Range(1, 10).ToArray();
 
-		private async Task<int[]> GetSampleItems(CancellationToken ct)
+		private int[] GetSampleItems(CancellationToken ct)
 		{
 			return Enumerable
 				.Range(1, 10)

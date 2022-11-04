@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			//show the clock as truncated in landscape. The spinner style is enforced in these two cases.
 
 			var isSamsungAndMarshmellow = Build.VERSION.SdkInt == BuildVersionCodes.M &&
-										  Build.Manufacturer.ToLower().IndexOf("samsung") >= 0;
+										  Build.Manufacturer.Contains("samsung", StringComparison.OrdinalIgnoreCase);
 
 			var tryEnforceSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
 

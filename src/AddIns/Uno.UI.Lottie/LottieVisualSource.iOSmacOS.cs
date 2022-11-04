@@ -1,4 +1,4 @@
-﻿#if !NET6_0
+﻿#if !NET6_0_OR_GREATER
 using System;
 using System.Threading;
 using Windows.Foundation;
@@ -66,7 +66,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					else
 					{
 						var path = sourceUri?.PathAndQuery ?? "";
-						if (path.StartsWith("/"))
+						if (path.StartsWith("/", StringComparison.Ordinal))
 						{
 							path = path.Substring(1);
 						}

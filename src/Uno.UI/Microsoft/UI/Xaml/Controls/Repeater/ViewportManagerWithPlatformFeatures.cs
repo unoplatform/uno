@@ -645,7 +645,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Note: We use RunAnimation to get it as soon as possible.
 				// Note: UpdateViewport might also be invoked on Load, but in that case we expect either the viewport to not change,
 				//		 either the layout is pending anyway, so we should not have an extra useless layout pass.
-				m_owner.Dispatcher.RunAnimation(() => m_owner.InvalidateMeasure());
+				_ = m_owner.Dispatcher.RunAnimation(() => m_owner.InvalidateMeasure());
 #else
 				m_owner.InvalidateMeasure();
 #endif

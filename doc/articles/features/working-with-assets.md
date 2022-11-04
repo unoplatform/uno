@@ -1,6 +1,6 @@
 # Assets and image display
 
-In a standard Xamarin project, you must duplicate, rename, and manually add your assets to each target project (UWP, iOS, Android). 
+In a standard Xamarin project, you must duplicate, rename, and manually add your assets to each target project (UWP, iOS, Android).
 
 [Xamarin: Working with Images](https://developer.xamarin.com/samples/xamarin-forms/WorkingWithImages/)
 
@@ -12,7 +12,7 @@ For most other assets, Uno.UI uses custom build tasks to lets you include assets
 
 At the moment, only the following image file types are supported:
 
-|             | .bmp (Win BMP) | .gif‡ | .heic (Apple) | .jpg & .jpeg (JFIF) | .png | .webp | .pdf | .svg |
+|             | `.bmp` (Win BMP) | `.gif`‡ | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
 | ----------- | :------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
 | Windows UWP |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 | Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
@@ -21,7 +21,7 @@ At the moment, only the following image file types are supported:
 | Wasm†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
 | Skia WPF    |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ❌   |
 
-* † Actual **Wasm image format support** is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Checkmarks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
+* † Actual **Wasm image format support** is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
 * ‡ **Gif animation support**:
   * Play/Pause not implemented in Uno yet
   * Always animated on Wasm
@@ -36,7 +36,7 @@ This is just like adding an asset to any UWP project. Just make sure to add the 
 
 ## Qualify an asset
 
-On UWP, you can use qualifiers to load different assets depending on scale, language, etc. 
+On UWP, you can use qualifiers to load different assets depending on scale, language, etc.
 
 [Microsoft: Tailor your resources for language, scale, high contrast, and other qualifiers](https://docs.microsoft.com/en-us/windows/uwp/app-resources/tailor-resources-lang-scale-contrast)
 
@@ -48,12 +48,12 @@ Not all scales are supported on all platforms:
 
 | Scale | UWP         | iOS      | Android |
 |-------|:-----------:|:--------:|:-------:|
-| `100` | scale-100   | @1x      | mdpi    |
+| `100` | scale-100   | @1x      | `mdpi`    |
 | `125` | scale-125   | N/A      | N/A     |
-| `150` | scale-150   | N/A      | hdpi    |
-| `200` | scale-200   | @2x      | xhdpi   |
-| `300` | scale-300   | @3x      | xxhdpi  |
-| `400` | scale-400   | N/A      | xxxhdpi |
+| `150` | scale-150   | N/A      | `hdpi`    |
+| `200` | scale-200   | @2x      | `xhdpi`   |
+| `300` | scale-300   | @3x      | `xxhdpi`  |
+| `400` | scale-400   | N/A      | `xxxhdpi` |
 
 We recommend including assets for each of these scales: `100`, `150`, `200`, `300` and `400`. Only compatible scales will be included to each platform.
 
@@ -145,7 +145,7 @@ On UWP, you must add the following code to your `App.xaml.cs` constructor:
 
 ## Android: setting a custom image handler
 
-On Android, to handle the loading of images from a remote url, the Image control has to be provided a 
+On Android, to handle the loading of images from a remote url, the Image control has to be provided a
 ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
 
 This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:

@@ -311,7 +311,7 @@ namespace Uno.UI.Controls.Legacy
 				}
 				else
 				{
-					CoreDispatcher.Main
+					_ = CoreDispatcher.Main
 						.RunAsync(
 							CoreDispatcherPriority.Normal,
 							async () =>
@@ -633,7 +633,7 @@ namespace Uno.UI.Controls.Legacy
 				{
 					GC.ReRegisterForFinalize(this);
 
-					Windows.UI.Core.CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
+					_ = Windows.UI.Core.CoreDispatcher.Main.RunIdleAsync(_ => Dispose());
 				}
 				else
 				{

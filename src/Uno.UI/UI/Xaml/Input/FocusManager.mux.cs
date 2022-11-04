@@ -1914,7 +1914,7 @@ namespace Windows.UI.Xaml.Input
 					// Raise the FocusManagerLostFocus event asynchronously
 					// TODO Uno: We raise the events using dispatcher queue, which is a bit different from MUX
 					// which does everything via EventManager
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						LostFocus?.Invoke(null, new FocusManagerLostFocusEventArgs(null, correlationId));
 					});
@@ -1926,7 +1926,7 @@ namespace Windows.UI.Xaml.Input
 				}
 				else
 				{
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						GotFocus?.Invoke(null, new FocusManagerGotFocusEventArgs(_focusedElement, correlationId));
 					});
@@ -2044,20 +2044,20 @@ namespace Windows.UI.Xaml.Input
 			{
 				// In the case of an IFocusable raise both <IFocusable>_LostFocus and UIElement_LostFocus.
 				// UIElement_LostFocus is used internally for to decide where focus rects should be rendered.
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					lostFocusElementFocusable.OnLostFocus(spLostFocusEventArgs);
 				});
 			}
 
 			// Raise the LostFocus event to the new focused element asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				(pLostFocusElement as UIElement)?.RaiseEvent(UIElement.LostFocusEvent, spLostFocusEventArgs);
 			});
 
 			// Raise the FocusManagerLostFocus event to the focus manager asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				LostFocus?.Invoke(null, spFocusManagerLostFocusEventArgs);
 			});
@@ -2166,20 +2166,20 @@ namespace Windows.UI.Xaml.Input
 
 			if (FocusableHelper.GetIFocusableForDO(pGotFocusElement) is IFocusable gotFocusElementFocusable)
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					gotFocusElementFocusable.OnGotFocus(spGotFocusEventArgs);
 				});
 			}
 
 			// Raise the GotFocus event to the new focused element asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				(pGotFocusElement as UIElement)?.RaiseEvent(UIElement.GotFocusEvent, spGotFocusEventArgs);
 			});
 
 			// Raise the FocusManagerGotFocus event to the focus manager asynchronously
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				GotFocus?.Invoke(null, spFocusManagerGotFocusEventArgs);
 			});
@@ -3056,7 +3056,7 @@ namespace Windows.UI.Xaml.Input
 					{
 						// TODO Uno: We raise the events using dispatcher queue, which is a bit different from MUX
 						// which does everything via EventManager
-						CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+						_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 						{
 							// In the case of hyperlink raise both Hyperlink_GotFocus and UIElement_GotFocus. UIElement_GotFocus
 							// is used internally for to decide where focus rects should be rendered.
@@ -3131,7 +3131,7 @@ namespace Windows.UI.Xaml.Input
 
 					// TODO Uno: We raise the events using dispatcher queue, which is a bit different from MUX
 					// which does everything via EventManager
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 					{
 						// In the case of hyperlink raise both Hyperlink_LostFocus and UIElement_LostFocus. UIElement_LostFocus
 						// is used internally for to decide where focus rects should be rendered.

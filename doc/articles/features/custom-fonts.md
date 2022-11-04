@@ -92,11 +92,11 @@ Second, you can use it in XAML in this way:
 ```
 
 > [!NOTE]
-> This approach is nice and pretty flexible, but not friendly for multi-targetting. Until Uno.UI v4.4, it was the only way to defined custom fonts on this platform.
+> This approach is nice and pretty flexible, but not friendly for multi-targeting. Until Uno.UI v4.4, it was the only way to defined custom fonts on this platform.
 
 ### Added a custom font from a file defined as application assets
 
-When the application is multi-targetted, this approach is simpler because no CSS manipulation is required.
+When the application is multi-targeted, this approach is simpler because no CSS manipulation is required.
 
 1. Add font file as `Content` build action in the application's head project.
 
@@ -137,7 +137,7 @@ Will match:
 ```
 
 > [!NOTE]
-> The `#` part is optional and is there for cross-platform compatibilty. It is completely ignored on Uno WASM and can be omitted.
+> The `#` part is optional and is there for cross-platform compatibility. It is completely ignored on Uno WASM and can be omitted.
 
 > [!TIP]
 > Even if the font is defined in CSS, it could still be useful to preload it, since the browser won't parse the font file until is it actually used by the content. Preloading it will force the browser to do this sooner, resulting in a better user experience. This will also prevent the application from doing a new _measure_ phase once the font is loaded.
@@ -160,7 +160,7 @@ public static void main(string[] orgs)
 
     // Preloads a font which has been specified as a CSS font, either with a data uri or a remote resource.
     Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("Roboto");
-    
+
     Windows.UI.Xaml.Application.Start(_ => _app = new App());
 ```
 

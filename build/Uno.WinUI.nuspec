@@ -16,8 +16,8 @@
 
 	<dependencies>
 
-	  <!-- net6.0-android30.0 -->
-	  <group targetFramework="net6.0-android30.0">
+	  <!-- net7.0-android30.0 -->
+	  <group targetFramework="net7.0-android30.0">
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0.10" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
@@ -28,23 +28,56 @@
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
 
+	  <!-- net7.0-ios -->
+	  <group targetFramework="net7.0-ios">
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
+	  </group>
+
+	  <!-- net7.0-maccatalyst -->
+	  <group targetFramework="net7.0-maccatalyst">
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
+	  </group>
+
+	  <!-- net7.0-macos -->
+	  <group targetFramework="net7.0-macos">
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
+	  </group>
+
+	  <!-- net6.0-android30.0 -->
+	  <group targetFramework="net6.0-android30.0">
+		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0.10" />
+		<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
+		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
+		<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
+		<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
+		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
+	  </group>
+
 	  <!-- net6.0-ios -->
 	  <group targetFramework="net6.0-ios">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
 
 	  <!-- net6.0-maccatalyst -->
 	  <group targetFramework="net6.0-maccatalyst">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
 
 	  <!-- net6.0-macos -->
 	  <group targetFramework="net6.0-macos">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
@@ -57,7 +90,7 @@
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.5.2" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.5.1" />
 		<dependency id="Xamarin.AndroidX.Browser"  version="1.4.0.2" />
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -70,7 +103,7 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
 		<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -78,7 +111,7 @@
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -86,7 +119,7 @@
 
 	  <!-- macOS -->
 	  <group targetFramework="xamarinmac20">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -94,7 +127,7 @@
 
 	  <!-- .NET Standard 2.0 (Reference API) -->
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0" />
 		<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
@@ -105,7 +138,7 @@
 
 	  <!-- .NET 7 (Reference API) -->
 	  <group targetFramework="net7.0">
-		<dependency id="Uno.SourceGenerationTasks" version="4.2.0-dev.6" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.2.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0" />
 		<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
@@ -175,6 +208,38 @@
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
 
+
+	  <!-- macOS -->
+	  <group targetFramework="xamarinmac20">
+		<reference file="Uno.Xaml.dll" />
+		<reference file="Uno.UI.dll" />
+		<reference file="Uno.UI.Composition.dll" />
+		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.Foundation.dll" />
+		<reference file="Uno.Foundation.Logging.dll" />
+		<reference file="Uno.dll" />
+		<reference file="Uno.UI.Toolkit.dll" />
+		<reference file="Uno.UI.FluentTheme.dll" />
+		<reference file="Uno.UI.FluentTheme.v1.dll" />
+		<reference file="Uno.UI.FluentTheme.v2.dll" />
+	  </group>
+
+	  <!-- Android -->
+	  <group targetFramework="MonoAndroid">
+		<reference file="Uno.UI.BindingHelper.Android.dll" />
+		<reference file="Uno.Xaml.dll" />
+		<reference file="Uno.UI.dll" />
+		<reference file="Uno.UI.Composition.dll" />
+		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.Foundation.dll" />
+		<reference file="Uno.Foundation.Logging.dll" />
+		<reference file="Uno.dll" />
+		<reference file="Uno.UI.Toolkit.dll" />
+		<reference file="Uno.UI.FluentTheme.dll" />
+		<reference file="Uno.UI.FluentTheme.v1.dll" />
+		<reference file="Uno.UI.FluentTheme.v2.dll" />
+	  </group>
+
 	  <!-- net6.0-ios -->
 	  <group targetFramework="net6.0-ios">
 		<reference file="Uno.Xaml.dll" />
@@ -219,38 +284,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-
-	  <!-- macOS -->
-	  <group targetFramework="xamarinmac20">
-		<reference file="Uno.Xaml.dll" />
-		<reference file="Uno.UI.dll" />
-		<reference file="Uno.UI.Composition.dll" />
-		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.Foundation.dll" />
-		<reference file="Uno.Foundation.Logging.dll" />
-		<reference file="Uno.dll" />
-		<reference file="Uno.UI.Toolkit.dll" />
-		<reference file="Uno.UI.FluentTheme.dll" />
-		<reference file="Uno.UI.FluentTheme.v1.dll" />
-		<reference file="Uno.UI.FluentTheme.v2.dll" />
-	  </group>
-
-	  <!-- Android -->
-	  <group targetFramework="MonoAndroid">
-		<reference file="Uno.UI.BindingHelper.Android.dll" />
-		<reference file="Uno.Xaml.dll" />
-		<reference file="Uno.UI.dll" />
-		<reference file="Uno.UI.Composition.dll" />
-		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.Foundation.dll" />
-		<reference file="Uno.Foundation.Logging.dll" />
-		<reference file="Uno.dll" />
-		<reference file="Uno.UI.Toolkit.dll" />
-		<reference file="Uno.UI.FluentTheme.dll" />
-		<reference file="Uno.UI.FluentTheme.v1.dll" />
-		<reference file="Uno.UI.FluentTheme.v2.dll" />
-	  </group>
-
+		
 	  <!-- net6.0-android30.0 -->
 	  <group targetFramework="net6.0-android30.0">
 		<reference file="Uno.UI.BindingHelper.Android.dll" />
@@ -267,6 +301,66 @@
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
 
+	  <!-- net7.0-ios -->
+	  <group targetFramework="net7.0-ios">
+		<reference file="Uno.Xaml.dll" />
+		<reference file="Uno.UI.dll" />
+		<reference file="Uno.UI.Composition.dll" />
+		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.Foundation.dll" />
+		<reference file="Uno.Foundation.Logging.dll" />
+		<reference file="Uno.dll" />
+		<reference file="Uno.UI.Toolkit.dll" />
+		<reference file="Uno.UI.FluentTheme.dll" />
+		<reference file="Uno.UI.FluentTheme.v1.dll" />
+		<reference file="Uno.UI.FluentTheme.v2.dll" />
+	  </group>
+
+	  <!-- net7.0-maccatalyst -->
+	  <group targetFramework="net7.0-maccatalyst">
+		<reference file="Uno.Xaml.dll" />
+		<reference file="Uno.UI.dll" />
+		<reference file="Uno.UI.Composition.dll" />
+		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.Foundation.dll" />
+		<reference file="Uno.Foundation.Logging.dll" />
+		<reference file="Uno.dll" />
+		<reference file="Uno.UI.Toolkit.dll" />
+		<reference file="Uno.UI.FluentTheme.dll" />
+		<reference file="Uno.UI.FluentTheme.v1.dll" />
+		<reference file="Uno.UI.FluentTheme.v2.dll" />
+	  </group>
+
+	  <!-- net7.0-macos -->
+	  <group targetFramework="net7.0-macos">
+		<reference file="Uno.Xaml.dll" />
+		<reference file="Uno.UI.dll" />
+		<reference file="Uno.UI.Composition.dll" />
+		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.Foundation.dll" />
+		<reference file="Uno.Foundation.Logging.dll" />
+		<reference file="Uno.dll" />
+		<reference file="Uno.UI.Toolkit.dll" />
+		<reference file="Uno.UI.FluentTheme.dll" />
+		<reference file="Uno.UI.FluentTheme.v1.dll" />
+		<reference file="Uno.UI.FluentTheme.v2.dll" />
+	  </group>
+		
+	  <!-- net7.0-android30.0 -->
+	  <group targetFramework="net7.0-android30.0">
+		<reference file="Uno.UI.BindingHelper.Android.dll" />
+		<reference file="Uno.Xaml.dll" />
+		<reference file="Uno.UI.dll" />
+		<reference file="Uno.UI.Composition.dll" />
+		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.Foundation.dll" />
+		<reference file="Uno.Foundation.Logging.dll" />
+		<reference file="Uno.dll" />
+		<reference file="Uno.UI.Toolkit.dll" />
+		<reference file="Uno.UI.FluentTheme.dll" />
+		<reference file="Uno.UI.FluentTheme.v1.dll" />
+		<reference file="Uno.UI.FluentTheme.v2.dll" />
+	  </group>
 	  <!-- Windows -->
 	  <group targetFramework="uap10.0.18362">
 		<reference file="Uno.UI.Toolkit.dll" />
@@ -363,108 +457,211 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
 
 	<!-- net6.0-ios -->
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Foundation.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Foundation.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Foundation.Logging.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Foundation.Logging.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Composition.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Composition.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Dispatching.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Dispatching.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Xaml.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Xaml.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-ios\*.xml" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-ios\Uno.UI.FluentTheme.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-ios\Uno.UI.FluentTheme.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-ios\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-ios\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-ios\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-ios\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-ios\Uno.UI.Toolkit.dll" target="lib\net6.0-ios" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-ios\Uno.UI.Toolkit.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.Foundation.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.Foundation.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.Foundation.Logging.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.Foundation.Logging.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.UI.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.UI.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.UI.Composition.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.UI.Composition.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.UI.Dispatching.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.UI.Dispatching.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.Xaml.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-ios\Uno.Xaml.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net6.0-ios\*.xml" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-ios\Uno.UI.FluentTheme.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-ios\Uno.UI.FluentTheme.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-ios\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-ios\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-ios\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-ios\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-ios\Uno.UI.Toolkit.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-ios\Uno.UI.Toolkit.pdb" target="lib\net6.0-ios" />
 
 	<!-- net6.0-maccatalyst -->
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Foundation.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Foundation.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Composition.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Composition.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Dispatching.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Dispatching.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Xaml.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Xaml.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-maccatalyst\*.xml" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-maccatalyst\Uno.UI.Toolkit.dll" target="lib\net6.0-maccatalyst" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-maccatalyst\Uno.UI.Toolkit.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.Foundation.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.Foundation.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Composition.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Composition.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Dispatching.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Dispatching.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.Xaml.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\Uno.Xaml.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net6.0-maccatalyst\*.xml" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Toolkit.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Toolkit.pdb" target="lib\net6.0-maccatalyst" />
 
 	<!-- net6.0-macos -->
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Foundation.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Foundation.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Foundation.Logging.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Foundation.Logging.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Composition.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Composition.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Dispatching.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Dispatching.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Xaml.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Xaml.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-macos\*.xml" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-macos\Uno.UI.FluentTheme.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-macos\Uno.UI.FluentTheme.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-macos\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-macos\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-macos\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-macos\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-macos\Uno.UI.Toolkit.dll" target="lib\net6.0-macos" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-macos\Uno.UI.Toolkit.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.Foundation.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.Foundation.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.Foundation.Logging.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.Foundation.Logging.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.UI.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.UI.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.UI.Composition.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.UI.Composition.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.UI.Dispatching.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.UI.Dispatching.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.Xaml.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-macos\Uno.Xaml.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net6.0-macos\*.xml" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-macos\Uno.UI.FluentTheme.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-macos\Uno.UI.FluentTheme.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-macos\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-macos\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-macos\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-macos\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-macos\Uno.UI.Toolkit.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-macos\Uno.UI.Toolkit.pdb" target="lib\net6.0-macos" />
 
 	<!-- net6.0-android30.0 -->
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.Logging.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.Logging.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Composition.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Composition.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Dispatching.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Dispatching.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Xaml.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Xaml.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.BindingHelper.Android.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.Foundation.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.Foundation.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.Foundation.Logging.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.Foundation.Logging.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.Composition.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.Composition.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.Dispatching.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.Dispatching.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.Xaml.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.Xaml.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net6.0-android\Uno.UI.BindingHelper.Android.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.BindingHelper.Android\Bin\Release\net6.0-android\Uno.UI.BindingHelper.Android.aar" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-android\*.xml" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.net6\Release\net6.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-android\Uno.UI.Toolkit.dll" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.net6\Release\net6.0-android\Uno.UI.Toolkit.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net6.0-android\*.xml" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.v1.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.v1.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.v2.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-android\Uno.UI.Toolkit.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-android\Uno.UI.Toolkit.pdb" target="lib\net6.0-android30.0" />
+	  
+	<!-- net7.0-ios -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.Foundation.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.Foundation.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.Foundation.Logging.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.Foundation.Logging.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.Composition.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.Composition.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.Dispatching.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.Dispatching.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.Xaml.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.Xaml.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net7.0-ios\*.xml" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-ios\Uno.UI.FluentTheme.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-ios\Uno.UI.FluentTheme.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-ios\Uno.UI.FluentTheme.v1.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-ios\Uno.UI.FluentTheme.v1.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-ios\Uno.UI.FluentTheme.v2.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-ios\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-ios\Uno.UI.Toolkit.dll" target="lib\net7.0-ios" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-ios\Uno.UI.Toolkit.pdb" target="lib\net7.0-ios" />
 
+	<!-- net7.0-maccatalyst -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Composition.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Composition.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Dispatching.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Dispatching.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.Xaml.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.Xaml.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\*.xml" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.FluentTheme.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.FluentTheme.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.FluentTheme.v1.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.FluentTheme.v1.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.FluentTheme.v2.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Toolkit.dll" target="lib\net7.0-maccatalyst" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Toolkit.pdb" target="lib\net7.0-maccatalyst" />
+
+	<!-- net7.0-macos -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.Foundation.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.Foundation.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.Foundation.Logging.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.Foundation.Logging.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.Composition.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.Composition.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.Dispatching.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.Dispatching.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.Xaml.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.Xaml.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net7.0-macos\*.xml" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-macos\Uno.UI.FluentTheme.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-macos\Uno.UI.FluentTheme.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-macos\Uno.UI.FluentTheme.v1.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-macos\Uno.UI.FluentTheme.v1.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-macos\Uno.UI.FluentTheme.v2.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-macos\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-macos\Uno.UI.Toolkit.dll" target="lib\net7.0-macos" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-macos\Uno.UI.Toolkit.pdb" target="lib\net7.0-macos" />
+
+	<!-- net7.0-android30.0 -->
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.Foundation.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.Foundation.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.Foundation.Logging.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.Foundation.Logging.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.Composition.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.Composition.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.Dispatching.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.Dispatching.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.Xaml.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.Xaml.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.BindingHelper.Android.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.BindingHelper.Android\Bin\Release\net7.0-android\Uno.UI.BindingHelper.Android.aar" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net7.0-android\*.xml" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.v1.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.v1.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.v2.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.dll" target="lib\net7.0-android30.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.pdb" target="lib\net7.0-android30.0" />
+	  
 	<!-- macOS -->
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.pdb" target="lib\xamarinmac20" />
@@ -673,6 +870,10 @@
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-ios" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-macos" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-android30.0" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-ios" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-macos" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
@@ -684,6 +885,10 @@
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-android30.0" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-ios" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-macos" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.common.targets" target="buildTransitive\MonoAndroid" />
@@ -695,6 +900,10 @@
 	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-android30.0" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-ios" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-macos" />
 	<file src="uno.winui.common.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.single-project.targets" target="buildTransitive\MonoAndroid" />
@@ -706,6 +915,10 @@
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-android30.0" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-ios" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-macos" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\MonoAndroid" />
@@ -717,18 +930,38 @@
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-android30.0" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-ios" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-macos" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinmac20" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\netstandard2.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net7.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-android30.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-ios" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-macos" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net5.0-windows" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\netstandard2.0" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net7.0" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-android30.0" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-ios" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-maccatalyst" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net5.0-windows" />
+
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\MonoAndroid" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\xamarinios10" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\xamarinmac20" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\netstandard2.0" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-android30.0" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-ios" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-maccatalyst" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-macos" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-android30.0" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-ios" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-maccatalyst" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-macos" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net5.0-windows" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />

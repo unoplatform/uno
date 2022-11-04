@@ -9,20 +9,20 @@ using _UIImage = AppKit.NSImage;
 using AppKit;
 #endif
 using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation;
-using Windows.Storage.Streams;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using CoreAnimation;
-using Uno.UI;
+using Uno.UI.Xaml.Media;
+using Uno.Disposables;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image
 	{
+		private SerialDisposable _childViewDisposable = new SerialDisposable();
+
 		private Size _sourceImageSize;
 
 		/// <summary>
@@ -45,10 +45,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public Image() { }
 
+		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
+		{
+			UpdateContentMode(newValue);
+		}
+
 		private void TryOpenImage(bool forceReload = false)
 		{
 			//Skip opening the image source source is already loaded or if the view isn't loaded
-			if (!forceReload && _openedImage == Source)
+			if (!forceReload && _openedSource == Source)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
@@ -79,17 +84,17 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
-				_openedImage = Source;
+				_openedSource = Source;
 
-				if (_openedImage == null || !_openedImage.HasSource())
+				if (_openedSource == null || !_openedSource.HasSource())
 				{
-					_native?.Reset();
+					_nativeImageView?.Reset();
 					SetNeedsLayoutOrDisplay();
 					_imageFetchDisposable.Disposable = null;
 				}
-				else if (_openedImage.TryOpenSync(out var img))
+				else if (_openedSource.TryOpenSync(out var imageData))
 				{
-					SetImage(img);
+					SetImageData(imageData);
 					_imageFetchDisposable.Disposable = null;
 				}
 				else
@@ -97,8 +102,8 @@ namespace Windows.UI.Xaml.Controls
 					// The Jupiter behavior is to reset the visual right away, displaying nothing
 					// then show the new image. We're rescheduling the work below, so there is going
 					// to be a visual blank displayed.
-					TryCreateNative();
-					_native.Reset();
+					TryCreateNativeImageView();
+					_nativeImageView.Reset();
 
 					Func<CancellationToken, Task> scheduledFetch = async (ct) =>
 					{
@@ -111,17 +116,17 @@ namespace Windows.UI.Xaml.Controls
 						)
 						{
 							//_openedImage could be set to null while trying to access it on the thread pool
-							var image = await Task.Run(() => _openedImage?.Open(ct));
+							var imageData = await Task.Run(() => _openedSource?.Open(ct));
 
 							//if both image and _openedImage are null this is ok just return;
 							//otherwise call SetImage with null which will raise the OnImageFailed event
 							if (ct.IsCancellationRequested ||
-								(image == null && _openedImage == null))
+								(!imageData.HasData && _openedSource is null))
 							{
 								return;
 							}
 
-							SetImage(image);
+							SetImageData(imageData);
 						}
 					};
 
@@ -130,7 +135,58 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SetImage(_UIImage image)
+		private void SetImageData(ImageData imageData)
+		{
+			using (
+			_imageTrace.WriteEventActivity(
+				TraceProvider.Image_SetImageStart,
+				TraceProvider.Image_SetImageStop,
+				new object[] { this.GetDependencyObjectId() }))
+			{
+
+				if (_openedSource is SvgImageSource svgImageSource && imageData.Kind == ImageDataKind.ByteArray)
+				{
+					SetSvgSource(svgImageSource, imageData.ByteArray);
+				}
+				else if (_openedSource is { } source && imageData.Kind == ImageDataKind.NativeImage)
+				{
+					SetNativeImage(source, imageData.NativeImage);
+				}
+				else
+				{
+					SetNativeImage(null, null);
+				}
+			}
+
+			InvalidateMeasure();
+
+			if (imageData.HasData)
+			{
+				OnImageOpened(_openedSource);
+			}
+			else
+			{
+				OnImageFailed(_openedSource);
+			}
+		}
+
+		private void SetSvgSource(SvgImageSource svgImageSource, byte[] byteArray)
+		{			
+			_childViewDisposable.Disposable = null;
+
+			_svgCanvas = svgImageSource.GetCanvas();
+			AddSubview(_svgCanvas);
+
+			_childViewDisposable.Disposable = Disposable.Create(() =>
+			{
+				_svgCanvas.RemoveFromSuperview();
+				_svgCanvas = null;
+			});
+
+			SourceImageSize = svgImageSource.SourceSize;
+		}
+
+		private void SetNativeImage(ImageSource imageSource, _UIImage image)
 		{
 			using (
 				_imageTrace.WriteEventActivity(
@@ -140,39 +196,36 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
-				if (MonochromeColor != null)
+				if (MonochromeColor != null && image != null)
 				{
 					image = image.AsMonochrome(MonochromeColor.Value);
 				}
 
-				TryCreateNative();
+				TryCreateNativeImageView();
 
-				_native.SetImage(image);
+				_nativeImageView.SetImage(image);
 
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
-
-			InvalidateMeasure();
-
-			if (_native.HasImage)
-			{
-				OnImageOpened(image);
-			}
-			else
-			{
-				OnImageFailed(image);
-			}
 		}
 
-		private void TryCreateNative()
+		private void TryCreateNativeImageView()
 		{
-			if (_native == null)
+			if (_nativeImageView is null)
 			{
-				_native = new NativeImage();
+				_childViewDisposable.Disposable = null;
+				var imageView = new NativeImageView();
+				_nativeImageView = imageView;
 
-				AddSubview(_native);
+				AddSubview(_nativeImageView);
 
 				UpdateContentMode(Stretch);
+
+				_childViewDisposable.Disposable = Disposable.Create(() =>
+				{
+					imageView.RemoveFromSuperview();
+					_nativeImageView = null;
+				});
 			}
 		}
 

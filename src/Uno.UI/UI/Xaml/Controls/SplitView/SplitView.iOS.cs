@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				timeline.Completed -= PatchInvalidFinalStateHandler;
 			}
 
-			Dispatcher.RunIdleAsync(_ => InvalidateMeasure());
+			_ = Dispatcher.RunIdleAsync(_ => InvalidateMeasure());
 		}
 	}
 }

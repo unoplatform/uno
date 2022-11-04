@@ -160,7 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		[TestMethod]
 		[RunsOnUIThread]
 		[ExpectedException(typeof(ArgumentException))]
-		public async Task When_SetNegativeInterval()
+		public void When_SetNegativeInterval()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 

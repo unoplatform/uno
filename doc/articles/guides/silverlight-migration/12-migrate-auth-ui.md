@@ -88,7 +88,7 @@ The following steps will create the **LoginForm**.
     > [!IMPORTANT]
     > Do not delete the **Title**, **PrimaryButtonText** and **SecondaryButtonText** properties. Due to an open [Uno issue #921](https://github.com/unoplatform/uno/issues/921), unless these properties are defined in XAML, the **x:Uid** resources won't be applied.
 
-1. To add the login form string resources, open the **Strings\\en\Resources.resw** file and add the following strings:
+1. To add the login form string resources, open the `Strings\en\Resources.resw` file and add the following strings:
 
     | Name | Value |
     | :--- | :--- |
@@ -128,7 +128,7 @@ The following steps will create the **LoginForm**.
     > * [Functions in x:Bind](https://docs.microsoft.com/windows/uwp/data-binding/function-bindings)
     > * [Value Converters](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Data.IValueConverter)
 
-1. To add the input controls string resources, open the **Strings\\en\Resources.resw** file and add the following strings:
+1. To add the input controls string resources, open the `Strings\en\Resources.resw` file and add the following strings:
 
     | Name | Value |
     | :--- | :--- |
@@ -153,7 +153,7 @@ The business logic for the **LoginForm** is implemented in the code-behind. Of c
 * Respond to **AuthenticationService** events regarding login success or failure
 * Display any error messages
 
-Let's walk-through the implementation.
+Let's walk through the implementation.
 
 1. Open the **LoginForm.xaml.cs** file.
 
@@ -299,7 +299,7 @@ Let's walk-through the implementation.
     }
     ```
 
-    This simple ternary expression converts the **IsBusy** proeprty to a **Visibility** enum and is used in the binding:
+    This simple ternary expression converts the **IsBusy** property to a **Visibility** enum and is used in the binding:
 
     ```xml
     <ProgressRing IsActive="{x:Bind IsBusy, Mode=TwoWay}"
@@ -344,7 +344,7 @@ And logged in, which displays the logged-in user and a button to logout:
 
 ![Login Status - Logged In](assets/LoginStatus-LoggedIn.png)
 
-The control makes use of the the **VisualStateManager** to switch between the various layouts, a number of custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk-through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
+The control makes use of the the **VisualStateManager** to switch between the various layouts, a number of custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
 
 > [!NOTE]
 > The following steps will focus on the process of migrating the **UserControl** - i.e. the changes to XAML, styles and code-behind, to support the controls behavior. As there are a many lines of XAML, the emphasis will be on the changes that must be made, rather than showing every line of code.
@@ -384,7 +384,7 @@ In the following steps, the Silverlight styles used by the **LoginStatus** contr
 
 1. Locate each of the styles listed above, and copy them to the **Shared** project **\\Resources\\Styles.xaml** file.
 
-1. Review the **\\Resources\\Styles.xaml** file. The purpose is to idenitfy any issues with the XAML, such as properties that are not found. Issues are usually indicated by a blue "squiggle" underline - the image below indicates that the **TargetType** of **Button** lacks a **TextOptions.TextHintingMode** property:
+1. Review the **\\Resources\\Styles.xaml** file. The purpose is to identify any issues with the XAML, such as properties that are not found. Issues are usually indicated by a blue "squiggle" underline - the image below indicates that the **TargetType** of **Button** lacks a **TextOptions.TextHintingMode** property:
 
     ![XAML style property displaying an error](assets/Style-Property-error.png)
 
@@ -616,8 +616,8 @@ In order to test this code, the web services must be running.
 
     You should now be able to exercise the login. Try logging in with no user and/or password. Try random credentials. Finally, try the following account:
 
-    * **Username**: tylerr
-    * **Password**: Pa$$W0rd!
+    * **Username**: `tylerr`
+    * **Password**: `Pa$$W0rd!`
 
     Query the database to find other logins and their roles (whenever you login a user for the first time, the user is automatically given the password `Pa$$W0rd!`):
 

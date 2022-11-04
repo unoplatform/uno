@@ -2,7 +2,7 @@
 
 Everyone is welcome to contribute to the Uno Platform. Here you'll find useful information for new and returning contributors.
 
-For starters, please read our [Code of Conduct](https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md), which sets out our commitment to an open, welcoming, harrassment-free community.
+For starters, please read our [Code of Conduct](https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md), which sets out our commitment to an open, welcoming, harassment-free community.
 
 If you're wondering where to start, [read about ways to contribute to Uno](ways-to-contribute.md). Or, you can peruse the list of [first-timer-friendly open issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
@@ -20,7 +20,7 @@ If you're doing development for Uno's macOS support, you'll need to build and ru
 
 You can contribute to Uno directly from your browser using GitPod. [Find out how.](../features/working-with-gitpod.md)
 
-Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](debugging-inspect-visual-tree.md) is often a key step. 
+Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](debugging-inspect-visual-tree.md) is often a key step.
 
 ## Writing code in Uno
 
