@@ -4,7 +4,7 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2022 (17.3 or later)
+- Visual Studio 2022 (17.4 or later)
     - `Visual Studio extensions development` (for the VSIX projects)
     - `MAUI`
     - `Xamarin development` (Under the MAUI optional components)

@@ -21,7 +21,7 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
 |                                                  | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |--------------------------------------------------|----------------------------|---------|-----|-------------------|---------------- |------------------|------------------|-----------------------|
-| [**Visual Studio**](get-started-vs.md)           | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
+| [**Visual Studio**](get-started-vs-2022.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
 | [**VS Code**](get-started-vscode.md)             | ❌                         | ❌     | ❌  | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
 | [**Codespaces / Gitpod**](get-started-vscode.md) | ❌                         | ❌     | ❌  | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
 | [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️             | ✔️              | ✔️                   |
