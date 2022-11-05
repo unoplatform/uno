@@ -37,7 +37,7 @@
     <SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
     <EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
     <Deterministic>true</Deterministic>
-    
+
     <UNO_UWP_BUILD>true</UNO_UWP_BUILD>
     <DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
     <DefineConstants Condition="
@@ -45,7 +45,7 @@
 		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-android'))
 		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net7.0-android'))
 		">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
-	  
+
     <DefineConstants Condition="
 		$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))
 		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-ios'))
@@ -110,7 +110,7 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Reference.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
-	
+
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.netcoremobile.csproj</_AdjustedOutputProjects>
@@ -128,7 +128,7 @@
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.Reference.csproj</_AdjustedOutputProjects>
-	
+
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
 
@@ -190,14 +190,14 @@
 		or '$(TargetFramework)'=='net6.0-android'
 		or '$(TargetFramework)'=='net7.0-android'
 		">true</IsMonoAndroid>
-    
+
     <IsXamarinIOS>false</IsXamarinIOS>
     <IsXamarinIOS Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinios'))
 		or '$(TargetFramework)'=='net6.0-ios'
 		or '$(TargetFramework)'=='net7.0-ios'
 		">true</IsXamarinIOS>
-    
+
     <IsXamarinMac>false</IsXamarinMac>
     <IsXamarinMac Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinmac'))
