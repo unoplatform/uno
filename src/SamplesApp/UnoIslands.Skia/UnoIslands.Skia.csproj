@@ -42,7 +42,7 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="System.Management" Version="4.6.0" />
-		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
