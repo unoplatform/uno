@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
@@ -147,6 +148,102 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var fg = SUT.PrimaryButton.Foreground as SolidColorBrush;
 				Assert.IsNotNull(fg);
 				Assert.AreEqual(Colors.White, fg.Color);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Initial_Focus_With_Focusable_Content()
+		{
+			Button button = new Button() { Content = "Target" };
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = button,
+				PrimaryButtonText = "Target",
+				SecondaryButtonText = "Secondary"
+			};
+
+			SUT.DefaultButton = ContentDialogButton.None;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+
+				Assert.AreEqual(button, focused);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Initial_Focus_With_DefaultButton_Not_Set()
+		{
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				PrimaryButtonText = "Target",
+				SecondaryButtonText = "Secondary"
+			};
+
+			SUT.DefaultButton = ContentDialogButton.None;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+
+				Assert.IsInstanceOfType(focused, typeof(Button));
+				Assert.AreEqual("Target", ((Button)focused).Content);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Initial_Focus_With_DefaultButton_Set()
+		{
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				PrimaryButtonText = "Accept",
+				SecondaryButtonText = "Target"
+			};
+
+			SUT.DefaultButton = ContentDialogButton.Secondary;
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+
+				Assert.IsInstanceOfType(focused, typeof(Button));
+				Assert.AreEqual("Target", ((Button)focused).Content);
 			}
 			finally
 			{

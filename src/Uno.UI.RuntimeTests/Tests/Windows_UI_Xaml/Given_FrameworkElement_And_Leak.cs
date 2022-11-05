@@ -79,6 +79,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
 #endif
+#if !__IOS__ // Disabled - #10344
+		[DataRow(typeof(TextBox_Focus_Leak), 15)]
+#endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
