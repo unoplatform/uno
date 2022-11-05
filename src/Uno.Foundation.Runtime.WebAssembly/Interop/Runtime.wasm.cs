@@ -308,7 +308,7 @@ namespace Uno.Foundation
 							}
 
 							mappedParameters[jsObject] = parameterReference = $"__parameter_{i}";
-							commandBuilder.AppendLine(CultureInfo.InvariantCulture, $"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
+							commandBuilder.AppendLine($"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
 						}
 
 						parameters[i] = parameterReference;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static string GetHtmlId(this UIElement element)
 		{
-			return element.HtmlId.ToString();
+			return element.HtmlId.ToString(CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
