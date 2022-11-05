@@ -407,16 +407,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 
-			d.Add(_popup.PopupPanel.RegisterDisposablePropertyChangedCallback(Popup.VisibilityProperty, (s, e) =>
-			{
-				if (_popup.PopupPanel.Visibility == Visibility.Visible)
-				{
-					this.SetDialogFocus();
-				}
-			}));
+			d.Add(_popup.PopupPanel.RegisterDisposablePropertyChangedCallback(VisibilityProperty, OnPopupPanelVisibilityChanged));
 
 			_subscriptions.Disposable = d;
 		}
+
+		private void OnPopupPanelVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (_popup.PopupPanel.Visibility == Visibility.Visible)
+			{
+				SetDialogFocus();
+			}
+		}
+
 		private void OnBackRequested(object sender, BackRequestedEventArgs e)
 		{
 			// Match Windows behavior:
