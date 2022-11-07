@@ -92,6 +92,7 @@
 
 		<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
 			<PropertyGroup>
+				<TrimMode Condition="'$(Configuration)'=='Release'">link</TrimMode>
 			</PropertyGroup>
 		</When>
 	</Choose>

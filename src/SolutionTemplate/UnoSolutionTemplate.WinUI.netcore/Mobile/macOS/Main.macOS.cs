@@ -1,8 +1,9 @@
 ﻿using AppKit;
 
-namespace $ext_safeprojectname$.macOS
+namespace $ext_safeprojectname$
 {
-	static class MainClass
+	// This is the main entry point of the application.
+	public class EntryPoint
 	{
 		static void Main(string[] args)
 		{
