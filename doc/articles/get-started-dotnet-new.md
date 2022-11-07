@@ -4,7 +4,7 @@ The Uno Platform provides a set of command-line templates to create cross-platfo
 
 To install the templates, type the following:
 ```
-dotnet new install Uno.ProjectTemplates.Dotnet
+dotnet new --install Uno.ProjectTemplates.Dotnet
 ```
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
@@ -21,8 +21,6 @@ If you need to determine the parameters available for a template use `dotnet new
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
 This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
-
-[**Find detailed instructions here.**](get-started-winui3.md)
 
 A basic example:
 ```
