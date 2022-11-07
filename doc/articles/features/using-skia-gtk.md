@@ -78,11 +78,11 @@ To build an app with this feature enabled:
 1. Add the following items in your `.csproj`:
    ```xml
    <ItemGroup>
-		<RdXmlFile Include="rd.xml" />
+		<RdXmlFile Include="MyApp.rd.xml" />
 		<RuntimeHostConfigurationOption Include="Switch.System.Reflection.Assembly.SimulatedCallingAssembly" Value="true" />
    </ItemGroup>
    ```
-1. Create a file name `rd.xml`, and place it next to your csproj:
+1. Create a file name `MyApp.rd.xml`, and place it next to your csproj:
    ```xml
    <Directives>
       <Application>
