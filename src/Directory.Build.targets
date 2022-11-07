@@ -89,7 +89,7 @@
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.3" />
 	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
-	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
+	<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
 	<PackageReference Update="FluentAssertions" Version="5.10.3" />
 	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />

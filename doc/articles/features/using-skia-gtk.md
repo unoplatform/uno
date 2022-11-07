@@ -57,9 +57,50 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 
 ```xml
 <ItemGroup>
-   <PackagReference Include="SkiaSharp" Version="2.88.0" />
-   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.0" />
-   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.0" />
+   <PackagReference Include="SkiaSharp" Version="2.88.3" />
+   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.3" />
+   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.3" />
 </ItemGroup>
 ```
+
+### .NET Native AOT support
+
+Building an Uno Platform Skia+GTK app with .NET (7+) Native AOT requires, GtkSharp 3.24.24.38 (or later), or Uno Platform 4.7 (or later).
+
+To build an app with this feature enabled:
+1. Add the following property in your `.csproj`:
+   ```xml
+   <PropertyGroup>
+   		<PublishAot>true</PublishAot>
+	</PropertyGroup>
+   ```
+1. Add the following items in your `.csproj`:
+   ```xml
+   <ItemGroup>
+		<RdXmlFile Include="rd.xml" />
+		<RuntimeHostConfigurationOption Include="Switch.System.Reflection.Assembly.SimulatedCallingAssembly" Value="true" />
+   </ItemGroup>
+   ```
+1. Create a file name `rd.xml`, and place it next to your csproj:
+   ```xml
+   <Directives>
+      <Application>
+         <Assembly Name="MyApp.Skia.Gtk" Dynamic="Required All" />
+         
+         <Assembly Name="SkiaSharp" Dynamic="Required All" />
+         <Assembly Name="HarfBuzzSharp" Dynamic="Required All"> />
+
+         <Assembly Name="GdkSharp" Dynamic="Required All" />
+         <Assembly Name="GioSharp" Dynamic="Required All" />
+         <Assembly Name="GLibSharp" Dynamic="Required All" />
+         <Assembly Name="GtkSharp" Dynamic="Required All" />
+      </Application>
+   </Directives>
+   ```
+1. Build your app with:
+   ```bash
+   dotnet publish -r win-x64 -c Release
+   ```
+
+See [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) for more details, and the [.NET Native AOT documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/).
