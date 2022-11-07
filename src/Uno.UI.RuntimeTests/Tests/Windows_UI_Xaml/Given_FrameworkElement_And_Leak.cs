@@ -45,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
 		[DataRow(typeof(XamlEvent_Leak_TextBox), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
 		[DataRow(typeof(Animation_Leak), 15)]
 		[DataRow(typeof(TextBox), 15)]
 		[DataRow(typeof(Button), 15)]
