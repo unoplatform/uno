@@ -48,6 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Animation_Leak), 15)]
 		[DataRow(typeof(TextBox), 15)]
 		[DataRow(typeof(Button), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
 		[DataRow(typeof(RadioButton), 15)]
 		[DataRow(typeof(ToggleButton), 15)]
 		[DataRow(typeof(RepeatButton), 15)]
