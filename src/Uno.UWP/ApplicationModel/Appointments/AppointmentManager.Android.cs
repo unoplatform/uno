@@ -49,7 +49,7 @@ public partial class AppointmentManager
 	public static IAsyncOperation<AppointmentStore?> RequestStoreAsync(AppointmentStoreAccessType options)
 		=> RequestStoreAsyncTask(options).AsAsyncOperation();
 
-	private static async Task ShowTimeFrameAsyncTask(DateTimeOffset timeToShow, TimeSpan duration)
+	private static Task ShowTimeFrameAsyncTask(DateTimeOffset timeToShow, TimeSpan duration)
 	{
 		var builder = CalendarContract.ContentUri?.BuildUpon();
 		if (builder is null)
@@ -61,6 +61,8 @@ public partial class AppointmentManager
 		ContentUris.AppendId(builder, timeToShow.ToUniversalTime().ToUnixTimeMilliseconds());
 		var intent = new Intent(Intent.ActionView).SetData(builder.Build());
 		Application.Context.StartActivity(intent);
+
+		return Task.CompletedTask;
 	}
 
 	private static async Task<AppointmentStore?> RequestStoreAsyncTask(AppointmentStoreAccessType options)

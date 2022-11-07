@@ -63,6 +63,14 @@ public partial class Appointment
 	public AppointmentOrganizer Organizer { get; set; } // Android: string = email; Win: Address (email), DisplayName (optional)
 
 	/// <summary>
+	/// Gets or sets a time span value. The value declares the amount of time
+	/// to subtract from the StartTime, and that time used as the issue time
+	/// for a reminder for an appointment. A null value indicates that the appointment
+	/// will not issue a reminder.
+	/// </summary>
+	public TimeSpan? Reminder { get; set; }
+
+	/// <summary>
 	/// Gets or sets the starting time for the appointment. StartTime is of type DateTime.
 	/// </summary>
 	public DateTimeOffset StartTime { get; set; } = DateTimeOffset.Now;

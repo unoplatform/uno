@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Android.Database;
 using Windows.Foundation;
+using static Android.Graphics.BitmapFactory;
 using AndroidEventColumns = Android.Provider.CalendarContract.IEventsColumns;
 
 namespace Windows.ApplicationModel.Appointments;
@@ -34,62 +36,88 @@ public partial class AppointmentStore
 	public IAsyncOperation<IReadOnlyList<Appointment>?> FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options) =>
 		FindAppointmentsAsyncTask(rangeStart, rangeLength, options).AsAsyncOperation();
 
-	private async Task<IReadOnlyList<Appointment>?> FindAppointmentsAsyncTask(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
+	private Task<IReadOnlyList<Appointment>?> FindAppointmentsAsyncTask(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
 	{
-		List<Appointment> entriesList = new();
-
 		if (options is null)
 		{
-			return null;
+			return Task.FromResult<IReadOnlyList<Appointment>?>(null);
 		}
 
-		var builder = Android.Provider.CalendarContract.Instances.ContentUri?.BuildUpon();
-		if (builder == null)
-		{
-			throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, builder is null (impossible)");
-		}
-		Android.Content.ContentUris.AppendId(builder, rangeStart.ToUniversalTime().ToUnixTimeMilliseconds());
-		var rangeEnd = rangeStart + rangeLength;
-		Android.Content.ContentUris.AppendId(builder, rangeEnd.ToUniversalTime().ToUnixTimeMilliseconds());
-		var uri = builder.Build();
-		// it is simply: {content://com.android.calendar/instances/when/1588275364371/1588880164371}
-		if (uri == null)
-		{
-			throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, oUri is null (impossible)");
-		}
-
-		var androidColumns = ConvertWinRTToAndroidColumnNames(options.FetchProperties);
-		// some 'system columns' columns, cannot be switched off
-		androidColumns.Add(AndroidEventColumns.CalendarId);
-		androidColumns.Add("_id");
-		androidColumns.Add(Android.Provider.CalendarContract.Instances.Begin);    // for sort
-		androidColumns.Add(Android.Provider.CalendarContract.Instances.End);    // we need this, as Android sometimes has NULL duration, and it should be reconstructed from start/end
-
-		// string sortMode = Android.Provider.CalendarContract.EventsColumns.Dtstart + " ASC";
-		var sortMode = Android.Provider.CalendarContract.Instances.Begin + " ASC";
-		var contentResolver = Android.App.Application.Context.ContentResolver;
+		using var contentResolver = Android.App.Application.Context.ContentResolver;
 		if (contentResolver == null)
 		{
 			throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, _contentResolver is null (impossible)");
 		}
 
-		using var cursor = contentResolver?.Query(uri,
-								androidColumns.ToArray(),  // columns in result
-								null,   // where
-								null,   // where params
-								sortMode);
+		using var cursor = CreateContactsCursor(contentResolver, rangeStart, rangeLength, options);
 
 		if (cursor is null || cursor.IsAfterLast)
 		{
-			return entriesList;
+			return Task.FromResult<IReadOnlyList<Appointment>?>(Array.Empty<Appointment>());
 		}
 
 		if (!cursor.MoveToFirst())
 		{
-			return entriesList;
+			return Task.FromResult<IReadOnlyList<Appointment>?>(Array.Empty<Appointment>());
 		}
 
-		// optimization
+		var results = ReadAppointments(cursor, contentResolver, options);
+
+		cursor.Close();
+		
+		return Task.FromResult<IReadOnlyList<Appointment>?>(results);
+	}
+
+	private ICursor? CreateContactsCursor(
+		Android.Content.ContentResolver contentResolver,
+		DateTimeOffset rangeStart,
+		TimeSpan rangeLength,
+		FindAppointmentsOptions options)
+	{
+		var builder = Android.Provider.CalendarContract.Instances.ContentUri?.BuildUpon();
+		if (builder is null)
+		{
+			throw new InvalidOperationException("Android Calendar contract is invalid");
+		}
+
+		Android.Content.ContentUris.AppendId(builder, rangeStart.ToUniversalTime().ToUnixTimeMilliseconds());
+		var rangeEnd = rangeStart + rangeLength;
+		Android.Content.ContentUris.AppendId(builder, rangeEnd.ToUniversalTime().ToUnixTimeMilliseconds());
+
+		// Uri has the following format: "content://com.android.calendar/instances/when/??/??"
+		var uri = builder.Build();
+
+		if (uri is null)
+		{
+			throw new InvalidOperationException("Android Calendar contract URI was not valid");
+		}
+
+		var androidColumns = ConvertWinRTToAndroidColumnNames(options.FetchProperties);
+
+		// Required 'system columns' columns, cannot be switched off
+		androidColumns.Add(AndroidEventColumns.CalendarId);
+		androidColumns.Add("_id");
+		// For sorting
+		androidColumns.Add(Android.Provider.CalendarContract.Instances.Begin);
+		// We need this, as Android sometimes has null duration, and it should be reconstructed from start/end
+		androidColumns.Add(Android.Provider.CalendarContract.Instances.End);
+
+		var sortMode = Android.Provider.CalendarContract.Instances.Begin + " ASC";
+
+
+		var cursor = contentResolver?.Query(
+			uri,
+			androidColumns.ToArray(),  // columns in result
+			null,   // where
+			null,   // where params
+			sortMode);
+
+		return cursor;
+	}
+	
+	private IReadOnlyList<Appointment> ReadAppointments(ICursor cursor, Android.Content.ContentResolver? contentResolver, FindAppointmentsOptions options)
+	{
+		List<Appointment> results = new List<Appointment>();
 		int colAllDay = cursor.GetColumnIndex(AndroidEventColumns.AllDay);
 		int colLocation = cursor.GetColumnIndex(AndroidEventColumns.EventLocation);
 		int colStartTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.Begin);
@@ -100,8 +128,6 @@ public partial class AppointmentStore
 		int colCalId = cursor.GetColumnIndex(AndroidEventColumns.CalendarId);
 		int colHasAlarm = cursor.GetColumnIndex(AndroidEventColumns.HasAlarm);
 		int colId = cursor.GetColumnIndex("_id");
-
-		// reading...
 
 		for (uint pageGuard = options.MaxCount; pageGuard > 0; pageGuard--)
 		{
@@ -191,7 +217,7 @@ public partial class AppointmentStore
 				}
 			}
 
-			entriesList.Add(entry);
+			results.Add(entry);
 
 			if (!cursor.MoveToNext())
 			{
@@ -199,9 +225,7 @@ public partial class AppointmentStore
 			}
 		}
 
-		cursor.Close();
-
-		return entriesList;
+		return results;
 	}
 
 	private List<string> ConvertWinRTToAndroidColumnNames(IList<string> uwpColumns)
