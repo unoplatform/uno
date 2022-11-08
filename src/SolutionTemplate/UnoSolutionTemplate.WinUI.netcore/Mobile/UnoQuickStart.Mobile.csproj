@@ -7,7 +7,7 @@
 
 		<!-- Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401-->
 		<!--
-		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
+		$_if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif_$
 		-->
 
 		<SingleProject>true</SingleProject>
@@ -18,6 +18,7 @@
 
 		<!-- Required for C# Hot Reload, except for macOS which uses CoreCLR (not Mono) -->
 		<!-- Disabled because of https://github.com/dotnet/runtime/issues/68808 -->
+
 		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != '$basetargetframework$-maccatalyst' and '$(TargetFramework)' != '$basetargetframework$-macos'">True</UseInterpreter>-->
 
 		<IsUnoHead>true</IsUnoHead>
