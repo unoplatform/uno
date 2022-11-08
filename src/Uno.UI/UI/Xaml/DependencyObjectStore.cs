@@ -1912,7 +1912,7 @@ namespace Windows.UI.Xaml
 			{
 				if (value?.GetType() != propertyDetails.Property.Type)
 				{
-					value = Convert.ChangeType(value, propertyDetails.Property.Type, CultureInfo.CurrentUICulture);
+					value = Convert.ChangeType(value, propertyDetails.Property.Type, CultureInfo.CurrentCulture);
 				}
 			}
 

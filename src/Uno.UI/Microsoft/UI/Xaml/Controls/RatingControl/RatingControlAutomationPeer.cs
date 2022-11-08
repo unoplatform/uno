@@ -198,7 +198,7 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 		SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
 		formatter.NumberRounder = rounder;
 
-		string maxRatingString = GetRatingControl().MaxRating.ToString(CultureInfo.CurrentUICulture);
+		string maxRatingString = GetRatingControl().MaxRating.ToString(CultureInfo.CurrentCulture);
 
 		int fractionDigits = DetermineFractionDigits(ratingValue);
 		int sigDigits = DetermineSignificantDigits(ratingValue, fractionDigits);
