@@ -259,7 +259,9 @@ internal class HotReloadWorkspace
 		return new(diagnostics, updates);
 	}
 
-	private static PortableExecutableReference[] BuildFrameworkReferences() => Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System*.dll")
+	private static PortableExecutableReference[] BuildFrameworkReferences()
+		=> Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "System*.dll")
+			.Concat(Directory.GetFiles(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "mscorlib.dll"))
 				.Where(f => !f.Contains(".Native", StringComparison.OrdinalIgnoreCase))
 				.Select(f => MetadataReference.CreateFromFile(f))
 				.ToArray();
