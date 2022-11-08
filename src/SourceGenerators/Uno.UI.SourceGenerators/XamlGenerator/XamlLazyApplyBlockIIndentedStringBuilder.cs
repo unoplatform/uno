@@ -47,7 +47,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					blockDisposable = _source.BlockInvariant(".GenericApply({1}({0} => ", _closureName, delegateString);
+					// This syntax is used to avoid closing on __that and __namescope when running in HotReload.
+					blockDisposable = _source.BlockInvariant(".GenericApply(__that, __nameScope, {1}(({0}, __that, __nameScope) => ", _closureName, delegateString);
 				}
 
 				_applyDisposable = new DisposableAction(() =>
