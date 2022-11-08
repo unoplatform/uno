@@ -67,8 +67,6 @@ namespace Windows.UI.Xaml
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
 		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
-#else
-		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
 		private bool _defaultStyleApplied;

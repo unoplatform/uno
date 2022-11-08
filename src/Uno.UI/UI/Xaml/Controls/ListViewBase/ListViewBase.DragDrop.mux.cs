@@ -39,9 +39,8 @@ namespace Windows.UI.Xaml.Controls
 		const double LISTVIEWBASE_EDGE_SCROLL_MAX_SPEED = (1500.0 /* px/sec */);
 
 		// The delay time before going playing the live reorder
-		const int LISTVIEW_LIVEREORDER_TIMER = 200;
-		const int GRIDVIEW_LIVEREORDER_TIMER = 300;
-
+		//const int LISTVIEW_LIVEREORDER_TIMER = 200;
+		//const int GRIDVIEW_LIVEREORDER_TIMER = 300;
 
 		// Returns true if
 		// 1) a drag and drop operation is in progress, and

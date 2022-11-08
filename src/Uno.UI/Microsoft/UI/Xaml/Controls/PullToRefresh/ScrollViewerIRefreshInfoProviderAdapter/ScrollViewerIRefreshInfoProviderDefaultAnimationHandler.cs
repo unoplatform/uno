@@ -23,13 +23,13 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 	//private const double REFRESH_VISUALIZER_OVERPAN_RATIO = 0.4;
 
 	// Implementors of the IAdapterAnimationHandler interface are responsible for implementing the
-	// 3 well defined component level animations in a PTR scenario. The three animations involved 
-	// in PTR include the expression animation used to have the RefreshVisualizer and its 
+	// 3 well defined component level animations in a PTR scenario. The three animations involved
+	// in PTR include the expression animation used to have the RefreshVisualizer and its
 	// InfoProvider follow the users finger, the animation used to show the RefreshVisualizer
-	// when a refresh is requested, and the animation used to hide the refreshVisualizer when the 
+	// when a refresh is requested, and the animation used to hide the refreshVisualizer when the
 	// refresh is completed.
 
-	// The interaction tracker set up by the Adapter has to be assembled in a very particular way. 
+	// The interaction tracker set up by the Adapter has to be assembled in a very particular way.
 	// Factoring out this functionality is a way to expose the animation for
 	// Alteration without having to expose the "delicate" interaction tracker.
 

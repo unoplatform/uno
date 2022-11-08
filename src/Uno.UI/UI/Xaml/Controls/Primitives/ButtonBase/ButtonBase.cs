@@ -39,8 +39,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			);
 		}
 
-		private readonly SerialDisposable _commandCanExecute = new SerialDisposable();
-
 		public
 #if XAMARIN_ANDROID
 			new
