@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
-			// If the template is being recycled and it's TemplatedParent is null, this means that 
+			// If the template is being recycled and it's TemplatedParent is null, this means that
 			// this instance was part of the ControlTemplate of a ScrollViewer instance that was GC'ed.
 			// We need to ensure that we're not keeping any content coming from ScrollView.Content.
 			if (TemplatedParent is null && Native is { })
@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region SCP to Native SCP
+#pragma warning disable CA1044 // Properties should not be write only
 		public ScrollBarVisibility NativeHorizontalScrollBarVisibility
 		{
 			set
@@ -60,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#pragma warning restore CA1044 // Properties should not be write only
 
 		public bool CanHorizontallyScroll
 		{
