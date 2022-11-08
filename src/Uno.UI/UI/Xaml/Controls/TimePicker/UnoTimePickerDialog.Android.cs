@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 				minutePicker.Value = values.FindIndex(num => num == _minute);
 				minutePicker.MinValue = 0;
 				minutePicker.MaxValue = values.Count - 1;
-				minutePicker.SetDisplayedValues(values.Select(num => num.ToString("00", CultureInfo.InvariantCulture)).ToArray());
+				minutePicker.SetDisplayedValues(values.Select(num => num.ToString("00", CultureInfo.CurrentUICulture)).ToArray());
 			}
 			else
 			{

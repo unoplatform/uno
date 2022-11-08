@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (badgeNumber <= 99)
 			{
-				m_badgeNumberTextBlock.Text = badgeNumber.ToString(CultureInfo.InvariantCulture);
+				m_badgeNumberTextBlock.Text = badgeNumber.ToString(CultureInfo.CurrentUICulture);
 			}
 			else
 			{

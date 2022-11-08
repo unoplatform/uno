@@ -1535,7 +1535,7 @@ public partial class Slider
 
 			roundedValue = DoubleUtil.Round(originalValue, numPlacesPastDecimalPoint);
 
-			return string.Format(CultureInfo.InvariantCulture, szFormat, roundedValue);
+			return string.Format(CultureInfo.CurrentUICulture, szFormat, roundedValue);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
