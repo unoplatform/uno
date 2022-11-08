@@ -68,6 +68,7 @@ jobs:
         !**\obj\**
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
+        !**\*netcore.Tests.dll
         !**\*.RuntimeTests.dll
         !**\testhost*.*
         !**\Microsoft*.dll

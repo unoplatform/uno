@@ -66,3 +66,26 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts-reference
       ArtifactType: Container
+
+  - task: VisualStudioTestPlatformInstaller@1
+    inputs:
+      versionSelector: specificVersion
+      testPlatformVersion: 17.5.0-preview-20221003-04
+
+  - task: VSTest@2
+    inputs:
+      testAssemblyVer2: |
+        **\*netcore.Tests.dll
+        !**\obj\**
+        !**\*Wasm.Test*.dll
+        !**\*UITests.dll
+        !**\*.RuntimeTests.dll
+        !**\testhost*.*
+        !**\Microsoft*.dll
+
+      vsTestVersion: toolsInstaller
+      testRunTitle: $(Agent.JobName)
+      testSelector: testAssemblies
+      batchingBasedOnAgentsOption: customBatchSize
+      rerunFailedTests: 'true'
+      customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
