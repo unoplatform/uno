@@ -72,6 +72,6 @@ jobs:
     inputs:
       command: test
       projects: |
-        **/*netcore.Tests.dll
+        **/*netcore.Tests.csproj
       arguments: -c Release
       publishTestResults: true
