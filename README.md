@@ -1,9 +1,8 @@
 <h1 align=center>
- <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
+ <img width="10%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
+Pixel-Perfect Multi-Platform Applications with C# and WinUI
 </h1>
 
-
-## Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.
 
 [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
@@ -13,18 +12,23 @@
 [![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg)](https://GitHub.com/unoplatform/uno/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
-# What is the Uno Platform?
-The Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android, and Linux. 
+Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android, and Linux. 
 
-It allows C# and WinUI XAML code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Windows.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+
+# Documentation
+* [Getting Started](https://platform.uno/docs/articles/get-started.html?tabs=windows) 
+* [Uno Platform Documentation](https://platform.uno/docs/articles/intro.html)
+* [Contributing to Uno Platform](https://platform.uno/docs/articles/uno-development/contributing-intro.html?q=contr)
+
+For release updates, new features and announcements follow the [Uno Platform Newsletter](https://platform.uno/#:~:text=Keep%20in%20touch,with%20Uno%20Platform)
+
+# About Uno Platform
+
+It allows C# and WinUI XAML code to run on all target platforms while letting you control every pixel. It supports Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of WinRT and WinUI APIs, such as Windows.UI.Xaml, to enable WinUI applications to run on all platforms with native performance. 
 
 Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
-Visit [our documentation](doc/articles/intro.md) for more details.
-
-# Getting Started
-
-See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, JetBrains Rider, or Visual Studio for Mac.
+# Uno Platform Showcase
 
 For a larger example and features demo:
 * Visit the [Uno Gallery](https://github.com/unoplatform/uno.gallery) repository.
@@ -77,7 +81,7 @@ For a larger example and features demo:
 
 # Live WebAssembly Apps
 
-Here's a list of live apps made with the Uno Platform for WebAssembly.
+Here's a list of live apps made with Uno Platform for WebAssembly.
 
 * The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Gallery](https://gallery.platform.uno) demonstrates the use of Fluent and Material guidelines.
@@ -103,7 +107,7 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the WinRT and WinUI APIs are pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [Discord Channel #uno-platform](https://discord.gg/eBHZSKG) for help on how to contribute!
+There are many ways that you can contribute to Uno Platform, as the WinRT and WinUI APIs are pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [Discord Channel #uno-platform](https://discord.gg/eBHZSKG) for help on how to contribute!
 
 Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [our guide here](doc/articles/features/working-with-gitpod.md).
 
