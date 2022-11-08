@@ -795,7 +795,7 @@ public partial class Slider
 		_tpElementVerticalThumb.SizeChanged += OnThumbSizeChanged;
 		_elementVerticalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.SizeChanged -= OnThumbSizeChanged);
 	}
-	
+
 	private void AttachHorizontalThumbSubscriptions()
 	{
 		_tpElementHorizontalThumb.DragStarted += OnThumbDragStarted;
@@ -807,7 +807,7 @@ public partial class Slider
 		_tpElementHorizontalThumb.SizeChanged += OnThumbSizeChanged;
 		_elementHorizontalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.SizeChanged -= OnThumbSizeChanged);
 	}
-	
+
 	private void AttachSliderContainerEvents()
 	{
 		FrameworkElement spSliderContainer = _tpSliderContainer ?? this;
@@ -1078,7 +1078,7 @@ public partial class Slider
 #if HAS_UNO
 		isThumbToolTipEnabled &= FeatureConfiguration.ToolTip.UseToolTips;
 #endif
-		
+
 		maximum = Maximum;
 		minimum = Minimum;
 		currentValue = IntermediateValue;
@@ -1535,7 +1535,7 @@ public partial class Slider
 
 			roundedValue = DoubleUtil.Round(originalValue, numPlacesPastDecimalPoint);
 
-			return string.Format(CultureInfo.CurrentUICulture, szFormat, roundedValue);
+			return string.Format(CultureInfo.CurrentCulture, szFormat, roundedValue);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();

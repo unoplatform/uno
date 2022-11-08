@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
 	{
 		// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
-		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle. 
+		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle.
 		Storyboard? m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
 		bool m_isWithToggleButtons;
@@ -795,7 +795,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
-					this.SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.CurrentUICulture, toolTipFormatString, labelText, keyboardAcceleratorText));
+					this.SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.CurrentCulture, toolTipFormatString, labelText, keyboardAcceleratorText));
 				}
 				else
 				{
