@@ -83,6 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBadge), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBar), 15)]
@@ -90,7 +91,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if false // Disabled for #10309
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
 #endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
