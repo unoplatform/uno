@@ -118,6 +118,15 @@ public class Given_HotReloadService
 		Assert.AreEqual(0, results[0].Diagnostics.Length);
 		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
 	}
+	
+	[TestMethod]
+	public async Task When_Simple_Xaml_Add_xLoad()
+	{
+		var results = await ApplyScenario(isDebugCompilation: true);
+
+		Assert.AreEqual(0, results[0].Diagnostics.Length);
+		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
+	}
 
 	private async Task<HotReloadWorkspace.UpdateResult[]> ApplyScenario(bool isDebugCompilation, [CallerMemberName] string? name = null)
 	{

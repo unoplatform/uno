@@ -63,6 +63,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
 	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add_Twice\0\p1\MainPage.xaml">
 	    <SubType>Designer</SubType>
 	    <Generator>MSBuild:Compile</Generator>
@@ -75,11 +83,11 @@
 	    <SubType>Designer</SubType>
 	    <Generator>MSBuild:Compile</Generator>
 	  </Content>
-	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\0\p1\MainPage.xaml">
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xLoad\0\p1\MainPage.xaml">
 	    <SubType>Designer</SubType>
 	    <Generator>MSBuild:Compile</Generator>
 	  </Content>
-	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\1\p1\MainPage.xaml">
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xLoad\1\p1\MainPage.xaml">
 	    <SubType>Designer</SubType>
 	    <Generator>MSBuild:Compile</Generator>
 	  </Content>

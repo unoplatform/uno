@@ -1061,6 +1061,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe) "))
 				{
+					writer.AppendLineIndented($"var owner = this;");
+
 					using (writer.BlockInvariant($"__fe.Loading += delegate"))
 					{
 						BuildComponentResouceBindingUpdates(writer);
@@ -3792,7 +3794,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						EnsureXClassName();
 
-						AddXBindEventHandlerToScope(builderName, _xClassName, eventSymbol.ContainingType, componentDefinition);
+						var ownerName = CurrentScope.ClassName;
+						
+						AddXBindEventHandlerToScope(builderName, ownerName, eventSymbol.ContainingType, componentDefinition);
 
 						using (writer.BlockInvariant($"__that.{builderName} = (__that, __owner) => "))
 						{
@@ -4038,7 +4042,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			return new XamlLazyApplyBlockIIndentedStringBuilder(writer, closureName, appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null, delegateType);
+			return new XamlLazyApplyBlockIIndentedStringBuilder(
+				writer,
+				closureName,
+				appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
+				delegateType,
+				!_isTopLevelDictionary);
 		}
 
 		private void RegisterPartial(string format, params object[] values)
@@ -6282,8 +6291,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
 
+										writer.AppendLineIndented($"var owner = this;");
+										
+										if (_isHotReloadEnabled)
+										{
+											// Attach the current context to itself to avoid having a closure in the lambda
+											writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"{componentName}_owner\", owner);");
+										}
+
 										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
+										    if (_isHotReloadEnabled)
+										    {
+											    writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
+										    }
+
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
 											// in order for the component field to be filled, and Bindings.Update() to do its work.
@@ -6659,14 +6681,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 		
-		private void AddXBindEventHandlerToScope(string fieldName, XClassName className, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
+		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
 		{
 			if(componentDefinition is null)
 			{
 				throw new InvalidOperationException("The component definition cannot be null.");
 			}
 
-			var builderDelegateType = $"global::System.Action<{className.Symbol?.ToDisplayString(NullableFlowState.None, SymbolDisplayFormat.FullyQualifiedFormat)}, {declaringType.ToDisplayString(NullableFlowState.None, SymbolDisplayFormat.FullyQualifiedFormat)}>";
+			var builderDelegateType = $"global::System.Action<{ownerTypeName}, {declaringType.ToDisplayString(NullableFlowState.None, SymbolDisplayFormat.FullyQualifiedFormat)}>";
 			var definition = new EventHandlerBackingFieldDefinition(builderDelegateType, fieldName, Accessibility.Private, componentDefinition.MemberName);
 
 			CurrentScope.xBindEventsHandlers.Add(definition);
