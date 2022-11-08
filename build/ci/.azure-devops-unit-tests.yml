@@ -58,7 +58,8 @@ jobs:
 
   - task: VisualStudioTestPlatformInstaller@1
     inputs:
-      versionSelector: latestStable
+      versionSelector: specificVersion
+      testPlatformVersion: 17.5.0-preview-20221003-04
 
   - task: VSTest@2
     inputs:

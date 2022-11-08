@@ -266,11 +266,19 @@ internal class HotReloadWorkspace
 
 	private static PortableExecutableReference[] BuildUnoReferences()
 	{
+		const string configuration =
+#if DEBUG
+			"DEBUG";
+#else
+			"RELEASE";
+#endif
+
 		var availableTargets = new[] {
-			Path.Combine("Uno.UI.Skia", "Debug", "netstandard2.0"),
-			Path.Combine("Uno.UI.Skia", "Debug", "net7.0"),
-			Path.Combine("Uno.UI.Reference", "Debug", "netstandard2.0"),
-			Path.Combine("Uno.UI.Reference", "Debug", "net7.0"),
+			Path.Combine("Uno.UI.Skia", configuration, "netstandard2.0"),
+			Path.Combine("Uno.UI.Skia", configuration, "net7.0"),
+			Path.Combine("Uno.UI.Reference", configuration, "netstandard2.0"),
+			Path.Combine("Uno.UI.Reference", configuration, "net7.0"),
+			Path.Combine(configuration, "net461"),
 		};
 
 		var unoUIBase = Path.Combine(
