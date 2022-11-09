@@ -21,14 +21,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string? _applyPrefix;
 		private readonly string? _delegateType;
 		private readonly IDisposable? _parentDisposable;
+		private readonly bool _exposeContext;
 
-		public XamlLazyApplyBlockIIndentedStringBuilder(IIndentedStringBuilder source, string closureName, string? applyPrefix, string? delegateType, IDisposable? parentDisposable = null)
+		public XamlLazyApplyBlockIIndentedStringBuilder(
+			IIndentedStringBuilder source,
+			string closureName, string? applyPrefix,
+			string? delegateType,
+			bool exposeContext,
+			IDisposable? parentDisposable = null)
 		{
 			_closureName = closureName;
 			_source = source;
 			_applyPrefix = applyPrefix;
 			_delegateType = delegateType;
 			_parentDisposable = parentDisposable;
+			_exposeContext = exposeContext;
 		}
 
 		private void TryWriteApply()
@@ -45,9 +52,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockDisposable = _source.BlockInvariant(".{0}_XamlApply({2}({1} => ", _applyPrefix, _closureName, delegateString);
 				}
+				else if(_exposeContext)
+				{
+					// This syntax is used to avoid closing on __that and __namescope when running in HotReload.
+					blockDisposable = _source.BlockInvariant(".GenericApply(__that, __nameScope, {1}(({0}, __that, __nameScope) => ", _closureName, delegateString);
+				}
 				else
 				{
-					blockDisposable = _source.BlockInvariant(".GenericApply({1}({0} => ", _closureName, delegateString);
+					blockDisposable = _source.BlockInvariant(".GenericApply({1}(({0}) => ", _closureName, delegateString);
 				}
 
 				_applyDisposable = new DisposableAction(() =>
