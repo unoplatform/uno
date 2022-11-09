@@ -234,6 +234,9 @@ dotnet_diagnostic.RS0030.severity = error
 
 dotnet_analyzer_diagnostic.category-Performance.severity = error
 
+# CA1044: Properties should not be write only
+dotnet_diagnostic.CA1044.severity = error
+
 # CA1304: Specify CultureInfo
 dotnet_diagnostic.CA1304.severity = error
 
@@ -260,6 +263,12 @@ dotnet_diagnostic.CA1828.severity = error
 
 # CA1829: Use Length/Count property instead of Count() when available
 dotnet_diagnostic.CA1829.severity = error
+
+# CA2200: Rethrow to preserve stack details
+dotnet_diagnostic.CA2200.severity = error
+
+# CA2218: Override GetHashCode on overriding Equals
+dotnet_diagnostic.CA2218.severity = error
 
 # CA1802: Use literals where appropriate
 dotnet_diagnostic.CA1802.severity = none
