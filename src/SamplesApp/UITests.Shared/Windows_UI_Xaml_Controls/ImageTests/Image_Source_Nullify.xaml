@@ -1,0 +1,26 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Source_Nullify"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ImageTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+		<Button
+            Grid.Row="0"
+            HorizontalAlignment="Left"
+            Command="{x:Bind ViewModel.ClearImageCommand, Mode=OneWay}"
+            Content="Clear Image" />
+		<Button
+            Grid.Row="1"
+            HorizontalAlignment="Left"
+            Command="{x:Bind ViewModel.LoadImageCommand, Mode=OneWay}"
+            Content="Load Image" />
+		<Image 
+            Grid.Row="2"
+            Source="{x:Bind ViewModel.TestImageSource, Mode=OneWay}" />
+	</Grid>
+</Page>
