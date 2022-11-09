@@ -202,8 +202,14 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
-				var logicalRenderingArea = TransformToLogical(renderingArea);
-
+				var fullRenderingArea = TransformToLogical(renderingArea);
+				var halfActualStrokeThickness = ActualStrokeThickness / 2;
+				var logicalRenderingArea = new Windows.Foundation.Rect(
+					fullRenderingArea.X + halfActualStrokeThickness,
+					fullRenderingArea.Y + halfActualStrokeThickness,
+					fullRenderingArea.Width - ActualStrokeThickness,
+					fullRenderingArea.Height - ActualStrokeThickness);
+				
 				if (!_logicalRenderingArea.Equals(logicalRenderingArea))
 				{
 					_logicalRenderingArea = logicalRenderingArea;
