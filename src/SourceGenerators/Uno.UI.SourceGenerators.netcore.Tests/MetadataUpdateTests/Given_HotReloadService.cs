@@ -20,16 +20,7 @@ public class Given_HotReloadService
 	[TestMethod]
 	public async Task When_Empty()
 	{
-		try
-		{
-			var results = await ApplyScenario(isDebugCompilation: true);
-
-			Assert.Fail();
-		}
-		catch (Exception e)
-		{
-			Assert.IsTrue(e.Message.Contains("CS5001"));
-		}
+		var results = await ApplyScenario(isDebugCompilation: true);
 	}
 
 	[TestMethod]
@@ -86,7 +77,7 @@ public class Given_HotReloadService
 		Assert.AreEqual(0, results[0].Diagnostics.Length);
 		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
 		Assert.AreEqual(4, results[1].Diagnostics.Length);
-		Assert.IsTrue(results[1].Diagnostics.First().GetMessage().Contains("ENC0049"));
+		Assert.IsTrue(results[1].Diagnostics.First().ToString().Contains("ENC0049"));
 	}
 
 	[TestMethod]

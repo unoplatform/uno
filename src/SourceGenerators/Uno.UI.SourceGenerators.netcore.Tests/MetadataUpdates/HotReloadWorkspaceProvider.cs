@@ -133,7 +133,7 @@ internal class HotReloadWorkspace
 							name: projectName,
 							assemblyName: projectName,
 							language: LanguageNames.CSharp,
-							filePath: Path.Combine(_baseWorkFolder, projectName + "csproj"),
+							filePath: Path.Combine(_baseWorkFolder, projectName + ".csproj"),
 							outputFilePath: _baseWorkFolder,
 							metadataReferences: references,
 							compilationOptions: new CSharpCompilationOptions(
@@ -146,7 +146,7 @@ internal class HotReloadWorkspace
 
 			projectInfo = projectInfo
 				.WithCompilationOutputInfo(
-					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + ".exe")));
+					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".exe")));
 
 			var project = workspace.AddProject(projectInfo);
 			currentSolution = project.Solution;

@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
+using Uno.UI.SourceGenerators.MetadataUpdates;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
@@ -71,7 +72,14 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					TestState.AdditionalFiles.Add(($"/0/{xamlFile.FileName}", xamlFile.Contents));
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
-				ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20")));
+				
+				ReferenceAssemblies = new ReferenceAssemblies(
+						"net7.0",
+						new PackageIdentity(
+							"Microsoft.NETCore.App.Ref",
+							"7.0.0"),
+						Path.Combine("ref", "net7.0"));
+				
 				TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck;
 			}
 
@@ -83,6 +91,53 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				return options.WithPreprocessorSymbols(PreprocessorSymbols);
 				
 			}
+
+			protected override Project ApplyCompilationOptions(Project project)
+			{
+				var p = project.AddMetadataReferences(BuildUnoReferences());
+				
+				return base.ApplyCompilationOptions(p);
+			}
+
+			private static MetadataReference[] BuildUnoReferences()
+			{
+				const string configuration =
+#if DEBUG
+					"Debug";
+#else
+			"Release";
+#endif
+
+				var availableTargets = new[] {
+					Path.Combine("Uno.UI.Skia", configuration, "net7.0"),
+					Path.Combine("Uno.UI.Reference", configuration, "net7.0"),
+				};
+
+				var unoUIBase = Path.Combine(
+					Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+					"..",
+					"..",
+					"..",
+					"..",
+					"..",
+					"Uno.UI",
+					"bin"
+					);
+
+				var unoTarget = availableTargets
+					.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
+					.FirstOrDefault(File.Exists);
+
+				if (unoTarget is null)
+				{
+					throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
+				}
+
+				return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")
+							.Select(f => MetadataReference.CreateFromFile(Path.GetFullPath(f)))
+							.ToArray();
+			}
+
 		}
 	}
 }
