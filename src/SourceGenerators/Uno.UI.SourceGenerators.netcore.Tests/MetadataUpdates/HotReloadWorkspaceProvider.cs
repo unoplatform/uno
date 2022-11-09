@@ -269,9 +269,9 @@ internal class HotReloadWorkspace
 	{
 		const string configuration =
 #if DEBUG
-			"DEBUG";
+			"Debug";
 #else
-			"RELEASE";
+			"Release";
 #endif
 
 		var availableTargets = new[] {
