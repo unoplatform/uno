@@ -210,7 +210,7 @@
 		}
 	  ],
 	  "replaces": "net6.0",
-	  "defaultValue": "net6.0"
+	  "defaultValue": "net7.0"
 	}
   },
   "primaryOutputs": [
