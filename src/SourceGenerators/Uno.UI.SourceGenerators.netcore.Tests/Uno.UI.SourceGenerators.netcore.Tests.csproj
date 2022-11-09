@@ -18,7 +18,7 @@
 		<Compile Remove="**\*.xaml.cs" />
 		<None Include="**\*.xaml.cs" />
 
-		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotreloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" />
+		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" />
 		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" />
 	</ItemGroup>
 
