@@ -75,6 +75,10 @@ To build an app with this feature enabled:
    		<PublishAot>true</PublishAot>
 	</PropertyGroup>
    ```
+1. Upgrade your project to net7.0:
+   ```xml
+   <TargetFramework>net7.0</TargetFramework>
+   ```
 1. Add the following items in your `.csproj`:
    ```xml
    <ItemGroup>
@@ -88,13 +92,12 @@ To build an app with this feature enabled:
       <Application>
          <Assembly Name="MyApp.Skia.Gtk" Dynamic="Required All" />
          
-         <Assembly Name="SkiaSharp" Dynamic="Required All" />
-         <Assembly Name="HarfBuzzSharp" Dynamic="Required All"> />
-
-         <Assembly Name="GdkSharp" Dynamic="Required All" />
-         <Assembly Name="GioSharp" Dynamic="Required All" />
-         <Assembly Name="GLibSharp" Dynamic="Required All" />
-         <Assembly Name="GtkSharp" Dynamic="Required All" />
+         <Assembly Name="GdkSharp" Dynamic="Required All">
+            <Type Name="Gdk.Screen" Dynamic="Required All"/>
+         </Assembly>
+         <Assembly Name="GtkSharp" Dynamic="Required All">
+            <Type Name="Gtk.WindowStateEventArgs" Dynamic="Required All"/>
+         </Assembly>
       </Application>
    </Directives>
    ```
