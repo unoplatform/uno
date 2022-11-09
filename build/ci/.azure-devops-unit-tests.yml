@@ -95,9 +95,11 @@ jobs:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP 
 
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+      # Disabled as tests explicitly use UWP types.
+      # Will be migrated once the whole tree is moved to WinUI
+      # WinUI:
+      #   UNO_UWP_BUILD: false
+      #   XAML_FLAVOR_BUILD: WinUI 
 
   variables:
     CombinedConfiguration: Release|Any CPU
