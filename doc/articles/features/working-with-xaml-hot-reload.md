@@ -34,6 +34,8 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
     - Unchecking the `Use SSL` option in the project's Debug launch profiles (in VS 2022 17.0 or earlier)
     - Removing the https App URL in the project's Debug launch profiles (in VS 2022 17.1 or later)
     - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
+- WinAppSDK on Windows specific issues
+    - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 
 ### Visual Studio 2019/2022
 - The output window in VS has an output named "Uno Platform" in its drop down. Diagnostics messages from the VS integration appear there.
