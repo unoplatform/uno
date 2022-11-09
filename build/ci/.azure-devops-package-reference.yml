@@ -66,12 +66,3 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts-reference
       ArtifactType: Container
-
-  - task: DotNetCoreCLI@2
-    displayName: Run netcore Unit Tests
-    inputs:
-      command: test
-      projects: |
-        **/*netcore.Tests.csproj
-      arguments: -c Release
-      publishTestResults: true
