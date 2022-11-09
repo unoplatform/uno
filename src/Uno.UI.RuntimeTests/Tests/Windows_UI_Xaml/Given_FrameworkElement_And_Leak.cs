@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -304,6 +305,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				await TestServices.WindowHelper.WaitForIdle();
 			}
 		}
+
+		[TestMethod]
+		[Timeout(TestTimeout.Infinite)]
+		public async Task When_Samples_Leak()
+		{
+			if (SampleAttribute is null)
+			{
+				throw new InvalidOperationException("SampleAttribute must be set before running this test");
+			}
+
+			var testAssembliesTypes =
+				from asm in AppDomain.CurrentDomain.GetAssemblies()
+				from type in asm.GetTypes()
+				where type.GetCustomAttribute(SampleAttribute) != null
+				where typeof(FrameworkElement).IsAssignableFrom(type)
+				//where type.Name.CompareTo("Flyout_Attached") > 0
+				orderby type.Name ascending
+				select type;
+
+			foreach (var sample in testAssembliesTypes)
+			{
+				try
+				{
+					await When_Add_Remove(sample, 2);
+				}
+				catch
+				{
+					global::System.IO.File.AppendAllText("leak.txt", sample.FullName + Environment.NewLine);
+				}
+			}
+		}
+
+		public static Type? SampleAttribute { get; set; }
 
 		[TestMethod]
 		public void When_Control_Loaded_Then_HardReferences()

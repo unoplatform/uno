@@ -53,7 +53,7 @@ namespace Uno.UI.Samples.Tests
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
 #if DEBUG
-		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(300);
+		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromHours(10);
 #else
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 #endif
