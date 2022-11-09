@@ -211,7 +211,17 @@ namespace Windows.UI.Xaml.Shapes
 				}
 			}
 
-			return (LayoutRound(size), LayoutRound(renderingArea));
+			size = LayoutRound(size);
+			renderingArea = LayoutRound(renderingArea);
+			
+			var twoHalfStrokeThickness = ActualStrokeThickness;
+			var halfStrokeThickness = twoHalfStrokeThickness / 2.0;
+			renderingArea.X += halfStrokeThickness;
+			renderingArea.Y += halfStrokeThickness;
+			renderingArea.Width -= twoHalfStrokeThickness;
+			renderingArea.Height -= twoHalfStrokeThickness;
+
+			return (size, renderingArea);
 		}
 
 #if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
