@@ -772,7 +772,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildResourceLoaderFromFilePath(IndentedStringBuilder writer, string? referenceFilePath)
 		{
 			using var stream = File.OpenRead(referenceFilePath);
-			using var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
+
+#if NETSTANDARD2_0
+			// Using is conditional to netstandard2 when running under netcore
+			// disposing the assembly crashes the mono runtime under macos.
+			using
+#endif
+				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
 
 			if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri", StringComparison.Ordinal)))
 			{
