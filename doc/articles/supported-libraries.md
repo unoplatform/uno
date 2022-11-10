@@ -9,6 +9,7 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
  * [Infragistics](https://www.infragistics.com/products/uno-platform)
  * [Lightning Chart](https://platform.uno/blog/lightningchart-introduces-uno-platform-support/)
  * [Live Charts](https://platform.uno/blog/livecharts-announces-support-for-uno-platform/)
+ * [OxyPlot](https://github.com/HavenDV/H.OxyPlot)
 
 ## Presentation frameworks
 

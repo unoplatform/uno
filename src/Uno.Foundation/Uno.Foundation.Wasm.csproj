@@ -12,13 +12,12 @@
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
-    <RootNamespace>Windows.Foundation</RootNamespace>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<RootNamespace>Windows.Foundation</RootNamespace>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>

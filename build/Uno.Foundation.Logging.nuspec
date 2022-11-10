@@ -24,7 +24,7 @@
     <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\MonoAndroid13.0\*.*" target="lib\MonoAndroid13.0" />
     <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\net461\*.*" target="lib\net461" />
     
-    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging.net6\Release\net6.0\*.*" target="lib\net6.0" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging.netcoremobile\Release\net6.0\*.*" target="lib\net6.0" />
     <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\net7.0\*.*" target="lib\net7.0" />
 
   </files>

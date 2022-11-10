@@ -17,6 +17,12 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 			myTextBox.Select((int)startNumber.Value, (int)lengthNumber.Value);
 		}
 
+		private void SelectReadOnly_OnClick(object sender, RoutedEventArgs args)
+		{
+			MyReadOnlyTextBox.Focus(FocusState.Programmatic);
+			MyReadOnlyTextBox.Select((int)startNumber.Value, (int)lengthNumber.Value);
+		}
+
 		private void SelectAll_OnClick(object sender, RoutedEventArgs args)
 		{
 			myTextBox.Focus(FocusState.Programmatic);

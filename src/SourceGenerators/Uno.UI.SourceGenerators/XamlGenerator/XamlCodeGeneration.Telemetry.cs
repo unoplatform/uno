@@ -122,6 +122,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
 							("IsRunningCI", IsRunningCI.ToString()),
+							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString()),
 						},
 						new[] { ("FileCount", (double)files.Length) }
 					);

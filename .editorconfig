@@ -4,7 +4,6 @@ root = true
 tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
-end_of_line = crlf
 
 [*.{xaml,xml,targets,props,csproj}]
 indent_style = tab
@@ -233,7 +232,13 @@ dotnet_style_qualification_for_property = false:suggestion
 # https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
 dotnet_diagnostic.RS0030.severity = error
 
-dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
+dotnet_analyzer_diagnostic.category-Performance.severity = error
+
+# CA1044: Properties should not be write only
+dotnet_diagnostic.CA1044.severity = error
+
+# CA1304: Specify CultureInfo
+dotnet_diagnostic.CA1304.severity = error
 
 # CA1805: Do not initialize unnecessarily
 dotnet_diagnostic.CA1805.severity = error
@@ -258,6 +263,12 @@ dotnet_diagnostic.CA1828.severity = error
 
 # CA1829: Use Length/Count property instead of Count() when available
 dotnet_diagnostic.CA1829.severity = error
+
+# CA2200: Rethrow to preserve stack details
+dotnet_diagnostic.CA2200.severity = error
+
+# CA2218: Override GetHashCode on overriding Equals
+dotnet_diagnostic.CA2218.severity = error
 
 # CA1802: Use literals where appropriate
 dotnet_diagnostic.CA1802.severity = none
@@ -309,10 +320,20 @@ dotnet_diagnostic.CA1849.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal
 
+# CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1303.severity = none
-dotnet_diagnostic.CA1304.severity = none
+
+# CA1305: Specify IFormatProvider
 dotnet_diagnostic.CA1305.severity = none
+
+# CA1307: Specify StringComparison for clarity
 dotnet_diagnostic.CA1307.severity = none
+
+# CA1308: Normalize strings to uppercase
 dotnet_diagnostic.CA1308.severity = none
+
+# CA1309: Use ordinal StringComparison
 dotnet_diagnostic.CA1309.severity = none
+
+# CA2101: Specify marshalling for P/Invoke string arguments
 dotnet_diagnostic.CA2101.severity = none

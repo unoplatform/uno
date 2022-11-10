@@ -27,7 +27,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
-[assembly: InternalsVisibleTo("Uno.UI.DualScreen.net6")]
+[assembly: InternalsVisibleTo("Uno.UI.DualScreen.netcoremobile")]
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("SamplesApp")]

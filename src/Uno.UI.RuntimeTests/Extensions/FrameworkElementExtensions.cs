@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
@@ -21,5 +22,10 @@ namespace Uno.UI.RuntimeTests.Extensions
 		/// </summary>
 		public static Rect GetRelativeBounds(this FrameworkElement element, FrameworkElement relativeTo)
 			=> element.TransformToVisual(relativeTo).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+		public static RelativeCoords GetRelativeCoords(this FrameworkElement parent, FrameworkElement child)
+		{
+			return RelativeCoords.From(parent, child);
+		}
 	}
 }

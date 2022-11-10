@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<!--
+		 Add files present in the shared project folder, excluding the ones
+		 explicitly included in the projitem, so files can be added from vscode
+		 without manipulating the projitem file.
+	-->
+		<_Globbled_Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="@(Page);@(ApplicationDefinition)">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</_Globbled_Page>
+		<Page Include="@(_Globbled_Page)" />
+
+		<_Globbed_Compile Include="$(MSBuildThisFileDirectory)**/*.xaml.cs" Exclude="@(Compile)">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</_Globbed_Compile>
+		<_Globbed_Compile Include="$(MSBuildThisFileDirectory)**/*.cs" Exclude="@(Compile);@(_Globbed_Compile)" />
+		<Compile Include="@(_Globbed_Compile)" />
+
+		<_Globbed_PRIResource Include="$(MSBuildThisFileDirectory)**/*.resw" Exclude="@(PRIResource)" />
+		<PRIResource Include="@(_Globbed_PRIResource)" />
+
+		<_Globbed_Content Include="$(MSBuildThisFileDirectory)Assets/**/*.*" Exclude="@(Content)" />
+		<Content Include="@(_Globbed_Content)" />
+
+		<!-- Mark the files from this folder as being part of WinUI -->
+		<Page Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
+		<ApplicationDefinition Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
+
+		<!-- Make sure XAML files force reevaluation of up-to-date checks -->
+		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)**/*.xaml" />
+	</ItemGroup>
+</Project>

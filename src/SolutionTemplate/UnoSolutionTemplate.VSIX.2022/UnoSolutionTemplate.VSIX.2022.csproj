@@ -81,9 +81,9 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="..\UnoLibraryTemplate.net6\UnoLibraryTemplate.net6.csproj">
+    <ProjectReference Include="..\UnoLibraryTemplate.netcore\UnoLibraryTemplate.netcore.csproj">
       <Project>{E0F1F702-6061-49BC-83C0-2BF3B9CDCF30}</Project>
-      <Name>UnoLibraryTemplate.net6</Name>
+      <Name>UnoLibraryTemplate.netcore</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
@@ -95,9 +95,9 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj">
+    <ProjectReference Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj">
       <Project>{042F79A0-E0BB-4DED-8BC8-419700B9EE30}</Project>
-      <Name>UnoSolutionTemplate.WinUI.net6</Name>
+      <Name>UnoSolutionTemplate.WinUI.netcore</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>

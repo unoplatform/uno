@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701;Uno0001</NoWarn>
+		<NoWarn>$(NoWarn);Uno0001</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
@@ -21,7 +21,7 @@
 		<RootNamespace>Uno.UI.Lottie</RootNamespace>
 
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_SKOTTIE</DefineConstants>
-		
+
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
@@ -35,7 +35,7 @@
 	    <Pack>true</Pack>
 	  </Content>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
@@ -51,7 +51,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 
 		<PackageReference Include="SkiaSharp.Skottie" />
-		
+
 		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 

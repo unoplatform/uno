@@ -460,12 +460,20 @@ namespace Windows.ApplicationModel.DataTransfer
 						{
 							// Convert from a temp Url (see above example) into an absolute file path
 							var fileUrl = new NSUrl(tempFileUrl);
-							var file = await StorageFile.GetFileFromPathAsync(fileUrl.FilePathUrl.AbsoluteString);
 
-							var storageItems = new List<IStorageItem>();
-							storageItems.Add(file);
+							if (fileUrl.FilePathUrl?.AbsoluteString != null)
+							{
+								var file = await StorageFile.GetFileFromPathAsync(fileUrl.FilePathUrl.AbsoluteString);
 
-							return storageItems.AsReadOnly();
+								var storageItems = new List<IStorageItem>();
+								storageItems.Add(file);
+
+								return storageItems.AsReadOnly();
+							}
+							else
+							{
+								throw new InvalidOperationException($"The url {tempFileUrl} is not valid");
+							}
 						});
 				}
 

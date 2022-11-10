@@ -19,8 +19,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 		[Test] [AutoRetry] public void When_Transforms_Completed_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
 		[Test] [AutoRetry] public void When_Transforms_Completed_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
-		[Test] [AutoRetry] public void When_Transforms_Paused_With_FillBehaviorStop_Then_Hold() => TestTransformsFinalState();
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Disabled for Android and iOS: https://github.com/unoplatform/uno/issues/9080
+		public void When_Transforms_Paused_With_FillBehaviorStop_Then_Hold() => TestTransformsFinalState();
+		
 		[Test] [AutoRetry] public void When_Transforms_Paused_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
+
 		[Test] [AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
 		[Test] [AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorHold_Then_Rollback() => TestTransformsFinalState();
 

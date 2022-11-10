@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Collections;
+using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Markup;
 using Windows.ApplicationModel.Resources;
@@ -17,6 +19,11 @@ namespace Uno.UI.Helpers
 	/// </summary>
 	public static class MarkupHelper
 	{
+		private static WeakAttachedDictionary<object, string>? _weakProperties;
+		
+		private static WeakAttachedDictionary<object, string> WeakProperties
+			=> _weakProperties ??= new();
+
 		/// <summary>
 		/// Sets the x:Uid member on a element implementing <see cref="IXUidProvider"/>
 		/// </summary>
@@ -81,5 +88,21 @@ namespace Uno.UI.Helpers
 				Name = propertyName,
 				Type = propertyType,
 			});
+
+		/// <summary>
+		/// Attaches a property to an object, using a weak reference.
+		/// </summary>
+		/// <remarks>This helper is mainly used for XAML Hot Reload</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void SetElementProperty<TInstance>(object target, string propertyName, TInstance value)
+			=> WeakProperties.SetValue(target, propertyName, value);
+
+		/// <summary>
+		/// Gets a property to an object, using a weak reference.
+		/// </summary>
+		/// <remarks>This helper is mainly used for XAML Hot Reload</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static TInstance? GetElementProperty<TInstance>(object target, string propertyName)
+			=> WeakProperties.GetValue<TInstance>(target, propertyName);
 	}
 }

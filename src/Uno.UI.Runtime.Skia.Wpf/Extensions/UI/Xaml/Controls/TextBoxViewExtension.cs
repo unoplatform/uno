@@ -9,6 +9,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
+using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 {
@@ -19,6 +20,8 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 		private WpfTextViewTextBox? _currentTextBoxInputWidget;
 		private System.Windows.Controls.PasswordBox? _currentPasswordBoxInputWidget;
+
+		private SerialDisposable _textChangedDisposable = new SerialDisposable();
 
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
@@ -70,7 +73,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 			UpdateNativeView();
 			SetTextNative(textBox.Text);
-
+			ObserveInputChanges();
 			InvalidateLayout();
 
 			if (_isPasswordBox && !_isPasswordRevealed)
@@ -85,6 +88,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 		public void EndEntry()
 		{
+			_textChangedDisposable.Disposable = null;
 			if (_currentTextBoxInputWidget is null)
 			{
 				// No entry is in progress.
@@ -231,7 +235,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		private WpfTextViewTextBox CreateInputControl()
 		{
 			var textView = new WpfTextViewTextBox();
-			textView.TextChanged += WpfTextViewTextChanged;
 			return textView;
 		}
 
@@ -241,8 +244,25 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			passwordBox.BorderBrush = System.Windows.Media.Brushes.Transparent;
 			passwordBox.Background = System.Windows.Media.Brushes.Transparent;
 			passwordBox.BorderThickness = new Thickness(0);
-			passwordBox.PasswordChanged += PasswordBoxViewPasswordChanged;
 			return passwordBox;
+		}
+
+		private void ObserveInputChanges()
+		{
+			_textChangedDisposable.Disposable = null;
+			CompositeDisposable disposable = new();
+			if (_currentTextBoxInputWidget is not null)
+			{
+				_currentTextBoxInputWidget.TextChanged += WpfTextViewTextChanged;
+				disposable.Add(Disposable.Create(() => _currentTextBoxInputWidget.TextChanged -= WpfTextViewTextChanged));
+			}
+
+			if (_currentPasswordBoxInputWidget is not null)
+			{
+				_currentPasswordBoxInputWidget.PasswordChanged += PasswordBoxViewPasswordChanged;
+				disposable.Add(Disposable.Create(() => _currentPasswordBoxInputWidget.PasswordChanged -= PasswordBoxViewPasswordChanged));
+			}
+			_textChangedDisposable.Disposable = disposable;
 		}
 
 		private void PasswordBoxViewPasswordChanged(object sender, System.Windows.RoutedEventArgs e)
