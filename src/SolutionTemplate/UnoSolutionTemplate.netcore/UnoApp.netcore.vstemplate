@@ -20,7 +20,9 @@
 	<PlatformTag>Windows</PlatformTag>
 	<PlatformTag>macOS</PlatformTag>
 	<PlatformTag>web</PlatformTag>
+	<PlatformTag>Cloud</PlatformTag>
 	<PlatformTag>Tizen</PlatformTag>
+	<PlatformTag>linux</PlatformTag>
 	<ProjectTypeTag>mobile</ProjectTypeTag>
 	<ProjectTypeTag>UWP</ProjectTypeTag>
 	<ProjectTypeTag>WebAssembly</ProjectTypeTag>
