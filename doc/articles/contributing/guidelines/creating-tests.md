@@ -47,6 +47,9 @@ A complete set of instructions for authoring UI tests is available [here](../../
 
 Although only a subset of the samples in the SamplesApp are covered by automated UI tests, _all_ samples are screen-shotted on every build, and a reporting tool (currently WASM-only) reports any screenshots that differ from the previous build. Currently the build isn't gated on these checks, but this may be adjusted in the future.
 
+> [!NOTE]
+> Platform runtime unit tests are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
+
 ### .NET Framework unit tests (`Uno.UI.Tests`)
 
 These are 'classic' unit tests which are built against a mocked version of the `Uno.UI` assembly targeting .NET Framework.
@@ -69,7 +72,7 @@ If you want to actually test that generated XAML produces correct behavior, whic
 
 ### Source generator tests
 
-These can be used to assert that a given input to a given source generator produces specific expected diagnostics. They infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`.UI.SourceGenerators.net6.Tests`](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators.net6.Tests).
+These can be used to assert that a given input to a given source generator produces specific expected diagnostics. They infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`.UI.SourceGenerators.netcoremobile.Tests`](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators.netcore.Tests).
 
 ### UI snapshot tests
 

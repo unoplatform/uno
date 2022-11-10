@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 		[DataRow(Stretch.UniformToFill, Inf, 100, 200, 100)]
 		[DataRow(Stretch.UniformToFill, Inf, 2000, 4000, 2000)]
 		[DataRow(Stretch.UniformToFill, Inf, Inf, 1000, 500)]
-		public async Task AdjustSize_Expected_Result(Stretch stretch, double availableWidth, double availableHeight, double expectedWidth, double expectedHeight)
+		public void AdjustSize_Expected_Result(Stretch stretch, double availableWidth, double availableHeight, double expectedWidth, double expectedHeight)
 		{
 			var imageNaturalSize = new Size(1000, 500);
 			var availableSize = new Size(availableWidth, availableHeight);
@@ -90,7 +90,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 		[DataRow(Stretch.UniformToFill, "cc", 500, 1000, 1000, 1000, 0, -500, 1000, 2000)]
 		[DataRow(Stretch.UniformToFill, "rb", 1000, 200, 100, 100, -400, 0, 500, 100)]
 		[DataRow(Stretch.UniformToFill, "rb", 200, 1000, 100, 100, 0, -400, 100, 500)]
-		public async Task MeasureSource_Expected_Result(
+		public void MeasureSource_Expected_Result(
 			Stretch stretch,
 			string alignment,
 			double imageNaturalWidth,

@@ -229,7 +229,6 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown += OnTextBoxKeyDown;
-				_textBox.LostFocus += OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -253,7 +252,6 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
-				_textBox.LostFocus -= OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -270,6 +268,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_popup.Closed -= OnPopupClosed;
 			}
+		}
+
+		protected override void OnLostFocus(RoutedEventArgs e)
+		{
+			IsSuggestionListOpen = false;
 		}
 
 		private void OnPopupClosed(object sender, object e)
@@ -314,7 +317,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			ChoseItem(e.ClickedItem);
-			SubmitSearch();
+			SubmitSearch(e.ClickedItem);
 		}
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
@@ -324,20 +327,15 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Query button clicked");
 			}
 
-			SubmitSearch();
+			SubmitSearch(_suggestionsList.SelectedItem);
 		}
 
-		private void SubmitSearch()
+		private void SubmitSearch(object item)
 	    {
-			var finalResult = _suggestionsList.SelectedItem ?? GetObjectText(Text);
+			var finalResult = item ?? GetObjectText(Text);
 
 			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
 
-			IsSuggestionListOpen = false;
-		}
-
-		private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
-		{
 			IsSuggestionListOpen = false;
 		}
 
@@ -350,7 +348,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Enter key pressed");
 				}
 
-				SubmitSearch();
+				SubmitSearch(_suggestionsList.SelectedItem);
 			}
 			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
 			{

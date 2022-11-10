@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,13 +27,24 @@ using AppKit;
 using Uno.UI;
 #endif
 
+[assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor))]
+
 namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
-	{
+	{	
 		private void ReloadFile(FileReload fileReload)
 		{
-			Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+			if (Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES") == "debug")
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($".NET Hot Reload is enabled, skipping XAML Reader reload");
+				}
+				return;
+			}
+
+			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
 			{
@@ -47,7 +59,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 					Application.RegisterComponent(uri, fileReload.Content);
 
-					foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
+					foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.BaseUri?.OriginalString))
 					{
 						switch (instance)
 						{
@@ -86,10 +98,10 @@ namespace Uno.UI.RemoteControl.HotReload
 			});
 		}
 
-		private IEnumerable<UIElement> EnumerateInstances(object instance, Uri baseUri)
+		private static IEnumerable<UIElement> EnumerateInstances(object instance, Func<FrameworkElement, bool> predicate)
 		{
 			if (
-				instance is FrameworkElement fe && baseUri.OriginalString == fe.BaseUri?.OriginalString)
+				instance is FrameworkElement fe && predicate(fe))
 			{
 				yield return fe;
 			}
@@ -102,24 +114,24 @@ namespace Uno.UI.RemoteControl.HotReload
 						case Panel panel:
 							foreach (var child in panel.Children)
 							{
-								yield return EnumerateInstances(child, baseUri);
+								yield return EnumerateInstances(child, predicate);
 							}
 							break;
-
+							
 						case Border border:
-							yield return EnumerateInstances(border.Child, baseUri);
+							yield return EnumerateInstances(border.Child, predicate);
 							break;
 
 						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
-							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, baseUri);
+							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, predicate);
 							break;
 
 						case Control control:
-							yield return EnumerateInstances(control.TemplatedRoot, baseUri);
+							yield return EnumerateInstances(control.TemplatedRoot, predicate);
 							break;
 
 						case ContentPresenter presenter:
-							yield return EnumerateInstances(presenter.Content, baseUri);
+							yield return EnumerateInstances(presenter.Content, predicate);
 							break;
 					}
 				}
@@ -162,7 +174,80 @@ namespace Uno.UI.RemoteControl.HotReload
 			if (oldView is Page oldPage && newView is Page newPage)
 			{
 				newPage.Frame = oldPage.Frame;
+
+				// If we've replaced the Page in its frame, we may need to
+				// swap the content property as well. If may be required
+				// if the frame is handled by a (native) FramePresenter.
+				newPage.Frame.Content = newPage;
 			}
+
+			if(newView.DataContext is null
+				&& oldView.DataContext is not null)
+			{
+				// If the DataContext is not provided by the page itself, it may
+				// have been provided by an external actor. Copy the value as is
+				// in the DataContext of the new element.
+
+				newView.DataContext = oldView.DataContext;
+			}
+		}
+		
+		private static void ProcessMetadataUpdate(Type[] updatedTypes)
+		{
+			foreach (var updatedType in updatedTypes)
+			{
+				if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(ClientHotReloadProcessor).Log().LogDebug($"Processing changed type [{updatedType}]");
+				}
+
+				if (updatedType.Is<UIElement>())
+				{
+					foreach (var instance in EnumerateInstances(Window.Current.Content, i => updatedType.IsInstanceOfType(i)))
+					{
+						if (instance.GetType().GetConstructor(Array.Empty<Type>()) is { })
+						{
+							if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Trace))
+							{
+								typeof(ClientHotReloadProcessor).Log().Trace($"Creating instance of type {instance.GetType()}");
+							}
+
+							var newInstance = Activator.CreateInstance(instance.GetType());
+
+							switch (instance)
+							{
+#if __IOS__
+								case UserControl userControl:
+									SwapViews(userControl, newInstance as UIKit.UIView);
+									break;
+#endif
+								case ContentControl content:
+									SwapViews(content, newInstance as ContentControl);
+									break;
+							}
+						}
+						else
+						{
+							if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Debug))
+							{
+								typeof(ClientHotReloadProcessor).Log().LogDebug($"Type [{updatedType}] has no parameterless constructor, skipping");
+							}
+						}
+					}
+				}
+				else
+				{
+					if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(ClientHotReloadProcessor).Log().LogDebug($"Type [{updatedType}] is not a UIElement, skipping");
+					}
+				}
+			}
+		}
+
+		public static void UpdateApplication(Type[] types)
+		{
+			ProcessMetadataUpdate(types);
 		}
 	}
 }

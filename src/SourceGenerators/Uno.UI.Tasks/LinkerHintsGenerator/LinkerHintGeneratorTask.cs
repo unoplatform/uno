@@ -139,7 +139,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				// As we're skipping unresolved symbols already, and that
 				// we do not need a functioning output, we can remove the assembly
 				// altogether.
-				.Where(r => !r.EndsWith("Java.Interop.dll"))
+				.Where(r => !r.EndsWith("Java.Interop.dll", StringComparison.Ordinal))
 				.Distinct()
 				.Select(r => $"-reference \"{r}\" "));
 
@@ -329,7 +329,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 				return
 					(unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
-						referencePath.StartsWith(unoUIPackageBasePath) ?
+						referencePath.StartsWith(unoUIPackageBasePath, StringComparison.Ordinal) ?
 							referencePath.Replace($"lib{separator}{runtimeTargetFramework}", $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}") :
 								referencePath;
 			}

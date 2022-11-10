@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -99,7 +100,7 @@ namespace Uno.UWPSyncGenerator
 						$": {type.EnumUnderlyingType.ToDisplayString()}" :
 							string.Empty;
 
-				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {kind.ToString().ToLower()} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {enumBaseType}{BuildInterfaces(type)}"))
+				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {kind.ToString().ToLower(CultureInfo.InvariantCulture)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {enumBaseType}{BuildInterfaces(type)}"))
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{

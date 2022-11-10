@@ -2,6 +2,7 @@
 using System.Globalization;
 using FluentAssertions;
 using NUnit.Framework;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -426,6 +427,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.FastTap("ClearSelectedItemButton");
 
 			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListViewItem_Click_Focus()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListViewItem_Click_Focus");
+
+			var clearButton = _app.Marked("ClearButton");
+			var outputTextBlock = _app.Marked("OutputTextBlock");
+			var listViewItem = _app.Marked("TestListViewItem");
+			
+			var listViewItemRect = listViewItem.FirstResult().Rect;
+			
+			_app.WaitForElement(clearButton);
+
+			_app.Tap(clearButton);
+
+			_app.DragCoordinates(listViewItemRect.CenterX, listViewItemRect.CenterY, listViewItemRect.CenterX, listViewItemRect.Bottom + 50);
+
+			Assert.AreNotEqual("F", outputTextBlock.GetText());
+
+			_app.Tap(listViewItem);
+			
+			Assert.AreEqual("F", outputTextBlock.GetText());
 		}
 
 		[Test]

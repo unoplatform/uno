@@ -35,6 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_progressPropertySet = new CompositionPropertySet(null);
 #endif
 			Loaded += OnLoaded;
+			Unloaded += OnIconUnloaded;
 
 			this.RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
 			this.RegisterPropertyChangedCallback(FlowDirectionProperty, OnFlowDirectionPropertyChanged);
@@ -77,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 #if HAS_UNO
-			// Uno specific: Called to ensure OnApplyTemplate runs
+			// Uno specific: Called to ensure OnApplyTemplate runs and Foreground is subscribed
 			EnsureInitialized();
 #endif
 
@@ -394,7 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 							foreach (var marker in markers)
 							{
 								string value = marker.Key;
-								if (value.IndexOf(fragment) > -1)
+								if (value.IndexOf(fragment, StringComparison.Ordinal) > -1)
 								{
 									m_lastAnimationSegmentStart = "";
 									m_lastAnimationSegmentEnd = marker.Key;

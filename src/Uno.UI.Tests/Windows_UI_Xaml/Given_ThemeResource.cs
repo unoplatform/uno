@@ -590,7 +590,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #endif
 
 		[TestMethod]
-		public async Task When_Direct_Assignment_Incompatible()
+		public void When_Direct_Assignment_Incompatible()
 		{
 			var page = new ThemeResource_Direct_Assignment_Incompatible_Page();
 			var transform = page.Resources["MyTransform"] as TranslateTransform;

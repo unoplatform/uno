@@ -7,6 +7,7 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Media;
 using CoreGraphics;
+using Uno.UI.Xaml.Media;
 #if __IOS__
 using UIKit;
 using _Image = UIKit.UIImage;
@@ -56,7 +57,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (backgroundImage == null)
 				{
-					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImage);
+					ImageData backgroundImageData = default;
+					if ((Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData) == true &&
+						backgroundImageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
+					{
+						backgroundImage = backgroundImageData.NativeImage;
+					}
 				}
 
 				if (_borderRenderer.UpdateLayer(this, Background, BackgroundSizing, BorderThickness, BorderBrush, CornerRadius, backgroundImage)

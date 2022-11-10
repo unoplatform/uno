@@ -468,7 +468,7 @@ namespace Windows.UI.Xaml
 			var executable = args[0];
 			var rawCmd = Environment.CommandLine;
 
-			var index = rawCmd.IndexOf(executable);
+			var index = rawCmd.IndexOf(executable, StringComparison.Ordinal);
 			if (index == 0)
 			{
 				rawCmd = rawCmd.Substring(executable.Length);

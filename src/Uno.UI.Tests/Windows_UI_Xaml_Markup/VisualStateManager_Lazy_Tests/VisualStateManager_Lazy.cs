@@ -125,7 +125,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 
 			Assert.AreEqual(ContentDialogButton.None, SUT.DefaultButton);
 
-			await ShowDialog(SUT);
+			ShowDialog(SUT);
 
 			Assert.IsNotNull(SUT.PrimaryButton);
 
@@ -151,10 +151,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 			Assert.AreEqual("0", SUT.testKeyFrame.Value);
 		}
 
-		private static async Task ShowDialog(MyContentDialog dialog)
+		private static void ShowDialog(MyContentDialog dialog)
 		{
 			dialog.ForceLoaded();
-			dialog.ShowAsync();
+			_ = dialog.ShowAsync();
 		}
 
 #if NETFX_CORE
@@ -163,7 +163,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 		private static Task WaitForIdle() => Task.CompletedTask;
 #endif
 
-		private static async Task<bool> SwapSystemTheme()
+		private static
+#if NETFX_CORE
+		async
+#endif
+		Task<bool> SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;
 			var targetTheme = currentTheme == ApplicationTheme.Light ?
@@ -182,7 +186,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 			Application.Current.SetExplicitRequestedTheme(targetTheme);
 #endif
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
+
+#if NETFX_CORE
 			return true;
+#else
+			return Task.FromResult(true);
+#endif
 		}
 	}
 

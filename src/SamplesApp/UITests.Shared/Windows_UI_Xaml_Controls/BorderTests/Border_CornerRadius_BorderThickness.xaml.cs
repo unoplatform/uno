@@ -17,143 +17,138 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 
 		public Thickness MyBorderThickness
 		{
-			get { return (Thickness)GetValue(MyBorderThicknessProperty); }
-			set { SetValue(MyBorderThicknessProperty, value); }
+			get => (Thickness)GetValue(MyBorderThicknessProperty);
+			set => SetValue(MyBorderThicknessProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MyBorderThicknessProperty =
-			DependencyProperty.Register("MyBorderThickness", typeof(Thickness), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(new Thickness(0, 0, 0, 0)));
-
-
+		public static DependencyProperty MyBorderThicknessProperty { get; } =
+			DependencyProperty.Register(nameof(MyBorderThickness), typeof(Thickness), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(new Thickness(0, 0, 0, 0)));
 
 		public CornerRadius MyCornerRadius
 		{
-			get { return (CornerRadius)GetValue(MyCornerRadiusProperty); }
-			set { SetValue(MyCornerRadiusProperty, value); }
+			get => (CornerRadius)GetValue(MyCornerRadiusProperty);
+			set => SetValue(MyCornerRadiusProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for MyCornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty MyCornerRadiusProperty =
-			DependencyProperty.Register("MyCornerRadius", typeof(CornerRadius), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(new CornerRadius(0, 0, 0, 0)));
-
-
+		public static DependencyProperty MyCornerRadiusProperty { get; } =
+			DependencyProperty.Register(nameof(MyCornerRadius), typeof(CornerRadius), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(new CornerRadius(0, 0, 0, 0)));
 
 		public bool LockCornerRadius
 		{
-			get { return (bool)GetValue(LockCornerRadiusProperty); }
-			set { SetValue(LockCornerRadiusProperty, value); }
+			get => (bool)GetValue(LockCornerRadiusProperty);
+			set => SetValue(LockCornerRadiusProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for LockCornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty LockCornerRadiusProperty =
-			DependencyProperty.Register("LockCornerRadius", typeof(bool), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(false, OnLockCornerRadiusChanged));
-
-
+		public static DependencyProperty LockCornerRadiusProperty { get; } =
+			DependencyProperty.Register(nameof(LockCornerRadius), typeof(bool), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(false, OnLockCornerRadiusChanged));
 
 		public bool LockBorderThickness
 		{
-			get { return (bool)GetValue(LockBorderThicknessProperty); }
-			set { SetValue(LockBorderThicknessProperty, value); }
+			get => (bool)GetValue(LockBorderThicknessProperty);
+			set => SetValue(LockBorderThicknessProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for LockBorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty LockBorderThicknessProperty =
-			DependencyProperty.Register("LockBorderThickness", typeof(bool), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(false, OnLockBorderThicknessChanged));
+		public static DependencyProperty LockBorderThicknessProperty { get; } =
+			DependencyProperty.Register(nameof(LockBorderThickness), typeof(bool), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(false, OnLockBorderThicknessChanged));
 
+		public bool LockSize
+		{
+			get => (bool)GetValue(LockSizeProperty);
+			set => SetValue(LockSizeProperty, value);
+		}
 
+		public static DependencyProperty LockSizeProperty { get; } =
+			DependencyProperty.Register(nameof(LockSize), typeof(bool), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(false, OnLockSizeChanged));
 
 		public int TopLeftCornerRadius
 		{
-			get { return (int)GetValue(TopLeftCornerRadiusProperty); }
-			set { SetValue(TopLeftCornerRadiusProperty, value); }
+			get => (int)GetValue(TopLeftCornerRadiusProperty);
+			set => SetValue(TopLeftCornerRadiusProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for TopLeftCornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TopLeftCornerRadiusProperty =
-			DependencyProperty.Register("TopLeftCornerRadius", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
+		public static DependencyProperty TopLeftCornerRadiusProperty { get; } =
+			DependencyProperty.Register(nameof(TopLeftCornerRadius), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
 
 		public int TopRightCornerRadius
 		{
-			get { return (int)GetValue(TopRightCornerRadiusProperty); }
-			set { SetValue(TopRightCornerRadiusProperty, value); }
+			get => (int)GetValue(TopRightCornerRadiusProperty);
+			set => SetValue(TopRightCornerRadiusProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for TopRightCornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TopRightCornerRadiusProperty =
-			DependencyProperty.Register("TopRightCornerRadius", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
-
-
+		public static DependencyProperty TopRightCornerRadiusProperty { get; } =
+			DependencyProperty.Register(nameof(TopRightCornerRadius), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
 
 		public int BottomRightCornerRadius
 		{
-			get { return (int)GetValue(BottomRightCornerRadiusProperty); }
-			set { SetValue(BottomRightCornerRadiusProperty, value); }
+			get => (int)GetValue(BottomRightCornerRadiusProperty);
+			set => SetValue(BottomRightCornerRadiusProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for BottomRightCornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BottomRightCornerRadiusProperty =
-			DependencyProperty.Register("BottomRightCornerRadius", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
-
-
+		public static DependencyProperty BottomRightCornerRadiusProperty { get; } =
+			DependencyProperty.Register(nameof(BottomRightCornerRadius), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
 
 		public int BottomLeftCornerRadius
 		{
-			get { return (int)GetValue(BottomLeftCornerRadiusProperty); }
-			set { SetValue(BottomLeftCornerRadiusProperty, value); }
+			get => (int)GetValue(BottomLeftCornerRadiusProperty);
+			set => SetValue(BottomLeftCornerRadiusProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for BottomLeftCornerRadius.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BottomLeftCornerRadiusProperty =
-			DependencyProperty.Register("BottomLeftCornerRadius", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
-
+		public static DependencyProperty BottomLeftCornerRadiusProperty { get; } =
+			DependencyProperty.Register(nameof(BottomLeftCornerRadius), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnCornerRadiusChanged));
 
 		public int LeftBorderThickness
 		{
-			get { return (int)GetValue(LeftBorderThicknessProperty); }
-			set { SetValue(LeftBorderThicknessProperty, value); }
+			get => (int)GetValue(LeftBorderThicknessProperty);
+			set => SetValue(LeftBorderThicknessProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for LeftBorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty LeftBorderThicknessProperty =
-			DependencyProperty.Register("LeftBorderThickness", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
-
-
+		public static DependencyProperty LeftBorderThicknessProperty { get; } =
+			DependencyProperty.Register(nameof(LeftBorderThickness), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
 
 		public int TopBorderThickness
 		{
-			get { return (int)GetValue(TopBorderThicknessProperty); }
-			set { SetValue(TopBorderThicknessProperty, value); }
+			get => (int)GetValue(TopBorderThicknessProperty);
+			set => SetValue(TopBorderThicknessProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for TopBorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty TopBorderThicknessProperty =
-			DependencyProperty.Register("TopBorderThickness", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
-
-
+		public static DependencyProperty TopBorderThicknessProperty { get; } =
+			DependencyProperty.Register(nameof(TopBorderThickness), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
 
 		public int RightBorderThickness
 		{
-			get { return (int)GetValue(RightBorderThicknessProperty); }
-			set { SetValue(RightBorderThicknessProperty, value); }
+			get => (int)GetValue(RightBorderThicknessProperty);
+			set => SetValue(RightBorderThicknessProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for RightBorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty RightBorderThicknessProperty =
-			DependencyProperty.Register("RightBorderThickness", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
-
-
+		public static DependencyProperty RightBorderThicknessProperty { get; } =
+			DependencyProperty.Register(nameof(RightBorderThickness), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
 
 		public int BottomBorderThickness
 		{
-			get { return (int)GetValue(BottomBorderThicknessProperty); }
-			set { SetValue(BottomBorderThicknessProperty, value); }
+			get => (int)GetValue(BottomBorderThicknessProperty);
+			set => SetValue(BottomBorderThicknessProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for BottomBorderThickness.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty BottomBorderThicknessProperty =
-			DependencyProperty.Register("BottomBorderThickness", typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
+		public static DependencyProperty BottomBorderThicknessProperty { get; } =
+			DependencyProperty.Register(nameof(BottomBorderThickness), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(0, OnBorderThicknessChanged));
 
+		public int ElementWidth
+		{
+			get => (int)GetValue(ElementWidthProperty);
+			set => SetValue(ElementWidthProperty, value);
+		}
+
+		public static DependencyProperty ElementWidthProperty { get; } =
+			DependencyProperty.Register(nameof(ElementWidth), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(200, OnElementSizeChanged));
+
+		public int ElementHeight
+		{
+			get => (int)GetValue(ElementHeightProperty);
+			set => SetValue(ElementHeightProperty, value);
+		}
+
+		public static DependencyProperty ElementHeightProperty { get; } =
+			DependencyProperty.Register(nameof(ElementHeight), typeof(int), typeof(Border_CornerRadius_BorderThickness), new PropertyMetadata(200, OnElementSizeChanged));
 
 		private static void OnCornerRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -172,8 +167,6 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 			}
 		}
 
-
-
 		private static void OnBorderThicknessChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			if (d is Border_CornerRadius_BorderThickness ctrl)
@@ -191,6 +184,18 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 			}
 		}
 
+		private static void OnElementSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			if (d is Border_CornerRadius_BorderThickness ctrl)
+			{
+				if (ctrl.LockSize)
+				{
+					var val = (int)e.NewValue;
+					ctrl.ElementHeight = ctrl.ElementWidth = val;
+				}
+			}
+		}
+
 		private static void OnLockCornerRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			if (d is Border_CornerRadius_BorderThickness ctrl)
@@ -199,7 +204,6 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 				{
 					var max = Math.Max(Math.Max(ctrl.TopLeftCornerRadius, ctrl.TopRightCornerRadius), Math.Max(ctrl.BottomLeftCornerRadius, ctrl.BottomRightCornerRadius));
 					ctrl.TopLeftCornerRadius = ctrl.TopRightCornerRadius = ctrl.BottomLeftCornerRadius = ctrl.BottomRightCornerRadius = max;
-
 				}
 			}
 		}
@@ -212,7 +216,18 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 				{
 					var max = Math.Max(Math.Max(ctrl.LeftBorderThickness, ctrl.TopBorderThickness), Math.Max(ctrl.RightBorderThickness, ctrl.BottomBorderThickness));
 					ctrl.LeftBorderThickness = ctrl.TopBorderThickness = ctrl.RightBorderThickness = ctrl.BottomBorderThickness = max;
+				}
+			}
+		}
 
+		private static void OnLockSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			if (d is Border_CornerRadius_BorderThickness ctrl)
+			{
+				if ((bool)e.NewValue)
+				{
+					var max = Math.Max(ctrl.ElementWidth, ctrl.ElementHeight);
+					ctrl.ElementWidth = ctrl.ElementHeight = max;
 				}
 			}
 		}

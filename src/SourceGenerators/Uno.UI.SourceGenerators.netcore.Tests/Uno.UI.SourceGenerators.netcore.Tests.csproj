@@ -1,0 +1,123 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+		<Using Include="FluentAssertions" />
+		<Using Include="FluentAssertions.Execution" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="**\*.xaml.cs" />
+		<None Include="**\*.xaml.cs" />
+
+		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" />
+		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0-preview-20221003-04" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="coverlet.collector" Version="3.2.0" />
+		<PackageReference Include="FluentAssertions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0-2.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.4.0-2.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0-2.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
+		<ProjectReference Include="..\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Windows_UI_Xaml_Controls\GridTests\Controls\Grid_Uses_Both_Syntaxes.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="Windows_UI_Xaml_Controls\GridTests\Controls\Grid_Uses_Both_Syntaxes.xaml.cs">
+	    <DependentUpon>Grid_Uses_Both_Syntaxes.xaml</DependentUpon>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="MetadataUpdateTests\Scenarios\**" />
+		<Page Remove="MetadataUpdateTests\Scenarios\**" />
+		<Content Include="MetadataUpdateTests\Scenarios\**" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add_Twice\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add_Twice\2\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add_Twice\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xLoad\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xLoad\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_xBind_Event_Add\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_xBind_Event_Add\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_Text_Change\0\p1\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_Text_Change\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_No_Update\0\p1\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_No_Update\1\p1\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	</ItemGroup>
+
+	<Import Project="..\Uno.UI.SourceGenerators.Tests.Shared\Uno.UI.SourceGenerators.Tests.Shared.projitems" Label="Shared" />
+
+</Project>

@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
+using Uno.UI.Xaml.Media;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -17,7 +18,19 @@ namespace Windows.UI.Xaml.Media
 	{
 		partial void InitFromResource(Uri uri)
 		{
-			WebUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
+			var path = uri.PathAndQuery.TrimStart("/");
+
+			if (uri.Host is { Length: > 0 } host)
+			{
+				path = host.ToLowerInvariant() + "/" + path;
+			}
+
+			AbsoluteUri = new Uri(path, UriKind.Relative);
+		}
+
+		partial void CleanupResource()
+		{
+			AbsoluteUri = null;
 		}
 
 		private protected async Task<ImageData> OpenFromStream(IRandomAccessStreamWithContentType stream, Action<ulong, ulong?>? progress, CancellationToken ct)
@@ -29,17 +42,13 @@ namespace Windows.UI.Xaml.Media
 
 				ReportImageLoaded();
 
-				return new ImageData
-				{
-					Kind = ImageDataKind.DataUri,
-					Value = "data:" + stream.ContentType + ";base64," + encodedBytes
-				};
+				return ImageData.FromDataUri("data:" + stream.ContentType + ";base64," + encodedBytes);
 			}
 			catch (Exception ex)
 			{
 				ReportImageFailed(ex.Message);
 
-				return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+				return ImageData.FromError(ex);
 			}
 		}
 

@@ -146,12 +146,12 @@ namespace Uno.Xaml
 			if (stringValue != null && stringValue != string.Empty)
 			{
 				// Remove wrapping single quotes.
-				if (stringValue.StartsWith("'") && stringValue.EndsWith("'"))
+				if (stringValue.StartsWith("'", StringComparison.Ordinal) && stringValue.EndsWith("'", StringComparison.Ordinal))
 				{
 					return stringValue.Trim(new[] { '\'' });
 				}
 				// Remove wrapping double quotes.
-				else if (stringValue.StartsWith("\"") && stringValue.EndsWith("\""))
+				else if (stringValue.StartsWith("\"", StringComparison.Ordinal) && stringValue.EndsWith("\"", StringComparison.Ordinal))
 				{
 					return stringValue.Trim(new[] { '\"' });
 				}
@@ -160,11 +160,11 @@ namespace Uno.Xaml
 			return stringValue;
 		}
 
-		private static bool IsValidMarkupExtension(string valueString) => valueString.StartsWith("{") && !valueString.StartsWith("{}");
+		private static bool IsValidMarkupExtension(string valueString) => valueString.StartsWith("{", StringComparison.Ordinal) && !valueString.StartsWith("{}", StringComparison.Ordinal);
 
 		static string UnescapeValue(string s)
 		{
-			if (s.StartsWith("{}"))
+			if (s.StartsWith("{}", StringComparison.Ordinal))
 			{
 				return s.Substring(2);
 			}

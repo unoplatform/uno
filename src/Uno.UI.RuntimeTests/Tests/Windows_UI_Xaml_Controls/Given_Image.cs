@@ -127,18 +127,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ImageSource_TargetNullValue();
 
 			var nameIsAppliedSource = SUT.NameIsApplied.Source as BitmapImage;
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("mypanel", nameIsAppliedSource.UriSource.ToString());
-#else
 			Assert.AreEqual("ms-appx:///mypanel", nameIsAppliedSource.UriSource.ToString());
-#endif
 
 			var targetNullValueSource = SUT.TargetNullValueIsApplied.Source as BitmapImage;
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
-#else
 			Assert.AreEqual("ms-appx:///Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
-#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Transitive_Asset_Loaded()
+		{
+			string url = "ms-appx://Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
+			var img = new Image();
+			var SUT = new BitmapImage(new Uri(url));
+			img.Source = SUT;
+
+			TestServices.WindowHelper.WindowContent = img;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(img.ActualHeight > 0);
 		}
 
 		[TestMethod]

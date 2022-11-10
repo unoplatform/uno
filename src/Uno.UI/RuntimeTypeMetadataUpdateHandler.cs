@@ -12,14 +12,7 @@ namespace Uno.UI
 	{
 		public static void ClearCache(Type[] types)
 		{
-			Windows.UI.Xaml.DependencyProperty.ClearRegistry();
 			DataBinding.BindingPropertyHelper.ClearCaches();
-		}
-
-		public static void UpdateApplication(Type[] types)
-		{
-			// Keep empty, both methods (ClearCache, UpdateApplication) are
-			// invoked in sequence.
 		}
 	}
 }

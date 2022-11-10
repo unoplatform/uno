@@ -2133,7 +2133,7 @@ namespace Windows.UI.Tests.Enterprise
 			await gotFocusEvent.WaitForDefault();
 
 			KeyboardHelper.Escape(secondaryItemsPresenter);
-			closedEvent.WaitForDefault();
+			await closedEvent.WaitForDefault();
 			await RunOnUIThread(() => VERIFY_IS_TRUE(expandButton.FocusState == FocusState.Keyboard));
 		}
 
@@ -5157,11 +5157,11 @@ namespace Windows.UI.Tests.Enterprise
 
 			if (openMethod == OpenMethod.Mouse)
 			{
-				ControlHelper.DoClickUsingAP(moreButton as Button);
+				await ControlHelper.DoClickUsingAP(moreButton as Button);
 			}
 			else if (openMethod == OpenMethod.Touch)
 			{
-				ControlHelper.DoClickUsingAP(moreButton as Button);
+				await ControlHelper.DoClickUsingAP(moreButton as Button);
 			}
 			else if (openMethod == OpenMethod.Keyboard)
 			{

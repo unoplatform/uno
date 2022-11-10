@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		private void ParseUriAndLauchMailto(Uri mailtoUri)
 		{
-			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
 				Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 				async (ct) =>
 				{

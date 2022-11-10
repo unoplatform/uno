@@ -148,7 +148,7 @@ internal class FontFamilyLoader
 			return; // already loading
 		}
 
-		LoadFontAsync();
+		_ = LoadFontAsync();
 	}
 
 	/// <summary>

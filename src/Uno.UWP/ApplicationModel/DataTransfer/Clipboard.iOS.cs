@@ -18,9 +18,9 @@ namespace Windows.ApplicationModel.DataTransfer
 				throw new ArgumentNullException(nameof(content));
 			}
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				() => SetContentAsync(content));
+				async () => await SetContentAsync(content));
 		}
 
 		internal static async Task SetContentAsync(DataPackage content)

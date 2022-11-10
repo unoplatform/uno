@@ -9,6 +9,8 @@
 		<UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
 	</ItemGroup>
 
+	<Import Project="uno.ui.tasks.assets.targets"/>
+
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
@@ -52,9 +54,14 @@
 	</Target>
 
 	<Target Name="UnoAssetsGeneration"
-				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
-				DependsOnTargets="ResolveProjectReferences"
-				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
+				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources"
+				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems"
+				Condition="
+				'$(DesignTimeBuild)' != 'true'
+				and '$(BuildingInsideUnoSourceGenerator)' == ''
+				and ('$(IsUnoHead)'=='true'
+					or '$(AndroidApplication)'=='true'
+					or '$(ProjectTypeGuids)'!='')">
 		<!-- Assets -->
 		<PropertyGroup>
 			<UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
@@ -62,7 +69,7 @@
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
-							ContentItems="@(Content)"
+							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							Condition="'$(XamarinProjectType)'!=''">
 			<Output TaskParameter="Assets"
@@ -150,11 +157,20 @@
 
 		<PropertyGroup>
 			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
-			<_UnoLinkerHintGeneratorILLinkerPath
-				Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0')) and '$(ILLinkTasksAssembly)'!=''"
-			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
 
-			<_UnoUIPackageBasePath Condition="'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI' or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'">%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
+			
+			<_UnoLinkerHintGeneratorILLinkerPath
+				Condition="'
+				$(TargetFrameworkIdentifier)'=='.NETCoreApp'
+				and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0'))
+				and '$(ILLinkTasksAssembly)'!=''"
+			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\$(MicrosoftNETBuildTasksTFM)</_UnoLinkerHintGeneratorILLinkerPath>
+
+			<_UnoUIPackageBasePath
+				Condition="
+					'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI'
+					or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'"
+				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
 		</PropertyGroup>
 
 		<LinkerHintGeneratorTask_v0

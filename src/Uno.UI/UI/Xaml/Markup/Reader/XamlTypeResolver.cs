@@ -310,7 +310,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				string getFullName()
 				{
-					if (!isKnownNamespace && type.PreferredXamlNamespace.StartsWith("using:"))
+					if (!isKnownNamespace && type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 					{
 						return type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
 					}
@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					var nsName = ns.Namespace.TrimStart("using:");
 
-					if (nsName.StartsWith("clr-namespace:"))
+					if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 					{
 						nsName = nsName.Split(new[] { ';' })[0].TrimStart("clr-namespace:");
 					}

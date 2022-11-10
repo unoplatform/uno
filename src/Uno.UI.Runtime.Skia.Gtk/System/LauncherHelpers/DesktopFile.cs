@@ -50,11 +50,11 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 				{
 					continue;
 				}
-				if (line.StartsWith("#"))
+				if (line.StartsWith("#", StringComparison.Ordinal))
 				{
 					continue;
 				}
-				if (line.StartsWith("[") && line.EndsWith("]"))
+				if (line.StartsWith("[", StringComparison.Ordinal) && line.EndsWith("]", StringComparison.Ordinal))
 				{
 					currentHeaderName = line.Substring(1, line.Length - 2);
 					if (!_groups.ContainsKey(currentHeaderName))

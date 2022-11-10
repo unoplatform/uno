@@ -14,6 +14,9 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 
   For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](../contributing/guidelines/creating-tests.md).
 
+> [!NOTE]
+> [Platform runtime unit tests](../contributing/guidelines/creating-tests.md) are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
+
 ## Running UI tests locally
 
 1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.

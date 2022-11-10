@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 				_currentRatio = args;
 			}
 
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				Visibility = Visibility.Visible;
 			});
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				Visibility = Visibility.Collapsed;
 			});

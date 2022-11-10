@@ -75,7 +75,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			Assert.AreEqual(2, callCounter);
 		}
 
-		private static async Task<bool> SwapSystemTheme()
+		private static void SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;
 			var targetTheme = currentTheme == ApplicationTheme.Light ?
@@ -84,7 +84,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			Application.Current.SetExplicitRequestedTheme(targetTheme);
 
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
-			return true;
 		}
 	}
 }

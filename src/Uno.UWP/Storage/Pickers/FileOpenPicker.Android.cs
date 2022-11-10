@@ -142,7 +142,7 @@ namespace Windows.Storage.Pickers
 				bool unknownExtensionPresent = false;
 
 				string oneExtension = oneExtensionForLoop;
-				if (oneExtension.StartsWith("."))
+				if (oneExtension.StartsWith(".", StringComparison.Ordinal))
 				{
 					// Supported format from UWP, e.g. ".jpg"
 					oneExtension = oneExtension.Substring(1);

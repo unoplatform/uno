@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace UnoXFQuickStart.Wasm
 {
-	public class Program
+	public sealed class Program
 	{
 		static int Main(string[] args)
 		{
@@ -24,7 +24,7 @@ namespace UnoXFQuickStart.Wasm
                     {
                         { "Uno", LogLevel.Warning },
                         { "Windows", LogLevel.Warning },
-					
+
 						// Generic Xaml events
 						// { "Windows.UI.Xaml", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
@@ -32,15 +32,15 @@ namespace UnoXFQuickStart.Wasm
 						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
 						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Setter", LogLevel.Debug },
-						   
+
 						// Layouter specific messages
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
-						   
+
 						// Binding related messages
 						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
-						   
+
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
 					}

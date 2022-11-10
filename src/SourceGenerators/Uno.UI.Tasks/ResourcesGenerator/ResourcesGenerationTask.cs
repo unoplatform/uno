@@ -47,7 +47,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 			{
 				GeneratedFiles = Resources
 					// TODO: Add support for other resources file names
-					.Where(resource => resource.ItemSpec?.EndsWith("resw") ?? false)
+					.Where(resource => resource.ItemSpec?.EndsWith("resw", StringComparison.Ordinal) ?? false)
 					// TODO: Merge duplicates (based on file name and qualifiers)
 					.SelectMany(GetResourcesForItem)
 					.Where(r => r != null)
@@ -108,11 +108,11 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 				if (Path.IsPathRooted(resource.ItemSpec))
 				{
 					string definingProjectDirectory = resource.GetMetadata("DefiningProjectDirectory");
-					if (resource.ItemSpec.StartsWith(definingProjectDirectory))
+					if (resource.ItemSpec.StartsWith(definingProjectDirectory, StringComparison.Ordinal))
 					{
 						return resource.ItemSpec.Replace(definingProjectDirectory, "");
 					}
-					else if (resource.ItemSpec.StartsWith(TargetProjectDirectory))
+					else if (resource.ItemSpec.StartsWith(TargetProjectDirectory, StringComparison.Ordinal))
 					{
 						return resource.ItemSpec.Replace(TargetProjectDirectory, "");
 					}

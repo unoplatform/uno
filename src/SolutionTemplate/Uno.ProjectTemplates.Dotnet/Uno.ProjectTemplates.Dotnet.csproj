@@ -102,36 +102,36 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\*.vstemplate" />
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\__*.png" />
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\obj\**" />
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\**\bin\**" />
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\Properties\**" />
-		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.csproj" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\*.vstemplate" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\__*.png" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\obj\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\bin\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\Properties\**" />
+		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\UnoSolutionTemplate.csproj" />
 
-		<_UnoAppnet6UWPTemplateFiles Include="..\UnoSolutionTemplate.net6\**" Exclude="@(_UnoAppnet6UWPTemplateFilesExclude)" />
+		<_UnoAppnet6UWPTemplateFiles Include="..\UnoSolutionTemplate.netcore\**" Exclude="@(_UnoAppnet6UWPTemplateFilesExclude)" />
 	</ItemGroup>
 	
 	<ItemGroup>
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\*.vstemplate" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\__*.png" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\obj\**" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\**\bin\**" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\Properties\**" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\*.vstemplate" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\__*.png" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\obj\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\bin\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\Properties\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj" />
 
-		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.net6\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\*.vstemplate" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\**\__*.png" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\obj\**" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\bin\**" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\Properties\**" />
-		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate\UnoLibraryTemplate.csproj" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\*.vstemplate" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\**\__*.png" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\obj\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\bin\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\Properties\**" />
+		<_UnoLibTemplateFilesExclude Include="..\UnoLibraryTemplate.netcore\UnoLibraryTemplate.netcore.csproj" />
 
-		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
+		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate.netcore\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -300,7 +300,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.json" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.json", "*.props" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{
@@ -415,7 +415,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.props" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{

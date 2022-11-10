@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				button = TreeHelper.GetVisualChildByName(dateTimePicker, "FlyoutButton") as Button;
 			});
 
-			ControlHelper.DoClickUsingTap(button);
+			await ControlHelper.DoClickUsingTap(button);
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}

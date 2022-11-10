@@ -9,7 +9,7 @@
 	<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 	<Version>255.255.255.255</Version>
 
-	<NoWarn>$(NoWarn);4014;VSX1000;NU1701</NoWarn>
+	<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 	<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
@@ -23,7 +23,9 @@
 	<NoWarn>$(NoWarn);0105</NoWarn>
   </PropertyGroup>
 
-  <!--
+	<Import Project="uno.mobile-cross-targeting-disable.props" Condition="'$(_UnoMobileCrossTargetingWasImported)'!='true'" />
+
+	<!--
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
@@ -62,7 +64,7 @@
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net6.0-maccatalyst'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net6.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
 
 	<!-- Remove Warnings about -->
@@ -108,15 +110,17 @@
 		Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
 
 	<PropertyGroup>
-	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-	  <_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-	  <_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+		<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+		<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+		<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+		<_overridePackageId>$(AssemblyName)</_overridePackageId>
+		<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('Uno.UI','Uno.WinUI'))</_overridePackageId>
+		<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+	  <_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 	</PropertyGroup>
 	<ItemGroup>
-	  <_OutputFiles Include="$(TargetDir)\*.*" />
-	  <_OutputRefFiles Include="$(TargetDir)\ref\*.*" />
+		<_OutputFiles Include="$(TargetDir)\*.*" />
+		<_OutputRefFiles Include="$(TargetDir)\ref\*.*" />
 	</ItemGroup>
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
@@ -139,8 +143,9 @@
       <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
       <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 	  <CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
+	  <CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('Uno.UI','Uno.WinUI'))</CommonOverridePackageId>
 	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 	</PropertyGroup>
 
 	<ItemGroup>

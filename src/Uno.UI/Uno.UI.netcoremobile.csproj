@@ -1,0 +1,228 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+
+		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI</AssemblyName>
+		<RootNamespace>Uno.UI</RootNamespace>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
+		<NoWarn>$(NoWarn);NU1701;1572;1587;419;1574;1711;1734;CS0105</NoWarn>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<Nullable>disable</Nullable>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+
+		<!-- Force the generation of upri files for Uno.UI self localization -->
+		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
+
+		<!-- Generate automation IDs in debug builds, use by UI tests. -->
+		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+
+		<!-- Disable WPF targets -->
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
+	</PropertyGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="'$(TargetFramework)'=='net461'">
+			<ItemGroup>
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
+			</ItemGroup>
+		</When>
+		<When Condition="'$(TargetFramework)'=='netstandard2.0'">
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
+
+				<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
+				<Page Remove="@(Page)" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
+
+				<!-- remove files included by msbuild extras -->
+				<Page Remove="@(Page)" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+
+	<ItemGroup>
+		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
+		<None Include="Mixins\Android\FrameworkElementMixins.g.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</None>
+		<None Include="Mixins\iOS\FrameworkElementMixins.g.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</None>
+		<None Include="Mixins\macOS\FrameworkElementMixins.g.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		</None>
+		<None Include="Resources\AboutResources.txt" />
+		<None Include="Resources\Values\Attrs.xml" />
+		<None Include="Resources\Values\Styles.xml" />
+		<None Include="Resources\IResourceRegistry.cs" />
+		<None Include="Resources\ResourceRegistry.cs" />
+		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="System.Memory" Version="4.5.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" Condition="'$(TargetPlatformIdentifier)' == 'android'">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.netcoremobile.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
+		  <LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
+		<!-- Remove the reference added automatically by msbuild extras -->
+		<Reference Remove="PresentationFramework" />
+		<Reference Remove="PresentationCore" />
+		<Reference Remove="WindowsBase" />
+		<Reference Remove="System.Xaml" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="UI\Xaml\Maps\Presenters\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PRIResource Include="**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<OutputItemType>Analyzer</OutputItemType>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Mixins\Android\BaseActivity.Callbacks.tt">
+	    <LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
+	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\iOS\FrameworkElementMixins.tt">
+	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
+	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
+
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+	<Target Name="GetTargetPath" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+	<Target Name="GetNativeManifest" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
+
+			<Reference Remove="@(_ReferenceToRemove)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+	<Import Project="MixinGeneration.targets" />
+	<Import Project="XamlMerge.targets" />
+
+</Project>

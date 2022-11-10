@@ -8,9 +8,9 @@ This article details the migration steps required to migrate from one version to
 
 The built-in `ElevatedView` control has undergone a visual unification, which means existing apps may experience slightly different shadow visuals, especially on Android, which now supports the full range of colors including opacity. If you encounter visual discrepancies, please tweak the `Elevation` and `ShadowColor` properties to fit your needs.
 
-### Uno 4.1
+### Uno Platform 4.1
 
-### Android 12 support
+#### Android 12 support
 Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
 
 Additionally, here are some specific hints about the migration to Android 12:
@@ -31,7 +31,7 @@ Additionally, here are some specific hints about the migration to Android 12:
 - The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the packages versions used by Uno Platform.
 
 
-### Uno 4.0
+### Uno Platform 4.0
 
 Uno 4.0 introduces a set of binary and source breaking changes required to align with the Windows App SDK 1.0.
 
@@ -58,7 +58,7 @@ To migrate your application to Uno 4.0:
   use one of the sub packages created to limit the number of transitive dependencies.
 - The `Uno.UI.DualScreen` package is now renamed as` Uno.UI.Foldable`
 
-### Uno 3.6 
+### Uno Platform 3.6 
 
 #### Optional upgrade for Microsoft.Extension.Logging
 
@@ -162,7 +162,7 @@ If your WebAssembly project is using the `netstandard2.0` TargetFramework, migra
 
 You may also want to apply the changes from the section above (logger updates) to benefits from the update to .NET 5.
 
-### Uno 2.x to Uno 3.0
+### Uno Platform 2.x to Uno 3.0
 
 Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code and configuration.
 

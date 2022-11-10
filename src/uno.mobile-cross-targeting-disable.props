@@ -1,0 +1,28 @@
+<Project ToolsVersion="15.0">
+
+	<PropertyGroup>
+		<_UnoMobileCrossTargetingWasImported>true</_UnoMobileCrossTargetingWasImported>
+	</PropertyGroup>
+
+	<!-- CI helper to split net6 and net7 builds and actually build on net6 the net6.0-* targets -->
+	<PropertyGroup Condition="'$(UnoDisableNet6Mobile)'=='true'">
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net6.0-ios','').Replace('net6.0-android','').Replace('net6.0-maccatalyst','').Replace('net6.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+
+		<!--
+		Results from property functions are escaped, causing itemgroup inclusion to be
+		done as a single string. Unescape restores `;` as a proper separator.
+		-->
+		<TargetFrameworks>$([MSBuild]::Unescape($(_UnoFilteredTargetFrameworks)))</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoDisableNet7Mobile)'=='true'">
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net7.0-ios','').Replace('net7.0-android','').Replace('net7.0-maccatalyst','').Replace('net7.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+
+		<!--
+		Results from property functions are escaped, causing itemgroup inclusion to be
+		done as a single string. Unescape restores `;` as a proper separator.
+		-->
+		<TargetFrameworks>$([MSBuild]::Unescape($(_UnoFilteredTargetFrameworks)))</TargetFrameworks>
+	</PropertyGroup>
+
+</Project>

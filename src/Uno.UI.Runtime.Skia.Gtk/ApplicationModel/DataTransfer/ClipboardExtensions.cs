@@ -164,7 +164,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
 				throw new ArgumentNullException(nameof(content));
 			}
 
-			CoreDispatcher.Main.RunAsync(
+			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
 				() => SetContentCore(content));
 		}

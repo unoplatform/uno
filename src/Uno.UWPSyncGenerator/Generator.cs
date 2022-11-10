@@ -84,23 +84,23 @@ namespace Uno.UWPSyncGenerator
 
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
-						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.WinUI")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Text")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Foundation")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Composition")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Dispatching")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Input")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Windowing")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.UI.Xaml.Hosting.HostingContract")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Web.WebView2.Core")
-						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
+						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.WinUI", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Foundation", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Windowing", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
+                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
+                          let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
 
@@ -151,13 +151,13 @@ namespace Uno.UWPSyncGenerator
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
 					where !SkipNamespace(targetType)
 					where targetType.DeclaredAccessibility == Accessibility.Public
-					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml") && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml"))
+					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml", StringComparison.Ordinal) && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal))
 					|| (
 						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
-						&& unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+						&& unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
 					)
-					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
-					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
+					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
 					group targetType by targetType.ContainingNamespace into namespaces
 					orderby namespaces.Key.MetadataName
 					select new
@@ -178,7 +178,7 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
 		{
-			if (namedTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("Microsoft.UI.Input.Experimental"))
+			if (namedTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("Microsoft.UI.Input.Experimental", StringComparison.Ordinal))
 			{
 				// Skip Microsoft.UI.Input.Experimental as it is not part of WinAppSDK desktop APIs
 				return true;
@@ -238,37 +238,37 @@ namespace Uno.UWPSyncGenerator
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
 #if !HAS_UNO_WINUI
-			else if (type.ContainingNamespace.ToString().StartsWith("Windows.UI.Composition")
+			else if (type.ContainingNamespace.ToString().StartsWith("Windows.UI.Composition", StringComparison.Ordinal)
 			)
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
 #else
 			else if (
-				type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
+				type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
 			)
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
-			else if (type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching")
+			else if (type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
 			)
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
 #endif
 			else if (
-				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml")
+				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
 #if HAS_UNO_WINUI
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Input")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.ApplicationModel.Resources")
-				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Web")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Web", StringComparison.Ordinal)
 #endif
 			)
 			{
@@ -406,7 +406,7 @@ namespace Uno.UWPSyncGenerator
 
 			private static bool IsGeneratedFile(string filePath)
 			{
-				if (filePath.EndsWith(".g.cs"))
+				if (filePath.EndsWith(".g.cs", StringComparison.Ordinal))
 				{
 					return true;
 				}
@@ -772,7 +772,7 @@ namespace Uno.UWPSyncGenerator
 				typeName = typeName.Replace($"__helper{typeRef.index}__", SanitizeType(typeRef.param));
 			}
 
-			if (typeName.StartsWith("System."))
+			if (typeName.StartsWith("System.", StringComparison.Ordinal))
 			{
 				typeName = "global::" + typeName;
 			}
@@ -1110,7 +1110,7 @@ namespace Uno.UWPSyncGenerator
 							{
 								var filteredName = method.Name.TrimStart("Get", StringComparison.Ordinal).TrimStart("Set", StringComparison.Ordinal);
 								var isAttachedPropertyMethod =
-									(method.Name.StartsWith("Get") || method.Name.StartsWith("Set"))
+									(method.Name.StartsWith("Get", StringComparison.Ordinal) || method.Name.StartsWith("Set", StringComparison.Ordinal))
 									&& method.IsStatic
 									&& type
 										.GetMembers(filteredName + "Property")
@@ -1122,12 +1122,12 @@ namespace Uno.UWPSyncGenerator
 								{
 									var instanceParamName = SanitizeParameter(method.Parameters.First().Name);
 
-									if (method.Name.StartsWith("Get"))
+									if (method.Name.StartsWith("Get", StringComparison.Ordinal))
 									{
 										b.AppendLineInvariant($"return ({SanitizeType(method.ReturnType)}){instanceParamName}.GetValue({filteredName}Property);");
 
 									}
-									else if (method.Name.StartsWith("Set"))
+									else if (method.Name.StartsWith("Set", StringComparison.Ordinal))
 									{
 										var valueParamName = SanitizeParameter(method.Parameters.ElementAt(1).Name);
 										b.AppendLineInvariant($"{instanceParamName}.SetValue({filteredName}Property, {valueParamName});");
@@ -1486,12 +1486,12 @@ namespace Uno.UWPSyncGenerator
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({allMembers.GenerateNotImplementedList()})]");
 
 						bool isDependencyPropertyDeclaration = property.IsStatic
-							&& property.Name.EndsWith("Property")
+							&& property.Name.EndsWith("Property", StringComparison.Ordinal)
 							&& SymbolEqualityComparer.Default.Equals(property.Type, _dependencyPropertySymbol);
 
 						if (isDependencyPropertyDeclaration)
 						{
-							var propertyName = property.Name.Substring(0, property.Name.LastIndexOf("Property"));
+							var propertyName = property.Name.Substring(0, property.Name.LastIndexOf("Property", StringComparison.Ordinal));
 
 							var getAttached = property.ContainingType.GetMembers("Get" + propertyName).OfType<IMethodSymbol>().FirstOrDefault();
 							var getLocal = property.ContainingType.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
@@ -1930,7 +1930,7 @@ namespace Uno.UWPSyncGenerator
 
 				// Ignore resource assemblies for now, we'll have to adjust this
 				// when adding globalization.
-				if (assembly.Name.EndsWith(".resources"))
+				if (assembly.Name.EndsWith(".resources", StringComparison.Ordinal))
 				{
 					return null;
 				}

@@ -10,6 +10,7 @@ using Uno.UI;
 using Uno.UI.UI.Xaml.Media;
 using static System.Double;
 using ObjCRuntime;
+using Uno.UI.Xaml.Media;
 
 #if __IOS__
 using _Color = UIKit.UIColor;
@@ -145,11 +146,13 @@ namespace Windows.UI.Xaml.Shapes
 
 		private bool TryCreateImageBrushLayers(ImageBrush imageBrush, CAShapeLayer fillMask, out CALayer imageContainerLayer)
 		{
-			if (imageBrush.ImageSource == null || !imageBrush.ImageSource.TryOpenSync(out var uiImage))
+			if (imageBrush.ImageSource == null || !imageBrush.ImageSource.TryOpenSync(out var imageData) || imageData.Kind != ImageDataKind.NativeImage)
 			{
 				imageContainerLayer = default;
 				return false;
 			}
+
+			var uiImage = imageData.NativeImage;
 
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			imageContainerLayer = new CALayer

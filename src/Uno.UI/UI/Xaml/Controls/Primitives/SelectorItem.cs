@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
 					await Task.Delay(delay);
 
@@ -315,8 +315,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			args.Handled = ShouldHandlePressed;
 
-			Focus(FocusState.Pointer);
-
 			base.OnPointerPressed(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);
 		}
@@ -324,6 +322,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
+			// Selector item focus should be triggered only when pointer is released.
+			Focus(FocusState.Pointer);
+
 			ManipulationUpdateKind update;
 			if (_canRaiseClickOnPointerRelease)
 			{

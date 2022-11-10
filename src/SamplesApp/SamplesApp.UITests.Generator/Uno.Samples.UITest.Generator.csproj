@@ -4,7 +4,6 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 	
 	<ItemGroup>

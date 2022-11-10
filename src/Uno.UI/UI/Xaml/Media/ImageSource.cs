@@ -1,18 +1,15 @@
-﻿using Uno.Extensions;
-using Uno.Foundation.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
-using System.Text;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Uno;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -25,6 +22,8 @@ namespace Windows.UI.Xaml.Media
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private protected static HttpClient _httpClient;
+		private protected ImageData _imageData;
 
 		public static class TraceProvider
 		{
@@ -87,7 +86,12 @@ namespace Windows.UI.Xaml.Media
 
 		internal static Uri TryCreateUriFromString(string url)
 		{
-			if (url.StartsWith("/"))
+			if (url is null)
+			{
+				return null;
+			}
+
+			if (url.StartsWith("/", StringComparison.Ordinal))
 			{
 				url = MsAppXScheme + "://" + url;
 			}
@@ -112,6 +116,10 @@ namespace Windows.UI.Xaml.Media
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
+			CleanupResource();
+			FilePath = null;
+			AbsoluteUri = null;
+
 			if (uri.IsLocalResource())
 			{
 				InitFromResource(uri);
@@ -129,7 +137,7 @@ namespace Windows.UI.Xaml.Media
 				InitFromFile(uri.PathAndQuery);
 			}
 
-			WebUri = uri;
+			AbsoluteUri = uri;
 		}
 
 		private void InitFromFile(string filePath)
@@ -139,13 +147,31 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri);
 
+		partial void CleanupResource();
+
 		public static implicit operator ImageSource(string url)
 		{
-			//This check is done in order to force a null to return if a empty string is passed.
-			return url.IsNullOrWhiteSpace() ? null : new BitmapImage(url);
+			var uri = TryCreateUriFromString(url);
+			return (ImageSource)uri;
 		}
 
-		public static implicit operator ImageSource(Uri uri) => new BitmapImage(uri);
+		public static implicit operator ImageSource(Uri uri)
+		{
+			if (uri is null)
+			{
+				return null;
+			}
+
+			if (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
+				uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+			{
+				return new SvgImageSource(uri);
+			}
+			else
+			{
+				return new BitmapImage(uri);
+			}
+		}
 
 		public static implicit operator ImageSource(Stream stream)
 		{
@@ -154,13 +180,17 @@ namespace Windows.UI.Xaml.Media
 
 		partial void DisposePartial();
 
-		public void Dispose() => DisposePartial();
+		public void Dispose()
+		{
+			UnloadImageData();
+			DisposePartial();
+		}
 
 		/// <summary>
 		/// Downloads an image from the provided Uri.
 		/// </summary>
 		/// <returns>n Uri containing a local path for the downloaded image.</returns>
-		private async Task<Uri> Download(CancellationToken ct, Uri uri)
+		internal async Task<Uri> Download(CancellationToken ct, Uri uri)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -177,15 +207,15 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private Uri _webUri;
+		private Uri _absoluteUri;
 
-		internal Uri WebUri
+		internal Uri AbsoluteUri
 		{
-			get { return _webUri; }
+			get => _absoluteUri;
 
 			private set
 			{
-				_webUri = value;
+				_absoluteUri = value;
 
 				if (value != null)
 				{
@@ -195,5 +225,29 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		partial void SetImageLoader();
+
+		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
+		{
+			_httpClient ??= new HttpClient();
+			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
+			return await response.Content.ReadAsStreamAsync();
+		}
+
+		internal void UnloadImageData()
+		{
+			UnloadImageDataPlatform();
+			UnloadImageSourceData();
+			_imageData = ImageData.Empty;
+		}
+
+		partial void UnloadImageDataPlatform();
+
+		/// <summary>
+		/// Override in concrete ImageSource implementations
+		/// to provide source-specific cleanup of image data.
+		/// </summary>
+		private protected virtual void UnloadImageSourceData()
+		{
+		}
 	}
 }

@@ -111,7 +111,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					else
 					{
 						var path = sourceUri?.PathAndQuery ?? "";
-						if (path.StartsWith("/"))
+						if (path.StartsWith("/", StringComparison.Ordinal))
 						{
 							path = path.Substring(1);
 						}

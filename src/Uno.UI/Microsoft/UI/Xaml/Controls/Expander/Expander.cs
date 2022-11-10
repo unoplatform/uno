@@ -25,9 +25,14 @@ namespace Microsoft.UI.Xaml.Controls
 			// Uno Doc: Not supported
 			//__RP_Marker_ClassById(RuntimeProfiler::ProfId_Expander);
 
-			SetDefaultStyleKey(this);
+			DefaultStyleKey = typeof(AnimatedIcon);
 
 			SetValue(TemplateSettingsProperty, new ExpanderTemplateSettings());
+
+#if HAS_UNO
+			Loaded += Expander_Loaded;
+			Unloaded += Expander_Unloaded;
+#endif
 		}
 
 		// IUIElement
@@ -222,5 +227,17 @@ namespace Microsoft.UI.Xaml.Controls
 				);
 			}
 		}
+
+#if HAS_UNO
+		private void Expander_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (_eventSubscriptions.Disposable is null)
+			{
+				OnApplyTemplate();
+			}
+		}
+
+		private void Expander_Unloaded(object sender, RoutedEventArgs e) => _eventSubscriptions.Disposable = null;
+#endif
 	}
 }

@@ -67,7 +67,7 @@ namespace Windows.Devices.Sensors
 			}
 			else
 			{
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					CalculateCurrentOrientation(orientation);
 				});

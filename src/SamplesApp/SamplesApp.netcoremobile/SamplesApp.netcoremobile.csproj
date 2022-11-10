@@ -1,0 +1,193 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
+		<SingleProject>true</SingleProject>
+
+		<OutputType>Exe</OutputType>
+		<AssemblyName>SamplesApp</AssemblyName>
+		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<IsUnoHead>true</IsUnoHead>
+		
+		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+
+		<!-- Override RuntimeIdentifir specifically for smaller builds -->
+		<RuntimeIdentifier Condition="'$(UnoSampleAppRuntimeIdentifiers)'!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
+		
+		<InvariantGlobalization Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">true</InvariantGlobalization>
+
+		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
+		<!-- <MtouchExtraArgs Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
+
+		<!--
+		Required for Catalyst nuget restore to revalidate
+		once transitive dependencies have been updated.
+		-->
+		<NoWarn>$(NoWarn);NU1703</NoWarn>
+
+		<!--
+		aab is the default packaging format in net6 API 31.
+		We need an APK for deployment on simulators.
+		-->
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Shows applied capabilities in a new VS project node -->
+		<ProjectCapability Include="DiagnoseCapabilities" />
+	</ItemGroup>
+
+	<Choose>
+
+		<When Condition="'$(TargetPlatformIdentifier)'=='ios'">
+			<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='ios'">
+				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+
+				<!-- See https://github.com/unoplatform/uno/issues/9430 for more details. -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
+
+				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+			</PropertyGroup>
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.4.0" />
+			</ItemGroup>
+		</When>
+
+		<When Condition="'$(TargetPlatformIdentifier)'=='maccatalyst'">
+			<PropertyGroup>
+				<!-- Configure the GC -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+
+				<!-- Required for unknown crash as of .NET 6 Mobile Preview 13 -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
+
+				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+			</PropertyGroup>
+		</When>
+	</Choose>
+
+
+	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='ios'">
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+	  <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
+
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='ios' or '$(TargetPlatformIdentifier)'=='maccatalyst'">
+		<PackageReference Include="Uno.Extensions.Logging.OSLog " Version="1.4.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
+		<AndroidAsset Include="Assets\sound.mp3" />
+		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
+		<AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
+		<AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
+		<AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
+		<AndroidAsset Include="Assets\Lottie\uno.json" />
+		<AndroidAsset Include="Assets\Lottie\LightBulb.json" />
+		<AndroidEnvironment Include="Android\environment.conf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Graph">
+			<Version>3.12.0</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Identity.Client">
+			<Version>4.15.0</Version>
+		</PackageReference>
+
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework)' == 'android'">
+		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'ios'">
+		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">
+		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'macos'">
+		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
+		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
+		
+		<!--
+		<ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.netcoremobile.csproj"/>
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.netcoremobile.csproj"/>
+		-->
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="MacOS\" />
+	  <Folder Include="Properties\" />
+	</ItemGroup>
+	
+
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+	
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+  <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
+
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\..\build\uno.winui.single-project.targets" />
+
+</Project>

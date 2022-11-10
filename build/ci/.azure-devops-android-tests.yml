@@ -4,10 +4,22 @@ parameters:
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
+  automatedTestsBuckets:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+
+  runtimeTestsGroups:
+    - 0
+    - 1
+    - 2
+
 jobs:
 
-- job: Android_Build_Net6_For_Tests
-  displayName: 'Build net6 Android UI Tests'
+- job: Android_Build_NetCoreMobile_For_Tests
+  displayName: 'Build .NET Mobile Android UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -23,20 +35,20 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet6-install-mac.yml
+  - template: templates/dotnet7-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile
-      dotnet publish -f net6.0-android -c Release -p:UnoSampleAppRuntimeIdentifiers=android-x64 -p:UnoUIDisableNet7Build=true
+      cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
+      dotnet publish -f net6.0-android -c Release -p:UnoSampleAppRuntimeIdentifiers=android-x64 -p:UnoTargetFrameworkOverride=net6.0-android -p:UnoUIDisableNet7Build=true /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Android samples app
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.net6mobile/bin/Release/net6.0-android/android-x64/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net6.0-android/android-x64/publish
       Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
@@ -47,7 +59,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-android-net6-build
+      ArtifactName: uitests-android-netcoremobile-build
       ArtifactType: Container
 
 - job: Android_Build_For_Tests
@@ -101,7 +113,7 @@ jobs:
   displayName: 'Run Android UI Tests'
   dependsOn:
   - Android_Build_For_Tests
-  - Android_Build_Net6_For_Tests
+  - Android_Build_NetCoreMobile_For_Tests
   - SamplesApp_UITests_Build
 
   timeoutInMinutes: 90
@@ -120,55 +132,29 @@ jobs:
       #  ANDROID_SIMULATOR_APILEVEL: 21
       #  UITEST_TEST_MODE_NAME: Automated
 
-      Android_9.0_Group_01:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 1 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270000'
+      ${{ each testBucket in parameters.automatedTestsBuckets }}:
+        Android_9.0_Group_${{ testBucket }}:
+          ANDROID_SIMULATOR_APILEVEL: 28
+          UITEST_TEST_MODE_NAME: Automated
+          UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
+          SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+          TARGETPLATFORM_NAME: xamarin
+          FAILBUILD_ON_FAILURE: true
+          ALLOW_RERUN: true
+          UITEST_TEST_TIMEOUT: '270000'
 
-      Android_9.0_Group_02:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 2 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270000'
-
-      Android_9.0_Group_03:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        UITEST_TEST_TIMEOUT: '270000'
-        ALLOW_RERUN: true
-
-      Android_9.0_Group_04:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 4 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        UITEST_TEST_TIMEOUT: '270000'
-        ALLOW_RERUN: true
-
-      Android_9.0_Group_05:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: Automated
-        UNO_UITEST_BUCKET_ID: 5 ## Note: Align with UNO_UITEST_BUCKET_COUNT
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        UITEST_TEST_TIMEOUT: '270000'
-        ALLOW_RERUN: true
+      ${{ each testGroup in parameters.runtimeTestsGroups }}:
+        Android_9.0_RuntimeTests_${{ testGroup }}:
+          ANDROID_SIMULATOR_APILEVEL: 28
+          UITEST_TEST_MODE_NAME: RuntimeTests
+          UNO_UITEST_BUCKET_ID: RuntimeTests
+          UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
+          UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+          SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+          TARGETPLATFORM_NAME: xamarin
+          FAILBUILD_ON_FAILURE: true
+          ALLOW_RERUN: false
+          UITEST_TEST_TIMEOUT: '2600000'
 
       Android_9.0_Snapshots:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -179,42 +165,6 @@ jobs:
         FAILBUILD_ON_FAILURE: true
         ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270000'
-
-      Android_9.0_RuntimeTests_00:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: false
-        UITEST_TEST_TIMEOUT: '2600000'
-
-      Android_9.0_RuntimeTests_01:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: false
-        UITEST_TEST_TIMEOUT: '2600000'
-
-      Android_9.0_RuntimeTests_02:
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
-        TARGETPLATFORM_NAME: xamarin
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: false
-        UITEST_TEST_TIMEOUT: '2600000'
 
       # Disabled because of layout instabilities: https://github.com/unoplatform/uno/issues/7996
       #

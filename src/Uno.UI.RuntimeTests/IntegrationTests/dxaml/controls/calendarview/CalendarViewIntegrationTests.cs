@@ -782,7 +782,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -793,7 +793,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -814,7 +814,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			helper.PrepareLoadedEvent();
+			await helper.PrepareLoadedEvent();
 			CalendarView cv = await helper.GetCalendarView();
 
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -822,7 +822,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			rootPanel = await CalendarHelper.CreateTestResources();
 
-			helper.PrepareCICEvent();
+			await helper.PrepareCICEvent();
 
 			var date = ConvertToDateTime(1, 2000, 2, 1, 1, 12, 0, 0, 0); // 2/1/2000 12:00:00 AM
 
@@ -852,7 +852,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await helper.WaitForLoaded();
 
-			helper.WaitForCICEvent();
+			await helper.WaitForCICEvent();
 
 			await helper.WaitForSelectedDatesChanged();
 
@@ -4952,7 +4952,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -4968,7 +4968,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -5024,7 +5024,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Year by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 
@@ -5039,7 +5039,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				LOG_OUTPUT("CalendarViewIntegrationTests: changing viewmode to Decade by using Tap.");
 
-				ControlHelper.DoClickUsingAP(headerButton);
+				await ControlHelper.DoClickUsingAP(headerButton);
 
 				await WindowHelper.WaitForIdle();
 

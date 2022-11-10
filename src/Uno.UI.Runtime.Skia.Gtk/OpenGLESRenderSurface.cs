@@ -48,7 +48,7 @@ namespace Uno.UI.Runtime.Skia
 				var isWSL2 = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
 					// https://github.com/microsoft/WSL/issues/423#issuecomment-844418910
 					&& File.Exists("/proc/sys/kernel/osrelease")
-					&& File.ReadAllText("/proc/sys/kernel/osrelease").Trim().EndsWith("WSL2");
+					&& File.ReadAllText("/proc/sys/kernel/osrelease").Trim().EndsWith("WSL2", StringComparison.Ordinal);
 
 				var isGDKGL_GLES = Environment.GetEnvironmentVariable("GDK_GL")?.Equals("gles", StringComparison.OrdinalIgnoreCase) ?? false;
 

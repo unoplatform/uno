@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -63,7 +64,7 @@ namespace Uno.UI.RemoteControl
 			}
 
 			RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
-			StartConnection();
+			_ = StartConnection();
 		}
 
 		private void RegisterProcessor(IRemoteControlProcessor processor)
@@ -76,7 +77,7 @@ namespace Uno.UI.RemoteControl
 			try
 			{
 #if __WASM__
-				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").ToLower() == "true";
+				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
 #else
 				const bool isHttps = false;
 #endif
@@ -100,7 +101,7 @@ namespace Uno.UI.RemoteControl
 						else if (port == 443)
 						{
 #if __WASM__
-							if (endpoint.EndsWith("gitpod.io"))
+							if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
 							{
 								var originParts = endpoint.Split('-');
 
@@ -185,7 +186,7 @@ namespace Uno.UI.RemoteControl
 						connection.cts.Cancel();
 						if (connection.task.Status == TaskStatus.RanToCompletion)
 						{
-							connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+							_ = connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
 						}
 					}
 
@@ -235,7 +236,7 @@ namespace Uno.UI.RemoteControl
 
 		private async Task ProcessMessages()
 		{
-			InitializeServerProcessors();
+			_ = InitializeServerProcessors();
 
 			foreach(var processor in _processors)
 			{
@@ -291,7 +292,7 @@ namespace Uno.UI.RemoteControl
 						this.Log().Trace($"Sending Keepalive frame");
 					}
 
-					SendMessage(keepAlive);
+					_ = SendMessage(keepAlive);
 				}
 				catch(Exception)
 				{

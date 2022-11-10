@@ -98,7 +98,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.net6.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.netcore.Tests" />
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
 	</ItemGroup>
 

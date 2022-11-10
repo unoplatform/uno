@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Collections.Generic;
 using Uno.Extensions;
-
+using Uno.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
 

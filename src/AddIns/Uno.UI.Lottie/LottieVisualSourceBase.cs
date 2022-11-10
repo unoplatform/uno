@@ -23,6 +23,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
+		private static HttpClient? _httpClient;
+
 		private AnimatedVisualPlayer? _player;
 
 		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
@@ -82,7 +84,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 
-#if !(__WASM__ || (__ANDROID__ && !NET6_0) || (__IOS__ && !NET6_0) || (__MACOS__ && !NET6_0) || HAS_SKOTTIE)
+#if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
 			throw new NotImplementedException();
@@ -296,9 +298,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
 		{
-			using var client = new HttpClient();
+			_httpClient ??= new HttpClient();
 
-			using var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
+			using var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
 
 			if (!response.IsSuccessStatusCode)
 			{

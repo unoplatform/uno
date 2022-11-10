@@ -1,15 +1,17 @@
-﻿namespace Windows.UI.Xaml.Media.Imaging
-{
-	public partial class SvgImageSourceFailedEventArgs
-	{
-#if __ANDROID__ || __IOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-#endif
-		public SvgImageSourceLoadStatus Status { get; }
+﻿namespace Windows.UI.Xaml.Media.Imaging;
 
-		internal SvgImageSourceFailedEventArgs(SvgImageSourceLoadStatus status)
-		{
-			Status = status;
-		}
+/// <summary>
+/// Provides event data for the SvgImageSource.OpenFailed event.
+/// </summary>
+public partial class SvgImageSourceFailedEventArgs
+{
+	internal SvgImageSourceFailedEventArgs(SvgImageSourceLoadStatus status)
+	{
+		Status = status;
 	}
+
+	/// <summary>
+	/// Gets a value that indicates the reason for the SVG loading failure.
+	/// </summary>
+	public SvgImageSourceLoadStatus Status { get; }
 }

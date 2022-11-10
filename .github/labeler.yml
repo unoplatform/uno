@@ -10,19 +10,10 @@ area/automation:
   - src/Uno.UI.Wasm.Tests/*
   - src/Uno.UI.Wasm.Tests/**/*
 
-area/android:
-  - src/Uno.UI.BindingHelper.Android/*
-  - src/Uno.UI.BindingHelper.Android/**/*
-  - '**/*.Android.cs'
-  - '**/*.android.cs'
-  - '**/*.droid.cs'
-
 area/build:
   - build/*
   - build/**/*
   - '**/*.yml'
-  - src/Uno.UI.AssemblyComparer/*
-  - src/Uno.UI.AssemblyComparer/**/*
   - src/Uno.UI.TestComparer/*
   - src/Uno.UI.TestComparer/**/*
 
@@ -32,25 +23,53 @@ area/code-generation:
 
 kind/documentation:
   - README.*
-  - docs/*
-  - docs/**/*
+  - doc/**
   - '**/*.md'
   - '**/*.MD'
   - '**/*.txt'
 
-area/ios:
-  - '**/*.iOS.cs'
-  - '**/*.ios.cs'
+area/skia:
+  - '**/*.skia.cs'
+  - src/Uno.UI.Runtime.Skia.Gtk/*
+  - src/Uno.UI.Runtime.Skia.Gtk/**/*
+  - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/*
+  - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
+  - src/Uno.UI.Runtime.Skia.Tizen/*
+  - src/Uno.UI.Runtime.Skia.Tizen/**/*
+  - src/Uno.UI.Runtime.Skia.Wpf/*
+  - src/Uno.UI.Runtime.Skia.Wpf/**/*
+  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
+  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
 
 area/solution-templates:
   - src/SolutionTemplate/*
   - src/SolutionTemplate/**/*
   - src/UnoItemTemplate/*
   - src/UnoItemTemplate/**/*
-
-area/wasm:
+  
+platform/android:
+  - src/Uno.UI.BindingHelper.Android/*
+  - src/Uno.UI.BindingHelper.Android/**/*
+  - '**/*.Android.cs'
+  - '**/*.Xamarin.cs'
+  
+platform/wasm:
   - '**/*.wasm.cs'
-  - '**/*.WASM.cs'
   - src/Uno.UI.Wasm/*
   - src/Uno.UI.Wasm/**/*
-  
+  - src/Uno.Foundation.Runtime.WebAssembly/*
+  - src/Uno.Foundation.Runtime.WebAssembly/**/*
+  - src/Uno.UI.Runtime.WebAssembly/*
+  - src/Uno.UI.Runtime.WebAssembly/**/*
+  - src/Uno.UI.Runtime.WebAssembly.Compatibility/*
+  - src/Uno.UI.Runtime.WebAssembly.Compatibility/**/*
+
+platform/ios:
+  - '**/*.iOS.cs'
+  - '**/*.iOSmacOS.cs'
+  - '**/*.Xamarin.cs'
+
+platform/macos:
+  - '**/*.macOS.cs'
+  - '**/*.iOSmacOS.cs'
+  - '**/*.Xamarin.cs'

@@ -4,11 +4,13 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Reference.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",
+      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Reference.csproj",
       "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.Reference.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators.netcore.Tests\\Uno.UI.SourceGenerators.netcore.Tests.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Reference.csproj",
