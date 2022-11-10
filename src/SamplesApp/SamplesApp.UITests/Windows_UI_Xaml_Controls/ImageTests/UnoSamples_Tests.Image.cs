@@ -413,7 +413,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void Image_Source_Nullify()
 		{
-			Run("Uno.UI.Samples.UITests.ImageTests.Image_Source_Nullify");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Source_Nullify");
 
 			var panel = _app.Marked("CompareGrid");
 			var loadButton = _app.Marked("LoadButton");
