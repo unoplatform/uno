@@ -65,7 +65,10 @@ namespace Windows.UI.Xaml.Controls
 			ViewCache = new BufferViewCache(this);
 			SetViewCacheExtension(ViewCache);
 
-			InitializeSnapHelper();
+			if (FeatureConfiguration.NativeListViewBase.UseNativeSnapHelper)
+			{
+				InitializeSnapHelper();
+			}
 
 			_shouldRecalibrateFlingVelocity = (int)Android.OS.Build.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
 
