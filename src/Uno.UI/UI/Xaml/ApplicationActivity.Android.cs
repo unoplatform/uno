@@ -21,6 +21,7 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -102,6 +103,44 @@ namespace Windows.UI.Xaml
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
 			var handled = false;
+			
+			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
+
+			var args = new KeyEventArgs(
+				"keyboard",
+				virtualKey,
+				new CorePhysicalKeyStatus
+				{
+					ScanCode = (uint)e.KeyCode,
+					RepeatCount = 1,
+				});
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"PressesBegan: {e.KeyCode} -> {virtualKey}");
+			}
+
+			try
+			{
+				if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
+				{
+					ownerEvents.RaiseKeyDown(args);
+
+					var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+					{
+						CanBubbleNatively = false
+					};
+
+					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
+
+					handled = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
+			}
+			
 			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
 			{
 				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
