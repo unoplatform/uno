@@ -14,7 +14,10 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 using System.Windows.Input;
+using Uno.UI.Common;
+using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
@@ -24,51 +27,51 @@ public sealed partial class Image_Source_Nullify : Page
 	public Image_Source_Nullify()
 	{
 		this.InitializeComponent();
+		DataContextChanged += Image_Source_Nullify_DataContextChanged;
 	}
+
+	private void Image_Source_Nullify_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+	{
+		ViewModel = (ImageSourceNullifyViewModel)args.NewValue;
+	}
+
+	internal ImageSourceNullifyViewModel ViewModel { get; set; }
 }
 
-public class ImageSourceNullifyViewModel : ViewModelBase
+internal class ImageSourceNullifyViewModel : ViewModelBase
 {
-	private ICommand clearImageCommand;
+	private ImageSource _testImageSource;
 
-	private ICommand loadImageCommand;
-
-	private ImageSource testImageSource;
-
-	public ImageSourceNullifyViewModel(Dispatcher )
+	public ImageSourceNullifyViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 	{
-		this.LoadImageCommand = new RelayCommand(async () =>
+		LoadImageCommand = new DelegateCommand(() =>
 		{
-			this.TestImageSource = new BitmapImage(new Uri("ms-appx:///Assets/ingredient1.png"));
+			TestImageSource = new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
 		});
 
-		this.ClearImageCommand = new DelegateCommand(() =>
+		ClearImageCommand = new DelegateCommand(() =>
 		{
-			this.TestImageSource = null;
+			TestImageSource = null;
 		});
 	}
 
 	/// <summary> Gets or sets the clear image command. </summary>
 	/// <value> The clear image command. </value>
-	public ICommand ClearImageCommand
-	{
-		get => this.clearImageCommand;
-		private set => this.SetProperty(ref this.clearImageCommand, value);
-	}
+	public ICommand ClearImageCommand { get; }
 
 	/// <summary> Gets or sets the load image command. </summary>
 	/// <value> The load image command. </value>
-	public ICommand LoadImageCommand
-	{
-		get => this.loadImageCommand;
-		private set => this.SetProperty(ref this.loadImageCommand, value);
-	}
+	public ICommand LoadImageCommand { get; }
 
 	/// <summary> Gets or sets the test image source. </summary>
 	/// <value> The test image source. </value>
 	public ImageSource TestImageSource
 	{
-		get => this.testImageSource;
-		private set => this.SetProperty(ref this.testImageSource, value);
+		get => _testImageSource;
+		private set
+		{
+			_testImageSource = value;
+			RaisePropertyChanged();
+		}
 	}
 }

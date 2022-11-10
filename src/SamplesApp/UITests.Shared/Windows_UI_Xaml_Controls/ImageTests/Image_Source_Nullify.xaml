@@ -8,19 +8,26 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid RowSpacing="8" Padding="8">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
 		<Button
+			x:Name="ClearButton"
             Grid.Row="0"
             HorizontalAlignment="Left"
             Command="{x:Bind ViewModel.ClearImageCommand, Mode=OneWay}"
             Content="Clear Image" />
 		<Button
+			x:Name="LoadButton"
             Grid.Row="1"
             HorizontalAlignment="Left"
             Command="{x:Bind ViewModel.LoadImageCommand, Mode=OneWay}"
             Content="Load Image" />
-		<Image 
-            Grid.Row="2"
-            Source="{x:Bind ViewModel.TestImageSource, Mode=OneWay}" />
+		<Grid Grid.Row="2" Background="White" x:Name="CompareGrid" Width="100" Height="100" Padding="8">
+			<Image Stretch="Fill" Source="{x:Bind ViewModel.TestImageSource, Mode=OneWay}" />
+		</Grid>
 	</Grid>
 </Page>
