@@ -124,14 +124,24 @@ namespace Windows.UI.Xaml
 			{
 				if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
 				{
-					ownerEvents.RaiseKeyDown(args);
-
-					var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+					if (e.Action == KeyEventActions.Down)
 					{
-						CanBubbleNatively = false
-					};
+						ownerEvents.RaiseKeyDown(args);
+					}
 
-					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
+					if (FocusManager.GetFocusedElement() is FrameworkElement element)
+					{
+						var routedArgs = new KeyRoutedEventArgs(this, virtualKey)
+						{
+							CanBubbleNatively = false
+						};
+
+						RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
+							UIElement.KeyDownEvent :
+							UIElement.KeyUpEvent;
+							
+						element?.RaiseEvent(routedEvent, routedArgs);
+					}
 
 					handled = true;
 				}
