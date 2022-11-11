@@ -124,10 +124,12 @@ namespace Windows.UI.Xaml.Shapes
 				}
 
 				// This needs to be adjusted if multiple UI threads are used in the future for multi-window
-				cornerRadius.GetRadii(ref _outerRadiiStore, new Size(area.Width, area.Height), borderThickness, true);
-				cornerRadius.GetRadii(ref _innerRadiiStore, new Size(area.Width, area.Height), borderThickness, false);
+				var outerRadii = cornerRadius.GetRadii(new Size(area.Width, area.Height), borderThickness, true);
+				outerRadii.GetRadii(_outerRadiiStore);
+				var innerRadii = cornerRadius.GetRadii(new Size(area.Width, area.Height), borderThickness, false);
+				innerRadii.GetRadii(_innerRadiiStore);
 
-				var borderPath = GetRoundedRect(_outerRadiiStore, _innerRadiiStore, borderThickness, area, adjustedArea);
+				var borderPath = GetRoundedRectCompositionPath(_outerRadiiStore, _innerRadiiStore, area, adjustedArea);
 
 				var backgroundPath = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge ?
 					GetRoundedPath(adjustedArea.ToSKRect(), _innerRadiiStore) :
@@ -315,29 +317,33 @@ namespace Windows.UI.Xaml.Shapes
 			return backgroundArea;
 		}
 
-		/// <summary>
-		/// Creates a rounded-rectangle path from the nominated bounds and corner radius.
-		/// </summary>
+
 		private static CompositionPath GetRoundedPath(SKRect area, SKPoint[] radii, SkiaGeometrySource2D geometrySource = null)
 		{
 			geometrySource ??= new SkiaGeometrySource2D();
 			var geometry = geometrySource.Geometry;
 
-			var roundRect = new SKRoundRect();
-			roundRect.SetRectRadii(area, radii);
+			var roundRect = CreateRoundRect(area, radii);
 			geometry.AddRoundRect(roundRect);
 			geometry.Close();
 
 			return new CompositionPath(geometrySource);
+		}
+
+		private static SKRoundRect CreateRoundRect(SKRect area, SKPoint[] radii)
+		{
+			var roundRect = new SKRoundRect();
+			roundRect.SetRectRadii(area, radii);
+			return roundRect;
 		}		
 
-		private static CompositionPath GetRoundedRect(SKPoint[] outerRadii, SKPoint[] innerRadii, Thickness borderThickness, Rect area, Rect insetArea)
+		private static CompositionPath GetRoundedRectCompositionPath(SKPoint[] outerRadii, SKPoint[] innerRadii, Rect area, Rect insetArea)
 		{
 			var geometrySource = new SkiaGeometrySource2D();
-
 			GetRoundedPath(area.ToSKRect(), outerRadii, geometrySource);
 			GetRoundedPath(insetArea.ToSKRect(), innerRadii, geometrySource);
 			geometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
+			
 			return new CompositionPath(geometrySource);
 		}
 
