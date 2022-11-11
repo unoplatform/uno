@@ -18,6 +18,7 @@ namespace SampleControl.Entities
 		public string Description { get; set; }
 		public bool IgnoreInSnapshotTests { get; internal set; }
 		public bool IsManualTest { get; internal set; }
+		public bool UsesFrame { get; internal set; }
 
 		bool _isFavorite;
 		public bool IsFavorite
