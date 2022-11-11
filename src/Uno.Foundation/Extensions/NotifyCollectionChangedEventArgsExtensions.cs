@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 using Windows.Foundation.Collections;
 
 namespace Uno.Extensions;
