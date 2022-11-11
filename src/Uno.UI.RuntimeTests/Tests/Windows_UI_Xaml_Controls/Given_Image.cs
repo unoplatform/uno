@@ -8,12 +8,17 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -163,6 +168,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
 			Assert.IsTrue(img.ActualHeight > 0);			
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
+		public async Task When_Image_Source_Nullify()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var parent = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.White)
+			};
+			
+			var SUT = new Image()
+			{
+				Width = 100,
+				Height = 100,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png")),
+				Stretch = Stretch.Fill
+			};
+
+			parent.Child = SUT;
+			WindowHelper.WindowContent = parent;
+			await WindowHelper.WaitForLoaded(parent);
+			var result = await TakeScreenshot(parent);
+						
+			var sample = SUT.GetRelativeCoords(parent);
+			var centerX = sample.X + sample.Width / 2;
+			var centerY = sample.Y + sample.Height / 2;
+
+			ImageAssert.HasPixels(
+				result,
+				ExpectedPixels.At(centerX, centerY).Named("center with image").Pixel(Colors.Blue));
+
+			SUT.Source = null;
+			await WindowHelper.WaitForIdle();
+			result = await TakeScreenshot(parent);
+
+			ImageAssert.HasPixels(
+				result,
+				ExpectedPixels.At(centerX, centerY).Named("center without image").Pixel(Colors.White));
+		}
+
+		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+		{
+			var renderer = new RenderTargetBitmap();
+			await WindowHelper.WaitForIdle();
+			await renderer.RenderAsync(SUT);
+			var result = await RawBitmap.From(renderer, SUT);
+			await WindowHelper.WaitForIdle();
+			return result;
 		}
 	}
 }

@@ -408,6 +408,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreEqual(afterHide, beforeHide, originalRect, tolerance: PixelTolerance.Exclusive(1));
 		}
 
+		// Can be removed when #10340 is done (in favor of When_Image_Source_Nullify runtime test).
+		[Test]
+		[AutoRetry]
+		public void Image_Source_Nullify()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Source_Nullify");
+
+			var panel = _app.Marked("CompareGrid");
+			var loadButton = _app.Marked("LoadButton");
+			var clearButton = _app.Marked("ClearButton");
+
+			var physicalRect = _app.GetPhysicalRect(panel);
+
+			using var beforeLoad = TakeScreenshot("image_source_nullify_empty");
+
+			loadButton.FastTap();
+
+			using var afterLoad = TakeScreenshot("image_source_nullify_loaded");
+
+			ImageAssert.AreNotEqual(beforeLoad, afterLoad, physicalRect);
+
+			clearButton.FastTap();
+			
+			using var afterClear = TakeScreenshot("image_source_nullify_cleared");
+
+			ImageAssert.AreEqual(beforeLoad, afterClear, physicalRect, tolerance: PixelTolerance.Exclusive(1));
+		}
+
 		private void WaitForBitmapOrSvgLoaded()
 		{
 			var isLoaded = _app.Marked("isLoaded");
