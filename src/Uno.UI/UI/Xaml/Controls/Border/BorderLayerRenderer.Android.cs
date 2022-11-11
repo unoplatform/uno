@@ -28,6 +28,8 @@ namespace Windows.UI.Xaml.Controls
 		private LayoutState _currentState;
 
 		private readonly SerialDisposable _layerDisposable = new SerialDisposable();
+		private static readonly float[] _outerRadiiStore = new float[8];
+		private static readonly float[] _innerRadiiStore = new float[8];
 
 		/// <summary>
 		/// Updates or creates a sublayer to render a border-like shape.
@@ -129,8 +131,14 @@ namespace Windows.UI.Xaml.Controls
 					drawArea.Width += fra.Width;
 				}
 
-				using (var backgroundPath = cornerRadius.GetInnerOutlinePath(adjustedArea.ToRectF(), borderThickness))
+				var outerRadii = cornerRadius.GetRadii(new Windows.Foundation.Size(drawArea.Width, drawArea.Height), borderThickness, true);
+				outerRadii.GetRadii(_outerRadiiStore);
+				var innerRadii = cornerRadius.GetRadii(new Windows.Foundation.Size(drawArea.Width, drawArea.Height), borderThickness, false);
+				innerRadii.GetRadii(_innerRadiiStore);
+
+				using (var backgroundPath = new Path())
 				{
+					backgroundPath.AddRoundRect(adjustedArea.ToRectF(), _innerRadiiStore, Path.Direction.Cw);
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
 					{
@@ -160,10 +168,14 @@ namespace Windows.UI.Xaml.Controls
 						// Related Issue: https://github.com/unoplatform/uno/issues/6893
 						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
 						{
-							//Create the path for the outer and inner rectangles that will become our border shape
-							var borderPath = cornerRadius.GetOutlinePath(drawArea.ToRectF());
-							borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetInnerRadii(borderThickness), Path.Direction.Cw);
+							//Create the path for the outer and inner rectangles that will become our border shape							
+							using var borderPath = new Path();
 
+							borderPath.AddRoundRect(drawArea, _outerRadiiStore, Path.Direction.Cw);
+							borderPath.AddRoundRect(adjustedArea, _innerRadiiStore, Path.Direction.Cw);
+							//Create the path for the outer and inner rectangles that will become our border shape
+							//var borderPath = cornerRadius.GetOutlinePath(drawArea.ToRectF());
+							//borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetInnerRadii(borderThickness), Path.Direction.Cw);
 							var overlay = GetOverlayDrawable(
 								strokePaint,
 								physicalBorderThickness,
