@@ -385,32 +385,22 @@ namespace Windows.UI.Xaml.Controls
 						// it doesn't matter so do it for consistency.
 						snapPoint *= zoomFactor;
 
-						var alignedSnapPoint = alignment switch
+						// Adjust snap point to relative(near/center/far) viewport offset, and then
+						// clamp it within valid scroll range.
+						var adjustedOffset = alignment switch
 						{
 							SnapPointsAlignment.Near => snapPoint,
 							SnapPointsAlignment.Center => (float)(snapPoint - viewportDimension / 2),
 							SnapPointsAlignment.Far => (float)(snapPoint - viewportDimension),
 							_ => throw new IndexOutOfRangeException("alignment")
 						};
+						var clampedOffset = (float)Math.Max(0, Math.Min(adjustedOffset, ScrollableWidth));
 
-						var distanceFromFarEdge = (float)(extentDimension - viewportDimension - alignedSnapPoint);
-
-						// With certain scale factors and resolutions the snap points sometimes get pushed out of bounds
-						// by rounding errors, in these cases we need to intervene and return them to the boundary.
-						if (distanceFromFarEdge < 0 &&
-						    distanceFromFarEdge >= (-1.0 * (ScrollViewerSnapPointLocationTolerance * Math.Max(1.0f, zoomFactor))))
+						if (staticZoomFactor == 1.0f)
 						{
-							alignedSnapPoint = (float)(extentDimension - viewportDimension);
-							distanceFromFarEdge = 0;
+							clampedOffset /= zoomFactor;
 						}
-						if (alignedSnapPoint >= 0 && distanceFromFarEdge >= 0)
-						{
-							if (staticZoomFactor == 1.0f)
-							{
-								alignedSnapPoint /= zoomFactor;
-							}
-							result.Add(alignedSnapPoint);
-						}
+						result.Add(clampedOffset);
 					}
 				}
 			}
