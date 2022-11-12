@@ -1,18 +1,17 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation
+namespace Windows.Foundation;
+
+/// <summary>
+/// Enables arbitrary enumerations, structures, and delegate types to be used as an array of property values. You can't implement this interface, see Remarks.
+/// </summary>
+/// <remarks>
+/// You can't implement the IReferenceArray interface or include it in a signature. IReferenceArray is mainly an internal implementation detail
+/// of how the Windows Runtime implements boxing and nullable values.
+/// </remarks>
+/// <typeparam name="T">Item type.</typeparam>
+public partial interface IReferenceArray<T> : IPropertyValue
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial interface IReferenceArray<T> : global::Windows.Foundation.IPropertyValue
-	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		T[] Value
-		{
-			get;
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.IReferenceArray<T>.Value.get
-	}
+	/// <summary>
+	/// Gets the type that is represented as an IPropertyValue array.
+	/// </summary>
+	T[] Value { get; }
 }

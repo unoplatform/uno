@@ -1,6 +1,11 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation
-{
-	// Skipping already declared delegate Windows.Foundation.AsyncActionProgressHandler<TProgress>
-}
+using System.Runtime.InteropServices;
+
+namespace Windows.Foundation;
+
+/// <summary>
+/// Represents a method that handles progress update events of an asynchronous action that provides progress updates.
+/// </summary>
+/// <typeparam name="TProgress">Progress data type.</typeparam>
+/// <param name="asyncInfo">The asynchronous action.</param>
+/// <param name="progressInfo">The progress information.</param>
+public delegate void AsyncActionProgressHandler<TProgress>([In] IAsyncActionWithProgress<TProgress> asyncInfo, [In] TProgress progressInfo);

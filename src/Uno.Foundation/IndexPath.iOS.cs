@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Foundation;
 
-namespace Uno.UI
+namespace Uno.UI;
+
+/// <summary>
+/// An index to an entry in a grouped items source.
+/// </summary>
+public partial struct IndexPath
 {
-	/// <summary>
-	/// An index to an entry in a grouped items source.
-	/// </summary>
-	public partial struct IndexPath
-	{
-		internal static IndexPath FromNSIndexPath(global::Foundation.NSIndexPath indexPath)
-		{
-			return new IndexPath(indexPath.Row, indexPath.Section);
-		}
-	}
+    internal static IndexPath FromNSIndexPath(NSIndexPath indexPath) => new IndexPath(indexPath.Row, indexPath.Section);
 }

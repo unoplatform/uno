@@ -1,48 +1,47 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Uno.UI.Common
+namespace Uno.UI.Common;
+
+public class DelegateCommand<T> : ICommand
 {
-	public class DelegateCommand<T> : ICommand
+	private Action<T> _action;
+	private bool _canExecuteEnabled = true;
+
+	public event EventHandler CanExecuteChanged;
+
+	public DelegateCommand(Action<T> action)
 	{
-		private Action<T> _action;
-		private bool _canExecuteEnabled = true;
+		_action = action;
+	}
 
-		public event EventHandler CanExecuteChanged;
+	public bool CanExecute(object parameter) => CanExecuteEnabled;
 
-		public DelegateCommand(Action<T> action)
+	public void Execute(object parameter)
+	{
+		if (parameter is T t)
 		{
-			_action = action;
+			_action?.Invoke(t);
 		}
-
-		public bool CanExecute(object parameter) => CanExecuteEnabled;
-
-		public void Execute(object parameter)
+		else if (parameter == null && !typeof(T).IsValueType)
 		{
-			if (parameter is T t)
-			{
-				_action?.Invoke(t);
-			}
-			else if (parameter == null && !typeof(T).IsValueType)
-			{
-				_action?.Invoke(default(T));
-			}
-			else
-			{
-				throw new InvalidCastException($"parameter must be a {typeof(T)}");
-			}
+			_action?.Invoke(default(T));
 		}
-
-		private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-
-		public bool CanExecuteEnabled
+		else
 		{
-			get => _canExecuteEnabled;
-			set
-			{
-				_canExecuteEnabled = value;
-				OnCanExecuteChanged();
-			}
+			throw new InvalidCastException($"parameter must be a {typeof(T)}");
+		}
+	}
+
+	private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+	public bool CanExecuteEnabled
+	{
+		get => _canExecuteEnabled;
+		set
+		{
+			_canExecuteEnabled = value;
+			OnCanExecuteChanged();
 		}
 	}
 }
