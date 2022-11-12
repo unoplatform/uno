@@ -3,8 +3,10 @@
 
 #nullable enable
 
+using System.Collections.Generic;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -35,8 +37,8 @@ partial class CommandBarFlyout
 	private const int s_commandBarElementDependencyPropertiesCount = 3;
 	private const int s_commandBarElementDependencyPropertiesCountRS3 = 2;
 
-	static winrt::DependencyProperty s_appBarButtonDependencyProperties[s_commandBarElementDependencyPropertiesCount];
-	static winrt::DependencyProperty s_appBarToggleButtonDependencyProperties[s_commandBarElementDependencyPropertiesCount];
+	private static DependencyProperty[] s_appBarButtonDependencyProperties = new DependencyProperty[s_commandBarElementDependencyPropertiesCount];
+	private static DependencyProperty[] s_appBarToggleButtonDependencyProperties = new DependencyProperty[s_commandBarElementDependencyPropertiesCount];
 
 	private bool m_alwaysExpanded;
 
@@ -53,10 +55,10 @@ partial class CommandBarFlyout
 	private readonly SerialDisposable m_commandBarClosedRevoker = new();
 	private readonly SerialDisposable m_commandBarClosingRevoker = new();
 
-	std::map<int, winrt::ButtonBase::Click_revoker> m_secondaryButtonClickRevokerByIndexMap;
-	std::map<int, winrt::ToggleButton::Checked_revoker> m_secondaryToggleButtonCheckedRevokerByIndexMap;
-	std::map<int, winrt::ToggleButton::Unchecked_revoker> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
-	std::map<int, PropertyChanged_revoker[s_commandBarElementDependencyPropertiesCount]> m_propertyChangedRevokersByIndexMap;
+	private readonly Dictionary<int, SerialDisposable> m_secondaryButtonClickRevokerByIndexMap = new();
+	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonCheckedRevokerByIndexMap;
+	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
+	private readonly Dictionary<int, SerialDisposable> m_propertyChangedRevokersByIndexMap;
 
 	private FlyoutPresenter m_presenter { this };
 
