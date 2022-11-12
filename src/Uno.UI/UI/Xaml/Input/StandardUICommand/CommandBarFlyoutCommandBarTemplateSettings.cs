@@ -7,8 +7,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 /// Provides calculated values that can be referenced as TemplatedParent sources when defining
 /// templates for a CommandBarFlyout control. Not intended for general use.
 /// </summary>
-internal class CommandBarFlyoutCommandBarTemplateSettings : DependencyObject
+public sealed class CommandBarFlyoutCommandBarTemplateSettings : DependencyObject
 {
+	internal CommandBarFlyoutCommandBarTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets the end position for the close animation.
 	/// </summary>
