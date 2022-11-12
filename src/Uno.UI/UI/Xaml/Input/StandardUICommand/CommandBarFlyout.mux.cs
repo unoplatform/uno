@@ -14,14 +14,6 @@ public partial class CommandBarFlyout : FlyoutBase
 	// Copyright (c) Microsoft Corporation. All rights reserved.
 	// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-# include "pch.h"
-# include "common.h"
-# include "CommandBarFlyout.h"
-# include "CommandBarFlyoutCommandBar.h"
-# include "Vector.h"
-# include "RuntimeProfiler.h"
-
-# include "CommandBarFlyout.properties.cpp"
 
 	// Change to 'true' to turn on debugging outputs in Output window
 	bool CommandBarFlyoutTrace.s_IsDebugOutputEnabled { false };
