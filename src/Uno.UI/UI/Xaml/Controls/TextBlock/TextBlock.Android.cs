@@ -28,6 +28,7 @@ using Windows.UI.Xaml.Media;
 
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Uno.Collections;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -48,6 +49,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private readonly static TextUtils.TruncateAt TruncateEnd = TextUtils.TruncateAt.End;
+
+		private readonly static Layout.Alignment LayoutAlignCenter = Android.Text.Layout.Alignment.AlignCenter;
+		private readonly static Layout.Alignment LayoutAlignOpposite = Android.Text.Layout.Alignment.AlignOpposite;
+		private readonly static Layout.Alignment LayoutAlignNormal = Android.Text.Layout.Alignment.AlignNormal;
+
 		private readonly static Java.Lang.String EmptyString = new Java.Lang.String();
 		private static Java.Lang.Reflect.Constructor _maxLinedStaticLayout;
 		private static Java.Lang.Object _textDirectionHeuristics;
@@ -175,21 +181,21 @@ namespace Windows.UI.Xaml.Controls
 			switch (TextAlignment)
 			{
 				case TextAlignment.Center:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignCenter;
+					_layoutAlignment = LayoutAlignCenter;
 					_justificationMode = JustificationMode.None;
 					break;
 
 				case TextAlignment.Right:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignOpposite;
+					_layoutAlignment = LayoutAlignOpposite;
 					_justificationMode = JustificationMode.None;
 					break;
 				case TextAlignment.Justify:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignNormal;
+					_layoutAlignment = LayoutAlignNormal;
 					_justificationMode = JustificationMode.InterWord;
 					break;
 				default:
 				case TextAlignment.Left:
-					_layoutAlignment = Android.Text.Layout.Alignment.AlignNormal;
+					_layoutAlignment = LayoutAlignNormal;
 					_justificationMode = JustificationMode.None;
 					break;
 			}
