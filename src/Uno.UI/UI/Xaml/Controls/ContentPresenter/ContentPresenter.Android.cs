@@ -29,9 +29,9 @@ namespace Windows.UI.Xaml.Controls
 			IFrameworkElementHelper.Initialize(this);
 		}
 
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
+		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
-			base.OnLayoutCore(changed, left, top, right, bottom);
+			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
 			UpdateBorder();
 		}

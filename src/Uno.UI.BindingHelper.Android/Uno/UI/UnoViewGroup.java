@@ -129,13 +129,13 @@ public abstract class UnoViewGroup
 		_unoLayoutOverride = false;
 	}
 
-	protected abstract void onLayoutCore(boolean changed, int left, int top, int right, int bottom);
+	protected abstract void onLayoutCore(boolean changed, int left, int top, int right, int bottom, boolean isLayoutRequested);
 
 	protected final void onLayout(boolean changed, int left, int top, int right, int bottom)
 	{
 		if(!_unoLayoutOverride)
 		{
-			onLayoutCore(changed, left, top, right, bottom);
+			onLayoutCore(changed, left, top, right, bottom, isLayoutRequested());
 		}
 	}
 
