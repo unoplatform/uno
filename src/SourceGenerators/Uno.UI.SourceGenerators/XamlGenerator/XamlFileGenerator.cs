@@ -5072,7 +5072,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static string ParseTimeSpan(string memberValue)
 		{
-			var value = TimeSpan.Parse(memberValue);
+			var value = TimeSpan.Parse(memberValue, CultureInfo.InvariantCulture);
 
 			return $"global::System.TimeSpan.FromTicks({value.Ticks} /* {memberValue} */)";
 		}
@@ -6014,13 +6014,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var q = from element in EnumerateSubElements(xamlObjectDefinition.Owner)
 						let phase = FindMember(element, "Phase")?.Value
 						where phase != null
-						select int.Parse(phase.ToString() ?? "");
+						select int.Parse(phase.ToString() ?? "", CultureInfo.InvariantCulture);
 
 				var phases = q.Distinct().ToArray();
 
 				if (phases.Any())
 				{
-					var phasesValue = phases.OrderBy(i => i).Select(s => s.ToString()).JoinBy(",");
+					var phasesValue = phases.OrderBy(i => i).Select(s => s.ToString(CultureInfo.InvariantCulture)).JoinBy(",");
 					return $"global::Uno.UI.FrameworkElementHelper.SetDataTemplateRenderPhases({ownerVariable}, new []{{{phasesValue}}});";
 				}
 			}

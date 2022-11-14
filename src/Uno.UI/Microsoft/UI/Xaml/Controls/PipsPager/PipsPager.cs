@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Input;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 
 using ButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility;
+using System.Globalization;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -415,7 +416,7 @@ public partial class PipsPager : Control
 			var style = index == SelectedPageIndex ? SelectedPipStyle : NormalPipStyle;
 			ApplyStyleToPipAndUpdateOrientation(element, style);
 
-			AutomationProperties.SetName(element, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (index + 1).ToString());
+			AutomationProperties.SetName(element, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (index + 1).ToString(CultureInfo.InvariantCulture));
 			AutomationProperties.SetPositionInSet(element, index + 1);
 			AutomationProperties.SetSizeOfSet(element, NumberOfPages);
 

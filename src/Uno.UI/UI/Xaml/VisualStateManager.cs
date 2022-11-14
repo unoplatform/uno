@@ -7,6 +7,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
+using System.Globalization;
 
 namespace Windows.UI.Xaml
 {
@@ -191,7 +192,7 @@ namespace Windows.UI.Xaml
 					EventOpcode.Send,
 					new[] {
 						control.GetType()?.ToString(),
-						control?.GetDependencyObjectId().ToString(),
+						control?.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture),
 						state.Name,
 						useTransitions ? "UseTransitions" : "NoTransitions"
 					}

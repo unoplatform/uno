@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -189,7 +190,7 @@ namespace Uno.Xaml
 
 		static Exception Error(string format, params object[] args)
 		{
-			return new XamlParseException(String.Format(format, args));
+			return new XamlParseException(String.Format(CultureInfo.InvariantCulture, format, args));
 		}
 
 		internal static IEnumerable<string> SliceParameters(string vargs, string raw)

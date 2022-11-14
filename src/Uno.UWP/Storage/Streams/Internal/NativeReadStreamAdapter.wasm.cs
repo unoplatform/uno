@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -78,7 +79,7 @@ namespace Uno.Storage.Streams.Internal
 				var pinnedData = handle.AddrOfPinnedObject();
 				// TODO: Handle case of reading beyond end of file!
 				var countReadString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.readAsync('{_streamId}', {pinnedData}, {offset}, {count}, {Position})");
-				var countRead = int.Parse(countReadString);
+				var countRead = int.Parse(countReadString, CultureInfo.InvariantCulture);
 				Position += countRead;
 				return countRead;
 			}

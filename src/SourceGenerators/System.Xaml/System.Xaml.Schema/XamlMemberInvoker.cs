@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 namespace Uno.Xaml.Schema
@@ -66,9 +67,9 @@ namespace Uno.Xaml.Schema
 			if (instance == null)
 				throw new ArgumentNullException ("instance");
 			if (member is XamlDirective)
-				throw new NotSupportedException (String.Format ("not supported operation on directive member {0}", member));
+				throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "not supported operation on directive member {0}", member));
 			if (UnderlyingGetter == null)
-				throw new NotSupportedException (String.Format ("Attempt to get value from write-only property or event {0}", member));
+				throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Attempt to get value from write-only property or event {0}", member));
 			return UnderlyingGetter.Invoke (instance, Array.Empty<object>());
 		}
 		public virtual void SetValue (object instance, object value)
@@ -77,9 +78,9 @@ namespace Uno.Xaml.Schema
 			if (instance == null)
 				throw new ArgumentNullException ("instance");
 			if (member is XamlDirective)
-				throw new NotSupportedException (String.Format ("not supported operation on directive member {0}", member));
+				throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "not supported operation on directive member {0}", member));
 			if (UnderlyingSetter == null)
-				throw new NotSupportedException (String.Format ("Attempt to set value from read-only property {0}", member));
+				throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Attempt to set value from read-only property {0}", member));
 			if (member.IsAttachable)
 				UnderlyingSetter.Invoke (null, new object [] {instance, value});
 			else

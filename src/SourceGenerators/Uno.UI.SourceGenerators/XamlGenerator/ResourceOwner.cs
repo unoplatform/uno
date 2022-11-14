@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using System.Globalization;
+
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	/// <summary>
@@ -16,7 +18,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public ResourceOwner()
 		{
-			Name = "__ResourceOwner_" + (_resourceOwners++).ToString();
+			Name = "__ResourceOwner_" + (_resourceOwners++).ToString(CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>

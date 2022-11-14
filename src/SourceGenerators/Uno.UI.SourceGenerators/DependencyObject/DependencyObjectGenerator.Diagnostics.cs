@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Globalization;
 using Microsoft.CodeAnalysis;
 
 #if NETFRAMEWORK
@@ -25,7 +26,7 @@ public partial class DependencyObjectGenerator
 	private static void ReportDiagnostic(GeneratorExecutionContext context, Diagnostic diagnostic)
 	{
 #if NETFRAMEWORK
-		throw new InvalidOperationException(diagnostic.GetMessage());
+		throw new InvalidOperationException(diagnostic.GetMessage(CultureInfo.InvariantCulture));
 #else
 		context.ReportDiagnostic(diagnostic);
 #endif

@@ -192,7 +192,7 @@ namespace Uno.Xaml
 			var state = object_states.Peek ();
 			var wpl = state.WrittenProperties;
 			if (wpl.Any (wp => wp.Member == property))
-				throw new XamlDuplicateMemberException (String.Format ("Property '{0}' is already set to this '{1}' object", property, object_states.Peek ().Type));
+				throw new XamlDuplicateMemberException (String.Format (CultureInfo.InvariantCulture, "Property '{0}' is already set to this '{1}' object", property, object_states.Peek ().Type));
 			wpl.Add (new MemberAndValue (property));
 			if (property == XamlLanguage.PositionalParameters)
 				state.PositionalParameterIndex = 0;
@@ -249,7 +249,7 @@ namespace Uno.Xaml
 			if (vs != null)
 				return vs.ConverterInstance.ConvertToString (value, service_provider);
 			else
-				throw new XamlXmlWriterException (String.Format ("Value type is '{0}' but it must be either string or any type that is convertible to string indicated by TypeConverterAttribute.", value != null ? value.GetType () : null));
+				throw new XamlXmlWriterException (String.Format (CultureInfo.InvariantCulture, "Value type is '{0}' but it must be either string or any type that is convertible to string indicated by TypeConverterAttribute.", value != null ? value.GetType () : null));
 		}
 	}
 }

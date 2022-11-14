@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.Content;
@@ -101,8 +102,8 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private static (int id, int portNumber) ParseMidiDeviceId(string id)
 		{
 			var parts = id.Split("_");
-			var intId = int.Parse(parts[0]);
-			var portNumber = int.Parse(parts[1]);
+			var intId = int.Parse(parts[0], CultureInfo.InvariantCulture);
+			var portNumber = int.Parse(parts[1], CultureInfo.InvariantCulture);
 			return (intId, portNumber);
 		}
 
@@ -124,7 +125,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private IEnumerable<MidiDeviceInfo.PortInfo> FilterMatchingPorts(IEnumerable<MidiDeviceInfo.PortInfo> port)
 		{
 			return port.Where(p => p.Type == _portType);
-		}		
+		}
 
 		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation) =>
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
@@ -179,8 +180,8 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 			var deviceInformation = new DeviceInformation(deviceIdentifier, properties)
 			{
-				Name = name,				
-			};						
+				Name = name,
+			};
 
 			return deviceInformation;
 		}

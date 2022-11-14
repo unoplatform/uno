@@ -5,6 +5,7 @@ using Uno.UI;
 using Uno.UI.Controls;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -144,7 +145,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Notifies that this view has been removed from its parent. This method is only 
+		/// Notifies that this view has been removed from its parent. This method is only
 		/// called when the parent is an UnoViewGroup.
 		/// </summary>
 		protected override void OnRemovedFromParent()
@@ -269,7 +270,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Provides an implementation <see cref="ViewGroup.Layout(int, int, int, int)"/> in order 
+		/// Provides an implementation <see cref="ViewGroup.Layout(int, int, int, int)"/> in order
 		/// to avoid the back and forth between Java and C#.
 		/// </summary>
 		internal void FastLayout(bool changed, int left, int top, int right, int bottom)
@@ -304,7 +305,7 @@ namespace Windows.UI.Xaml
 					EventOpcode.Send,
 					new[] {
 						GetType().ToString(),
-						this.GetDependencyObjectId().ToString()
+						this.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture)
 					}
 				);
 			}

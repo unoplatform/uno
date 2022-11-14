@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Markup;
 using Uno.Xaml.Schema;
@@ -105,7 +106,7 @@ namespace System.Windows.Markup
 
 				if (invalid)
 				{
-					throw new InvalidOperationException (String.Format ("Item in the array must be an instance of '{0}'", Type));
+					throw new InvalidOperationException (String.Format (CultureInfo.InvariantCulture, "Item in the array must be an instance of '{0}'", Type));
 				}
 			}
 			Array a = Array.CreateInstance (Type, Items.Count);

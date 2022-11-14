@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 
 				if (value is ValueType)
 				{
-					return GridLengthHelper.FromPixels(Convert.ToDouble(value));
+					return GridLengthHelper.FromPixels(Convert.ToDouble(value, CultureInfo.InvariantCulture));
 				}
 
 				return base.ConvertFrom(context, culture, value);

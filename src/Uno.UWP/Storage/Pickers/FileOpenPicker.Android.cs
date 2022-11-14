@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -64,7 +65,7 @@ namespace Windows.Storage.Pickers
 			var intent = new Intent(action);
 			intent.PutExtra(Intent.ExtraAllowMultiple, multiple);
 
-			var settingName = string.Format(StorageIdentifierFormatString, SettingsIdentifier);
+			var settingName = string.Format(CultureInfo.InvariantCulture, StorageIdentifierFormatString, SettingsIdentifier);
 			if (ApplicationData.Current.LocalSettings.Values.ContainsKey(settingName))
 			{
 				var uri = ApplicationData.Current.LocalSettings.Values[settingName].ToString();

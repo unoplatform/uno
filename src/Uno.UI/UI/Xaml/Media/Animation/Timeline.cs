@@ -8,6 +8,7 @@ using System.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -45,7 +46,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			return new[] {
 				this.GetParent()?.GetType().Name,
-				this.GetParent()?.GetDependencyObjectId().ToString(),
+				this.GetParent()?.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture),
 				Target?.GetType().ToString(),
 				PropertyInfo?.Path
 			};

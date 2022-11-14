@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -87,7 +88,7 @@ namespace Uno.UWPSyncGenerator
 				_sb.AppendHorizontalRule();
 
 				_sb.AppendParagraph();
-				_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f")}.");
+				_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f", CultureInfo.InvariantCulture)}.");
 			}
 			using (var fileWriter = new StreamWriter(Path.Combine(DocPath, ImplementedViewsFileName)))
 			{
@@ -158,7 +159,7 @@ namespace Uno.UWPSyncGenerator
 							_sb.AppendHorizontalRule();
 
 							_sb.AppendParagraph();
-							_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f")}.");
+							_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f", CultureInfo.InvariantCulture)}.");
 
 							void AppendImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 							{
