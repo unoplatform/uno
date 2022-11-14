@@ -21,6 +21,4 @@ public partial class CommandBarFlyoutCommandBar : CommandBar
 				typeof(CommandBarFlyoutCommandBarTemplateSettings),
 				typeof(CommandBarFlyoutCommandBar),
 				new FrameworkPropertyMetadata(null));
-
-
 }

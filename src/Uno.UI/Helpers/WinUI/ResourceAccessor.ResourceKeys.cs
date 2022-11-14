@@ -152,6 +152,13 @@
 
 		public const string SR_AutomationNameEllipsisBreadcrumbBarItem = "AutomationNameEllipsisBreadcrumbBarItem";
 
+		public const string SR_CommandBarFlyoutCommandBarLocalizedControlType = "CommandBarFlyoutCommandBarLocalizedControlType";
+		public const string SR_CommandBarFlyoutAppBarButtonLocalizedControlType = "CommandBarFlyoutAppBarButtonLocalizedControlType";
+		public const string SR_CommandBarFlyoutAppBarToggleButtonLocalizedControlType = "CommandBarFlyoutAppBarToggleButtonLocalizedControlType";
+
+		public const string SR_WarningSuitableWebView2NotFound = "WarningSuitableWebView2NotFound";
+		public const string SR_DownloadWebView2Runtime = "DownloadWebView2Runtime";
+
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 
 	}
