@@ -266,7 +266,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 		[ActivePlatforms(Platform.Android)]
 		public void Border_AntiAlias()
 		{
-			const string firstRectBlueish = "#ffd8d8ff";
+			const string firstRectBlueish = "#ff6262ff";
 			const string secondRectBlueish = "#ff9e9eff";
 
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.BorderAntiAlias");
