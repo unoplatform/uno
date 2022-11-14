@@ -228,7 +228,7 @@ public partial class CommandBarFlyout : FlyoutBase
 		{
 			if (m_commandBar is { } commandBar)
 			{
-				if (commandBar.HasOpenAnimation)
+				if (commandBar.HasOpenAnimation())
 				{
 					commandBar.PlayOpenAnimation();
 				}
@@ -478,17 +478,16 @@ public partial class CommandBarFlyout : FlyoutBase
 
 		for (int commandBarElementDependencyPropertyIndex = 0; commandBarElementDependencyPropertyIndex < commandBarElementDependencyPropertiesCount; commandBarElementDependencyPropertyIndex++)
 		{
-			m_propertyChangedRevokersByIndexMap[index][commandBarElementDependencyPropertyIndex] =
-				RegisterPropertyChanged(
-					appBarToggleButton,
-					s_appBarToggleButtonDependencyProperties[commandBarElementDependencyPropertyIndex], { this, &CommandBarFlyout.OnCommandBarElementDependencyPropertyChanged });
+			var disposable = appBarToggleButton.RegisterDisposablePropertyChangedCallback(s_appBarToggleButtonDependencyProperties[commandBarElementDependencyPropertyIndex], OnCommandBarElementDependencyPropertyChanged);
+			m_propertyChangedRevokersByIndexMap[index][commandBarElementDependencyPropertyIndex] = disposable;
+		}
 	}
 
 	private void HookAllCommandBarElementDependencyPropertyChanges()
 	{
 		UnhookAllCommandBarElementDependencyPropertyChanges();
 
-		for (uint i = 0; i < SecondaryCommands.Count; i++)
+		for (int i = 0; i < SecondaryCommands.Count; i++)
 		{
 			var element = SecondaryCommands[i];
 			var button = element as AppBarButton;
