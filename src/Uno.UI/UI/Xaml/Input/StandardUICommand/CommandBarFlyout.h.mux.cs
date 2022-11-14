@@ -4,9 +4,9 @@
 #nullable enable
 
 using System.Collections.Generic;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -24,6 +24,8 @@ partial class CommandBarFlyout
 		set => m_alwaysExpanded = value;
 	}
 
+	private CommandBarFlyoutCommandBar? m_commandBar;
+
 	/// <summary>
 	/// Gets the collection of primary command elements for the CommandBarFlyout.
 	/// </summary>
@@ -36,9 +38,6 @@ partial class CommandBarFlyout
 
 	private const int s_commandBarElementDependencyPropertiesCount = 3;
 	private const int s_commandBarElementDependencyPropertiesCountRS3 = 2;
-
-	private static DependencyProperty[] s_appBarButtonDependencyProperties = new DependencyProperty[s_commandBarElementDependencyPropertiesCount];
-	private static DependencyProperty[] s_appBarToggleButtonDependencyProperties = new DependencyProperty[s_commandBarElementDependencyPropertiesCount];
 
 	private bool m_alwaysExpanded;
 
@@ -60,7 +59,7 @@ partial class CommandBarFlyout
 	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
 	private readonly Dictionary<int, SerialDisposable> m_propertyChangedRevokersByIndexMap;
 
-	private FlyoutPresenter m_presenter { this };
+	private FlyoutPresenter? m_presenter = null;
 
 	private bool m_isClosingAfterCloseAnimation = false;
 }
