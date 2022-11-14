@@ -79,6 +79,9 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesApp.Shared", "SamplesApp\SamplesApp.Shared\SamplesApp.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Droid", "SamplesApp\SamplesApp.Droid\SamplesApp.Droid.csproj", "{3FDF0F2D-CC11-49BE-8634-F81638D595C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6872579-B7A0-42CE-AE97-44234BB55625} = {E6872579-B7A0-42CE-AE97-44234BB55625}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.iOS", "SamplesApp\SamplesApp.iOS\SamplesApp.iOS.csproj", "{B71AE380-558C-4D6C-81D8-9C043B50262C}"
 	ProjectSection(ProjectDependencies) = postProject
