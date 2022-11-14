@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
 
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Uno.UI.Helpers.WinUI.ResourceAccessor;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -32,7 +33,7 @@ partial class CommandBarFlyoutCommandBar
 
 		Loaded += (s, e) =>
 			{
-#if _DEBUG
+#if MUX_DEBUG
 	            COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH_STR, METH_NAME, this, "Loaded");
 #endif
 
@@ -66,21 +67,18 @@ partial class CommandBarFlyoutCommandBar
 								}
 								else
 								{
-									m_firstItemLoadedRevoker = firstCommandAsFrameworkElement.Loaded(auto_revoke,
-
+									void OnFirstCommandLoaded(object sender, object args)
 									{
-										[this, commands, usingPrimaryCommands, ensureTabStopUniqueness](object & sender, var &)
-
-										{
-											FocusCommand(
-												commands,
-												usingPrimaryCommands ? m_moreButton : null /*moreButton*/,
-												FocusState.Programmatic /*focusState*/,
-												true /*firstCommand*/,
-												ensureTabStopUniqueness);
-											m_firstItemLoadedRevoker.Disposable = null;
-										}
-									});
+										FocusCommand(
+											commands,
+											usingPrimaryCommands ? m_moreButton : null /*moreButton*/,
+											FocusState.Programmatic /*focusState*/,
+											true /*firstCommand*/,
+											ensureTabStopUniqueness);
+										m_firstItemLoadedRevoker.Disposable = null;
+									}
+									firstCommandAsFrameworkElement.Loaded += OnFirstCommandLoaded;
+									m_firstItemLoadedRevoker.Disposable = Disposable.Create(() => firstCommandAsFrameworkElement.Loaded -= OnFirstCommandLoaded);
 								}
 							}
 						}
@@ -90,7 +88,7 @@ partial class CommandBarFlyoutCommandBar
 
 		SizeChanged += (s, e) =>
 		{
-#if _DEBUG
+#if MUX_DEBUG
 	        COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "SizeChanged");
 #endif
 
@@ -99,24 +97,24 @@ partial class CommandBarFlyoutCommandBar
 
 		Closing += (s, e) =>
 		{
-#if _DEBUG
+#if MUX_DEBUG
 	            COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "Closing");
 #endif
 
-			if (var owningFlyout = m_owningFlyout)
-	            {
-				if (owningFlyout.AlwaysExpanded())
+			if (m_owningFlyout is { } owningFlyout)
+			{
+				if (owningFlyout.AlwaysExpanded)
 				{
 					// Don't close the secondary commands list when the flyout is AlwaysExpanded.
-					IsOpen(true);
+					IsOpen = true;
 				}
 			}
 		};
 
 		Closed += (s, e) =>
 		{
-#if _DEBUG
-						COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "Closed");
+#if MUX_DEBUG
+			COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "Closed");
 #endif
 
 			m_secondaryItemsRootSized = false;
@@ -129,55 +127,45 @@ partial class CommandBarFlyoutCommandBar
 			}
 		};
 
-		RegisterPropertyChangedCallback(
-			AppBar.IsOpenProperty(),
-
-
-			[this](var &, var &)
-
-	{
-#if _DEBUG
-	            COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "IsOpenProperty changed");
+		this.RegisterDisposablePropertyChangedCallback(
+			IsOpenProperty,
+			(s, e) =>
+			{
+#if MUX_DEBUG
+				COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "IsOpenProperty changed");
 #endif
 
-			UpdateFlowsFromAndFlowsTo();
-			UpdateUI(!m_commandBarFlyoutIsOpening);
-		});
+				UpdateFlowsFromAndFlowsTo();
+				UpdateUI(!m_commandBarFlyoutIsOpening);
+			});
 
 		// Since we own these vectors, we don't need to cache the event tokens -
 		// in fact, if we tried to remove these handlers in our destructor,
 		// these properties will have already been cleared, and we'll nullref.
-		PrimaryCommands.VectorChanged({
-			[this] (var &, var &)
-
-			{
-#if _DEBUG
+		PrimaryCommands.VectorChanged += (s, e) =>
+		{
+#if MUX_DEBUG
 	            COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "PrimaryCommands VectorChanged");
 #endif
 
-				EnsureLocalizedControlTypes();
-				PopulateAccessibleControls();
-				UpdateFlowsFromAndFlowsTo();
-				UpdateUI(!m_commandBarFlyoutIsOpening);
-			}
-		});
+			EnsureLocalizedControlTypes();
+			PopulateAccessibleControls();
+			UpdateFlowsFromAndFlowsTo();
+			UpdateUI(!m_commandBarFlyoutIsOpening);
+		};
 
-		SecondaryCommands.VectorChanged({
-			[this](var &, var &)
-
-
-			{
-#if _DEBUG
-	            COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "SecondaryCommands VectorChanged");
+		SecondaryCommands.VectorChanged += (s, e) =>
+		{
+#if MUX_DEBUG
+	        COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "SecondaryCommands VectorChanged");
 #endif
 
-				m_secondaryItemsRootSized = false;
-				EnsureLocalizedControlTypes();
-				PopulateAccessibleControls();
-				UpdateFlowsFromAndFlowsTo();
-				UpdateUI(!m_commandBarFlyoutIsOpening);
-			}
-		});
+			m_secondaryItemsRootSized = false;
+			EnsureLocalizedControlTypes();
+			PopulateAccessibleControls();
+			UpdateFlowsFromAndFlowsTo();
+			UpdateUI(!m_commandBarFlyoutIsOpening);
+		};
 	}
 
 	protected override void OnApplyTemplate()
@@ -199,49 +187,49 @@ partial class CommandBarFlyoutCommandBar
 		AutomationProperties.SetLocalizedControlType(this, ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutCommandBarLocalizedControlType));
 		EnsureLocalizedControlTypes();
 
-		IControlProtected thisAsControlProtected = this;
-
 		m_primaryItemsRoot = (FrameworkElement)GetTemplateChild("PrimaryItemsRoot");
 		m_overflowPopup = (Popup)GetTemplateChild("OverflowPopup");
 		m_secondaryItemsRoot = (FrameworkElement)GetTemplateChild("OverflowContentRoot");
 		m_moreButton = (ButtonBase)GetTemplateChild("MoreButton");
-		m_openingStoryboard = [this, thisAsControlProtected](
-
+		
+		Storyboard GetOpeningStoryboard()
+		{
+			if (GetTemplateChild<Storyboard>("OpeningOpacityStoryboard") is { } opacityStoryBoard)
 			{
-			if (var opacityStoryBoard = GetTemplateChildT<Storyboard>("OpeningOpacityStoryboard", thisAsControlProtected))
-	            {
 				m_openAnimationKind = CommandBarFlyoutOpenCloseAnimationKind.Opacity;
 				return opacityStoryBoard;
 			}
 			m_openAnimationKind = CommandBarFlyoutOpenCloseAnimationKind.Clip;
 			return (Storyboard)GetTemplateChild("OpeningStoryboard");
-		} ());
-		m_closingStoryboard = [this, thisAsControlProtected](
+		}
+		m_openingStoryboard = GetOpeningStoryboard();
 
+		Storyboard GetClosingStoryboard()
+		{
+			if (GetTemplateChild<Storyboard>("ClosingOpacityStoryboard") is { } opacityStoryBoard)
 			{
-			if (var opacityStoryBoard = GetTemplateChildT<Storyboard>("ClosingOpacityStoryboard", thisAsControlProtected))
-	            {
 				return opacityStoryBoard;
 			}
 			return (Storyboard)GetTemplateChild("ClosingStoryboard");
-		} ());
+		}
+		m_closingStoryboard = GetClosingStoryboard();
 
-		if (var overflowPopup = m_overflowPopup)
+		if (m_overflowPopup is { } overflowPopup)
 	    {
-			if (var overflowPopup4 = overflowPopup as IPopup4())
-	        {
-				overflowPopup4.PlacementTarget(m_primaryItemsRoot);
-				overflowPopup4.DesiredPlacement(PopupPlacementMode.BottomEdgeAlignedLeft);
+			if (overflowPopup is { } overflowPopup4)
+			{
+				overflowPopup4.PlacementTarget = m_primaryItemsRoot;
+				overflowPopup4.DesiredPlacement = PopupPlacementMode.BottomEdgeAlignedLeft;
 			}
 		}
 
-		if (var moreButton = m_moreButton)
+		if (m_moreButton is { } moreButton)
 	    {
 			// Initially only the first focusable primary and secondary commands
 			// keep their IsTabStop set to True.
-			if (moreButton.IsTabStop())
+			if (moreButton.IsTabStop)
 			{
-				moreButton.IsTabStop(false);
+				moreButton.IsTabStop = false;
 			}
 		}
 
@@ -261,7 +249,7 @@ partial class CommandBarFlyoutCommandBar
 		PopulateAccessibleControls();
 		UpdateFlowsFromAndFlowsTo();
 		UpdateUI(false /* useTransitions */);
-		SetPresenterName(m_flyoutPresenter);
+		SetPresenterName(m_flyoutPresenter?.Target as FlyoutPresenter);
 	}
 
 	private void SetOwningFlyout(CommandBarFlyout owningFlyout)
@@ -277,79 +265,72 @@ partial class CommandBarFlyoutCommandBar
 		{
 			if (overflowPopup is { } overflowPopup4)
 			{
-				m_overflowPopupActualPlacementChangedRevoker = overflowPopup4.ActualPlacementChanged(auto_revoke,
-
-
+				void actualPlacementChangedHandler(object sender, object args)
 				{
-					[this](var &, var &)
-
-					{
-#if _DEBUG
-	                    COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "OverflowPopup ActualPlacementChanged");
+#if MUX_DEBUG
+					COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "OverflowPopup ActualPlacementChanged");
 #endif
 
-						UpdateUI();
-					}
-				});
+					UpdateUI();
+				}
+
+				overflowPopup4.ActualPlacementChanged += actualPlacementChangedHandler;
+				m_overflowPopupActualPlacementChangedRevoker.Disposable = Disposable.Create(() => overflowPopup4.ActualPlacementChanged -= actualPlacementChangedHandler);
 			}
 		}
 
 		if (m_secondaryItemsRoot is { } secondaryItemsRoot)
 		{
-			m_secondaryItemsRootSizeChangedRevoker = secondaryItemsRoot.SizeChanged(auto_revoke,
-
+			void sizeChangedHandler(object sender, object args)
 			{
-				[this](var &, var &)
-
-				{
-#if _DEBUG
-	                COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "secondaryItemsRoot SizeChanged");
+#if MUX_DEBUG
+	            COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "secondaryItemsRoot SizeChanged");
 #endif
 
-					m_secondaryItemsRootSized = true;
-					UpdateUI(!m_commandBarFlyoutIsOpening, true /*isForSizeChange*/);
-				}
-			});
+				m_secondaryItemsRootSized = true;
+				UpdateUI(!m_commandBarFlyoutIsOpening, true /*isForSizeChange*/);
+			}
+
+			secondaryItemsRoot.SizeChanged += sizeChangedHandler;
+			m_secondaryItemsRootSizeChangedRevoker.Disposable = Disposable.Create(() => secondaryItemsRoot.SizeChanged -= sizeChangedHandler);
 
 			if (SharedHelpers.IsRS3OrHigher())
 			{
-				m_secondaryItemsRootPreviewKeyDownRevoker = secondaryItemsRoot.PreviewKeyDown(auto_revoke,
-
-
+				void previewKeyDownHandler(object sender, KeyRoutedEventArgs args)
 				{
-					[this](var &, KeyRoutedEventArgs & args)
+					//COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH_STR, METH_NAME, this,
+					//	TypeLogging.KeyRoutedEventArgsToString(args).c_str());
 
+					if (args.Handled)
 					{
-						COMMANDBARFLYOUT_TRACE_INFO(this, TRACE_MSG_METH_STR, METH_NAME, this,
-							TypeLogging.KeyRoutedEventArgsToString(args).c_str());
-
-						if (args.Handled)
-						{
-							return;
-						}
-
-						switch (args.Key)
-						{
-							case VirtualKey.Escape:
-								{
-									// In addition to closing the CommandBar if someone hits the escape key,
-									// we also want to close the whole flyout.
-									if (m_owningFlyout is { } owningFlyout)
-									{
-										owningFlyout.Hide();
-									}
-									break;
-								}
-
-							case VirtualKey.Down:
-							case VirtualKey.Up:
-								{
-									OnKeyDown(args);
-									break;
-								}
-						}
+						return;
 					}
-				});
+
+					switch (args.Key)
+					{
+						case VirtualKey.Escape:
+							{
+								// In addition to closing the CommandBar if someone hits the escape key,
+								// we also want to close the whole flyout.
+								if (m_owningFlyout is { } owningFlyout)
+								{
+									owningFlyout.Hide();
+								}
+								break;
+							}
+
+						case VirtualKey.Down:
+						case VirtualKey.Up:
+							{
+								OnKeyDown(args);
+								break;
+							}
+					}
+				}
+
+				secondaryItemsRoot.PreviewKeyDown += previewKeyDownHandler;
+				m_secondaryItemsRootPreviewKeyDownRevoker.Disposable = Disposable.Create(() => secondaryItemsRoot.PreviewKeyDown -= previewKeyDownHandler);
+
 			}
 			else
 			{
@@ -357,26 +338,20 @@ partial class CommandBarFlyoutCommandBar
 				// for SecondaryCommands is left to True and the KeyDown event is used to
 				// close the whole flyout with the escape key.
 				// The custom Down / Up arrows handling above is skipped.
-				m_keyDownRevoker = AddRoutedEventHandler<RoutedEventType.KeyDown>(
-					secondaryItemsRoot as UIElement,
-
-
-
-
-
-					[this](var &, var args)
-
-
+				void keyDownHandler(object sender, KeyRoutedEventArgs args)
+				{
+					if (m_owningFlyout is { } owningFlyout)
 					{
-					if (var owningFlyout = m_owningFlyout)
-	                    {
 						if (args.Key == VirtualKey.Escape)
 						{
 							owningFlyout.Hide();
 						}
 					}
-				},
-	                true /*handledEventsToo*/);
+				}
+				var routedHandler = new RoutedEventHandler<KeyRoutedEventArgs>(keyDownHandler);
+
+				secondaryItemsRoot.AddHandler(UIElement.KeyDownEvent, routedHandler, true);
+				m_keyDownRevoker.Disposable = Disposable.Create(() => secondaryItemsRoot.RemoveHandler(UIElement.KeyDownEvent, routedHandler));
 			}
 		}
 
@@ -384,7 +359,7 @@ partial class CommandBarFlyoutCommandBar
 		{
 			void StopOpeningStoryboard(object sender, object args) => m_openingStoryboard.Stop();
 			m_openingStoryboard.Completed += StopOpeningStoryboard;
-			m_openingStoryboardCompletedRevoker.Disposable = Disposable.Create(() => m_openingStoryboard.Complete -= StopOpeningStoryboard);
+			m_openingStoryboardCompletedRevoker.Disposable = Disposable.Create(() => m_openingStoryboard.Completed -= StopOpeningStoryboard);
 		}
 	}
 
@@ -509,7 +484,7 @@ partial class CommandBarFlyoutCommandBar
 
 			// If we have a more button and at least one focusable primary item, then
 			// we'll use the more button as the last element in our primary items list.
-			if (moreButton is not null && moreButton.Visibility == Visibility.Visible && m_currentPrimaryItemsEndElement)
+			if (moreButton is not null && moreButton.Visibility == Visibility.Visible && m_currentPrimaryItemsEndElement is not null)
 			{
 				m_currentPrimaryItemsEndElement = moreButton;
 			}
@@ -523,7 +498,7 @@ partial class CommandBarFlyoutCommandBar
 				}
 			}
 
-			if (m_currentPrimaryItemsEndElement && m_currentSecondaryItemsStartElement)
+			if (m_currentPrimaryItemsEndElement is not null && m_currentSecondaryItemsStartElement is not null)
 			{
 				AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Add(m_currentSecondaryItemsStartElement);
 				AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Add(m_currentPrimaryItemsEndElement);
@@ -1214,7 +1189,7 @@ partial class CommandBarFlyoutCommandBar
 
 	private void EnsureTabStopUniqueness(
 		IObservableVector<ICommandBarElement> commands,
-		Control moreButton)
+		Control? moreButton)
 	{
 		//COMMANDBARFLYOUT_TRACE_VERBOSE(null, TRACE_MSG_METH, METH_NAME, null);
 
@@ -1316,7 +1291,7 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
-	private void ClearShadow()
+	internal void ClearShadow()
 	{
 		if (SharedHelpers.IsThemeShadowAvailable() && !SharedHelpers.Is21H1OrHigher())
 		{
@@ -1331,7 +1306,7 @@ partial class CommandBarFlyoutCommandBar
 		m_flyoutPresenter = WeakReferencePool.RentWeakReference(this, presenter);
 	}
 
-	private void SetPresenterName(FlyoutPresenter presenter)
+	private void SetPresenterName(FlyoutPresenter? presenter)
 	{
 		// Since DropShadows don't play well with clip entrance animations for the presenter,
 		// we'll need to fade it in. This name helps us locate the element to set the fade in

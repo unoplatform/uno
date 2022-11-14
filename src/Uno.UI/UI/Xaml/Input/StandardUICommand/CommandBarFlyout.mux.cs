@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.ObjectModel;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Collections;
@@ -10,6 +11,8 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -77,7 +80,7 @@ public partial class CommandBarFlyout : FlyoutBase
 				// will just open the flyout rather than executing an action, so we don't want that to
 				// do anything.
 				var index = (int)args.Index;
-				var closeFlyoutFunc = [this](var sender, var args) { Hide(); };
+				void closeFlyoutFunc (object sender, object args) => Hide();
 
 				switch (args.CollectionChange)
 				{
@@ -98,7 +101,7 @@ public partial class CommandBarFlyout : FlyoutBase
 								HookAppBarToggleButtonDependencyPropertyChanges(toggleButton, index);
 							}
 
-							if (button is not null && !button.Flyout)
+							if (button is not null && button.Flyout is null)
 							{
 								m_secondaryButtonClickRevokerByIndexMap[index] = button.Click(auto_revoke, closeFlyoutFunc);
 								SharedHelpers.EraseIfExists(m_secondaryToggleButtonCheckedRevokerByIndexMap, index);
@@ -133,7 +136,7 @@ public partial class CommandBarFlyout : FlyoutBase
 								HookAppBarToggleButtonDependencyPropertyChanges(toggleButton, index);
 							}
 
-							if (button is not null && !button.Flyout)
+							if (button is not null && button.Flyout is null)
 							{
 								m_secondaryButtonClickRevokerByIndexMap[index] = button.Click(auto_revoke, closeFlyoutFunc);
 							}
@@ -270,11 +273,11 @@ public partial class CommandBarFlyout : FlyoutBase
 				else
 				{
 					// If we don't have an animation, close the command bar and thus it's subflyouts.
-					commandBar.IsOpen(false);
+					commandBar.IsOpen = false;
 				}
 
 				//Drop shadows do not play nicely with clip animations, if we are using both, clear the shadow
-				if (SharedHelpers.Is21H1OrHigher() && commandBar.OpenAnimationKind() == CommandBarFlyoutOpenCloseAnimationKind.Clip)
+				if (SharedHelpers.Is21H1OrHigher() && commandBar.OpenAnimationKind == CommandBarFlyoutOpenCloseAnimationKind.Clip)
 				{
 					commandBar.ClearShadow();
 				}
@@ -307,16 +310,6 @@ public partial class CommandBarFlyout : FlyoutBase
 
 	//	UnhookAllCommandBarElementDependencyPropertyChanges();
 	//}
-
-	IObservableVector<ICommandBarElement> PrimaryCommands
-	{
-			return m_primaryCommands;
-	}
-
-	IObservableVector<ICommandBarElement> SecondaryCommands
-	{
-			return m_secondaryCommands;
-	}
 
 	Control CreatePresenter()
 	{
@@ -421,51 +414,63 @@ public partial class CommandBarFlyout : FlyoutBase
 		return presenter;
 	}
 
-	void SetSecondaryCommandsToCloseWhenExecuted()
+	private void SetSecondaryCommandsToCloseWhenExecuted()
 	{
-		m_secondaryButtonClickRevokerByIndexMap.clear();
-		m_secondaryToggleButtonCheckedRevokerByIndexMap.clear();
-		m_secondaryToggleButtonUncheckedRevokerByIndexMap.clear();
+		m_secondaryButtonClickRevokerByIndexMap.Clear();
+		m_secondaryToggleButtonCheckedRevokerByIndexMap.Clear();
+		m_secondaryToggleButtonUncheckedRevokerByIndexMap.Clear();
 
-		var closeFlyoutFunc = [this](var sender, var args) { Hide(); };
+		void closeFlyoutFunc(object sender, object args)
+		{
+			Hide();
+		}
 
-		for (uint i = 0; i < SecondaryCommands.Count; i++)
+		for (int i = 0; i < SecondaryCommands.Count; i++)
 		{
 			var element = SecondaryCommands[i];
 			var button = element as AppBarButton;
 			var toggleButton = element as AppBarToggleButton;
 
-			if (button && !button.Flyout())
+			if (button is not null && button.Flyout is null)
 			{
-				m_secondaryButtonClickRevokerByIndexMap[i] = button.Click(auto_revoke, closeFlyoutFunc);
+				button.Click += closeFlyoutFunc;
+				var clickRevoker = new SerialDisposable();
+				clickRevoker.Disposable = Disposable.Create(() => button.Click -= closeFlyoutFunc);
 			}
-			else if (toggleButton)
+			else if (toggleButton is not null)
 			{
-				m_secondaryToggleButtonCheckedRevokerByIndexMap[i] = toggleButton.Checked(auto_revoke, closeFlyoutFunc);
-				m_secondaryToggleButtonUncheckedRevokerByIndexMap[i] = toggleButton.Unchecked(auto_revoke, closeFlyoutFunc);
+				toggleButton.Checked += closeFlyoutFunc;
+				var secondaryCheckedRevoker = new SerialDisposable();
+				secondaryCheckedRevoker.Disposable = Disposable.Create(() => toggleButton.Checked -= closeFlyoutFunc);
+				m_secondaryToggleButtonCheckedRevokerByIndexMap[i] = secondaryCheckedRevoker;
+
+				toggleButton.Unchecked += closeFlyoutFunc;
+				var secondaryUncheckedRevoker = new SerialDisposable();
+				secondaryUncheckedRevoker.Disposable = Disposable.Create(() => toggleButton.Unchecked -= closeFlyoutFunc);
+				m_secondaryToggleButtonUncheckedRevokerByIndexMap[i] = secondaryUncheckedRevoker;
 			}
 		}
 	}
 
-	void AddDropShadow()
+	internal void AddDropShadow()
 	{
 		if (SharedHelpers.Is21H1OrHigher())
 		{
 			if (m_presenter is { } presenter)
 			{
-				Windows.UI.Xaml.Media.ThemeShadow shadow;
-				presenter.Shadow(shadow);
+				ThemeShadow shadow = new();
+				presenter.Shadow = shadow;
 			}
 		}
 	}
 
-	void RemoveDropShadow()
+	internal void RemoveDropShadow()
 	{
 		if (SharedHelpers.Is21H1OrHigher())
 		{
 			if (m_presenter is { } presenter)
 			{
-				presenter.Shadow(null);
+				presenter.Shadow = null;
 			}
 		}
 	}
@@ -484,7 +489,7 @@ public partial class CommandBarFlyout : FlyoutBase
 					s_appBarButtonDependencyProperties[commandBarElementDependencyPropertyIndex], { this, &CommandBarFlyout.OnCommandBarElementDependencyPropertyChanged });
 	}
 
-	private void HookAppBarToggleButtonDependencyPropertyChanges(AppBarToggleButton & appBarToggleButton, int index)
+	private void HookAppBarToggleButtonDependencyPropertyChanges(AppBarToggleButton appBarToggleButton, int index)
 	{
 		var commandBarElementDependencyPropertiesCount = SharedHelpers.IsRS4OrHigher() ? s_commandBarElementDependencyPropertiesCount : s_commandBarElementDependencyPropertiesCountRS3;
 
@@ -517,7 +522,7 @@ public partial class CommandBarFlyout : FlyoutBase
 		}
 	}
 
-	private void UnhookCommandBarElementDependencyPropertyChanges(int index, bool eraseRevokers)
+	private void UnhookCommandBarElementDependencyPropertyChanges(int index, bool eraseRevokers = true)
 	{
 		var revokers = m_propertyChangedRevokersByIndexMap.find(index);
 		if (revokers != m_propertyChangedRevokersByIndexMap.end())
