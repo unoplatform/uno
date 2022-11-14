@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var needsForceLayout = double.IsPositiveInfinity(slotSize.Width) || double.IsPositiveInfinity(slotSize.Height);
 
-			Uno.UI.Controls.BindableView.TryFastRequestLayout(view, needsForceLayout);
+			Uno.UI.Controls.BindableView.TryFastRequestLayout_Slim(view, needsForceLayout);
 
 			MeasureChild(view, widthSpec, heightSpec);
 

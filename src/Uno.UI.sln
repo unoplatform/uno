@@ -4080,6 +4080,7 @@ Global
 		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release_NoSamples|x86.Build.0 = Release|Any CPU
 		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release|ARM.ActiveCfg = Release|Any CPU
 		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release|ARM.Build.0 = Release|Any CPU
 		{3C272635-C7D1-444C-86C2-CB95E367D13D}.Release|ARM64.ActiveCfg = Release|Any CPU
@@ -6796,6 +6797,7 @@ Global
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SourceGenerators\Uno.UI.SourceGenerators.Tests.Shared\Uno.UI.SourceGenerators.Tests.Shared.projitems*{34db4266-6184-4889-8d16-92f22c43bb15}*SharedItemsImports = 5
+		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{3c272635-c7d1-444c-86c2-cb95e367d13d}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{3c272635-c7d1-444c-86c2-cb95e367d13d}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{3c272635-c7d1-444c-86c2-cb95e367d13d}*SharedItemsImports = 5
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{3c272635-c7d1-444c-86c2-cb95e367d13d}*SharedItemsImports = 5

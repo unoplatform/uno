@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkUIHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\AndroidBench\Given_UnoViewGroup_GetMeasuredDimensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\AndroidBench\Given_UnoViewGroup_IsLayoutRequested.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\SpanBench\SimpleSpanBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetControl.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetTestsPage.xaml.cs" />

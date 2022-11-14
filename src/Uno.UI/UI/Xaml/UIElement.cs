@@ -810,7 +810,7 @@ namespace Windows.UI.Xaml
 		{
 #if XAMARIN_ANDROID
 			// Use a non-virtual version of the RequestLayout method, for performance.
-			base.RequestLayout();
+			base.RequestLayout_Slim();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #elif XAMARIN_IOS
 			SetNeedsLayout();

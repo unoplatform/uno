@@ -435,7 +435,7 @@ namespace Uno.UI
 			{
 				// Use the C# implementation of RequestLayout so that it is
 				// executed faster. See UnoViewGroup for details.
-				bindableView.RequestLayout();
+				bindableView.RequestLayout_Slim();
 			}
 			else
 			{

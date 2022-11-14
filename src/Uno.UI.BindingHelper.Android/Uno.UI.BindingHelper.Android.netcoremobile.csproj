@@ -34,6 +34,7 @@
 
 	<ItemGroup>
 		<_JavaFile Include="Uno\**\*.java" />
+		<!--<Compile Include="Additions\**\*.cs" />-->
 	</ItemGroup>
 
 	<ItemGroup>
@@ -144,13 +145,6 @@
 			<Output TaskParameter="Include" ItemName="_CleanCurrentFileWrites" />
 		</CreateItem>
 	</Target>
-
-
-
-	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="$(IsMonoAndroid)">
-		<Compile Remove="**\*.cs" />
-	</ItemGroup>
 	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsMonoAndroid)" />
 
 </Project>

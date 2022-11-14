@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml
 		internal bool IsMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutRequested;
+			get => IsLayoutRequested_Slim;
 		}
 
 		/// <summary>

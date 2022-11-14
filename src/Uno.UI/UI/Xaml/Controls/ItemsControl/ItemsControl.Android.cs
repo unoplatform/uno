@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RequestLayoutPartial()
 		{
-			RequestLayout();
+			InvalidateMeasure();
 		}
 
 		partial void RemoveViewPartial(View current)

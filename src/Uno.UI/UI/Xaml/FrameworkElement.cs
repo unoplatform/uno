@@ -1063,7 +1063,8 @@ namespace Windows.UI.Xaml
 			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
 
 #if XAMARIN_ANDROID
-			protected override void MeasureChild(View view, int widthSpec, int heightSpec) => view.Measure(widthSpec, heightSpec);
+			protected override void MeasureChild(View view, int widthSpec, int heightSpec)
+				=> Uno.UI.BindingHelper.Android.AndroidViewsViewExtensions.Measure_Slim(view, widthSpec, heightSpec);
 #endif
 
 			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);

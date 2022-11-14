@@ -13,6 +13,8 @@
 		
 		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+		
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net7.0-android'">android-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="'$(UnoSampleAppRuntimeIdentifiers)'!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
@@ -133,6 +135,9 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+		
+		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'android'">
@@ -185,6 +190,7 @@
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+  <Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
 	<Import Project="..\..\Uno.CrossTargetting.props" />
