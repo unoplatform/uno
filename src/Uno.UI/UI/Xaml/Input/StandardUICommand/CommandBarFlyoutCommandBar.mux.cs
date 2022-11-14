@@ -252,7 +252,7 @@ partial class CommandBarFlyoutCommandBar
 		SetPresenterName(m_flyoutPresenter?.Target as FlyoutPresenter);
 	}
 
-	private void SetOwningFlyout(CommandBarFlyout owningFlyout)
+	internal void SetOwningFlyout(CommandBarFlyout owningFlyout)
 	{
 		m_owningFlyout = owningFlyout;
 	}
@@ -397,9 +397,9 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
-	private bool HasCloseAnimation() => m_closingStoryboard is not null && SharedHelpers.IsAnimationsEnabled();
+	internal bool HasCloseAnimation() => m_closingStoryboard is not null && SharedHelpers.IsAnimationsEnabled();
 
-	private void PlayCloseAnimation(
+	internal void PlayCloseAnimation(
 		ManagedWeakReference weakCommandBarFlyout,
 		Action onCompleteFunc)
 	{
@@ -907,7 +907,7 @@ partial class CommandBarFlyoutCommandBar
 			MUX_ASSERT(m_verticallyAccessibleControls is not null);
 
 			m_horizontallyAccessibleControls.Clear();
-			m_verticallyAccessibleControls.Clear();
+			m_verticallyAccessibleControls!.Clear();
 		}
 
 		var primaryCommands = PrimaryCommands;
@@ -1301,7 +1301,7 @@ partial class CommandBarFlyoutCommandBar
 	}
 
 
-	private void SetPresenter(FlyoutPresenter presenter)
+	internal void SetPresenter(FlyoutPresenter presenter)
 	{
 		m_flyoutPresenter = WeakReferencePool.RentWeakReference(this, presenter);
 	}
@@ -1324,7 +1324,7 @@ partial class CommandBarFlyoutCommandBar
 		}
 	}
 
-	private bool HasSecondaryOpenCloseAnimations() =>
+	internal bool HasSecondaryOpenCloseAnimations() =>
 		SharedHelpers.IsAnimationsEnabled() &&
 		(bool)(m_expandedDownToCollapsedStoryboardRevoker.Disposable is not null ||
 		m_expandedUpToCollapsedStoryboardRevoker.Disposable is not null ||
@@ -1391,7 +1391,7 @@ partial class CommandBarFlyoutCommandBar
 	}
 
 	// Invoked by CommandBarFlyout when a secondary AppBarButton or AppBarToggleButton dependency property changed.
-	private void OnCommandBarElementDependencyPropertyChanged()
+	internal void OnCommandBarElementDependencyPropertyChanged()
 	{
 		//COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH, METH_NAME, this);
 
