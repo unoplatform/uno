@@ -9028,6 +9028,27 @@
 	  <Properties>
 	  </Properties>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="4.6">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)" 
+					reason="Externally unused API for android layouting" />
+		</Methods>
+	</IgnoreSet>
+
+
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
