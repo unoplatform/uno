@@ -78,7 +78,7 @@
       <Version>16.0.374-pre</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel.Composition">
-      <Version>4.7.0</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="VSSDK.TemplateWizardInterface">
       <Version>12.0.4</Version>
