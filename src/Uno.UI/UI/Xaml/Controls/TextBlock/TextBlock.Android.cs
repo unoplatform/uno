@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (UseInlinesFastPath)
 			{
-				return new Java.Lang.String(Text);
+				return JavaStringCache.GetNativeString(Text);
 			}
 			else
 			{
