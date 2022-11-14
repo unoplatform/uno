@@ -50,9 +50,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly static TextUtils.TruncateAt TruncateEnd = TextUtils.TruncateAt.End;
 
-		private readonly static Layout.Alignment LayoutAlignCenter = Android.Text.Layout.Alignment.AlignCenter;
-		private readonly static Layout.Alignment LayoutAlignOpposite = Android.Text.Layout.Alignment.AlignOpposite;
-		private readonly static Layout.Alignment LayoutAlignNormal = Android.Text.Layout.Alignment.AlignNormal;
+		private readonly static Android.Text.Layout.Alignment LayoutAlignCenter = Android.Text.Layout.Alignment.AlignCenter;
+		private readonly static Android.Text.Layout.Alignment LayoutAlignOpposite = Android.Text.Layout.Alignment.AlignOpposite;
+		private readonly static Android.Text.Layout.Alignment LayoutAlignNormal = Android.Text.Layout.Alignment.AlignNormal;
 
 		private readonly static Java.Lang.String EmptyString = new Java.Lang.String();
 		private static Java.Lang.Reflect.Constructor _maxLinedStaticLayout;
