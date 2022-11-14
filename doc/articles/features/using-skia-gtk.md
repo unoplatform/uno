@@ -82,6 +82,7 @@ To build an app with this feature enabled:
 1. Add the following items in your `.csproj`:
    ```xml
    <ItemGroup>
+      <TrimmerRootAssembly Include="MyApp.Skia.Gtk" />
 		<RdXmlFile Include="MyApp.rd.xml" />
 		<RuntimeHostConfigurationOption Include="Switch.System.Reflection.Assembly.SimulatedCallingAssembly" Value="true" />
    </ItemGroup>
@@ -89,15 +90,9 @@ To build an app with this feature enabled:
 1. Create a file name `MyApp.rd.xml`, and place it next to your csproj:
    ```xml
    <Directives>
-      <Application>
-         <Assembly Name="MyApp.Skia.Gtk" Dynamic="Required All" />
-         
-         <Assembly Name="GdkSharp" Dynamic="Required All">
-            <Type Name="Gdk.Screen" Dynamic="Required All"/>
-         </Assembly>
-         <Assembly Name="GtkSharp" Dynamic="Required All">
-            <Type Name="Gtk.WindowStateEventArgs" Dynamic="Required All"/>
-         </Assembly>
+      <Application>        
+         <Assembly Name="GdkSharp" />
+         <Assembly Name="GtkSharp" />
       </Application>
    </Directives>
    ```
