@@ -42,7 +42,7 @@
 			<Version>3.1.6</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
-		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+		<PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.8.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
