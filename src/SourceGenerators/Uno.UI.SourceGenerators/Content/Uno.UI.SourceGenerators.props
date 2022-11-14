@@ -367,6 +367,7 @@
 		<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoForceHotReloadCodeGen" />
 	</ItemGroup>
 
 	<Target Name="_FillSourceGeneratorItemGroups">
