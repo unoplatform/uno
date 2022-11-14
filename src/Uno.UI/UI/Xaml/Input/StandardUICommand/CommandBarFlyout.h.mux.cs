@@ -29,20 +29,20 @@ partial class CommandBarFlyout
 	/// <summary>
 	/// Gets the collection of primary command elements for the CommandBarFlyout.
 	/// </summary>
-	public IObservableVector<ICommandBarElement> PrimaryCommands { get; }
+	public IObservableVector<ICommandBarElement> PrimaryCommands => m_primaryCommands;
 
 	/// <summary>
 	/// Gets the collection of secondary command elements for the CommandBarFlyout.
 	/// </summary>
-	public IObservableVector<ICommandBarElement> SecondaryCommands { get; }
+	public IObservableVector<ICommandBarElement> SecondaryCommands => m_secondaryCommands;
 
 	private const int s_commandBarElementDependencyPropertiesCount = 3;
 	private const int s_commandBarElementDependencyPropertiesCountRS3 = 2;
 
 	private bool m_alwaysExpanded;
 
-	private IObservableVector<ICommandBarElement>? m_primaryCommands = null;
-	private IObservableVector<ICommandBarElement>? m_secondaryCommands = null;
+	private IObservableVector<ICommandBarElement> m_primaryCommands = null;
+	private IObservableVector<ICommandBarElement> m_secondaryCommands = null;
 
 	// winrt::IObservableVector<winrt::ICommandBarElement>::VectorChanged_revoker throws a weird build error when used,
 	// so we're using the event token pattern for manual detachment instead.
