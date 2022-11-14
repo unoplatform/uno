@@ -41,7 +41,7 @@ partial class CommandBarFlyoutCommandBar
 	private FrameworkElement? m_currentSecondaryItemsStartElement;
 
 	private CommandBarFlyoutOpenCloseAnimationKind m_openAnimationKind = CommandBarFlyoutOpenCloseAnimationKind.Clip;
-	private ManagedWeakReference m_flyoutPresenter;
+	private ManagedWeakReference? m_flyoutPresenter;
 	private Storyboard? m_openingStoryboard;
 	private Storyboard? m_closingStoryboard;
 	private readonly SerialDisposable m_openingStoryboardCompletedRevoker = new();
