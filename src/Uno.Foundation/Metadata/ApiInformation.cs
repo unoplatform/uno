@@ -29,7 +29,10 @@ namespace Windows.Foundation.Metadata
 		{
 			lock (_assemblies)
 			{
-				_assemblies.Add(assembly);
+				if (!_assemblies.Contains(assembly))
+				{
+					_assemblies.Add(assembly);
+				}
 			}
 		}
 

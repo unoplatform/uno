@@ -9,6 +9,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
 using Uno.Extensions;
+using Windows.Foundation.Metadata;
 
 using System.ComponentModel;
 using Uno.Foundation.Logging;
@@ -31,6 +32,12 @@ namespace Windows.UI.Xaml
 		public NativeApplication(AppBuilder appBuilder, IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)
 			: base(javaReference, transfer)
 		{
+			// Register assemblies earlier than Application itself, otherwise
+			// ApiInformation may return APIs as not implemented incorrectly.
+			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+
 			// Delay create the Windows.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
