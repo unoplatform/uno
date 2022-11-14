@@ -15,9 +15,14 @@ namespace Windows.System
 		private static Debug.MemoryInfo? _mi;
 		private static ActivityManager.MemoryInfo? _memoryInfo;
 		private static global::System.Diagnostics.Stopwatch _updateWatch = global::System.Diagnostics.Stopwatch.StartNew();
-		private static long _lastUpdate = long.MinValue;
+		private static TimeSpan _lastUpdate = TimeSpan.FromSeconds(-_updateInterval.TotalSeconds);
 
-		private readonly static long _updateResolution = global::System.Diagnostics.Stopwatch.Frequency;
+		private readonly static TimeSpan _updateInterval = TimeSpan.FromSeconds(10);
+
+		static MemoryManager()
+		{
+			IsAvailable = true;
+		}
 
 		public static ulong AppMemoryUsage
 		{
@@ -41,8 +46,8 @@ namespace Windows.System
 
 		private static void Update()
 		{
-			var now = _updateWatch.ElapsedTicks;
-			if (now - _lastUpdate > _updateResolution)
+			var now = _updateWatch.Elapsed;
+			if (_lastUpdate + _updateInterval < now)
 			{
 				_lastUpdate = now;
 
