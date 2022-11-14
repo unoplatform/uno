@@ -3,6 +3,7 @@
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
@@ -57,7 +58,7 @@ partial class CommandBarFlyout
 	private readonly Dictionary<int, SerialDisposable> m_secondaryButtonClickRevokerByIndexMap = new();
 	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonCheckedRevokerByIndexMap;
 	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
-	private readonly Dictionary<int, SerialDisposable> m_propertyChangedRevokersByIndexMap;
+	private readonly Dictionary<int, IDisposable[]> m_propertyChangedRevokersByIndexMap;
 
 	private FlyoutPresenter? m_presenter = null;
 
