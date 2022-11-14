@@ -20,7 +20,7 @@ partial class CommandBarFlyoutCommandBar
 {
 	internal CommandBarFlyoutOpenCloseAnimationKind OpenAnimationKind => m_openAnimationKind;
 
-	private bool m_commandBarFlyoutIsOpening;
+	internal bool m_commandBarFlyoutIsOpening;
 
 	private FrameworkElement? m_primaryItemsRoot;
 	private Popup? m_overflowPopup;
