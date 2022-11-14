@@ -379,9 +379,9 @@ partial class CommandBarFlyoutCommandBar
 		m_collapsedToExpandedDownStoryboardRevoker.Disposable = null;
 	}
 
-	private bool HasOpenAnimation() => m_openingStoryboard is not null && SharedHelpers.IsAnimationsEnabled();
+	internal bool HasOpenAnimation() => m_openingStoryboard is not null && SharedHelpers.IsAnimationsEnabled();
 
-	private void PlayOpenAnimation()
+	internal void PlayOpenAnimation()
 	{
 		if (m_closingStoryboard is { } closingStoryboard)
 		{
@@ -994,7 +994,7 @@ partial class CommandBarFlyoutCommandBar
 					// both which control list to use and in which direction to iterate through
 					// it to find the next control to focus.  Then we'll do that iteration
 					// to focus the next control.
-					var accessibleControls = isUp || isDown ? m_verticallyAccessibleControls : m_horizontallyAccessibleControls;
+					var accessibleControls = isUp || isDown ? m_verticallyAccessibleControls! : m_horizontallyAccessibleControls!;
 					int startIndex = isLeft || isUp ? accessibleControls.Count - 1 : 0;
 					int endIndex = isLeft || isUp ? -1 : accessibleControls.Count;
 					int deltaIndex = isLeft || isUp ? -1 : 1;
@@ -1109,10 +1109,10 @@ partial class CommandBarFlyoutCommandBar
 
 		if (updateTabStop)
 		{
-			newFocus.IsTabStop = true;
+			newFocus!.IsTabStop = true;
 		}
 
-		if (newFocus.Focus(focusState))
+		if (newFocus!.Focus(focusState))
 		{
 			if (oldFocus is not null && updateTabStop)
 			{
@@ -1137,7 +1137,7 @@ partial class CommandBarFlyoutCommandBar
 		// Give focus to the first or last focusable command
 		Control? focusedControl = null;
 		int startIndex = 0;
-		int endIndex = commands.Count;
+		int endIndex = commands!.Count;
 		int deltaIndex = 1;
 
 		if (!firstCommand)
@@ -1197,10 +1197,10 @@ partial class CommandBarFlyoutCommandBar
 
 		bool tabStopSeen = moreButton is not null && moreButton.IsTabStop;
 
-		if (tabStopSeen || GetFirstTabStopControl(commands) is not null)
+		if (tabStopSeen || GetFirstTabStopControl(commands!) is not null)
 		{
 			// Make sure only one command or the MoreButton has IsTabStop set
-			foreach (var command in commands)
+			foreach (var command in commands!)
 			{
 				if (command is Control commandAsControl)
 				{
@@ -1222,7 +1222,7 @@ partial class CommandBarFlyoutCommandBar
 		else
 		{
 			// Set IsTabStop to first focusable command
-			foreach (var command in commands)
+			foreach (var command in commands!)
 			{
 				if (command is Control commandAsControl)
 				{
@@ -1384,7 +1384,7 @@ partial class CommandBarFlyoutCommandBar
 				binding.Mode = BindingMode.OneWay;
 				if (actualFlyout.GetPresenter() is { } presenter)
 				{
-					presenter.SetBinding(Control.CornerRadiusProperty, binding);
+					(presenter as FrameworkElement).SetBinding(Control.CornerRadiusProperty, binding);
 				}
 			}
 		}
