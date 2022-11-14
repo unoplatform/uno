@@ -4,7 +4,7 @@ using Uno.UI.Runtime.Skia;
 
 namespace $ext_safeprojectname$.Skia.Gtk
 {
-	class Program
+	public sealed class Program
 	{
 		static void Main(string[] args)
 		{

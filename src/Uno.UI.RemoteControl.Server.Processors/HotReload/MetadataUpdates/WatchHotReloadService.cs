@@ -1,4 +1,6 @@
-﻿#if NET6_0_OR_GREATER
+﻿#nullable enable
+
+#if NET6_0_OR_GREATER
 using System;
 using System.Collections;
 using System.Collections.Immutable;
@@ -8,16 +10,17 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	public class WatchHotReloadService
 	{
-		private Func<Solution, CancellationToken, Task> _startSessionAsync;
-		private Func<Solution, CancellationToken, Task<ITuple>> _emitSolutionUpdateAsync;
-		private Action _endSession;
-		private object _targetInstance;
+		private Func<Solution, CancellationToken, Task>? _startSessionAsync;
+		private Func<Solution, CancellationToken, Task<ITuple>>? _emitSolutionUpdateAsync;
+		private Action? _endSession;
+		private object? _targetInstance;
 
 		public readonly record struct Update
 		{
@@ -59,13 +62,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					if (watchHotReloadServiceType.GetMethod(nameof(EmitSolutionUpdateAsync)) is { } emitSolutionUpdateAsyncMethod)
 					{
 						_emitSolutionUpdateAsync = async (s, ct) => {
-							var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] {s, ct });
+							var r = emitSolutionUpdateAsyncMethod.Invoke(_targetInstance, new object[] { s, ct });
 
 							if (r is Task t)
 							{
 								await t;
 
-								var value = r.GetType().GetProperty("Result").GetValue(r, null);
+								var resultPropertyInfo = r.GetType().GetProperty("Result")
+									?? throw new InvalidOperationException($"Unable to find Result property on [{r}]");
+
+								var value = resultPropertyInfo.GetValue(r, null);
 
 								if(value is ITuple tuple)
 								{
@@ -94,14 +100,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		}
 
 		internal Task StartSessionAsync(Solution currentSolution, CancellationToken cancellationToken)
-			=> _startSessionAsync(currentSolution, cancellationToken);
+		{
+			if(_startSessionAsync is null)
+			{
+				throw new InvalidOperationException($"_startSessionAsync cannot be null");
+			}
+			
+			return _startSessionAsync(currentSolution, cancellationToken);
+		}
 
 		public async Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
 		{
+			if (_emitSolutionUpdateAsync is null)
+			{
+				throw new InvalidOperationException($"_emitSolutionUpdateAsync cannot be null");
+			}
+
 			var ret = await _emitSolutionUpdateAsync(solution, cancellationToken);
 
-			var updatesSource = (IEnumerable)ret[0];
-			var diagnostics = (ImmutableArray<Diagnostic>)ret[1];
+			var updatesSource = (IEnumerable)ret[0]!;
+			var diagnostics = (ImmutableArray<Diagnostic>)ret[1]!;
 
 			var builder = ImmutableArray<Update>.Empty.ToBuilder();
 			foreach (var updateSource in updatesSource)
@@ -109,10 +127,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				var updateType = updateSource.GetType();
 
 				var update = new Update(
-					(Guid)GetField(updateType, nameof(Update.ModuleId)).GetValue(updateSource)
-					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.ILDelta)).GetValue(updateSource)
-					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.MetadataDelta)).GetValue(updateSource)
-					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.PdbDelta)).GetValue(updateSource)
+					(Guid)GetField(updateType, nameof(Update.ModuleId)).GetValue(updateSource)!
+					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.ILDelta)).GetValue(updateSource)!
+					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.MetadataDelta)).GetValue(updateSource)!
+					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.PdbDelta)).GetValue(updateSource)!
 				);
 
 				builder.Add(update);
@@ -133,7 +151,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 		}
 
-		public void EndSession() => _endSession();
+		public void EndSession()
+		{
+			if (_endSession is null)
+			{
+				throw new InvalidOperationException($"_endSession cannot be null");
+			}
+			
+			_endSession();
+		}
 	}
 }
 #endif

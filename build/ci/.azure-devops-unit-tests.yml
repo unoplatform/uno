@@ -67,6 +67,7 @@ jobs:
         !**\obj\**
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
+        !**\*netcore.Tests.dll
         !**\*.RuntimeTests.dll
         !**\testhost*.*
         !**\Microsoft*.dll
@@ -77,3 +78,64 @@ jobs:
       batchingBasedOnAgentsOption: customBatchSize
       rerunFailedTests: 'true'
       customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
+
+
+- job: Unit_Tests_netcore
+  displayName: 'Unit Tests - netcore'
+  timeoutInMinutes: 90
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: reference_package_build
+
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP 
+
+      # Disabled as tests explicitly use UWP types.
+      # Will be migrated once the whole tree is moved to WinUI
+      # WinUI:
+      #   UNO_UWP_BUILD: false
+      #   XAML_FLAVOR_BUILD: WinUI 
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/dotnet-install.yml
+  - template: templates/download-winui-converted-tree.yml
+  
+  - task: DownloadBuildArtifacts@0
+    displayName: Download build artifact
+    inputs:
+      artifactName: 'NugetPackages-Artifacts-reference'
+      downloadPath: '$(Agent.WorkFolder)' 
+
+  - task: ExtractFiles@1
+    displayName: Restore binaries structure
+    inputs:
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      destinationFolder: $(build.sourcesdirectory)
+      cleanDestinationFolder: false
+      overwriteExistingFiles: true
+
+  # Run on windows for now, as some generators tests fail with :
+  # error CS0041: Unexpected error writing debug information -- 'Value cannot be null. (Parameter 'type')'
+  - task: DotNetCoreCLI@2
+    displayName: Run netcore Unit Tests
+    inputs:
+      command: test
+      projects: |
+        **/*netcore.Tests.csproj
+      arguments: -c Release
+      publishTestResults: true

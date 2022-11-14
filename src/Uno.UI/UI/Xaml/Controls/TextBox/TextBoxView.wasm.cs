@@ -200,13 +200,13 @@ namespace Windows.UI.Xaml.Controls
 		public int SelectionStart
 		{
 			get => int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
-			set => SetProperty("selectionStart", value.ToString());
+			set => SetProperty("selectionStart", value.ToString(CultureInfo.InvariantCulture));
 		}
 
 		public int SelectionEnd
 		{
 			get => int.TryParse(GetProperty("selectionEnd"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
-			set => SetProperty("selectionEnd", value.ToString());
+			set => SetProperty("selectionEnd", value.ToString(CultureInfo.InvariantCulture));
 		}
 
 		internal override bool IsViewHit() => true;

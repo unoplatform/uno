@@ -49,9 +49,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(TextBox), 15)]
 		[DataRow(typeof(Button), 15)]
 		[DataRow(typeof(RadioButton), 15)]
+		[DataRow(typeof(ToggleButton), 15)]
+		[DataRow(typeof(RepeatButton), 15)]
 		[DataRow(typeof(TextBlock), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
+		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
 		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressRing), 15)]
 		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
@@ -67,8 +71,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(CommandBar), 15)]
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
-		[DataRow(typeof(ContentDialog), 15)]
-		[DataRow(typeof(ItemsRepeater), 15)]
+		[DataRow(typeof(ContentDialog), 15)]		
+		[DataRow(typeof(RelativePanel), 15)]
+		[DataRow(typeof(FlipView), 15)]
+		[DataRow(typeof(DatePicker), 15)]
+		[DataRow(typeof(CalendarView), 15)]
+		[DataRow(typeof(Page), 15)]
+		[DataRow(typeof(Image), 15)]
+		[DataRow(typeof(MenuBar), 15)]
+		[DataRow(typeof(ToggleSwitch), 15)]
+		[DataRow(typeof(SwipeControl), 15)]
+		[DataRow(typeof(SplitView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBadge), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
+#if false // Disabled for #10309
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
+#endif
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PagerControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PipsPager), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RefreshContainer), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioButtons), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RatingControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ItemsRepeater), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SplitButton), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TabView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TreeView), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TwoPaneView), 15)]
 		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
@@ -78,6 +115,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
 #if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+#endif
+#if !__IOS__ // Disabled - #10344
+		[DataRow(typeof(TextBox_Focus_Leak), 15)]
 #endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
@@ -102,6 +142,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var maxCounter = 0;
 			var activeControls = 0;
 			var maxActiveControls = 0;
+
+			// Ensure Holder counter is reset between individual control tests.
+			Holder.Reset();
 
 			var rootContainer = new ContentControl();
 
@@ -301,6 +344,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				_update(--_counter);
 			}
+
+			public static void Reset() => _counter = 0;
 		}
 	}
 }

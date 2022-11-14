@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml;
 using System.Threading.Tasks;
@@ -15,7 +16,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static string GetHtmlId(this UIElement element)
 		{
+#pragma warning disable CA1305 // Specify IFormatProvider
 			return element.HtmlId.ToString();
+#pragma warning restore CA1305 // Specify IFormatProvider
 		}
 
 		/// <summary>

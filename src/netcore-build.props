@@ -5,5 +5,5 @@
 		<TargetFrameworksCI>$(TargetFrameworks);net7.0</TargetFrameworksCI>
 	</PropertyGroup>
 
-	<Import Project="uno.mobile-cross-targeting-disable.props" />
+	<Import Project="uno.mobile-cross-targeting-disable.props" Condition="'$(_UnoMobileCrossTargetingWasImported)'!='true'" />
 </Project>

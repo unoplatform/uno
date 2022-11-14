@@ -316,6 +316,8 @@
                   href: features/VisibleBoundsPadding.md
                 - name: ElevatedView
                   href: features/ElevatedView.md
+                - name: AdaptiveTrigger
+                - href: features/AdaptiveTrigger.md
                 - name: Other features
                   href: Uno.UI.Toolkit.md
             - name: Uno Material

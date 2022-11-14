@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Windows.Markup;
 using Uno.Xaml.Schema;
 using System.Xml.Serialization;
+using System.Globalization;
 
 namespace Uno.Xaml
 {
@@ -66,7 +67,7 @@ namespace Uno.Xaml
 				PreferredXamlNamespace = XamlLanguage.Xaml2006Namespace;
 			} else {
 				Name = GetXamlName (type);
-				PreferredXamlNamespace = schemaContext.GetXamlNamespace (type.Namespace) ?? String.Format ("clr-namespace:{0};assembly={1}", type.Namespace, type.Assembly.GetName ().Name);
+				PreferredXamlNamespace = schemaContext.GetXamlNamespace (type.Namespace) ?? String.Format (CultureInfo.InvariantCulture, "clr-namespace:{0};assembly={1}", type.Namespace, type.Assembly.GetName ().Name);
 			}
 			if (type.IsGenericType) {
 				TypeArguments = new List<XamlType> ();

@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[SampleControlInfo("Geometry", "ClosedFigure")]
+	[Sample("Geometry", Name = "ClosedFigure", UsesFrame = false)]
 	public sealed partial class ClosedFigurePage : Page
     {
         public ClosedFigurePage()

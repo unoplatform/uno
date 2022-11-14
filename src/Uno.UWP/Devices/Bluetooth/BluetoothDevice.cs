@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Windows.Devices.Bluetooth
@@ -45,7 +46,7 @@ namespace Windows.Devices.Bluetooth
 
 		public static string GetDeviceSelectorFromBluetoothAddress( ulong bluetoothAddress)
 		{ 
-			string macAddr = string.Format("{0:x12}", bluetoothAddress);
+			string macAddr = string.Format(CultureInfo.InvariantCulture, "{0:x12}", bluetoothAddress);
 			return _deviceSelectorPrefix + "(System.DeviceInterface.Bluetooth.DeviceAddress:=\"" + macAddr + "\" OR " + _deviceSelectorIssueInquiry + "#True)";
 		}
 

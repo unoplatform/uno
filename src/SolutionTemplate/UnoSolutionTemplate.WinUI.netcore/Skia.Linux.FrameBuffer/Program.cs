@@ -5,7 +5,7 @@ using Windows.UI.Core;
 
 namespace $ext_safeprojectname$
 {
-	class Program
+	public sealed class Program
 	{
 		static void Main(string[] args)
 		{

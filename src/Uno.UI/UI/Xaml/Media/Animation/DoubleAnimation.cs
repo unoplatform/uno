@@ -7,6 +7,7 @@ using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -107,7 +108,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		float IAnimation<float>.Add(float first, float second) => first + second;
 
-		float IAnimation<float>.Convert(object value) => Convert.ToSingle(value);
+		float IAnimation<float>.Convert(object value) => Convert.ToSingle(value, CultureInfo.InvariantCulture);
 
 		float IAnimation<float>.Multiply(float multiplier, float t) => multiplier * t;
 	}

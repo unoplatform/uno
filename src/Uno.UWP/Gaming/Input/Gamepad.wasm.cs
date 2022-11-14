@@ -136,7 +136,7 @@ public partial class Gamepad
 		var connectedGamepadIds =
 			serializedIds
 				.Split(new[] { IdSeparator }, StringSplitOptions.RemoveEmptyEntries)
-				.Select(id => long.Parse(id))
+				.Select(id => long.Parse(id, CultureInfo.InvariantCulture))
 				.ToList();
 
 		lock (_gamepadCache)

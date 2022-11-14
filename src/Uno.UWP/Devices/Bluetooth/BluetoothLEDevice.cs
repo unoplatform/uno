@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Windows.Devices.Bluetooth
@@ -63,7 +64,7 @@ namespace Windows.Devices.Bluetooth
 
 		public static string GetDeviceSelectorFromBluetoothAddress(ulong bluetoothAddress)
 		{
-			string macAddr = string.Format("{0:x12}", bluetoothAddress);
+			string macAddr = string.Format(CultureInfo.InvariantCulture, "{0:x12}", bluetoothAddress);
 			return _deviceSelectorPrefix + "(System.DeviceInterface.Bluetooth.DeviceAddress:=\"" + macAddr + "\" OR " + _deviceSelectorIssueInquiry + "#True)";
 		}
 
@@ -74,7 +75,7 @@ namespace Windows.Devices.Bluetooth
 				return GetDeviceSelectorFromBluetoothAddress(bluetoothAddress);
 			}
 
-			string macAddr = string.Format("{0:x12}", bluetoothAddress);
+			string macAddr = string.Format(CultureInfo.InvariantCulture, "{0:x12}", bluetoothAddress);
 			string selector = _deviceSelectorPrefix + "((System.DeviceInterface.Bluetooth.DeviceAddress:=\"" + macAddr + "\"" +
 				"AND System.Devices.Aep.Bluetooth.Le.AddressType:=System.Devices.Aep.Bluetooth.Le.AddressType#";
 
@@ -94,8 +95,8 @@ namespace Windows.Devices.Bluetooth
 		public static string GetDeviceSelectorFromAppearance(BluetoothLEAppearance appearance)
 		{
 			return _deviceSelectorPrefix +
-				"((System.Devices.Aep.Bluetooth.Le.Appearance.Category:=" + appearance.Category.ToString() +
-				"AND System.Devices.Aep.Bluetooth.Le.Appearance.Subcategory:=" + appearance.SubCategory.ToString() +
+				"((System.Devices.Aep.Bluetooth.Le.Appearance.Category:=" + appearance.Category.ToString(CultureInfo.InvariantCulture) +
+				"AND System.Devices.Aep.Bluetooth.Le.Appearance.Subcategory:=" + appearance.SubCategory.ToString(CultureInfo.InvariantCulture) +
 				_deviceSelectorIssueInquiry + "#True";
 		}
 

@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using Color = Windows.UI.Color;
+using System.Globalization;
 
 namespace Windows.UI.Xaml
 {
@@ -129,7 +130,7 @@ namespace Windows.UI.Xaml
 		{
 			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
 			var sizeParts = sizeString.Split(';');
-			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+			return new Rect(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture), double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture));
 		}
 
 		protected internal void SetStyle(string name, string value)
@@ -240,7 +241,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 			var count = ++_arrangeCount;
 
-			SetAttribute(("xamlArrangeCount", count.ToString()));
+			SetAttribute(("xamlArrangeCount", count.ToString(CultureInfo.InvariantCulture)));
 #endif
 		}
 

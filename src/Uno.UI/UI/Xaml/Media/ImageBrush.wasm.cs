@@ -240,8 +240,8 @@ namespace Windows.UI.Xaml.Media
 			var imgElement = pattern.FindFirstChild();
 
 			imgElement?.SetAttribute(
-				("width", naturalSize.Width.ToString()),
-				("height", naturalSize.Height.ToString())
+				("width", naturalSize.Width.ToString(CultureInfo.InvariantCulture)),
+				("height", naturalSize.Height.ToString(CultureInfo.InvariantCulture))
 			);
 
 			var width = (int)target.ActualWidth;

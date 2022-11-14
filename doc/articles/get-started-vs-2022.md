@@ -6,7 +6,7 @@ This getting started will guide you through the creation of an Uno Platform App 
 > This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
 
 > [!IMPORTANT] 
-> To use Xamarin (as opposed to .NET 6 Mobile) and Visual Studio 2019, [follow this guide](get-started-vs.md).
+> To use Xamarin (as opposed to .NET 6 Mobile) with Visual Studio 2019, [follow this guide](get-started-vs.md).
 
 ## Prerequisites
 To create Uno Platform applications you will need [**Visual Studio 2022 17.3 or later**](https://visualstudio.microsoft.com/vs/):
@@ -28,10 +28,13 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.3 or 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
 
 > [!IMPORTANT] 
-> To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6, 
+> To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 > [!NOTE]
 > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+
+> [!IMPORTANT] 
+> To build .NET 7 projects, you will need to install Visual Studio 17.4 Preview 5 or later.
 
 [!include[getting-help](use-uno-check-inline-windows.md)]
 

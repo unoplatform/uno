@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Windows.UI.Xaml.Data;
 using Uno.UI;
 using System.Collections;
+using System.Globalization;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -1911,7 +1912,7 @@ namespace Windows.UI.Xaml
 			{
 				if (value?.GetType() != propertyDetails.Property.Type)
 				{
-					value = Convert.ChangeType(value, propertyDetails.Property.Type);
+					value = Convert.ChangeType(value, propertyDetails.Property.Type, CultureInfo.CurrentCulture);
 				}
 			}
 

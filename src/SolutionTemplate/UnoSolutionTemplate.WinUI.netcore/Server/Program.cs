@@ -4,7 +4,7 @@ using Uno.Wasm.Bootstrap.Server;
 
 namespace UnoQuickStart
 {
-	public class Program
+	public sealed class Program
 	{
 		public static void Main(string[] args)
 		{

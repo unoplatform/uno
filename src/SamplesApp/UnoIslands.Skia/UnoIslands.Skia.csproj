@@ -41,7 +41,7 @@
 		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="System.Management" Version="4.6.0" />
+		<PackageReference Include="System.Management" Version="7.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 	</ItemGroup>
 

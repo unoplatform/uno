@@ -3,6 +3,7 @@
 // MUX Reference ValueHelpers.cpp
 
 using System;
+using System.Globalization;
 
 namespace Uno.UI.Helpers.WinUI
 {
@@ -26,6 +27,6 @@ namespace Uno.UI.Helpers.WinUI
 			type == typeof(string) ||
 			type == typeof(Guid);
 		
-		internal static string ConvertValueToString(object value, Type type) => Convert.ToString(value);
+		internal static string ConvertValueToString(object value, Type type) => Convert.ToString(value, CultureInfo.InvariantCulture);
 	}
 }

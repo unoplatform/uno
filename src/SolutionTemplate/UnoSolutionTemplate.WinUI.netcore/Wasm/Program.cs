@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 
 namespace $ext_safeprojectname$.Wasm
 {
-	public class Program
+	public sealed class Program
 	{
 		private static App _app;
 

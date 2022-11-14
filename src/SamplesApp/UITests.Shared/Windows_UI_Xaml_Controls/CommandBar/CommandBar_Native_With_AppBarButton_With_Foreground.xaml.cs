@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar
 {
-	[Sample]
+	[Sample(UsesFrame = false)]
 	public sealed partial class CommandBar_Native_With_AppBarButton_With_Foreground : Page
 	{
 		public CommandBar_Native_With_AppBarButton_With_Foreground()

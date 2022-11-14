@@ -1,6 +1,7 @@
 // MUX Reference PersonPicture.cpp, commit de78834
 
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Contacts;
@@ -292,7 +293,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (badgeNumber <= 99)
 			{
-				m_badgeNumberTextBlock.Text = badgeNumber.ToString();
+				m_badgeNumberTextBlock.Text = badgeNumber.ToString(CultureInfo.CurrentCulture);
 			}
 			else
 			{
@@ -661,7 +662,7 @@ namespace Windows.UI.Xaml.Controls
 			if (m_badgingEllipse != null && m_badgingBackgroundEllipse != null && m_badgeNumberTextBlock != null && m_badgeGlyphIcon != null)
 			{
 				// Maintain badging circle and font size by enforcing the new size on both Width and Height.
-				// Design guidelines have specified the font size to be 60% of the badging plate, and we want to keep 
+				// Design guidelines have specified the font size to be 60% of the badging plate, and we want to keep
 				// badging plate to be about 50% of the control so that don't block the initial/profile picture.
 				double newSize = (args.NewSize.Width < args.NewSize.Height) ? args.NewSize.Width : args.NewSize.Height;
 				m_badgingEllipse.Height = newSize * 0.5;

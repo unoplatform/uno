@@ -11,6 +11,7 @@ using System.Threading;
 using Windows.UI.Core;
 using Uno.Disposables;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -98,7 +99,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					EventOpcode.Start,
 					payload: new[] {
 						this.GetParent()?.GetType().Name,
-						this.GetParent()?.GetDependencyObjectId().ToString(),
+						this.GetParent()?.GetDependencyObjectId().ToString(CultureInfo.InvariantCulture),
 					}
 				);
 			}

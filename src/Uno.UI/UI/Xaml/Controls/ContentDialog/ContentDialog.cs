@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Uno.Client;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -15,6 +14,7 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -31,6 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 		private readonly SerialDisposable _templateSubscriptions = new SerialDisposable();
+
 		private bool _hiding;
 		private bool _templateApplied;
 
@@ -66,6 +67,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (thisRef.Target is ContentDialog that)
 				{
+					that.SetDialogFocus();
+
 					that.Opened?.Invoke(that, new ContentDialogOpenedEventArgs());
 					that.UpdateVisualState();
 				}
@@ -117,6 +120,41 @@ namespace Windows.UI.Xaml.Controls
 			if (m_placementMode != PlacementMode.InPlace)
 			{
 				SizeAndPositionContentInPopup();
+			}
+		}
+
+		private void SetDialogFocus()
+		{
+			bool focusSet = false;
+
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+
+			if (m_tpContentPart is not null)
+			{
+				if (focusManager.GetFirstFocusableElement(m_tpContentPart) is UIElement focusableElement)
+				{
+					focusSet = focusableElement.Focus(FocusState.Programmatic);
+				}
+			}
+
+			if (!focusSet)
+			{
+				ButtonBase button = DefaultButton switch				
+				{
+					ContentDialogButton.Primary => m_tpPrimaryButtonPart,
+					ContentDialogButton.Secondary => m_tpSecondaryButtonPart,
+					ContentDialogButton.Close => m_tpCloseButtonPart,
+					_ => null,
+				};
+				focusSet = button?.Focus(FocusState.Programmatic) ?? false;
+			}
+
+			if (!focusSet && m_tpCommandSpacePart is not null)
+			{
+				if (focusManager.GetFirstFocusableElement(m_tpCommandSpacePart) is UIElement focusableCommandElement)
+				{
+					focusableCommandElement.Focus(FocusState.Programmatic);
+				}
 			}
 		}
 
@@ -368,8 +406,20 @@ namespace Windows.UI.Xaml.Controls
 				});
 			}
 
+
+			d.Add(_popup.PopupPanel.RegisterDisposablePropertyChangedCallback(VisibilityProperty, OnPopupPanelVisibilityChanged));
+
 			_subscriptions.Disposable = d;
 		}
+
+		private void OnPopupPanelVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (_popup.PopupPanel.Visibility == Visibility.Visible)
+			{
+				SetDialogFocus();
+			}
+		}
+
 		private void OnBackRequested(object sender, BackRequestedEventArgs e)
 		{
 			// Match Windows behavior:

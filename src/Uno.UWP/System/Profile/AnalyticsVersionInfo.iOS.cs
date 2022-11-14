@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using UIKit;
 using Windows.System.Profile.Internal;
 
@@ -14,7 +15,7 @@ public partial class AnalyticsVersionInfo
 
 		if (Version.TryParse(UIDevice.CurrentDevice.SystemVersion, out var version))
 		{
-			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString();
+			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString(CultureInfo.InvariantCulture);
 		}
 	}
 }

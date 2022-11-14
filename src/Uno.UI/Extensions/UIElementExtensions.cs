@@ -7,6 +7,7 @@ using System.Text;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using System.Globalization;
 
 namespace Uno.UI.Extensions
 {
@@ -88,7 +89,7 @@ namespace Uno.UI.Extensions
 				var sb = new StringBuilder(depth * 4);
 				for (var i = 0; i < depth - 1; i++)
 				{
-					sb.Append(' ', i.ToString().Length);
+					sb.Append(' ', i.ToString(CultureInfo.InvariantCulture).Length);
 					sb.Append('|');
 				}
 

@@ -17,6 +17,7 @@ using Uno.UI.Services;
 
 using Windows.ApplicationModel.Resources;
 using Uno.UI;
+using System.Globalization;
 #if __IOS__
 using UIKit;
 #else
@@ -662,11 +663,11 @@ namespace Windows.UI.Xaml.Controls
 						this.Log().Debug($"WKNavigationDelegate.DecidePolicy: NavigationType: {navigationAction.NavigationType} Request:{requestUrl} TargetRequest: {navigationAction.TargetFrame?.Request}");
 					}
 
-					var scheme = requestUrl.Scheme.ToLower();
+					var scheme = requestUrl.Scheme;
 
 					// Note that the "file" scheme is not officially supported by the UWP WebView (https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.webview.unsupportedurischemeidentified?view=winrt-19041#remarks).
 					// We have to support it here for anchor navigation (as long as https://github.com/unoplatform/uno/issues/2998 is not resolved).
-					var isUnsupportedScheme = scheme != "http" && scheme != "https" && scheme != "file";
+					var isUnsupportedScheme = !scheme.Equals("http", StringComparison.OrdinalIgnoreCase) && !scheme.Equals("https", StringComparison.OrdinalIgnoreCase) && !scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 					if (isUnsupportedScheme)
 					{
 						bool cancelled = unoWKWebView.OnUnsupportedUriSchemeIdentified(requestUrl);

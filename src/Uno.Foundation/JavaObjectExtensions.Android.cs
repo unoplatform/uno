@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Runtime;
 using System;
@@ -31,7 +32,7 @@ namespace Uno.Extensions
 				if (instance.Log().IsEnabled(LogLevel.Warning))
 				{
 					instance.Log().Warn(
-						string.Format("Native invocation discarded for {0} at {1}:{2} ({3}). The object may not have been disposed properly by its owner."
+						string.Format(CultureInfo.InvariantCulture, "Native invocation discarded for {0} at {1}:{2} ({3}). The object may not have been disposed properly by its owner."
 						, instance.GetType()
 						, member
 						, line

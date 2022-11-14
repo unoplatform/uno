@@ -71,6 +71,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 			_contentElement = textBox.ContentElement;
 			EnsureWidget(textBox);
+			ObserveTextChanges();
 			var textInputLayer = GetWindowTextInputLayer();
 			if (_currentInputWidget!.Parent != textInputLayer)
 			{
@@ -80,7 +81,6 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			_lastPosition = new GdkPoint(-1, -1);
 			UpdateNativeView();
 			SetWidgetText(textBox.Text);
-
 			InvalidateLayout();
 
 			textInputLayer.ShowAll();
@@ -103,6 +103,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		public void EndEntry()
 		{
+			_textChangedDisposable.Disposable = null;
 			if (GetInputText() is { } inputText)
 			{
 				_owner.UpdateTextFromNative(inputText);
@@ -259,8 +260,6 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			if (acceptsReturn)
 			{
 				var textView = new TextView();
-				textView.Buffer.Changed += WidgetTextChanged;
-				_textChangedDisposable.Disposable = Disposable.Create(() => textView.Buffer.Changed -= WidgetTextChanged);
 				widget = textView;
 			}
 			else
@@ -272,12 +271,30 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 					entry.Visibility = isPasswordVisible;
 				}
 
-				entry.Changed += WidgetTextChanged;
-				_textChangedDisposable.Disposable = Disposable.Create(() => entry.Changed -= WidgetTextChanged);
 				widget = entry;
 			}
 			widget.StyleContext.AddClass(TextBoxViewCssClass);
 			return widget;
+		}
+
+		private void ObserveTextChanges()
+		{
+			if (_currentInputWidget is TextView textView)
+			{
+				textView.Buffer.Changed += WidgetTextChanged;
+				_textChangedDisposable.Disposable = Disposable.Create(() =>
+				{
+					textView.Buffer.Changed -= WidgetTextChanged;
+				});
+			}
+			else if (_currentInputWidget is Entry entry)
+			{
+				entry.Changed += WidgetTextChanged;
+				_textChangedDisposable.Disposable = Disposable.Create(() =>
+				{
+					entry.Changed -= WidgetTextChanged;
+				});
+			}
 		}
 
 		private void WidgetTextChanged(object? sender, EventArgs e)
