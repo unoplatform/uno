@@ -173,9 +173,7 @@ namespace Windows.UI.Xaml.Controls
 
 							borderPath.AddRoundRect(drawArea, _outerRadiiStore, Path.Direction.Cw);
 							borderPath.AddRoundRect(adjustedArea, _innerRadiiStore, Path.Direction.Cw);
-							//Create the path for the outer and inner rectangles that will become our border shape
-							//var borderPath = cornerRadius.GetOutlinePath(drawArea.ToRectF());
-							//borderPath.AddRoundRect(adjustedArea.ToRectF(), cornerRadius.GetInnerRadii(borderThickness), Path.Direction.Cw);
+
 							var overlay = GetOverlayDrawable(
 								strokePaint,
 								physicalBorderThickness,

@@ -101,50 +101,50 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	/// <returns>Radii.</returns>
 	internal FullCornerRadius GetRadii(Size elementSize, Thickness borderThickness, bool outer)
 	{
-		var halfLeft = borderThickness.Left * 0.5;
-		var halfTop = borderThickness.Top * 0.5;
-		var halfRight = borderThickness.Right * 0.5;
-		var halfBottom = borderThickness.Bottom * 0.5;
+		var halfLeftBorder = borderThickness.Left * 0.5;
+		var halfTopBorder = borderThickness.Top * 0.5;
+		var halfRightBorder = borderThickness.Right * 0.5;
+		var halfBottomBorder = borderThickness.Bottom * 0.5;
 
-		double leftTop, topLeft, topRight, rightTop, rightBottom, bottomRight, leftBottom, bottomLeft;
-		leftTop = topLeft = topRight = rightTop = rightBottom = bottomRight = leftBottom = bottomLeft = 0;
+		double leftTopArc, topLeftArc, topRightArc, rightTopArc, rightBottomArc, bottomRightArc, leftBottomArc, bottomLeftArc;
+		leftTopArc = topLeftArc = topRightArc = rightTopArc = rightBottomArc = bottomRightArc = leftBottomArc = bottomLeftArc = 0;
 
 		if (outer)
 		{
 			if (!MathHelpers.IsCloseReal(TopLeft, 0.0f))
 			{
-				leftTop = TopLeft + halfLeft;
-				topLeft = TopLeft + halfTop;
+				leftTopArc = TopLeft + halfLeftBorder;
+				topLeftArc = TopLeft + halfTopBorder;
 			}
 
 			if (!MathHelpers.IsCloseReal(TopRight, 0.0f))
 			{
-				topRight = TopRight + halfTop;
-				rightTop = TopRight + halfRight;
+				topRightArc = TopRight + halfTopBorder;
+				rightTopArc = TopRight + halfRightBorder;
 			}
 
 			if (!MathHelpers.IsCloseReal(BottomRight, 0.0f))
 			{
-				rightBottom = BottomRight + halfRight;
-				bottomRight = BottomRight + halfBottom;
+				rightBottomArc = BottomRight + halfRightBorder;
+				bottomRightArc = BottomRight + halfBottomBorder;
 			}
 
 			if (!MathHelpers.IsCloseReal(BottomLeft, 0.0f))
 			{
-				bottomLeft = BottomLeft + halfBottom;
-				leftBottom = BottomLeft + halfLeft;
+				bottomLeftArc = BottomLeft + halfBottomBorder;
+				leftBottomArc = BottomLeft + halfLeftBorder;
 			}
 		}
 		else
 		{
-			leftTop = Math.Max(0.0f, TopLeft - halfLeft);
-			topLeft = Math.Max(0.0f, TopLeft - halfTop);
-			topRight = Math.Max(0.0f, TopRight - halfTop);
-			rightTop = Math.Max(0.0f, TopRight - halfRight);
-			rightBottom = Math.Max(0.0f, BottomRight - halfRight);
-			bottomRight = Math.Max(0.0f, BottomRight - halfBottom);
-			bottomLeft = Math.Max(0.0f, BottomLeft - halfBottom);
-			leftBottom = Math.Max(0.0f, BottomLeft - halfLeft);
+			leftTopArc = Math.Max(0.0f, TopLeft - halfLeftBorder);
+			topLeftArc = Math.Max(0.0f, TopLeft - halfTopBorder);
+			topRightArc = Math.Max(0.0f, TopRight - halfTopBorder);
+			rightTopArc = Math.Max(0.0f, TopRight - halfRightBorder);
+			rightBottomArc = Math.Max(0.0f, BottomRight - halfRightBorder);
+			bottomRightArc = Math.Max(0.0f, BottomRight - halfBottomBorder);
+			bottomLeftArc = Math.Max(0.0f, BottomLeft - halfBottomBorder);
+			leftBottomArc = Math.Max(0.0f, BottomLeft - halfLeftBorder);
 		}
 
 		// Adjust the corner radius to fit element size
@@ -152,38 +152,38 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 		// them "fairly" along the side.
 		double ratio;
 
-		if (leftTop + rightTop > elementSize.Width)
+		if (leftTopArc + rightTopArc > elementSize.Width)
 		{
-			ratio = leftTop / (leftTop + rightTop);
-			leftTop = ratio * elementSize.Width;
-			rightTop = elementSize.Width - leftTop;
+			ratio = leftTopArc / (leftTopArc + rightTopArc);
+			leftTopArc = ratio * elementSize.Width;
+			rightTopArc = elementSize.Width - leftTopArc;
 		}
 
-		if (topRight + bottomRight > elementSize.Height)
+		if (topRightArc + bottomRightArc > elementSize.Height)
 		{
-			ratio = topRight / (topRight + bottomRight);
-			topRight = ratio * elementSize.Height;
-			bottomRight = elementSize.Height - topRight;
+			ratio = topRightArc / (topRightArc + bottomRightArc);
+			topRightArc = ratio * elementSize.Height;
+			bottomRightArc = elementSize.Height - topRightArc;
 		}
 
-		if (rightBottom + leftBottom > elementSize.Width)
+		if (rightBottomArc + leftBottomArc > elementSize.Width)
 		{
-			ratio = rightBottom / (rightBottom + leftBottom);
-			rightBottom = ratio * elementSize.Width;
-			leftBottom = elementSize.Width - rightBottom;
+			ratio = rightBottomArc / (rightBottomArc + leftBottomArc);
+			rightBottomArc = ratio * elementSize.Width;
+			leftBottomArc = elementSize.Width - rightBottomArc;
 		}
 
-		if (bottomLeft + topLeft > elementSize.Height)
+		if (bottomLeftArc + topLeftArc > elementSize.Height)
 		{
-			ratio = bottomLeft / (bottomLeft + topLeft);
-			bottomLeft = ratio * elementSize.Height;
-			topLeft = elementSize.Height - bottomLeft;
+			ratio = bottomLeftArc / (bottomLeftArc + topLeftArc);
+			bottomLeftArc = ratio * elementSize.Height;
+			topLeftArc = elementSize.Height - bottomLeftArc;
 		}
 
 		return new(
-			new((float)leftTop, (float)topLeft),
-			new((float)rightTop, (float)topRight),
-			new((float)rightBottom, (float)bottomRight),
-			new((float)leftBottom, (float)bottomLeft));
+			new((float)leftTopArc, (float)topLeftArc),
+			new((float)rightTopArc, (float)topRightArc),
+			new((float)rightBottomArc, (float)bottomRightArc),
+			new((float)leftBottomArc, (float)bottomLeftArc));
 	}
 }
