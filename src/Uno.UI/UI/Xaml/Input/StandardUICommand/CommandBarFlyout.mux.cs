@@ -143,12 +143,15 @@ public partial class CommandBarFlyout : FlyoutBase
 
 							if (button is not null && button.Flyout is null)
 							{
-								m_secondaryButtonClickRevokerByIndexMap[index] = button.Click(auto_revoke, closeFlyoutFunc);
+								button.Click += closeFlyoutFunc;
+								m_secondaryButtonClickRevokerByIndexMap[index] = Disposable.Create(() => button.Click -= closeFlyoutFunc);
 							}
 							else if (toggleButton is not null)
 							{
-								m_secondaryToggleButtonCheckedRevokerByIndexMap[index] = toggleButton.Checked(auto_revoke, closeFlyoutFunc);
-								m_secondaryToggleButtonUncheckedRevokerByIndexMap[index] = toggleButton.Unchecked(auto_revoke, closeFlyoutFunc);
+								toggleButton.Checked += closeFlyoutFunc;
+								m_secondaryToggleButtonCheckedRevokerByIndexMap[index] = Disposable.Create(() => toggleButton.Checked -= closeFlyoutFunc);
+								toggleButton.Unchecked += closeFlyoutFunc;
+								m_secondaryToggleButtonUncheckedRevokerByIndexMap[index] = Disposable.Create(() => toggleButton.Unchecked -= closeFlyoutFunc);
 							}
 							break;
 						}
