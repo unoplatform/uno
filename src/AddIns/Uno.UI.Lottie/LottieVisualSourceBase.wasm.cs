@@ -9,6 +9,8 @@ using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Disposables;
 
+#pragma warning disable CA1305 // Specify IFormatProvider
+
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSourceBase
@@ -44,7 +46,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			if (_lastSource == null || !_lastSource.Equals(sourceUri))
 			{
 				_lastSource = sourceUri;
-				
+
 				if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 				{
 					var firstLoad = true;
@@ -87,7 +89,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 							updatedJson,
 							");"
 						};
-						
+
 						ExecuteJs(js);
 
 						if (_playState != null && _domLoaded)

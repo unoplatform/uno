@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using Uno.Xaml.Schema;
 
@@ -71,7 +72,7 @@ namespace System.Windows.Markup
 			// there might be some cases that it could still
 			// resolve a static member without MemberType, 
 			// but we don't know any of such so far.
-			throw new ArgumentException (String.Format ("Member '{0}' could not be resolved to a static member", Member));
+			throw new ArgumentException (String.Format (CultureInfo.InvariantCulture, "Member '{0}' could not be resolved to a static member", Member));
 		}
 	}
 }

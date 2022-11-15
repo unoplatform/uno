@@ -813,7 +813,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
 								for (int fluentVersion = 1; fluentVersion <= XamlConstants.MaxFluentResourcesVersion; fluentVersion++)
 								{
-									RegisterForFile(string.Format(WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
+									RegisterForFile(string.Format(CultureInfo.InvariantCulture, WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
 								}
 								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
 							}

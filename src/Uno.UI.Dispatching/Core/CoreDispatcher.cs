@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 
 namespace Uno.UI.Dispatching
 {
@@ -212,7 +213,7 @@ namespace Uno.UI.Dispatching
 					TraceProvider.CoreDispatcher_Schedule,
 					EventOpcode.Send,
 					new[] {
-						((int)priority).ToString(),
+						((int)priority).ToString(CultureInfo.InvariantCulture),
 						handler.Method.DeclaringType?.FullName + "." + handler.Method.DeclaringType?.Name
 					}
 				);
@@ -363,7 +364,7 @@ namespace Uno.UI.Dispatching
 					TraceProvider.CoreDispatcher_InvokeStart,
 					TraceProvider.CoreDispatcher_InvokeStop,
 					relatedActivity: operation.ScheduleEventActivity,
-					payload: new[] { ((int)CurrentPriority).ToString(), operation.GetDiagnosticsName() }
+					payload: new[] { ((int)CurrentPriority).ToString(CultureInfo.InvariantCulture), operation.GetDiagnosticsName() }
 				);
 			}
 

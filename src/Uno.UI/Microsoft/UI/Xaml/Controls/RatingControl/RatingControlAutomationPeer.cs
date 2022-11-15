@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RatingControlAutomationPeer.cpp, commit de78834
 
+using System.Globalization;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Globalization.NumberFormatting;
@@ -197,7 +198,7 @@ public partial class RatingControlAutomationPeer : FrameworkElementAutomationPee
 		SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
 		formatter.NumberRounder = rounder;
 
-		string maxRatingString = GetRatingControl().MaxRating.ToString();
+		string maxRatingString = GetRatingControl().MaxRating.ToString(CultureInfo.CurrentCulture);
 
 		int fractionDigits = DetermineFractionDigits(ratingValue);
 		int sigDigits = DetermineSignificantDigits(ratingValue, fractionDigits);

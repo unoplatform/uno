@@ -46,17 +46,30 @@ public partial class BreadcrumbBarItem : ContentControl
 
 #if HAS_UNO
 		// Uno specific: We use Unloaded instead of destructor
-		this.Unloaded += BreadcrumbBarItem_Unloaded;
+		Loaded += BreadcrumbBarItem_Loaded;
+		Unloaded += BreadcrumbBarItem_Unloaded;
 #endif
+	}
+
+#if HAS_UNO
+	private void BreadcrumbBarItem_Loaded(object sender, RoutedEventArgs e)
+	{
+		HookListeners(m_isEllipsisDropDownItem);
 	}
 
 	private void BreadcrumbBarItem_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		RevokeListeners();
+		m_ellipsisRepeaterElementPreparedRevoker.Disposable = null;
+		m_ellipsisRepeaterElementIndexChangedRevoker.Disposable = null;
 	}
+#endif
 
 	private void HookListeners(bool forEllipsisDropDownItem)
 	{
+#if HAS_UNO
+		RevokeListeners();
+#endif
 		if (this is UIElement thisAsUIElement7)
 		{
 			if (m_childPreviewKeyDownToken.Disposable == null)

@@ -16,14 +16,14 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using AppBarToggleButtonAutomationPeer = Windows.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer;
 using AppBarToggleButtonTemplateSettings = Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
-
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
 	{
 		// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
-		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle. 
+		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle.
 		Storyboard? m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
 		CommandBarDefaultLabelPosition m_defaultLabelPosition;
@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// If there are other buttons that have open sub-menus, then we should
 				// close those on a delay, since they no longer have mouse-over.
-			
+
 				CommandBar.FindParentCommandBarForElement(this, out var parentCommandBar);
 
 				if (parentCommandBar is { })
@@ -491,7 +491,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
-					SetValue(ToolTipService.ToolTipProperty, string.Format(toolTipFormatString, labelText, keyboardAcceleratorText));
+					SetValue(ToolTipService.ToolTipProperty, string.Format(CultureInfo.CurrentCulture, toolTipFormatString, labelText, keyboardAcceleratorText));
 				}
 				else
 				{

@@ -68,21 +68,21 @@ namespace System.Windows.Markup
 			DateTime dt = (DateTime) value;
 			if (dt.Millisecond != 0)
 			{
-				return dt.ToString ("yyyy-MM-dd'T'HH:mm:ss.F");
+				return dt.ToString ("yyyy-MM-dd'T'HH:mm:ss.F", CultureInfo.InvariantCulture);
 			}
 
 			if (dt.Second != 0)
 			{
-				return dt.ToString ("yyyy-MM-dd'T'HH:mm:ss");
+				return dt.ToString ("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture);
 			}
 
 			if (dt.Minute != 0)
 			{
-				return dt.ToString ("yyyy-MM-dd'T'HH:mm");
+				return dt.ToString ("yyyy-MM-dd'T'HH:mm", CultureInfo.InvariantCulture);
 			}
 			else
 			{
-				return dt.ToString ("yyyy-MM-dd");
+				return dt.ToString ("yyyy-MM-dd", CultureInfo.InvariantCulture);
 			}
 		}
 	}

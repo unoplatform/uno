@@ -23,6 +23,7 @@
 		<PlatformTag>Web</PlatformTag>
 		<PlatformTag>Cloud</PlatformTag>
 		<PlatformTag>Tizen</PlatformTag>
+		<PlatformTag>linux</PlatformTag>
 		<ProjectTypeTag>mobile</ProjectTypeTag>
 		<ProjectTypeTag>WinUI</ProjectTypeTag>
 		<ProjectTypeTag>Windows App SDK</ProjectTypeTag>

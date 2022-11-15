@@ -36,6 +36,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InitializeImageSource(source);
 			}
+			else
+			{
+				// Null or unsupported source
+				_sourceDisposable.Disposable = null;
+				_imageSprite.Brush = null;
+				InvalidateMeasure();
+			}
 		}
 
 		private void InitializeSvgSource(SvgImageSource source)

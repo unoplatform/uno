@@ -35,6 +35,11 @@ public partial class BreadcrumbBar : Control
 		m_itemsRepeaterElementFactory = new BreadcrumbElementFactory();
 		m_itemsRepeaterLayout = new BreadcrumbLayout(this);
 		m_itemsIterable = new BreadcrumbIterable();
+
+#if HAS_UNO
+		this.Loaded += BreadcrumbBar_Loaded;
+		this.Unloaded += BreadcrumbBar_Unloaded;
+#endif
 	}
 
 	private void RevokeListeners()
@@ -45,6 +50,14 @@ public partial class BreadcrumbBar : Control
 		m_itemsRepeaterElementClearingRevoker.Disposable = null;
 		m_itemsSourceChanged.Disposable = null;
 		m_itemsSourceAsObservableVectorChanged.Disposable = null;
+
+#if HAS_UNO
+		m_breadcrumbKeyDownHandlerRevoker.Disposable = null;
+		AccessKeyInvoked -= OnAccessKeyInvoked;
+		GettingFocus -= OnGettingFocus;
+		PreviewKeyDown -= OnChildPreviewKeyDown;
+		UnregisterPropertyChangedCallback(FlowDirectionProperty, _flowPropertyToken);
+#endif
 	}
 
 	protected override void OnApplyTemplate()
@@ -74,7 +87,7 @@ public partial class BreadcrumbBar : Control
 		AccessKeyInvoked += OnAccessKeyInvoked;
 		GettingFocus += OnGettingFocus;
 
-		RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, OnFlowDirectionChanged);
+		_flowPropertyToken = RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, OnFlowDirectionChanged);
 
 		if (m_itemsRepeater is { } itemsRepeater)
 		{
@@ -720,4 +733,23 @@ public partial class BreadcrumbBar : Control
 		}
 	}
 
+#if HAS_UNO
+	private bool _isUnloaded = false;
+	private long _flowPropertyToken = 0;
+
+	private void BreadcrumbBar_Loaded(object sender, RoutedEventArgs e)
+	{
+		if (_isUnloaded)
+		{
+			_isUnloaded = false;
+			OnApplyTemplate();
+		}
+	}
+
+	private void BreadcrumbBar_Unloaded(object sender, RoutedEventArgs e)
+	{
+		RevokeListeners();
+		_isUnloaded = true;
+	}
+#endif
 }

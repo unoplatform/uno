@@ -43,13 +43,13 @@ namespace Uno.Xaml.Schema
 
 		public override Object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, Object value)
 		{
-			throw new NotSupportedException (String.Format ("Conversion from type {0} is not supported", value != null ? value.GetType () : null));
+			throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Conversion from type {0} is not supported", value != null ? value.GetType () : null));
 		}
 
 		public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 		{
 			if (!CanConvertTo (context, destinationType))
-				throw new NotSupportedException (String.Format ("Conversion to type {0} is not supported", destinationType));
+				throw new NotSupportedException (String.Format (CultureInfo.InvariantCulture, "Conversion to type {0} is not supported", destinationType));
 
 			var vctx = (IValueSerializerContext) context;
 			var lookup = vctx != null ? (INamespacePrefixLookup) vctx.GetService (typeof (INamespacePrefixLookup)) : null;

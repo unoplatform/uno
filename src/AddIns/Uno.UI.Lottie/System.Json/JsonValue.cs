@@ -290,7 +290,7 @@ namespace System.Json
                         case '/': sb.Append("\\/"); break;
                         default:
                             sb.Append("\\u");
-                            sb.Append(((int)src[i]).ToString("x04"));
+                            sb.Append(((int)src[i]).ToString("x04", CultureInfo.InvariantCulture));
                             break;
                     }
                     start = i + 1;
