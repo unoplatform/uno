@@ -55,9 +55,9 @@ partial class CommandBarFlyout
 	private readonly SerialDisposable m_commandBarClosedRevoker = new();
 	private readonly SerialDisposable m_commandBarClosingRevoker = new();
 
-	private readonly Dictionary<int, SerialDisposable> m_secondaryButtonClickRevokerByIndexMap = new();
-	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonCheckedRevokerByIndexMap;
-	private readonly Dictionary<int, SerialDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
+	private readonly Dictionary<int, IDisposable> m_secondaryButtonClickRevokerByIndexMap = new();
+	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonCheckedRevokerByIndexMap;
+	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
 	private readonly Dictionary<int, IDisposable[]> m_propertyChangedRevokersByIndexMap;
 
 	private FlyoutPresenter? m_presenter = null;
