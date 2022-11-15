@@ -11,45 +11,25 @@
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
+	<ItemGroup>
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>3.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>3.3.1</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.6</Version>
-		</PackageReference>
-		<PackageReference Include="Mono.Cecil">
-			<Version>0.10.1</Version>
-		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.3.1" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" ExcludeAssets="runtime" />
 		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
-			<Version>3.1.6</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.8.0</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Mono.Cecil">
-			<Version>0.11.4</Version>
-		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.8.0" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 	<ItemGroup>
