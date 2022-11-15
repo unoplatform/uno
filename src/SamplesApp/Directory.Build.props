@@ -7,14 +7,21 @@
     <!-- fixed for self-testing inside the Uno Solution -->
     <UnoRemoteControlPort>53487</UnoRemoteControlPort>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
     <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
+        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+        <UndefineProperties>TargetFramework</UndefineProperties>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
