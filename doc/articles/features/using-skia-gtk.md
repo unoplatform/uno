@@ -84,7 +84,6 @@ To build an app with this feature enabled:
    <ItemGroup>
       <TrimmerRootAssembly Include="MyApp.Skia.Gtk" />
 		<RdXmlFile Include="MyApp.rd.xml" />
-		<RuntimeHostConfigurationOption Include="Switch.System.Reflection.Assembly.SimulatedCallingAssembly" Value="true" />
    </ItemGroup>
    ```
 1. Create a file name `MyApp.rd.xml`, and place it next to your csproj:
