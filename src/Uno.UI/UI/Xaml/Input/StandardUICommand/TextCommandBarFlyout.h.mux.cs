@@ -27,16 +27,16 @@ partial class TextCommandBarFlyout
 	private Dictionary<TextControlButtons, ICommandBarElement> m_buttons;
 	private AppBarButton m_proofingButton;
 
-	private List<SerialDisposable> m_buttonCommandRevokers;
-	private List<SerialDisposable> m_buttonClickRevokers;
-	private List<SerialDisposable> m_toggleButtonCheckedRevokers;
-	private List<SerialDisposable> m_toggleButtonUncheckedRevokers;
+	private List<IDisposable> m_buttonCommandRevokers;
+	private List<IDisposable> m_buttonClickRevokers;
+	private List<IDisposable> m_toggleButtonCheckedRevokers;
+	private List<IDisposable> m_toggleButtonUncheckedRevokers;
 
 	private SerialDisposable m_proofingButtonLoadedRevoker = new();
 
-	private List<SerialDisposable> m_proofingMenuItemClickRevokers;
-	private List<SerialDisposable> m_proofingMenuToggleItemClickRevokers;
-	private DispatcherHelper m_dispatcherHelper { this };
+	private List<IDisposable> m_proofingMenuItemClickRevokers;
+	private List<IDisposable> m_proofingMenuToggleItemClickRevokers;
+	private DispatcherHelper m_dispatcherHelper;
 
 	private bool m_isSettingToggleButtonState = false;
 }

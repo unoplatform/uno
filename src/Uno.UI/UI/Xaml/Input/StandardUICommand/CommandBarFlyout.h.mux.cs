@@ -25,7 +25,7 @@ partial class CommandBarFlyout
 		set => m_alwaysExpanded = value;
 	}
 
-	private CommandBarFlyoutCommandBar? m_commandBar;
+	internal CommandBarFlyoutCommandBar? m_commandBar;
 
 	/// <summary>
 	/// Gets the collection of primary command elements for the CommandBarFlyout.
