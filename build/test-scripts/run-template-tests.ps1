@@ -99,6 +99,11 @@ dotnet new unoapp-uwp -n MyApp.Uno
 & $msbuild $debug MyApp.Uno\MyApp.Uno.sln
 Assert-ExitCodeIsZero
 
+# csharp 7.3 test
+dotnet new unoapp-uwp -n CSharp73App
+& $msbuild $debug CSharp73App\CSharp73App.sln /p:LangVersion=7.3 /p:UnoForceHotReloadCodeGen=false
+Assert-ExitCodeIsZero
+
 dotnet new unoapp-uwp -n MyApp.Android (Get-TemplateConfiguration -android 1)
 & $msbuild $debug MyApp.Android\MyApp.Android.sln
 Assert-ExitCodeIsZero
