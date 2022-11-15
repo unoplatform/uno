@@ -24,8 +24,7 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-    
-  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/dotnet-install.yml
 
   - bash: |
@@ -89,7 +88,6 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       set -euo pipefail
@@ -179,7 +177,6 @@ jobs:
     clean: true
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
     parameters:
