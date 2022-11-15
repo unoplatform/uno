@@ -13,6 +13,5 @@ steps:
       & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
     errorActionPreference: continue
-    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3

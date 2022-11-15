@@ -65,8 +65,10 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - template: templates/dotnet6-mobile-install-windows.yml
-  - template: templates/dotnet7-mobile-install-windows.yml
+  - ${{ if and(succeeded(), ne(variables.UnoDisableNet6Mobile, 'true')) }}:
+    - template: templates/dotnet6-mobile-install-windows.yml
+  - ${{ if and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true')) }}:
+    - template: templates/dotnet7-mobile-install-windows.yml
 
   - template: templates/install-windows-sdk.yml
 
