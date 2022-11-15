@@ -104,7 +104,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					this.Log().Trace($"Applying IL Delta for {assembly} (metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length})");
 				}
 
-#if NET6_OR_GREATER
+#if NET6_0_OR_GREATER
 				System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(assembly, metadataDelta, ilDeta, pdbDelta);
 #else
 				if (_applyUpdate == null)
