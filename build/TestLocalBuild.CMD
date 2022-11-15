@@ -2,7 +2,6 @@
 setlocal ENABLEEXTENSIONS
 set VSLANG=1033
 SET DOTNET_CLI_UI_LANGUAGE=en-US
-IF NOT DEFINED UNO_UWP_BUILD (SET UNO_UWP_BUILD=true)
 chcp 437 > nul
 if '%Platform%' NEQ '' if '%CI%' NEQ '' goto errorci
 
