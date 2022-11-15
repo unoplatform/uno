@@ -19,7 +19,10 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
 
+#if !NET6_0_OR_GREATER
 		private ApplyUpdateHandler _applyUpdate;
+#endif
+
 		private bool _linkerEnabled;
 
 		private delegate void ApplyUpdateHandler(Assembly assembly, ReadOnlySpan<byte> metadataDelta, ReadOnlySpan<byte> ilDelta, ReadOnlySpan<byte> pdbDelta);
