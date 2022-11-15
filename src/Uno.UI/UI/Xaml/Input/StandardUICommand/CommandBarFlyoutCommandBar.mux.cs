@@ -175,13 +175,10 @@ partial class CommandBarFlyoutCommandBar
 		base.OnApplyTemplate();
 		DetachEventHandlers();
 
-		if (m_overflowPopup is { } overflowPopup)
+		if (m_overflowPopup is { } overflowPopup1)
 		{
-			if (overflowPopup is { } overflowPopup4)
-			{
-				overflowPopup4.PlacementTarget = null;
-				overflowPopup4.DesiredPlacement = PopupPlacementMode.Auto;
-			}
+			overflowPopup1.PlacementTarget = null;
+			overflowPopup1.DesiredPlacement = PopupPlacementMode.Auto;
 		}
 
 		AutomationProperties.SetLocalizedControlType(this, ResourceAccessor.GetLocalizedStringResource(SR_CommandBarFlyoutCommandBarLocalizedControlType));
@@ -191,7 +188,7 @@ partial class CommandBarFlyoutCommandBar
 		m_overflowPopup = (Popup)GetTemplateChild("OverflowPopup");
 		m_secondaryItemsRoot = (FrameworkElement)GetTemplateChild("OverflowContentRoot");
 		m_moreButton = (ButtonBase)GetTemplateChild("MoreButton");
-		
+
 		Storyboard GetOpeningStoryboard()
 		{
 			if (GetTemplateChild<Storyboard>("OpeningOpacityStoryboard") is { } opacityStoryBoard)
@@ -214,17 +211,14 @@ partial class CommandBarFlyoutCommandBar
 		}
 		m_closingStoryboard = GetClosingStoryboard();
 
-		if (m_overflowPopup is { } overflowPopup)
-	    {
-			if (overflowPopup is { } overflowPopup4)
-			{
-				overflowPopup4.PlacementTarget = m_primaryItemsRoot;
-				overflowPopup4.DesiredPlacement = PopupPlacementMode.BottomEdgeAlignedLeft;
-			}
+		if (m_overflowPopup is { } overflowPopup2)
+		{
+			overflowPopup2.PlacementTarget = m_primaryItemsRoot;
+			overflowPopup2.DesiredPlacement = PopupPlacementMode.BottomEdgeAlignedLeft;
 		}
 
 		if (m_moreButton is { } moreButton)
-	    {
+		{
 			// Initially only the first focusable primary and secondary commands
 			// keep their IsTabStop set to True.
 			if (moreButton.IsTabStop)
