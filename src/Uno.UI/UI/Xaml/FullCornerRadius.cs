@@ -4,8 +4,11 @@ namespace Windows.UI.Xaml;
 
 internal partial record struct FullCornerRadius
 (
-	Point TopLeft,
-	Point TopRight,
-	Point BottomRight,
-	Point BottomLeft
-);
+	NonUniformCornerRadius Outer,
+	NonUniformCornerRadius Inner
+)
+{
+	public static FullCornerRadius None { get; }
+
+	public bool IsEmpty => Outer.IsEmpty && Inner.IsEmpty;
+}

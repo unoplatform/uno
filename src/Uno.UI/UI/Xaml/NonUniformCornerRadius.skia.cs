@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Xaml;
 
-partial record struct FullCornerRadius
+partial record struct NonUniformCornerRadius
 {
 	internal void GetRadii(SKPoint[] radiiStore)
 	{

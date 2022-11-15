@@ -3,7 +3,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml;
 
-partial record struct FullCornerRadius
+partial record struct NonUniformCornerRadius
 {
 	internal void GetRadii(float[] radiiStore)
 	{

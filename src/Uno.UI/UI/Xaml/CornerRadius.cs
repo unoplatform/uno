@@ -94,12 +94,30 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	public static bool operator !=(CornerRadius cr1, CornerRadius cr2) => !Equals(cr1, cr2);
 
 	/// <summary>
-	/// Retrieves the radii for a border.
+	/// Retrieves the actual inner and outer radii.
+	/// </summary>
+	/// <param name="elementSize">Element size.</param>
+	/// <param name="borderThickness">Border thickness.</param>
+	/// <returns>Full corner radius.</returns>
+	internal FullCornerRadius GetRadii(Size elementSize, Thickness borderThickness)
+	{
+		if (this == None)
+		{
+			return FullCornerRadius.None;
+		}
+
+		var outer = GetRadii(elementSize, borderThickness, true);
+		var inner = GetRadii(elementSize, borderThickness, false);
+		return new FullCornerRadius(outer, inner);
+	}
+
+	/// <summary>
+	/// Retrieves the non-uniform radii for a border.
 	/// </summary>
 	/// <param name="borderThickness">Border thickness.</param>
 	/// <param name="outer">True to return outer corner radii, false for inner.</param>
 	/// <returns>Radii.</returns>
-	internal FullCornerRadius GetRadii(Size elementSize, Thickness borderThickness, bool outer)
+	private NonUniformCornerRadius GetRadii(Size elementSize, Thickness borderThickness, bool outer)
 	{
 		var halfLeftBorder = borderThickness.Left * 0.5;
 		var halfTopBorder = borderThickness.Top * 0.5;
