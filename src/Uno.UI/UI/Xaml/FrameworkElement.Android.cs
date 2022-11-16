@@ -198,11 +198,11 @@ namespace Windows.UI.Xaml
 			SetMeasuredDimension(width, height);
 		}
 
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
+		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			try
 			{
-				base.OnLayoutCore(changed, left, top, right, bottom);
+				base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
 				Rect finalRect;
 				if (TransientArrangeFinalRect is Rect tafr)
@@ -245,7 +245,8 @@ namespace Windows.UI.Xaml
 					(changed && _lastLayoutSize != finalRect.Size)
 
 					// Even if nothing changed, but a layout was requested, arrange the children.
-					|| IsLayoutRequested
+					// Use the copy grabbed from the native invocation to avoid an additional interop call
+					|| localIsLayoutRequested
 				)
 				{
 					_lastLayoutSize = finalRect.Size;
@@ -282,7 +283,7 @@ namespace Windows.UI.Xaml
 				NativeStartLayoutOverride(left, top, right, bottom);
 
 				// Invoke our own layouting without going back and fort with Java.
-				OnLayoutCore(changed, left, top, right, bottom);
+				OnLayoutCore(changed, left, top, right, bottom, IsLayoutRequested);
 			}
 			finally
 			{

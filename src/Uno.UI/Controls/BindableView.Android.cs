@@ -55,7 +55,7 @@ namespace Uno.UI.Controls
 			InitializeBinder();
 		}
 
-		protected override void OnLayoutCore(bool changed, int l, int t, int r, int b)
+		protected override void OnLayoutCore(bool changed, int l, int t, int r, int b, bool localIsLayoutRequested)
 		{
 
 		}
