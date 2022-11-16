@@ -72,8 +72,8 @@ To build an app with this feature enabled:
 1. Add the following property in your `.csproj`:
    ```xml
    <PropertyGroup>
-   		<PublishAot>true</PublishAot>
-	</PropertyGroup>
+      <PublishAot>true</PublishAot>
+   </PropertyGroup>
    ```
 1. Upgrade your project to net7.0:
    ```xml
@@ -83,17 +83,9 @@ To build an app with this feature enabled:
    ```xml
    <ItemGroup>
       <TrimmerRootAssembly Include="MyApp.Skia.Gtk" />
-		<RdXmlFile Include="MyApp.rd.xml" />
+      <TrimmerRootAssembly Include="GtkSharp" />
+      <TrimmerRootAssembly Include="GdkSharp" />
    </ItemGroup>
-   ```
-1. Create a file name `MyApp.rd.xml`, and place it next to your csproj:
-   ```xml
-   <Directives>
-      <Application>        
-         <Assembly Name="GdkSharp" />
-         <Assembly Name="GtkSharp" />
-      </Application>
-   </Directives>
    ```
 1. Build your app with:
    ```bash
