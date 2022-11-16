@@ -4,11 +4,11 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 
   <!-- Ensure that Uno.Samples.UITest.Generator build before all SamplesApp project -->
-  <ItemGroup Condition="'$(IsUITestGenerator)'=='' or '$(IsUITestGenerator)'=='false'">
+  <ItemGroup Condition="'$(MSBuildProjectName)'!='Uno.Samples.UITest.Generator' and '$(DocsGeneration)'==''">
     <ProjectReference Include="$(MSBuildThisFileDirectory)\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
         <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-        <UndefineProperties>TargetFramework</UndefineProperties>
+        <UndefineProperties>TargetFramework;RuntimeIdentifier;TargetFrameworks;RuntimeIdentifiers</UndefineProperties>
     </ProjectReference>
   </ItemGroup>
 </Project>

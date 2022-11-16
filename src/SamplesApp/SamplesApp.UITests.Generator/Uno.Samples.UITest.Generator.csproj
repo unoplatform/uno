@@ -4,7 +4,6 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<IsUITestGenerator>true</IsUITestGenerator>
 	</PropertyGroup>
 
 	<ItemGroup>
