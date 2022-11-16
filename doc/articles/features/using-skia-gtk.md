@@ -57,9 +57,41 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 
 ```xml
 <ItemGroup>
-   <PackagReference Include="SkiaSharp" Version="2.88.0" />
-   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.0" />
-   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.0" />
+   <PackagReference Include="SkiaSharp" Version="2.88.3" />
+   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.3" />
+   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.3" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.3" />
 </ItemGroup>
 ```
+
+### .NET Native AOT support
+
+Building an Uno Platform Skia+GTK app with .NET (7+) Native AOT requires, GtkSharp 3.24.24.38 (or later), or Uno Platform 4.7 (or later).
+
+To build an app with this feature enabled:
+1. Add the following property in your `.csproj`:
+   ```xml
+   <PropertyGroup>
+      <PublishAot>true</PublishAot>
+   </PropertyGroup>
+   ```
+1. Upgrade your project to net7.0:
+   ```xml
+   <TargetFramework>net7.0</TargetFramework>
+   ```
+1. Add the following items in your `.csproj`:
+   ```xml
+   <ItemGroup>
+      <TrimmerRootAssembly Include="MyApp.Skia.Gtk" />
+      <TrimmerRootAssembly Include="GtkSharp" />
+      <TrimmerRootAssembly Include="GdkSharp" />
+   </ItemGroup>
+   ```
+1. Build your app with:
+   ```bash
+   dotnet publish -c Release
+   ```
+   > [!NOTE] 
+   > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for linux or mac, you'll need to build on corresponding host.
+
+See [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) for more details, and the [.NET Native AOT documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/).
