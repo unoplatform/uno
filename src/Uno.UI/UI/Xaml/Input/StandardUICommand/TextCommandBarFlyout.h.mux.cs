@@ -1,6 +1,7 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
-using System.Text;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Controls;
@@ -24,19 +25,19 @@ internal enum  TextControlButtons
 
 partial class TextCommandBarFlyout
 {
-	private Dictionary<TextControlButtons, ICommandBarElement> m_buttons;
-	private AppBarButton m_proofingButton;
+	private Dictionary<TextControlButtons, ICommandBarElement> m_buttons = new();
+	private AppBarButton? m_proofingButton;
 
 	// TODO:MZ: Ensure disposal of all lists of revokers
-	private List<IDisposable> m_buttonCommandRevokers;
-	private List<IDisposable> m_buttonClickRevokers;
-	private List<IDisposable> m_toggleButtonCheckedRevokers;
-	private List<IDisposable> m_toggleButtonUncheckedRevokers;
+	private List<IDisposable> m_buttonCommandRevokers = new();
+	private List<IDisposable> m_buttonClickRevokers = new();
+	private List<IDisposable> m_toggleButtonCheckedRevokers = new();
+	private List<IDisposable> m_toggleButtonUncheckedRevokers = new();
 
 	private SerialDisposable m_proofingButtonLoadedRevoker = new();
 
-	private List<IDisposable> m_proofingMenuItemClickRevokers;
-	private List<IDisposable> m_proofingMenuToggleItemClickRevokers;
+	private List<IDisposable> m_proofingMenuItemClickRevokers = new();
+	private List<IDisposable> m_proofingMenuToggleItemClickRevokers = new();
 	private DispatcherHelper m_dispatcherHelper;
 
 	private bool m_isSettingToggleButtonState = false;
