@@ -115,6 +115,12 @@ namespace Windows.UI.Xaml.Controls
 			CornerRadius cornerRadius,
 			Action onImageSet)
 		{
+			// In case the element has no size, skip everything!
+			if (drawArea.Width == 0 && drawArea.Height == 0)
+			{
+				return Disposable.Empty;
+			}
+
 			var disposables = new CompositeDisposable();
 
 			var physicalBorderThickness = borderThickness.LogicalToPhysicalPixels();
@@ -123,7 +129,9 @@ namespace Windows.UI.Xaml.Controls
 				? drawArea.DeflateBy(physicalBorderThickness)
 				: drawArea;
 
-			if (cornerRadius != 0)
+			var fullCornerRadius = cornerRadius.GetRadii(drawArea.Size, borderThickness);
+			
+			if (!fullCornerRadius.IsEmpty)
 			{
 				if ((view as UIElement)?.FrameRoundingAdjustment is { } fra)
 				{
@@ -131,10 +139,9 @@ namespace Windows.UI.Xaml.Controls
 					drawArea.Width += fra.Width;
 				}
 
-				var outerRadii = cornerRadius.GetRadii(new Windows.Foundation.Size(drawArea.Width, drawArea.Height), borderThickness, true);
-				outerRadii.GetRadii(_outerRadiiStore);
-				var innerRadii = cornerRadius.GetRadii(new Windows.Foundation.Size(drawArea.Width, drawArea.Height), borderThickness, false);
-				innerRadii.GetRadii(_innerRadiiStore);
+				// This needs to be adjusted if multiple UI threads are used in the future for multi-window
+				fullCornerRadius.Outer.GetRadii(_outerRadiiStore);
+				fullCornerRadius.Inner.GetRadii(_innerRadiiStore);
 
 				using (var backgroundPath = new Path())
 				{
