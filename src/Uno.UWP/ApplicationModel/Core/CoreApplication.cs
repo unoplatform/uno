@@ -76,7 +76,7 @@ public static partial class CoreApplication
 
 	public static CoreApplicationView GetCurrentView() => _currentView;
 
-	#if __ANDROID__ || __SKIA__ || __MACOS__
+	#if __ANDROID__ || __SKIA__ || __MACOS__ || __NETSTD__
 	/// <summary>
 	/// Shuts down the app.
 	/// </summary>

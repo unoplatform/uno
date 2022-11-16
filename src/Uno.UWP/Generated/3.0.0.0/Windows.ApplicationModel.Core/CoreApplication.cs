@@ -68,8 +68,8 @@ namespace Windows.ApplicationModel.Core
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.MainView.get
-		#if false || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		#if false || __IOS__ || NET461 || __WASM__ || false || false || false
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__")]
 		public static void Exit()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "void CoreApplication.Exit()");
