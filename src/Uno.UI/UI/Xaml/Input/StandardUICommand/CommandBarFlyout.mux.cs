@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
@@ -11,7 +10,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using CommandBarFlyoutCommandBar = Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar;
@@ -105,7 +103,7 @@ public partial class CommandBarFlyout : FlyoutBase
 							if (button is not null && button.Flyout is null)
 							{
 								button.Click += closeFlyoutFunc;
-								m_secondaryButtonClickRevokerByIndexMap[index].Disposable = Disposable.Create(() => button.Click -= closeFlyoutFunc);								
+								m_secondaryButtonClickRevokerByIndexMap[index] = Disposable.Create(() => button.Click -= closeFlyoutFunc);
 
 								SharedHelpers.EraseIfExists(m_secondaryToggleButtonCheckedRevokerByIndexMap, index);
 								SharedHelpers.EraseIfExists(m_secondaryToggleButtonUncheckedRevokerByIndexMap, index);
@@ -114,9 +112,9 @@ public partial class CommandBarFlyout : FlyoutBase
 							{
 								SharedHelpers.EraseIfExists(m_secondaryButtonClickRevokerByIndexMap, index);
 								toggleButton.Checked += closeFlyoutFunc;
-								m_secondaryToggleButtonCheckedRevokerByIndexMap[index].Disposable = Disposable.Create(() => toggleButton.Checked -= closeFlyoutFunc);
+								m_secondaryToggleButtonCheckedRevokerByIndexMap[index] = Disposable.Create(() => toggleButton.Checked -= closeFlyoutFunc);
 								toggleButton.Unchecked += closeFlyoutFunc;
-								m_secondaryToggleButtonUncheckedRevokerByIndexMap[index].Disposable = Disposable.Create(() => toggleButton.Unchecked -= closeFlyoutFunc);
+								m_secondaryToggleButtonUncheckedRevokerByIndexMap[index] = Disposable.Create(() => toggleButton.Unchecked -= closeFlyoutFunc);
 							}
 							else
 							{
@@ -189,15 +187,12 @@ public partial class CommandBarFlyout : FlyoutBase
 				// When CommandBarFlyout is in AlwaysOpen state, don't show the overflow button
 				if (AlwaysExpanded)
 				{
-					commandBar.OverflowButtonVisibility(Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility.Collapsed);
-					if (thisAsFlyoutBase5)
-					{
-						thisAsFlyoutBase5.ShowMode(FlyoutShowMode.Standard);
-					}
+					commandBar.OverflowButtonVisibility = CommandBarOverflowButtonVisibility.Collapsed;
+					ShowMode = FlyoutShowMode.Standard;
 				}
 				else
 				{
-					commandBar.OverflowButtonVisibility(Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility.Auto);
+					commandBar.OverflowButtonVisibility = CommandBarOverflowButtonVisibility.Auto;
 				}
 				// TODO:MZ: This needs to be done differently in Uno
 				SharedHelpers.QueueCallbackForCompositionRendering(() =>
@@ -306,7 +301,7 @@ public partial class CommandBarFlyout : FlyoutBase
 	//	UnhookAllCommandBarElementDependencyPropertyChanges();
 	//}
 
-	private Control CreatePresenter()
+	protected override Control CreatePresenter()
 	{
 		var commandBar = new CommandBarFlyoutCommandBar();
 
@@ -391,7 +386,7 @@ public partial class CommandBarFlyout : FlyoutBase
 			commandBar.Closing += onCommandBarClosing;
 			m_commandBarClosingRevoker.Disposable = Disposable.Create(() => commandBar.Closing -= onCommandBarClosing);
 		}
-		
+
 		commandBar.SetOwningFlyout(this);
 
 		m_commandBar = commandBar;
@@ -459,7 +454,7 @@ public partial class CommandBarFlyout : FlyoutBase
 		}
 	}
 
-	protected override FlyoutPresenter GetPresenter() => m_presenter;
+	internal override Control GetPresenter() => m_presenter;
 
 	private void HookAppBarButtonDependencyPropertyChanges(AppBarButton appBarButton, int index)
 	{
@@ -515,7 +510,8 @@ public partial class CommandBarFlyout : FlyoutBase
 
 			for (int commandBarElementDependencyPropertyIndex = 0; commandBarElementDependencyPropertyIndex < commandBarElementDependencyPropertiesCount; commandBarElementDependencyPropertyIndex++)
 			{
-				revokers[commandBarElementDependencyPropertyIndex].Disposable = null;
+				revokers[commandBarElementDependencyPropertyIndex].Dispose();
+				revokers[commandBarElementDependencyPropertyIndex] = null;
 			}
 
 			if (eraseRevokers)
