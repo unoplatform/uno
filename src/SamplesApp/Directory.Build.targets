@@ -3,4 +3,12 @@
   <!-- https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#use-case-multi-level-merging -->
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 
+  <!-- Ensure that Uno.Samples.UITest.Generator build before all SamplesApp project -->
+  <ItemGroup Condition="'$(IsUITestGenerator)'=='' or '$(IsUITestGenerator)'=='false'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
+        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+        <UndefineProperties>TargetFramework</UndefineProperties>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
