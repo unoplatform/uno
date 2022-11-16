@@ -8,7 +8,7 @@
     "dotnet": "7.0.100"
   },
   "msbuild-sdks": {
-    "MSBuild.Sdk.Extras": "3.0.38",
+    "MSBuild.Sdk.Extras": "3.0.44",
     "Xamarin.Legacy.Sdk": "0.1.0-alpha2"
   }
 }

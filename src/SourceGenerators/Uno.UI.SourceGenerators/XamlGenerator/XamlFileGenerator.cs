@@ -4053,7 +4053,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				closureName,
 				appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
 				delegateType,
-				!_isTopLevelDictionary);
+				!_isTopLevelDictionary && _isHotReloadEnabled);
 		}
 
 		private void RegisterPartial(string format, params object[] values)

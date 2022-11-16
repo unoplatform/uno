@@ -21,6 +21,12 @@
 		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
 		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'==''">false</UnoUIUseRoslynSourceGenerators>
 
+		<!--
+		MSBuild below 17.0 implies C# 7.3 or below, which does not support lambda parameters shadowing (https://github.com/dotnet/csharplang/blob/main/meetings/2019/LDM-2019-01-16.md).
+		In this mode, we disable all hot reload specific code generation.
+		-->
+		<UnoForceHotReloadCodeGen Condition="'$(UnoForceHotReloadCodeGen)'=='' and '$(MSBuildVersion)' &lt; '17.0'">false</UnoForceHotReloadCodeGen>
+
 		<XamarinProjectType Condition="
 							'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'
 							or $(TargetFramework.ToLower().StartsWith('xamarinios'))
@@ -361,6 +367,7 @@
 		<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoForceHotReloadCodeGen" />
 	</ItemGroup>
 
 	<Target Name="_FillSourceGeneratorItemGroups">
