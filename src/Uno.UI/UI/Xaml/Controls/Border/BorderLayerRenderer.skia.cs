@@ -151,9 +151,6 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var borderPath = GetBorderPath(_outerRadiiStore, _innerRadiiStore, area, adjustedArea);
 					borderShape.Geometry = compositor.CreatePathGeometry(borderPath);
-					
-					var outerPath = GetRoundedPath(area.ToSKRect(), _outerRadiiStore);
-					outerShape.Geometry = compositor.CreatePathGeometry(outerPath);
 
 					var borderVisual = compositor.CreateShapeVisual();
 
@@ -162,12 +159,10 @@ namespace Windows.UI.Xaml.Shapes
 
 					parent.Children.InsertAtTop(borderVisual);
 				}
-
-				owner.ClippingIsSetByCornerRadius = cornerRadius != CornerRadius.None;
-				if (owner.ClippingIsSetByCornerRadius)
-				{
-					parent.Clip = compositor.CreateGeometricClip(outerShape.Geometry);
-				}
+				
+				parent.Clip = compositor.CreateRectangleClip(
+					0, 0, (float)area.Width, (float)area.Height,
+					fullCornerRadius.Outer.TopLeft, fullCornerRadius.Outer.TopRight, fullCornerRadius.Outer.BottomRight, fullCornerRadius.Outer.BottomLeft);
 			}
 			else
 			{
@@ -348,7 +343,7 @@ namespace Windows.UI.Xaml.Shapes
 			var roundRect = new SKRoundRect();
 			roundRect.SetRectRadii(area, radii);
 			return roundRect;
-		}		
+		}
 
 		private static CompositionPath GetBorderPath(SKPoint[] outerRadii, SKPoint[] innerRadii, Rect area, Rect insetArea)
 		{
@@ -356,7 +351,7 @@ namespace Windows.UI.Xaml.Shapes
 			GetRoundedPath(area.ToSKRect(), outerRadii, geometrySource);
 			GetRoundedPath(insetArea.ToSKRect(), innerRadii, geometrySource);
 			geometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
-			
+
 			return new CompositionPath(geometrySource);
 		}
 

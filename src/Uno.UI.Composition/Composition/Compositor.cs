@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Numerics;
 using Windows.UI;
 
 namespace Windows.UI.Composition
@@ -81,11 +82,45 @@ namespace Windows.UI.Composition
 			=> new InsetClip(this);
 
 		public InsetClip CreateInsetClip(float leftInset, float topInset, float rightInset, float bottomInset)
-			=> new InsetClip(this) {
+			=> new InsetClip(this)
+			{
 				LeftInset = leftInset,
 				TopInset = topInset,
 				RightInset = rightInset,
 				BottomInset = bottomInset
+			};
+
+		public RectangleClip CreateRectangleClip()
+			=> new RectangleClip(this);
+
+		public RectangleClip CreateRectangleClip(float left, float top, float right, float bottom)
+			=> new RectangleClip(this)
+			{
+				Left = left,
+				Top = top,
+				Right = right,
+				Bottom = bottom
+			};
+
+		public RectangleClip CreateRectangleClip(
+			float left,
+			float top,
+			float right,
+			float bottom,
+			Vector2 topLeftRadius,
+			Vector2 topRightRadius,
+			Vector2 bottomRightRadius,
+			Vector2 bottomLeftRadius)
+			=> new RectangleClip(this)
+			{
+				Left = left,
+				Top = top,
+				Right = right,
+				Bottom = bottom,
+				TopLeftRadius = topLeftRadius,
+				TopRightRadius = topRightRadius,
+				BottomRightRadius = bottomRightRadius,
+				BottomLeftRadius = bottomLeftRadius
 			};
 
 		public CompositionLinearGradientBrush CreateLinearGradientBrush()
@@ -98,7 +133,8 @@ namespace Windows.UI.Composition
 			=> new CompositionColorGradientStop(this);
 
 		public CompositionColorGradientStop CreateColorGradientStop(float offset, Color color)
-			=> new CompositionColorGradientStop(this) {
+			=> new CompositionColorGradientStop(this)
+			{
 				Offset = offset,
 				Color = color
 			};

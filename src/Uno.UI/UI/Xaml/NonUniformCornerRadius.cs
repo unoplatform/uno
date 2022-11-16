@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using System.Numerics;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml;
 
@@ -11,15 +12,15 @@ namespace Windows.UI.Xaml;
 /// <param name="BottomLeft">Bottom left corner.</param>
 internal partial record struct NonUniformCornerRadius
 (
-	Point TopLeft,
-	Point TopRight,
-	Point BottomRight,
-	Point BottomLeft
+	Vector2 TopLeft,
+	Vector2 TopRight,
+	Vector2 BottomRight,
+	Vector2 BottomLeft
 )
 {
 	public bool IsEmpty =>
-		TopLeft == Point.Zero &&
-		TopRight == Point.Zero &&
-		BottomRight == Point.Zero &&
-		BottomLeft == Point.Zero;
+		TopLeft == Vector2.Zero &&
+		TopRight == Vector2.Zero &&
+		BottomRight == Vector2.Zero &&
+		BottomLeft == Vector2.Zero;
 }

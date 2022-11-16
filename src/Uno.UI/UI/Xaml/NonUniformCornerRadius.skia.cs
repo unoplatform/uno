@@ -6,9 +6,9 @@ partial record struct NonUniformCornerRadius
 {
 	internal void GetRadii(SKPoint[] radiiStore)
 	{
-		radiiStore[0] = new((float)TopLeft.X, (float)TopLeft.Y);
-		radiiStore[1] = new((float)TopRight.X, (float)TopRight.Y);
-		radiiStore[2] = new((float)BottomRight.X, (float)BottomRight.Y);
-		radiiStore[3] = new((float)BottomLeft.X, (float)BottomLeft.Y);
+		radiiStore[0] = new(TopLeft.X, TopLeft.Y);
+		radiiStore[1] = new(TopRight.X, TopRight.Y);
+		radiiStore[2] = new(BottomRight.X, BottomRight.Y);
+		radiiStore[3] = new(BottomLeft.X, BottomLeft.Y);
 	}
 }
