@@ -413,21 +413,21 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member AnimationPropertyInfo Compositor.CreateAnimationPropertyInfo() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.RectangleClip CreateRectangleClip()
 		{
 			throw new global::System.NotImplementedException("The member RectangleClip Compositor.CreateRectangleClip() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.RectangleClip CreateRectangleClip( float left,  float top,  float right,  float bottom)
 		{
 			throw new global::System.NotImplementedException("The member RectangleClip Compositor.CreateRectangleClip(float left, float top, float right, float bottom) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.RectangleClip CreateRectangleClip( float left,  float top,  float right,  float bottom,  global::System.Numerics.Vector2 topLeftRadius,  global::System.Numerics.Vector2 topRightRadius,  global::System.Numerics.Vector2 bottomRightRadius,  global::System.Numerics.Vector2 bottomLeftRadius)
 		{

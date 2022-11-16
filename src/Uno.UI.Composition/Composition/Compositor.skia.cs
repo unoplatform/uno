@@ -134,6 +134,10 @@ namespace Windows.UI.Composition
 
 				surface.Canvas.ClipRect(clipRect, SKClipOperation.Intersect, true);
 			}
+			else if (visual.Clip is RectangleClip rectangleClip)
+			{
+				surface.Canvas.ClipRoundRect(rectangleClip.SKRoundRect, SKClipOperation.Intersect, true);
+			}
 			else if (visual.Clip is CompositionGeometricClip geometricClip)
 			{
 				if (geometricClip.Geometry is CompositionPathGeometry cpg)

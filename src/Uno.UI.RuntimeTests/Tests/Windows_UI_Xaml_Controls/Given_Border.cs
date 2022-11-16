@@ -332,7 +332,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__ANDROID__
 			Assert.Inconclusive();
 #endif
-			const string firstRectBlueish = "#ffd8d8ff";
+			const string firstRectBlueish = "#ff6262ff";
 			const string secondRectBlueish = "#ff9e9eff";
 
 			var SUT = new Border_AntiAlias();
