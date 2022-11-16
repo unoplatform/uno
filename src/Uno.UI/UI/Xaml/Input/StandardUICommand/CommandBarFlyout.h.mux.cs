@@ -42,8 +42,8 @@ partial class CommandBarFlyout
 
 	private bool m_alwaysExpanded;
 
-	private IObservableVector<ICommandBarElement> m_primaryCommands = null;
-	private IObservableVector<ICommandBarElement> m_secondaryCommands = null;
+	private IObservableVector<ICommandBarElement> m_primaryCommands;
+	private IObservableVector<ICommandBarElement> m_secondaryCommands;
 
 	// winrt::IObservableVector<winrt::ICommandBarElement>::VectorChanged_revoker throws a weird build error when used,
 	// so we're using the event token pattern for manual detachment instead.
@@ -56,9 +56,9 @@ partial class CommandBarFlyout
 	private readonly SerialDisposable m_commandBarClosingRevoker = new();
 
 	private readonly Dictionary<int, IDisposable> m_secondaryButtonClickRevokerByIndexMap = new();
-	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonCheckedRevokerByIndexMap;
-	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap;
-	private readonly Dictionary<int, IDisposable[]> m_propertyChangedRevokersByIndexMap;
+	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonCheckedRevokerByIndexMap = new();
+	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap = new();
+	private readonly Dictionary<int, IDisposable[]> m_propertyChangedRevokersByIndexMap = new();
 
 	private FlyoutPresenter? m_presenter = null;
 
