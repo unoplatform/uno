@@ -366,6 +366,11 @@
 		<reference file="Uno.UI.Toolkit.dll" />
 	  </group>
 
+	  <!--
+	  This group must not be present for nuget to fallback on net7.0 target when running on Skia+Wpf.
+	  The references list is adjusted only when WinAppSDK is detected.
+	  <group targetFramework="net5.0-windows10.0.18362.0">
+	  </group>-->
 	</references>
   </metadata>
   <files>
