@@ -55,7 +55,7 @@ jobs:
 
   - task: ArchiveFiles@2
     inputs:
-      rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
+      rootFolderOrFile: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/Reference-bin-$(XAML_FLAVOR_BUILD).zip'

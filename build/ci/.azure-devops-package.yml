@@ -10,7 +10,6 @@ parameters:
 jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
-  timeoutInMinutes: 90
 
   dependsOn:
   - generic_win_build
@@ -54,8 +53,6 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - template: templates/install-windows-sdk.yml
-
   - ${{ each artifact in parameters.artifactsToDownload }}:
       - task: DownloadBuildArtifacts@0
         displayName: Download build artifact ${{ artifact }}
@@ -77,7 +74,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-packages.binlog
+      msbuildArguments: /r /m /v:m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -89,7 +86,7 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/Build
       Contents: '*.nupkg'
-      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      TargetFolder: $(build.artifactstagingdirectory)/vslatest
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -102,7 +99,7 @@ jobs:
       Contents: |
         NugetPackages-Artifacts*/vslatest*/*.nupkg
         NugetPackages-Artifacts*/vslatest*/*.vsix
-      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      TargetFolder: $(build.artifactstagingdirectory)/vslatest
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: true
@@ -116,7 +113,7 @@ jobs:
       SignClientSecret: $(SignClientSecret)
       SignPackageName: "Uno Platform"
       SignPackageDescription: "The Uno Platform"
-      ArtifactDirectory: $(build.artifactstagingdirectory)\vslatest
+      ArtifactDirectory: $(build.artifactstagingdirectory)/vslatest
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
@@ -125,19 +122,3 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
       ArtifactType: Container
-
-  # - task: PublishBuildArtifacts@1
-  #   displayName: Publish Skia Artifacts
-  #   condition: always()
-  #   inputs:
-  #     PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
-  #     ArtifactName: uno-skia-artifacts
-  #     ArtifactType: Container
-  # 
-  # - task: PublishBuildArtifacts@1
-  #   displayName: Publish Tizen Artifacts
-  #   condition: always()
-  #   inputs:
-  #     PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50
-  #     ArtifactName: uno-tizen-artifacts
-  #     ArtifactType: Container

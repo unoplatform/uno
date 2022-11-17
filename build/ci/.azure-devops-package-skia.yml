@@ -4,10 +4,12 @@ parameters:
 jobs:
 - job: skia_package_build
   displayName: 'Build Skia Package Binaries'
-  
+  container: nv-bionic-wasm
+ 
   dependsOn: winui_convert_tree
 
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
 
   strategy:
     matrix:
@@ -27,12 +29,16 @@ jobs:
     # Build validation is performed on other jobs
     UnoUIDisableNet7Build: true
 
-    NUGET_PACKAGES: $(build.sourcesdirectory)\.nuget
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # We're building packages on linux, so we need to enable WPF support
+    EnableWindowsTargeting: true
 
   steps:
   - checkout: self
     clean: true
 
+  - template: templates/linux-install-zip.yml
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
@@ -52,14 +58,14 @@ jobs:
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build\Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Skia Binaries
 
   - template: templates/copy-package-assets.yml
 
   - task: ArchiveFiles@2
     inputs:
-      rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
+      rootFolderOrFile: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/skia-bin-$(XAML_FLAVOR_BUILD).zip'
