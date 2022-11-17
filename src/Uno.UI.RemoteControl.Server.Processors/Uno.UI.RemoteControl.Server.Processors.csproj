@@ -31,22 +31,10 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.0.1" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Build">
-			<Version>16.5.0</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Framework">
-			<Version>16.5.0</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Tasks.Core">
-			<Version>16.5.0</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Utilities.Core">
-			<Version>16.5.0</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.Build" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.5.0" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 	<ItemGroup>
