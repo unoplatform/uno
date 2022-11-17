@@ -59,6 +59,44 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\0\p1\MainPage.xaml" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\0\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\1\p1\MainPage.xaml" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\1\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\0\p1\MainPage.xaml" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\0\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\1\p1\MainPage.xaml" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\1\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\0\p1\MainPage.xaml" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\0\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\1\p1\MainPage.xaml" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\1\p1\MainPage.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\0\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\0\p1\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
+	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\1\p1\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Content>
 	  <Content Update="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\0\p1\MainPage.xaml">
 	    <SubType>Designer</SubType>
 	    <Generator>MSBuild:Compile</Generator>
