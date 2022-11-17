@@ -30,7 +30,7 @@ dotnet new unoapp -o MyApp
 ```
 
 > [!NOTE]
-> It is possible to create a .NET 7 template by using `-framework net7.0` parameter.
+> It is possible to create a .NET 7 template by using `-f net7.0` parameter.
 
 More articles on WinUI 3:
 
