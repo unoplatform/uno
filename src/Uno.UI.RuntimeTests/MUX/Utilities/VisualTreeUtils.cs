@@ -143,5 +143,20 @@ namespace MUXControlsTestApp.Utilities
 
 			return children;
 		}
+		
+		public static FrameworkElement FindVisualParentByName(this DependencyObject element, string name)
+		{
+			if (element is null || string.IsNullOrWhiteSpace(name))
+			{
+				return null;
+			}
+
+			if (element is FrameworkElement elementAsFE && elementAsFE.Name == name)
+			{
+				return elementAsFE;
+			}
+
+			return VisualTreeHelper.GetParent(element).FindVisualParentByName(name);
+		}
 	}
 }
