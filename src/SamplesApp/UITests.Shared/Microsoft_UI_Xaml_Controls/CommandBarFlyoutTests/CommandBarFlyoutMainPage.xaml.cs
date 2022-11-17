@@ -38,7 +38,7 @@ namespace MUXControlsTestApp
         }
         private void CmbCommandBarFlyoutOutputDebugStringLevel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-#if HAS_UNO
+#if false
 			MUXControlsTestHooks.SetOutputDebugStringLevelForType(
                 "CommandBarFlyout",
                 cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 1 || cmbCommandBarFlyoutOutputDebugStringLevel.SelectedIndex == 2,
