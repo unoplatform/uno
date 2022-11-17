@@ -201,7 +201,7 @@
                     <AppBarToggleButton x:Name="FavoriteToggleButton9" AutomationProperties.AutomationId="FavoriteToggleButton9" Label="Favorite" Icon="Favorite" Checked="OnElementChecked" Unchecked="OnElementUnchecked" />
                 </muxc:CommandBarFlyout.SecondaryCommands>
             </muxc:CommandBarFlyout>
-            <contract13Present:CommandBarFlyout Placement="Right" x:Name="Flyout10" AutomationProperties.AutomationId="Flyout10" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed">
+            <!--<contract13Present:CommandBarFlyout Placement="Right" x:Name="Flyout10" AutomationProperties.AutomationId="Flyout10" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed">
                 <AppBarButton x:Name="CutButton10" AutomationProperties.AutomationId="CutButton10" Label="Cut" Icon="Cut" Click="OnElementClicked" />
                 <AppBarButton x:Name="CopyButton10" AutomationProperties.AutomationId="CopyButton10" Label="Copy" Icon="Copy" Click="OnElementClicked" />
                 <AppBarButton x:Name="PasteButton10" AutomationProperties.AutomationId="PasteButton10" Label="Paste" Icon="Paste" Click="OnElementClicked" />
@@ -214,7 +214,7 @@
                     <AppBarButton x:Name="SelectAllButton10" AutomationProperties.AutomationId="SelectAllButton10" Label="Select all" Click="OnElementClicked" />
                     <AppBarToggleButton x:Name="FavoriteToggleButton10" AutomationProperties.AutomationId="FavoriteToggleButton10" Label="Favorite" Icon="Favorite" Checked="OnElementChecked" Unchecked="OnElementUnchecked" />
                 </contract13Present:CommandBarFlyout.SecondaryCommands>
-            </contract13Present:CommandBarFlyout>
+            </contract13Present:CommandBarFlyout>-->
         </Grid.Resources>
         <ScrollViewer>
             <StackPanel>

@@ -27,8 +27,10 @@ namespace MUXControlsTestApp
         {
             this.InitializeComponent();
 
-            RichEditBox1.Document.SetText(Windows.UI.Text.TextSetOptions.None, "Lorem ipsum ergo sum");
-            Clipboard.ContentChanged += OnClipboardContentChanged;
+#if !HAS_UNO
+			RichEditBox1.Document.SetText(Windows.UI.Text.TextSetOptions.None, "Lorem ipsum ergo sum");
+#endif
+			Clipboard.ContentChanged += OnClipboardContentChanged;
 
             if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode", "BottomEdgeAlignedLeft"))
             {
@@ -52,8 +54,10 @@ namespace MUXControlsTestApp
             {
                 TextBox1.ContextFlyout = TextControlContextFlyout;
                 TextBlock1.ContextFlyout = TextControlContextFlyout;
-                RichEditBox1.ContextFlyout = TextControlContextFlyout;
-                RichTextBlock1.ContextFlyout = TextControlContextFlyout;
+#if !HAS_UNO
+				RichEditBox1.ContextFlyout = TextControlContextFlyout;
+#endif
+				RichTextBlock1.ContextFlyout = TextControlContextFlyout;
                 PasswordBox1.ContextFlyout = TextControlContextFlyout;
             }
 
@@ -71,8 +75,10 @@ namespace MUXControlsTestApp
 
                 if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.RichEditBox", "SelectionFlyout"))
                 {
-                    RichEditBox1.SelectionFlyout = TextControlSelectionFlyout;
-                }
+#if !HAS_UNO
+					RichEditBox1.SelectionFlyout = TextControlSelectionFlyout;
+#endif
+				}
 
                 if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.RichTextBlock", "SelectionFlyout"))
                 {
@@ -135,8 +141,10 @@ namespace MUXControlsTestApp
 
         private void OnRichEditBoxSelectAllClicked(object sender, object args)
         {
-            RichEditBox1.Document.Selection.Expand(Windows.UI.Text.TextRangeUnit.Story);
-        }
+#if !HAS_UNO
+			RichEditBox1.Document.Selection.Expand(Windows.UI.Text.TextRangeUnit.Story);
+#endif
+		}
 
         private void OnRichTextBlockSelectAllClicked(object sender, object args)
         {
@@ -155,8 +163,10 @@ namespace MUXControlsTestApp
 
         private void OnRichEditBoxClearSelectionClicked(object sender, object args)
         {
-            RichEditBox1.Document.Selection.Collapse(true);
-        }
+#if !HAS_UNO
+			RichEditBox1.Document.Selection.Collapse(true);
+#endif
+		}
 
         private void OnTextBoxFillWithTextClicked(object sender, object args)
         {
@@ -165,8 +175,10 @@ namespace MUXControlsTestApp
 
         private void OnRichEditBoxFillWithTextClicked(object sender, object args)
         {
+#if !HAS_UNO
             RichEditBox1.Document.SetText(TextSetOptions.None, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        }
+#endif
+		}
 
         private void OnRichTextBlockClearSelectionClicked(object sender, object args)
         {
@@ -185,8 +197,10 @@ namespace MUXControlsTestApp
 
         private void OnShowTextControlFlyoutOnRichEditBoxClicked(object sender, object args)
         {
-            ShowTextControlContextFlyoutTransient(RichEditBox1);
-        }
+#if !HAS_UNO
+			ShowTextControlContextFlyoutTransient(RichEditBox1);
+#endif
+		}
 
         private void OnShowTextControlFlyoutOnRichTextBlockClicked(object sender, object args)
         {
@@ -210,8 +224,10 @@ namespace MUXControlsTestApp
 
         private void OnShowStandardTextControlFlyoutOnRichEditBoxClicked(object sender, object args)
         {
-            ShowTextControlContextFlyoutStandard(RichEditBox1);
-        }
+#if !HAS_UNO
+			ShowTextControlContextFlyoutStandard(RichEditBox1);
+#endif
+		}
 
         private void OnShowStandardTextControlFlyoutOnRichTextBlockClicked(object sender, object args)
         {
@@ -264,9 +280,11 @@ namespace MUXControlsTestApp
 
         private void OnGetRichEditBoxRtfContentClicked(object sender, object args)
         {
-            string rtfContent;
+#if !HAS_UNO
+			string rtfContent;
             RichEditBox1.Document.GetText(TextGetOptions.FormatRtf, out rtfContent);
-            StatusReportingTextBox.Text = rtfContent;
-        }
+			StatusReportingTextBox.Text = rtfContent;
+#endif
+		}
     }
 }
