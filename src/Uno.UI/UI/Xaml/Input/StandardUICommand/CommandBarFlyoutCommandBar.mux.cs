@@ -445,13 +445,15 @@ partial class CommandBarFlyoutCommandBar
 
 		if (m_currentPrimaryItemsEndElement is not null)
 		{
-			AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Clear();
+			// TODO:MZ: Fix
+			//AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Clear();
 			m_currentPrimaryItemsEndElement = null;
 		}
 
 		if (m_currentSecondaryItemsStartElement is not null)
 		{
-			AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Clear();
+			// TODO:MZ: Fix
+			//AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Clear();
 			m_currentSecondaryItemsStartElement = null;
 		}
 
@@ -494,8 +496,9 @@ partial class CommandBarFlyoutCommandBar
 
 			if (m_currentPrimaryItemsEndElement is not null && m_currentSecondaryItemsStartElement is not null)
 			{
-				AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Add(m_currentSecondaryItemsStartElement);
-				AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Add(m_currentPrimaryItemsEndElement);
+				// TODO:MZ: Fix
+				//AutomationProperties.GetFlowsTo(m_currentPrimaryItemsEndElement).Add(m_currentSecondaryItemsStartElement);
+				//AutomationProperties.GetFlowsFrom(m_currentSecondaryItemsStartElement).Add(m_currentPrimaryItemsEndElement);
 			}
 		}
 	}
