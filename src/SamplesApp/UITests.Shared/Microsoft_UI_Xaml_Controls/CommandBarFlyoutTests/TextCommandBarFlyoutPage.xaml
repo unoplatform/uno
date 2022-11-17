@@ -36,7 +36,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="TextBox1" AutomationProperties.AutomationId="TextBox" Text="Lorem ipsum ergo sum" Margin="10" />
                     <TextBlock x:Name="TextBlock1" AutomationProperties.AutomationId="TextBlock" Text="Lorem ipsum ergo sum" Margin="10" IsTextSelectionEnabled="True" Grid.Row="1" />
-                    <RichEditBox x:Name="RichEditBox1" AutomationProperties.AutomationId="RichEditBox" Margin="10" Grid.Row="2" />
+                    <!--<RichEditBox x:Name="RichEditBox1" AutomationProperties.AutomationId="RichEditBox" Margin="10" Grid.Row="2" />-->
                     <RichTextBlock x:Name="RichTextBlock1" AutomationProperties.AutomationId="RichTextBlock" Margin="10" IsTextSelectionEnabled="True" Grid.Row="3">
                         <Paragraph>
                             <Bold>
