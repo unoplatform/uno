@@ -92,7 +92,7 @@ jobs:
     
 - template: build/ci/.azure-devops-package-skia.yml
   parameters:
-    poolName: '$(windowsScaledPool)'
+    vmImage: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-package.yml
   parameters:
