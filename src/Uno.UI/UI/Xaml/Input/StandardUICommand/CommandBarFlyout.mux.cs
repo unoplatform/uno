@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
@@ -460,13 +461,16 @@ public partial class CommandBarFlyout : FlyoutBase
 	{
 		var commandBarElementDependencyPropertiesCount = SharedHelpers.IsRS4OrHigher() ? s_commandBarElementDependencyPropertiesCount : s_commandBarElementDependencyPropertiesCountRS3;
 
+		var revokers = new IDisposable[commandBarElementDependencyPropertiesCount];
+		m_propertyChangedRevokersByIndexMap[index] = revokers;
+		
 		for (int commandBarElementDependencyPropertyIndex = 0; commandBarElementDependencyPropertyIndex < commandBarElementDependencyPropertiesCount; commandBarElementDependencyPropertyIndex++)
 		{
 			var token = appBarButton.RegisterDisposablePropertyChangedCallback(
 					s_appBarButtonDependencyProperties[commandBarElementDependencyPropertyIndex],
 					OnCommandBarElementDependencyPropertyChanged);
 			// TODO:MZ: Wrong probably
-			m_propertyChangedRevokersByIndexMap[index][commandBarElementDependencyPropertyIndex] = token;
+			revokers[commandBarElementDependencyPropertyIndex] = token;
 		}
 	}
 
