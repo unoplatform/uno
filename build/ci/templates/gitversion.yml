@@ -23,14 +23,6 @@ steps:
     displayName: Update GitVersion file for PullRequests
 
   - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 5.0.3'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: runtime
-      version: 5.0.3
-      installationPath: '${{parameters.dotnetInstallationPath}}'
-
-  - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 6.0.4'
     retryCountOnTaskFailure: 3
     inputs:
@@ -38,18 +30,10 @@ steps:
       version: 6.0.4
       installationPath: '${{parameters.dotnetInstallationPath}}'
 
-  - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 3.1.12'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: runtime
-      version: 3.1.12
-      installationPath: '${{parameters.dotnetInstallationPath}}'
-
   - task: gitversion/setup@0
     retryCountOnTaskFailure: 3
     inputs:
-      versionSpec: '5.6.8'
+      versionSpec: '5.10.3'
 
   - task: gitversion/execute@0
     retryCountOnTaskFailure: 3

@@ -19,7 +19,7 @@ branches:
     mode: ContinuousDeployment
     tag: 'PullRequest'
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
-    increment: Inherit
+    increment: Minor # use minor to avoid expensive commit search
 
   beta:
     mode: ContinuousDeployment
