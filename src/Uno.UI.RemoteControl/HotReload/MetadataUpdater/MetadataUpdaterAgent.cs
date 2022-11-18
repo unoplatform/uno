@@ -31,9 +31,11 @@ internal sealed class HotReloadAgent : IDisposable
 	private readonly ConcurrentDictionary<Assembly, Assembly> _appliedAssemblies = new();
 	private volatile UpdateHandlerActions? _handlerActions;
 
+	internal const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
+
 #if !NET6_0_OR_GREATER
 	private delegate void ApplyUpdateHandler(Assembly assembly, ReadOnlySpan<byte> metadataDelta, ReadOnlySpan<byte> ilDelta, ReadOnlySpan<byte> pdbDelta);
-	private ApplyUpdateHandler _applyUpdate;
+	private static ApplyUpdateHandler? _applyUpdate;
 #endif
 
 	public HotReloadAgent(Action<string> log)
@@ -155,7 +157,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 		Action<Type[]?> CreateAction(MethodInfo update)
 		{
-			Action<Type[]?> action = update.CreateDelegate<Action<Type[]?>>();
+			Action<Type[]?> action = (Action<Type[]?>)update.CreateDelegate(typeof(Action<Type[]?>));
 			return types =>
 			{
 				try
@@ -175,7 +177,7 @@ internal sealed class HotReloadAgent : IDisposable
 #endif
 		Type handlerType, string name)
 		{
-			if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, new[] { typeof(Type[]) }) is MethodInfo updateMethod &&
+			if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(Type[]) }, null) is MethodInfo updateMethod &&
 				updateMethod.ReturnType == typeof(void))
 			{
 				return updateMethod;

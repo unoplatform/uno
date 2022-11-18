@@ -18,8 +18,6 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
-		private const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
-
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
 
@@ -45,7 +43,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private string[] GetMetadataUpdateCapabilities()
 		{
-			if (Type.GetType(MetadataUpdaterType) is { } type)
+			if (Type.GetType(HotReloadAgent.MetadataUpdaterType) is { } type)
 			{
 				if (type.GetMethod("GetCapabilities", BindingFlags.Static | BindingFlags.NonPublic) is { } getCapabilities)
 				{
@@ -62,7 +60,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					{
 						if (this.Log().IsEnabled(LogLevel.Warning))
 						{
-							this.Log().Trace($"Runtime does not support Hot Reload (Invalid returned type for {MetadataUpdaterType}.GetCapabilities())");
+							this.Log().Trace($"Runtime does not support Hot Reload (Invalid returned type for {HotReloadAgent.MetadataUpdaterType}.GetCapabilities())");
 						}
 					}
 				}
@@ -70,7 +68,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().Trace($"Runtime does not support Hot Reload (Unable to find method {MetadataUpdaterType}.GetCapabilities())");
+						this.Log().Trace($"Runtime does not support Hot Reload (Unable to find method {HotReloadAgent.MetadataUpdaterType}.GetCapabilities())");
 					}
 				}
 			}
@@ -78,7 +76,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Trace($"Runtime does not support Hot Reload (Unable to find type {MetadataUpdaterType})");
+					this.Log().Trace($"Runtime does not support Hot Reload (Unable to find type {HotReloadAgent.MetadataUpdaterType})");
 				}
 			}
 			return Array.Empty<string>();
