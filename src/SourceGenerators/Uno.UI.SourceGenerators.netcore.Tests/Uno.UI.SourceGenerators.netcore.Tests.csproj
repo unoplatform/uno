@@ -59,18 +59,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Empty\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property\Scenario.json" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\0\p1\MainPage.xaml" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\0\p1\MainPage.xaml.cs" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\1\p1\MainPage.xaml" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\1\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xBind_Simple_Property_Update\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Add_xLoad\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_No_Update\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_Text_Change\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Add_Twice\Scenario.json" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\0\p1\MainPage.xaml" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\0\p1\MainPage.xaml.cs" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\1\p1\MainPage.xaml" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\1\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_Single_xName_Change\Scenario.json" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\0\p1\MainPage.xaml" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\0\p1\MainPage.xaml.cs" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\1\p1\MainPage.xaml" />
 	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\1\p1\MainPage.xaml.cs" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_With_ThemeResource_Add\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Simple_Xaml_xBind_Event_Add\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Single_Code_File_With_Code_Update\Scenario.json" />
+	  <None Remove="MetadataUpdateTests\Scenarios\When_Single_Code_File_With_No_Update\Scenario.json" />
 	</ItemGroup>
 
 	<ItemGroup>

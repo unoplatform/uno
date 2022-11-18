@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -17,218 +19,86 @@ namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
 [TestClass]
 public class Given_HotReloadService
 {
-	[TestMethod]
-	public async Task When_Empty()
+	[DataTestMethod]
+	[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
+	public async Task TestRunner(string name, Scenario? scenario)
 	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
+		if (scenario != null)
+		{
+			var results = await ApplyScenario(scenario.IsDebug, scenario.IsMono, name);
+
+			for (int i = 0; i < scenario.PassResults.Length; i++)
+			{
+				var resultValidation = scenario.PassResults[i];
+
+				Assert.AreEqual(
+					resultValidation.Diagnostics?.Length ?? 0,
+					results[i].Diagnostics.Length,
+					$"Diagnostics: {string.Join("\n", results[i].Diagnostics)}");
+				Assert.AreEqual(resultValidation.MetadataUpdates, results[i].MetadataUpdates.Length);
+			}
+		}
 	}
 
-	[TestMethod]
-	public async Task When_Single_Code_File_With_No_Update()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
+	public record Scenario(bool IsDebug, bool IsMono, params PassResult[] PassResults);
+	public record PassResult(int MetadataUpdates, params DiagnosticsResult[] Diagnostics);
+	public record DiagnosticsResult(string Id);
 
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
+	private static IEnumerable<object?[]> GetScenarios()
+	{
+		foreach (var scenarioFolder in Directory.EnumerateDirectories(ScenariosFolder, "*.*", SearchOption.TopDirectoryOnly))
+		{
+			var scenarioName = Path.GetFileName(scenarioFolder);
+			var path = Path.Combine(scenarioFolder, "Scenario.json");
+
+			if (File.Exists(path))
+			{
+				var scenarios = ReadScenarioConfig(path);
+
+				if (scenarios != null)
+				{
+					foreach (var scenario in scenarios)
+					{
+						yield return new object?[] {
+							scenarioName,
+							scenario
+						};
+					}
+				}
+			}
+			else
+			{
+				yield return new[] { scenarioName, null };
+			}
+		}
+
+		static Scenario[]? ReadScenarioConfig(string path)
+		{
+			try
+			{
+				var detailsContent = File.ReadAllText(path);
+
+				var scenarios = System.Text.Json.JsonSerializer.Deserialize<Scenario[]>(
+					detailsContent,
+					new System.Text.Json.JsonSerializerOptions()
+					{
+						ReadCommentHandling = System.Text.Json.JsonCommentHandling.Skip,
+						AllowTrailingCommas = true
+					});
+				return scenarios;
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException($"Failed to setup scenario in {path}", e);
+			}
+		}
 	}
 
-	[TestMethod]
-	public async Task When_Single_Code_File_With_No_Update_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Single_Code_File_With_Code_Update()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Single_Code_File_With_Code_Update_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_With_ThemeResource_Add()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_With_ThemeResource_Add_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_No_Update()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_Text_Change()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_Text_Change_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_xName_Add()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_xName_Add_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		Assert.AreEqual(1, results[0].Diagnostics.Length);
-		Assert.IsTrue(results[0].Diagnostics.First().ToString().Contains("ENC0100"));
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_xName_Change()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(1, results[0].Diagnostics.Length);
-		Assert.IsTrue(results[0].Diagnostics.First().ToString().Contains("ENC0009")); // Updating the type of property requires restarting the application.
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_xName_Change_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		Assert.AreEqual(1, results[0].Diagnostics.Length);
-		Assert.IsTrue(results[0].Diagnostics.First().ToString().Contains("ENC0009")); // Updating the type of property requires restarting the application.
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_xName_Add_Twice_Release()
-	{
-		var results = await ApplyScenario(isDebugCompilation: false, isMono: false);
-
-		Assert.AreEqual(2, results.Length);
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-		Assert.AreEqual(4, results[1].Diagnostics.Length);
-		Assert.IsTrue(results[1].Diagnostics.First().ToString().Contains("ENC0049"));
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Single_xName_Add_Twice_Debug()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(2, results.Length);
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-		Assert.AreEqual(0, results[1].Diagnostics.Length);
-		Assert.AreEqual(1, results[1].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_xBind_Event_Add()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Add_xBind_Simple_Property()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Add_xBind_Simple_Property_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		// error ENC0100: Adding auto-property requires restarting the application.	
-		// error ENC0100: Adding field requires restarting the application.
-
-		Assert.AreEqual(2, results[0].Diagnostics.Length);
-		Assert.IsTrue(results[0].Diagnostics[0].ToString().Contains("ENC0100"));
-		Assert.IsTrue(results[0].Diagnostics[1].ToString().Contains("ENC0100"));
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Add_xBind_Simple_Property_Update()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
-		Assert.AreEqual(1, results[0].Diagnostics.Length);
-		Assert.IsTrue(results[0].Diagnostics[0].ToString().Contains("ENC0049"));
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Add_xBind_Simple_Property_Update_Mono()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: true);
-
-		// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
-		Assert.AreEqual(1, results[0].Diagnostics.Length);
-		Assert.IsTrue(results[0].Diagnostics[0].ToString().Contains("ENC0049"));
-		Assert.AreEqual(0, results[0].MetadataUpdates.Length);
-	}
-
-	[TestMethod]
-	public async Task When_Simple_Xaml_Add_xLoad()
-	{
-		var results = await ApplyScenario(isDebugCompilation: true, isMono: false);
-
-		Assert.AreEqual(0, results[0].Diagnostics.Length);
-		Assert.AreEqual(1, results[0].MetadataUpdates.Length);
-	}
+	private static string ScenariosFolder
+		=> Path.Combine(
+			Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+			"MetadataUpdateTests",
+			"Scenarios");
 
 	private async Task<HotReloadWorkspace.UpdateResult[]> ApplyScenario(bool isDebugCompilation, bool isMono, [CallerMemberName] string? name = null)
 	{
@@ -237,16 +107,7 @@ public class Given_HotReloadService
 			throw new InvalidOperationException($"A test scenario name must be provided.");
 		}
 
-		name = name
-			.Replace("_Debug", "")
-			.Replace("_Release", "")
-			.Replace("_Mono", "");
-
-		var scenarioFolder = Path.Combine(
-			Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
-			"MetadataUpdateTests",
-			"Scenarios",
-			name);
+		var scenarioFolder = Path.Combine(ScenariosFolder, name);
 		
 		HotReloadWorkspace SUT = new(isDebugCompilation, isMono);
 		List<HotReloadWorkspace.UpdateResult> results = new();
@@ -261,6 +122,11 @@ public class Given_HotReloadService
 		{
 			foreach (var file in step)
 			{
+				if(file == Path.Combine(scenarioFolder, "Scenario.json"))
+				{
+					continue;
+				}
+
 				var pathParts = Path.GetRelativePath(scenarioFolder, file).Split(Path.DirectorySeparatorChar);
 				
 				var fileContent = File.ReadAllText(file);

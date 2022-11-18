@@ -1,0 +1,27 @@
+[
+	{
+		"IsDebug": true,
+		"IsMono": false,
+		"PassResults": [
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					{ "Id": "ENC0009" }
+				]
+			}
+		]
+	},
+	{
+		"IsDebug": true,
+		"IsMono": true,
+		"PassResults": [
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					{ "Id": "ENC0009" }
+				]
+			}
+		]
+	}
+]
+
