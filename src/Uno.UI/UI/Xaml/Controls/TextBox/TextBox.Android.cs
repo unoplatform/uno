@@ -431,10 +431,10 @@ namespace Windows.UI.Xaml.Controls
 			// not receive any input.
 			var isReadOnly = IsReadOnly || !IsTabStop;
 
-			_textBoxView.Focusable = !isReadOnly;
-			_textBoxView.FocusableInTouchMode = !isReadOnly;
+			_textBoxView.Focusable = IsTabStop;
+			_textBoxView.FocusableInTouchMode = IsTabStop;
 			_textBoxView.Clickable = !isReadOnly;
-			_textBoxView.LongClickable = !isReadOnly;
+			_textBoxView.LongClickable = !IsTabStop;
 			_textBoxView.SetCursorVisible(!isReadOnly);
 
 			if (isReadOnly)

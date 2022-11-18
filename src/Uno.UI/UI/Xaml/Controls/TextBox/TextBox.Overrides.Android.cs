@@ -45,12 +45,19 @@ namespace Windows.UI.Xaml.Controls
 			private readonly ManagedWeakReference _owner;
 			private TextBox Owner => _owner.Target as TextBox;
 
+			private bool IsReadonly => Owner is not { } owner ? false : owner.IsReadOnly || !owner.IsTabStop;
+
 			public TextBoxStringBuilder(ManagedWeakReference owner, ICharSequence text) : base(text)
 			{
 				_owner = owner;
 			}
 			public override IEditable Replace(int start, int end, ICharSequence tb, int tbstart, int tbend)
 			{
+				if (IsReadonly)
+				{
+					return this;
+				}
+
 				// Create a copy of this string builder to preview the change, allowing the TextBox's event handlers to act on the modified text.
 				var copy = new SpannableStringBuilder(this);
 				copy.Replace(start, end, tb, tbstart, tbend);
