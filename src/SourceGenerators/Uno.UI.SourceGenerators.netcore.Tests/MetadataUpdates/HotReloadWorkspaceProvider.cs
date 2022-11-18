@@ -191,7 +191,7 @@ internal class HotReloadWorkspace
 						# For now, there is no need to customize these for each test.
 						build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
 						build_property.RootNamespace = {project.Name}
-						build_property.XamlSourceGeneratorTracingFolder = c:\Temp\xaml-gen
+						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
 						build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
 						
 						"""); ;
