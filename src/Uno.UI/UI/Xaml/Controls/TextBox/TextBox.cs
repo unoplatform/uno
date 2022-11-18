@@ -1088,7 +1088,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void PasteFromClipboard()
 		{
-			Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				var content = Clipboard.GetContent();
 				var clipboardText = await content.GetTextAsync();
