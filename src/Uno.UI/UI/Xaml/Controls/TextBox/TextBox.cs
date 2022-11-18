@@ -1086,29 +1086,32 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Copies content from the OS clipboard into the text control.
 		/// </summary>
-		public async void PasteFromClipboard()
+		public void PasteFromClipboard()
 		{
-			var content = Clipboard.GetContent();
-			var clipboardText = await content.GetTextAsync();
-			var selectionStart = SelectionStart;
-			var selectionLength = SelectionLength;
-			var currentText = Text;
-			
-			if (selectionStart >= 0 && selectionLength > 0)
+			Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
-				currentText = currentText.Remove(selectionStart, selectionLength);
-			}
-			
-			if (selectionStart >= 0)
-			{
-				currentText = currentText.Insert(selectionStart, clipboardText);
-			}
-			else
-			{
-				currentText += clipboardText;
-			}
-			
-			Text = currentText;
+				var content = Clipboard.GetContent();
+				var clipboardText = await content.GetTextAsync();
+				var selectionStart = SelectionStart;
+				var selectionLength = SelectionLength;
+				var currentText = Text;
+
+				if (selectionStart >= 0 && selectionLength > 0)
+				{
+					currentText = currentText.Remove(selectionStart, selectionLength);
+				}
+
+				if (selectionStart >= 0)
+				{
+					currentText = currentText.Insert(selectionStart, clipboardText);
+				}
+				else
+				{
+					currentText += clipboardText;
+				}
+
+				Text = currentText;
+			});
 		}
 
 		/// <summary>
