@@ -21,7 +21,7 @@ public class Given_HotReloadService
 {
 	[DataTestMethod]
 	[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
-	public async Task TestRunner(string name, Scenario? scenario)
+	public async Task HR(string name, Scenario? scenario)
 	{
 		if (scenario != null)
 		{
@@ -40,7 +40,11 @@ public class Given_HotReloadService
 		}
 	}
 
-	public record Scenario(bool IsDebug, bool IsMono, params PassResult[] PassResults);
+	public record Scenario(bool IsDebug, bool IsMono, params PassResult[] PassResults)
+	{
+		public override string ToString()
+			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")}";
+	}
 	public record PassResult(int MetadataUpdates, params DiagnosticsResult[] Diagnostics);
 	public record DiagnosticsResult(string Id);
 
@@ -51,7 +55,7 @@ public class Given_HotReloadService
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
-			//if(scenarioName != "When_Simple_Xaml_Add_xBind_Simple_Property_Update")
+			//if (scenarioName != "When_Simple_Xaml_ResourceDictionary_Change_One")
 			//{
 			//	continue;
 			//}
