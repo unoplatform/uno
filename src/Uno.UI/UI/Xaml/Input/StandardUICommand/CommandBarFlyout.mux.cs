@@ -478,10 +478,13 @@ public partial class CommandBarFlyout : FlyoutBase
 	{
 		var commandBarElementDependencyPropertiesCount = SharedHelpers.IsRS4OrHigher() ? s_commandBarElementDependencyPropertiesCount : s_commandBarElementDependencyPropertiesCountRS3;
 
+		var revokers = new IDisposable[commandBarElementDependencyPropertiesCount];
+		m_propertyChangedRevokersByIndexMap[index] = revokers;
+
 		for (int commandBarElementDependencyPropertyIndex = 0; commandBarElementDependencyPropertyIndex < commandBarElementDependencyPropertiesCount; commandBarElementDependencyPropertyIndex++)
 		{
 			var disposable = appBarToggleButton.RegisterDisposablePropertyChangedCallback(s_appBarToggleButtonDependencyProperties[commandBarElementDependencyPropertyIndex], OnCommandBarElementDependencyPropertyChanged);
-			m_propertyChangedRevokersByIndexMap[index][commandBarElementDependencyPropertyIndex] = disposable;
+			revokers[commandBarElementDependencyPropertyIndex] = disposable;
 		}
 	}
 
