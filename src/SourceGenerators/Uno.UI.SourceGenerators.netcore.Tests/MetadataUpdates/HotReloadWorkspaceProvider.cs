@@ -20,18 +20,21 @@ internal class HotReloadWorkspace
 {
 	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<WatchHotReloadService.Update> MetadataUpdates);
 
-	const string CapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters";
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters";
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes";
 
 	private readonly string _baseWorkFolder;
 	private readonly bool _isDebugCompilation;
+	private readonly bool _isMono;
 	private Dictionary<string, Dictionary<string, string>> _sourceFiles = new();
 	private Dictionary<string, Dictionary<string, string>> _additionalFiles = new();
 	private Solution? _currentSolution;
 	private WatchHotReloadService? _hotReloadService;
 
-	public HotReloadWorkspace(bool isDebugCompilation)
+	public HotReloadWorkspace(bool isDebugCompilation, bool isMono)
 	{
 		_isDebugCompilation = isDebugCompilation;
+		_isMono = isMono;
 		_baseWorkFolder = Path.Combine(Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!, "work");
 		Directory.CreateDirectory(_baseWorkFolder);
 
@@ -239,7 +242,7 @@ internal class HotReloadWorkspace
 			}
 		}
 
-		var metadataUpdateCaps = CapsRaw.Split(" ");
+		var metadataUpdateCaps = (_isMono ? MonoCapsRaw : NetCoreCapsRaw).Split(" ");
 		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCaps);
 		await hotReloadService.StartSessionAsync(currentSolution, ct);
 

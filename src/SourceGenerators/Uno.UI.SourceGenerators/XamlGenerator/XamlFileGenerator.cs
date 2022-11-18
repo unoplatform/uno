@@ -6664,7 +6664,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var componentDefinition = new ComponentDefinition(
 				objectDefinition,
 				true,
-				$"_component_{_generationRunFileInfo.RunInfo.Index}_{CurrentScope.ComponentCount}");
+				$"_component_{CurrentScope.ComponentCount}");
 			CurrentScope.Components.Add(componentDefinition);
 
 			if (CurrentXLoadScope is { } xLoadScope)
@@ -6677,7 +6677,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition, bool isWeak)
 		{
-			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, isWeak, $"_component_{_generationRunFileInfo.RunInfo.Index}_{CurrentScope.ComponentCount}"));
+			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, isWeak, $"_component_{CurrentScope.ComponentCount}"));
 
 			if (_xLoadScopeStack.Count > 1)
 			{
