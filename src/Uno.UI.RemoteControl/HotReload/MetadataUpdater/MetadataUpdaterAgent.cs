@@ -154,6 +154,10 @@ internal sealed class HotReloadAgent : IDisposable
 			_log($"No invokable methods found on metadata handler type '{handlerType}'. " +
 				$"Allowed methods are ClearCache, UpdateApplication");
 		}
+		else
+		{
+			_log($"Invokable methods found on metadata handler type '{handlerType}'. ");
+		}
 
 		Action<Type[]?> CreateAction(MethodInfo update)
 		{

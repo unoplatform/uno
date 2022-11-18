@@ -247,6 +247,11 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		public static void UpdateApplication(Type[] types)
 		{
+			if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(ClientHotReloadProcessor).Log().Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
+			}
+
 			ProcessMetadataUpdate(types);
 		}
 	}

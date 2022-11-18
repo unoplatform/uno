@@ -1,6 +1,7 @@
 ﻿	#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -89,15 +90,37 @@ namespace Uno.UI.RemoteControl.HotReload
 				this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
 			}
 
+			var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.PdbDelta));
+			var changedTypesReader = new BinaryReader(changedTypesStreams);
+
 			var delta = new UpdateDelta()
 			{
 				MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
 				ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
 				PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
 				ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
+				UpdatedTypes = ReadIntArray(changedTypesReader)
 			};
 
 			_agent.ApplyDeltas(new[] { delta });
+		}
+
+		static int[] ReadIntArray(BinaryReader binaryReader)
+		{
+			var numValues = binaryReader.ReadInt32();
+			if (numValues == 0)
+			{
+				return Array.Empty<int>();
+			}
+
+			var values = new int[numValues];
+
+			for (var i = 0; i < numValues; i++)
+			{
+				values[i] = binaryReader.ReadInt32();
+			}
+
+			return values;
 		}
 	}
 }
