@@ -207,6 +207,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				for (int i = 0; i < updates.Length; i++)
 				{
+					var updateTypesWriterStream = new MemoryStream();
+					var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
+					WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
+
 					await _remoteControlServer.SendFrame(
 						new AssemblyDeltaReload()
 						{
@@ -215,7 +219,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
 							ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
 							MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
+							UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
 						});
+				}
+			}
+
+			static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
+			{
+				if (values is null)
+				{
+					binaryWriter.Write(0);
+					return;
+				}
+
+				binaryWriter.Write(values.Length);
+				foreach (var value in values)
+				{
+					binaryWriter.Write(value);
 				}
 			}
 		}

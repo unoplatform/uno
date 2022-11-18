@@ -1,6 +1,7 @@
-﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
+﻿	#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +10,7 @@ using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
@@ -17,15 +19,8 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
-		private const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
-
-#if !NET6_0_OR_GREATER
-		private ApplyUpdateHandler _applyUpdate;
-#endif
-
 		private bool _linkerEnabled;
-
-		private delegate void ApplyUpdateHandler(Assembly assembly, ReadOnlySpan<byte> metadataDelta, ReadOnlySpan<byte> ilDelta, ReadOnlySpan<byte> pdbDelta);
+		private HotReloadAgent _agent;
 
 		partial void InitializeMetadataUpdater()
 		{
@@ -38,11 +33,18 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				Console.WriteLine($"[ERROR] {message}");
 			}
+
+			_agent = new HotReloadAgent(s => {
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace(s);
+				}
+			});
 		}
 
 		private string[] GetMetadataUpdateCapabilities()
 		{
-			if (Type.GetType(MetadataUpdaterType) is { } type)
+			if (Type.GetType(HotReloadAgent.MetadataUpdaterType) is { } type)
 			{
 				if (type.GetMethod("GetCapabilities", BindingFlags.Static | BindingFlags.NonPublic) is { } getCapabilities)
 				{
@@ -59,7 +61,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					{
 						if (this.Log().IsEnabled(LogLevel.Warning))
 						{
-							this.Log().Trace($"Runtime does not support Hot Reload (Invalid returned type for {MetadataUpdaterType}.GetCapabilities())");
+							this.Log().Trace($"Runtime does not support Hot Reload (Invalid returned type for {HotReloadAgent.MetadataUpdaterType}.GetCapabilities())");
 						}
 					}
 				}
@@ -67,7 +69,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().Trace($"Runtime does not support Hot Reload (Unable to find method {MetadataUpdaterType}.GetCapabilities())");
+						this.Log().Trace($"Runtime does not support Hot Reload (Unable to find method {HotReloadAgent.MetadataUpdaterType}.GetCapabilities())");
 					}
 				}
 			}
@@ -75,7 +77,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Trace($"Runtime does not support Hot Reload (Unable to find type {MetadataUpdaterType})");
+					this.Log().Trace($"Runtime does not support Hot Reload (Unable to find type {HotReloadAgent.MetadataUpdaterType})");
 				}
 			}
 			return Array.Empty<string>();
@@ -88,60 +90,37 @@ namespace Uno.UI.RemoteControl.HotReload
 				this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
 			}
 
-			var moduleIdGuid = Guid.Parse(assemblyDeltaReload.ModuleId);
-			var assemblyQuery = from a in AppDomain.CurrentDomain.GetAssemblies()
-								from m in a.Modules
-								where m.ModuleVersionId == moduleIdGuid
-								select a;
+			var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.PdbDelta));
+			var changedTypesReader = new BinaryReader(changedTypesStreams);
 
-			var assembly = assemblyQuery.FirstOrDefault();
-
-			ReadOnlySpan<byte> metadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta);
-			ReadOnlySpan<byte> ilDeta = Convert.FromBase64String(assemblyDeltaReload.ILDelta);
-			ReadOnlySpan<byte> pdbDelta = Convert.FromBase64String(assemblyDeltaReload.PdbDelta);
-
-			if (assembly is not null)
+			var delta = new UpdateDelta()
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Trace($"Applying IL Delta for {assembly} (metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length})");
-				}
+				MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
+				ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
+				PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
+				ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
+				UpdatedTypes = ReadIntArray(changedTypesReader)
+			};
 
-#if NET6_0_OR_GREATER
-				System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(assembly, metadataDelta, ilDeta, pdbDelta);
-#else
-				if (_applyUpdate == null)
-				{
-					if (Type.GetType(MetadataUpdaterType) is { } type)
-					{
-						if (type.GetMethod("ApplyUpdate") is { } applyUpdateMethod)
-						{
-							_applyUpdate = (ApplyUpdateHandler)applyUpdateMethod.CreateDelegate(typeof(ApplyUpdateHandler));
-						}
-						else
-						{
-							throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(...)");
-						}
-					}
-					else
-					{
-						throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater");
-					}
-				}
+			_agent.ApplyDeltas(new[] { delta });
+		}
 
-				if (_applyUpdate is not null)
-				{
-					_applyUpdate(assembly, metadataDelta, ilDeta, pdbDelta);
-				}
-#endif
-			}
-			else
+		static int[] ReadIntArray(BinaryReader binaryReader)
+		{
+			var numValues = binaryReader.ReadInt32();
+			if (numValues == 0)
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"Unable to applying IL delta for {assemblyDeltaReload.FilePath} (Unable to find module with guid:{assemblyDeltaReload.ModuleId}, is the IL Linker enabled?)");
-				}
+				return Array.Empty<int>();
 			}
+
+			var values = new int[numValues];
+
+			for (var i = 0; i < numValues; i++)
+			{
+				values[i] = binaryReader.ReadInt32();
+			}
+
+			return values;
 		}
 	}
 }

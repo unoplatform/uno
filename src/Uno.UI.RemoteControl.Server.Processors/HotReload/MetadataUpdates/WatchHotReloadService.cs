@@ -28,13 +28,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			public readonly ImmutableArray<byte> ILDelta;
 			public readonly ImmutableArray<byte> MetadataDelta;
 			public readonly ImmutableArray<byte> PdbDelta;
+			public readonly ImmutableArray<int> UpdatedTypes;
 
-			public Update(Guid moduleId, ImmutableArray<byte> ilDelta, ImmutableArray<byte> metadataDelta, ImmutableArray<byte> pdbDelta)
+			public Update(Guid moduleId, ImmutableArray<byte> ilDelta, ImmutableArray<byte> metadataDelta, ImmutableArray<byte> pdbDelta, ImmutableArray<int> updatedTypes)
 			{
 				ModuleId = moduleId;
 				ILDelta = ilDelta;
 				MetadataDelta = metadataDelta;
 				PdbDelta = pdbDelta;
+				UpdatedTypes = updatedTypes;
 			}
 		}
 
@@ -131,6 +133,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.ILDelta)).GetValue(updateSource)!
 					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.MetadataDelta)).GetValue(updateSource)!
 					, (ImmutableArray<byte>)GetField(updateType, nameof(Update.PdbDelta)).GetValue(updateSource)!
+					, (ImmutableArray<int>)GetField(updateType, nameof(Update.UpdatedTypes)).GetValue(updateSource)!
 				);
 
 				builder.Add(update);

@@ -37,15 +37,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.Xaml.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\AssemblyDeltaReload.cs" />
-	  <UpToDateCheckInput Remove="Messages\ProcessorsDiscovery.cs" />
-	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
-	  <UpToDateCheckInput Remove="ServerProcessorsConfigurationAttribute.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">

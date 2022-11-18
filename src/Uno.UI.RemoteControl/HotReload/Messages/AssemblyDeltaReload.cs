@@ -21,6 +21,9 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		[JsonProperty]
 		public string PdbDelta { get; set; }
 
+		[JsonProperty]
+		public string UpdatedTypes { get; set; }
+
 		[JsonIgnore]
 		public string Scope => HotReloadConstants.ScopeName;
 
