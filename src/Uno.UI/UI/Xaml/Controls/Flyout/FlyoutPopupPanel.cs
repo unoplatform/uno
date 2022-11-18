@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 	/// This panel is *NOT* used by types derived from <see cref="PickerFlyoutBase"/>. Pickers use a plain
 	/// <see cref="PopupPanel"/> (see <see cref="PickerFlyoutBase.InitializePopupPanel()"/>).
 	/// </remarks>
-	internal partial class FlyoutBasePopupPanel : PlacementPopupPanel
+	internal partial class FlyoutBasePopupPanel : PopupPanel
 	{
 		private readonly FlyoutBase _flyout;
 

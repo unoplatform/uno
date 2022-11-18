@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class ToolTipPopupPanel : PlacementPopupPanel
+	internal partial class ToolTipPopupPanel : PopupPanel
 	{
 		private readonly ToolTip _toolTip;
 

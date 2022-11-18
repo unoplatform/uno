@@ -201,12 +201,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
 			// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
 			this.SetLogicalParent(Popup);
+
+			Windows.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
 		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			this.SetLogicalParent(null);
+
+			Windows.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
 		}
 
 		// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
