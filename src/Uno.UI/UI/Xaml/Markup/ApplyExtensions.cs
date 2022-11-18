@@ -7,6 +7,7 @@ namespace Uno.UI.Helpers.Xaml
 	public static class ApplyExtensions
 	{
 		public delegate Binding BindingApplyHandler(Binding binding);
+		public delegate Binding BindingApplyWithParamHandler(Binding binding, object that);
 
 		/// <summary>
 		/// Executes the provided apply handler on the binding instance. Used by the XAML code generator.
@@ -15,6 +16,16 @@ namespace Uno.UI.Helpers.Xaml
 		public static Binding BindingApply(this Binding instance, BindingApplyHandler apply)
 		{
 			apply(instance);
+			return instance;
+		}
+
+		/// <summary>
+		/// Executes the provided apply handler on the binding instance. Used by the XAML code generator.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Binding BindingApply(this Binding instance, object that, BindingApplyWithParamHandler apply)
+		{
+			apply(instance, that);
 			return instance;
 		}
 

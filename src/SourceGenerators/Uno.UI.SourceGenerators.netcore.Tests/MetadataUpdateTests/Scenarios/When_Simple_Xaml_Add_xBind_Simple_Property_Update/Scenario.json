@@ -4,11 +4,8 @@
 		"IsMono": false,
 		"PassResults": [
 			{
-				"MetadataUpdates": 0,
-				"Diagnostics": [
-					// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
-					{ "Id": "ENC0049" }
-				]
+				"MetadataUpdates": 1,
+				"Diagnostics": []
 			}
 		]
 	},
@@ -17,11 +14,8 @@
 		"IsMono": true,
 		"PassResults": [
 			{
-				"MetadataUpdates": 0,
-				"Diagnostics": [
-					// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
-					{ "Id": "ENC0049" }
-				]
+				"MetadataUpdates": 1,
+				"Diagnostics": []
 			}
 		]
 	}

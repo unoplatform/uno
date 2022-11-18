@@ -6,6 +6,7 @@
 			{
 				"MetadataUpdates": 0,
 				"Diagnostics": [
+					// error ENC0009: Updating the type of method requires restarting the application.
 					{ "Id": "ENC0009" }
 				]
 			}
@@ -18,6 +19,7 @@
 			{
 				"MetadataUpdates": 0,
 				"Diagnostics": [
+					// error ENC0009: Updating the type of method requires restarting the application.
 					{ "Id": "ENC0009" }
 				]
 			}
