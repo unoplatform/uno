@@ -15,6 +15,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	[ContentProperty(Name = "Child")]
 	public partial class Popup
 	{
+		private PopupPlacementMode _actualPlacement;
+
+
 		/// <summary>
 		/// Overrides the default location of this popup (cf. Remarks)
 		/// </summary>
@@ -146,6 +149,66 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(defaultValue: default(LightDismissOverlayMode), propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+
+		/// <summary>
+		/// Gets or sets the element to use as the popup's placement target.
+		/// </summary>
+		public FrameworkElement PlacementTarget
+		{
+			get => (FrameworkElement)GetValue(PlacementTargetProperty);
+			set => SetValue(PlacementTargetProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the PlacementTarget dependency property.
+		/// </summary>
+		public static DependencyProperty PlacementTargetProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PlacementTarget),
+				typeof(FrameworkElement),
+				typeof(Popup),
+				new FrameworkPropertyMetadata(default(FrameworkElement)));
+
+		/// <summary>
+		/// Gets or sets the preferred placement to be used for the popup, in relation to its placement target.
+		/// </summary>
+		public PopupPlacementMode DesiredPlacement
+		{
+			get => (PopupPlacementMode)GetValue(DesiredPlacementProperty);
+			set => SetValue(DesiredPlacementProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the DesiredPlacement dependency property.
+		/// </summary>
+		public static DependencyProperty DesiredPlacementProperty { get; } =
+			DependencyProperty.Register(
+				nameof(DesiredPlacement),
+				typeof(PopupPlacementMode),
+				typeof(Popup),
+				new FrameworkPropertyMetadata(default(PopupPlacementMode)));
+
+		/// <summary>
+		/// Gets the actual placement of the popup, in relation to its placement target.
+		/// </summary>
+		public PopupPlacementMode ActualPlacement
+		{
+			get => _actualPlacement;
+			set
+			{
+				if (_actualPlacement != value)
+				{
+					_actualPlacement = value;
+
+					ActualPlacementChanged?.Invoke(this, value);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Raised when the ActualPlacement property changes.
+		/// </summary>
+		public event EventHandler<object> ActualPlacementChanged;
 
 		private void ApplyLightDismissOverlayMode()
 		{

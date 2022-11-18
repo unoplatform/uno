@@ -30,7 +30,23 @@ namespace Windows.UI.Xaml.Controls
 			Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 		}
 
-		protected override FlyoutPlacementMode PopupPlacement => _flyout.EffectivePlacement;
+		protected override PopupPlacementMode PopupPlacement => _flyout.EffectivePlacement switch
+		{
+			FlyoutPlacementMode.Top => PopupPlacementMode.Top,
+			FlyoutPlacementMode.Bottom => PopupPlacementMode.Bottom,
+			FlyoutPlacementMode.Left => PopupPlacementMode.Bottom,
+			FlyoutPlacementMode.Right => PopupPlacementMode.Bottom,
+			FlyoutPlacementMode.TopEdgeAlignedLeft => PopupPlacementMode.TopEdgeAlignedLeft,
+			FlyoutPlacementMode.TopEdgeAlignedRight => PopupPlacementMode.TopEdgeAlignedRight,
+			FlyoutPlacementMode.BottomEdgeAlignedLeft => PopupPlacementMode.BottomEdgeAlignedLeft,
+			FlyoutPlacementMode.BottomEdgeAlignedRight => PopupPlacementMode.BottomEdgeAlignedRight,
+			FlyoutPlacementMode.LeftEdgeAlignedTop => PopupPlacementMode.LeftEdgeAlignedTop,
+			FlyoutPlacementMode.LeftEdgeAlignedBottom => PopupPlacementMode.LeftEdgeAlignedBottom,
+			FlyoutPlacementMode.RightEdgeAlignedTop => PopupPlacementMode.RightEdgeAlignedTop,
+			FlyoutPlacementMode.RightEdgeAlignedBottom => PopupPlacementMode.RightEdgeAlignedBottom,
+			FlyoutPlacementMode.Full => PopupPlacementMode.Full,
+			_ => PopupPlacementMode.Auto,
+		};
 
 		protected override FrameworkElement AnchorControl => _flyout.Target as FrameworkElement;
 

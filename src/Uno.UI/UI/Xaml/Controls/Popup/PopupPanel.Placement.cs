@@ -68,7 +68,7 @@ partial class PopupPanel
 	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 		=> InvalidateMeasure();
 
-	protected virtual FlyoutPlacementMode PopupPlacement { get; }
+	protected virtual PopupPlacementMode PopupPlacement { get; }
 
 	protected virtual FrameworkElement AnchorControl { get; }
 
