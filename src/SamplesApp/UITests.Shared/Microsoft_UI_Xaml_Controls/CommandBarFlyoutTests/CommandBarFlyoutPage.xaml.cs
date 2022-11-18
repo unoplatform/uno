@@ -259,7 +259,9 @@ namespace MUXControlsTestApp
 
         private void OnFlyoutTarget10Click(object sender, RoutedEventArgs e)
         {
-            ShowFlyoutAt(Flyout10, FlyoutTarget10);
+#if false // This uses WUX CommandBarFlyout - ignored
+			ShowFlyoutAt(Flyout10, FlyoutTarget10);
+#endif
         }
 
         private void ShowFlyoutAt(FlyoutBase flyout, FrameworkElement targetElement, FlyoutShowMode showMode = FlyoutShowMode.Transient)
