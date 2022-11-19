@@ -1,0 +1,85 @@
+[
+	{
+		"IsDebug": true,
+		"IsMono": false,
+		"PassResults": [
+			{
+				"MetadataUpdates": 1,
+				"Diagnostics": []
+			},
+			{
+				"MetadataUpdates": 1,
+				"Diagnostics": []
+			}
+		]
+	},
+	{
+		"IsDebug": true,
+		"IsMono": true,
+		"PassResults": [
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					// error ENC0100: Adding field requires restarting the application.
+					{ "Id": "ENC0100" }
+				]
+			},
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(102,59): error ENC0100: Adding field requires restarting the application.
+					{ "Id": "ENC0100" },
+					{ "Id": "ENC0100" }
+				]
+			}
+		]
+	},
+	{
+		"IsDebug": false,
+		"IsMono": false,
+		"PassResults": [
+			{
+				"MetadataUpdates": 1,
+				"Diagnostics": []
+			},
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
+					{ "Id": "ENC0049" },
+					{ "Id": "ENC0049" },
+
+					// error ENC0009: Updating the type of method requires restarting the application.
+					{ "Id": "ENC0009" },
+					{ "Id": "ENC0009" }
+				]
+			}
+		]
+	},
+	{
+		"IsDebug": false,
+		"IsMono": true,
+		"PassResults": [
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					// error ENC0100: Adding field requires restarting the application.
+					{ "Id": "ENC0100" }
+				]
+			},
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
+					{ "Id": "ENC0049" },
+					{ "Id": "ENC0049" },
+
+					// error ENC0009: Updating the type of method requires restarting the application.
+					{ "Id": "ENC0009" },
+					{ "Id": "ENC0009" }
+				]
+			}
+		]
+	}
+]
+
