@@ -35,7 +35,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	{	
 		private void ReloadFile(FileReload fileReload)
 		{
-			if (Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES").Equals("debug", StringComparison.OrdinalIgnoreCase))
+			if (String.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
