@@ -63,7 +63,7 @@ jobs:
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        msbuild Uno.UI.Build.csproj "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
 
     - name: commit
       run: |
