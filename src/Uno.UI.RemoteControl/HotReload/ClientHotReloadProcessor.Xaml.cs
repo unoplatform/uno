@@ -33,7 +33,10 @@ using Uno.UI;
 namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
-	{	
+	{
+        private static Logger _log = typeof(ClientHotReloadProcessor).Log();
+        private string? _lastUpdatedFilePath;
+
 		private void ReloadFile(FileReload fileReload)
 		{
 			if (string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
@@ -60,15 +63,17 @@ namespace Uno.UI.RemoteControl.HotReload
                 return;
             }
 
+            _lastUpdatedFilePath = fileReload.FilePath;
+
             _ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
                 Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
                 {
-                    await ReloadWithFileContent(fileReload.FilePath, fileReload.Content);
+                    await ReloadWithFileAndContent(fileReload.FilePath, fileReload.Content);
                 });
 		}
 
-        private async Task ReloadWithFileContent(string filePath, string fileContent)
+        private async Task ReloadWithFileAndContent(string filePath, string fileContent)
         {
             try
             {
@@ -86,9 +91,9 @@ namespace Uno.UI.RemoteControl.HotReload
                     switch (instance)
                     {
 #if __IOS__
-							case UserControl userControl:
-								SwapViews(userControl, XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView);
-								break;
+						case UserControl userControl:
+							SwapViews(userControl, XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView);
+							break;
 #endif
                         case ContentControl content:
                             if (XamlReader.LoadUsingXClass(fileContent) is ContentControl newContent)
@@ -215,74 +220,116 @@ namespace Uno.UI.RemoteControl.HotReload
 				newView.DataContext = oldView.DataContext;
 			}
 		}
-		
-		private static void ProcessMetadataUpdate(Type[] updatedTypes)
-		{
-			foreach (var updatedType in updatedTypes)
-			{
-				if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Debug))
-				{
-					typeof(ClientHotReloadProcessor).Log().LogDebug($"Processing changed type [{updatedType}]");
-				}
 
-				if (updatedType.Is<UIElement>())
-				{
-					foreach (var instance in EnumerateInstances(Window.Current.Content, i => updatedType.IsInstanceOfType(i)))
-					{
-						if (instance.GetType().GetConstructor(Array.Empty<Type>()) is { })
-						{
-							if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Trace))
-							{
-								typeof(ClientHotReloadProcessor).Log().Trace($"Creating instance of type {instance.GetType()}");
-							}
+        private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
+        {
+            if(updatedTypes.Length == 0)
+            {
+                ReloadWithLastChangedFile();
+                return;
+            }
 
-							var newInstance = Activator.CreateInstance(instance.GetType());
+            foreach (var updatedType in updatedTypes)
+            {
+                if (_log.IsEnabled(LogLevel.Debug))
+                {
+                    _log.LogDebug($"Processing changed type [{updatedType}]");
+                }
 
-                            switch (instance)
-                            {
+                if (updatedType.Is<UIElement>())
+                {
+                    ReplaceViewInstances(i => updatedType.IsInstanceOfType(i));
+                }
+                else
+                {
+                    if (_log.IsEnabled(LogLevel.Debug))
+                    {
+                        _log.LogDebug($"Type [{updatedType}] is not a UIElement, skipping");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reload with the last updated file after metadata was updated
+        /// </summary>
+        /// <remarks>
+        /// This scenario can happen when using WebAssembly from VisualStudio 2022, where changed types are not provided by browserlink.
+        /// </remarks>
+        private static void ReloadWithLastChangedFile()
+        {
+            var lastUpdated = _instance?._lastUpdatedFilePath;
+
+            if (lastUpdated is null)
+            {
+                if (_log.IsEnabled(LogLevel.Debug))
+                {
+                    _log.LogDebug($"Last changed filed is not available, skipping");
+                }
+
+                return;
+            }
+
+            if (_log.IsEnabled(LogLevel.Debug))
+            {
+                _log.LogDebug($"Processing last changed file [{lastUpdated}]");
+            }
+
+            var uri = new Uri("file:///" + lastUpdated.Replace("\\", "/"));
+
+            // Search for all types in the main window's tree that
+            // match the last modified uri.
+            ReplaceViewInstances(i => uri.OriginalString == i.BaseUri?.OriginalString);
+        }
+
+        private static void ReplaceViewInstances(Func<FrameworkElement, bool> predicate)
+        {
+            foreach (var instance in EnumerateInstances(Window.Current.Content, predicate))
+            {
+                if (instance.GetType().GetConstructor(Array.Empty<Type>()) is { })
+                {
+                    if (_log.IsEnabled(LogLevel.Trace))
+                    {
+                        _log.Trace($"Creating instance of type {instance.GetType()}");
+                    }
+
+                    var newInstance = Activator.CreateInstance(instance.GetType());
+
+                    switch (instance)
+                    {
 #if __IOS__
-								case UserControl userControl:
-									SwapViews(userControl, newInstance as UIKit.UIView);
-									break;
+						case UserControl userControl:
+							SwapViews(userControl, newInstance as UIKit.UIView);
+							break;
 #endif
-                                case ContentControl content:
-                                    if (newInstance is ContentControl newContent)
-                                    {
-                                        SwapViews(content, newContent);
-                                    }
-									break;
-							}
-						}
-						else
-						{
-							if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Debug))
-							{
-								typeof(ClientHotReloadProcessor).Log().LogDebug($"Type [{updatedType}] has no parameterless constructor, skipping");
-							}
-						}
-					}
-				}
-				else
-				{
-					if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Debug))
-					{
-						typeof(ClientHotReloadProcessor).Log().LogDebug($"Type [{updatedType}] is not a UIElement, skipping");
-					}
-				}
-			}
-		}
+                        case ContentControl content:
+                            if (newInstance is ContentControl newContent)
+                            {
+                                SwapViews(content, newContent);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    if (_log.IsEnabled(LogLevel.Debug))
+                    {
+                        _log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
+                    }
+                }
+            }
+        }
 
-		public static void UpdateApplication(Type[] types)
+        public static void UpdateApplication(Type[] types)
 		{
-			if (typeof(ClientHotReloadProcessor).Log().IsEnabled(LogLevel.Trace))
+			if (_log.IsEnabled(LogLevel.Trace))
 			{
-				typeof(ClientHotReloadProcessor).Log().Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
+				_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 			}
 
             _ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
                 Windows.UI.Core.CoreDispatcherPriority.Normal,
-                () => ProcessMetadataUpdate(types));
-            
+                () => ReloadWithUpdatedTypes(types));
 		}
 	}
 }

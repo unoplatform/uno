@@ -22,10 +22,13 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
+		private static ClientHotReloadProcessor? _instance;
 
 		[MemberNotNull(nameof(_agent))]
 		partial void InitializeMetadataUpdater()
 		{
+			_instance = this;
+
 			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
 
 			if (_linkerEnabled)
