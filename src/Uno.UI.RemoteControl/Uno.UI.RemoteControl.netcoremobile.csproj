@@ -22,7 +22,10 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
