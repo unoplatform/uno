@@ -1,6 +1,7 @@
-﻿	#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
+﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -22,6 +23,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
 
+		[MemberNotNull(nameof(_agent))]
 		partial void InitializeMetadataUpdater()
 		{
 			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
@@ -85,24 +87,34 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			if (assemblyDeltaReload.IsValid())
 			{
-				this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+				}
+
+				var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
+				var changedTypesReader = new BinaryReader(changedTypesStreams);
+
+				var delta = new UpdateDelta()
+				{
+					MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
+					ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
+					PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
+					ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
+					UpdatedTypes = ReadIntArray(changedTypesReader)
+				};
+
+				_agent.ApplyDeltas(new[] { delta });
 			}
-
-			var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.PdbDelta));
-			var changedTypesReader = new BinaryReader(changedTypesStreams);
-
-			var delta = new UpdateDelta()
+			else
 			{
-				MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
-				ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
-				PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
-				ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
-				UpdatedTypes = ReadIntArray(changedTypesReader)
-			};
-
-			_agent.ApplyDeltas(new[] { delta });
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Failed to apply IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload})");
+				}
+			}
 		}
 
 		static int[] ReadIntArray(BinaryReader binaryReader)

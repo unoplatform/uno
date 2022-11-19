@@ -19,6 +19,9 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>

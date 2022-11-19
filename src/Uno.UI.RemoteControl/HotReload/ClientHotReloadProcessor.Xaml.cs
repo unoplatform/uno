@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Windows.Storage.Pickers.Provider;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
@@ -35,7 +36,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	{	
 		private void ReloadFile(FileReload fileReload)
 		{
-			if (String.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
+			if (string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -44,61 +45,84 @@ namespace Uno.UI.RemoteControl.HotReload
 				return;
 			}
 
-			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+            if (!fileReload.IsValid())
+            {
+                if (fileReload.FilePath.HasValue() && this.Log().IsEnabled(LogLevel.Debug))
+                {
+                    this.Log().LogDebug($"FileReload is missing a file path");
+                }
+
+                if (fileReload.Content is null && this.Log().IsEnabled(LogLevel.Debug))
+                {
+                    this.Log().LogDebug($"FileReload is missing content");
+                }
+
+                return;
+            }
+
+            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
-			{
-				try
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Reloading changed file [{fileReload.FilePath}]");
-					}
+                {
+                    await ReloadWithFileContent(fileReload.FilePath, fileReload.Content);
+                });
+		}
 
-					var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
+        private async Task ReloadWithFileContent(string filePath, string fileContent)
+        {
+            try
+            {
+                if (this.Log().IsEnabled(LogLevel.Debug))
+                {
+                    this.Log().LogDebug($"Reloading changed file [{filePath}]");
+                }
 
-					Application.RegisterComponent(uri, fileReload.Content);
+                var uri = new Uri("file:///" + filePath.Replace("\\", "/"));
 
-					foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.BaseUri?.OriginalString))
-					{
-						switch (instance)
-						{
+                Application.RegisterComponent(uri, fileContent);
+
+                foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.BaseUri?.OriginalString))
+                {
+                    switch (instance)
+                    {
 #if __IOS__
 							case UserControl userControl:
 								SwapViews(userControl, XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView);
 								break;
 #endif
-							case ContentControl content:
-								SwapViews(content, XamlReader.LoadUsingXClass(fileReload.Content) as ContentControl);
-								break;
-						}
-					}
+                        case ContentControl content:
+                            if (XamlReader.LoadUsingXClass(fileContent) is ContentControl newContent)
+                            {
+                                SwapViews(content, newContent);
+                            }
+                            break;
+                    }
+                }
 
-					if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
-					{
-						var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileReload.Content);
-						targetDictionary.CopyFrom(replacementDictionary);
-						Application.Current.UpdateResourceBindingsForHotReload();
-					}
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().LogError($"Failed reloading changed file [{fileReload.FilePath}]", e);
-					}
+                if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
+                {
+                    var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileContent);
+                    targetDictionary.CopyFrom(replacementDictionary);
+                    Application.Current.UpdateResourceBindingsForHotReload();
+                }
+            }
+            catch (Exception e)
+            {
+                if (this.Log().IsEnabled(LogLevel.Error))
+                {
+                    this.Log().LogError($"Failed reloading changed file [{filePath}]", e);
+                }
 
-					await _rcClient.SendMessage(
-						new HotReload.Messages.XamlLoadError(
-							filePath: fileReload.FilePath,
-							exceptionType: e.GetType().ToString(),
-							message: e.Message,
-							stackTrace: e.StackTrace));
-				}
-			});
-		}
+                await _rcClient.SendMessage(
+                    new HotReload.Messages.XamlLoadError(
+                        filePath: filePath,
+                        exceptionType: e.GetType().ToString(),
+                        message: e.Message,
+                        stackTrace: e.StackTrace));
+            }
+        }
 
-		private static IEnumerable<UIElement> EnumerateInstances(object instance, Func<FrameworkElement, bool> predicate)
+        private static IEnumerable<UIElement> EnumerateInstances(object instance, Func<FrameworkElement, bool> predicate)
 		{
 			if (
 				instance is FrameworkElement fe && predicate(fe))
@@ -214,15 +238,18 @@ namespace Uno.UI.RemoteControl.HotReload
 
 							var newInstance = Activator.CreateInstance(instance.GetType());
 
-							switch (instance)
-							{
+                            switch (instance)
+                            {
 #if __IOS__
 								case UserControl userControl:
 									SwapViews(userControl, newInstance as UIKit.UIView);
 									break;
 #endif
-								case ContentControl content:
-									SwapViews(content, newInstance as ContentControl);
+                                case ContentControl content:
+                                    if (newInstance is ContentControl newContent)
+                                    {
+                                        SwapViews(content, newContent);
+                                    }
 									break;
 							}
 						}
@@ -252,7 +279,10 @@ namespace Uno.UI.RemoteControl.HotReload
 				typeof(ClientHotReloadProcessor).Log().Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 			}
 
-			ProcessMetadataUpdate(types);
+            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                () => ProcessMetadataUpdate(types));
+            
 		}
 	}
 }
