@@ -813,63 +813,70 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return presenterRect;
 		}
 
-		internal static PreferredJustification GetJustificationFromPlacementMode(FlyoutPlacementMode placement)
+		internal static PreferredJustification GetJustificationFromPlacementMode(PopupPlacementMode placement, bool fullPlacementRequested)
 		{
+			if (fullPlacementRequested)
+			{
+				return PreferredJustification.Center;
+			}
+
 			switch (placement)
 			{
-				case FlyoutPlacementMode.Full:
-				case FlyoutPlacementMode.Top:
-				case FlyoutPlacementMode.Bottom:
-				case FlyoutPlacementMode.Left:
-				case FlyoutPlacementMode.Right:
+				case PopupPlacementMode.Top:
+				case PopupPlacementMode.Bottom:
+				case PopupPlacementMode.Left:
+				case PopupPlacementMode.Right:
 					return PreferredJustification.Center;
-				case FlyoutPlacementMode.TopEdgeAlignedLeft:
-				case FlyoutPlacementMode.BottomEdgeAlignedLeft:
+				case PopupPlacementMode.TopEdgeAlignedLeft:
+				case PopupPlacementMode.BottomEdgeAlignedLeft:
 					return PreferredJustification.Left;
-				case FlyoutPlacementMode.TopEdgeAlignedRight:
-				case FlyoutPlacementMode.BottomEdgeAlignedRight:
+				case PopupPlacementMode.TopEdgeAlignedRight:
+				case PopupPlacementMode.BottomEdgeAlignedRight:
 					return PreferredJustification.Right;
-				case FlyoutPlacementMode.LeftEdgeAlignedTop:
-				case FlyoutPlacementMode.RightEdgeAlignedTop:
+				case PopupPlacementMode.LeftEdgeAlignedTop:
+				case PopupPlacementMode.RightEdgeAlignedTop:
 					return PreferredJustification.Top;
-				case FlyoutPlacementMode.LeftEdgeAlignedBottom:
-				case FlyoutPlacementMode.RightEdgeAlignedBottom:
+				case PopupPlacementMode.LeftEdgeAlignedBottom:
+				case PopupPlacementMode.RightEdgeAlignedBottom:
 					return PreferredJustification.Bottom;
 				default:
 					if (typeof(FlyoutBase).Log().IsEnabled(LogLevel.Error))
 					{
-						typeof(FlyoutBase).Log().LogError("Unsupported FlyoutPlacementMode");
+						typeof(FlyoutBase).Log().LogError("Unsupported PopupPlacementMode");
 					}
 					return PreferredJustification.Center;
 			}
 		}
 
-		internal static MajorPlacementMode GetMajorPlacementFromPlacement(FlyoutPlacementMode placement)
+		internal static MajorPlacementMode GetMajorPlacementFromPlacement(PopupPlacementMode placement, bool fullPlacementRequested)
 		{
+			if (fullPlacementRequested)
+			{
+				return MajorPlacementMode.Full;
+			}
+
 			switch (placement)
 			{
-				case FlyoutPlacementMode.Full:
-					return MajorPlacementMode.Full;
-				case FlyoutPlacementMode.Top:
-				case FlyoutPlacementMode.TopEdgeAlignedLeft:
-				case FlyoutPlacementMode.TopEdgeAlignedRight:
+				case PopupPlacementMode.Top:
+				case PopupPlacementMode.TopEdgeAlignedLeft:
+				case PopupPlacementMode.TopEdgeAlignedRight:
 					return MajorPlacementMode.Top;
-				case FlyoutPlacementMode.Bottom:
-				case FlyoutPlacementMode.BottomEdgeAlignedLeft:
-				case FlyoutPlacementMode.BottomEdgeAlignedRight:
+				case PopupPlacementMode.Bottom:
+				case PopupPlacementMode.BottomEdgeAlignedLeft:
+				case PopupPlacementMode.BottomEdgeAlignedRight:
 					return MajorPlacementMode.Bottom;
-				case FlyoutPlacementMode.Left:
-				case FlyoutPlacementMode.LeftEdgeAlignedTop:
-				case FlyoutPlacementMode.LeftEdgeAlignedBottom:
+				case PopupPlacementMode.Left:
+				case PopupPlacementMode.LeftEdgeAlignedTop:
+				case PopupPlacementMode.LeftEdgeAlignedBottom:
 					return MajorPlacementMode.Left;
-				case FlyoutPlacementMode.Right:
-				case FlyoutPlacementMode.RightEdgeAlignedTop:
-				case FlyoutPlacementMode.RightEdgeAlignedBottom:
+				case PopupPlacementMode.Right:
+				case PopupPlacementMode.RightEdgeAlignedTop:
+				case PopupPlacementMode.RightEdgeAlignedBottom:
 					return MajorPlacementMode.Right;
 				default:
 					if (typeof(FlyoutBase).Log().IsEnabled(LogLevel.Error))
 					{
-						typeof(FlyoutBase).Log().LogError("Unsupported FlyoutPlacementMode");
+						typeof(FlyoutBase).Log().LogError("Unsupported PopupPlacementMode");
 					}
 					return MajorPlacementMode.Full;
 			}

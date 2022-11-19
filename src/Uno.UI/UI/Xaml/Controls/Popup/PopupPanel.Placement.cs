@@ -70,6 +70,11 @@ partial class PopupPanel
 
 	protected virtual PopupPlacementMode PopupPlacement { get; }
 
+	// TODO: Use this whenever popup placement is Auto
+	protected virtual PopupPlacementMode DefaultPopupPlacement { get; }
+
+	protected virtual bool FullPlacementRequested { get; }
+
 	protected virtual FrameworkElement AnchorControl { get; }
 
 	protected virtual Point? PositionInAnchorControl { get; }
@@ -87,7 +92,7 @@ partial class PopupPanel
 
 			var desiredSize = elem.DesiredSize;
 			var maxSize = (elem as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
-			var rect = CalculateFlyoutPlacement(desiredSize, maxSize);
+			var rect = CalculatePopupPlacement(desiredSize, maxSize);
 
 			if (Flyout?.IsTargetPositionSet ?? false)
 			{
@@ -117,7 +122,7 @@ partial class PopupPanel
 		return anchor.GetBoundsRectRelativeTo(this);
 	}
 
-	protected virtual Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
+	protected virtual Rect CalculatePopupPlacement(Size desiredSize, Size maxSize)
 	{
 		if (!(GetAnchorRect() is { } anchorRect))
 		{
@@ -131,7 +136,7 @@ partial class PopupPanel
 		desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
 		// Try all placements...
-		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(PopupPlacement);
+		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(PopupPlacement, FullPlacementRequested);
 		var placementsToTry = PlacementsToTry.TryGetValue(preferredPlacement, out var p)
 			? p
 			: new[] { preferredPlacement };
@@ -218,10 +223,10 @@ partial class PopupPanel
 					break;
 			}
 
-			var justification = FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement);
+			var justification = FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement, FullPlacementRequested);
 
 			var fits = true;
-			if (PopupPlacement != FlyoutPlacementMode.Full)
+			if (!FullPlacementRequested)
 			{
 				if (IsPlacementModeVertical(placement))
 				{

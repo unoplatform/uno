@@ -44,9 +44,10 @@ namespace Windows.UI.Xaml.Controls
 			FlyoutPlacementMode.LeftEdgeAlignedBottom => PopupPlacementMode.LeftEdgeAlignedBottom,
 			FlyoutPlacementMode.RightEdgeAlignedTop => PopupPlacementMode.RightEdgeAlignedTop,
 			FlyoutPlacementMode.RightEdgeAlignedBottom => PopupPlacementMode.RightEdgeAlignedBottom,
-			FlyoutPlacementMode.Full => PopupPlacementMode.Full,
 			_ => PopupPlacementMode.Auto,
 		};
+
+		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
 
 		protected override FrameworkElement AnchorControl => _flyout.Target as FrameworkElement;
 
