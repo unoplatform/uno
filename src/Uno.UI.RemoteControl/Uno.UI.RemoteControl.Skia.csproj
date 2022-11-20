@@ -42,6 +42,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

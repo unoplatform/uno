@@ -32,6 +32,10 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
+	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
