@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
+using Uno.UI.Common;
 #if NETFX_CORE
 // Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
 using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
@@ -246,5 +247,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Verify_MenuBarItem_Bounds();
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_MenuFlyoutItem_CommandChanging()
+		{
+			var SUT = new MenuBar();
+			var item = new MenuBarItem() { Title = "test item" };
+			DelegateCommand command1 = null;
+			command1 = new DelegateCommand(() => command1.CanExecuteEnabled = !command1.CanExecuteEnabled);
+			var flyoutItem = new MenuFlyoutItem
+			{
+				Command = command1,
+				Text="test flyout"
+			};
+
+			SUT.Items.Add(item);
+			item.Items.Add(flyoutItem);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			item.Invoke();
+			Assert.IsTrue(flyoutItem.IsEnabled);
+
+			await WindowHelper.WaitForLoaded(flyoutItem);
+
+			flyoutItem.InvokeClick();
+
+			// Force close the flyout as InvokeClick does not do so.
+			item.CloseMenuFlyout();
+
+			await WindowHelper.WaitForIdle();
+
+			item.Invoke();
+
+			Assert.IsFalse(flyoutItem.IsEnabled);
+
+			flyoutItem.InvokeClick();
+			item.CloseMenuFlyout();
+		}
 	}
 }
