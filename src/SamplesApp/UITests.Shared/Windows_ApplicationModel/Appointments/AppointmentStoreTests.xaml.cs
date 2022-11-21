@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace UITests.Windows_ApplicationModel.Appointments;
 
-[Sample("Windows.ApplicationModel", Name = "AppointmentStore")]
+[Sample("Windows.ApplicationModel", Name = "AppointmentStore", IgnoreInSnapshotTests = true)]
 public sealed partial class AppointmentStoreTests : Page
 {
 	public AppointmentStoreTests()
