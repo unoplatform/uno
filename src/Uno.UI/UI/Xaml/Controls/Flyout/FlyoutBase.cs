@@ -458,6 +458,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public static void ShowAttachedFlyout(FrameworkElement flyoutOwner)
 		{
 			var flyout = GetAttachedFlyout(flyoutOwner);
+
+			flyout?.SetValue(
+				FlyoutBase.DataContextProperty,
+				flyoutOwner.DataContext,
+				precedence: DependencyPropertyValuePrecedences.Inheritance
+			);
+
 			flyout?.ShowAt(flyoutOwner);
 		}
 
