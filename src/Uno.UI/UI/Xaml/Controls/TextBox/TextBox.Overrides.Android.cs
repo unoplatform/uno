@@ -45,15 +45,13 @@ namespace Windows.UI.Xaml.Controls
 			private readonly ManagedWeakReference _owner;
 			private TextBox Owner => _owner.Target as TextBox;
 
-			private bool IsReadonly => Owner is not { } owner ? false : owner.IsReadOnly || !owner.IsTabStop;
-
 			public TextBoxStringBuilder(ManagedWeakReference owner, ICharSequence text) : base(text)
 			{
 				_owner = owner;
 			}
 			public override IEditable Replace(int start, int end, ICharSequence tb, int tbstart, int tbend)
 			{
-				if (IsReadonly)
+				if (Owner is { IsNativeReadOnly: true })
 				{
 					return this;
 				}
