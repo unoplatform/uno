@@ -62,7 +62,7 @@
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 	<PackageReference Update="NUnit" Version="3.13.3" />
-	<PackageReference Update="NUnit3TestAdapter" Version="4.3.0" />
+	<PackageReference Update="NUnit3TestAdapter" Version="4.3.1" />
 	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.32" />
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
