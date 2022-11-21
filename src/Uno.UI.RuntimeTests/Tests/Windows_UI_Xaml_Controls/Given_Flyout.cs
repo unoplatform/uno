@@ -452,7 +452,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if IS_UNO
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Test_Flyout_Binding()
@@ -480,6 +480,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Test_Flyout_Binding_In_MenuFlyoutItem()
+		{
+			var menuBar = new MenuBar();
+			var menuBarItem = new MenuBarItem();
+			var menuFlyoutItem = new MenuFlyoutItem();
+
+			menuFlyoutItem.SetBinding(MenuFlyoutItem.TextProperty, new Binding { Path = "." });
+
+			menuBar.Items.Add(menuBarItem);
+			menuBarItem.Items.Add(menuFlyoutItem);
+
+			menuBar.DataContext = "42";
+
+			TestServices.WindowHelper.WindowContent = menuBar;
+
+			await TestServices.WindowHelper.WaitForLoaded(menuBar);
+
+			menuBarItem.Invoke();
+
+			await TestServices.WindowHelper.WaitForLoaded(menuFlyoutItem);
+
+			Assert.AreEqual("42", menuFlyoutItem.Text);
+
+			menuBarItem.CloseMenuFlyout();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Test_Flyout_Binding_With_SetAttachedFlyout()
+		{
+			Border b1 = new()
+			{
+				DataContext = "41",
+				Width = 10,
+				Height = 10,
+			};
+			Border b2 = new()
+			{
+				DataContext = "42",
+				Width = 10,
+				Height = 10,
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children = { b1, b2 }
+			};
+
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			await TestServices.WindowHelper.WaitForLoaded(stackPanel);
+
+			var tb = new TextBlock();
+			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = "." });
+			var SUT = new Flyout
+			{
+				Content = tb
+			};
+
+			FlyoutBase.SetAttachedFlyout(b1, SUT);
+			FlyoutBase.SetAttachedFlyout(b2, SUT);
+
+			FlyoutBase.ShowAttachedFlyout(b1);
+			await TestServices.WindowHelper.WaitForLoaded(tb);
+			Assert.AreEqual("41", tb.Text);
+			SUT.Close();
+
+			FlyoutBase.ShowAttachedFlyout(b2);
+			await TestServices.WindowHelper.WaitForLoaded(tb);
+			Assert.AreEqual("42", tb.Text);
+			SUT.Close();
+		}
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Flyout_Content_Takes_Focus()
