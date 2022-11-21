@@ -68,14 +68,10 @@ partial class PopupPanel
 	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 		=> InvalidateMeasure();
 
-	protected virtual PopupPlacementMode PopupPlacement { get; }
-
 	// TODO: Use this whenever popup placement is Auto
 	protected virtual PopupPlacementMode DefaultPopupPlacement { get; }
 
 	protected virtual bool FullPlacementRequested { get; }
-
-	protected virtual FrameworkElement AnchorControl { get; }
 
 	protected virtual Point? PositionInAnchorControl { get; }
 
@@ -83,7 +79,7 @@ partial class PopupPanel
 
 	private Size PlacementArrangeOverride(Size finalSize)
 	{
-		foreach (var child in Children)
+		foreach (var child in Children.OfType)
 		{
 			if (!(child is UIElement elem))
 			{
