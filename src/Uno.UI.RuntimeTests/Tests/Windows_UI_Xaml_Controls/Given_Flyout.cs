@@ -478,8 +478,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var stackPanel = content as StackPanel;
 			Assert.AreEqual("My Data Context", (stackPanel.Children[0] as TextBlock).Text);
 		}
-#endif
-
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -554,6 +552,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("42", tb.Text);
 			SUT.Close();
 		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Flyout_Content_Takes_Focus()
