@@ -225,7 +225,7 @@
         {
           "condition": "(!wasm-pwa-manifest)",
           "exclude": [
-            "UnoQuickStart.Wasm/manifest.json",
+            "UnoQuickStart.Wasm/manifest.webmanifest",
             "UnoQuickStart.Wasm/Assets/AppIcon-*"
           ]
         }

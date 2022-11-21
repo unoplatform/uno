@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net5.0</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
-		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>$endif$
+		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -22,6 +22,10 @@
 
 	<ItemGroup>
 		<Content Include="Assets\SplashScreen.png" />
+		$if$($UseWebAssemblyManifestJson$ == True)
+		<Content Include="manifest.webmanifest" />
+		<Content Include="Assets\AppIcon-*.png" />
+		$endif$
 	</ItemGroup>
 
 	<ItemGroup>
