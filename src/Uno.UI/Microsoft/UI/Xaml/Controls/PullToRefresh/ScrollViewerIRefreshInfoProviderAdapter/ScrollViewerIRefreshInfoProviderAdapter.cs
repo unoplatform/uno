@@ -10,12 +10,15 @@ using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+
+#pragma warning disable CS0105 // Ignore duplicate namespace for WinUI build
+using Windows.UI.Xaml.Controls;
+#pragma warning restore CS0105
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
