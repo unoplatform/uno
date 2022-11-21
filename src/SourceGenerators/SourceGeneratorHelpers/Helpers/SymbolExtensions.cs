@@ -1,11 +1,10 @@
 ﻿#nullable enable
 
-using Microsoft.CodeAnalysis;
-using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Uno.Extensions;
 using Uno;
 
 namespace Microsoft.CodeAnalysis
@@ -120,7 +119,7 @@ namespace Microsoft.CodeAnalysis
 				TypeKind.Struct => "struct ",
 				_ => throw new ArgumentException($"Unexpected type kind {namedTypeSymbol.TypeKind}")
 			};
-			
+
 			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
 
 			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}{afterClassHeader}";

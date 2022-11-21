@@ -23,6 +23,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public static class Namespaces
 		{
+			public const string Base = BaseXamlNamespace;
 			public const string Controls = BaseXamlNamespace + ".Controls";
 			public const string Primitives = Controls + ".Primitives";
 			public const string Text = RootWUINamespace + ".Text";
@@ -31,6 +32,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Media = BaseXamlNamespace + ".Media";
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
+			public const string Input = BaseXamlNamespace + ".Input";
 			public const string Automation = BaseXamlNamespace + ".Automation";
 
 			public static readonly string[] PresentationNamespaces =
@@ -124,6 +126,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string TextBox = Namespaces.Controls + ".TextBox";
 			public const string ColumnDefinition = Namespaces.Controls + ".ColumnDefinition";
 			public const string RowDefinition = Namespaces.Controls + ".RowDefinition";
+
+			// EventArgs
+			public const string PointerRoutedEventArgs = Namespaces.Input + ".PointerRoutedEventArgs";
+			public const string ManipulationStartingRoutedEventArgs = Namespaces.Input + ".ManipulationStartingRoutedEventArgs";
+			public const string ManipulationStartedRoutedEventArgs = Namespaces.Input + ".ManipulationStartedRoutedEventArgs";
+			public const string ManipulationDeltaRoutedEventArgs = Namespaces.Input + ".ManipulationDeltaRoutedEventArgs";
+			public const string ManipulationInertiaStartingRoutedEventArgs = Namespaces.Input + ".ManipulationInertiaStartingRoutedEventArgs";
+			public const string ManipulationCompletedRoutedEventArgs = Namespaces.Input + ".ManipulationCompletedRoutedEventArgs";
+			public const string TappedRoutedEventArgs = Namespaces.Input + ".TappedRoutedEventArgs";
+			public const string DoubleTappedRoutedEventArgs = Namespaces.Input + ".DoubleTappedRoutedEventArgs";
+			public const string RightTappedRoutedEventArgs = Namespaces.Input + ".RightTappedRoutedEventArgs";
+			public const string HoldingRoutedEventArgs = Namespaces.Input + ".HoldingRoutedEventArgs";
+			public const string DragEventArgs = Namespaces.Base + ".DragEventArgs";
+			public const string RoutedEventArgs = Namespaces.Base + ".RoutedEventArgs";
+			public const string KeyRoutedEventArgs = Namespaces.Input + ".KeyRoutedEventArgs";
+			public const string BringIntoViewRequestedEventArgs = Namespaces.Base + ".BringIntoViewRequestedEventArgs";
 
 			// Documents
 			public const string Run = Namespaces.Documents + ".Run";
