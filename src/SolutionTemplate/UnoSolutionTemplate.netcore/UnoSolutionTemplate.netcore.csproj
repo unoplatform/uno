@@ -237,7 +237,7 @@
     <Content Include="UWP\Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Wasm\Assets\SplashScreen.png" />
     <Content Include="Wasm\LinkerConfig.xml" />
-    <Content Include="Wasm\manifest.json" />
+    <Content Include="Wasm\manifest.webmanifest" />
     <Content Include="Wasm\WasmCSS\Fonts.css" />
     <Content Include="Wasm\WasmScripts\AppManifest.js" />
     <Content Include="__PreviewImage.png" />

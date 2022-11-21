@@ -302,7 +302,7 @@
 		  {
 			"condition": "(!wasm-pwa-manifest)",
 			"exclude": [
-				"UnoWinUIQuickStart.Wasm/manifest.json",
+				"UnoWinUIQuickStart.Wasm/manifest.webmanifest",
 				"UnoWinUIQuickStart.Wasm/Assets/AppIcon-*"
 			]
 		  }

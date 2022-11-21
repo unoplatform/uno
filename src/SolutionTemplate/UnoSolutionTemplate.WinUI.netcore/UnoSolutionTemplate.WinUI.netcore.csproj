@@ -253,7 +253,7 @@
     <Content Include="Skia.WPF\__TemplateIcon.png" />
     <Content Include="Wasm\Assets\SplashScreen.png" />
     <Content Include="Wasm\LinkerConfig.xml" />
-    <Content Include="Wasm\manifest.json" />
+    <Content Include="Wasm\manifest.webmanifest" />
     <None Include="Wasm\Properties\launchSettings.json" />
     <Content Include="Wasm\WasmCSS\Fonts.css" />
     <Content Include="Wasm\WasmScripts\AppManifest.js" />

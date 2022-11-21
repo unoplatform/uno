@@ -86,7 +86,7 @@ namespace UnoSolutionTemplate.Wizard
 
 						if (!_useWebAssemblyManifestJson)
 						{
-							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, $"{_projectName}.Wasm", "manifest.json");
+							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, $"{_projectName}.Wasm", "manifest.webmanifest");
 							File.Delete(webAssemblyManifestJsonPath);
 						}
 					}
