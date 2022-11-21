@@ -19,19 +19,12 @@ namespace Windows.UI.Xaml
 		// private ScrollViewer _rootScrollViewer;
 		private Border? _rootBorder;
 
-		public Window()
-		{
-			Init();
-
-			Compositor = new Compositor();
-		}
-
-		public void Init()
+		partial void InitPlatform()
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
-			InitializeCommon();
+			Compositor = new Compositor();
 		}
 
 		internal void OnNativeSizeChanged(Size size)
@@ -54,7 +47,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public Compositor Compositor { get; }
+		public Compositor Compositor { get; private set; }
 
 		private void InternalSetContent(UIElement content)
 		{
