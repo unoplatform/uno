@@ -20,7 +20,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
-using Uno.UI.Common;
 #if NETFX_CORE
 // Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
 using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
