@@ -247,13 +247,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_MenuFlyoutItem_CommandChanging()
 		{
 			var SUT = new MenuBar();
 			var item = new MenuBarItem() { Title = "test item" };
-			DelegateCommand command1 = null;
-			command1 = new DelegateCommand(() => command1.CanExecuteEnabled = !command1.CanExecuteEnabled);
+			Common.DelegateCommand command1 = null;
+			command1 = new(() => command1.CanExecuteEnabled = !command1.CanExecuteEnabled);
 			var flyoutItem = new MenuFlyoutItem
 			{
 				Command = command1,
@@ -285,5 +286,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			flyoutItem.InvokeClick();
 			item.CloseMenuFlyout();
 		}
+#endif
 	}
 }
