@@ -13,7 +13,7 @@ namespace Uno.UI.RemoteControl.Helpers
 		const int BufferSize = 1 << 16;
 		private static readonly RecyclableMemoryStreamManager manager = new RecyclableMemoryStreamManager();
 
-		public static async Task<Frame> ReadFrame(WebSocket socket, CancellationToken token)
+		public static async Task<Frame?> ReadFrame(WebSocket socket, CancellationToken token)
 		{
 			var pool = ArrayPool<byte>.Shared;
 			var buff = pool.Rent(BufferSize);

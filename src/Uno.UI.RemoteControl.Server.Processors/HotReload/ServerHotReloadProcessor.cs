@@ -18,8 +18,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[] _watchers;
-		private CompositeDisposable _watcherEventsDisposable;
+		private FileSystemWatcher[]? _watchers;
+		private CompositeDisposable? _watcherEventsDisposable;
 		private IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)

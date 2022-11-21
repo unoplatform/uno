@@ -19,6 +19,9 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>
@@ -36,6 +39,10 @@
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

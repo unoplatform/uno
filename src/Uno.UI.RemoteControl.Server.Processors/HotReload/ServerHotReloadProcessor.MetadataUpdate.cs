@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,12 +27,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[] _solutionWatchers;
-		private CompositeDisposable _solutionWatcherEventsDisposable;
+		private FileSystemWatcher[]? _solutionWatchers;
+		private CompositeDisposable? _solutionWatcherEventsDisposable;
 
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
-		private Solution _currentSolution;
-		private WatchHotReloadService _hotReloadService;
+		private Solution? _currentSolution;
+		private WatchHotReloadService? _hotReloadService;
 		private IReporter _reporter = new Reporter();
 
 		private bool _useRoslynHotReload;
@@ -132,7 +133,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task<bool> ProcessSolutionChanged(CancellationToken cancellationToken, string file)
 		{
-			await EnsureSolutionInitializedAsync();
+			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
+			{
+				return false;
+			}
 
 			var sw = Stopwatch.StartNew();
 
@@ -298,7 +302,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 
-
+		[MemberNotNullWhen(true, nameof(_currentSolution))]
 		private async ValueTask<bool> EnsureSolutionInitializedAsync()
 		{
 			if (_currentSolution != null)
