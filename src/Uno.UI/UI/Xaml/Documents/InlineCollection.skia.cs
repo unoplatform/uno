@@ -180,8 +180,9 @@ namespace Windows.UI.Xaml.Documents
 							length = 1;
 							width = GetGlyphWidthWithSpacing(segment.Glyphs[start], characterSpacing);
 
-							while ((width + GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing)) is var newWidth &&
-								   newWidth < remainingWidth)
+							while ( start + length < segment.Glyphs.Count
+								&& (width + GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing)) is var newWidth
+								&& newWidth < remainingWidth)
 							{
 								width = newWidth;
 								length++;
