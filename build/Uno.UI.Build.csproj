@@ -202,7 +202,7 @@
 
     <WriteLinesToFile
         File="%(_Sha1Replace.Identity)"
-        Lines="$([System.IO.File]::ReadAllText(%(_Sha1Replace.Identity)).Replace('v0','v$(GITVERSION_VersionSourceSha)'))"
+        Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(GITVERSION_VersionSourceSha)'))"
         Overwrite="true" />
 
 	</Target>
