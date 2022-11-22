@@ -246,5 +246,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Verify_MenuBarItem_Bounds();
 		}
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_MenuFlyoutItem_CommandChanging()
+		{
+			var SUT = new MenuBar();
+			var item = new MenuBarItem() { Title = "test item" };
+			Common.DelegateCommand command1 = null;
+			command1 = new(() => command1.CanExecuteEnabled = !command1.CanExecuteEnabled);
+			var flyoutItem = new MenuFlyoutItem
+			{
+				Command = command1,
+				Text="test flyout"
+			};
+
+			SUT.Items.Add(item);
+			item.Items.Add(flyoutItem);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			item.Invoke();
+			Assert.IsTrue(flyoutItem.IsEnabled);
+
+			await WindowHelper.WaitForLoaded(flyoutItem);
+
+			flyoutItem.InvokeClick();
+
+			// Force close the flyout as InvokeClick does not do so.
+			item.CloseMenuFlyout();
+
+			await WindowHelper.WaitForIdle();
+
+			item.Invoke();
+
+			Assert.IsFalse(flyoutItem.IsEnabled);
+
+			flyoutItem.InvokeClick();
+			item.CloseMenuFlyout();
+		}
+#endif
 	}
 }
