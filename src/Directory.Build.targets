@@ -84,7 +84,7 @@
 	<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" />
 	<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" />
 	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" />
-	<PackageReference Update="Svg.Skia" Version="0.5.16" />
+	<PackageReference Update="Svg.Skia" Version="0.5.18" />
 
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.3" />
