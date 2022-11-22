@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace UnoWinUIRevert
@@ -181,7 +182,7 @@ namespace UnoWinUIRevert
 				if (updated)
 				{
 					Console.WriteLine($"Updating [{file}]");
-					File.WriteAllText(file, content);
+					File.WriteAllText(file, content, Encoding.UTF8);
 				}
 			}
 		}
@@ -201,7 +202,7 @@ namespace UnoWinUIRevert
 
 			var txt = File.ReadAllText(filePath);
 			txt = txt.Replace(from, to);
-			File.WriteAllText(filePath, txt);
+			File.WriteAllText(filePath, txt, Encoding.UTF8);
 		}
 
 		private static void DeleteFiles(string[] filePaths)
