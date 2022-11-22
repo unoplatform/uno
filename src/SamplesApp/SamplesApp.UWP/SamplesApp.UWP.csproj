@@ -19,6 +19,7 @@
     <PackageCertificateKeyFile>SamplesApp.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>C9BABD35FEC08A61255449941CE49343F09EA763</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -106,15 +107,16 @@
       <Version>7.0.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.8.0-prerelease.210927001</Version>
+      <Version>2.8.2-prerelease.220830001</Version>
     </PackageReference>
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+    <PackageReference Include="MSTest.TestFramework" />
     <PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
-    <PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.0-dev.7" />
-    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
-    <PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
-    <PackageReference Include="Uno.Core.Extensions.Compatibility" Version="4.0.0-dev.7" />
-    <PackageReference Include="Uno.Core.Extensions" Version="4.0.1" />
+    <PackageReference Include="Uno.Core.Extensions.Logging" />
+    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+    <PackageReference Include="Uno.Core.Extensions.Disposables" />
+    <PackageReference Include="Uno.Core.Extensions.Compatibility" />
+    <PackageReference Include="Uno.Core.Extensions"  />
+    <PackageReference Include="Uno.UI.RuntimeTests.Engine" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
