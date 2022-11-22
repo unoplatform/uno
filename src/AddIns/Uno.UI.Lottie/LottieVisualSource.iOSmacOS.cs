@@ -45,6 +45,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					_lastSource = sourceUri;
 					if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 					{
+						var tcs = new TaskCompletionSource<bool>();
+
 						var cacheKey = sourceUri.OriginalString;
 						_animationDataSubscription.Disposable = null;
 						_animationDataSubscription.Disposable =
@@ -56,12 +58,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 							var animation = LOTAnimationView.AnimationFromJSON(jsonData);
 							SetAnimation(animation);
 
-							if (_playState != null)
-							{
-								var (fromProgress, toProgress, looped) = _playState.Value;
-								Play(fromProgress, toProgress, looped);
-							}
+							tcs.TrySetResult(true);
 						}
+
+						await tcs.Task;
 					}
 					else
 					{
