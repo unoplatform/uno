@@ -419,9 +419,20 @@ namespace Uno.UI
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
-				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Frame_Available)
+				{
+					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+				}
+
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CommandBar_Available)
+				{
+					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
+				}
+
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_AppBarButton_Available)
+				{
+					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
+				}
 			}
 
 			/// <summary>

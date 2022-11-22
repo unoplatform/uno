@@ -94,6 +94,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						bindableTypes = bindableTypes.ToArray();
 
 						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(bindableTypes));
+						context.AddSource("DependencyObjectAvailability_Debug",
+							$"""
+							/*
+							_assemblyName:{_assemblyName}
+							_namedSymbolsLookup:{_namedSymbolsLookup}
+							_dependencyObjectSymbol:{_dependencyObjectSymbol}
+							modules: {string.Join(", ", modules)}
+							modules: {string.Join(", ", modules)}
+
+							*/
+							""");
 
 						GenerateLinkerSubstitutionDefinition(bindableTypes, isApplication);
 					}

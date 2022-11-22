@@ -350,7 +350,8 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToIconElement(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Windows.UI.Xaml.Controls.IconElement))
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_IconElement_Available
+				&& outputType == typeof(Windows.UI.Xaml.Controls.IconElement))
 			{
 				output = (Windows.UI.Xaml.Controls.IconElement)input;
 				return true;
@@ -427,7 +428,8 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToToolTip(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Windows.UI.Xaml.Controls.ToolTip))
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ToolTip_Available
+				&& outputType == typeof(Windows.UI.Xaml.Controls.ToolTip))
 			{
 				output = new Windows.UI.Xaml.Controls.ToolTip { Content = input };
 				return true;
@@ -509,7 +511,8 @@ namespace Uno.UI.DataBinding
 		private static bool FastStringToPath(Type outputType, string input, ref object output)
 		{
 #if __WASM__
-			if (outputType == typeof(Geometry))
+			if (__LinkerHints.Is_Windows_UI_Xaml_Media_Geometry_Available
+				&& outputType == typeof(Geometry))
 			{
 				output = (Geometry)input;
 
@@ -613,7 +616,8 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToImageSource(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Windows.UI.Xaml.Media.ImageSource))
+			if (__LinkerHints.Is_Windows_UI_Xaml_Media_ImageSource_Available
+				&& outputType == typeof(Windows.UI.Xaml.Media.ImageSource))
 			{
 				output = (Windows.UI.Xaml.Media.ImageSource)input;
 				return true;
