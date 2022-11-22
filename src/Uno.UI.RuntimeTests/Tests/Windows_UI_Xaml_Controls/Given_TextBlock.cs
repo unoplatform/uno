@@ -70,6 +70,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
+#if __MACOS__
+			Assert.Inconclusive("https://github.com/unoplatform/uno/issues/626");
+#endif
+
 			var SUT = new TextBlock
 			{
 				Inlines = {

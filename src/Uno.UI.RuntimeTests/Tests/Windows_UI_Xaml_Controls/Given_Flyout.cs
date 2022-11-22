@@ -452,7 +452,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if HAS_UNO
+#if HAS_UNO && !__MACOS__ // For macOS, see https://github.com/unoplatform/uno/issues/626 
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Test_Flyout_Binding()
