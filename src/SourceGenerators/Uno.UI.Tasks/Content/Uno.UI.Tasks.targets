@@ -160,11 +160,11 @@
 
 			
 			<_UnoLinkerHintGeneratorILLinkerPath
-				Condition="'
-				$(TargetFrameworkIdentifier)'=='.NETCoreApp'
+				Condition="
+				'$(TargetFrameworkIdentifier)'=='.NETCoreApp'
 				and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0'))
 				and '$(ILLinkTasksAssembly)'!=''"
-			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\$(MicrosoftNETBuildTasksTFM)</_UnoLinkerHintGeneratorILLinkerPath>
+			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(BundledNETCoreAppTargetFrameworkVersion)</_UnoLinkerHintGeneratorILLinkerPath>
 
 			<_UnoUIPackageBasePath
 				Condition="
