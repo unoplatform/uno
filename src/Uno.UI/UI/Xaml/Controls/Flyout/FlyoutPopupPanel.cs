@@ -31,8 +31,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
-		
-		protected override Point? PositionInAnchorControl => _flyout.PopupPositionInTarget;
 
 		internal override FlyoutBase Flyout => _flyout;
 	}

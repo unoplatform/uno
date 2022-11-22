@@ -74,8 +74,6 @@ partial class PopupPanel
 
 	protected virtual bool FullPlacementRequested { get; }
 
-	protected virtual Point? PositionInAnchorControl { get; }
-
 	internal virtual FlyoutBase Flyout => null;
 
 	private Size PlacementArrangeOverride(Size finalSize)

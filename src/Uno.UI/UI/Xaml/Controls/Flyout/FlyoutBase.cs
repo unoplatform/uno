@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup.Child is FrameworkElement child)
 			{
-				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target, PopupPositionInTarget);
+				SizeChangedEventHandler handler = (_, __) => SetPopupPosition(Target, PopupPositionInTarget);
 
 				child.SizeChanged += handler;
 
@@ -450,13 +450,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			EnsurePopupCreated();
 
-			SetPopupPositionPartial(Target, PopupPositionInTarget);
+			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
 
 			_popup.IsOpen = true;
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget);
+		private void SetPopupPosition(FrameworkElement placementTarget, Point? positionInTarget)
+		{
+			_popup.PlacementTarget = placementTarget;
+
+			if (positionInTarget is Point position)
+			{
+				_popup.HorizontalOffset = position.X;
+				_popup.VerticalOffset = position.Y;
+			}
+		}
 
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
 			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
