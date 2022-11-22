@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
 				// Note: we do not prevent overflow of the popup on any side as UWP does not!
 				//		 (And actually it also lets the view appear out of the window ...)
-				var anchor = Popup.Anchor ?? Popup;
+				var anchor = Popup.PlacementTarget ?? Popup;
 				var anchorLocation = anchor.TransformToVisual(this).TransformPoint(new Point());
 
 #if __ANDROID__

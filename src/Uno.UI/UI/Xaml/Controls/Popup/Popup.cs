@@ -17,17 +17,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private PopupPlacementMode _actualPlacement;
 
-
-		/// <summary>
-		/// Overrides the default location of this popup (cf. Remarks)
-		/// </summary>
-		/// <remarks>
-		/// When a Popup is opened, the <see cref="PopupPanel"/> will top/left aligned the <see cref="Child"/> to the
-		/// current location of the given popup in the visual tree.
-		/// However when an Anchor is set on a popup, the Child will instead be top/left aligned to the location of this Anchor.
-		/// </remarks>
-		internal UIElement Anchor { get; set; }
-
 		internal bool IsSubMenu { get; set; }
 
 		internal bool IsForFlyout => AssociatedFlyout != null;

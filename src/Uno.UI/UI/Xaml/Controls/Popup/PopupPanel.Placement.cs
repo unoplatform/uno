@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Uno.Foundation.Logging;
+using System.Linq;
 
 
 #if HAS_UNO_WINUI
@@ -79,23 +80,18 @@ partial class PopupPanel
 
 	private Size PlacementArrangeOverride(Size finalSize)
 	{
-		foreach (var child in Children.OfType)
+		foreach (var child in Children.OfType<Popup>())
 		{
-			if (!(child is UIElement elem))
-			{
-				continue;
-			}
-
-			var desiredSize = elem.DesiredSize;
-			var maxSize = (elem as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
-			var rect = CalculatePopupPlacement(desiredSize, maxSize);
+			var desiredSize = child.DesiredSize;
+			var maxSize = (child as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
+			var rect = CalculatePopupPlacement(child, desiredSize, maxSize);
 
 			if (Flyout?.IsTargetPositionSet ?? false)
 			{
 				rect = Flyout.UpdateTargetPosition(ApplicationView.GetForCurrentView().VisibleBounds, desiredSize, rect);
 			}
 
-			elem.Arrange(rect);
+			child.Arrange(rect);
 		}
 
 		return finalSize;
@@ -109,7 +105,7 @@ partial class PopupPanel
 			return NativeAnchor.GetBoundsRectRelativeTo(this);
 		}
 #endif
-		var anchor = AnchorControl;
+		var anchor = Children.OfType<Popup>().FirstOrDefault()?.PlacementTarget;
 		if (anchor == null)
 		{
 			return default;
@@ -118,7 +114,7 @@ partial class PopupPanel
 		return anchor.GetBoundsRectRelativeTo(this);
 	}
 
-	protected virtual Rect CalculatePopupPlacement(Size desiredSize, Size maxSize)
+	protected virtual Rect CalculatePopupPlacement(Popup popup, Size desiredSize, Size maxSize)
 	{
 		if (!(GetAnchorRect() is { } anchorRect))
 		{
@@ -132,14 +128,14 @@ partial class PopupPanel
 		desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
 		// Try all placements...
-		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(PopupPlacement, FullPlacementRequested);
+		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(popup.DesiredPlacement, FullPlacementRequested);
 		var placementsToTry = PlacementsToTry.TryGetValue(preferredPlacement, out var p)
 			? p
 			: new[] { preferredPlacement };
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement)} from PopupPlacement={PopupPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
+			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={popup.DesiredPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
 		}
 
 		var halfAnchorWidth = anchorRect.Width / 2;
@@ -219,7 +215,7 @@ partial class PopupPanel
 					break;
 			}
 
-			var justification = FlyoutBase.GetJustificationFromPlacementMode(PopupPlacement, FullPlacementRequested);
+			var justification = FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested);
 
 			var fits = true;
 			if (!FullPlacementRequested)
