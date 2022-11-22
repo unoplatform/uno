@@ -76,13 +76,13 @@ partial class PopupPanel
 
 	internal virtual FlyoutBase Flyout => null;
 
-	private Size PlacementArrangeOverride(Size finalSize)
+	private Size PlacementArrangeOverride(Popup popup, Size finalSize)
 	{
-		foreach (var child in Children.OfType<Popup>())
+		foreach (var child in Children)
 		{
 			var desiredSize = child.DesiredSize;
 			var maxSize = (child as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
-			var rect = CalculatePopupPlacement(child, desiredSize, maxSize);
+			var rect = CalculatePopupPlacement(popup, desiredSize, maxSize);
 
 			if (Flyout?.IsTargetPositionSet ?? false)
 			{
