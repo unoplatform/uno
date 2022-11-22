@@ -65,5 +65,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			SUT.Measure(new Size(1000, 1000));
 		}
+<<<<<<< HEAD
+=======
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
+		{
+#if __MACOS__
+			Assert.Inconclusive("https://github.com/unoplatform/uno/issues/626");
+#endif
+
+			var SUT = new TextBlock
+			{
+				Inlines = {
+					new Run { Text = "", FontSize = 16, CharacterSpacing = 18 }
+				},
+				TextWrapping = TextWrapping.Wrap,
+				FontSize = 16,
+				CharacterSpacing = 18
+			};
+
+			WindowHelper.WindowContent = new Border { Width = 10, Height = 10, Child = SUT };
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+			Assert.AreNotEqual(0, SUT.ActualWidth);
+			Assert.AreNotEqual(0, SUT.ActualHeight);
+		}
+>>>>>>> de49e6fadc (test: Disable some macOS runtime tests)
 	}
 }
