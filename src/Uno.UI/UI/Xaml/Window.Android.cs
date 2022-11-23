@@ -25,15 +25,13 @@ namespace Windows.UI.Xaml
 	{
 		private Border _rootBorder;
 
-		public Window()
+		partial void InitPlatform()
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
 			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged
 				+= RaiseNativeSizeChanged;
-
-			InitializeCommon();
 		}
 
 		internal Thickness Insets { get; set; }

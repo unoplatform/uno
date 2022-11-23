@@ -54,7 +54,7 @@ namespace $ext_safeprojectname$
             }
 #endif
 
-#if NET5_0 && WINDOWS
+#if NET5_0 && WINDOWS && !HAS_UNO
             _window = new Window();
             _window.Activate();
 #else

@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static Func<RootViewController> ViewControllerGenerator { get; set; }
 
-		public Window()
+		partial void InitPlatform()
 		{
 			var style = NSWindowStyle.Closable | NSWindowStyle.Resizable | NSWindowStyle.Titled | NSWindowStyle.Miniaturizable;
 
@@ -55,8 +55,6 @@ namespace Windows.UI.Xaml
 			CoreWindow = new CoreWindow(_window);
 
 			_window.CoreWindowEvents = CoreWindow;
-
-			InitializeCommon();
 		}
 
 		internal NSWindow NativeWindow => _window;

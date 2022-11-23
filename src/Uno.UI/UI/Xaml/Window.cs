@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
-		
+
 		private UIElement _content;
 		private RootVisual _rootVisual;
 
@@ -35,6 +35,32 @@ namespace Windows.UI.Xaml
 #if HAS_UNO_WINUI
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 #endif
+
+#if HAS_UNO_WINUI
+		public Window() : this(false)
+		{
+		}
+#endif
+
+		internal Window(bool internalUse)
+		{
+			if (!internalUse)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Creating a secondary Window instance is currently not supported in Uno Platform targets. " +
+						"Use the Window.Current property instead (you can use #if HAS_UNO to differentiate " +
+						"between Uno Platform targets and Windows App SDK).");
+				}
+			}
+			
+			InitPlatform();
+
+			InitializeCommon();
+		}
+
+		partial void InitPlatform();
 
 #pragma warning disable 67
 		/// <summary>
@@ -96,7 +122,7 @@ namespace Windows.UI.Xaml
 						oldRoot.SizeChanged -= RootSizeChanged;
 					}
 				}
-				
+
 				if (value != null)
 				{
 					value.IsWindowRoot = true;
@@ -106,7 +132,7 @@ namespace Windows.UI.Xaml
 
 				if (value is FrameworkElement newRoot)
 				{
-					newRoot.SizeChanged += RootSizeChanged;					
+					newRoot.SizeChanged += RootSizeChanged;
 				}
 
 				oldContent?.XamlRoot?.NotifyChanged();
@@ -282,7 +308,7 @@ namespace Windows.UI.Xaml
 					(h as EventHandler)?.Invoke(s, (EventArgs)e)
 			);
 
-		private static Window InternalGetCurrentWindow() => _current ??= new Window();
+		private static Window InternalGetCurrentWindow() => _current ??= new Window(true);
 
 		private UIElement InternalGetContent() => _content!;
 
