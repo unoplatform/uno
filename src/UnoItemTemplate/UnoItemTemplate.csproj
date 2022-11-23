@@ -138,13 +138,13 @@
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="BlankPage.UWP\BlankPage.uwp.vstemplate">
-      <OutputSubPath>Uno Platform</OutputSubPath>
+      <OutputSubPath>Uno Platform (UWP)</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="BlankPage.WinUI\BlankPage.winui.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="UserControl.UWP\UserControl.uwp.vstemplate">
-      <OutputSubPath>Uno Platform</OutputSubPath>
+      <OutputSubPath>Uno Platform (UWP)</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="UserControl.WinUI\UserControl.winui.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
@@ -153,19 +153,19 @@
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.uwp.vstemplate" >
-      <OutputSubPath>Uno Platform</OutputSubPath>
+      <OutputSubPath>Uno Platform (UWP)</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionaryWithCodeBehind.winui.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="ContentDialog.UWP\ContentDialog.uwp.vstemplate">
-      <OutputSubPath>Uno Platform</OutputSubPath>
+      <OutputSubPath>Uno Platform (UWP)</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="ContentDialog.WinUI\ContentDialog.winui.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="TemplatedControl.UWP\TemplatedControl.uwp.vstemplate">
-      <OutputSubPath>Uno Platform</OutputSubPath>
+      <OutputSubPath>Uno Platform (UWP)</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="TemplatedControl.WinUI\TemplatedControl.winui.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
