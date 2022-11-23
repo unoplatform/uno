@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>ResourceDictionary with code behind (Uno Platform WinUI 3)</Name>
+    <Name>ResourceDictionary with code behind (Uno Platform Windows App SDK)</Name>
     <Description>A Resource Dictionary with code behind.</Description>
     <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4010" />
     <TemplateID>Uno.WinUI.CS.ResourceDictionaryWithCodeBehind</TemplateID>

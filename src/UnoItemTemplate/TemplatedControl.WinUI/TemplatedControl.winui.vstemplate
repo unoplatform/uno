@@ -2,7 +2,7 @@
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <DefaultName>CustomControl.cs</DefaultName>
-    <Name>Custom Control (Uno Platform WinUI 3)</Name>
+    <Name>Custom Control (Uno Platform Windows App SDK)</Name>
     <Description>A custom control with full templating capabilities.</Description>
     <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4009" />
     <ProjectType>CSharp</ProjectType>
