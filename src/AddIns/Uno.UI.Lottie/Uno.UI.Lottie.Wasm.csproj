@@ -73,4 +73,8 @@
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="AssemblyInfo.cs" />
+	</ItemGroup>
+
 </Project>

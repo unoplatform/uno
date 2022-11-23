@@ -99,6 +99,7 @@ namespace UnoWinUIRevert
 				("Windows.UI.Text.FontWeights", "Microsoft.UI.Text.FontWeights"),
 				("Windows.UI.ColorHelper", "Microsoft.UI.ColorHelper"),
 				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
+				("__LinkerHints.Is_Windows_UI_Xaml", "__LinkerHints.Is_Microsoft_UI_Xaml"),
 				("Microsoft.UI.Xaml.Controls\", \"ProgressRing", "Uno.UI.Controls.Legacy\", \"ProgressRing"),
 				("<UNO_UWP_BUILD>true</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>"),
 			};
