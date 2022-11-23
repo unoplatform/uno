@@ -31,7 +31,11 @@
 								  and (
 									'$(MSBuildVersion)' &lt; '17.0'
 									or (
-										'$(LangVersion)'!=''
+										'$(MSBuildVersion)' &gt;= '17.0'
+										and '$(LangVersion)' != ''
+										and '$(LangVersion)' != 'latest'
+										and '$(LangVersion)' != 'latestMajor'
+										and '$(LangVersion)' != 'default'
 										and '$(LangVersion)' &lt; '8.0'
 									)
 								  )">false</UnoForceHotReloadCodeGen>
