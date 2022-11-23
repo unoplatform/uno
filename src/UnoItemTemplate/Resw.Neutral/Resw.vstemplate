@@ -4,7 +4,7 @@
     <DefaultName>Resources.resw</DefaultName>
     <Name>Resources File (.resw)</Name>
     <Description>A file for storing string and conditional resources.</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4006" />
+	<Icon>Resw.png</Icon>
     <ProjectType>CSharp</ProjectType>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
     <TemplateID>Uno.Neutral.CS.Resw</TemplateID>

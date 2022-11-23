@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>.canvas{fill: none; opacity: 0;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-blue{fill: #005dba; opacity: 1;}</style>
+  </defs>
+  <title>IconLightWPFResourceDictionary</title>
+  <g id="canvas">
+    <path class="canvas" d="M16,16H0V0H16Z" />
+  </g>
+  <g id="level-1">
+    <path class="light-defaultgrey-10" d="M13.5,3.707v7.586l-.207.207H10.659l-2-1.989-1.44,1.447H3.767L3.5,10.693V3.707L3.707,3.5H6.5a1.982,1.982,0,0,1,1.6.814l.4.539.4-.539A1.982,1.982,0,0,1,10.5,3.5h2.793Z" />
+    <path class="light-defaultgrey" d="M14,3.5v8l-.5.5H11.161l-.978-.974A2.557,2.557,0,0,1,10.5,11H13V4H10.5A1.5,1.5,0,0,0,9,5.5V9.847l-.337-.336L8,10.177V5.5A1.5,1.5,0,0,0,6.5,4H4v6.958H3.767L3,10.2V3.5L3.5,3h3a2.491,2.491,0,0,1,2,1.015A2.491,2.491,0,0,1,10.5,3h3Z" />
+    <path class="light-defaultgrey" d="M1.207,13.469l1.816,1.82L2.316,16,.147,13.823v-.706l2.169-2.179.709.705Zm9.647-.351v.709L8.666,16l-.7-.709,1.831-1.819L7.961,11.647l.705-.709Z" />
+    <path class="light-blue" d="M7,11.971v3H4v-3Z" />
+  </g>
+</svg>

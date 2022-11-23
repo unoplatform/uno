@@ -61,6 +61,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BlankPage.UWP\BlankPage.png" />
+    <None Include="BlankPage.WinUI\BlankPage.png" />
+    <None Include="ContentDialog.UWP\ContentDialog.png" />
+    <None Include="ContentDialog.WinUI\ContentDialog.png" />
+    <None Include="ResourceDictionary.Neutral\ResourceDictionary.png" />
+    <None Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionary.png" />
+    <None Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionary.png" />
+    <None Include="Resw.Neutral\Resw.png" />
+    <None Include="TemplatedControl.UWP\TemplatedControl.png" />
+    <None Include="TemplatedControl.WinUI\TemplatedControl.png" />
+    <None Include="UserControl.UWP\UserControl.png" />
+    <None Include="UserControl.WinUI\UserControl.png" />
     <None Include="BlankPage.UWP\BlankPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,7 +79,6 @@
     <None Include="BlankPage.UWP\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </None>
-    <None Include="BlankPage.WinUI\BlankPage.png" />
     <None Include="BlankPage.WinUI\BlankPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -76,7 +86,6 @@
     <None Include="BlankPage.WinUI\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </None>
-
     <None Include="UserControl.UWP\UserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -91,7 +100,6 @@
     <None Include="UserControl.WinUI\UserControl.xaml.cs">
       <DependentUpon>UserControl.xaml</DependentUpon>
     </None>
-
     <None Include="ContentDialog.UWP\ContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,15 +114,12 @@
     <None Include="ContentDialog.WinUI\ContentDialog.xaml.cs">
       <DependentUpon>ContentDialog.xaml</DependentUpon>
     </None>
-
     <None Include="TemplatedControl.UWP\CustomControl.cs" />
     <None Include="TemplatedControl.WinUI\CustomControl.cs" />
-
     <None Include="ResourceDictionary.Neutral\ResourceDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-
     <None Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -129,11 +134,9 @@
     <None Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionaryWithCodeBehind.xaml.cs">
       <DependentUpon>ResourceDictionaryWithCodeBehind.xaml</DependentUpon>
     </None>
-
     <None Include="Resw.Neutral\Resources.resw">
       <SubType>Designer</SubType>
     </None>
-    
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +155,7 @@
     <VSTemplate Include="ResourceDictionary.Neutral\ResourceDictionary.neutral.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <VSTemplate Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.uwp.vstemplate" >
+    <VSTemplate Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.uwp.vstemplate">
       <OutputSubPath>Uno Platform (UWP)</OutputSubPath>
     </VSTemplate>
     <VSTemplate Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionaryWithCodeBehind.winui.vstemplate">
@@ -173,6 +176,9 @@
     <VSTemplate Include="Resw.Neutral\Resw.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
+  </ItemGroup>
+  <ItemGroup>
+
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

@@ -3,7 +3,7 @@
   <TemplateData>
     <Name>ResourceDictionary</Name>
     <Description>A Resource Dictionary without code-behind.</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4010" />
+    <Icon>ResourceDictionary.png</Icon>
     <TemplateID>Uno.Neutral.CS.ResourceDictionary</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
     <ProjectType>CSharp</ProjectType>

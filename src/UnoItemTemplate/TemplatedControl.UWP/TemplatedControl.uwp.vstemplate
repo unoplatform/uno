@@ -2,9 +2,9 @@
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <DefaultName>CustomControl.cs</DefaultName>
-    <Name>Custom Control (Uno Platform UWP)</Name>
+    <Name>Templated Control (Uno Platform UWP)</Name>
     <Description>A custom control with full templating capabilities.</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4009" />
+	<Icon>TemplatedControl.png</Icon>
     <ProjectType>CSharp</ProjectType>
     <TemplateID>Uno.UWP.CS.TemplatedControl</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>

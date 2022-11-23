@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.canvas{fill: none; opacity: 0;}.light-blue{fill: #005dba; opacity: 1;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.cls-1{opacity:0.75;}</style>
+  </defs>
+  <title>IconLightWPFApplication</title>
+  <g id="canvas" class="canvas">
+    <path class="canvas" d="M16,16H0V0H16Z"/>
+  </g>
+  <g id="level-1">
+    <path class="light-blue" d="M7,12v3H4V12Z"/>
+    <path class="light-defaultgrey" d="M10.854,13.146v.708l-2,2-.708-.708L9.793,13.5,8.146,11.854l.708-.708Zm-8.708-2,.708.708L1.207,13.5l1.647,1.646-.708.708-2-2v-.708Z"/>
+    <path class="light-blue-10" d="M 13.444 3.252 L 7.887 8.809 L 6.405 7.291 L 11.944 1.752 C 12.358 1.337 13.03 1.337 13.444 1.752 C 13.857 2.166 13.857 2.837 13.444 3.252 Z" style="opacity: 0.1; fill: rgb(113, 113, 113);"/>
+    <path class="light-blue" d="M 13.83 1.383 C 13.222 0.777 12.239 0.777 11.63 1.383 L 6.38 6.633 L 4.798 9.879 L 5.473 10.553 L 8.468 8.924 L 13.833 3.588 C 14.44 2.977 14.438 1.991 13.83 1.383 Z M 13.13 2.883 L 7.93 8.083 L 7.147 7.283 L 12.337 2.094 C 12.642 1.789 13.163 1.929 13.275 2.345 C 13.326 2.539 13.271 2.745 13.129 2.887 L 13.13 2.883 Z" style="fill: rgb(46, 46, 46);"/>
+  </g>
+</svg>

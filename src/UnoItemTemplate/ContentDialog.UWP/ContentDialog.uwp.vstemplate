@@ -3,7 +3,7 @@
   <TemplateData>
     <Name>ContentDialog (Uno Platform UWP)</Name>
     <Description>A ContentDialog control</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4008" />
+	<Icon>ContentDialog.png</Icon>
     <TemplateID>Uno.UWP.CS.ContentDialog</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
     <ProjectType>CSharp</ProjectType>
