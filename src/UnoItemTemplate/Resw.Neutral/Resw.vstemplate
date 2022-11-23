@@ -2,12 +2,12 @@
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <DefaultName>Resources.resw</DefaultName>
-    <Name>Resources File (.resw Uno Platform UWP)</Name>
-    <Description>A file for storing string and conditional resources for apps based on the UWP Library.</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
+    <Name>Resources File (.resw)</Name>
+    <Description>A file for storing string and conditional resources.</Description>
+	<Icon>Resw.png</Icon>
     <ProjectType>CSharp</ProjectType>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
-    <TemplateID>Uno.Cs.Neutral.Resw</TemplateID>
+    <TemplateID>Uno.Neutral.CS.Resw</TemplateID>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <ShowByDefault>true</ShowByDefault>
     <TargetPlatformName>Windows</TargetPlatformName>
@@ -16,6 +16,7 @@
     <PlatformTag>windows</PlatformTag>
     <ProjectTypeTag>uwp</ProjectTypeTag>
     <ProjectTypeTag>desktop</ProjectTypeTag>
+	<SortOrder>40</SortOrder>
   </TemplateData>
   <TemplateContent>
     <ProjectItem ItemType="PRIResource">Resources.resw</ProjectItem>
