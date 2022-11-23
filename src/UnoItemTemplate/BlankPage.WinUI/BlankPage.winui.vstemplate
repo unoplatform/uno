@@ -9,7 +9,7 @@
     <ProjectType>CSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>BlankPage.xaml</DefaultName>
-    <SortOrder>40</SortOrder>
+    <SortOrder>30</SortOrder>
     <PreviewImage>BlankPage.png</PreviewImage>
   </TemplateData>
   <TemplateContent>

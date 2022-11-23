@@ -2,9 +2,9 @@
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
     <Name>User Control (Uno Platform UWP)</Name>
-    <Description>A user control</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
-    <TemplateID>Uno.CS.UserControl</TemplateID>
+    <Description>A reusable user control with XAML content.</Description>
+    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4009" />
+    <TemplateID>Uno.UWP.CS.UserControl</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
     <ProjectType>CSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

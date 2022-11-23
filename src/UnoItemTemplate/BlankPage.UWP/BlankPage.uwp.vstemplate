@@ -4,12 +4,12 @@
     <Name>Page (Uno Platform UWP)</Name>
     <Description>A Page control</Description>
     <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
-    <TemplateID>Uno.CS.BlankPage</TemplateID>
+    <TemplateID>Uno.UWP.CS.BlankPage</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
     <ProjectType>CSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>BlankPage.xaml</DefaultName>
-    <SortOrder>40</SortOrder>
+    <SortOrder>30</SortOrder>
     <PreviewImage>BlankPage.png</PreviewImage>
   </TemplateData>
   <TemplateContent>
