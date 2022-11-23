@@ -44,6 +44,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private INamedTypeSymbol? _dependencyObjectSymbol;
 			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private bool _xamlResourcesTrimming;
+			private bool _isUnoUISolution;
 
 			internal void Generate(GeneratorExecutionContext context)
 			{
@@ -58,7 +59,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_xamlResourcesTrimming = false;
 					}
 
-					if (validPlatform && _xamlResourcesTrimming)
+					if (!bool.TryParse(context.GetMSBuildPropertyValue("_IsUnoUISolution"), out _isUnoUISolution))
+					{
+						_isUnoUISolution = false;
+					}
+
+					if (validPlatform && (_xamlResourcesTrimming || _isUnoUISolution))
 					{
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
