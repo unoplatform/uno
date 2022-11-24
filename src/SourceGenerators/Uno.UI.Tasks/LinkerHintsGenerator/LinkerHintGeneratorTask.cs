@@ -295,7 +295,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				{
 					if (!map.TryGetValue(type.FullName, out var list))
 					{
-						list = new();
+						map[type.FullName] = list = new();
 					}
 
 					list.Add(type);
