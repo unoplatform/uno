@@ -121,6 +121,11 @@ namespace Uno.UI.RemoteControl.HotReload
                     this.Log().LogError($"Failed reloading changed file [{filePath}]", e);
                 }
 
+                if (e is TargetInvocationException { InnerException: { } innerException })
+                {
+                    e = innerException;
+                }
+
                 await _rcClient.SendMessage(
                     new HotReload.Messages.XamlLoadError(
                         filePath: filePath,
