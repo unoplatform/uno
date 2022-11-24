@@ -150,7 +150,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private HashSet<INamedTypeSymbol> FindAdditionalLinkerHints(INamedTypeSymbol? additionalLinkerHintAttributeSymbol, GeneratorExecutionContext context)
 			{
-				HashSet<INamedTypeSymbol> types = new();
+				HashSet<INamedTypeSymbol> types = new(SymbolEqualityComparer.Default);
 
 				if (additionalLinkerHintAttributeSymbol != null)
 				{
