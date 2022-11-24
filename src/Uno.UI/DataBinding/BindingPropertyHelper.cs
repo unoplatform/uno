@@ -691,7 +691,8 @@ namespace Uno.UI.DataBinding
 					return instance => attachedPropertyGetter.Invoke(null, new[] { instance });
 				}
 
-				if(type == typeof(System.Dynamic.ExpandoObject))
+				if(__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+					&& type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return instance =>
 					{
@@ -707,7 +708,8 @@ namespace Uno.UI.DataBinding
 					};
 				}
 
-				if(type.Is(typeof(System.Dynamic.DynamicObject)))
+				if(__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+					&& type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
 					return instance =>
 					{
@@ -905,7 +907,8 @@ namespace Uno.UI.DataBinding
 					}
 				}
 
-				if (type == typeof(System.Dynamic.ExpandoObject))
+				if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+					&& type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return (instance, value) =>
 					{
@@ -917,7 +920,8 @@ namespace Uno.UI.DataBinding
 				}
 
 
-				if (type.Is(typeof(System.Dynamic.DynamicObject)))
+				if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+					&& type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
 					return (instance, value) =>
 					{

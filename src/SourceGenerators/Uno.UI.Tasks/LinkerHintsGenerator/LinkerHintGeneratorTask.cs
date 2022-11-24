@@ -186,6 +186,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			var features = new Dictionary<string, string>();
 
 			var availableLinkerHints = FindAvailableLinkerHints(assemblies);
+			var availableTypes = BuildAvailableTypes(assemblies);
 
 			foreach(var hint in availableLinkerHints)
 			{
@@ -196,9 +197,34 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				foreach(var type in asm.MainModule.Types)
 				{
+					// Search for dependency object types that are still available after the current
+					// linker pass.
 					if (IsDependencyObject(type))
 					{
 						features[LinkerHintsHelpers.GetPropertyAvailableName(type.FullName)] = "true";
+					}
+				}
+
+				// Search for additional types that may still be available after the current
+				// linker pass.
+				var additionalLinkerHints = asm
+					.MainModule
+					.GetCustomAttributes()
+					.Where(a => a.AttributeType.FullName == "Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
+
+				foreach (var additionalLinkerHint in additionalLinkerHints)
+				{
+					if (!additionalLinkerHint.HasConstructorArguments)
+					{
+						throw new InvalidOperationException($"The AdditionalLinkerHintAttribute must have one ctor parameter");
+					}
+
+					if (additionalLinkerHint.ConstructorArguments[0].Value is string typeName)
+					{
+						if (availableTypes.TryGetValue(typeName, out var additionalTypes))
+						{
+							features[LinkerHintsHelpers.GetPropertyAvailableName(typeName)] = "true";
+						}
 					}
 				}
 			}
@@ -257,6 +283,26 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 
 			return hints.Distinct().ToList();
+		}
+
+		private static Dictionary<string, List<TypeDefinition>> BuildAvailableTypes(List<AssemblyDefinition> assemblySearchList)
+		{
+			Dictionary<string, List<TypeDefinition>> map = new();
+
+			foreach (var asm in assemblySearchList)
+			{
+				foreach(var type in asm.MainModule.Types)
+				{
+					if(!map.TryGetValue(type.FullName, out var list))
+					{
+						list = new();
+					}
+
+					list.Add(type);
+				}
+			}
+
+			return map;
 		}
 
 		private List<AssemblyDefinition> BuildResourceSearchList()

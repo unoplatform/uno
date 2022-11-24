@@ -42,6 +42,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _intermediatePath;
 			private string? _assemblyName;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
+			private INamedTypeSymbol? _additionalLinkerHintAttributeSymbol;
 			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private bool _xamlResourcesTrimming;
 			private bool _isUnoUISolution;
@@ -80,6 +81,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
 						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
+						_additionalLinkerHintAttributeSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
+
+						var additionalLinkerHintSymbols = FindAdditionalLinkerHints(_additionalLinkerHintAttributeSymbol, context);
+
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 									  where sym != null
@@ -91,15 +96,16 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						var bindableTypes = from module in modules
 											from type in module.GlobalNamespace.GetNamespaceTypes()
 											where (
-												(
-													type.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
-												)
+												type.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
+												|| additionalLinkerHintSymbols.Contains(type)
 											)
 											select type;
 
 						bindableTypes = bindableTypes.ToArray();
 
 						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(bindableTypes));
+
+#if DEBUG
 						context.AddSource("DependencyObjectAvailability_Debug",
 							$"""
 							/*
@@ -107,10 +113,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							_namedSymbolsLookup:{_namedSymbolsLookup}
 							_dependencyObjectSymbol:{_dependencyObjectSymbol}
 							modules: {string.Join(", ", modules)}
-							modules: {string.Join(", ", modules)}
-
+							_additionalLinkerHintAttributeSymbol: {_additionalLinkerHintAttributeSymbol}
+							additionalLinkerHintSymbols: {String.Join(",", additionalLinkerHintSymbols)}
 							*/
 							""");
+#endif
 
 						GenerateLinkerSubstitutionDefinition(bindableTypes, isApplication);
 					}
@@ -139,6 +146,51 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
 #endif
 				}
+			}
+
+			private HashSet<INamedTypeSymbol> FindAdditionalLinkerHints(INamedTypeSymbol? additionalLinkerHintAttributeSymbol, GeneratorExecutionContext context)
+			{
+				HashSet<INamedTypeSymbol> types = new();
+
+				if (additionalLinkerHintAttributeSymbol != null)
+				{
+					var attributes = context
+						.Compilation
+						.Assembly
+						.GetAttributes()
+						.Where(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, additionalLinkerHintAttributeSymbol));
+
+					foreach (var attribute in attributes)
+					{
+						if (attribute.ConstructorArguments.FirstOrDefault().Value is string targetType)
+						{
+							if (context.Compilation.GetTypeByMetadataName(targetType) is { } targetSymbol)
+							{
+								types.Add(targetSymbol);
+							}
+							else
+							{
+								var diagnostic = Diagnostic.Create(
+									XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+									null,
+									$"Failed to find type {targetType} in the current context.");
+
+								context.ReportDiagnostic(diagnostic);
+							}
+						}
+						else
+						{
+							var diagnostic = Diagnostic.Create(
+								XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+								null,
+								$"Type attribute AdditionalLinkerHintAttribute must have exactly one parameter");
+
+							context.ReportDiagnostic(diagnostic);
+						}
+					}
+				}
+
+				return types;
 			}
 
 			private void GenerateLinkerSubstitutionDefinition(IEnumerable<INamedTypeSymbol> bindableTypes, bool isApplication)
