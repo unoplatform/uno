@@ -32,17 +32,19 @@ As of Uno 3.9, the Uno.UI WebAssembly assembly is 7.5MB, trimmed down to 3.1MB f
 In some scenarios (e.g. ExpandoObject), it may be needed to generate linker hints for non-DependencyObject types.
 
 To get a `__LinkerHints` property for an additional type, add the following in AssemblyInfo.cs:
+
 ```csharp
 [assembly: AdditionalLinkerHint("System.Dynamic.ExpandoObject")]
 ```
 
 Then make the code using `ExpandoObject` conditional:
+
 ```csharp
-if(__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
 	&& type == typeof(System.Dynamic.ExpandoObject))
-    {
-        ...
-    }
+{
+    ...
+}
 ```
 
 The linker will automatically remove the rest of the conditional block if the linker hint is considered false, based on the use of `ExpandoObject` in the rest of the app (except the current assembly).

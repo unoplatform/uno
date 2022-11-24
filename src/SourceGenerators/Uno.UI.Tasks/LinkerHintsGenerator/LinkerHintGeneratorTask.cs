@@ -293,7 +293,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				foreach(var type in asm.MainModule.Types)
 				{
-					if(!map.TryGetValue(type.FullName, out var list))
+					if (!map.TryGetValue(type.FullName, out var list))
 					{
 						list = new();
 					}

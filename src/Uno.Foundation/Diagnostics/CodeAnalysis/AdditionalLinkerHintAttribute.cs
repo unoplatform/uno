@@ -10,7 +10,7 @@ namespace Uno.Foundation.Diagnostics.CodeAnalysis
 	/// Provide the ability to include an additional type to the linker hints generator.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-	internal class AdditionalLinkerHintAttribute : Attribute
+	internal sealed class AdditionalLinkerHintAttribute : Attribute
 	{
 		/// <summary>
 		/// Builds a new linker hint
