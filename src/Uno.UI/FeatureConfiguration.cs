@@ -354,6 +354,11 @@ namespace Uno.UI
 			/// Forcing a recycling pass with ItemAnimator is known to cause a flicker of the whole list.
 			/// </remarks>
 			public static bool ForceRecycleOnDrop;
+
+			/// <summary>
+			/// Sets a value indicating whether the item snapping will be implemented by the native <see cref="AndroidX.RecyclerView.Widget.SnapHelper"/> or by Uno.
+			/// </summary>
+			public static bool UseNativeSnapHelper = true;
 		}
 #endif
 
