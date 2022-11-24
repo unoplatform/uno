@@ -1041,7 +1041,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (writer.BlockInvariant($"Loading += (s, e) => "))
 				{
-					if (_isHotReloadEnabled)
+					if (_isHotReloadEnabled && _xClassName.Symbol != null)
 
 					{
 						writer.AppendLineIndented($"var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{_xClassName.Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(s, \"owner\");");
