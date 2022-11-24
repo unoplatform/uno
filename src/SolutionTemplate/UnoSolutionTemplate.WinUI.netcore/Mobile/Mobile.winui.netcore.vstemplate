@@ -134,7 +134,7 @@
 			<Folder Name="MacOS" TargetFolderName="MacOS">
 				<ProjectItem ReplaceParameters="true" TargetFileName="Entitlements.plist">Entitlements.plist</ProjectItem>
 				<ProjectItem ReplaceParameters="true" TargetFileName="Info.plist">Info.plist</ProjectItem>
-				<ProjectItem ReplaceParameters="true" TargetFileName="Main.cs">Main.cs</ProjectItem>
+				<ProjectItem ReplaceParameters="true" TargetFileName="Main.macOS.cs">Main.macOS.cs</ProjectItem>
 				<Folder Name="Assets.xcassets" TargetFolderName="Assets.xcassets">
 					<ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
 					<Folder Name="AppIcon.appiconset" TargetFolderName="AppIcon.appiconset">
