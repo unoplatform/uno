@@ -349,11 +349,11 @@ namespace Microsoft.CodeAnalysis
 			return property?.GetAllAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
-		public static IEnumerable<INamedTypeSymbol> GetAllInterfaces(this ITypeSymbol? symbol, bool includeCurrent = true)
+		public static IEnumerable<INamedTypeSymbol> GetAllInterfaces(this ITypeSymbol? symbol)
 		{
 			if (symbol != null)
 			{
-				if (includeCurrent && symbol.TypeKind == TypeKind.Interface)
+				if (symbol.TypeKind == TypeKind.Interface)
 				{
 					yield return (INamedTypeSymbol)symbol;
 				}
