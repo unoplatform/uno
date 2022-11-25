@@ -51,9 +51,6 @@
     <type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher">
       <method name="DispatchStateChanged" />
     </type>
-	<type fullname="Windows.Devices.Sensors.Accelerometer">
-	  <method name="DispatchReading" />
-	</type>
 	<type fullname="Windows.Devices.Sensors.Magnetometer">
 	  <method name="DispatchReading" />
 	</type>
