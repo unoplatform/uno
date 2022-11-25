@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewListView.cpp, commit 309c88f
+// MUX Reference: TabViewListView.cpp, commit 4bab3245a
 
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;
@@ -28,8 +28,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 			this.DefaultStyleKey = typeof(TabViewListView);
 
 			ContainerContentChanging += OnContainerContentChanging;
+
+			RegisterPropertyChangedCallback(Selector.SelectedIndexProperty, OnSelectedIndexPropertyChanged);
 		}
 
+		private void OnSelectedIndexPropertyChanged(DependencyObject sender, DependencyProperty dp)
+		{
+			UpdateBottomBorderVisualState();
+		}
+		
 		protected override DependencyObject GetContainerForItemOverride() => new TabViewItem();
 
 		protected override bool IsItemItsOwnContainerOverride(object args)
@@ -53,6 +60,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 				var internalTabView = tabView;
 				internalTabView.OnItemsChanged(item, this);
 			}
+
+			UpdateBottomBorderVisualState();
 		}
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
@@ -86,6 +95,20 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 				var internalTabView = tabView;
 				internalTabView.UpdateTabContent();
 			}
+		}
+
+		private void UpdateBottomBorderVisualState()
+		{
+
+			VisualStateManager.GoToState(
+				this,
+				SelectedIndex == 0 ? "LeftBottomBorderLineShort" : "LeftBottomBorderLineNormal",
+				false /*useTransitions*/);
+
+			VisualStateManager.GoToState(
+				this,
+				SelectedIndex == (Items.Count - 1) ? "RightBottomBorderLineShort" : "RightBottomBorderLineNormal",
+				false /*useTransitions*/);
 		}
 	}
 }
