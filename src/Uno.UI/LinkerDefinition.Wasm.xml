@@ -64,9 +64,6 @@
       <method name="DispatchDpiChanged" />
       <method name="DispatchOrientationChanged" />
     </type>
-	<type fullname="Windows.Devices.Sensors.Gyrometer">
-	  <method name="DispatchReading" />
-	</type>
 	<type fullname="Windows.Devices.Geolocation.Geolocator">
 	  <method name="DispatchAccessRequest" />
 	  <method name="DispatchGeoposition" />
