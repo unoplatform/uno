@@ -139,11 +139,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					var diagnostic = Diagnostic.Create(
 						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 						null,
-						$"Failed to generate dependency objects. ({e.Message})");
+						$"Failed to generate linker hints. ({e.Message})");
 
 					context.ReportDiagnostic(diagnostic);
 #else
-					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+					Console.WriteLine("Failed to generate linker hints", new Exception("Failed to generate linker hints" + message, e));
 #endif
 				}
 			}
