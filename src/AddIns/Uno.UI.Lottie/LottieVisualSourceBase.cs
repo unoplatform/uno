@@ -87,37 +87,51 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public void Stop()
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public void Pause()
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public void Resume()
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public void SetProgress(double progress)
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public void Load()
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public void Unload()
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public Size Measure(Size availableSize)
@@ -129,9 +143,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private readonly Size CompositionSize = default;
 #pragma warning restore CA1805 // Do not initialize unnecessarily
 
-		private Task InnerUpdate(CancellationToken ct)
+		private async Task InnerUpdate(CancellationToken ct)
 		{
-			throw new NotSupportedException("Lottie on this platform is not supported yet.");
+#if !NET461
+			throw new NotImplementedException();
+#else
+			await Task.Yield();
+#endif
 		}
 #endif
 
