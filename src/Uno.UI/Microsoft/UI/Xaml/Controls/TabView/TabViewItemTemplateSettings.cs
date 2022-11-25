@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItemTemplateSettings.properties.cpp, commit 8aaf7f8
+// MUX Reference: TabViewItemTemplateSettings.properties.cpp, commit 92fbfcd55f05
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -28,5 +28,20 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		/// </summary>
 		public static DependencyProperty IconElementProperty { get; } =
 			DependencyProperty.Register(nameof(IconElement), typeof(IconElement), typeof(TabViewItemTemplateSettings), new FrameworkPropertyMetadata(null));
+		
+		/// <summary>
+		/// Gets or sets tab geometry.
+		/// </summary>
+		public Geometry TabGeometry
+		{
+			get => (Geometry)GetValue(TabGeometryProperty);
+			set => SetValue(TabGeometryProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the TabGeometry dependency property.
+		/// </summary>
+		public static DependencyProperty TabGeometryProperty { get; } =
+			DependencyProperty.Register(nameof(TabGeometry), typeof(Geometry), typeof(TabViewItemTemplateSettings), new FrameworkPropertyMetadata(null));		
 	}
 }
