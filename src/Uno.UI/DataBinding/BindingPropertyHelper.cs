@@ -713,8 +713,8 @@ namespace Uno.UI.DataBinding
 				{
 					return instance =>
 					{
-						if (
-							instance is System.Dynamic.DynamicObject dynamicObject
+						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+							&& instance is System.Dynamic.DynamicObject dynamicObject
 							&& dynamicObject.TryGetMember(new UnoGetMemberBinder(property, true), out var binderValue)
 						)
 						{
@@ -925,7 +925,8 @@ namespace Uno.UI.DataBinding
 				{
 					return (instance, value) =>
 					{
-						if (instance is System.Dynamic.DynamicObject dynamicObject)
+						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+							&& instance is System.Dynamic.DynamicObject dynamicObject)
 						{
 							dynamicObject.TrySetMember(new UnoSetMemberBinder(property, true), value);
 						}
