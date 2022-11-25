@@ -32,7 +32,6 @@ namespace Windows.Devices.Sensors
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
 
-		[Preserve]
 		public static int DispatchReading(float lux)
 		{
 			var reading = new LightSensorReading(lux, DateTimeOffset.UtcNow);
