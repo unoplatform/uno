@@ -148,7 +148,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				$"--feature UnoBindableMetadata false",
 				$"--verbose",
 				$"--deterministic",
-				$"--used-attrs-only true",
+				// $"--used-attrs-only true", // not used to keep additional linker hints
 				$"--skip-unresolved true",
 				$"-b true",
 				$"-a {AssemblyPath}",
@@ -185,10 +185,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			var features = new Dictionary<string, string>();
 
-			var availableLinkerHints = FindAvailableLinkerHints(assemblies);
+			var originalLinkerHints = FindAvailableLinkerHints(BuildOriginalResourceSearchList());
+
 			var availableTypes = BuildAvailableTypes(assemblies);
 
-			foreach(var hint in availableLinkerHints)
+			foreach(var hint in originalLinkerHints)
 			{
 				features[hint] = "false";
 			}
@@ -256,7 +257,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private string BuildLinkerFeaturesList()
 		{
-			var assemblySearchList = BuildResourceSearchList();
+			var assemblySearchList = BuildOriginalResourceSearchList();
 
 			var hints = FindAvailableLinkerHints(assemblySearchList);
 
@@ -305,7 +306,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return map;
 		}
 
-		private List<AssemblyDefinition> BuildResourceSearchList()
+		private List<AssemblyDefinition> BuildOriginalResourceSearchList()
 		{
 			var sourceList = new List<string>();
 
