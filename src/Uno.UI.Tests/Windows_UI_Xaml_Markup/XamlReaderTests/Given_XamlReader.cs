@@ -290,10 +290,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var panel = r.FindName("innerPanel") as StackPanel;
 			Assert.IsNotNull(panel);
 
-			Assert.AreEqual(0, Grid.GetRow(panel));
-			Assert.AreEqual(double.NaN, panel.Width);
-			Assert.AreEqual(double.NaN, panel.Height);
-
 			r.ForceLoaded();
 
 			Assert.AreEqual(42, Grid.GetRow(panel));
@@ -1456,6 +1452,32 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			Assert.AreEqual(t1, Windows.UI.Colors.Red);
 			Assert.AreEqual(t1, b1.Color);
+		}
+
+		[TestMethod]
+		public void When_Setter_Override_From_Visual_Parent()
+		{
+			var s = GetContent(nameof(When_Setter_Override_From_Visual_Parent));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+			SUT.ForceLoaded();
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public void When_Setter_Override_State_From_Visual_Parent()
+		{
+			var s = GetContent(nameof(When_Setter_Override_State_From_Visual_Parent));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+			SUT.ForceLoaded();
+
+			VisualStateManager.GoToState((Control)SUT.FindName("SubjectToggleButton"), "Checked", false);
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
 		}
 
 		/// <summary>
