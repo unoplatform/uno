@@ -54,9 +54,6 @@
 	<type fullname="Windows.Devices.Sensors.Magnetometer">
 	  <method name="DispatchReading" />
 	</type>
-    <type fullname="Windows.Devices.Sensors.LightSensor">
-      <method name="DispatchReading" />
-    </type>
     <type fullname="Windows.Networking.Connectivity.NetworkInformation">
 	  <method name="DispatchStatusChanged" />
 	</type>
