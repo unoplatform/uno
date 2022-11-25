@@ -1485,7 +1485,7 @@ public partial class TabView : Control
 		}
 	}
 
-	private bool MoveFocus(bool moveForward)
+	internal bool MoveFocus(bool moveForward)
 	{
 		var focusedControl = FocusManager.GetFocusedElement() as Control;
 

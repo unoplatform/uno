@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.cpp, commit 27052f7
+// MUX Reference: TabViewItem.cpp, commit 367bb0d512c
 
 using System.Numerics;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
@@ -39,6 +39,7 @@ public partial class TabViewItem : ListViewItem
 	/// </summary>
 	public TabViewItem()
 	{
+		m_dispatcherHelper = new(this);
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TabViewItem);
 
 		DefaultStyleKey = typeof(TabViewItem);
@@ -47,13 +48,37 @@ public partial class TabViewItem : ListViewItem
 
 		Loaded += OnLoaded;
 
+		SizeChanged += OnSizeChanged;
+
 		RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedPropertyChanged);
 		RegisterPropertyChangedCallback(Control.ForegroundProperty, OnForegroundPropertyChanged);
 	}
 
 	protected override void OnApplyTemplate()
 	{
-		var popupRadius = (CornerRadius)ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey);
+		base.OnApplyTemplate();
+
+		m_selectedBackgroundPathSizeChangedRevoker.Disposable = null;
+		m_closeButtonClickRevoker.Disposable = null;
+		m_tabDragStartingRevoker.Disposable = null;
+		m_tabDragCompletedRevoker.Disposable = null;
+
+		if (SharedHelpers.Is19H1OrHigher()) // UIElement.ActualOffset introduced in Win10 1903.
+		{
+			m_selectedBackgroundPath = GetTemplateChild<Path>("SelectedBackgroundPath");
+
+			if (m_selectedBackgroundPath is { } selectedBackgroundPath)
+			{
+				m_selectedBackgroundPathSizeChangedRevoker = selectedBackgroundPath.SizeChanged(winrt::auto_revoke,
+
+			{
+					[this](auto const&, auto const&)
+                {
+						UpdateSelectedBackgroundPathTranslateTransform();
+					}
+				});
+			}
+		}
 
 		m_headerContentPresenter = GetTemplateChild<ContentPresenter>("ContentPresenter");
 
@@ -122,6 +147,34 @@ public partial class TabViewItem : ListViewItem
 		UpdateCloseButton();
 		UpdateForeground();
 		UpdateWidthModeVisualState();
+		UpdateTabGeometry();
+	}
+
+	private void UpdateTabGeometry()
+	{
+		var templateSettings = TabViewTemplateSettings;
+		var scaleFactor = SharedHelpers.Is19H1OrHigher() ?
+			XamlRoot.RasterizationScale :
+			DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+		var height = ActualHeight;
+		var popupRadius = (CornerRadius)ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey);
+		var leftCorner = popupRadius.TopLeft;
+		var rightCorner = popupRadius.TopRight;
+
+		// Assumes 4px curving-out corners, which are hardcoded in the markup
+		var data = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>F1 M0,%f  a 4,4 0 0 0 4,-4  L 4,%f  a %f,%f 0 0 1 %f,-%f  l %f,0  a %f,%f 0 0 1 %f,%f  l 0,%f  a 4,4 0 0 0 4,4 Z</Geometry>";
+
+		//WCHAR strOut[1024];
+		StringCchPrintf(strOut, ARRAYSIZE(strOut), data,
+			height - 1.0f,
+			leftCorner, leftCorner, leftCorner, leftCorner, leftCorner,
+			ActualWidth - (leftCorner + rightCorner + 1.0f / scaleFactor),
+			rightCorner, rightCorner, rightCorner, rightCorner,
+			height - (5 + rightCorner));
+
+		var geometry = XamlReader.Load(strOut) as Geometry;
+
+		templateSettings.TabGeometry = geometry;
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs args)
@@ -132,6 +185,12 @@ public partial class TabViewItem : ListViewItem
 			var index = internalTabView.IndexFromContainer(this);
 			internalTabView.SetTabSeparatorOpacity(index);
 		}
+	}
+
+	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+	{
+		m_dispatcherHelper.RunAsync(() => UpdateTabGeometry());
+		UpdateTabGeometry();
 	}
 
 	private void OnIsSelectedPropertyChanged(DependencyObject sender, DependencyProperty args)
@@ -190,6 +249,33 @@ public partial class TabViewItem : ListViewItem
 			else
 			{
 				Shadow = null;
+			}
+		}
+	}
+
+	private void UpdateSelectedBackgroundPathTranslateTransform()
+	{
+		MUX_ASSERT(SharedHelpers.Is19H1OrHigher());
+
+		if (m_selectedBackgroundPath is { } selectedBackgroundPath)
+		{
+			var selectedBackgroundPathActualOffset = selectedBackgroundPath.ActualOffset;
+			var roundedSelectedBackgroundPathActualOffsetY = Math.Round(selectedBackgroundPathActualOffset.Y);
+
+			if (roundedSelectedBackgroundPathActualOffsetY > selectedBackgroundPathActualOffset.y)
+			{
+				// Move the SelectedBackgroundPath element down by a fraction of a pixel to avoid a faint gap line
+				// between the selected TabViewItem and its content.
+				TranslateTransform translateTransform = new();
+
+				translateTransform.Y = roundedSelectedBackgroundPathActualOffsetY - selectedBackgroundPathActualOffset.y;
+
+				selectedBackgroundPath.RenderTransform = translateTransform;
+			}
+			else if (selectedBackgroundPath.RenderTransform is not null)
+			{
+				// Reset any TranslateTransform that may have been set above.
+				selectedBackgroundPath.RenderTransform = null;
 			}
 		}
 	}
@@ -479,6 +565,35 @@ public partial class TabViewItem : ListViewItem
 		m_hasPointerCapture = false;
 		m_isMiddlePointerButtonPressed = false;
 		RestoreLeftAdjacentTabSeparatorVisibility();
+	}
+
+	// Note that the ItemsView will handle the left and right arrow keys if we don't do so before it does,
+	// so this needs to be handled below the items view. That's why we can't put this in TabView's OnKeyDown.
+	private void OnKeyDown(KeyRoutedEventArgs args)
+	{
+		if (!args.Handled && (args.Key == VirtualKey.Left || args.Key == VirtualKey.Right))
+		{
+			// Alt+Shift+Arrow reorders tabs, so we don't want to handle that combination.
+			// ListView also handles Alt+Arrow  (no Shift) by just doing regular XY focus,
+			// same as how it handles Arrow without any modifier keys, so in that case
+			// we do want to handle things so we get the improved keyboarding experience.
+			var isAltDown = (Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			var isShiftDown = (Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			
+			if (!isAltDown || !isShiftDown)
+			{
+				var bool moveForward =
+					(FlowDirection == FlowDirection.LeftToRight && args.Key == VirtualKey.Right) ||
+					(FlowDirection == FlowDirection.RightToLeft && args.Key == VirtualKey.Left);
+
+				args.Handled = GetParentTabView().MoveFocus(moveForward);
+			}
+		}
+
+		if (!args.Handled)
+		{
+			base.OnKeyDown(args);
+		}
 	}
 
 	private void OnIconSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
