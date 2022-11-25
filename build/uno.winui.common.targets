@@ -8,6 +8,17 @@
 		<_IsUnoPlatform>true</_IsUnoPlatform>
 	</PropertyGroup>
 
+	<!-- Feature configuration -->
+	<PropertyGroup>
+		<UnoDragDropExternalSupport Condition="'$(UnoDragDropExternalSupport)'==''">true</UnoDragDropExternalSupport>
+	</PropertyGroup>
+	<ItemGroup>
+		
+		<RuntimeHostConfigurationOption Include="Windows.ApplicationModel.DataTransfer.DragDrop.ExternalSupport"
+										Value="$(UnoDragDropExternalSupport)"
+										Trim="true" />
+	</ItemGroup>
+
 	<Target Name="ValidateUnoUIAndUnoWinUIExclusion" BeforeTargets="BeforeBuild">
 		<Error Code="UNOB0001"
 		Text="Cannot build with both Uno.WinUI and Uno.UI nuget packages referenced."
@@ -211,5 +222,4 @@
 			">
 		<Error Text="Building for the iOS Simulator requires the use of the static registrar. Make sure that `MtouchExtraArgs` contains `--registrar:static`. See https://github.com/unoplatform/uno/issues/9430 for more details." />
 	</Target>
-
 </Project>

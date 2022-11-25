@@ -61,6 +61,17 @@
 			document.removeEventListener("drop", this._dropHandler);
 		}
 
+		public static registerNoOp() {
+			let notifyDisabled = (evt: DragEvent) => {
+				evt.dataTransfer.dropEffect = "none";
+				console.debug("DragAndDrop from external sources is disabled. See the UnoDragDropExternalSupport msbuild property.");
+
+				document.removeEventListener("dragenter", notifyDisabled);
+			};
+
+			document.addEventListener("dragenter", notifyDisabled);
+		}
+
 		private dispatchDropEvent(evt: DragEvent): any {
 			if (evt.type == "dragleave"
 				&& evt.clientX > 0
