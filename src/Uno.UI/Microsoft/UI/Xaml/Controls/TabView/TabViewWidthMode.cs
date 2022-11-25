@@ -2,27 +2,26 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: TabView.idl, commit 8aaf7f8
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+/// <summary>
+/// Defines constants that specify the width of the tabs.
+/// </summary>
+public enum TabViewWidthMode
 {
 	/// <summary>
-	/// Defines constants that specify the width of the tabs.
+	/// Each tab has the same width.
 	/// </summary>
-	public enum TabViewWidthMode
-	{
-		/// <summary>
-		/// Each tab has the same width.
-		/// </summary>
-		Equal = 0,
+	Equal = 0,
 
-		/// <summary>
-		/// Each tab adjusts its width to the content within the tab.
-		/// </summary>
-		SizeToContent = 1,
+	/// <summary>
+	/// Each tab adjusts its width to the content within the tab.
+	/// </summary>
+	SizeToContent = 1,
 
-		/// <summary>
-		/// Unselected tabs collapse to show only their icon. The selected
-		/// tab adjusts to display the content within the tab.
-		/// </summary>
-		Compact = 2,
-	}
+	/// <summary>
+	/// Unselected tabs collapse to show only their icon. The selected
+	/// tab adjusts to display the content within the tab.
+	/// </summary>
+	Compact = 2,
 }
