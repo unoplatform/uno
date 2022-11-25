@@ -563,6 +563,34 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[TestMethod]
+		public void ThemeResource_When_Setter_Override_From_Visual_Parent()
+		{
+			var SUT = new ThemeResource_When_Setter_Override_From_Visual_Parent();
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public void ThemeResource_When_Setter_Override_State_From_Visual_Parent()
+		{
+			var SUT = new ThemeResource_When_Setter_Override_State_From_Visual_Parent();
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			VisualStateManager.GoToState(SUT.SubjectToggleButton, "Checked", false);
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
 		/// <summary>
 		/// Use Fluent styles for the duration of the test.
 		/// </summary>
