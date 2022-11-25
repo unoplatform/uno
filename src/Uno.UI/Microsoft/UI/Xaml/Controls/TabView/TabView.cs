@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, commit ed31e13
+// MUX Reference TabView.cpp, commit 367bb0d512cd
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -43,6 +43,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		// TODO (WinUI): what is the right number and should this be customizable?
 		private const double c_scrollAmount = 50.0;
+
+		// Change to 'true' to turn on debugging outputs in Output window
+		private const bool s_IsDebugOutputEnabled = false;
+		private const bool s_IsVerboseDebugOutputEnabled = false;
 
 		public TabView()
 		{
@@ -208,10 +212,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					}
 
 					addButton.Click += OnAddButtonClick;
-					m_addButtonClickRevoker.Disposable = Disposable.Create(() =>
-					{
-						addButton.Click -= OnAddButtonClick;
-					});
+					m_addButtonClickRevoker.Disposable = Disposable.Create(() => addButton.Click -= OnAddButtonClick);
+					addButton.KeyDown += OnAddButtonKeyDown;
+					m_addButtonKeyDownRevoker.Disposable = Disposable.Create(() => addButton.KeyDown -= OnAddButtonKeyDown);
 				}
 				return addButton;
 			}
@@ -349,6 +352,64 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			SetTabSeparatorOpacity(((int)args.OldValue) - 1);
 			SetTabSeparatorOpacity(SelectedIndex - 1);
 			SetTabSeparatorOpacity(SelectedIndex);
+
+			UpdateTabBottomBorderLineVisualStates();
+		}
+
+		private void UpdateTabBottomBorderLineVisualStates()
+		{
+			int numItems = TabItems.Count;
+			int selectedIndex = SelectedIndex;
+
+			for (int i = 0; i < numItems; i++)
+			{
+				var state = "NormalBottomBorderLine";
+				if (m_isDragging)
+				{
+					state = "NoBottomBorderLine";
+				}
+				else if (selectedIndex != -1)
+				{
+					if (i == selectedIndex)
+					{
+						state = "NoBottomBorderLine";
+					}
+					else if (i == selectedIndex - 1)
+					{
+						state = "LeftOfSelectedTab";
+					}
+					else if (i == selectedIndex + 1)
+					{
+						state = "RightOfSelectedTab";
+					}
+				}
+
+				if (ContainerFromIndex(i) is Control tvi)
+				{
+					VisualStateManager.GoToState(tvi, state, false /*useTransitions*/);
+				}
+			}
+		}
+
+		private void UpdateBottomBorderLineVisualStates()
+		{
+			// Update border line on all tabs
+			UpdateTabBottomBorderLineVisualStates();
+
+			// Update border lines on the TabView
+			VisualStateManager.GoToState(this, m_isDragging ? "SingleBottomBorderLine" : "NormalBottomBorderLine", false /*useTransitions*/);
+
+			// Update border lines in the inner TabViewListView
+			if (m_listView is { } lv)
+			{
+				VisualStateManager.GoToState(lv, m_isDragging ? "NoBottomBorderLine" : "NormalBottomBorderLine", false /*useTransitions*/);
+			}
+
+			// Update border lines in the ScrollViewer
+			if (m_scrollViewer is { } scroller)
+			{
+				VisualStateManager.GoToState(scroller, m_isDragging ? "NoBottomBorderLine" : "NormalBottomBorderLine", false /*useTransitions*/);
+			}
 		}
 
 		private void OnSelectedItemPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -442,6 +503,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			m_scrollViewerViewChangedRevoker.Disposable = null;
 			m_scrollDecreaseClickRevoker.Disposable = null;
 			m_scrollIncreaseClickRevoker.Disposable = null;
+			m_addButtonKeyDownRevoker.Disposable = null;
 
 			m_tabContentPresenter = null;
 			m_rightContentPresenter = null;
@@ -611,6 +673,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					});
 				}
 			}
+
+			UpdateTabBottomBorderLineVisualStates();
 		}
 
 		private void OnTabStripPointerExited(object sender, PointerRoutedEventArgs args)
@@ -756,12 +820,33 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				// Presenter size didn't change because of item being removed, so update manually
 				UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 				UpdateTabWidths();
+				// Make sure that the selected tab is fully in view and not cut off
+				BringSelectedTabIntoView();
+			}
+		}
+
+		private void BringSelectedTabIntoView()
+		{
+			if (SelectedItem is not null)
+			{
+				var tvi = SelectedItem as TabViewItem;
+				if (tvi is null)
+				{
+					tvi = ContainerFromItem(SelectedItem) as TabViewItem;
+				}
+
+				tvi?.StartBringTabIntoView();
 			}
 		}
 
 		//TODO Uno: The second parameter is needed, as OnItemsChanged may get called before OnApplyTemplate due to control lifecycle differences
 		internal void OnItemsChanged(object item, TabViewListView tabListView)
 		{
+			if (m_isDragging)
+			{
+				return;
+			}
+
 			var args = item as IVectorChangedEventArgs;
 			if (args != null)
 			{
@@ -828,6 +913,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					SetTabSeparatorOpacity(numItems - 1);
 				}
 			}
+
+			UpdateTabBottomBorderLineVisualStates();
 		}
 
 		private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs args)
@@ -877,11 +964,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnListViewDragItemsStarting(object sender, DragItemsStartingEventArgs args)
 		{
+			m_isDragging = true;
+
 			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
 			var myArgs = new TabViewTabDragStartingEventArgs(args, item, tab);
 
 			TabDragStarting?.Invoke(this, myArgs);
+
+			UpdateBottomBorderLineVisualStates();
 		}
 
 		private void OnListViewDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs args)
@@ -896,6 +987,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnListViewDragItemsCompleted(object sender, DragItemsCompletedEventArgs args)
 		{
+			m_isDragging = false;
+
+			// Selection change was disabled during drag, update SelectedIndex now
+			if (m_listView is { } listView)
+			{
+				SelectedIndex = listView.SelectedIndex;
+				SelectedItem = listView.SelectedItem;
+			}
+
 			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
 			var myArgs = new TabViewTabDragCompletedEventArgs(args, item, tab);
@@ -908,6 +1008,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var tabDroppedArgs = new TabViewTabDroppedOutsideEventArgs(item, tab);
 				TabDroppedOutside?.Invoke(this, tabDroppedArgs);
 			}
+
+			UpdateBottomBorderLineVisualStates();
 		}
 
 		internal void UpdateTabContent()
@@ -981,6 +1083,70 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		internal void RequestCloseTab(TabViewItem container, bool updateTabWidths)
 		{
+			// If the tab being closed is the currently focused tab, we'll move focus to the next tab
+			// when the tab closes.
+			bool tabIsFocused = false;
+			var focusedElement = FocusManager.GetFocusedElement() as DependencyObject;
+
+			while (focusedElement is not null)
+			{
+				if (focusedElement == container)
+				{
+					tabIsFocused = true;
+					break;
+				}
+
+				focusedElement = VisualTreeHelper.GetParent(focusedElement);
+			}
+
+			if (tabIsFocused)
+			{
+				// If the tab specified both is focused and loses focus, then we'll move focus to an adjacent focusable tab, if one exists.
+				// TODO:MZ: losingFocusRevoker = WHEN TO REVOKE THIS????
+
+				void OnLosingFocus(UIElement sender, LosingFocusEventArgs args)
+				{
+					if (!args.Cancel && !args.Handled)
+					{
+						int focusedIndex = IndexFromContainer(container);
+						DependencyObject newFocusedElement = null;
+
+						for (int i = focusedIndex + 1; i < GetItemCount(); i++)
+						{
+							var candidateElement = ContainerFromIndex(i);
+
+							if (IsFocusable(candidateElement))
+							{
+								newFocusedElement = candidateElement;
+								break;
+							}
+						}
+
+						if (newFocusedElement is null)
+						{
+							for (int i = focusedIndex - 1; i >= 0; i--)
+							{
+								var candidateElement = ContainerFromIndex(i);
+
+								if (IsFocusable(candidateElement))
+								{
+									newFocusedElement = candidateElement;
+									break;
+								}
+							}
+						}
+
+						if (newFocusedElement is null)
+						{
+							newFocusedElement = m_addButton;
+						}
+
+						args.Handled = args.TrySetNewFocusedElement(newFocusedElement);
+					}
+				}
+				container.LosingFocus += OnLosingFocus;
+			}
+
 			var listView = m_listView;
 			if (listView != null)
 			{
@@ -1017,9 +1183,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			if (previousAvailableSize.Width != availableSize.Width)
+			if (m_previousAvailableSize.Width != availableSize.Width)
 			{
-				previousAvailableSize = availableSize;
+				m_previousAvailableSize = availableSize;
 				UpdateTabWidths();
 			}
 
@@ -1044,12 +1210,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (addButtonColumn != null)
 				{
 					var addButtonColumnWidth = addButtonColumn.ActualWidth;
-					if (addButtonColumn.ActualWidth == 0 && m_addButton?.Visibility == Visibility.Visible && previousAvailableSize.Width > 0)
+					if (addButtonColumn.ActualWidth == 0 && m_addButton?.Visibility == Visibility.Visible && m_previousAvailableSize.Width > 0)
 					{
 						// Uno workaround: We may arrive here before the AddButton has been measured, and if there are enough tabs to take
 						// all the space, the Grid will not assign any to the button. As a workaround we measure the button directly and use
 						// its desired size.
-						m_addButton.Measure(previousAvailableSize);
+						m_addButton.Measure(m_previousAvailableSize);
 						addButtonColumnWidth = m_addButton.DesiredSize.Width;
 					}
 					widthTaken += addButtonColumnWidth;
@@ -1070,7 +1236,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (tabColumn != null)
 				{
 					// Note: can be infinite
-					var availableWidth = previousAvailableSize.Width - widthTaken;
+					var availableWidth = m_previousAvailableSize.Width - widthTaken;
 
 					// Size can be 0 when window is first created; in that case, skip calculations; we'll get a new size soon
 					if (availableWidth > 0)
@@ -1083,15 +1249,30 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 							// If we should fill all of the available space, use scrollviewer dimensions
 							var padding = Padding;
+
+							double headerWidth = 0.0;
+							double footerWidth = 0.0;
+							if (m_itemsPresenter is { } itemsPresenter)
+							{
+								if (itemsPresenter.Header is FrameworkElement header)
+								{
+									headerWidth = header.ActualWidth;
+								}
+								if (itemsPresenter.Footer is FrameworkElement footer)
+								{
+									footerWidth = footer.ActualWidth;
+								}
+							}
+
 							if (fillAllAvailableSpace)
 							{
 								// Calculate the proportional width of each tab given the width of the ScrollViewer.
-								var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right)) / (double)(TabItems.Count);
-								tabWidth = Math.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
+								var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right + headerWidth + footerWidth)) / (double)(TabItems.Count);
+								tabWidth = MathEx.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
 							}
 							else
 							{
-								double availableTabViewSpace = (tabColumn.ActualWidth - (padding.Left + padding.Right));
+								double availableTabViewSpace = (tabColumn.ActualWidth - (padding.Left + padding.Right + headerWidth + footerWidth));
 								var increaseButton = m_scrollIncreaseButton;
 								if (increaseButton != null)
 								{
@@ -1117,8 +1298,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 
 							// Size tab column to needed size
-							tabColumn.MaxWidth = availableWidth;
-							var requiredWidth = tabWidth * TabItems.Count;
+							tabColumn.MaxWidth = availableWidth + headerWidth + footerWidth;
+							var requiredWidth = tabWidth * TabItems.Count + headerWidth + footerWidth;
 							if (requiredWidth > (availableWidth - (padding.Left + padding.Right)))
 							{
 								tabColumn.Width = GridLengthHelper.FromPixels(availableWidth);
@@ -1284,18 +1465,123 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		private bool SelectNextTab(int increment)
+		private bool MoveFocus(bool moveForward)
 		{
-			bool handled = false;
-			int itemsSize = GetItemCount();
-			if (itemsSize > 1)
+			var focusedControl = FocusManager.GetFocusedElement() as Control;
+
+			// If there's no focused control, then we have nothing to do.
+			if (focusedControl is null)
 			{
-				var index = SelectedIndex;
-				index = (index + increment + itemsSize) % itemsSize;
-				SelectedIndex = index;
-				handled = true;
+				return false;
 			}
-			return handled;
+
+			// Focus goes in this order:
+			//
+			//    Tab 1 -> Tab 1 close button -> Tab 2 -> Tab 2 close button -> ... -> Tab N -> Tab N close button -> Add tab button -> Tab 1
+			//
+			// Any element that's not focusable is skipped.
+			//
+			List<Control> focusOrderList;
+
+			for (int i = 0; i < GetItemCount(); i++)
+			{
+				if (ContainerFromIndex(i) is TabViewItem tab)
+				{
+					if (IsFocusable(tab, false /* checkTabStop */))
+					{
+						focusOrderList.Add(tab);
+
+						if (tab.GetCloseButton() is { } closeButton)
+						{
+							if (IsFocusable(closeButton, false /* checkTabStop */))
+							{
+								focusOrderList.Add(closeButton);
+							}
+						}
+					}
+				}
+			}
+
+			if (m_addButton is { } addButton)
+			{
+				if (IsFocusable(addButton, false /* checkTabStop */))
+				{
+					focusOrderList.push_back(addButton);
+				}
+			}
+
+			var position = std::find(focusOrderList.begin(), focusOrderList.end(), focusedControl);
+
+			// The focused control is not in the focus order list - nothing for us to do here either.
+			if (position == focusOrderList.end())
+			{
+				return false;
+			}
+
+			// At this point, we know that the focused control is indeed in the focus list, so we'll move focus to the next or previous control in the list.
+
+			int sourceIndex = static_cast<int>(position - focusOrderList.begin());
+			const int listSize = static_cast<int>(focusOrderList.size());
+			const int increment = moveForward ? 1 : -1;
+			int nextIndex = sourceIndex + increment;
+
+			if (nextIndex < 0)
+			{
+				nextIndex = listSize - 1;
+			}
+			else if (nextIndex >= listSize)
+			{
+				nextIndex = 0;
+			}
+
+			// We have to do a bit of a dance for the close buttons - we don't want users to be able to give them focus when tabbing through an app,
+			// since we only want to tab into the TabView once and then tab out on the next tab press.  However, IsTabStop also controls keyboard
+			// focusability in general - we can't give keyboard focus to a control with IsTabStop = false.  To work around this, we'll temporarily set
+			// IsTabStop = true before calling Focus(), and then set it back to false if it was previously false.
+
+			var control = focusOrderList[nextIndex];
+			bool originalIsTabStop = control.IsTabStop;
+
+			using var scopeGuard = Disposable.Create(() =>
+					{
+						control.IsTabStop = originalIsTabStop;
+					});
+
+			control.IsTabStop = true;
+
+			// We checked focusability above, so we should never be in a situation where Focus() returns false.
+			MUX_ASSERT(control.Focus(FocusState.Keyboard));
+			return true;
+		}
+
+		private bool MoveSelection(bool moveForward)
+		{
+			const int originalIndex = SelectedIndex;
+			const int increment = moveForward ? 1 : -1;
+			int currentIndex = originalIndex + increment;
+			const int itemCount = GetItemCount();
+
+			while (currentIndex != originalIndex)
+			{
+				if (currentIndex < 0)
+				{
+					currentIndex = itemCount - 1;
+				}
+				else if (currentIndex >= itemCount)
+				{
+					currentIndex = 0;
+				}
+
+				if (IsFocusable(ContainerFromIndex(currentIndex)))
+				{
+					SelectedIndex = currentIndex;
+					return true;
+				}
+
+				currentIndex += increment;
+			}
+
+			return false;
 		}
 
 		private bool RequestCloseCurrentTab()
@@ -1344,11 +1630,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 						if (isCtrlDown && !isShiftDown)
 						{
-							args.Handled = SelectNextTab(1);
+							args.Handled = MoveSelection(true /* moveForward */);
 						}
 						else if (isCtrlDown && isShiftDown)
 						{
-							args.Handled = SelectNextTab(-1);
+							args.Handled = MoveSelection(false /* moveForward */);
 						}
 					}
 				}
@@ -1362,18 +1648,50 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnCtrlTabInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
 		{
-			args.Handled = SelectNextTab(1);
+			args.Handled = MoveSelection(true /* moveForward */);
 		}
 
 		private void OnCtrlShiftTabInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
 		{
-			args.Handled = SelectNextTab(-1);
+			args.Handled = MoveSelection(false /* moveForward */);
 		}
 
-		/* Header file */
+		private void OnAddButtonKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			if (m_addButton is { } addButton)
+			{
+				if (args.Key == VirtualKey.Right)
+				{
+					args.Handled(MoveFocus(addButton.FlowDirection == FlowDirection.LeftToRight));
+				}
+				else if (args.Key == VirtualKey.Left)
+				{
+					args.Handled(MoveFocus(addButton.FlowDirection != FlowDirection.LeftToRight));
+				}
+			}
+		}
 
-		internal UIElement GetShadowReceiver() => m_shadowReceiver;
+		// Note that the parameter is a DependencyObject for convenience to allow us to call this on the return value of ContainerFromIndex.
+		// There are some non-control elements that can take focus - e.g. a hyperlink in a RichTextBlock - but those aren't relevant for our purposes here.
+		private bool IsFocusable(DependencyObject dependencyObject, bool checkTabStop = false)
+		{
+			if (dependencyObject is null)
+			{
+				return false;
+			}
 
-		internal string GetTabCloseButtonTooltipText() => m_tabCloseButtonTooltipText;
+			if (dependencyObject is Control control)
+			{
+				return control is not null &&
+					control.Visibility == Visibility.Visible &&
+					(control.IsEnabled || control.AllowFocusWhenDisabled) &&
+					(control.IsTabStop || !checkTabStop);
+			}
+
+			else
+			{
+				return false;
+			}
+		}
 	}
 }
