@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Helpers;
+using System.Diagnostics;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -86,48 +87,27 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
-		{
-#if !NET461
-			throw new NotImplementedException();
-#endif
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Stop()
-		{
-#if !NET461
-			throw new NotImplementedException();
-#endif
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Pause()
-		{
-#if !NET461
-			throw new NotImplementedException();
-#endif
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Resume()
-		{
-#if !NET461
-			throw new NotImplementedException();
-#endif
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void SetProgress(double progress)
-		{
-#if !NET461
-			throw new NotImplementedException();
-#endif
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Load()
-		{
-#if !NET461
-			throw new NotImplementedException();
-#endif
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Unload()
+			=> ThrowNotImplementedOnNonTestPlatforms();
+
+		private static void ThrowNotImplementedOnNonTestPlatforms()
 		{
 #if !NET461
 			throw new NotImplementedException();
@@ -143,13 +123,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private readonly Size CompositionSize = default;
 #pragma warning restore CA1805 // Do not initialize unnecessarily
 
-		private async Task InnerUpdate(CancellationToken ct)
+		private Task InnerUpdate(CancellationToken ct)
 		{
-#if !NET461
-			throw new NotImplementedException();
-#else
-			await Task.Yield();
-#endif
+			ThrowNotImplementedOnNonTestPlatforms();
+			return Task.CompletedTask;
 		}
 #endif
 

@@ -1463,7 +1463,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
 			Assert.IsNotNull(tb);
-			Assert.AreEqual(Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
 		}
 
 		[TestMethod]
@@ -1477,7 +1477,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
 			Assert.IsNotNull(tb);
-			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
 		}
 
 		[TestMethod]
@@ -1494,10 +1494,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(border1);
 			Assert.IsNotNull(border2);
 
-			Assert.AreEqual(Colors.Red, (border1.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Pink, (border1.BorderBrush as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Blue, (border2.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Yellow, (border2.BorderBrush as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Red, (border1.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Pink, (border1.BorderBrush as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Blue, (border2.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Yellow, (border2.BorderBrush as SolidColorBrush)?.Color);
 		}
 
 		/// <summary>
