@@ -116,6 +116,11 @@ namespace Uno.UI.RemoteControl.HotReload
             }
             catch (Exception e)
             {
+                if (e is TargetInvocationException { InnerException: { } innerException })
+                {
+                    e = innerException;
+                }
+
                 if (this.Log().IsEnabled(LogLevel.Error))
                 {
                     this.Log().LogError($"Failed reloading changed file [{filePath}]", e);
