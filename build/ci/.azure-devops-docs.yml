@@ -25,7 +25,6 @@ jobs:
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
-  - template: templates/update-vs-components.yml
 
   - task: NuGetToolInstaller@0
     inputs:
