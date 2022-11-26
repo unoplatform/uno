@@ -723,7 +723,7 @@ namespace Uno.UI.DataBinding
 							// the System.Dynamic containing assembly. We're using reflection to create the binder
 							// given that the full type has been kept through `DynamicDependency` provided above.
 							_unoGetMemberBindingType ??=
-								Type.GetType("Uno.UI.DataBinding.UnoGetMemberBinder, Uno.UI")
+								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoGetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
 								?? throw new InvalidOperationException();
 
 							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, true);
@@ -952,7 +952,7 @@ namespace Uno.UI.DataBinding
 							// the System.Dynamic containing assembly. We're using reflection to create the binder
 							// given that the full type has been kept through `DynamicDependency` provided above.
 							_unoSetMemberBindingType ??=
-								Type.GetType("Uno.UI.DataBinding.UnoSetMemberBinder, Uno.UI")
+								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoSetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
 								?? throw new InvalidOperationException();
 
 							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, true);
