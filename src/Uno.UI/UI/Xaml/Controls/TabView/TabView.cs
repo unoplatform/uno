@@ -1501,7 +1501,7 @@ public partial class TabView : Control
 		//
 		// Any element that's not focusable is skipped.
 		//
-		List<Control> focusOrderList;
+		List<Control> focusOrderList = new();
 
 		for (int i = 0; i < GetItemCount(); i++)
 		{
@@ -1526,23 +1526,23 @@ public partial class TabView : Control
 		{
 			if (IsFocusable(addButton, false /* checkTabStop */))
 			{
-				focusOrderList.push_back(addButton);
+				focusOrderList.Add(addButton);
 			}
 		}
 
-		var position = std::find(focusOrderList.begin(), focusOrderList.end(), focusedControl);
+		var position = focusOrderList.IndexOf(focusedControl);
 
 		// The focused control is not in the focus order list - nothing for us to do here either.
-		if (position == focusOrderList.end())
+		if (position < 0)
 		{
 			return false;
 		}
 
 		// At this point, we know that the focused control is indeed in the focus list, so we'll move focus to the next or previous control in the list.
 
-		int sourceIndex = static_cast<int>(position - focusOrderList.begin());
-		const int listSize = static_cast<int>(focusOrderList.size());
-		const int increment = moveForward ? 1 : -1;
+		int sourceIndex = position;
+		int listSize = focusOrderList.Count;
+		int increment = moveForward ? 1 : -1;
 		int nextIndex = sourceIndex + increment;
 
 		if (nextIndex < 0)
@@ -1563,9 +1563,9 @@ public partial class TabView : Control
 		bool originalIsTabStop = control.IsTabStop;
 
 		using var scopeGuard = Disposable.Create(() =>
-				{
-					control.IsTabStop = originalIsTabStop;
-				});
+		{
+			control.IsTabStop = originalIsTabStop;
+		});
 
 		control.IsTabStop = true;
 
@@ -1576,10 +1576,10 @@ public partial class TabView : Control
 
 	private bool MoveSelection(bool moveForward)
 	{
-		const int originalIndex = SelectedIndex;
-		const int increment = moveForward ? 1 : -1;
+		int originalIndex = SelectedIndex;
+		int increment = moveForward ? 1 : -1;
 		int currentIndex = originalIndex + increment;
-		const int itemCount = GetItemCount();
+		int itemCount = GetItemCount();
 
 		while (currentIndex != originalIndex)
 		{
@@ -1682,18 +1682,18 @@ public partial class TabView : Control
 		{
 			if (args.Key == VirtualKey.Right)
 			{
-				args.Handled(MoveFocus(addButton.FlowDirection == FlowDirection.LeftToRight));
+				args.Handled = MoveFocus(addButton.FlowDirection == FlowDirection.LeftToRight);
 			}
 			else if (args.Key == VirtualKey.Left)
 			{
-				args.Handled(MoveFocus(addButton.FlowDirection != FlowDirection.LeftToRight));
+				args.Handled = MoveFocus(addButton.FlowDirection != FlowDirection.LeftToRight);
 			}
 		}
 	}
 
 	// Note that the parameter is a DependencyObject for convenience to allow us to call this on the return value of ContainerFromIndex.
 	// There are some non-control elements that can take focus - e.g. a hyperlink in a RichTextBlock - but those aren't relevant for our purposes here.
-	private bool IsFocusable(DependencyObject dependencyObject, bool checkTabStop = false)
+	private new bool IsFocusable(DependencyObject dependencyObject, bool checkTabStop = false)
 	{
 		if (dependencyObject is null)
 		{

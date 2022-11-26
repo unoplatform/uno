@@ -69,14 +69,9 @@ public partial class TabViewItem : ListViewItem
 
 			if (m_selectedBackgroundPath is { } selectedBackgroundPath)
 			{
-				m_selectedBackgroundPathSizeChangedRevoker = selectedBackgroundPath.SizeChanged(winrt::auto_revoke,
-
-			{
-					[this](auto const&, auto const&)
-                {
-						UpdateSelectedBackgroundPathTranslateTransform();
-					}
-				});
+				void OnSizeChanged(object sender, object args) => UpdateSelectedBackgroundPathTranslateTransform();
+				selectedBackgroundPath.SizeChanged += OnSizeChanged;
+				m_selectedBackgroundPathSizeChangedRevoker.Disposable = Disposable.Create(() => selectedBackgroundPath.SizeChanged -= OnSizeChanged);
 			}
 		}
 
@@ -162,14 +157,22 @@ public partial class TabViewItem : ListViewItem
 		var rightCorner = popupRadius.TopRight;
 
 		// Assumes 4px curving-out corners, which are hardcoded in the markup
-		var data = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>F1 M0,%f  a 4,4 0 0 0 4,-4  L 4,%f  a %f,%f 0 0 1 %f,-%f  l %f,0  a %f,%f 0 0 1 %f,%f  l 0,%f  a 4,4 0 0 0 4,4 Z</Geometry>";
+		var data = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>F1 M0,{0}  a 4,4 0 0 0 4,-4  L 4,{1}  a {2},{3} 0 0 1 {4},-{5}  l {6},0  a {7},{8} 0 0 1 {9},{10}  l 0,{11}  a 4,4 0 0 0 4,4 Z</Geometry>";
 
-		//WCHAR strOut[1024];
-		StringCchPrintf(strOut, ARRAYSIZE(strOut), data,
+		var strOut = string.Format(
+			CultureInfo.InvariantCulture,
+			data,
 			height - 1.0f,
-			leftCorner, leftCorner, leftCorner, leftCorner, leftCorner,
+			leftCorner,
+			leftCorner,
+			leftCorner,
+			leftCorner,
+			leftCorner,
 			ActualWidth - (leftCorner + rightCorner + 1.0f / scaleFactor),
-			rightCorner, rightCorner, rightCorner, rightCorner,
+			rightCorner,
+			rightCorner,
+			rightCorner,
+			rightCorner,
 			height - (5 + rightCorner));
 
 		var geometry = XamlReader.Load(strOut) as Geometry;
@@ -262,13 +265,13 @@ public partial class TabViewItem : ListViewItem
 			var selectedBackgroundPathActualOffset = selectedBackgroundPath.ActualOffset;
 			var roundedSelectedBackgroundPathActualOffsetY = Math.Round(selectedBackgroundPathActualOffset.Y);
 
-			if (roundedSelectedBackgroundPathActualOffsetY > selectedBackgroundPathActualOffset.y)
+			if (roundedSelectedBackgroundPathActualOffsetY > selectedBackgroundPathActualOffset.Y)
 			{
 				// Move the SelectedBackgroundPath element down by a fraction of a pixel to avoid a faint gap line
 				// between the selected TabViewItem and its content.
 				TranslateTransform translateTransform = new();
 
-				translateTransform.Y = roundedSelectedBackgroundPathActualOffsetY - selectedBackgroundPathActualOffset.y;
+				translateTransform.Y = roundedSelectedBackgroundPathActualOffsetY - selectedBackgroundPathActualOffset.Y;
 
 				selectedBackgroundPath.RenderTransform = translateTransform;
 			}
@@ -569,7 +572,7 @@ public partial class TabViewItem : ListViewItem
 
 	// Note that the ItemsView will handle the left and right arrow keys if we don't do so before it does,
 	// so this needs to be handled below the items view. That's why we can't put this in TabView's OnKeyDown.
-	private void OnKeyDown(KeyRoutedEventArgs args)
+	protected override void OnKeyDown(KeyRoutedEventArgs args)
 	{
 		if (!args.Handled && (args.Key == VirtualKey.Left || args.Key == VirtualKey.Right))
 		{
@@ -582,7 +585,7 @@ public partial class TabViewItem : ListViewItem
 			
 			if (!isAltDown || !isShiftDown)
 			{
-				var bool moveForward =
+				var moveForward =
 					(FlowDirection == FlowDirection.LeftToRight && args.Key == VirtualKey.Right) ||
 					(FlowDirection == FlowDirection.RightToLeft && args.Key == VirtualKey.Left);
 
