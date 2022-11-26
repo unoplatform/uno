@@ -33,6 +33,7 @@
 									or (
 										'$(MSBuildVersion)' &gt;= '17.0'
 										and '$(LangVersion)' != ''
+										and '$(LangVersion)' != 'preview'
 										and '$(LangVersion)' != 'latest'
 										and '$(LangVersion)' != 'latestMajor'
 										and '$(LangVersion)' != 'default'
