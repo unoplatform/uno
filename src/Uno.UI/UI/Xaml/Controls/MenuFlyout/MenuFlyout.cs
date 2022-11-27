@@ -149,15 +149,18 @@ namespace Windows.UI.Xaml.Controls
 			Control presenter = GetPresenter();
 			MenuFlyoutPresenter menuFlyoutPresenter = presenter as MenuFlyoutPresenter;
 
-			if (menuFlyoutPresenter != null)
+			if (menuFlyoutPresenter is not null)
 			{
 				IMenu parentMenu = (this as IMenu).ParentMenu as IMenu;
 
 				(menuFlyoutPresenter as IMenuPresenter).OwningMenu = parentMenu != null ? parentMenu : this;
 				menuFlyoutPresenter.UpdateTemplateSettings();
+			}
 
-				base.OnOpening();
-				
+			base.OnOpening();
+			
+			if (menuFlyoutPresenter is not null)
+			{
 				// Reset the presenter's ItemsSource.  Since Items is not an IObservableVector, we don't
 				// automatically respond to changes within the vector.  Clearing the property when the presenter
 				// unloads and resetting it before we reopen ensures any changes to Items are reflected
