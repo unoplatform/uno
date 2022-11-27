@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
@@ -64,7 +63,7 @@ public sealed partial class SvgImageSource_Icons : Page
 			{
 				(s2 as MenuFlyout).Items.Add(new MenuFlyoutItem
 				{
-					Icon = new ImageIcon { Source = svgImageSource },
+					Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 					Text = "This menu item should have a HOME icon",
 				});
 			};
