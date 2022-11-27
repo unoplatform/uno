@@ -95,7 +95,7 @@ partial class PopupPanel
 		return finalSize;
 	}
 
-	private Rect? GetAnchorRect()
+	private Rect? GetAnchorRect(Popup popup)
 	{
 #if __ANDROID__ || __IOS__
 		if (NativeAnchor != null)
@@ -103,7 +103,7 @@ partial class PopupPanel
 			return NativeAnchor.GetBoundsRectRelativeTo(this);
 		}
 #endif
-		var anchor = Children.OfType<Popup>().FirstOrDefault()?.PlacementTarget;
+		var anchor = popup.PlacementTarget;
 		if (anchor == null)
 		{
 			return default;
@@ -114,7 +114,7 @@ partial class PopupPanel
 
 	protected virtual Rect CalculatePopupPlacement(Popup popup, Size desiredSize, Size maxSize)
 	{
-		if (!(GetAnchorRect() is { } anchorRect))
+		if (!(GetAnchorRect(popup) is { } anchorRect))
 		{
 			return default;
 		}
