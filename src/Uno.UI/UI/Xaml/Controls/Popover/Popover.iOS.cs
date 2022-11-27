@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			_popoverSubscription.Disposable = null;
         }
 
-		public new UIKit.UIView Anchor
+		public UIKit.UIView Anchor
 		{
 			get => (UIKit.UIView)this.GetValue(AnchorProperty);
 			set => SetValue(AnchorProperty, value);

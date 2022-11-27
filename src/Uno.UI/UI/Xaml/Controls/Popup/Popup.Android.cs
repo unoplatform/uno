@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (newIsOpen)
 			{
 				PopupPanel.Visibility = Visibility.Visible;
-				_popupWindow.ShowAtLocation(Anchor ?? this, GravityFlags.Left | GravityFlags.Top, 0, 0);
+				_popupWindow.ShowAtLocation(PlacementTarget ?? this, GravityFlags.Left | GravityFlags.Top, 0, 0);
 			}
 			else
 			{

@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		public new View Anchor
+		public View Anchor
 		{
 			get { return (View)this.GetValue(AnchorProperty); }
 			set { this.SetValue(AnchorProperty, value); }

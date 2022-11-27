@@ -125,7 +125,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else if (Popup.CustomLayouter == null)
 			{
-				if (Popup.PlacementTarget is not null)
+				if (Popup.PlacementTarget is not null
+#if __ANDROID__ || __IOS__
+					|| NativeAnchor is not null
+#endif
+					)
 				{
 					return PlacementArrangeOverride(Popup, finalSize);
 				}

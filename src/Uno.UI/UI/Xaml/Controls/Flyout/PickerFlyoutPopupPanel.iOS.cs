@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		protected override Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
+		protected override Rect CalculatePopupPlacement(Popup popup, Size desiredSize, Size maxSize)
 		{
 			// A picker is often displayed at the bottom of the screen [...]
 			// The width of a picker is either the width of the screen or its enclosing view, depending on the device and context.
