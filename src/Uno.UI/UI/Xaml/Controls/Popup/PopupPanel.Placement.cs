@@ -64,7 +64,7 @@ partial class PopupPanel
 	/// This value is an arbitrary value for the placement of
 	/// a popup below its anchor.
 	/// </summary>
-	protected virtual int PopupPlacementTargetMargin => 5;	
+	protected virtual int PopupPlacementTargetMargin => 5;
 
 	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 		=> InvalidateMeasure();
@@ -81,7 +81,11 @@ partial class PopupPanel
 		foreach (var child in Children)
 		{
 			var desiredSize = child.DesiredSize;
-			var maxSize = (child as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
+			Size maxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+			if (child is FrameworkElement fe)
+			{
+				maxSize = fe.GetMaxSize();// UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
+			}
 			var rect = CalculatePopupPlacement(popup, desiredSize, maxSize);
 
 			if (Flyout?.IsTargetPositionSet ?? false)
@@ -104,8 +108,7 @@ partial class PopupPanel
 		}
 #endif
 
-		var anchor = popup.PlacementTarget;
-		return anchor.GetBoundsRectRelativeTo(this);
+		return popup.PlacementTarget.GetBoundsRectRelativeTo(this);
 	}
 
 	protected virtual Rect CalculatePopupPlacement(Popup popup, Size desiredSize, Size maxSize)
@@ -213,7 +216,6 @@ partial class PopupPanel
 			{
 				if (IsPlacementModeVertical(placement))
 				{
-					var controlXPos = finalPosition.X;
 					fits = TestAndCenterAlignWithinLimits(
 						anchorRect.X,
 						anchorRect.Width,
@@ -221,13 +223,12 @@ partial class PopupPanel
 						visibleBounds.Left,
 						visibleBounds.Right,
 						justification,
-						ref controlXPos
+						out var controlXPos
 					);
 					finalPosition.X = controlXPos;
 				}
 				else
 				{
-					var controlYPos = finalPosition.Y;
 					fits = TestAndCenterAlignWithinLimits(
 						anchorRect.Y,
 						anchorRect.Height,
@@ -235,7 +236,7 @@ partial class PopupPanel
 						visibleBounds.Top,
 						visibleBounds.Bottom,
 						justification,
-						ref controlYPos
+						out var controlYPos
 					);
 					finalPosition.Y = controlYPos;
 				}
@@ -320,7 +321,7 @@ partial class PopupPanel
 		double lowLimit,
 		double highLimit,
 		FlyoutBase.PreferredJustification justification,
-		ref double controlPos
+		out double controlPos
 	)
 	{
 		bool fits = true;
