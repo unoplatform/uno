@@ -344,8 +344,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				FlyoutPlacementMode.Top => PopupPlacementMode.Top,
 				FlyoutPlacementMode.Bottom => PopupPlacementMode.Bottom,
-				FlyoutPlacementMode.Left => PopupPlacementMode.Bottom,
-				FlyoutPlacementMode.Right => PopupPlacementMode.Bottom,
+				FlyoutPlacementMode.Left => PopupPlacementMode.Left,
+				FlyoutPlacementMode.Right => PopupPlacementMode.Right,
 				FlyoutPlacementMode.TopEdgeAlignedLeft => PopupPlacementMode.TopEdgeAlignedLeft,
 				FlyoutPlacementMode.TopEdgeAlignedRight => PopupPlacementMode.TopEdgeAlignedRight,
 				FlyoutPlacementMode.BottomEdgeAlignedLeft => PopupPlacementMode.BottomEdgeAlignedLeft,
