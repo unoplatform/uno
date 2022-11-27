@@ -13,21 +13,7 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 	public class Given_ImplementedRoutedEventsGenerator
 	{
 		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Default.AddPackages(
-			ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))); // UPDATE with a version that has a UIElementGeneratedProxy available.
-
-		// TODO: Remove and use s_defaultWithUno when we have a version with UIElementGeneratedProxy available.
-		private const string Stub = @"
-namespace Uno.UI.Xaml
-{
-	public static class UIElementGeneratedProxy
-	{
-		public static global::Uno.UI.Xaml.RoutedEventFlag RegisterImplementedRoutedEvents(global::System.Type type, global::Uno.UI.Xaml.RoutedEventFlag routedEventFlags)
-		{
-			return routedEventFlags;
-		}
-	}
-}
-";
+			ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.7.0-dev.427")));
 
 		private async Task TestGeneratorAsync(string inputSource, params GeneratedFile[] generatedFiles)
 		{
