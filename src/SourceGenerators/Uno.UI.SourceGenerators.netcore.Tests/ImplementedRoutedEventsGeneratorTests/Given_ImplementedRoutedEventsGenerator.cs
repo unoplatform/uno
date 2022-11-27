@@ -22,7 +22,7 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 				ReferenceAssemblies = s_defaultWithUno,
 				TestState =
 				{
-					Sources = { Stub, inputSource },
+					Sources = { inputSource },
 				},
 			};
 			test.TestState.GeneratedSources.AddRange(generatedFiles.Select(f => (f.Path, f.Source)));
