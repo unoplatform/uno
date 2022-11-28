@@ -242,11 +242,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}
 						else if (dpCandidateData.IsAttached)
 						{
-							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData.Value, attachedPropertiesBackingFieldStatements);
+							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData, attachedPropertiesBackingFieldStatements);
 						}
 						else
 						{
-							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData.Value);
+							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData);
 						}
 					}
 				}
