@@ -11,7 +11,7 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="NUnit3TestAdapter" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Content Include="Test\XmlFiles\*.xml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -20,7 +20,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 	  <None Remove="Test\XmlFiles\AttachedPropertyWithNamespace.xaml" />
 	  <None Remove="Test\XmlFiles\EmptyAttachedPropertyNode.xaml" />
@@ -31,7 +31,7 @@
 	  <None Remove="Test\XmlFiles\xBindFunctionTwoParamsWithPath.xaml" />
 	  <None Remove="Test\XmlFiles\xBindFunctionTwoParamWithoutPath.xaml" />
 	</ItemGroup>
-		
+
 	<ItemGroup>
 	  <ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj" />
 	</ItemGroup>
@@ -74,6 +74,5 @@
 	    <Aliases>msxaml,%(Aliases)</Aliases>
 	  </Reference>
 	</ItemGroup>
-	
-	<Import Project="..\..\Common.targets" />
+
 </Project>

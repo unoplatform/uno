@@ -54,8 +54,6 @@
 
 	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
 
-	<Import Project="..\Common.targets" />
-
 	<ItemGroup>
 		<Page Remove="@(Page)" />
 		<Page Include="Themes\**\*.xaml" />

@@ -54,6 +54,9 @@
 		">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+
+	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
+	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
   </PropertyGroup>
 
   <ItemGroup>
