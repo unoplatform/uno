@@ -616,6 +616,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = null;
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Hide_Always_Closing()
+		{
+			Flyout flyout = new Flyout();
+			var closingCalled = false;
+			flyout.Closing += (sender, args) => closingCalled = true;
+
+			flyout.Hide();
+			Assert.IsTrue(closingCalled);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Opening_Canceled()
+		{
+			Flyout flyout = new Flyout();
+			try
+			{
+				var button = new Button()
+				{
+					Content = "Test"
+				};
+				TestServices.WindowHelper.WindowContent = button;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				
+				var innerBorder = new Border()
+				{
+					Width = 100,
+					Height = 100
+				};
+				flyout.Content = innerBorder;
+				flyout.Opening += (sender, args) => ((Flyout)sender).Hide();
+				flyout.ShowAt(button);
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(flyout.IsOpen);
+				Assert.IsFalse(innerBorder.IsLoaded);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Opening_And_Closing_Canceled()
+		{
+			Flyout flyout = new Flyout();
+			bool cancelClosing = true;
+			try
+			{
+				var button = new Button()
+				{
+					Content = "Test"
+				};
+				TestServices.WindowHelper.WindowContent = button;
+				await TestServices.WindowHelper.WaitForIdle();
+
+
+				var innerBorder = new Border()
+				{
+					Width = 100,
+					Height = 100
+				};
+				flyout.Content = innerBorder;
+				flyout.Opening += (sender, args) => ((Flyout)sender).Hide();
+				
+				void OnClosing(object sender, FlyoutBaseClosingEventArgs args)
+				{
+					args.Cancel = cancelClosing;
+				}
+				flyout.Closing += OnClosing;
+				flyout.ShowAt(button);
+
+				await TestServices.WindowHelper.WaitForIdle();
+				
+				Assert.IsTrue(flyout.IsOpen);
+				Assert.IsTrue(innerBorder.IsLoaded);
+			}
+			finally
+			{
+				cancelClosing = false;
+				flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
