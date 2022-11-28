@@ -11,7 +11,7 @@ using Windows.ApplicationModel.Resources.Core;
 namespace Uno.UI.Tasks.Assets
 {
 	/// <summary>
-	/// Retargets UWP assets to Android and iOS.
+	/// Retargets assets to Android and iOS.
 	/// </summary>
 	/// <remarks>
 	/// Currently supports .png, .jpg, .jpeg and .gif.
@@ -42,7 +42,7 @@ namespace Uno.UI.Tasks.Assets
 
 		public override bool Execute()
 		{
-			Log.LogMessage($"Retargeting UWP assets to {TargetPlatform}.");
+			Log.LogMessage($"Retargeting assets to {TargetPlatform}.");
 
 			Func<ResourceCandidate, string> resourceToTargetPath;
 			Func<string, string> pathEncoder;
