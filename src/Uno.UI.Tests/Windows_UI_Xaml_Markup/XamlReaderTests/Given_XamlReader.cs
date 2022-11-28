@@ -20,6 +20,7 @@ using Microsoft.UI;
 using Windows.UI;
 using System.Text.RegularExpressions;
 using FluentAssertions.Execution;
+using System.Globalization;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -1456,6 +1457,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			Assert.AreEqual(t1, Windows.UI.Colors.Red);
 			Assert.AreEqual(t1, b1.Color);
+		}
+
+		[TestMethod]
+		public void When_Geometry()
+		{
+			var path = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z</Geometry>";
+			var geometry = Windows.UI.Xaml.Markup.XamlReader.Load(path) as Uno.Media.StreamGeometry;
+			Assert.IsNotNull(geometry);
+			Assert.AreEqual(FillRule.EvenOdd, geometry.FillRule);
 		}
 
 		/// <summary>
