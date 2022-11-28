@@ -340,8 +340,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			OnOpening();
-			Opening?.Invoke(this, EventArgs.Empty);
+			OnOpening();			
 			Open();
 			SynchronizeContentTemplatedParent();
 			IsOpen = true;
@@ -386,7 +385,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private protected virtual void OnOpening() { }
+		private protected virtual void OnOpening()
+		{
+			Opening?.Invoke(this, EventArgs.Empty);
+		}
 
 		internal virtual void OnClosing(ref bool cancel)
 		{

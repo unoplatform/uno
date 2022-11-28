@@ -45,4 +45,30 @@ public sealed partial class SvgImageSource_Icons : Page
 
 		flyout.ShowAt(sender as Button);
 	}
+
+	private async void OnDelayedClick(object sender, RoutedEventArgs args)
+	{
+		using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(
+			(await global::Windows.Storage.FileIO.ReadTextAsync(await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/Formats/home.svg")))))))
+		{
+			SvgImageSource svgImageSource = new SvgImageSource { RasterizePixelHeight = 48, RasterizePixelWidth = 48 };
+			await svgImageSource.SetSourceAsync(stream.AsRandomAccessStream());
+
+			var menu = new MenuFlyout
+			{
+				Placement = FlyoutPlacementMode.Bottom,
+			};
+
+			menu.Opening += (s2, e2) =>
+			{
+				(s2 as MenuFlyout).Items.Add(new MenuFlyoutItem
+				{
+					Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+					Text = "This menu item should have a HOME icon",
+				});
+			};
+
+			menu.ShowAt(sender as Button);
+		}
+	}
 }
