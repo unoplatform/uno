@@ -1,0 +1,13 @@
+﻿<linker>
+	<assembly fullname="Uno.UI">
+		<type fullname="Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension">
+
+			<method signature="System.Boolean get_IsExternalDragAndDropSupported()"
+					feature="Windows.ApplicationModel.DataTransfer.DragDrop.ExternalSupport"
+					body="stub"
+					value="false"
+					featurevalue="false" />
+
+		</type>
+	</assembly>
+</linker>

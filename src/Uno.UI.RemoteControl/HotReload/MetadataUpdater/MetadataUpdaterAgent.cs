@@ -55,12 +55,12 @@ internal sealed class HotReloadAgent : IDisposable
 				}
 				else
 				{
-					throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(...)");
+					_log($"Metadata updates are not supported with this runtime (Unable to find System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(...))");
 				}
 			}
 			else
 			{
-				throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater");
+				_log($"Metadata updates are not supported with this runtime (Unable to find System.Reflection.Metadata.MetadataUpdater)");
 			}
 		}
 #endif

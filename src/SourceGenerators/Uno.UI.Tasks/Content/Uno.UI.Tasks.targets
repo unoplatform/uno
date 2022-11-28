@@ -103,6 +103,7 @@
 		AfterTargets="CoreCompile">
 
 		<ItemGroup>
+			<_SubstitutionFiles Include="@(UnoLinkerSubstitution)" />
 			<_SubstitutionFiles Include="$(IntermediateOutputPath)\Substitutions\*.Substitutions.xml" />
 		</ItemGroup>
 
