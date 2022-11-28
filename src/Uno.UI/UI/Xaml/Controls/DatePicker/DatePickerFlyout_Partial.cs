@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml.Controls
 			base.Placement = FlyoutPlacementMode.Right;
 			base.UsePickerFlyoutTheme = true;
 
+			Opening += OnOpening;
+
 			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime?>(this, () => default);
 		}
 
@@ -90,8 +92,8 @@ namespace Windows.UI.Xaml.Controls
 			base.ShowAtCore(target, null);
 			return _asyncOperationManager.Start(target);
 		}
-
-		private protected override void OnOpening()
+		
+		private void OnOpening(object sender, object args)
 		{
 			//wrl.ComPtr<xaml_input.IInputManagerStatics> inputManagerStatics;
 			//xaml_input.LastInputDeviceType lastInputDeviceType;
