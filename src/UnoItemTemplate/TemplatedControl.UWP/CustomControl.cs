@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Media;
 
 namespace $rootnamespace$
 {
-    public sealed class $safeitemname$ : Control
+    public partial sealed class $safeitemname$ : Control
     {
         public $safeitemname$()
         {
