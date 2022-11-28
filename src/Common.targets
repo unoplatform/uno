@@ -12,12 +12,5 @@
 		<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 		<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
-	
-	<Target Name="_UnoCommonFeatureDefines" AfterTargets="PrepareForBuild">
 
-		<PropertyGroup Condition="'$(MSBuildVersion)' &gt;= '15.4'">
-			<DefineConstants>$(DefineConstants);__IOS_11__</DefineConstants>
-		</PropertyGroup>
-
-	</Target>
 </Project>
