@@ -1510,6 +1510,37 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(FillRule.EvenOdd, geometry.FillRule);
     }
 
+		[TestMethod]
+		public void MyTestMethod()
+		{
+			var height = 0.0f;
+			var leftCorner = 0.0f;
+			var rightCorner = 0.0f;
+			var scaleFactor = 1.0f;
+			var actualHeight = 0.0f;
+			var data = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>F1 M0,{0}  a 4,4 0 0 0 4,-4  L 4,{1}  a {2},{3} 0 0 1 {4},-{5}  l {6},0  a {7},{8} 0 0 1 {9},{10}  l 0,{11}  a 4,4 0 0 0 4,4 Z</Geometry>";
+
+			var strOut = string.Format(
+				CultureInfo.InvariantCulture,
+				data,
+				height - 1.0f,
+				leftCorner,
+				leftCorner,
+				leftCorner,
+				leftCorner,
+				leftCorner,
+				actualHeight - (leftCorner + rightCorner + 1.0f / scaleFactor),
+				rightCorner,
+				rightCorner,
+				rightCorner,
+				rightCorner,
+				height - (5 + rightCorner));
+
+			var geometry = Windows.UI.Xaml.Markup.XamlReader.Load(strOut) as Uno.Media.StreamGeometry;
+			Assert.IsNotNull(geometry);
+			Assert.AreEqual(FillRule.Nonzero, geometry.FillRule);
+		}
+
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
 		/// </summary>
