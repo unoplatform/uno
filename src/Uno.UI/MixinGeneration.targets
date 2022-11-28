@@ -69,7 +69,7 @@
 				</None>
 
 				<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
-				<Compile Remove="$(MSBuildThisFileDirectory\UI\Xaml\DependencyPropertiesImplementation.cs" />
+				<Compile Remove="$(MSBuildThisFileDirectory)\UI\Xaml\DependencyPropertiesImplementation.cs" />
 				<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
 				<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
 			</ItemGroup>
