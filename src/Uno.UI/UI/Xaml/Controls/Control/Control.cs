@@ -207,6 +207,10 @@ namespace Windows.UI.Xaml.Controls
 			base.OnPostLoading();
 
 			TryCallOnApplyTemplate();
+
+			// Update bindings to ensure resources defined
+			// in visual parents get applied.
+			this.UpdateResourceBindings();
 		}
 
 		private void TryCallOnApplyTemplate()

@@ -422,6 +422,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
 
+				Content = anchorProvider;
+
 				rootRepeater = (ItemsRepeater)anchorProvider.FindName("rootRepeater");
 				rootRepeater.SizeChanged += (sender, args) =>
 				{
@@ -450,7 +452,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 
 				rootRepeater.ItemsSource = itemsSource;
-				Content = anchorProvider;
 			});
 
 			// scroll down several times to cause recycling of elements
@@ -508,6 +509,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
 
+				Content = scrollhost;
+
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("repeater");
 				scrollViewer = (ScrollViewer)scrollhost.FindName("scrollviewer");
 				scrollViewer.ViewChanged += (sender, args) =>
@@ -524,7 +527,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					items.Add(Enumerable.Range(0, 4).ToList());
 				}
 				rootRepeater.ItemsSource = items;
-				Content = scrollhost;
 			});
 
 			// scroll down several times and validate no crash
@@ -577,6 +579,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         </ScrollViewer>
                     </controls:ItemsRepeaterScrollHost>");
 
+				Content = scrollhost;
+
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("rootRepeater");
 
 				List<List<int>> items = new List<List<int>>();
@@ -585,7 +589,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					items.Add(Enumerable.Range(0, 4).ToList());
 				}
 				rootRepeater.ItemsSource = items;
-				Content = scrollhost;
 			});
 
 			IdleSynchronizer.Wait();
@@ -638,14 +641,17 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                         </ScrollViewer>
                     </controls:ItemsRepeaterScrollHost>");
 
-				repeater = (ItemsRepeater)scrollhost.FindName("repeater");
 				Content = scrollhost;
+
+				// Get the control after entering the tree
+				repeater = (ItemsRepeater)scrollhost.FindName("repeater");
 			});
 
 			IdleSynchronizer.Wait();
 
 			RunOnUIThread.Execute(() =>
 			{
+
 				for (int i = 0; i < 10; i++)
 				{
 					var element = repeater.TryGetElement(i) as Button;
