@@ -5,6 +5,13 @@
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+
+		<!--
+			Set to false as a temporary workaround for:
+			mergedstyles_071591b3676f22ac4e4712a47cc7d18f.cs(1466,14): error CS1029: #error: 'Property for contract7Present:CornerRadius cannot be found on Windows.UI.Xaml.Controls.Button' [/Users/runner/work/1/s/src/Uno.UI/Uno.UI.netcoremobile.csproj::TargetFramework=net6.0-android]
+			Remove this workaround when fixing https://github.com/unoplatform/uno/issues/10596
+		-->
+		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
 	<Import Project="../netcore-build.props" />
@@ -21,10 +28,10 @@
 		<AssemblyName>Uno.UI</AssemblyName>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
- 
+
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
-		
+
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
@@ -43,7 +50,7 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
-	<ItemGroup> 
+	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
@@ -59,7 +66,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">	
+	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
 	  <EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
@@ -103,7 +110,7 @@
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
+
 	<ItemGroup>
 		<None Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml;$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml" />
 
@@ -117,14 +124,14 @@
 
 		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
-	
+
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
 			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(OutputPath)/javascript/Uno.UI.js</TypeScriptConfigFileAdditionalFlags>
 		</PropertyGroup>
 		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
-	
+
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
 			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
 			BeforeTargets="_UnoEmbeddedResourcesInjection">
@@ -149,7 +156,7 @@
 			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
 		</ItemGroup>
 	</Target>
-	
+
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
 	</ItemGroup>
