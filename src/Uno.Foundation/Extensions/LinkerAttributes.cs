@@ -3,7 +3,7 @@
 
 #nullable enable
 
-#if NETSTANDARD2_0
+#if !NET6_0_OR_GREATER
 namespace System.Diagnostics.CodeAnalysis
 {
 	/// <summary>

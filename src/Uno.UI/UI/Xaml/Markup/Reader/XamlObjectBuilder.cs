@@ -165,6 +165,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				var instance = component ?? Activator.CreateInstance(type)!;
 				rootInstance ??= instance;
 
+				var instanceAsFrameworkElement = instance as FrameworkElement;
+
+				if (instanceAsFrameworkElement is not null)
+				{
+					instanceAsFrameworkElement.IsParsing = true;
+				}
+
 				IDisposable? TryProcessStyle()
 				{
 					if (instance is Style style)
@@ -202,6 +209,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 						ProcessNamedMember(control, instance, member, rootInstance);
 					}
 				}
+
+				instanceAsFrameworkElement?.CreationComplete();
 
 				return instance;
 			}

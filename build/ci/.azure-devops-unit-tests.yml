@@ -42,7 +42,6 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
-  - template: templates/update-vs-components.yml
 
   - task: MSBuild@1
     inputs:
@@ -93,13 +92,13 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       # Disabled as tests explicitly use UWP types.
       # Will be migrated once the whole tree is moved to WinUI
       # WinUI:
       #   UNO_UWP_BUILD: false
-      #   XAML_FLAVOR_BUILD: WinUI 
+      #   XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -114,17 +113,17 @@ jobs:
 
   - template: templates/dotnet-install.yml
   - template: templates/download-winui-converted-tree.yml
-  
+
   - task: DownloadBuildArtifacts@0
     displayName: Download build artifact
     inputs:
       artifactName: 'NugetPackages-Artifacts-reference'
-      downloadPath: '$(Agent.WorkFolder)' 
+      downloadPath: '$(Agent.WorkFolder)'
 
   - task: ExtractFiles@1
     displayName: Restore binaries structure
     inputs:
-      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip'
       destinationFolder: $(build.sourcesdirectory)
       cleanDestinationFolder: false
       overwriteExistingFiles: true

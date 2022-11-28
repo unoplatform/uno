@@ -59,6 +59,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="LinkerSubstitution.Wasm.xml" />
+	  <UnoLinkerSubstitution Include="LinkerSubstitution.Wasm.xml" />
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">	
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>

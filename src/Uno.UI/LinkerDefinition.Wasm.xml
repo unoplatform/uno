@@ -16,9 +16,6 @@
 	<type fullname="Windows.UI.Xaml.Input.FocusManager">
 	  <method name="ReceiveFocusNative" />
 	</type>
-	<type fullname="Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension">
-	  <method name="OnNativeDropEvent" />
-	</type>
 	<type fullname="Windows.UI.Xaml.Application">
 	  <method name="DispatchSuspending" />
       <method name="DispatchSystemThemeChange" />
@@ -92,5 +89,4 @@
 	<type fullname="System.ComponentModel.*Converter" />
 	<type fullname="System.*Converter" />
   </assembly>
-
 </linker>

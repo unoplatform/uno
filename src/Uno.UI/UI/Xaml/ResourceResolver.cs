@@ -245,7 +245,7 @@ namespace Uno.UI
 		/// </returns>
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
-			if (TryStaticRetrieval(resourceKey, context, out var value)
+			if (TryVisualTreeRetrieval(resourceKey, context, out var value)
 				&& bindingPath.DataContext != null)
 			{
 				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
@@ -259,6 +259,38 @@ namespace Uno.UI
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Try to retrieve a resource using the visual tree determined
+		/// from the immediate scope.
+		/// </summary>
+		private static bool TryVisualTreeRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		{
+			var scope = CurrentScope.Sources.FirstOrDefault();
+
+			if (scope != null)
+			{
+				var dictionaries = (scope.Target as IDependencyObjectStoreProvider)?.Store.GetResourceDictionaries(true);
+
+				if (dictionaries != null)
+				{
+					foreach (var dict in dictionaries)
+					{
+						if (dict.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
+			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
+			}
+			return topLevel;
 		}
 
 		/// <summary>

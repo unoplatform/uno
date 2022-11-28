@@ -28,6 +28,7 @@ using Uno.Foundation.Logging;
 using Uno.Storage.Internal;
 using Uno.UI;
 using Uno.UI.Xaml;
+using System.Diagnostics.CodeAnalysis;
 
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
@@ -42,6 +43,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static DragDropExtension? _current;
 
+		/// <summary>
+		/// Conditional support for external drag and drop. See the UnoDragDropExternalSupport msbuild property.
+		/// </summary>
+		public static bool IsExternalDragAndDropSupported { get; } = true;
+
 		public static DragDropExtension GetForCurrentView()
 		{
 			// Note: We use the GetForCurrentView naming pattern, but we don't support multi-threading yet
@@ -49,10 +55,17 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 			if (_current is null && Interlocked.CompareExchange(ref _current, new DragDropExtension(), null) is null)
 			{
-				// For now we enable the D&DExtension sync at creation and we don't support disable.
-				// This allow us to prevent a drop of a content on an app which actually don't support D&D
-				// (would drive the browser to open the dragged file and "dismiss" the app).
-				_current.Enable();
+				if (IsExternalDragAndDropSupported)
+				{
+					// For now we enable the D&DExtension sync at creation and we don't support disable.
+					// This allow us to prevent a drop of a content on an app which actually don't support D&D
+					// (would drive the browser to open the dragged file and "dismiss" the app).
+					_current.Enable();
+				}
+				else
+				{
+					EnableExternalWarning();
+				}
 			}
 
 			return _current;
@@ -70,6 +83,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				?? throw new InvalidOperationException("No CoreDragDropManager available for current thread.");
 		}
 
+		[DynamicDependency(nameof(OnNativeDropEvent))]
 		private void Enable()
 		{
 			if (Interlocked.CompareExchange(ref _isInitialized, 1, 0) == 0)
@@ -82,6 +96,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			{
 				throw new InvalidOperationException("Multiple DragDropExtension is not supported yet.");
 			}
+		}
+
+		private static void EnableExternalWarning()
+		{
+			WebAssemblyRuntime.InvokeJS("Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.registerNoOp();");
 		}
 
 		/// <inheritdoc />
