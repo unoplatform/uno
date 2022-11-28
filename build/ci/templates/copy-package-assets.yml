@@ -15,7 +15,7 @@ steps:
         **/bin/**/*.vsix
         **/bin/**/*.json
         **/bin/**/*.config
-      TargetFolder: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
+      TargetFolder: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false

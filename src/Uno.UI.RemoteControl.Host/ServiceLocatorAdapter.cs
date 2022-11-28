@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable // IServiceLocator does not expose nullable attributes
+
+using System;
 using System.Collections.Generic;
 using CommonServiceLocator;
 

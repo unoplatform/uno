@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
@@ -19,6 +19,9 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>
@@ -37,14 +40,9 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.Xaml.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\AssemblyDeltaReload.cs" />
-	  <UpToDateCheckInput Remove="Messages\ProcessorsDiscovery.cs" />
-	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
-	  <UpToDateCheckInput Remove="ServerProcessorsConfigurationAttribute.cs" />
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

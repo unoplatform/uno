@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.canvas{fill: none; opacity: 0;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-blue{fill: #005dba; opacity: 1;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.cls-1{opacity:0.75;}</style>
+  </defs>
+  <title>IconLightWPFFile</title>
+  <g id="canvas" class="canvas">
+    <path class="canvas" d="M16,16H0V0H16Z"/>
+  </g>
+  <g id="level-1">
+    <path class="light-defaultgrey" d="M10.854,13.146v.708l-2,2-.708-.708L9.793,13.5,8.146,11.854l.708-.708Z"/>
+    <path class="light-blue" d="M7,12v3H4V12Z"/>
+    <path class="light-defaultgrey" d="M2.146,11.146l.708.708L1.207,13.5l1.647,1.646-.708.708-2-2v-.708Z"/>
+    <g class="cls-1" style="opacity: 0.95;">
+      <path class="light-defaultgrey-10" d="M13.5,4.5v10H11.621l.233-.232V12.732l-3-3L7.586,11H3.414L2.5,10.086V1.5h8Z"/>
+      <path class="light-defaultgrey" d="M14,4.5v10l-.5.5H11.121l.733-.732V14H13V5H10V2H3v8.586l-1-1V1.5L2.5,1h8l.354.146,3,3Z"/>
+    </g>
+  </g>
+</svg>

@@ -1,4 +1,26 @@
-# Using the IL Linker for WebAssembly
+---
+uid: articles.features.illinker
+---
+
+# Using the IL Linker
+
+### Support for features
+
+In order to improve the size of the application, some platforms are providing the ability to unconditionally disable features if the app is known not to use them.
+
+|Feature|MSBuild property|Description|
+|-----|----|---|
+|External Drag and Drop|`UnoDragDropExternalSupport`|Enables or disables drag and dropping content from **outside** the app using this property. Drag and Drop **inside** the app is always available when disabled.|
+
+For example, to disable external drag and drop support on WebAssembly, add the following to your csproj:
+
+```xml
+<PropertyGroup>
+    <UnoDragDropExternalSupport>false</UnoDragDropExternalSupport>
+</PropertyGroup>
+```
+
+## WebAssembly
 
 The [linker step](https://github.com/mono/linker/tree/master/docs) (also known as tree shaking, or IL Trimming) is responsible for the detection and removal of code that may not be used at runtime. This step is particularly important when targeting WebAssembly or native code in general, to reduce significantly the final package size.
 

@@ -573,6 +573,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, args.OldItems.Count);
+					CleanUpContainers(args.OldStartingIndex, args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
 
@@ -677,6 +678,20 @@ namespace Windows.UI.Xaml.Controls
 				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
 			}
 			_containersForIndexRepair.Clear();
+		}
+
+		private void CleanUpContainers(int startingIndex, int length)
+		{
+			if (ShouldItemsControlManageChildren) return;
+			
+			foreach (var container in MaterializedContainers)
+			{
+				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (startingIndex <= index && index < startingIndex + length)
+				{
+					CleanUpContainer(container);
+				}
+			}
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)

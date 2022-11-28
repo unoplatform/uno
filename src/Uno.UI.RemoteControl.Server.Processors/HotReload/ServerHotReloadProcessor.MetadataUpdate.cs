@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,12 +27,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[] _solutionWatchers;
-		private CompositeDisposable _solutionWatcherEventsDisposable;
+		private FileSystemWatcher[]? _solutionWatchers;
+		private CompositeDisposable? _solutionWatcherEventsDisposable;
 
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
-		private Solution _currentSolution;
-		private WatchHotReloadService _hotReloadService;
+		private Solution? _currentSolution;
+		private WatchHotReloadService? _hotReloadService;
 		private IReporter _reporter = new Reporter();
 
 		private bool _useRoslynHotReload;
@@ -132,7 +133,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task<bool> ProcessSolutionChanged(CancellationToken cancellationToken, string file)
 		{
-			await EnsureSolutionInitializedAsync();
+			if (!await EnsureSolutionInitializedAsync() || _currentSolution is null || _hotReloadService is null)
+			{
+				return false;
+			}
 
 			var sw = Stopwatch.StartNew();
 
@@ -207,6 +211,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				for (int i = 0; i < updates.Length; i++)
 				{
+					var updateTypesWriterStream = new MemoryStream();
+					var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
+					WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
+
 					await _remoteControlServer.SendFrame(
 						new AssemblyDeltaReload()
 						{
@@ -215,7 +223,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
 							ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
 							MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
+							UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
 						});
+				}
+			}
+
+			static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
+			{
+				if (values is null)
+				{
+					binaryWriter.Write(0);
+					return;
+				}
+
+				binaryWriter.Write(values.Length);
+				foreach (var value in values)
+				{
+					binaryWriter.Write(value);
 				}
 			}
 		}
@@ -278,7 +302,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 
-
+		[MemberNotNullWhen(true, nameof(_currentSolution))]
 		private async ValueTask<bool> EnsureSolutionInitializedAsync()
 		{
 			if (_currentSolution != null)

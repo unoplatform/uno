@@ -1,0 +1,27 @@
+[
+	{
+		"IsDebug": true,
+		"IsMono": false,
+		"PassResults": [
+			{
+				"MetadataUpdates": 1,
+				"Diagnostics": []
+			}
+		]
+	},
+	{
+		"IsDebug": true,
+		"IsMono": true,
+		"PassResults": [
+			{
+				"MetadataUpdates": 0,
+				"Diagnostics": [
+					// error ENC0100: Adding field requires restarting the application.
+					{ "Id": "ENC0100" },
+					{ "Id": "ENC0100" }
+				]
+			}
+		]
+	}
+]
+

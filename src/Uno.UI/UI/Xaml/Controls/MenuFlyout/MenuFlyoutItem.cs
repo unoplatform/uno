@@ -521,10 +521,11 @@ namespace Windows.UI.Xaml.Controls
 
 					m_epCanExecuteChangedHandler = Disposable.Create(() => spCommand.CanExecuteChanged -= OnCanExecuteChanged);
 				}
-				// In case we missed an update to CanExecute while the CanExecuteChanged handler was unhooked,
-				// we need to update our value now.
-				UpdateCanExecute();
 			}
+
+			// In case we missed an update to CanExecute while the CanExecuteChanged handler was unhooked,
+			// we need to update our value now.
+			UpdateCanExecute();
 		}
 
 		private protected override void OnUnloaded()

@@ -1,6 +1,7 @@
 ﻿#if __WASM__
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
 
@@ -12,6 +13,7 @@ namespace Windows.Devices.Sensors
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
+		[DynamicDependency(nameof(DispatchReading))]
 		private Gyrometer()
 		{
 		}
@@ -52,7 +54,6 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">AngularVelocity Y in radians/s</param>
 		/// <param name="z">AngularVelocity Z in radians/s</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
-		[Preserve]
 		public static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance == null)

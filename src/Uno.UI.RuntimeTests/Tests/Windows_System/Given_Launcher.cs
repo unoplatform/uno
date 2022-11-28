@@ -8,6 +8,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
+
 	[TestClass]
 	public class Given_Launcher
 	{

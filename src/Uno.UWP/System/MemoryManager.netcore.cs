@@ -62,7 +62,7 @@ namespace Windows.System
 			get
 			{
 #if NET6_0_OR_GREATER
-				return GC.GetGCMemoryInfo().MemoryLoadBytes;
+				return (ulong)GC.GetGCMemoryInfo().MemoryLoadBytes;
 #else
 				if (IsAvailable)
 				{
@@ -82,7 +82,7 @@ namespace Windows.System
 			get
 			{
 #if NET6_0_OR_GREATER
-				return GC.GetGCMemoryInfo().HighMemoryLoadThresholdBytes;
+				return (ulong)GC.GetGCMemoryInfo().HighMemoryLoadThresholdBytes;
 #else
 				if (IsAvailable)
 				{

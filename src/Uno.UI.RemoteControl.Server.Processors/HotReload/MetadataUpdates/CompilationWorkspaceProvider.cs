@@ -15,7 +15,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	internal static class CompilationWorkspaceProvider
 	{
-		private static string MSBuildBasePath;
+		private static string MSBuildBasePath = "";
 
 		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(string projectPath, IReporter reporter, string[] metadataUpdateCapabilities, CancellationToken cancellationToken)
 		{
@@ -32,7 +32,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string[] metadataUpdateCapabilities,
 			CancellationToken cancellationToken)
 		{
-			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath), "obj", "hr") + Path.DirectorySeparatorChar;
+			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath) ?? "", "obj", "hr") + Path.DirectorySeparatorChar;
 
 			Directory.CreateDirectory(intermediatePath);
 
@@ -131,13 +131,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				}
 
 				var assembly = new AssemblyName(e.Name);
-				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.Location).LocalPath);
+				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.Location).LocalPath) ?? "";
 
 				Console.WriteLine($"Searching for [{assembly}] from [{basePath}]");
 
 				// Ignore resource assemblies for now, we'll have to adjust this
 				// when adding globalization.
-				if (assembly.Name.EndsWith(".resources", StringComparison.Ordinal))
+				if (assembly.Name is not null && assembly.Name.EndsWith(".resources", StringComparison.Ordinal))
 				{
 					return null;
 				}
@@ -171,7 +171,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					return loadedAsm[0];
 				}
 
-				Assembly LoadAssembly(string filePath)
+				Assembly? LoadAssembly(string filePath)
 				{
 					if (File.Exists(filePath))
 					{

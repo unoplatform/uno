@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>.canvas{fill: none; opacity: 0;}.light-blue{fill: #005dba; opacity: 1;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.cls-1{opacity:0.75;}</style>
+  </defs>
+  <title>IconLightWPFApplication</title>
+  <g id="canvas" class="canvas">
+    <path class="canvas" d="M16,16H0V0H16Z" />
+  </g>
+  <g id="level-1">
+    <path class="light-blue" d="M7,12v3H4V12Z" />
+    <path class="light-defaultgrey" d="M10.854,13.146v.708l-2,2-.708-.708L9.793,13.5,8.146,11.854l.708-.708Zm-8.708-2,.708.708L1.207,13.5l1.647,1.646-.708.708-2-2v-.708Z" />
+    <g class="cls-1">
+      <path class="light-defaultgrey-10" d="M15.5,5v8.5H12.621L8.854,9.732,7.586,11H3.414L2.5,10.086V5Z" />
+      <path class="light-defaultgrey" d="M16,4.5v9l-.5.5H12V13h3V5h.5Z" />
+      <path class="light-defaultgrey" d="M2,9.586V4.5l.5.5H3v5.586Z" />
+    </g>
+    <path class="light-defaultgrey-10" d="M15.5,1.5v3H2.5v-3Z" />
+    <path class="light-defaultgrey" d="M15.5,1H2.5L2,1.5v3l.5.5h13l.5-.5v-3ZM15,4H3V2H15Z" />
+  </g>
+</svg>

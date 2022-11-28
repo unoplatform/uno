@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace UnoWinUIRevert
@@ -98,6 +99,7 @@ namespace UnoWinUIRevert
 				("Windows.UI.Text.FontWeights", "Microsoft.UI.Text.FontWeights"),
 				("Windows.UI.ColorHelper", "Microsoft.UI.ColorHelper"),
 				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
+				("__LinkerHints.Is_Windows_UI_Xaml", "__LinkerHints.Is_Microsoft_UI_Xaml"),
 				("Microsoft.UI.Xaml.Controls\", \"ProgressRing", "Uno.UI.Controls.Legacy\", \"ProgressRing"),
 				("<UNO_UWP_BUILD>true</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>"),
 			};
@@ -181,7 +183,7 @@ namespace UnoWinUIRevert
 				if (updated)
 				{
 					Console.WriteLine($"Updating [{file}]");
-					File.WriteAllText(file, content);
+					File.WriteAllText(file, content, Encoding.UTF8);
 				}
 			}
 		}
@@ -201,7 +203,7 @@ namespace UnoWinUIRevert
 
 			var txt = File.ReadAllText(filePath);
 			txt = txt.Replace(from, to);
-			File.WriteAllText(filePath, txt);
+			File.WriteAllText(filePath, txt, Encoding.UTF8);
 		}
 
 		private static void DeleteFiles(string[] filePaths)

@@ -13,6 +13,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : IFrameworkElement, DependencyObject, IScrollSnapPointsInfo
 	{
+		internal bool UseNativeSnapping { get; private set; }
+
 		public bool AreHorizontalSnapPointsRegular => ((IScrollSnapPointsInfo)NativeLayout).AreHorizontalSnapPointsRegular;
 
 		public bool AreVerticalSnapPointsRegular => ((IScrollSnapPointsInfo)NativeLayout).AreVerticalSnapPointsRegular;

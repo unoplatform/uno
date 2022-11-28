@@ -16,8 +16,8 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
-		private string _projectPath;
-		private string[] _xamlPaths;
+		private string? _projectPath;
+		private string[]? _xamlPaths;
 
 		private readonly IRemoteControlClient _rcClient;
 
@@ -74,6 +74,8 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
 				}
+
+				await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities()));
 			}
 			else
 			{
@@ -82,8 +84,6 @@ namespace Uno.UI.RemoteControl.HotReload
 					this.Log().LogError("Unable to find ProjectConfigurationAttribute");
 				}
 			}
-
-			await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities()));
 		}
 
 #if !(NET6_0_OR_GREATER || __WASM__ || __SKIA__)

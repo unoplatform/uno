@@ -1,0 +1,17 @@
+[
+	{
+		"IsDebug": true,
+		"IsMono": false,
+		"PassResults": [
+			{ "MetadataUpdates": 0 }
+		]
+	},
+	{
+		"IsDebug": true,
+		"IsMono": true,
+		"PassResults": [
+			{ "MetadataUpdates": 0 }
+		]
+	}
+]
+

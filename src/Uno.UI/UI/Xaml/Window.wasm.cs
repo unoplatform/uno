@@ -29,14 +29,7 @@ namespace Windows.UI.Xaml
 		private Border _rootBorder;
 		private bool _invalidateRequested;
 
-		public Window()
-		{
-			Init();
-
-			InitializeCommon();
-		}
-
-		private void Init()
+		partial void InitPlatform()
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();

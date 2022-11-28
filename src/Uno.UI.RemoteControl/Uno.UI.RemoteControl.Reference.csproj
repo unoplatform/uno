@@ -23,6 +23,9 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
 		<PackageId>Uno.UI.RemoteControl</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 		
@@ -33,6 +36,10 @@
 	
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

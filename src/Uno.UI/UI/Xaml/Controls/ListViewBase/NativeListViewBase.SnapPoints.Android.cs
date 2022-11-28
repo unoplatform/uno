@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var helper = new SnapPointsSnapHelper(this);
 			helper.AttachToRecyclerView(this);
+
+			UseNativeSnapping = true;
 		}
 
 		private class SnapPointsSnapHelper : SnapHelper

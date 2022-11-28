@@ -2,6 +2,16 @@
 
 In case of WebAssembly, you may need to work with the browser cookies to either read or set values with expiration support. For these purposes Uno Platform provides the `Uno.Web.Http.CookieManager` class.
 
+## Prerequisites
+
+All types related to cookie management are WebAssembly-specific and reside in the `Uno.Web.Http` namespace. When writing code which uses these types, you must wrap it in `#if __WASM__` blocks and either fully qualify these types (e.g. `Uno.Web.Http.Cookie` or `Uno.Web.Http.SetCookieRequest`) or add a using statement to the top of the file, wrapped within `#if`, as follows:
+
+```csharp
+#if __WASM__
+using Uno.Web.Http;
+#endif
+```
+
 ## Setting a cookie
 
 To set a cookie, create an instance of `Uno.Web.Http.SetCookieRequest` and initialize the values you are interested in. The following cookie attributes are supported:
