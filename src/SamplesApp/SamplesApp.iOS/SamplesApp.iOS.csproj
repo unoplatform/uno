@@ -15,6 +15,12 @@
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ProvisioningType>manual</ProvisioningType>
+
+	  <!--
+		Set to false as a temporary workaround for https://github.com/unoplatform/uno/issues/10596
+	    Remove this workaround when fixing the issue.
+	  -->
+	  <ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
