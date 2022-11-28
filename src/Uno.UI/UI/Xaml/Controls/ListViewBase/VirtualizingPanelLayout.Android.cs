@@ -2079,17 +2079,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private float GetSnapPoint(View view, SnapPointsAlignment alignment)
 		{
-			switch (alignment)
+			var snapPointInPhysical = alignment switch
 			{
-				case SnapPointsAlignment.Near:
-					return ContentOffset + GetChildStartWithMargin(view);
-				case SnapPointsAlignment.Center:
-					return ContentOffset + (GetChildStartWithMargin(view) + GetChildEndWithMargin(view)) / 2f;
-				case SnapPointsAlignment.Far:
-					return ContentOffset + GetChildEndWithMargin(view);
-				default:
-					throw new ArgumentOutOfRangeException(nameof(alignment));
-			}
+				SnapPointsAlignment.Near => ContentOffset + GetChildStartWithMargin(view),
+				SnapPointsAlignment.Center => ContentOffset + (GetChildStartWithMargin(view) + GetChildEndWithMargin(view)) / 2f,
+				SnapPointsAlignment.Far => ContentOffset + GetChildEndWithMargin(view),
+
+				_ => throw new ArgumentOutOfRangeException(nameof(alignment)),
+			};
+
+			return (float)ViewHelper.PhysicalToLogicalPixels(snapPointInPhysical);
 		}
 
 		/// <summary>

@@ -51,6 +51,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 			public override IEditable Replace(int start, int end, ICharSequence tb, int tbstart, int tbend)
 			{
+				if (Owner is { IsNativeReadOnly: true })
+				{
+					return this;
+				}
+
 				// Create a copy of this string builder to preview the change, allowing the TextBox's event handlers to act on the modified text.
 				var copy = new SpannableStringBuilder(this);
 				copy.Replace(start, end, tb, tbstart, tbend);

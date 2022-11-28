@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static Func<RootViewController> ViewControllerGenerator { get; set; }
 
-		public Window()
+		partial void InitPlatform()
 		{
 			_nativeWindow = new Uno.UI.Controls.Window();
 
@@ -45,7 +45,6 @@ namespace Windows.UI.Xaml
 			CoreWindow = new CoreWindow(_nativeWindow);
 
 			_nativeWindow.SetOwner(CoreWindow);
-			InitializeCommon();
 		}
 
 		internal Uno.UI.Controls.Window NativeWindow => _nativeWindow;

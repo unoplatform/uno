@@ -10,6 +10,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -162,8 +163,10 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			if (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
-				uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+			if (__LinkerHints.Is_Windows_UI_Xaml_Media_Imaging_SvgImageSource_Available
+				&& (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
+					uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+			)
 			{
 				return new SvgImageSource(uri);
 			}

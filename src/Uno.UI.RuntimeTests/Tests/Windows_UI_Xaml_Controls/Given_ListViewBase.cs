@@ -142,57 +142,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(container0, containerItem);
 		}
 
-
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__
+		[Ignore("Unlike other platforms, MaterializedContainers are removed immediately upon removal, and are not created on insertion until re-measure.")]
+#endif
 		public async Task ContainerIndicesAreUpdated_OnRemoveAndAdd()
 		{
 			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+			var item2 = source[2];
 			var SUT = new ListView { ItemsSource = source };
 			WindowHelper.WindowContent = SUT;
 
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForIdle();
-
 			SUT.MaterializedContainers.Should().HaveCount(5);
 
-			var originalIndicies = SUT.MaterializedContainers
-				.Select(container => (
-					item: (container as ContentControl)?.Content?.ToString(),
-					index: container.GetValue(ItemsControl.IndexForItemContainerProperty)))
-				.OrderBy(entry => entry.index)
-				.ToArray();
-
-			var item2 = source[2];
+			var snapshotOriginal = GetMaterializedItems();
 			source.RemoveAt(2);
+			var snapshotRemoved = GetMaterializedItems();
 			source.Insert(3, item2);
+			var snapshotReinserted = GetMaterializedItems();
+			await WindowHelper.WaitForIdle();
+			var snapshotRemeasured = GetMaterializedItems();
 
-			// Note: we don't let the LV the opportunity to be measured, indices should have been updated right away.
-			var updatedIndices = SUT.MaterializedContainers
+			snapshotOriginal.Should().BeEquivalentTo(new (int index, object item)[]
+			{
+				(0, "Item #0"),
+				(1, "Item #1"),
+				(2, "Item #2"),
+				(3, "Item #3"),
+				(4, "Item #4"),
+			});
+			snapshotRemoved.Should().BeEquivalentTo(new (int index, object item)[]
+			{
+				(-1, null),
+				(0, "Item #0"),
+				(1, "Item #1"),
+				(2, "Item #3"),
+				(3, "Item #4"),
+			});
+			snapshotReinserted.Should().BeEquivalentTo(new (int index, object item)[]
+			{
+				(-1, null),
+				(0, "Item #0"),
+				(1, "Item #1"),
+				(2, "Item #3"),
+				/* 'Item #2' will be inserted here at index=3, but is not yet measured */
+				(4, "Item #4"), // index got shifted with insertion
+			});
+			snapshotRemeasured.Should().BeEquivalentTo(new (int index, object item)[]
+			{
+				(0, "Item #0"),
+				(1, "Item #1"),
+				(2, "Item #3"),
+				(3, "Item #2"),
+				(4, "Item #4"),
+			});
+
+			(int Index, object Item)[] GetMaterializedItems() => SUT.MaterializedContainers
 				.Select(container => (
-					item: (container as ContentControl)?.Content?.ToString(),
-					index: container.GetValue(ItemsControl.IndexForItemContainerProperty)))
-				.OrderBy(entry => entry.index)
+					Index: (int)container.GetValue(ItemsControl.IndexForItemContainerProperty),
+					Item: (container as ContentControl)?.Content
+				))
+				.OrderBy(x => x.Index)
 				.ToArray();
-
-			originalIndicies.Should().BeEquivalentTo(new (object item, int index)[]
-			{
-				("Item #0", 0),
-				("Item #1", 1),
-				("Item #2", 2),
-				("Item #3", 3),
-				("Item #4", 4),
-			});
-
-			updatedIndices.Should().BeEquivalentTo(new (object item, int index)[]
-			{
-				("Item #0", 0),
-				("Item #1", 1),
-				("Item #3", 2),
-				("Item #2", 3),
-				("Item #4", 4),
-			});
 		}
 #endif
 
@@ -1932,6 +1947,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					source.Insert(0, $"Item {index}");
 				}
 			}
+		}
+
+		[TestMethod]
+		public async Task When_FE_Item_Removed()
+		{
+			var item = new Border();
+			var SUT = new ListView() { Items = { item } };
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0));
+
+			Assert.IsTrue(SUT.Items.Remove(item), "Failed to remove item from ListView.");
+			Assert.IsNull(item.Parent, "The item is still attached to a parent after being removed from ListView.");
 		}
 
 		[TestMethod]

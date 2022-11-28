@@ -927,7 +927,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TextBox_Selection_IsReadOnly()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection");

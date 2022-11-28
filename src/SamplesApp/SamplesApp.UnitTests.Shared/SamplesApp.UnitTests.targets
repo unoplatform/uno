@@ -9,12 +9,4 @@
 		<CompilerVisibleProperty Include="RootNamespace" />
 		<CompilerVisibleProperty Include="MSBuildProjectDirectory" />
 	</ItemGroup>
-
-	<ItemGroup Condition="'$(DocsGeneration)'==''">
-		<ProjectReference Include="$(MSBuildThisFileDirectory)..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework;RuntimeIdentifier;TargetFrameworks;RuntimeIdentifiers</UndefineProperties>
-		</ProjectReference>
-	</ItemGroup>
 </Project>

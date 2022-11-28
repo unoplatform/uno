@@ -20,7 +20,7 @@
 	<Project TargetFileName="$ext_safeprojectname$.Wasm.csproj" File="UnoQuickStart.Wasm.csproj" ReplaceParameters="true">
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 	  <ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
-	  <ProjectItem ReplaceParameters="true" TargetFileName="manifest.json">manifest.json</ProjectItem>
+	  <ProjectItem ReplaceParameters="true" TargetFileName="manifest.webmanifest">manifest.webmanifest</ProjectItem>
 	  <Folder Name="Assets" TargetFolderName="Assets">
 		<ProjectItem TargetFileName="AppIcon-16.png" ReplaceParameters="false">AppIcon-16.png</ProjectItem>
 		<ProjectItem TargetFileName="AppIcon-32.png" ReplaceParameters="false">AppIcon-32.png</ProjectItem>

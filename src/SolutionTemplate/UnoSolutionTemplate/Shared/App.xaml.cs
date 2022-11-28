@@ -54,7 +54,7 @@ namespace $ext_safeprojectname$
             }
 #endif
 
-#if NET5_0 && WINDOWS
+#if NET5_0 && WINDOWS && !HAS_UNO
             _window = new Window();
             _window.Activate();
 #else
@@ -130,7 +130,7 @@ namespace $ext_safeprojectname$
             {
 #if __WASM__
                 builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__
+#elif __IOS__ && !__MACCATALYST__
                 builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
 #elif NETFX_CORE
                 builder.AddDebug();

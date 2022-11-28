@@ -2,6 +2,7 @@
 using Uno;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Uno.Devices.Sensors.Helpers;
 
@@ -16,6 +17,7 @@ namespace Windows.Devices.Sensors
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
+		[DynamicDependency(nameof(DispatchReading))]
 		private Accelerometer()
 		{
 		}
@@ -82,7 +84,6 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">Accelerometer Y</param>
 		/// <param name="z">Accelerometer Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
-		[Preserve]
 		public static int DispatchReading(float x, float y, float z)
 		{
 			if ( _instance == null)

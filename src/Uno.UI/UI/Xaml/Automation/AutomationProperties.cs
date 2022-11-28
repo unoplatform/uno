@@ -200,17 +200,35 @@ namespace Windows.UI.Xaml.Automation
 				new FrameworkPropertyMetadata(default(AutomationLandmarkType)));
 
 #if __WASM__
-		private static string FindHtmlRole(UIElement uIElement) =>
-			uIElement switch
+		private static string FindHtmlRole(UIElement uIElement)
+		{
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Button_Available && uIElement is Button)
 			{
-				Button _ => "button",
-				RadioButton _ => "radio",
-				CheckBox _ => "checkbox",
-				TextBlock _ => "label",
-				TextBox _ => "textbox",
-				Slider _ => "slider",
-				_ => null
-			};
+				return "button";
+			}
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_RadioButton_Available && uIElement is RadioButton)
+			{
+				return "radio";
+			}
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CheckBox_Available && uIElement is CheckBox)
+			{
+				return "checkbox";
+			}
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_TextBlock_Available && uIElement is TextBlock)
+			{
+				return "label";
+			}
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_TextBox_Available && uIElement is TextBox)
+			{
+				return "textbox";
+			}
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Slider_Available && uIElement is Slider)
+			{
+				return "slider";
+			}
+
+			return null;
+		}
 #endif
 
 	}

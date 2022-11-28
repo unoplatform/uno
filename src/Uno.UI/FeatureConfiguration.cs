@@ -354,6 +354,11 @@ namespace Uno.UI
 			/// Forcing a recycling pass with ItemAnimator is known to cause a flicker of the whole list.
 			/// </remarks>
 			public static bool ForceRecycleOnDrop;
+
+			/// <summary>
+			/// Sets a value indicating whether the item snapping will be implemented by the native <see cref="AndroidX.RecyclerView.Widget.SnapHelper"/> or by Uno.
+			/// </summary>
+			public static bool UseNativeSnapHelper = true;
 		}
 #endif
 
@@ -419,9 +424,20 @@ namespace Uno.UI
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
-				SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
-				SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Frame_Available)
+				{
+					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+				}
+
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CommandBar_Available)
+				{
+					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
+				}
+
+				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_AppBarButton_Available)
+				{
+					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
+				}
 			}
 
 			/// <summary>

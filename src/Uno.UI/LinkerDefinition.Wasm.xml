@@ -16,9 +16,6 @@
 	<type fullname="Windows.UI.Xaml.Input.FocusManager">
 	  <method name="ReceiveFocusNative" />
 	</type>
-	<type fullname="Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension">
-	  <method name="OnNativeDropEvent" />
-	</type>
 	<type fullname="Windows.UI.Xaml.Application">
 	  <method name="DispatchSuspending" />
       <method name="DispatchSystemThemeChange" />
@@ -51,15 +48,6 @@
     <type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher">
       <method name="DispatchStateChanged" />
     </type>
-	<type fullname="Windows.Devices.Sensors.Accelerometer">
-	  <method name="DispatchReading" />
-	</type>
-	<type fullname="Windows.Devices.Sensors.Magnetometer">
-	  <method name="DispatchReading" />
-	</type>
-    <type fullname="Windows.Devices.Sensors.LightSensor">
-      <method name="DispatchReading" />
-    </type>
     <type fullname="Windows.Networking.Connectivity.NetworkInformation">
 	  <method name="DispatchStatusChanged" />
 	</type>
@@ -67,9 +55,6 @@
       <method name="DispatchDpiChanged" />
       <method name="DispatchOrientationChanged" />
     </type>
-	<type fullname="Windows.Devices.Sensors.Gyrometer">
-	  <method name="DispatchReading" />
-	</type>
 	<type fullname="Windows.Devices.Geolocation.Geolocator">
 	  <method name="DispatchAccessRequest" />
 	  <method name="DispatchGeoposition" />
@@ -104,5 +89,4 @@
 	<type fullname="System.ComponentModel.*Converter" />
 	<type fullname="System.*Converter" />
   </assembly>
-
 </linker>
