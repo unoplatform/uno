@@ -2,7 +2,6 @@
 using Uno;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Uno.Devices.Sensors.Helpers;
 
@@ -17,7 +16,6 @@ namespace Windows.Devices.Sensors
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		[DynamicDependency(nameof(DispatchReading))]
 		private Accelerometer()
 		{
 		}

@@ -2,7 +2,6 @@
 #nullable enable
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Uno.Helpers;
 using Windows.Foundation;
 
@@ -18,9 +17,6 @@ namespace Windows.Devices.Sensors
 
 		private readonly StartStopEventWrapper<TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>> _readingChangedWrapper;
 
-#if __WASM__
-		[DynamicDependency(nameof(DispatchReading))]
-#endif
 		private LightSensor()
 		{
 			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>>(
