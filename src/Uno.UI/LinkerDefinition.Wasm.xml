@@ -3,9 +3,6 @@
 		<type fullname="Uno.UI.Wasm.WasmHttpHandler" />
 
 		<type fullname="Windows.UI.Xaml.UIElement" />
-		<type fullname="Windows.UI.Xaml.UIElement">
-			<method name="OnNativePointerEvent" />
-		</type>
 		<type fullname="Windows.UI.Xaml.Window" />
 		<type fullname="Windows.UI.Xaml.Media.BrushConverter" />
 		<type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
@@ -33,46 +30,46 @@
 	</assembly>
 
 	<assembly fullname="Uno">
-		<type fullname="Windows.ApplicationModel.DataTransfer.Clipboard">
+		<type fullname="Windows.ApplicationModel.DataTransfer.Clipboard" required="false">
 			<method name="DispatchContentChanged" />
 		</type>
 		<type fullname="Windows.UI.Core.CoreDispatcher" />
 		<type fullname="Windows.UI.Core.SystemNavigationManager" />
-		<type fullname="Windows.Devices.Midi.MidiInPort">
+		<type fullname="Windows.Devices.Midi.MidiInPort" required="false">
 			<method name="DispatchMessage" />
 		</type>
-		<type fullname="Windows.Gaming.Input.Gamepad">
+		<type fullname="Windows.Gaming.Input.Gamepad" required="false">
 			<method name="DispatchGamepadAdded" />
 			<method name="DispatchGamepadRemoved" />
 		</type>
-		<type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher">
+		<type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher" required="false">
 			<method name="DispatchStateChanged" />
 		</type>
-		<type fullname="Windows.Devices.Sensors.Accelerometer">
+		<type fullname="Windows.Devices.Sensors.Accelerometer" required="false">
 			<method name="DispatchReading" />
 		</type>
-		<type fullname="Windows.Devices.Sensors.Magnetometer">
+		<type fullname="Windows.Devices.Sensors.Magnetometer" required="false">
 			<method name="DispatchReading" />
 		</type>
-		<type fullname="Windows.Devices.Sensors.LightSensor">
+		<type fullname="Windows.Devices.Sensors.LightSensor" required="false">
 			<method name="DispatchReading" />
 		</type>
-		<type fullname="Windows.Networking.Connectivity.NetworkInformation">
+		<type fullname="Windows.Networking.Connectivity.NetworkInformation" required="false">
 			<method name="DispatchStatusChanged" />
 		</type>
 		<type fullname="Windows.Graphics.Display.DisplayInformation">
 			<method name="DispatchDpiChanged" />
 			<method name="DispatchOrientationChanged" />
 		</type>
-		<type fullname="Windows.Devices.Sensors.Gyrometer">
+		<type fullname="Windows.Devices.Sensors.Gyrometer" required="false">
 			<method name="DispatchReading" />
 		</type>
-		<type fullname="Windows.Devices.Geolocation.Geolocator">
+		<type fullname="Windows.Devices.Geolocation.Geolocator" required="false">
 			<method name="DispatchAccessRequest" />
 			<method name="DispatchGeoposition" />
 			<method name="DispatchError" />
 		</type>
-		<type fullname="Windows.Media.SpeechRecognition.SpeechRecognizer">
+		<type fullname="Windows.Media.SpeechRecognition.SpeechRecognizer" required="false">
 			<method name="DispatchStatus" />
 			<method name="DispatchResult" />
 			<method name="DispatchHypothesis" />
