@@ -148,6 +148,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
+			else if (type == typeof(Media.Geometry) && unknownContentValue is string geometryStringValue)
+			{
+				var generated = Uno.Media.Parsers.ParseGeometry(geometryStringValue);
+
+				return (Media.Geometry)generated;
+			}
 			else if (
 				_genericConvertibles.Contains(type)
 				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
