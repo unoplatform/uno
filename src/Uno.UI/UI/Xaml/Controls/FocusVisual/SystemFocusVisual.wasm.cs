@@ -28,7 +28,6 @@ internal partial class SystemFocusVisual : Control
 		WebAssemblyRuntime.InvokeJS($"{JsType}.detachVisual()");
 	}
 
-	[Preserve]
 	public static int DispatchNativePositionChange(int focusVisualId)
 	{
 		var element = UIElement.GetElementFromHandle(focusVisualId) as SystemFocusVisual;
