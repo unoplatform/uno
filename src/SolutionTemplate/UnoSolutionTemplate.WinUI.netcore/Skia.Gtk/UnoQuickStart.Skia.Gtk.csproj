@@ -4,31 +4,23 @@
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>$basetargetframework$</TargetFramework>
+		
+		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 	</PropertyGroup>
 
-	<ItemGroup Condition="exists('..\$ext_safeprojectname$.Windows')">
-		<EmbeddedResource Include="..\$ext_safeprojectname$.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
-		<Content Include="..\$ext_safeprojectname$.Windows\Images\StoreLogo.png" Link="Assets\StoreLogo.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="Assets\**" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
+	<ItemGroup Condition="exists('Platforms\Windows')">
+		<EmbeddedResource Include="Platforms\Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<Content Include="Platforms\Windows\Images\StoreLogo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.2.6" />
-		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.7.0-dev.417" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.417" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
-		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.7.0-dev.417" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 	</ItemGroup>
-
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 
 </Project>

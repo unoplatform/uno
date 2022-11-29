@@ -46,20 +46,20 @@ $release = $default + '-c' + 'Release'
 $createParams=(Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
 dotnet new unoapp -n UnoAppWinUI --framework net7.0 $createParams
 
-dotnet build $debug UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
+dotnet build $debug UnoAppWinUI/UnoAppWinUI.App/UnoAppWinUI.Wasm.csproj
 Assert-ExitCodeIsZero
 
-dotnet build $release UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
+dotnet build $release UnoAppWinUI/UnoAppWinUI.App/UnoAppWinUI.Wasm.csproj
 Assert-ExitCodeIsZero
 
-dotnet build $debug UnoAppWinUI/UnoAppWinUI.Skia.Gtk/UnoAppWinUI.Skia.Gtk.csproj
+dotnet build $debug UnoAppWinUI/UnoAppWinUI.App/UnoAppWinUI.Skia.Gtk.csproj
 Assert-ExitCodeIsZero
 
-dotnet build $release UnoAppWinUI/UnoAppWinUI.Skia.Gtk/UnoAppWinUI.Skia.Gtk.csproj
+dotnet build $release UnoAppWinUI/UnoAppWinUI.App/UnoAppWinUI.Skia.Gtk.csproj
 Assert-ExitCodeIsZero
 
-dotnet build $debug UnoAppWinUI/UnoAppWinUI.Skia.Linux.FrameBuffer/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj
+dotnet build $debug UnoAppWinUI/UnoAppWinUI.App/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj
 Assert-ExitCodeIsZero
 
-dotnet build $release UnoAppWinUI/UnoAppWinUI.Skia.Linux.FrameBuffer/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj
+dotnet build $release UnoAppWinUI/UnoAppWinUI.App/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj
 Assert-ExitCodeIsZero

@@ -14,7 +14,7 @@
   <Properties>
 	<DisplayName>$ext_safeprojectname$</DisplayName>
 	<PublisherDisplayName>$ext_safeprojectname$</PublisherDisplayName>
-	<Logo>Images\StoreLogo.png</Logo>
+	<Logo>Platforms\Windows\Images\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -34,10 +34,10 @@
         DisplayName="$ext_safeprojectname$"
         Description="$ext_safeprojectname$"
         BackgroundColor="transparent"
-        Square150x150Logo="Images\Square150x150Logo.png"
-        Square44x44Logo="Images\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
-        <uap:SplashScreen Image="Images\SplashScreen.png" />
+        Square150x150Logo="Platforms\Windows\Images\Square150x150Logo.png"
+        Square44x44Logo="Platforms\Windows\Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Platforms\Windows\Images\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Platforms\Windows\Images\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
   </Applications>

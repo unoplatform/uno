@@ -1,27 +1,26 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
-  <TemplateData>
-    <Name>UnoQuickStart.Skia.Gtk</Name>
-    <Description>No Description</Description>
-    <Icon>__TemplateIcon.png</Icon>
-    <PreviewImage>__PreviewImage.png</PreviewImage>
-    <ProjectType>CSharp</ProjectType>
-    <ProjectSubType />
-    <SortOrder>1000</SortOrder>
-    <DefaultName>UnoQuickStart.Skia.Gtk</DefaultName>
-    <ProvideDefaultName>true</ProvideDefaultName>
-    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
-    <LocationField>Enabled</LocationField>
-    <CreateInPlace>true</CreateInPlace>
-	  <Hidden>true</Hidden>
-  </TemplateData>
-  <TemplateContent>
-    <Project File="UnoQuickStart.Skia.Gtk.csproj" TargetFileName="$ext_safeprojectname$.Skia.Gtk.csproj" ReplaceParameters="true">
-      <Folder Name="Assets" TargetFolderName="Assets">
-        <Folder Name="Fonts" TargetFolderName="Fonts">
-          <ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
-        </Folder>
-      </Folder>
-      <ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
-    </Project>
-  </TemplateContent>
+	<TemplateData>
+		<Name>UnoQuickStart.Skia.Gtk</Name>
+		<Description>No Description</Description>
+		<Icon>__TemplateIcon.png</Icon>
+		<PreviewImage>__PreviewImage.png</PreviewImage>
+		<ProjectType>CSharp</ProjectType>
+		<ProjectSubType />
+		<SortOrder>1000</SortOrder>
+		<DefaultName>UnoQuickStart.Skia.Gtk</DefaultName>
+		<ProvideDefaultName>true</ProvideDefaultName>
+		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+		<LocationField>Enabled</LocationField>
+		<CreateInPlace>true</CreateInPlace>
+		<Hidden>true</Hidden>
+	</TemplateData>
+	<TemplateContent>
+		<Project File="UnoQuickStart.Skia.Gtk.csproj" TargetFileName="$ext_safeprojectname$.Skia.Gtk.csproj" ReplaceParameters="true">
+			<Folder Name="Platforms" TargetFolderName="Platforms">
+				<Folder Name="Skia.Gtk" TargetFolderName="Skia.Gtk">
+					<ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
+				</Folder>
+			</Folder>
+		</Project>
+	</TemplateContent>
 </VSTemplate>

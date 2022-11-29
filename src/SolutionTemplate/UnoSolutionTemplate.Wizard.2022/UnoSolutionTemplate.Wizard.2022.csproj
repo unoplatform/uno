@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
+    <None Include="Directory.Build-netcore.props" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include=".vsconfig.vs16" />

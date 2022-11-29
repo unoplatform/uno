@@ -75,12 +75,12 @@ pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 {
     $platform=$dotnetBuildNet6Configurations[$i][0];
-    & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj"
+    & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.App\UnoAppWinUI.$platform.csproj"
     Assert-ExitCodeIsZero
 }
 
  # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
- & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
+ & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.App\UnoAppWinUI.Windows.csproj"
 Assert-ExitCodeIsZero
 
 popd

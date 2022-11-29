@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<SourceGeneratorBasePath Condition="'$(SourceGeneratorBasePath)'==''">..\</SourceGeneratorBasePath>
+		<SourceGeneratorBasePath Condition="'$(SourceGeneratorBasePath)'==''">.\</SourceGeneratorBasePath>
 		<UnoUIMSBuildTasksTargetPath Condition="'$(UnoUIMSBuildTasksTargetPath)'==''"></UnoUIMSBuildTasksTargetPath>
 
 		<_IsUnoPlatform>true</_IsUnoPlatform>
@@ -172,11 +172,11 @@
       If System.Collections* files are present, the package may have been overriden by an Uno.UI solution
       version before the introduction of this check.
       -->
-			<_OverrideFiles Include="$(MSBuildThisFileDirectory)../../tools/System.Collections*.dll"/>
+			<_OverrideFiles Include="$(MSBuildThisFileDirectory)../tools/System.Collections*.dll"/>
 		</ItemGroup>
 		<PropertyGroup>
 			<_warnForUnoOverride>false</_warnForUnoOverride>
-			<_warnForUnoOverride Condition="'@(_OverrideFiles)'!='' or exists('$(MSBuildThisFileDirectory)../../.packageoverride')">true</_warnForUnoOverride>
+			<_warnForUnoOverride Condition="'@(_OverrideFiles)'!='' or exists('$(MSBuildThisFileDirectory)../.packageoverride')">true</_warnForUnoOverride>
 		</PropertyGroup>
 		<Warning Condition="$(_warnForUnoOverride)"
              Text="======================================"

@@ -130,6 +130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var xamlItems = pageItems
 				.Concat(applicationDefinitionItems)
+				.Distinct()
 				.ToArray();
 
 			_xamlSourceFiles = xamlItems;

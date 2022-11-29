@@ -1,6 +1,6 @@
 ﻿var UnoAppManifest = {
 
-    splashScreenImage: "Assets/SplashScreen.png",
+    splashScreenImage: "Platforms/WebAssembly/Assets/SplashScreen.png",
     splashScreenColor: "transparent",
     displayName: "$ext_safeprojectname$"
 
