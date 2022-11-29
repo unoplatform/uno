@@ -52,14 +52,12 @@ namespace Windows.UI.Xaml
 			ObserveApplicationVisibility();
 		}
 
-		[Preserve]
 		public static int DispatchSystemThemeChange()
 		{
 			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
 			return 0;
 		}
 
-		[Preserve]
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;

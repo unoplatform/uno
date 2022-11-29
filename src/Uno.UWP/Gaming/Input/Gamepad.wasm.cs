@@ -85,7 +85,6 @@ public partial class Gamepad
 	}
 
 
-	[Preserve]
 	public static int DispatchGamepadAdded(long id)
 	{
 		Gamepad gamepad;
@@ -101,7 +100,6 @@ public partial class Gamepad
 		return 0;
 	}
 
-	[Preserve]
 	public static int DispatchGamepadRemoved(long id)
 	{
 		Gamepad gamepad;

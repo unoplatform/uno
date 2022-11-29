@@ -132,7 +132,6 @@ public partial class UIElement : DependencyObject
 	#endregion
 
 	#region Native event dispatch
-	[Preserve]
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void OnNativePointerEvent()
 	{

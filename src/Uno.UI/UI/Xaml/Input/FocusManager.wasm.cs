@@ -111,7 +111,6 @@ namespace Windows.UI.Xaml.Input
 			return true;
 		}
 
-		[Preserve]
 		public static void ReceiveFocusNative(int handle)
 		{
 			if (_isCallingFocusNative)
