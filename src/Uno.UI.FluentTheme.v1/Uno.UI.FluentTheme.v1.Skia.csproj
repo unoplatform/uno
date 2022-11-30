@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<!--
+			Set to false as a temporary workaround for https://github.com/unoplatform/uno/issues/10596
+			Remove this workaround when fixing the issue.
+		-->
+		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">

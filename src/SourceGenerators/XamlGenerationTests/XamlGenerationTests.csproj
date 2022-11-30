@@ -69,6 +69,4 @@
 
 	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'" />
 
-	<Import Project="..\..\Common.targets" />
-
 </Project>

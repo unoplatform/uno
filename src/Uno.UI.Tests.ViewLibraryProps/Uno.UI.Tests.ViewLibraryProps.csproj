@@ -54,8 +54,6 @@
 
 	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
 
-	<Import Project="..\Common.targets" />
-
 	<Import Project="..\Common_ViewLibraryProps\Globbing.props" />
 
 	<ItemGroup>

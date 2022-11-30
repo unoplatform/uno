@@ -82,8 +82,6 @@
 
 	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
 
-	<Import Project="..\Common.targets" />
-
 	<ItemGroup>
 		<EmbeddedResource Include="Windows_UI_Xaml_Markup\XamlReaderTests\*.xamltest" />
 	</ItemGroup>
