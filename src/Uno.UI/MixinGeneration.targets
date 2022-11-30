@@ -51,46 +51,20 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
 	</ItemGroup>
 
-	<Choose>
-		<When Condition="'$(_IsUnoUIProjectForMixins)'=='true'">
-			<ItemGroup>
-				<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
-					<Generator>TextTemplatingFileGenerator</Generator>
-					<LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
-				</None>
-
-				<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-					<DesignTime>True</DesignTime>
-					<AutoGen>True</AutoGen>
-					<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-				</Compile>
-				<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-					<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-				</None>
-
-				<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
-				<Compile Remove="$(MSBuildThisFileDirectory)\UI\Xaml\DependencyPropertiesImplementation.cs" />
-				<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
-				<Compile Remove="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.*.cs" />
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup>
-				<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
-					<Generator>TextTemplatingFileGenerator</Generator>
-					<LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
-				</None>
-				<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-					<DesignTime>True</DesignTime>
-					<AutoGen>True</AutoGen>
-					<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-				</Compile>
-				<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
-					<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
-				</None>
-			</ItemGroup>
-		</Otherwise>
-	</Choose>
+	<ItemGroup>
+		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>%(RecursiveDir)%(Filename).g.cs</LastGenOutput>
+		</None>
+		<Compile Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
+		</Compile>
+		<None Update="$(MSBuildThisFileDirectory)Mixins\**\*.g.cs">
+			<DependentUpon>%(RecursiveDir)$([System.String]::new(%(FileName)).Replace('.g','.tt'))</DependentUpon>
+		</None>
+	</ItemGroup>
 
 	<ItemGroup>
 		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsAndroid)" />
