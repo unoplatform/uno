@@ -451,14 +451,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-#if HAS_UNO
->>>>>>> d7217c218c (fix(flyout): Adjust DataContext propagation)
-=======
 #if HAS_UNO && !__MACOS__ // For macOS, see https://github.com/unoplatform/uno/issues/626 
->>>>>>> de49e6fadc (test: Disable some macOS runtime tests)
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Test_Flyout_Binding()
@@ -483,13 +476,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var stackPanel = content as StackPanel;
 			Assert.AreEqual("My Data Context", (stackPanel.Children[0] as TextBlock).Text);
-<<<<<<< HEAD
 #endif
 		}
-
-=======
-		}
->>>>>>> 4d14e0ba14 (chore: Adjust for uno-only tests)
 
 		[TestMethod]
 		[RunsOnUIThread]
