@@ -31,9 +31,19 @@ namespace Uno.UI.RemoteControl.Host
 
 					try
 					{
-						using (var server = new RemoteControlServer(context.RequestServices.GetService<IConfiguration>()))
+						if (context.RequestServices.GetService<IConfiguration>() is { } configuration)
 						{
-							await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+							using (var server = new RemoteControlServer(configuration))
+							{
+								await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+							}
+						}
+						else
+						{
+							if (app.Log().IsEnabled(LogLevel.Error))
+							{
+								app.Log().LogError($"Unable to find configuration service");
+							}
 						}
 					}
 					finally

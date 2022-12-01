@@ -1141,6 +1141,15 @@ namespace Windows.UI.Xaml.Controls
 			else if (element is ContentControl contentControl)
 			{
 				contentControl.ClearValue(DataContextProperty);
+
+				if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
+				{
+					contentControl.ClearValue(ContentControl.ContentTemplateProperty);
+				}
+				else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
+				{
+					contentControl.ClearValue(ContentControl.ContentTemplateSelectorProperty);
+				}
 			}
 		}
 

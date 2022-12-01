@@ -8,25 +8,13 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Build">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Framework">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Tasks.Core">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Build.Utilities.Core">
-			<Version>15.4.8</Version>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
 	</ItemGroup>
 
@@ -52,7 +40,7 @@
 	<ItemGroup>
 	  <Folder Include="external\linker\" />
 	</ItemGroup>
-	
+
 	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
 		<ItemGroup>
 			<_unoTasksFiles Include="$(OutputPath)\*.*" />
@@ -63,7 +51,6 @@
 		-->
 		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
-	<Import Project="..\..\Common.targets" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>

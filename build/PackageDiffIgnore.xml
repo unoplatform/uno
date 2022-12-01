@@ -9045,6 +9045,8 @@
 		<Methods>
 			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)" 
 					reason="Externally unused API for android layouting" />
+		<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()" 
+				reason="Window constructor does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 

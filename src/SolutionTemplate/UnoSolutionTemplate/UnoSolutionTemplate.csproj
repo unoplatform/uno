@@ -268,5 +268,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Import Project="..\..\Common.targets" />
 </Project>

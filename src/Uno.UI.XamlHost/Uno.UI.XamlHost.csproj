@@ -1,5 +1,5 @@
 <Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-  
+
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;netstandard2.0;net461</TargetFrameworks>
 	<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -7,7 +7,7 @@
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	<Deterministic>true</Deterministic>
   </PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -37,7 +37,6 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Common.targets" />
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="..\..\build\uno.winui.cross-runtime.targets"/>
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

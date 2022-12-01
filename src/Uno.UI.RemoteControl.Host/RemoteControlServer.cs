@@ -15,6 +15,7 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Messages;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -22,7 +23,7 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		private readonly Dictionary<string, IServerProcessor> _processors = new Dictionary<string, IServerProcessor>();
 
-		private WebSocket _socket;
+		private WebSocket? _socket;
 		private readonly IConfiguration _configuration;
 		private readonly AssemblyLoadContext _loadContext;
 
@@ -44,7 +45,7 @@ namespace Uno.UI.RemoteControl.Host
 		}
 
 		string IRemoteControlServer.GetServerConfiguration(string key)
-			=> _configuration[key];
+			=> _configuration[key] ?? "";
 
 		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		{
@@ -139,7 +140,17 @@ namespace Uno.UI.RemoteControl.Host
 							this.Log().LogDebug($"Discovery: Registering {processor.ProcessorType}");
 						}
 
-						RegisterProcessor((IServerProcessor)Activator.CreateInstance(processor.ProcessorType, this));
+						if (Activator.CreateInstance(processor.ProcessorType, this) is IServerProcessor serverProcessor)
+						{
+							RegisterProcessor(serverProcessor);
+						}
+						else
+						{
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().LogDebug($"Failed to create server processor {processor.ProcessorType}");
+							}
+						}
 					}
 				}
 			}
@@ -147,15 +158,25 @@ namespace Uno.UI.RemoteControl.Host
 
 		public async Task SendFrame(IMessage message)
 		{
-			await WebSocketHelper.SendFrame(
-				_socket,
-				Frame.Create(
-					1,
-					message.Scope,
-					message.Name,
-					message
-					),
-				CancellationToken.None);
+			if (_socket is not null)
+			{
+				await WebSocketHelper.SendFrame(
+					_socket,
+					Frame.Create(
+						1,
+						message.Scope,
+						message.Name,
+						message
+						),
+					CancellationToken.None);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Failed to send, no connection available");
+				}
+			}
 		}
 
 		public void Dispose()

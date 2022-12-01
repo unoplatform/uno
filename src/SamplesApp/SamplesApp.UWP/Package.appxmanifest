@@ -5,7 +5,8 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap mp rescap">
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+  IgnorableNamespaces="uap mp rescap uap2">
 
   <Identity
     Name="6c25beb3-e332-48d3-b4de-20a0b71935cd"
@@ -54,6 +55,10 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="confirmAppClose" />
+    <uap:Capability Name="appointments"/>
+    <uap:Capability Name="contacts"/>
+    <uap2:Capability Name="phoneCallHistoryPublic"/>
+    <uap:Capability Name="phoneCall"/>
     <DeviceCapability Name="location"/>
     <DeviceCapability Name="microphone"/>    
   </Capabilities>

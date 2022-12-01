@@ -50,6 +50,11 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.UnoOnly]
 		public bool ShouldForceDisableSpellCheck { get; set; } = true;
 
+		/// <summary>
+		/// Both IsReadOnly = true and IsTabStop = false make the control not receive any input.
+		/// </summary>
+		internal bool IsNativeReadOnly => IsReadOnly || !IsTabStop;
+
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
 			get
@@ -427,17 +432,13 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			// Both IsReadOnly = true and IsTabStop = false make the control
-			// not receive any input.
-			var isReadOnly = IsReadOnly || !IsTabStop;
+			_textBoxView.Focusable = IsTabStop;
+			_textBoxView.FocusableInTouchMode = IsTabStop;
+			_textBoxView.Clickable = !IsNativeReadOnly;
+			_textBoxView.LongClickable = !IsTabStop;
+			_textBoxView.SetCursorVisible(!IsNativeReadOnly);
 
-			_textBoxView.Focusable = !isReadOnly;
-			_textBoxView.FocusableInTouchMode = !isReadOnly;
-			_textBoxView.Clickable = !isReadOnly;
-			_textBoxView.LongClickable = !isReadOnly;
-			_textBoxView.SetCursorVisible(!isReadOnly);
-
-			if (isReadOnly)
+			if (IsNativeReadOnly)
 			{
 				_listener = _textBoxView.KeyListener;
 				_textBoxView.KeyListener = null;

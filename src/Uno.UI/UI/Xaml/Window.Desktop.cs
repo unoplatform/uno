@@ -17,11 +17,9 @@ namespace Windows.UI.Xaml
 	{
 		private bool _isActive;
 
-		public Window()
+		partial void InitPlatform()
 		{
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-
-			InitializeCommon();
 		}
 
 		partial void InternalActivate()

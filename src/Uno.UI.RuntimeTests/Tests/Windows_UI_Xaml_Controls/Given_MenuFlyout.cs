@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -18,6 +21,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 #if NETFX_CORE
@@ -31,13 +35,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public class Given_MenuFlyout
 	{
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Native_AppBarButton_And_Managed_Popups()
 		{
 			using (StyleHelper.UseNativeFrameNavigation())
@@ -71,9 +75,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Add_MenuFlyoutSeparator_To_MenuBarItem()
 		{
 			using (StyleHelper.UseFluentStyles())
@@ -148,9 +149,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task Verify_MenuBarItem_Bounds()
 		{
 			using (StyleHelper.UseFluentStyles())
@@ -244,6 +242,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
 		{
 			await Verify_MenuBarItem_Bounds();
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_MenuFlyoutItem_CommandChanging()
+		{
+			var SUT = new MenuBar();
+			var item = new MenuBarItem() { Title = "test item" };
+			Common.DelegateCommand command1 = null;
+			command1 = new(() => command1.CanExecuteEnabled = !command1.CanExecuteEnabled);
+			var flyoutItem = new MenuFlyoutItem
+			{
+				Command = command1,
+				Text="test flyout"
+			};
+
+			SUT.Items.Add(item);
+			item.Items.Add(flyoutItem);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			item.Invoke();
+			Assert.IsTrue(flyoutItem.IsEnabled);
+
+			await WindowHelper.WaitForLoaded(flyoutItem);
+
+			flyoutItem.InvokeClick();
+
+			// Force close the flyout as InvokeClick does not do so.
+			item.CloseMenuFlyout();
+
+			await WindowHelper.WaitForIdle();
+
+			item.Invoke();
+
+			Assert.IsFalse(flyoutItem.IsEnabled);
+
+			flyoutItem.InvokeClick();
+			item.CloseMenuFlyout();
+		}
+
+		[TestMethod]
+		public async Task When_MenuFlyout_Added_In_Opening()
+		{
+			MenuFlyout flyout = null;
+			try
+			{
+				var button = new Button() { Content = "Test" };
+				WindowHelper.WindowContent = button;
+				await WindowHelper.WaitForLoaded(button);
+				var menuItem = new MenuFlyoutItem
+				{
+					Icon = new SymbolIcon(Symbol.Home),
+					Text = "This menu item should have a home icon",
+				};
+
+				flyout = new MenuFlyout
+				{
+					Placement = FlyoutPlacementMode.Bottom,
+				};
+
+				flyout.Opening += (s2, e2) =>
+				{
+					(s2 as MenuFlyout).Items.Add(menuItem);
+				};
+
+				flyout.ShowAt(button);
+
+				await WindowHelper.WaitForLoaded(menuItem);
+
+				var presenter = flyout.GetPresenter() as MenuFlyoutPresenter;
+				Assert.IsNotNull(presenter);
+				Assert.IsTrue(presenter.GetContainsIconItems());
+			}
+			finally
+			{
+				if (flyout?.IsOpen == true)
+				{
+					flyout.Hide();
+				}
+			}
 		}
 #endif
 	}

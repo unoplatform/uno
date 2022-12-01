@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;netstandard2.0;net461</TargetFrameworks>
     <TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+
+	<!--
+		Set to false as a temporary workaround for https://github.com/unoplatform/uno/issues/10596
+		Remove this workaround when fixing the issue.
+	-->
+	<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">

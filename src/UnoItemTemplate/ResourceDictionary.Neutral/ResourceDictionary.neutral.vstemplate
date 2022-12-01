@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>ResourceDictionary</Name>
+    <Description>A Resource Dictionary without code-behind.</Description>
+    <Icon>ResourceDictionary.png</Icon>
+    <TemplateID>Uno.Neutral.CS.ResourceDictionary</TemplateID>
+    <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
+    <ProjectType>CSharp</ProjectType>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>ResourceDictionary.xaml</DefaultName>
+    <SortOrder>40</SortOrder>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem OpenInEditor="true" ReplaceParameters="true" ItemType="Page" SubType="Designer" CustomTool="MSBuild:Compile" TargetFileName="$fileinputname$.xaml">ResourceDictionary.xaml</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

@@ -1,4 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+	<PropertyGroup>
+		<_UnoRemoveReferences_BeforeTargets>
+			$(_UnoRemoveReferences_BeforeTargets);
+			FindReferenceAssembliesForReferences;
+			MarkupCompilePass1;
+		</_UnoRemoveReferences_BeforeTargets>
+	</PropertyGroup>
 
+	<Target Name="_UnoRemoveReferences"
+			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
+		<ItemGroup>
+			<_UnoReferencePathToRemove
+				Include="@(ReferencePath)"
+				Condition="'%(ReferencePath.NuGetPackageId)'=='Uno.UI' or '%(ReferencePath.NuGetPackageId)'=='Uno.WinUI'" />
+
+			<!-- Remove all uno references -->
+			<ReferencePath Remove="@(_UnoReferencePathToRemove)" />
+
+			<!-- Clear items -->
+			<_UnoReferencePathToRemove Remove="@(_UnoReferencePathToRemove)" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(PkgUno_WinUI)'!=''">
+			<!-- This must be aligned with $winuisourcepath$ in the nuspec -->
+			<ReferencePath Include="$(PkgUno_WinUI)/lib/net5.0-windows10.0.18362.0/*.dll" />
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(PkgUno_UI)'!=''">
+			<!-- This must be aligned with $winuisourcepath$ in the nuspec -->
+			<ReferencePath Include="$(PkgUno_UI)/lib/net5.0-windows10.0.18362.0/*.dll" />
+		</ItemGroup>
+	</Target>
+	
 </Project>

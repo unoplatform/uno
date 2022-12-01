@@ -1815,6 +1815,44 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.GetValue(MyDependencyObjectWithDefaultValueOverride.MyPropertyProperty));
 		}
 
+		[TestMethod]
+		public void When_FastLocal_Promoted()
+		{
+			FastLocalTestObject SUT = new();
+
+			WeakReference DoWork()
+			{
+				object instance = new();
+				var wr = new WeakReference(instance);
+				SUT.MyProperty = instance;
+
+				// Promote to full dependencypropertydetails stack, which
+				// should clear the fast local field.
+				SUT.SetValue(FastLocalTestObject.MyPropertyProperty, new object(), DependencyPropertyValuePrecedences.Animations);
+
+				// Clear the precedence to restore the local value
+				SUT.ClearValue(FastLocalTestObject.MyPropertyProperty, DependencyPropertyValuePrecedences.Animations);
+
+				// Reset the local value
+				SUT.MyProperty = null;
+				instance = null;
+
+				return wr;
+			}
+
+			var wr = DoWork();
+
+			int rounds = 0;
+			do
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+				Thread.Sleep(10);
+			} while (wr.IsAlive && rounds++ < 3);
+
+			Assert.IsFalse(wr.IsAlive);
+		}
+
 		private class MyDependencyObject : FrameworkElement
 		{
 			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(
@@ -2073,6 +2111,18 @@ namespace Uno.UI.Tests.BinderTests
 		}
 	}
 
+	public partial class FastLocalTestObject : DependencyObject
+	{
+		public object MyProperty
+		{
+			get { return (object)GetValue(MyPropertyProperty); }
+			set { SetValue(MyPropertyProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register("MyProperty", typeof(object), typeof(FastLocalTestObject), new PropertyMetadata(null));
+	}
 
 	#endregion
 }

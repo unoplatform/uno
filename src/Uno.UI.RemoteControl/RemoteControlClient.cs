@@ -245,7 +245,8 @@ namespace Uno.UI.RemoteControl
 
 			StartKeepAliveTimer();
 
-			while (await WebSocketHelper.ReadFrame(_webSocket, CancellationToken.None) is HotReload.Messages.Frame frame)
+			while (_webSocket != null
+				&& await WebSocketHelper.ReadFrame(_webSocket, CancellationToken.None) is HotReload.Messages.Frame frame)
 			{
 				if (frame.Scope == "RemoteControlServer")
 				{
@@ -335,15 +336,25 @@ namespace Uno.UI.RemoteControl
 
 		public async Task SendMessage(IMessage message)
 		{
-			await WebSocketHelper.SendFrame(
-				_webSocket,
-				HotReload.Messages.Frame.Create(
-					1,
-					message.Scope,
-					message.Name,
-					message
-				),
-				CancellationToken.None);
+			if (_webSocket != null)
+			{
+				await WebSocketHelper.SendFrame(
+					_webSocket,
+					HotReload.Messages.Frame.Create(
+						1,
+						message.Scope,
+						message.Name,
+						message
+					),
+					CancellationToken.None);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Unable send message, no connection available");
+				}
+			}
 		}
 	}
 }

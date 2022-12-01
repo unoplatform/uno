@@ -35,18 +35,15 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
 		<PackageReference Include="MSTest.TestAdapter" />
-    <PackageReference Include="MSTest.TestFramework" />
-    <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Moq">
-      <Version>4.17.2</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>1.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="Uno.SourceGenerationTasks" />
-  </ItemGroup>
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="Moq" Version="4.17.2" />
+		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="PresentationCore" />
@@ -85,19 +82,17 @@
 
 	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
 
-	<Import Project="..\Common.targets" />
-
 	<ItemGroup>
 		<EmbeddedResource Include="Windows_UI_Xaml_Markup\XamlReaderTests\*.xamltest" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="Lottie\animation.json" />
-	  <EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
-	  <EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
-	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-	  </EmbeddedResource>
+		<EmbeddedResource Include="Lottie\animation.json" />
+		<EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
+		<EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
+			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</EmbeddedResource>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
@@ -114,9 +109,9 @@
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
-	  <Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
-	  <Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
+		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
@@ -126,9 +121,6 @@
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -164,13 +156,13 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</None>
 		<None Update="ResourceLoader\Strings\en\Resources.resw">
 			<Generator>ResXFileCodeGenerator</Generator>
@@ -181,7 +173,7 @@
 			<Generator>ResXFileCodeGenerator</Generator>
 		</None>
 		<None Update="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</None>
 	</ItemGroup>
 

@@ -22,11 +22,11 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UnregisterSubView()
 		{
-			//var child = this.GetChildren()?.FirstOrDefault();
-			//if (child != null)
-			//{
-			//	RemoveChild(child);
-			//}
+			var child = this.GetChildren()?.FirstOrDefault();
+			if (child != null)
+			{
+				RemoveChild(child);
+			}
 		}
 
 		partial void RegisterSubView(View child)

@@ -1041,7 +1041,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (writer.BlockInvariant($"Loading += (s, e) => "))
 				{
-					if (_isHotReloadEnabled)
+					if (_isHotReloadEnabled && _xClassName.Symbol != null)
 
 					{
 						writer.AppendLineIndented($"var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{_xClassName.Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}>(s, \"owner\");");
@@ -2878,7 +2878,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (_xamlResourcesTrimming)
 			{
-				var styleTargetType = resource.Type.Name == "Style"
+				var styleTargetType = (resource.Type.Name == "Style" || resource.Type.Name == "ControlTemplate")
 						? resource.Members.FirstOrDefault(m => m.Member.Name == "TargetType")?.Value as string
 						: null;
 
@@ -4313,6 +4313,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 				: "";
 
+			var applyBindingParameters = _isHotReloadEnabled
+				? "__that, (___b, __that)"
+				: "___b";
+
 			if (isInsideDataTemplate)
 			{
 				var dataTypeObject = FindMember(dataTemplateObject!, "DataType", XamlConstants.XamlXmlNamespace);
@@ -4360,7 +4364,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? (object)({contextFunction}) : null, {buildBindBack()} {pathsArray}))";
+				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? (object)({contextFunction}) : null, {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
@@ -4407,7 +4411,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var bindFunction = $"___ctx is {_xClassName} ___tctx ? (object)({rawFunction}) : null";
-				return $".BindingApply(___b =>  /*defaultBindMode{GetDefaultBindMode()} {originalRawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {originalRawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 
@@ -6664,7 +6668,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var componentDefinition = new ComponentDefinition(
 				objectDefinition,
 				true,
-				$"_component_{_generationRunFileInfo.RunInfo.Index}_{CurrentScope.ComponentCount}");
+				$"_component_{CurrentScope.ComponentCount}");
 			CurrentScope.Components.Add(componentDefinition);
 
 			if (CurrentXLoadScope is { } xLoadScope)
@@ -6677,7 +6681,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition, bool isWeak)
 		{
-			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, isWeak, $"_component_{_generationRunFileInfo.RunInfo.Index}_{CurrentScope.ComponentCount}"));
+			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, isWeak, $"_component_{CurrentScope.ComponentCount}"));
 
 			if (_xLoadScopeStack.Count > 1)
 			{

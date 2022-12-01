@@ -20,6 +20,7 @@ using Microsoft.UI;
 using Windows.UI;
 using System.Text.RegularExpressions;
 using FluentAssertions.Execution;
+using System.Globalization;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -289,10 +290,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var panel = r.FindName("innerPanel") as StackPanel;
 			Assert.IsNotNull(panel);
-
-			Assert.AreEqual(0, Grid.GetRow(panel));
-			Assert.AreEqual(double.NaN, panel.Width);
-			Assert.AreEqual(double.NaN, panel.Height);
 
 			r.ForceLoaded();
 
@@ -1457,6 +1454,61 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(t1, Windows.UI.Colors.Red);
 			Assert.AreEqual(t1, b1.Color);
 		}
+
+		[TestMethod]
+		public void When_Setter_Override_From_Visual_Parent()
+		{
+			var s = GetContent(nameof(When_Setter_Override_From_Visual_Parent));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+			SUT.ForceLoaded();
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Windows.UI.Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public void When_Setter_Override_State_From_Visual_Parent()
+		{
+			var s = GetContent(nameof(When_Setter_Override_State_From_Visual_Parent));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+			SUT.ForceLoaded();
+
+			VisualStateManager.GoToState((Control)SUT.FindName("SubjectToggleButton"), "Checked", false);
+
+			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
+			Assert.IsNotNull(tb);
+			Assert.AreEqual(Windows.UI.Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public void When_ThemeResource_Inherited_multiple()
+		{
+			var s = GetContent(nameof(When_ThemeResource_Inherited_multiple));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+			SUT.ForceLoaded();
+
+
+			var border1 = (Border)SUT.FindName("border1");
+			var border2 = (Border)SUT.FindName("border2");
+
+			Assert.IsNotNull(border1);
+			Assert.IsNotNull(border2);
+
+			Assert.AreEqual(Windows.UI.Colors.Red, (border1.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Pink, (border1.BorderBrush as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Blue, (border2.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Windows.UI.Colors.Yellow, (border2.BorderBrush as SolidColorBrush)?.Color);
+		}
+    
+		[TestMethod]
+    public void When_Geometry()
+		{
+			var path = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z</Geometry>";
+			var geometry = Windows.UI.Xaml.Markup.XamlReader.Load(path) as Uno.Media.StreamGeometry;
+			Assert.IsNotNull(geometry);
+			Assert.AreEqual(FillRule.EvenOdd, geometry.FillRule);
+    }
 
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.

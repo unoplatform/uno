@@ -148,6 +148,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
+			else if (type == typeof(Media.Geometry) && unknownContentValue is string geometryStringValue)
+			{
+				var generated = Uno.Media.Parsers.ParseGeometry(geometryStringValue);
+
+				return (Media.Geometry)generated;
+			}
 			else if (
 				_genericConvertibles.Contains(type)
 				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
@@ -158,6 +164,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var instance = component ?? Activator.CreateInstance(type)!;
 				rootInstance ??= instance;
+
+				var instanceAsFrameworkElement = instance as FrameworkElement;
+
+				if (instanceAsFrameworkElement is not null)
+				{
+					instanceAsFrameworkElement.IsParsing = true;
+				}
 
 				IDisposable? TryProcessStyle()
 				{
@@ -196,6 +209,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 						ProcessNamedMember(control, instance, member, rootInstance);
 					}
 				}
+
+				instanceAsFrameworkElement?.CreationComplete();
 
 				return instance;
 			}

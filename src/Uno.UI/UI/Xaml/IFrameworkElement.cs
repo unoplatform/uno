@@ -282,25 +282,31 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if(e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
 			{
-				return FindInFlyout(name, contextFlyout);
-			}
+				// Static version here to ensure that it's not used outside of this scope
+				// where we're ensuring that we're not taking a dependency on FlyoutBase statically.
+				static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
+					=> flyoutBase switch
+					{
+						MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
+						Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
+					};
 
-			if (e is Button button && button.Flyout is Controls.Primitives.FlyoutBase buttonFlyout)
-			{
-				return FindInFlyout(name, buttonFlyout);
+				if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+				{
+					return FindInFlyout(name, contextFlyout);
+				}
+
+				if (e is Button button && button.Flyout is Controls.Primitives.FlyoutBase buttonFlyout)
+				{
+					return FindInFlyout(name, buttonFlyout);
+				}
 			}
 
 			return null;
 		}
 
-		private static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
-			=> flyoutBase switch
-			{
-				MenuFlyout f => f.Items.Select(i => i.FindName(name) as IFrameworkElement).Trim().FirstOrDefault(),
-				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
-			};
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{

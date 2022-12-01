@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>Page (Uno Platform WinUI 3)</Name>
+    <Name>Page (Uno Platform Windows App SDK)</Name>
     <Description>A Page control</Description>
-    <Icon Package="{2581426E-BF4F-4A49-A42A-20EF9D51EF49}" ID="4007" />
+	<Icon>BlankPage.png</Icon>
     <TemplateID>Uno.WinUI.CS.BlankPage</TemplateID>
     <AppliesTo>CSharp + SharedAssetsProject</AppliesTo>
     <ProjectType>CSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>BlankPage.xaml</DefaultName>
-    <SortOrder>40</SortOrder>
+    <SortOrder>20</SortOrder>
     <PreviewImage>BlankPage.png</PreviewImage>
   </TemplateData>
   <TemplateContent>

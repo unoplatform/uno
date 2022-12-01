@@ -20,7 +20,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	{
 		private static SymbolDisplayFormat _fullyQualifiedWithoutGlobal = SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
-		private readonly record struct AttachedPropertyData
+		private record AttachedPropertyData
 		{
 			public string? AttachedBackingFieldOwnerFullyQualifiedName { get; }
 			public string? AttachedBackingFieldOwnerNamespace { get; }
@@ -56,7 +56,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
-		private readonly record struct PropertyData
+		private record PropertyData
 		{
 			public string? PropertySymbolNodeContent { get; }
 
@@ -82,7 +82,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
-		private readonly record struct GenerationCandidateData
+		private record GenerationCandidateData
 		{
 			#region Attribute arguments
 			public string MetadataOptions { get; }
@@ -242,11 +242,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}
 						else if (dpCandidateData.IsAttached)
 						{
-							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData.Value, attachedPropertiesBackingFieldStatements);
+							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData, attachedPropertiesBackingFieldStatements);
 						}
 						else
 						{
-							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData.Value);
+							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData);
 						}
 					}
 				}

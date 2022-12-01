@@ -8,7 +8,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 	{
 		public const string Name = nameof(XamlLoadError);
 
-		public XamlLoadError(string filePath, string message, string stackTrace, string exceptionType)
+		public XamlLoadError(string filePath, string message, string? stackTrace, string exceptionType)
 		{
 			FilePath = filePath;
 			Message = message;
@@ -26,6 +26,6 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		public string Message { get; }
 
-		public string StackTrace { get; }
+		public string? StackTrace { get; }
 	}
 }

@@ -44,6 +44,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private INamedTypeSymbol? _dependencyObjectSymbol;
 			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private bool _xamlResourcesTrimming;
+			private bool _isUnoUISolution;
 
 			internal void Generate(GeneratorExecutionContext context)
 			{
@@ -58,7 +59,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_xamlResourcesTrimming = false;
 					}
 
-					if (validPlatform && _xamlResourcesTrimming)
+					if (!bool.TryParse(context.GetMSBuildPropertyValue("_IsUnoUISolution"), out _isUnoUISolution))
+					{
+						_isUnoUISolution = false;
+					}
+
+					if (validPlatform && (_xamlResourcesTrimming || _isUnoUISolution))
 					{
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
@@ -94,6 +100,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						bindableTypes = bindableTypes.ToArray();
 
 						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(bindableTypes));
+						context.AddSource("DependencyObjectAvailability_Debug",
+							$"""
+							/*
+							_assemblyName:{_assemblyName}
+							_namedSymbolsLookup:{_namedSymbolsLookup}
+							_dependencyObjectSymbol:{_dependencyObjectSymbol}
+							modules: {string.Join(", ", modules)}
+							modules: {string.Join(", ", modules)}
+
+							*/
+							""");
 
 						GenerateLinkerSubstitutionDefinition(bindableTypes, isApplication);
 					}
