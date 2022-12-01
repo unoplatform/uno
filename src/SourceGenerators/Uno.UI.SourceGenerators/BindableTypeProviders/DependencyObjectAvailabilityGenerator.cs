@@ -83,7 +83,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
 						_additionalLinkerHintAttributeSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
 
-						var additionalLinkerHintSymbols = FindAdditionalLinkerHints(_additionalLinkerHintAttributeSymbol, context);
+						var additionalLinkerHintSymbols = FindAdditionalLinkerHints(context);
 
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
@@ -148,17 +148,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				}
 			}
 
-			private HashSet<INamedTypeSymbol> FindAdditionalLinkerHints(INamedTypeSymbol? additionalLinkerHintAttributeSymbol, GeneratorExecutionContext context)
+			private HashSet<INamedTypeSymbol> FindAdditionalLinkerHints(GeneratorExecutionContext context)
 			{
 				HashSet<INamedTypeSymbol> types = new(SymbolEqualityComparer.Default);
 
-				if (additionalLinkerHintAttributeSymbol != null)
+				if (_additionalLinkerHintAttributeSymbol != null)
 				{
 					var attributes = context
 						.Compilation
 						.Assembly
 						.GetAttributes()
-						.Where(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, additionalLinkerHintAttributeSymbol));
+						.Where(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, _additionalLinkerHintAttributeSymbol));
 
 					foreach (var attribute in attributes)
 					{

@@ -737,7 +737,7 @@ namespace Uno.UI.DataBinding
 							}
 							else
 							{
-								_log.ErrorFormat("The type UnoGetMemberBinder is not available, likely caused by an incorrect Linker configuration.", property, type);
+								_log.ErrorFormat("The type UnoGetMemberBinder is not available, likely caused by an incorrect Linker configuration.");
 							}
 						}
 
@@ -948,7 +948,7 @@ namespace Uno.UI.DataBinding
 						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
 							&& instance is System.Dynamic.DynamicObject dynamicObject)
 						{
-							// Referencing UnoGetMemberBinder using a typeof or a generic type is enough to pull
+							// Referencing UnoSetMemberBinder using a typeof or a generic type is enough to pull
 							// the System.Dynamic containing assembly. We're using reflection to create the binder
 							// given that the full type has been kept through `DynamicDependency` provided above.
 							_unoSetMemberBindingType ??=
@@ -963,7 +963,7 @@ namespace Uno.UI.DataBinding
 							}
 							else
 							{
-								_log.ErrorFormat("The type UnoSetMemberBinder is not available, likely caused by an incorrect Linker configuration.", property, type);
+								_log.ErrorFormat("The type UnoSetMemberBinder is not available, likely caused by an incorrect Linker configuration.");
 							}
 
 						}

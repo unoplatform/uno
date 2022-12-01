@@ -185,18 +185,18 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			var features = new Dictionary<string, string>();
 
-			var originalLinkerHints = FindAvailableLinkerHints(BuildOriginalResourceSearchList());
+			var originalLinkerHints = FindAvailableLinkerHintsFromOriginalList();
 
 			var availableTypes = BuildAvailableTypes(assemblies);
 
-			foreach(var hint in originalLinkerHints)
+			foreach (var hint in originalLinkerHints)
 			{
 				features[hint] = "false";
 			}
 
 			foreach (var asm in assemblies)
 			{
-				foreach(var type in asm.MainModule.Types)
+				foreach (var type in asm.MainModule.Types)
 				{
 					// Search for dependency object types that are still available after the current
 					// linker pass.
@@ -222,7 +222,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 					if (additionalLinkerHint.ConstructorArguments[0].Value is string typeName)
 					{
-						if (availableTypes.TryGetValue(typeName, out var additionalTypes))
+						if (availableTypes.Contains(typeName))
 						{
 							features[LinkerHintsHelpers.GetPropertyAvailableName(typeName)] = "true";
 						}
@@ -232,6 +232,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			return features;
 		}
+
 
 		private bool IsDependencyObject(TypeDefinition type)
 		{
@@ -268,6 +269,16 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return output;
 		}
 
+		private List<string> FindAvailableLinkerHintsFromOriginalList()
+		{
+			var originalList = BuildOriginalResourceSearchList();
+			var originalLinkerHints = FindAvailableLinkerHints(originalList);
+
+			originalList.ForEach(a => a.Dispose());
+
+			return originalLinkerHints;
+		}
+
 		private static List<string> FindAvailableLinkerHints(List<AssemblyDefinition> assemblySearchList)
 		{
 			var hints = new List<string>();
@@ -286,20 +297,18 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return hints.Distinct().ToList();
 		}
 
-		private static Dictionary<string, List<TypeDefinition>> BuildAvailableTypes(List<AssemblyDefinition> assemblySearchList)
+		private static HashSet<string> BuildAvailableTypes(List<AssemblyDefinition> assemblySearchList)
 		{
-			Dictionary<string, List<TypeDefinition>> map = new();
+			HashSet<string> map = new();
 
 			foreach (var asm in assemblySearchList)
 			{
 				foreach(var type in asm.MainModule.Types)
 				{
-					if (!map.TryGetValue(type.FullName, out var list))
+					if (!map.Contains(type.FullName))
 					{
-						map[type.FullName] = list = new();
+						map.Add(type.FullName);
 					}
-
-					list.Add(type);
 				}
 			}
 
