@@ -2878,7 +2878,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (_xamlResourcesTrimming)
 			{
-				var styleTargetType = resource.Type.Name == "Style"
+				var styleTargetType = (resource.Type.Name == "Style" || resource.Type.Name == "ControlTemplate")
 						? resource.Members.FirstOrDefault(m => m.Member.Name == "TargetType")?.Value as string
 						: null;
 
