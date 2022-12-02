@@ -42,7 +42,7 @@ namespace Uno.Helpers
 			// The custom scheme has only lowercase ASCII letters in its name.
 			for (int i = "web+".Length; i < scheme.Length; i++)
 			{
-				if (scheme[i] is not (>= 'a' && <= 'z'))
+				if (scheme[i] is not (>= 'a' and <= 'z'))
 				{
 					throw new ArgumentException(
 						"Scheme must include only lowercase ASCII letters after " +
