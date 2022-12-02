@@ -19,6 +19,7 @@ using Uno.Conversion;
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.DataBinding
 {
@@ -55,6 +56,8 @@ namespace Uno.UI.DataBinding
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler> _getValueUnsetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string>, bool> _isEvent = new Dictionary<CachedTuple<Type, string>, bool>(CachedTuple<Type, string>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, bool>, Type?> _getPropertyType = new Dictionary<CachedTuple<Type, string, bool>, Type?>(CachedTuple<Type, string, bool>.Comparer);
+		private static Type? _unoGetMemberBindingType;
+		private static Type? _unoSetMemberBindingType;
 
 		static BindingPropertyHelper()
 		{
@@ -691,7 +694,8 @@ namespace Uno.UI.DataBinding
 					return instance => attachedPropertyGetter.Invoke(null, new[] { instance });
 				}
 
-				if(type == typeof(System.Dynamic.ExpandoObject))
+				if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+					&& type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return instance =>
 					{
@@ -707,16 +711,34 @@ namespace Uno.UI.DataBinding
 					};
 				}
 
-				if(type.Is(typeof(System.Dynamic.DynamicObject)))
+				if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+					&& type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
-					return instance =>
+					return [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UnoGetMemberBinder))] (instance) =>
 					{
-						if (
-							instance is System.Dynamic.DynamicObject dynamicObject
-							&& dynamicObject.TryGetMember(new UnoGetMemberBinder(property, true), out var binderValue)
-						)
+						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+							&& instance is System.Dynamic.DynamicObject dynamicObject)
 						{
-							return binderValue;
+							// Referencing UnoGetMemberBinder using a typeof or a generic type is enough to pull
+							// the System.Dynamic containing assembly. We're using reflection to create the binder
+							// given that the full type has been kept through `DynamicDependency` provided above.
+							_unoGetMemberBindingType ??=
+								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoGetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
+								?? throw new InvalidOperationException();
+
+							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, true);
+
+							if(binder is not null)
+							{
+								if (dynamicObject.TryGetMember(binder, out var binderValue))
+								{
+									return binderValue;
+								}
+							}
+							else
+							{
+								_log.ErrorFormat("The type UnoGetMemberBinder is not available, likely caused by an incorrect Linker configuration.");
+							}
 						}
 
 						return null;
@@ -905,7 +927,8 @@ namespace Uno.UI.DataBinding
 					}
 				}
 
-				if (type == typeof(System.Dynamic.ExpandoObject))
+				if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
+					&& type == typeof(System.Dynamic.ExpandoObject))
 				{
 					return (instance, value) =>
 					{
@@ -917,13 +940,32 @@ namespace Uno.UI.DataBinding
 				}
 
 
-				if (type.Is(typeof(System.Dynamic.DynamicObject)))
+				if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+					&& type.Is(typeof(System.Dynamic.DynamicObject)))
 				{
-					return (instance, value) =>
+					return [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(UnoSetMemberBinder))] (instance, value) =>
 					{
-						if (instance is System.Dynamic.DynamicObject dynamicObject)
+						if (__LinkerHints.Is_System_Dynamic_DynamicObject_Available
+							&& instance is System.Dynamic.DynamicObject dynamicObject)
 						{
-							dynamicObject.TrySetMember(new UnoSetMemberBinder(property, true), value);
+							// Referencing UnoSetMemberBinder using a typeof or a generic type is enough to pull
+							// the System.Dynamic containing assembly. We're using reflection to create the binder
+							// given that the full type has been kept through `DynamicDependency` provided above.
+							_unoSetMemberBindingType ??=
+								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoSetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
+								?? throw new InvalidOperationException();
+
+							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, true);
+
+							if (binder is not null)
+							{
+								dynamicObject.TrySetMember(binder, value);
+							}
+							else
+							{
+								_log.ErrorFormat("The type UnoSetMemberBinder is not available, likely caused by an incorrect Linker configuration.");
+							}
+
 						}
 					};
 				}

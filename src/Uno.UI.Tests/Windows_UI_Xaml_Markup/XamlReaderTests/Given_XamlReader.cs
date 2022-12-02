@@ -554,7 +554,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var link = tb1.Inlines.OfType<Hyperlink>().Single();
 			link.NavigateUri.ToString().Should().Be("http://www.site.com/");
 			link.Inlines.Single().Should().BeOfType<Run>();
-			((Run) link.Inlines.Single()).Text.Should().Be("Nav");
+			((Run)link.Inlines.Single()).Text.Should().Be("Nav");
 
 			var tb2 = r.FindName("tb02") as TextBlock;
 
@@ -728,7 +728,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsTrue((bool)tb1.IsChecked);
 			Assert.IsTrue((bool)tb2.IsChecked);
 		}
-		
+
 		[TestMethod]
 		public void When_GridRowDefinitions()
 		{
@@ -835,12 +835,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_ImplicitStyle_WithoutKey()
 		{
-			Assert.ThrowsException<InvalidOperationException>(() => {
+			Assert.ThrowsException<InvalidOperationException>(() =>
+			{
 				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
 				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 			});
 		}
-		
+
 		[TestMethod]
 		public void When_NonDependencyPropertyAssignable()
 		{
@@ -854,7 +855,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual("42", inner.Tag);
 			Assert.AreEqual(43, inner.MyProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_NonDependencyProperty_Binding()
 		{
@@ -1144,7 +1145,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				Assert.AreEqual(24, owner.Test.Value);
 			}
 		}
-		
+
 		[TestMethod]
 		public void When_xName_Reload()
 		{
@@ -1500,15 +1501,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(Windows.UI.Colors.Blue, (border2.Background as SolidColorBrush)?.Color);
 			Assert.AreEqual(Windows.UI.Colors.Yellow, (border2.BorderBrush as SolidColorBrush)?.Color);
 		}
-    
+
 		[TestMethod]
-    public void When_Geometry()
+		public void When_Geometry()
 		{
 			var path = "<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z</Geometry>";
 			var geometry = Windows.UI.Xaml.Markup.XamlReader.Load(path) as Uno.Media.StreamGeometry;
 			Assert.IsNotNull(geometry);
 			Assert.AreEqual(FillRule.EvenOdd, geometry.FillRule);
-    }
+		}
 
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
@@ -1516,7 +1517,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		/// <param name="sanitizedXaml">Xaml with single or double quots</param>
 		/// <param name="defaultXmlns">The default xmlns to inject; use null to not inject one.</param>
 		private T LoadXaml<T>(string sanitizedXaml, string defaultXmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation") where T : class =>
-			LoadXaml<T>(sanitizedXaml, new Dictionary<string, string>{ [string.Empty] = defaultXmlns });
+			LoadXaml<T>(sanitizedXaml, new Dictionary<string, string> { [string.Empty] = defaultXmlns });
 
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
