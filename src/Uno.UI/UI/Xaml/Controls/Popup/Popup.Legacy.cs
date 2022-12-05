@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 			get => GetHorizontalOffsetValue();
 			set => SetHorizontalOffsetValue(value);
 		}
-		private new void OnHorizontalOffsetChanged(double oldValue, double newValue)
+		private void OnHorizontalOffsetChanged(double oldValue, double newValue)
 			=> base.HorizontalOffset = newValue;
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0, LocalCache = false, ChangedCallback = true)]
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetVerticalOffsetValue(value);
 		}
 
-		private new void OnVerticalOffsetChanged(double oldValue, double newValue)
+		private void OnVerticalOffsetChanged(double oldValue, double newValue)
 			=> base.VerticalOffset = newValue;
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0, LocalCache = false, ChangedCallback = true)]

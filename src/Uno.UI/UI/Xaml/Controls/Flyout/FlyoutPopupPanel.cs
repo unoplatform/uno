@@ -33,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
 
 		internal override FlyoutBase Flyout => _flyout;
+
+		protected override int PopupPlacementTargetMargin => 5;
 	}
 }
 #endif

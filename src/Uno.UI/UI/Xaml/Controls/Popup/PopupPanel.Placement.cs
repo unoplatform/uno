@@ -63,8 +63,9 @@ partial class PopupPanel
 	/// <summary>
 	/// This value is an arbitrary value for the placement of
 	/// a popup below its anchor.
+	/// TODO: To be removed in favor of HorizontalOffset and VerticalOffset.
 	/// </summary>
-	protected virtual int PopupPlacementTargetMargin => 5;
+	protected virtual int PopupPlacementTargetMargin => 0;
 
 	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 		=> InvalidateMeasure();
@@ -149,23 +150,23 @@ partial class PopupPanel
 			{
 				case FlyoutBase.MajorPlacementMode.Top:
 					finalPosition = new Point(
-						x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
-						y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height);
+						x: anchorRect.Left + halfAnchorWidth - halfChildWidth + popup.HorizontalOffset,
+						y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Bottom:
 					finalPosition = new Point(
-						x: anchorRect.Left + halfAnchorWidth - halfChildWidth,
-						y: anchorRect.Bottom + PopupPlacementTargetMargin);
+						x: anchorRect.Left + halfAnchorWidth - halfChildWidth + popup.HorizontalOffset,
+						y: anchorRect.Bottom + PopupPlacementTargetMargin + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Left:
 					finalPosition = new Point(
-						x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width,
-						y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
+						x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width + popup.HorizontalOffset,
+						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Right:
 					finalPosition = new Point(
-						x: anchorRect.Right + PopupPlacementTargetMargin,
-						y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
+						x: anchorRect.Right + PopupPlacementTargetMargin + popup.HorizontalOffset,
+						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
 #if __IOS__ || __ANDROID__

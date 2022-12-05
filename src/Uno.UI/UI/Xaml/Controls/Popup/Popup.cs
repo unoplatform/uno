@@ -107,12 +107,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel);
 
-		partial void OnVerticalOffsetChangedPartial(double oldVerticalOffset, double newVerticalOffset)
-			=> PopupPanel?.InvalidateMeasure();
-
-		partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset)
-			=> PopupPanel?.InvalidateMeasure();
-
 		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
 			base.UpdateThemeBindings(updateReason);
@@ -156,7 +150,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(PlacementTarget),
 				typeof(FrameworkElement),
 				typeof(Popup),
-				new FrameworkPropertyMetadata(default(FrameworkElement)));
+				new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsArrange));
 
 		/// <summary>
 		/// Gets or sets the preferred placement to be used for the popup, in relation to its placement target.
@@ -175,7 +169,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(DesiredPlacement),
 				typeof(PopupPlacementMode),
 				typeof(Popup),
-				new FrameworkPropertyMetadata(default(PopupPlacementMode)));
+				new FrameworkPropertyMetadata(default(PopupPlacementMode), FrameworkPropertyMetadataOptions.AffectsArrange));
 
 		/// <summary>
 		/// Gets the actual placement of the popup, in relation to its placement target.
@@ -195,10 +189,48 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
+		/// Gets or sets the distance between the left side of the application window and the left side of the popup.
+		/// </summary>
+		public double HorizontalOffset
+		{
+			get => (double)GetValue(HorizontalOffsetProperty);
+			set => SetValue(HorizontalOffsetProperty, value);
+		}
+
+		/// <summary>
+		/// Gets the identifier for the HorizontalOffset dependency property.
+		/// </summary>
+		public static DependencyProperty HorizontalOffsetProperty { get; } =
+			DependencyProperty.Register(
+				nameof(HorizontalOffset),
+				typeof(double),
+				typeof(Popup),
+				new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+		/// <summary>
+		/// Gets or sets the distance between the top of the application window and the top of the popup.
+		/// </summary>
+		public double VerticalOffset
+		{
+			get => (double)GetValue(VerticalOffsetProperty);
+			set => SetValue(VerticalOffsetProperty, value);
+		}
+
+		/// <summary>
+		/// Gets the identifier for the VerticalOffset dependency property.
+		/// </summary>
+		public static DependencyProperty VerticalOffsetProperty { get; } =
+			DependencyProperty.Register(
+				nameof(VerticalOffset),
+				typeof(double),
+				typeof(Popup),
+				new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+		/// <summary>
 		/// Raised when the ActualPlacement property changes.
 		/// </summary>
 		public event EventHandler<object> ActualPlacementChanged;
-
+		
 		private void ApplyLightDismissOverlayMode()
 		{
 			if (PopupPanel != null)

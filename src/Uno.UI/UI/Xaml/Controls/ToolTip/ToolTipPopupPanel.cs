@@ -10,5 +10,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Background = null; // No light dismiss for tooltip, dismiss is managed by the cursor location
 		}
+
+		protected override int PopupPlacementTargetMargin => 5;
 	}
 }
