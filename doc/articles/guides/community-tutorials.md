@@ -11,4 +11,5 @@ This page lists links our community provided tutorials.
 - [Uno Platform - Build a Todo App - Part 5](https://steven-giesel.com/blogPost/2c025ac6-d67f-45ec-a616-009e0285c999), by Steven Giesel
 - [Uno Platform on Surface Duo](https://devblogs.microsoft.com/surface-duo/tag/uno-platform/), by Craig Dunn
 - [Introduction to Uno Platform](https://ronicasingh.hashnode.dev/introduction-to-uno-platform), by Ronica Singh
+- [Creating your First Uno Platform Application](https://ronicasingh.hashnode.dev/creating-your-first-uno-platform-application), by Ronica Singh
 - _Create a PR tp add yours here!_
