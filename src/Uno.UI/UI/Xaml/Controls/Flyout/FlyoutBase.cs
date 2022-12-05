@@ -48,6 +48,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private bool m_isPositionedForDateTimePicker;
 
+		private bool m_openingCanceled;
+
 		[NotImplemented]
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
@@ -244,11 +246,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void Hide(bool canCancel)
 		{
-			if (!IsOpen)
-			{
-				return;
-			}
-
 			if (canCancel)
 			{
 				bool cancel = false;
@@ -258,6 +255,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					return;
 				}
 			}
+
+			m_openingCanceled = true;
 
 			Close();
 			IsOpen = false;
@@ -340,7 +339,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			OnOpening();			
+			OnOpening();
+
+			if (m_openingCanceled)
+			{
+				return;
+			}
+
 			Open();
 			SynchronizeContentTemplatedParent();
 			IsOpen = true;
@@ -369,7 +374,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				content.TemplatedParent = TemplatedParent;
 			}
 		}
-		
+
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;
@@ -387,6 +392,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpening()
 		{
+			m_openingCanceled = false;
 			Opening?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -683,7 +689,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//		// Nudge down if necessary to avoid the exclusion rect
 			//		if (!RectUtil.AreDisjoint(m_exclusionRect, { (float)(horizontalOffset), (float)(verticalOffset), presenterSize.Width, presenterSize.Height }))
-   //         {
+			//         {
 			//			verticalOffset = m_exclusionRect.Y + m_exclusionRect.Height;
 			//		}
 			//	}
@@ -773,7 +779,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					//// Nudge down if necessary to avoid the exclusion rect
 					//if (!RectUtil.AreDisjoint(m_exclusionRect, { (float)(horizontalOffset), (float)(verticalOffset), presenterSize.Width, presenterSize.Height }))
-     //       {
+					//       {
 					//	verticalOffset = m_exclusionRect.Y + m_exclusionRect.Height;
 					//}
 				}
