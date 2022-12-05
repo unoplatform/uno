@@ -9,4 +9,9 @@ public partial class IRawElementProviderSimple : DependencyObject
 	internal IRawElementProviderSimple()
 	{
 	}
+
+	internal IRawElementProviderSimple(AutomationPeer automationPeer) =>
+		AutomationPeer = automationPeer;
+
+	internal AutomationPeer? AutomationPeer { get; set; }
 }
