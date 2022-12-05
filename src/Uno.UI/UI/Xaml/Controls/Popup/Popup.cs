@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(DesiredPlacement),
 				typeof(PopupPlacementMode),
 				typeof(Popup),
-				new FrameworkPropertyMetadata(default(PopupPlacementMode), FrameworkPropertyMetadataOptions.AffectsArrange));
+				new FrameworkPropertyMetadata(PopupPlacementMode.Auto, FrameworkPropertyMetadataOptions.AffectsArrange));
 
 		/// <summary>
 		/// Gets the actual placement of the popup, in relation to its placement target.
