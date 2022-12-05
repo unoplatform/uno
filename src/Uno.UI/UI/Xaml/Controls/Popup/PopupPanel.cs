@@ -125,7 +125,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else if (Popup.CustomLayouter == null)
 			{
-				if (Popup.PlacementTarget is not null
+				// TODO: For now, the layouting logic for DatePickerFlyout does not correctly work
+				// against the placement target approach.
+				if (Popup.AssociatedFlyout is not DatePickerFlyout &&
+					Popup.PlacementTarget is not null
 #if __ANDROID__ || __IOS__
 					|| NativeAnchor is not null
 #endif
