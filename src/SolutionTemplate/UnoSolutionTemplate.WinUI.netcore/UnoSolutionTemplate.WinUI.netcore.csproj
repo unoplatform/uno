@@ -115,7 +115,7 @@
     <None Include="Mobile\Platforms\Android\MainActivity.Android.cs" />
     <None Include="Mobile\Platforms\iOS\Main.iOS.cs" />
     <None Include="Mobile\Platforms\MacCatalyst\Main.maccatalyst.cs" />
-    <Compile Include="Mobile\Platforms\macOS\Main.macOS.cs" />
+    <None Include="Mobile\Platforms\macOS\Main.macOS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
