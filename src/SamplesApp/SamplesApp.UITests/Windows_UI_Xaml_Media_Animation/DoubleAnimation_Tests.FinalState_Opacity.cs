@@ -27,7 +27,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 		[ActivePlatforms(Platform.Browser)] // Disabled for Android: https://github.com/unoplatform/uno/issues/9080
 		public void When_Opacity_Paused_With_FillBehaviorStop_Then_Hold() => TestOpacityFinalState();
 
-		[Test] [AutoRetry] public void When_Opacity_Paused_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Disabled for Android: https://github.com/unoplatform/uno/issues/9080
+		public void When_Opacity_Paused_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
+		
 		[Test] [AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
 		[Test] [AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorHold_Then_Rollback() => TestOpacityFinalState();
 
