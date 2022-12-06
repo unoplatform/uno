@@ -34,6 +34,10 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{
+		// Creates a unique native CGColor for the transparent color, and make sure to keep a strong ref on it
+		// https://github.com/unoplatform/uno/issues/10283
+		private static readonly CGColor _transparent = Colors.Transparent;
+
 		private LayoutState _previousLayoutState;
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
@@ -183,7 +187,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else
 				{
-					backgroundLayer.FillColor = Colors.Transparent;
+					backgroundLayer.FillColor = _transparent;
 				}
 
 				outerLayer.Path = path;
@@ -200,6 +204,10 @@ namespace Windows.UI.Xaml.Shapes
 					{
 						outerLayer.StrokeColor = color;
 						outerLayer.FillColor = color;
+
+						// Make sure to hold native object ref until it has been retained by native itself
+						// https://github.com/unoplatform/uno/issues/10283
+						GC.KeepAlive(color);
 					})
 					.DisposeWith(disposables);
 				}
@@ -279,12 +287,13 @@ namespace Windows.UI.Xaml.Shapes
 
 					// This is required because changing the CornerRadius changes the background drawing
 					// implementation and we don't want a rectangular background behind a rounded background.
-					Disposable.Create(() => backgroundLayer.FillColor = null)
+					Disposable
+						.Create(() => backgroundLayer.FillColor = null)
 						.DisposeWith(disposables);
 				}
 				else
 				{
-					backgroundLayer.FillColor = Colors.Transparent;
+					backgroundLayer.FillColor = _transparent;
 				}
 
 				if (borderThickness != Thickness.Empty)
