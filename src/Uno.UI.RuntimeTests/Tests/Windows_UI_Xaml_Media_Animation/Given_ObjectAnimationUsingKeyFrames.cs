@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using FluentAssertions;
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
+namespace Uno.UI.RuntimeTests
 {
 	[TestClass]
 	[RunsOnUIThread]
