@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ListViewPages;
+using Uno.UI.RuntimeTests.ListViewPages;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
