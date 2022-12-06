@@ -289,6 +289,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task Border_CornerRadius_Content_Clipping()
+		{
+			const string blue = "#FF0000FF";
+
+#if __MACOS__
+			Assert.Inconclusive(); //MACOS interprets colors differently
+#endif
+
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Border() { Background = new SolidColorBrush(Colors.Blue) };
+			var inner = new Border() { CornerRadius = CornerRadiusHelper.FromUniformRadius(40), Width = 80, Height = 80 };
+			inner.Child = new Windows.UI.Xaml.Shapes.Rectangle() { Fill = new SolidColorBrush(Colors.Red), Width = 80, Height = 80 };
+			SUT.Child = inner;
+			
+			var snapshot = await TakeScreenshot(SUT);
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At($"top-left", 4, 4)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue),
+				ExpectedPixels
+					.At($"top-right", 76, 4)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue),
+				ExpectedPixels
+					.At($"bottom-left", 4, 76)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue),
+				ExpectedPixels
+					.At($"bottom-right", 76, 76)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue)
+			);
+		}
+
+		[TestMethod]
 		public async Task Border_LinearGradient()
 		{
 #if __MACOS__
