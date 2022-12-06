@@ -527,7 +527,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				Frame = fullArea,
 				Mask = fillMask,
-				BackgroundColor = new CGColor(0, 0, 0, 0),
+				BackgroundColor = _transparent,
 				MasksToBounds = true,
 			};
 
@@ -565,7 +565,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				Frame = fullArea,
 				Mask = fillMask,
-				BackgroundColor = new CGColor(0, 0, 0, 0),
+				BackgroundColor = _transparent,
 				MasksToBounds = true,
 			};
 
