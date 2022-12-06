@@ -65,8 +65,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			SUT.Measure(new Size(1000, 1000));
 		}
-<<<<<<< HEAD
-=======
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -96,6 +94,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.ActualWidth);
 			Assert.AreNotEqual(0, SUT.ActualHeight);
 		}
->>>>>>> de49e6fadc (test: Disable some macOS runtime tests)
 	}
 }
