@@ -111,10 +111,12 @@ namespace Windows.Networking.Connectivity
 
 #pragma warning disable CS0618 // Type or member is obsolete
 							var info = manager.GetNetworkInfo(network);
-#pragma warning restore CS0618 // Type or member is obsolete
-
-#pragma warning disable CS0618 // Type or member is obsolete
-							if (info == null || !info.IsAvailable)
+							var isInternetNetworkConnectionType = info?.Type is
+								ConnectivityType.Ethernet or
+								ConnectivityType.Wifi or
+								ConnectivityType.Mobile;
+							
+							if (info is null || !info.IsAvailable || !isInternetNetworkConnectionType)
 #pragma warning restore CS0618 // Type or member is obsolete
 								continue;
 
