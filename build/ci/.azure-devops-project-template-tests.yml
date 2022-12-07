@@ -21,7 +21,6 @@ jobs:
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
-  - template: templates/update-vs-components.yml
 
   - template: templates/install-windows-sdk.yml
     parameters:
@@ -53,7 +52,6 @@ jobs:
 
   - template: templates/gitversion.yml
   - template: templates/dotnet6-install-windows.yml
-  - template: templates/update-vs-components.yml
 
   - template: templates/install-windows-sdk.yml
     parameters:
