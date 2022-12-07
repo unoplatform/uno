@@ -19,28 +19,32 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project TargetFileName="$ext_safeprojectname$.Wasm.csproj" File="UnoQuickStart.Wasm.csproj" ReplaceParameters="true">
-			<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
-			<ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
-	  		<ProjectItem ReplaceParameters="true" TargetFileName="manifest.webmanifest">manifest.webmanifest</ProjectItem>
-			<Folder Name="Properties" TargetFolderName="Properties">
-				<ProjectItem TargetFileName="launchSettings.json" ReplaceParameters="true">launchSettings.json</ProjectItem>
-			</Folder>
-			<Folder Name="Assets" TargetFolderName="Assets">
-				<ProjectItem TargetFileName="AppIcon-16.png" ReplaceParameters="false">AppIcon-16.png</ProjectItem>
-				<ProjectItem TargetFileName="AppIcon-32.png" ReplaceParameters="false">AppIcon-32.png</ProjectItem>
-				<ProjectItem TargetFileName="AppIcon-128.png" ReplaceParameters="false">AppIcon-128.png</ProjectItem>
-				<ProjectItem TargetFileName="AppIcon-256.png" ReplaceParameters="false">AppIcon-256.png</ProjectItem>
-				<ProjectItem TargetFileName="AppIcon-512.png" ReplaceParameters="false">AppIcon-512.png</ProjectItem>
-				<ProjectItem TargetFileName="SplashScreen.png" ReplaceParameters="false">SplashScreen.png</ProjectItem>
-			</Folder>
-			<Folder Name="wwwroot" TargetFolderName="wwwroot">
-				<ProjectItem ReplaceParameters="true">web.config</ProjectItem>
-			</Folder>
-			<Folder Name="WasmCSS" TargetFolderName="WasmCSS">
-				<ProjectItem ReplaceParameters="true" TargetFileName="Fonts.css">Fonts.css</ProjectItem>
-			</Folder>
-			<Folder Name="WasmScripts" TargetFolderName="WasmScripts">
-				<ProjectItem ReplaceParameters="true" TargetFileName="AppManifest.js">AppManifest.js</ProjectItem>
+			<Folder Name="Platforms" TargetFolderName="Platforms">
+				<Folder Name="WebAssembly" TargetFolderName="WebAssembly">
+					<Folder Name="Properties" TargetFolderName="Properties">
+						<ProjectItem TargetFileName="launchSettings.json" ReplaceParameters="true">launchSettings.json</ProjectItem>
+					</Folder>
+					<Folder Name="Assets" TargetFolderName="Assets">
+						<ProjectItem TargetFileName="AppIcon-16.png" ReplaceParameters="false">AppIcon-16.png</ProjectItem>
+						<ProjectItem TargetFileName="AppIcon-32.png" ReplaceParameters="false">AppIcon-32.png</ProjectItem>
+						<ProjectItem TargetFileName="AppIcon-128.png" ReplaceParameters="false">AppIcon-128.png</ProjectItem>
+						<ProjectItem TargetFileName="AppIcon-256.png" ReplaceParameters="false">AppIcon-256.png</ProjectItem>
+						<ProjectItem TargetFileName="AppIcon-512.png" ReplaceParameters="false">AppIcon-512.png</ProjectItem>
+						<ProjectItem TargetFileName="SplashScreen.png" ReplaceParameters="false">SplashScreen.png</ProjectItem>
+					</Folder>
+					<Folder Name="wwwroot" TargetFolderName="wwwroot">
+						<ProjectItem ReplaceParameters="true">web.config</ProjectItem>
+					</Folder>
+					<Folder Name="WasmCSS" TargetFolderName="WasmCSS">
+						<ProjectItem ReplaceParameters="true" TargetFileName="Fonts.css">Fonts.css</ProjectItem>
+					</Folder>
+					<Folder Name="WasmScripts" TargetFolderName="WasmScripts">
+						<ProjectItem ReplaceParameters="true" TargetFileName="AppManifest.js">AppManifest.js</ProjectItem>
+					</Folder>
+					<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
+					<ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
+	  				<ProjectItem ReplaceParameters="true" TargetFileName="manifest.webmanifest">manifest.webmanifest</ProjectItem>
+				</Folder>
 			</Folder>
 		</Project>
 	</TemplateContent>

@@ -19,18 +19,16 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project TargetFileName="$ext_safeprojectname$.Shared.shproj" File="UnoQuickStart.Shared.shproj" ReplaceParameters="true">
-
 			<Folder Name="Assets" TargetFolderName="Assets">
-				<ProjectItem TargetFileName="SharedAssets.md" ReplaceParameters="false">SharedAssets.md</ProjectItem>
+				<Folder Name="Fonts" TargetFolderName="Fonts">
+					<ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
+				</Folder>
 			</Folder>
 			<Folder Name="Strings" TargetFolderName="Strings">
 				<Folder Name="en" TargetFolderName="en">
 					<ProjectItem TargetFileName="Resources.resw" ReplaceParameters="true">Resources.resw</ProjectItem>
 				</Folder>
 			</Folder>
-
-			<ProjectItem TargetFileName="$ext_safeprojectname$.Shared.globs.props" ReplaceParameters="true" ItemType="None">UnoQuickStart.Shared.globs.props</ProjectItem>
-			<ProjectItem TargetFileName="$ext_safeprojectname$.Shared.projitems" ReplaceParameters="true">UnoQuickStart.Shared.projitems</ProjectItem>
 			<ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">app.xaml</ProjectItem>
 			<ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">app.xaml.cs</ProjectItem>
 			<ProjectItem TargetFileName="MainPage.xaml" ReplaceParameters="true">mainpage.xaml</ProjectItem>

@@ -5,6 +5,8 @@
 		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
 		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
+
+		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -15,30 +17,26 @@
 
 		<!--
 		IL Linking is disabled in Debug configuration.
-		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-WebAssembly.html
 		-->
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Assets\SplashScreen.png" />
+		<Content Include="Platforms\WebAssembly\Assets\SplashScreen.png" />
 		$if$($UseWebAssemblyManifestJson$ == True)
-		<Content Include="manifest.webmanifest" />
-		<Content Include="Assets\AppIcon-*.png" />
+		<Content Include="Platforms\WebAssembly\manifest.webmanifest" />
+		<Content Include="Platforms\WebAssembly\Assets\AppIcon-*.png" />
 		$endif$
 	</ItemGroup>
 
 	<ItemGroup>
-		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
+		<EmbeddedResource Include="Platforms\WebAssembly\WasmCSS\Fonts.css" />
+		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmCSS\Fonts.css" />
-		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<LinkerDescriptor Include="LinkerConfig.xml" />
+		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,23 +46,20 @@
 
 		You can safely remove this ItemGroup completely.
 		-->
-		<None Include="Program.cs" />
-		<None Include="LinkerConfig.xml" />
-		<None Include="wwwroot\web.config" />
+		<None Include="Platforms\WebAssembly\Program.cs" />
+		<None Include="Platforms\WebAssembly\LinkerConfig.xml" />
+		<None Include="Platforms\WebAssembly\wwwroot\web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-		<PackageReference Include="Uno.WinUI.WebAssembly" Version="4.2.6" />
-		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
+		<PackageReference Include="Uno.WinUI.WebAssembly" Version="4.7.0-dev.417" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.417" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.417" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.3" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.3" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
-
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
-
 </Project>

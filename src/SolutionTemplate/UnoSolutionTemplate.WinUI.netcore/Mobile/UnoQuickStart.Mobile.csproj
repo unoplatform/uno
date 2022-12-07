@@ -13,6 +13,17 @@
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
 
+		<!-- Display name -->
+		<ApplicationTitle>$ext_safeprojectname$</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.$ext_safeprojectname$</ApplicationId>
+		<ApplicationIdGuid>$guid1$</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
 		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
 		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
 
@@ -21,6 +32,7 @@
 		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != '$basetargetframework$-maccatalyst' and '$(TargetFramework)' != '$basetargetframework$-macos'">True</UseInterpreter>-->
 
 		<IsUnoHead>true</IsUnoHead>
+		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">14.0</SupportedOSPlatformVersion>
@@ -36,11 +48,11 @@
   	</PropertyGroup>
 
   	<ItemGroup>
-    	<PackageReference Include="Uno.WinUI" Version="4.2.6" />
-		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
+    	<PackageReference Include="Uno.WinUI" Version="4.7.0-dev.417" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.417" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.417" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.7.0-dev.417" />
 	</ItemGroup>
 
 	<Choose>
@@ -51,7 +63,7 @@
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 			</ItemGroup>
 			<ItemGroup>
-				    <AndroidEnvironment Include="Android/environment.conf" />
+				<AndroidEnvironment Include="Platforms/Android/environment.conf" />
 			</ItemGroup>
 		</When>
 
@@ -96,6 +108,4 @@
 			</PropertyGroup>
 		</When>
 	</Choose>
-
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 </Project>

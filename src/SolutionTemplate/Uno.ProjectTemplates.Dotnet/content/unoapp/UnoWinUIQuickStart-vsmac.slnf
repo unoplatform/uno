@@ -2,18 +2,16 @@
   "solution": {
     "path": "UnoWinUIQuickStart.sln",
     "projects": [
-		"UnoWinUIQuickStart.Shared\\UnoWinUIQuickStart.Shared.shproj",
-
 		#//#if (mobile)
-		"UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj",
+		"UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Mobile.csproj",
 		#//#endif
 
 		#//#if (WebAssembly)
-		"UnoWinUIQuickStart.Wasm\\UnoWinUIQuickStart.Wasm.csproj",
+		"UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Wasm.csproj",
 		#//#endif
 
 		#//#if (skia-gtk)
-		"UnoWinUIQuickStart.Skia.Gtk\\UnoWinUIQuickStart.Skia.Gtk.csproj",
+		"UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Skia.Gtk.csproj",
 		#//#endif
     ]
   }

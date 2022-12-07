@@ -84,7 +84,7 @@
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
-		<Content Include="content\unolib-crossruntime\**">
+		<Content Include="content\unolib-crossruntime\**" Exclude="content\unolib-crossruntime\**\bin\**;content\unolib-crossruntime\**\obj\**">
 			<PackagePath>content\unolib-crossruntime</PackagePath>
 			<Pack>true</Pack>
 		</Content>
@@ -116,11 +116,19 @@
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\*.vstemplate" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\__*.png" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\obj\**" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\bin\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\*.shproj" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\Properties\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj" />
 
-		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Shared\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Mobile\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Skia.Gtk\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Skia.Linux.FrameBuffer\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Skia.WPF\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Wasm\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\WinUI\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude);@(_UnoAppnet6WinUITemplateSingleLocationFiles)"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -263,7 +271,9 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
+		<Copy SourceFiles="@(_UnoAppnet6WinUITemplateSingleLocationFiles)" DestinationFolder="$(IntermediateTemplatePath)\UnoQuickStart.App\%(RecursiveDir)" />
 		<Copy SourceFiles="@(_UnoAppnet6WinUITemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+		<Copy SourceFiles="..\UnoSolutionTemplate.Wizard.2022\Directory.Build-netcore.props" DestinationFiles="$(IntermediateTemplatePath)\Directory.Build.props" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
 		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
@@ -415,7 +425,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.props" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.props", "*.resw" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{

@@ -3,16 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 15.0.26124.0
 
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnoWinUIQuickStart.Shared", "UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
-EndProject
-
 #//#if (mobile)
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoWinUIQuickStart.Mobile", "UnoWinUIQuickStart.Mobile\UnoWinUIQuickStart.Mobile.csproj", "{$guid2$}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoWinUIQuickStart.Mobile", "UnoWinUIQuickStart.App\UnoWinUIQuickStart.Mobile.csproj", "{$guid2$}"
 EndProject
 #//#endif
 
 #//#if (WebAssembly)
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Wasm", "UnoWinUIQuickStart.Wasm\UnoWinUIQuickStart.Wasm.csproj", "{40EA03F7-8A22-4143-B251-79BAC3EB13D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Wasm", "UnoWinUIQuickStart.App\UnoWinUIQuickStart.Wasm.csproj", "{40EA03F7-8A22-4143-B251-79BAC3EB13D2}"
 EndProject
 #//#endif
 
@@ -22,22 +19,22 @@ EndProject
 #//#endif
 
 #//#if (skia-gtk)
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.Gtk", "UnoWinUIQuickStart.Skia.Gtk\UnoWinUIQuickStart.Skia.Gtk.csproj", "{A5B8155A-118F-4794-B551-C6F3CF7E5411}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.Gtk", "UnoWinUIQuickStart.App\UnoWinUIQuickStart.Skia.Gtk.csproj", "{A5B8155A-118F-4794-B551-C6F3CF7E5411}"
 EndProject
 #//#endif
 
 #//#if (skia-wpf)
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.WPF", "UnoWinUIQuickStart.Skia.WPF\UnoWinUIQuickStart.Skia.WPF.csproj", "{$guid5$}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.WPF", "UnoWinUIQuickStart.App\UnoWinUIQuickStart.Skia.WPF.csproj", "{$guid5$}"
 EndProject
 #//#endif
 
 #//#if (winui-desktop)
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Windows", "UnoWinUIQuickStart.Windows\UnoWinUIQuickStart.Windows.csproj", "{1AA13270-F438-4864-9435-54FD806E10EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Windows", "UnoWinUIQuickStart.App\UnoWinUIQuickStart.Windows.csproj", "{1AA13270-F438-4864-9435-54FD806E10EA}"
 EndProject
 #//#endif
 
 #//#if (skia-linux-fb)
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.Linux.FrameBuffer", "UnoWinUIQuickStart.Skia.Linux.FrameBuffer\UnoWinUIQuickStart.Skia.Linux.FrameBuffer.csproj", "{761D821E-9905-4444-9ADF-76C995FE5427}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.Linux.FrameBuffer", "UnoWinUIQuickStart.App\UnoWinUIQuickStart.Skia.Linux.FrameBuffer.csproj", "{761D821E-9905-4444-9ADF-76C995FE5427}"
 EndProject
 #//#endif
 
@@ -47,7 +44,6 @@ Global
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid3$}*SharedItemsImports = 4
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{40ea03f7-8a22-4143-b251-79bac3eb13d2}*SharedItemsImports = 5
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid5$}*SharedItemsImports = 5
-		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid1$}*SharedItemsImports = 4
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid4$}*SharedItemsImports = 4
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{a5b8155a-118f-4794-b551-c6f3cf7e5411}*SharedItemsImports = 5

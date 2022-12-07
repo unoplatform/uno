@@ -17,26 +17,30 @@
 
 	<TemplateContent>
 		<Project File="UnoQuickStart.Windows.csproj" TargetFileName="$ext_safeprojectname$.Windows.csproj" ReplaceParameters="true">
-			<Folder Name="Images" TargetFolderName="Images">
-				<ProjectItem TargetFileName="LockScreenLogo.scale-200.png" ReplaceParameters="false">LockScreenLogo.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="SplashScreen.scale-200.png" ReplaceParameters="false">SplashScreen.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="Square150x150Logo.scale-200.png" ReplaceParameters="false">Square150x150Logo.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="Square44x44Logo.scale-200.png" ReplaceParameters="false">Square44x44Logo.scale-200.png</ProjectItem>
-				<ProjectItem TargetFileName="Square44x44Logo.targetsize-24_altform-unplated.png" ReplaceParameters="false">Square44x44Logo.targetsize-24_altform-unplated.png</ProjectItem>
-				<ProjectItem TargetFileName="StoreLogo.png" ReplaceParameters="false">StoreLogo.png</ProjectItem>
-				<ProjectItem TargetFileName="Wide310x150Logo.scale-200.png" ReplaceParameters="false">Wide310x150Logo.scale-200.png</ProjectItem>
-			</Folder>
-			<Folder Name="Properties" TargetFolderName="Properties">
-				<ProjectItem TargetFileName="launchSettings.json" ReplaceParameters="true">launchSettings.json</ProjectItem>
-				<Folder Name="PublishProfiles" TargetFolderName="Properties">
-					<ProjectItem TargetFileName="win10-arm64.pubxml" ReplaceParameters="false">win10-arm64.pubxml</ProjectItem>
-					<ProjectItem TargetFileName="win10-x86.pubxml" ReplaceParameters="false">win10-x86.pubxml</ProjectItem>
-					<ProjectItem TargetFileName="win10-x64.pubxml" ReplaceParameters="false">win10-x64.pubxml</ProjectItem>
+			<Folder Name="Platforms" TargetFolderName="Platforms">
+				<Folder Name="Windows" TargetFolderName="Windows">
+					<Folder Name="Images" TargetFolderName="Images">
+						<ProjectItem TargetFileName="LockScreenLogo.scale-200.png" ReplaceParameters="false">LockScreenLogo.scale-200.png</ProjectItem>
+						<ProjectItem TargetFileName="SplashScreen.scale-200.png" ReplaceParameters="false">SplashScreen.scale-200.png</ProjectItem>
+						<ProjectItem TargetFileName="Square150x150Logo.scale-200.png" ReplaceParameters="false">Square150x150Logo.scale-200.png</ProjectItem>
+						<ProjectItem TargetFileName="Square44x44Logo.scale-200.png" ReplaceParameters="false">Square44x44Logo.scale-200.png</ProjectItem>
+						<ProjectItem TargetFileName="Square44x44Logo.targetsize-24_altform-unplated.png" ReplaceParameters="false">Square44x44Logo.targetsize-24_altform-unplated.png</ProjectItem>
+						<ProjectItem TargetFileName="StoreLogo.png" ReplaceParameters="false">StoreLogo.png</ProjectItem>
+						<ProjectItem TargetFileName="Wide310x150Logo.scale-200.png" ReplaceParameters="false">Wide310x150Logo.scale-200.png</ProjectItem>
+					</Folder>
+					<Folder Name="Properties" TargetFolderName="Properties">
+						<ProjectItem TargetFileName="launchSettings.json" ReplaceParameters="true">launchSettings.json</ProjectItem>
+						<Folder Name="PublishProfiles" TargetFolderName="Properties">
+							<ProjectItem TargetFileName="win10-arm64.pubxml" ReplaceParameters="false">win10-arm64.pubxml</ProjectItem>
+							<ProjectItem TargetFileName="win10-x86.pubxml" ReplaceParameters="false">win10-x86.pubxml</ProjectItem>
+							<ProjectItem TargetFileName="win10-x64.pubxml" ReplaceParameters="false">win10-x64.pubxml</ProjectItem>
+						</Folder>
+					</Folder>
+
+					<ProjectItem TargetFileName="Package.appxmanifest" ReplaceParameters="true">Package.appxmanifest</ProjectItem>
+					<ProjectItem TargetFileName="app.manifest" ReplaceParameters="true">app.manifest</ProjectItem>
 				</Folder>
 			</Folder>
-
-			<ProjectItem TargetFileName="Package.appxmanifest" ReplaceParameters="true">Package.appxmanifest</ProjectItem>
-			<ProjectItem TargetFileName="app.manifest" ReplaceParameters="true">app.manifest</ProjectItem>
 		</Project>
 	</TemplateContent>
 	<WizardExtension>
