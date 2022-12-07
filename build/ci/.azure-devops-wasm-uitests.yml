@@ -145,12 +145,12 @@ jobs:
   strategy:
     matrix:
       net7_default:
-        SITE_SUFFIX: 'net7.0'
+        SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120000'
 
       net7_benchmarks:
-        SITE_SUFFIX: 'net7.0'
+        SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '120000'
 
