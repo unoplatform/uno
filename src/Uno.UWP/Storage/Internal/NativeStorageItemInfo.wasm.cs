@@ -5,16 +5,15 @@ using System.Runtime.Serialization;
 
 namespace Uno.Storage.Internal
 {
-	[DataContract]
 	internal class NativeStorageItemInfo
 	{
-		[DataMember(Name = "id")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("id")]
 		public Guid Id { get; set; }
 
-		[DataMember(Name = "name")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("name")]
 		public string Name { get; set; } = null!;
 
-		[DataMember(Name = "isFile")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("isFile")]
 		public bool IsFile { get; set; }
 	}
 }
