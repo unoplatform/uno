@@ -493,17 +493,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 
-		[DataContract]
 		private struct DataEntry
 		{
 #pragma warning disable CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public int id;
 
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public string kind;
 
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public string type;
 #pragma warning restore CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
 
