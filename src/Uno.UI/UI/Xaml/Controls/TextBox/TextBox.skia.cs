@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			if (ContentElement != null && ContentElement.Content != TextBoxView.DisplayBlock)
 			{
 				ContentElement.Content = TextBoxView.DisplayBlock;
+				TextBoxView.SetTextNative(Text);
 			}
 		}
 
