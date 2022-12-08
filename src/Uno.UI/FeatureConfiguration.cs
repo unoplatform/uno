@@ -408,6 +408,15 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseUWPDefaultStyles { get; set; } = true;
 
+			internal static bool _usesContentPresenterBypass;
+
+			public static void UseContentPresenterBypass()
+			{
+				_usesContentPresenterBypass = true;
+				var defaultStyle = Application.Current.Resources["ContentControlContentPresenterBypassStyle"] as Windows.UI.Xaml.Style;
+				Windows.UI.Xaml.Style.RegisterDefaultStyleForType(typeof(ContentControl), () => defaultStyle);
+			}
+
 			/// <summary>
 			/// Override the native styles usage per control type.
 			/// </summary>
