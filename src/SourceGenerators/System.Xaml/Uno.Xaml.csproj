@@ -17,6 +17,8 @@
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('net461'))">$(UnoTargetFrameworkOverride);net461</TargetFrameworks>
+		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('netstandard2.0'))">$(UnoTargetFrameworkOverride);netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
