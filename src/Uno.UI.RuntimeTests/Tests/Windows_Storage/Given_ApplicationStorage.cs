@@ -12,25 +12,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	public class Given_ApplicationStorage
 	{
 		[TestMethod]
-		public void When_FileExistsInPackage_Nested()
+		public async Task When_FileExistsInPackage_Nested()
 		{
-			var fileExists = StorageFileHelper.Exists("Assets/Fonts/uno-fluentui-assets.ttf");
+			var fileExists = await StorageFileHelper.Exists("Assets/Fonts/uno-fluentui-assets.ttf");
 
 			Assert.IsTrue(fileExists);
 		}
 
 		[TestMethod]
-		public void When_FileExistsInPackage_RootPath()
+		public async Task When_FileExistsInPackage_RootPath()
 		{
-			var fileExists = StorageFileHelper.Exists("Asset_GetFileFromApplicationUriAsync.xml");
+			var fileExists = await StorageFileHelper.Exists("Asset_GetFileFromApplicationUriAsync.xml");
 
 			Assert.IsTrue(fileExists);
 		}
 
 		[TestMethod]
-		public void When_ResourceFileExistsInPackage_Nested()
+		public async Task When_ResourceFileExistsInPackage_Nested()
 		{
-			var fileExists = StorageFileHelper.Exists("Assets/Icons/menu.png");
+			var fileExists = await StorageFileHelper.Exists("Assets/Icons/menu.png");
 
 			Assert.IsTrue(fileExists);
 		}
