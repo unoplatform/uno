@@ -1,14 +1,25 @@
-﻿using Uno.UI.Web;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Windows.Web;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the WebView.NavigationCompleted and FrameNavigationCompleted events.
+/// </summary>
+public sealed partial class WebViewNavigationCompletedEventArgs
 {
-	public sealed partial class WebViewNavigationCompletedEventArgs
-	{
-		public bool IsSuccess { get; internal set; }
-		public Uri Uri { get; internal set; }
-		public WebErrorStatus WebErrorStatus { get; internal set; }
-	}
+	/// <summary>
+	/// Gets a value that indicates whether the navigation completed successfully.
+	/// </summary>
+	public bool IsSuccess { get; internal set; }
+
+	/// <summary>
+	/// Gets the Uniform Resource Identifier (URI) of the WebView content.
+	/// </summary>
+	public Uri Uri { get; internal set; }
+
+	/// <summary>
+	/// If the navigation was unsuccessful, gets a value that indicates why.
+	/// </summary>
+	public WebErrorStatus WebErrorStatus { get; internal set; }
 }

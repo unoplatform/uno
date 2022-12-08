@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+public partial class NativeWebView : FrameworkElement
 {
-	public partial class NativeWebView : FrameworkElement
-	{
-	}
 }

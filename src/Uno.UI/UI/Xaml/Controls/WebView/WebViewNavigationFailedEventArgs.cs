@@ -1,13 +1,20 @@
-﻿using Uno.UI.Web;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Windows.Web;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the WebView.NavigationFailed event.
+/// </summary>
+public partial class WebViewNavigationFailedEventArgs
 {
-	public partial class WebViewNavigationFailedEventArgs
-	{
-		public Uri Uri { get; internal set; }
-		public WebErrorStatus WebErrorStatus { get; internal set; }
-	}
+	/// <summary>
+	/// Gets the URI that the WebView attempted to navigate to.
+	/// </summary>
+	public Uri Uri { get; internal set; }
+
+	/// <summary>
+	/// Gets the error that occurred when navigation failed.
+	/// </summary>
+	public WebErrorStatus WebErrorStatus { get; internal set; }
 }
