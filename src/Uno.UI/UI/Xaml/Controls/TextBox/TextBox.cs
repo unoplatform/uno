@@ -1096,19 +1096,12 @@ namespace Windows.UI.Xaml.Controls
 				var selectionLength = SelectionLength;
 				var currentText = Text;
 
-				if (selectionStart >= 0 && selectionLength > 0)
+				if (selectionLength > 0)
 				{
 					currentText = currentText.Remove(selectionStart, selectionLength);
 				}
 
-				if (selectionStart >= 0)
-				{
-					currentText = currentText.Insert(selectionStart, clipboardText);
-				}
-				else
-				{
-					currentText += clipboardText;
-				}
+				currentText = currentText.Insert(selectionStart, clipboardText);
 
 				Text = currentText;
 			});
