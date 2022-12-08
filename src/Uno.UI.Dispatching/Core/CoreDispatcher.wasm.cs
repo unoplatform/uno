@@ -13,7 +13,7 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class CoreDispatcher
 	{
-		internal bool IsThreadingSupported { get; }
+		internal static bool IsThreadingSupported { get; }
 			= Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_FEATURES")
 				?.Split(',').Any(v => v.Equals("threads", StringComparison.OrdinalIgnoreCase)) ?? false;
 

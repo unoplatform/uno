@@ -35,7 +35,7 @@ namespace MUXControlsTestApp.Utilities
 			var dispatcher = whichView.Dispatcher;
 			if (dispatcher.HasThreadAccess
 #if __WASM__
-				|| !dispatcher.IsThreadingSupported
+				|| !Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported
 #endif
 				)
 			{
@@ -124,7 +124,7 @@ namespace MUXControlsTestApp.Utilities
 			var dispatcher = whichView.Dispatcher;
 			if (dispatcher.HasThreadAccess
 #if __WASM__
-				|| !dispatcher.IsThreadingSupported
+				|| !Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported
 #endif
 				)
 			{
