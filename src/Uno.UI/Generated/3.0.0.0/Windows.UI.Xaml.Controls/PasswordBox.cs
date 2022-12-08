@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.SelectionFlyout.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Description.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Description.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void PasteFromClipboard()
 		{
