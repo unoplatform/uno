@@ -21,19 +21,29 @@
         private static dispatchGeoposition: (geopositionRequestResult: string, requestId: string) => number;
         private static dispatchError: (geopositionRequestResult: string, requestId: string) => number;
 
+		private static interopInitialized: boolean = false;
+		
         private static positionWatches: any;
 
         public static initialize() {
-            this.positionWatches = {};
-            if (!this.dispatchAccessRequest) {
-                this.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
-            }
-            if (!this.dispatchError) {
-                this.dispatchError = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
-            }
-            if (!this.dispatchGeoposition) {
-                this.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
-            }
+			this.positionWatches = {};
+
+			if (!Geolocator.interopInitialized) {
+				const exports: any = (<any>globalThis).DotnetExports?.Uno?.Windows?.Devices?.Geolocation?.Geolocator;
+
+				if (exports !== undefined) {
+					Geolocator.dispatchAccessRequest = exports.DispatchAccessRequest;
+					Geolocator.dispatchError = exports.DispatchError;
+					Geolocator.dispatchGeoposition = exports.DispatchGeoposition;
+				}
+				else {
+					Geolocator.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
+					Geolocator.dispatchError = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
+					Geolocator.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
+				}
+
+				Geolocator.interopInitialized = true;
+			}
         }
 
         //checks for permission to the geolocation services

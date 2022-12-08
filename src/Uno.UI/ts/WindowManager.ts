@@ -61,7 +61,7 @@ namespace Uno.UI {
 		private static buildReadyPromise(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
 				Promise.all(
-					[WindowManager.buildSplashScreen()]
+					[WindowManager.buildSplashScreen(), ExportManager.initialize()]
 				).then(() => resolve(true))
 			});
 		}
