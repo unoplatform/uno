@@ -118,23 +118,23 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TeachingTipAlternateCloseButtonName" xml:space="preserve">
-    <value>Funga</value>
+    <value>बंद करचें</value>
     <comment>This is the automation name of the alternate close button.</comment>
   </data>
   <data name="TeachingTipAlternateCloseButtonTooltip" xml:space="preserve">
-    <value>Funga</value>
+    <value>बंद करचें</value>
     <comment>This is the string used for the alternate close button's tooltip</comment>
   </data>
   <data name="TeachingTipCustomLandmarkName" xml:space="preserve">
-    <value>Kidokezo</value>
+    <value>टीप</value>
     <comment>This is the custom landmark used to denote a tip to narrator.</comment>
   </data>
   <data name="TeachingTipNotification" xml:space="preserve">
-    <value>Bonyeza F6 ili kwenda kwenye taarifa mpya kutoka %1!s!, %2!s!.</value>
+    <value>%1!s!, %2!s! कडल्यान नवे अधिसुचोवणी खातीर F6 दामचो.</value>
     <comment>This is the formarted string read by narrator when a new tip is opened. It is "Press F6 to go to new notification from 'AppName', 'TipTitle'.</comment>
   </data>
   <data name="TeachingTipNotificationWithoutAppName" xml:space="preserve">
-    <value>Bonyeza F6 kwenda kwenye taarifa mpya, %1!s!.</value>
+    <value>%1!s! कडल्यान नवे अधिसुचोवणी खातीर F6 दामचो.</value>
     <comment>This is the formatted string read by narrator when a new tip is opened and the app name is not available. it is "Press F6 to go to new notification, 'TipTitle'.</comment>
   </data>
 </root>
