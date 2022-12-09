@@ -157,7 +157,7 @@
 		</ItemGroup>
 
 		<PropertyGroup>
-			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
+			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
 
 			
 			<_UnoLinkerHintGeneratorILLinkerPath
