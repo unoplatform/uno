@@ -118,59 +118,59 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TextAlphaLabel" xml:space="preserve">
-    <value>Непразрыстасць</value>
+    <value>অস্পষ্টতা</value>
     <comment>The label for the text box to edit the opacity.</comment>
   </data>
   <data name="AutomationNameAlphaSlider" xml:space="preserve">
-    <value>Непразрыстасць</value>
+    <value>অস্পষ্টতা</value>
     <comment>The automation name for the opacity slider.</comment>
   </data>
   <data name="AutomationNameAlphaTextBox" xml:space="preserve">
-    <value>Непразрыстасць</value>
+    <value>অস্পষ্টতা</value>
     <comment>The automation name for the text box to edit the opacity.</comment>
   </data>
   <data name="AutomationNameHueSlider" xml:space="preserve">
-    <value>Адценне</value>
+    <value>বৰণ</value>
     <comment>The automation name for the third-dimension slider when it's controlling hue.</comment>
   </data>
   <data name="AutomationNameSaturationSlider" xml:space="preserve">
-    <value>Насычанасць</value>
+    <value>সংপৃক্ততা</value>
     <comment>The automation name for the third-dimension slider when it's controlling saturation.</comment>
   </data>
   <data name="AutomationNameValueSlider" xml:space="preserve">
-    <value>Яркасць</value>
+    <value>মান (উজ্জ্বলতা)</value>
     <comment>The automation name for the third-dimension slider when it's controlling value.</comment>
   </data>
   <data name="TextBlueLabel" xml:space="preserve">
-    <value>Сіні</value>
+    <value>নীলা</value>
     <comment>The label for the text box to edit the blue component of the current RGB color.</comment>
   </data>
   <data name="AutomationNameBlueTextBox" xml:space="preserve">
-    <value>Сіні</value>
+    <value>নীলা</value>
     <comment>The automation name for the text box to edit the blue component of the current RGB color.</comment>
   </data>
   <data name="AutomationNameColorModelComboBox" xml:space="preserve">
-    <value>Колеравая мадэль</value>
+    <value>ৰঙৰ মডেল</value>
     <comment>The automation name for the color model selection combo box.</comment>
   </data>
   <data name="AutomationNameColorSpectrum" xml:space="preserve">
-    <value>Выбар колеру</value>
+    <value>ৰং নিৰ্বাচক</value>
     <comment>The automation name for the ColorSpectrum control.</comment>
   </data>
   <data name="TextGreenLabel" xml:space="preserve">
-    <value>Зялёны</value>
+    <value>সেউজীয়া</value>
     <comment>The label for the text box to edit the green component of the current RGB color.</comment>
   </data>
   <data name="AutomationNameGreenTextBox" xml:space="preserve">
-    <value>Зялёны</value>
+    <value>সেউজীয়া</value>
     <comment>The automation name for the text box to edit the green component of the current RGB color.</comment>
   </data>
   <data name="HelpTextColorSpectrum" xml:space="preserve">
-    <value>2D-навігацыя клавішамі са стрэлкамі</value>
+    <value>কাঁড় কীসমূহৰ সৈতে 2D নেভিগেশ্বন</value>
     <comment>The help text associated with ColorSpectrum.</comment>
   </data>
   <data name="AutomationNameHexTextBox" xml:space="preserve">
-    <value>RGB шаснаццатковы</value>
+    <value>RGB হেক্স</value>
     <comment>The automation name for the text box to edit the current RGB color as a hex value.</comment>
   </data>
   <data name="ContentHSVComboBoxItem" xml:space="preserve">
@@ -178,23 +178,23 @@
     <comment>The combo box item content for selecting HSV as the color model to use.</comment>
   </data>
   <data name="TextHueLabel" xml:space="preserve">
-    <value>Адценне</value>
+    <value>বৰণ</value>
     <comment>The label for the text box to edit the hue component of the current HSV color.</comment>
   </data>
   <data name="AutomationNameHueTextBox" xml:space="preserve">
-    <value>Адценне</value>
+    <value>বৰণ</value>
     <comment>The automation name for the text box to edit the hue component of the current HSV color.</comment>
   </data>
   <data name="LocalizedControlTypeColorSpectrum" xml:space="preserve">
-    <value>2D-паўзунок</value>
+    <value>2D শ্লাইডাৰ</value>
     <comment>The string to provide as the localized control type of the ColorSpectrum.</comment>
   </data>
   <data name="TextRedLabel" xml:space="preserve">
-    <value>Чырвоны</value>
+    <value>ৰঙা</value>
     <comment>The label for the text box to edit the red component of the current RGB color.</comment>
   </data>
   <data name="AutomationNameRedTextBox" xml:space="preserve">
-    <value>Чырвоны</value>
+    <value>ৰঙা</value>
     <comment>The automation name for the text box to edit the red component of the current RGB color.</comment>
   </data>
   <data name="ContentRGBComboBoxItem" xml:space="preserve">
@@ -202,23 +202,23 @@
     <comment>The combo box item content for selecting RGB as the color model to use.</comment>
   </data>
   <data name="TextSaturationLabel" xml:space="preserve">
-    <value>Насычанасць</value>
+    <value>সংপৃক্ততা</value>
     <comment>The label for the text box to edit the saturation component of the current HSV color.</comment>
   </data>
   <data name="AutomationNameSaturationTextBox" xml:space="preserve">
-    <value>Насычанасць</value>
+    <value>সংপৃক্ততা</value>
     <comment>The automation name for the text box to edit the saturation component of the current HSV color.</comment>
   </data>
   <data name="TextValueLabel" xml:space="preserve">
-    <value>Значэнне</value>
+    <value>মান</value>
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
-    <value>%1!s!, адценне %2!u!, насычанасць %3!u!, яркасць %4!u!</value>
+    <value>%1!s!, বৰণ %2!u!, সংপৃক্ততা %3!u!, মান %4!u!</value>
     <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
-    <value>Адценне %1!u!, насычанасць %2!u!, яркасць %3!u!</value>
+    <value>বৰণ %1!u!, সংপৃক্ততা %2!u!, মান %3!u!</value>
     <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
@@ -246,55 +246,55 @@
     <comment>The string to provide as the UIA value of the third-dimension slider when it's controlling value and we're not including the friendly color name. %1 is the brightness value between 0 and 100.</comment>
   </data>
   <data name="AutomationNameValueTextBox" xml:space="preserve">
-    <value>Яркасць</value>
+    <value>মান (উজ্জ্বলতা)</value>
     <comment>The automation name for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ToolTipStringAlphaSlider" xml:space="preserve">
-    <value>Непразрыстасць %1!u!%%</value>
+    <value>%1!u!%% অস্পষ্টতা</value>
     <comment>The string to display in the tool tip for the alpha slider. %1 is the alpha value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithColorName" xml:space="preserve">
-    <value>Адценне %1!u! (%2!s!)</value>
+    <value>বৰণ %1!u! (%2!s!)</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're including the friendly color name. %1 is the hue value between 0 and 359; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithoutColorName" xml:space="preserve">
-    <value>Адценне %1!u!</value>
+    <value>বৰণ %1!u!</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're not including the friendly color name. %1 is the hue value between 0 and 359.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithColorName" xml:space="preserve">
-    <value>Насычанасць %1!u! (%2!s!)</value>
+    <value>সংপৃক্ততা %1!u! (%2!s!)</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're including the friendly color name. %1 is the saturation value between 0 and 100; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithoutColorName" xml:space="preserve">
-    <value>Насычанасць %1!u!</value>
+    <value>সংপৃক্ততা %1!u!</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're not including the friendly color name. %1 is the saturation value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringValueSliderWithColorName" xml:space="preserve">
-    <value>Значэнне %1!u! (%2!s!)</value>
+    <value>মান %1!u! (%2!s!)</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling value and we're including the friendly color name. %1 is the value value between 0 and 100; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringValueSliderWithoutColorName" xml:space="preserve">
-    <value>Значэнне %1!u!</value>
+    <value>মান %1!u!</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling value and we're not including the friendly color name. %1 is the value value between 0 and 100.</comment>
   </data>
   <data name="AutomationNameMoreButtonCollapsed" xml:space="preserve">
-    <value>Больш</value>
+    <value>অধিক</value>
     <comment>The string to provide as the UIA value of the "more" button when it's collapsed.</comment>
   </data>
   <data name="AutomationNameMoreButtonExpanded" xml:space="preserve">
-    <value>Менш</value>
+    <value>কম</value>
     <comment>The string to provide as the UIA value of the "more" button when it's expanded.</comment>
   </data>
   <data name="HelpTextMoreButton" xml:space="preserve">
-    <value>Каб паказаць або схаваць палі ўводу тэксту, задзейнічайце гэта.</value>
+    <value>পাঠ প্ৰবিষ্টি ক্ষেত্ৰ দেখুৱাবলৈ বা লুকুৱাবলৈ আহ্বান কৰক৷</value>
     <comment>The help text associated with the "more" button.</comment>
   </data>
   <data name="TextMoreButtonLabelCollapsed" xml:space="preserve">
-    <value>Больш</value>
+    <value>অধিক</value>
     <comment>The string to display in the "more" button when it's collapsed.</comment>
   </data>
   <data name="TextMoreButtonLabelExpanded" xml:space="preserve">
-    <value>Менш</value>
+    <value>কম</value>
     <comment>The string to display in the "more" button when it's expanded.</comment>
   </data>
 </root>
