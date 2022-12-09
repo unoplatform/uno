@@ -118,55 +118,55 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BadgeItemPlural1" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is 21,31,41,etc. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemPlural2" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is 3-4. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemPlural3" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  22-24, 32-34, 42-44, etc. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemPlural4" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  0, 20, 25-30, 35-40, etc. (fallback plural). %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemPlural5" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  5-10. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemPlural6" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  11-19. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemPlural7" xml:space="preserve">
-    <value>Vipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! اشیاء</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  2. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemSingular" xml:space="preserve">
-    <value>Kipengee %1!s!, %2!u!</value>
+    <value>%1!s!، %2!u! شے</value>
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  1. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemTextOverride" xml:space="preserve">
-    <value>%1!s!, %2!u! %3!s!</value>
+    <value>%1!s!، %2!u! %3!s!</value>
     <comment>This format string is used for the automation name. It is 'Person Name, badgenumber badgetext', where badge text is a user specified string overriding 'item(s)'.</comment>
   </data>
   <data name="BadgeIcon" xml:space="preserve">
-    <value>%1!s!, ikoni</value>
+    <value>%1!s!، شبیہ</value>
     <comment>This text is used with the badging glyph. %1 is the contact name.</comment>
   </data>
   <data name="BadgeIconTextOverride" xml:space="preserve">
-    <value>%1!s!, %2!s!</value>
+    <value>%1!s!، %2!s!</value>
     <comment>This format string is used for the automation name. It is 'Person Name, badgetext', where badgetext is a user specified string like skype.</comment>
   </data>
   <data name="PersonName" xml:space="preserve">
-    <value>Mtu</value>
+    <value>شخص</value>
     <comment>This text is used as the generic narrator text when there is no display name or initials.</comment>
   </data>
   <data name="GroupName" xml:space="preserve">
-    <value>Kikundi</value>
+    <value>گروپ</value>
     <comment>This text is used as the generic narrator text when the group glyph is showing.</comment>
   </data>
 </root>
