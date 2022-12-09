@@ -54,7 +54,7 @@
 	</Target>
 
 	<Target Name="UnoAssetsGeneration"
-				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources"
+				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest"
 				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems"
 				Condition="
 				'$(DesignTimeBuild)' != 'true'
@@ -69,6 +69,7 @@
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
+							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							Condition="'$(XamarinProjectType)'!=''">
@@ -76,6 +77,8 @@
 							ItemName="Assets" />
 			<Output TaskParameter="RetargetedAssets"
 							ItemName="RetargetedAssets" />
+			<Output TaskParameter="PartialAppManifests"
+							ItemName="PartialAppManifest" />
 		</RetargetAssets_v0>
 		<ItemGroup>
 			<Content Remove="@(Assets)" />

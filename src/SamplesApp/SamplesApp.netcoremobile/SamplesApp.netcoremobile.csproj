@@ -5,7 +5,7 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
 		<SingleProject>true</SingleProject>
-
+ 
 		<OutputType>Exe</OutputType>
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
@@ -13,6 +13,8 @@
 
 		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+
+		<UseInterpreter>false</UseInterpreter>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="'$(UnoSampleAppRuntimeIdentifiers)'!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
@@ -50,13 +52,6 @@
 
 		<When Condition="'$(TargetPlatformIdentifier)'=='ios'">
 			<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='ios'">
-				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
-
-				<!-- See https://github.com/unoplatform/uno/issues/9430 for more details. -->
-				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
-
-				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
-				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
 			</PropertyGroup>
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.4.0" />

@@ -38,16 +38,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Fonts/uno-fluentui-assets.ttf</string>
-	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
+		<key>NSExceptionRequiresForwardSecrecy</key>
+		<false/>
 	</dict>
 	<key>NSMotionUsageDescription</key>
 	<string>This is a step counter, and we&apos;d like to track motion. </string>
