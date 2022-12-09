@@ -117,4 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CancelDraggingString" xml:space="preserve">
+    <value>%1!s! سۆرەشنى بىكار قىلىش</value>
+    <comment>Used when dragging is cancelled.</comment>
+  </data>
+  <data name="DefaultItemString" xml:space="preserve">
+    <value>نەرسە</value>
+    <comment>Used when the name of an item can't be found.</comment>
+  </data>
+  <data name="DropIntoNodeString" xml:space="preserve">
+    <value>‏%1!s! نى %2!s! گە تاشلاش</value>
+    <comment>Used when dropping onto a node in TreeView</comment>
+  </data>
+  <data name="FallBackPlaceString" xml:space="preserve">
+    <value>%1!s! نى قويۇش</value>
+    <comment>Fallback used when no other string is effectively generated for a TreeView D&amp;D operation</comment>
+  </data>
+  <data name="PlaceAfterString" xml:space="preserve">
+    <value>‏%1!s! نى %2!s! نىڭ ئارقىغا قويۇش</value>
+    <comment>Used when reordering to bottom of TreeView</comment>
+  </data>
+  <data name="PlaceBeforeString" xml:space="preserve">
+    <value>‏%1!s! نى %2!s! نىڭ ئالدىغا قويۇش</value>
+    <comment>Used when reordering to top of TreeView</comment>
+  </data>
+  <data name="PlaceBetweenString" xml:space="preserve">
+    <value>‏%1!s! نى %2!s! بىلەن %3!s! نىڭ ئارىلىقىغا قويۇش</value>
+    <comment>Used when reordering between items in a TreeView</comment>
+  </data>
 </root>

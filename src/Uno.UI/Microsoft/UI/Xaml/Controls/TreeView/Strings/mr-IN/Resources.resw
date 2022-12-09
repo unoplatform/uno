@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CancelDraggingString" xml:space="preserve">
-    <value>Katisha ukokotaji wa %1!s!</value>
+    <value>%1!s! ओढणे रद्द करा</value>
     <comment>Used when dragging is cancelled.</comment>
   </data>
   <data name="DefaultItemString" xml:space="preserve">
-    <value>Kipengee</value>
+    <value>आयटम</value>
     <comment>Used when the name of an item can't be found.</comment>
   </data>
   <data name="DropIntoNodeString" xml:space="preserve">
-    <value>Dondosha %1!s! kwenye %2!s!</value>
+    <value>%2!s! मध्ये %1!s! ड्रॉप करा</value>
     <comment>Used when dropping onto a node in TreeView</comment>
   </data>
   <data name="FallBackPlaceString" xml:space="preserve">
-    <value>Weka %1!s!</value>
+    <value>%1!s! ठेवा</value>
     <comment>Fallback used when no other string is effectively generated for a TreeView D&amp;D operation</comment>
   </data>
   <data name="PlaceAfterString" xml:space="preserve">
-    <value>Weka %1!s! baada ya %2!s!</value>
+    <value>%2!s! नंतर %1!s! ठेवा</value>
     <comment>Used when reordering to bottom of TreeView</comment>
   </data>
   <data name="PlaceBeforeString" xml:space="preserve">
-    <value>Weka %1!s! kabla ya %2!s!</value>
+    <value>%2!s! पूर्वी %1!s! ठेवा</value>
     <comment>Used when reordering to top of TreeView</comment>
   </data>
   <data name="PlaceBetweenString" xml:space="preserve">
-    <value>Weka %1!s! kati ya %2!s! na %3!s!</value>
+    <value>%2!s! आणि %3!s! यांच्यादरम्यान %1!s! ठेवा</value>
     <comment>Used when reordering between items in a TreeView</comment>
   </data>
 </root>

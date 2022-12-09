@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CancelDraggingString" xml:space="preserve">
-    <value>Скасаваць перацягванне «%1!s!»</value>
+    <value>Չեղարկել %1!s!-ի քաշումը</value>
     <comment>Used when dragging is cancelled.</comment>
   </data>
   <data name="DefaultItemString" xml:space="preserve">
-    <value>Элемент</value>
+    <value>Միավոր</value>
     <comment>Used when the name of an item can't be found.</comment>
   </data>
   <data name="DropIntoNodeString" xml:space="preserve">
-    <value>Перанесці «%1!s!» у «%2!s!»</value>
+    <value>Գցել %1!s!-ը %2!s!-ի մեջ</value>
     <comment>Used when dropping onto a node in TreeView</comment>
   </data>
   <data name="FallBackPlaceString" xml:space="preserve">
-    <value>Размясціць «%1!s!»</value>
+    <value>Տեղադրել %1!s!-ը</value>
     <comment>Fallback used when no other string is effectively generated for a TreeView D&amp;D operation</comment>
   </data>
   <data name="PlaceAfterString" xml:space="preserve">
-    <value>Размясціць «%1!s!» пасля «%2!s!»</value>
+    <value>Տեղադրել %1!s!-ը %2!s!-ից հետո</value>
     <comment>Used when reordering to bottom of TreeView</comment>
   </data>
   <data name="PlaceBeforeString" xml:space="preserve">
-    <value>Размясціць «%1!s!» перад «%2!s!»</value>
+    <value>Տեղադրել %1!s!-ը %2!s!-ից առաջ</value>
     <comment>Used when reordering to top of TreeView</comment>
   </data>
   <data name="PlaceBetweenString" xml:space="preserve">
-    <value>Размясціць «%1!s!» паміж «%2!s!» і «%3!s!»</value>
+    <value>Տեղադրել %1!s!-ը %2!s!-ի և %3!s!-ի միջև</value>
     <comment>Used when reordering between items in a TreeView</comment>
   </data>
 </root>
