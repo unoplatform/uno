@@ -205,7 +205,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(HorizontalOffset),
 				typeof(double),
 				typeof(Popup),
-				new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(
+					0.0,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((Popup)s)?.OnHorizontalOffsetChanged((double)e.OldValue, (double)e.NewValue)
+				)
+			);
+
+		protected virtual void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
+		{
+			OnHorizontalOffsetChangedPartial(oldHorizontalOffset, newHorizontalOffset);
+			OnHorizontalOffsetChangedPartialNative(oldHorizontalOffset, newHorizontalOffset);
+		}
+
+		partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset);
+		partial void OnHorizontalOffsetChangedPartialNative(double oldHorizontalOffset, double newHorizontalOffset);
 
 		/// <summary>
 		/// Gets or sets the distance between the top of the application window and the top of the popup.
@@ -224,7 +238,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(VerticalOffset),
 				typeof(double),
 				typeof(Popup),
-				new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(
+					0.0,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((Popup)s)?.OnVerticalOffsetChanged((double)e.OldValue, (double)e.NewValue)
+				)
+			);
+
+		protected virtual void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+		{
+			OnVerticalOffsetChangedPartial(oldVerticalOffset, newVerticalOffset);
+			OnVerticalOffsetChangedPartialNative(oldVerticalOffset, newVerticalOffset);
+		}
+
+		partial void OnVerticalOffsetChangedPartial(double oldVerticalOffset, double newVerticalOffset);
+		partial void OnVerticalOffsetChangedPartialNative(double oldVerticalOffset, double newVerticalOffset);
 
 		/// <summary>
 		/// Raised when the ActualPlacement property changes.
