@@ -19,7 +19,7 @@ using Uno;
 namespace Windows.UI.Xaml.Controls
 {
 #if __WASM__ || __SKIA__
-	[NotImplemented("__WASM__", "__SKIA__")]
+	[NotImplemented]
 #endif
 	public partial class WebView : Control
 	{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Uri BlankUri = new Uri(BlankUrl);
 
 		private object _internalSource;
-		private bool _isUpdatingSource;
+		private string _invokeScriptResponse = string.Empty;
 
 #pragma warning disable CS0414 // not used in skia
 		private bool _isLoaded;
@@ -37,85 +37,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(WebView);
 		}
-
-		#region CanGoBack
-
-		public bool CanGoBack
-		{
-			get { return (bool)GetValue(CanGoBackProperty); }
-			private set { SetValue(CanGoBackProperty, value); }
-		}
-
-		public static DependencyProperty CanGoBackProperty { get; } =
-			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
-
-		#endregion
-
-		#region CanGoForward
-
-		public bool CanGoForward
-		{
-			get { return (bool)GetValue(CanGoForwardProperty); }
-			private set { SetValue(CanGoForwardProperty, value); }
-		}
-
-		public static DependencyProperty CanGoForwardProperty { get; } =
-			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
-
-		#endregion
-
-		#region Source
-
-		public Uri Source
-		{
-			get { return (Uri)GetValue(SourceProperty); }
-			set { SetValue(SourceProperty, value); }
-		}
-
-		public static DependencyProperty SourceProperty { get; } =
-			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
-				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
-
-		#endregion
-
-#if __ANDROID__ || __IOS__ || __MACOS__
-		#region DocumentTitle
-		public string DocumentTitle
-		{
-			get { return (string)GetValue(DocumentTitleProperty); }
-			internal set { SetValue(DocumentTitleProperty, value); }
-		}
-
-		public static DependencyProperty DocumentTitleProperty { get; } =
-			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
-		#endregion
-#endif
-
-		#region IsScrollEnabled
-		public bool IsScrollEnabled
-		{
-			get { return (bool)GetValue(IsScrollEnabledProperty); }
-			set { SetValue(IsScrollEnabledProperty, value); }
-		}
-
-		public static DependencyProperty IsScrollEnabledProperty { get; } =
-			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
-				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
-
-		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);
-		#endregion
-
-#pragma warning disable 67
-		public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;
-		public event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> NavigationCompleted;
-		public event TypedEventHandler<WebView, WebViewNewWindowRequestedEventArgs> NewWindowRequested;
-		public event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
-#pragma warning restore 67
-
-		//Remove pragma when implemented for Android
-#pragma warning disable 0067
-		public event WebViewNavigationFailedEventHandler NavigationFailed;
-#pragma warning restore 0067
 
 		public void GoBack()
 		{
@@ -129,12 +50,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Navigate(Uri uri)
 		{
-			if (_isUpdatingSource)
-			{
-				// This avoids Stackoverflow. When Navigate is called, we end up setting Source property, and the property changed callback for SourceProperty is Navigate.
-				// So this breaks the cycle (Navigate → set_Source → Navigate → ...)
-				return;
-			}
 			this.SetInternalSource(uri ?? BlankUri);
 		}
 
@@ -188,30 +103,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateFromInternalSource()
 		{
-			if (_internalSource is Uri uri)
+			var uri = _internalSource as Uri;
+			if (uri != null)
 			{
-				_isUpdatingSource = true;
-				Source = new Uri(uri.ToString());
-				_isUpdatingSource = false;
 				NavigatePartial(uri);
+				return;
 			}
-			else if (_internalSource is string html)
+
+			var html = _internalSource as string;
+			if (html != null)
 			{
-				_isUpdatingSource = true;
-				Source = null;
-				_isUpdatingSource = false;
 				NavigateToStringPartial(html);
 			}
-			else if (_internalSource is HttpRequestMessage message)
+
+			var message = _internalSource as HttpRequestMessage;
+			if (message != null)
 			{
-				_isUpdatingSource = true;
-				Source = new Uri(message.RequestUri.ToString());
-				_isUpdatingSource = false;
 				NavigateWithHttpRequestMessagePartial(message);
 			}
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
 		private static string ConcatenateJavascriptArguments(string[] arguments)
 		{
 			var argument = string.Empty;
@@ -222,7 +133,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return argument;
 		}
-#endif
 
 		internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
 		{

@@ -16,209 +16,132 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
 
-namespace Microsoft.UI.Xaml.Controls
-{
-#if __WASM__ || __SKIA__
-	[NotImplemented]
-#endif
-	public partial class WebView2 : Control
-	{
-		private const string BlankUrl = "about:blank";
-		private static readonly Uri BlankUri = new Uri(BlankUrl);
+namespace Microsoft.UI.Xaml.Controls;
 
-		private object _internalSource;
-		private string _invokeScriptResponse = string.Empty;
+/// <summary>
+/// Represents an object that enables the hosting of web content.
+/// </summary>
+#if __WASM__ || __SKIA__
+[NotImplemented]
+#endif
+public partial class WebView2 : Control
+{
+	private const string BlankUrl = "about:blank";
+	private static readonly Uri BlankUri = new Uri(BlankUrl);
+
+	private object _internalSource;
+	private string _invokeScriptResponse = string.Empty;
 
 #pragma warning disable CS0414 // not used in skia
-		private bool _isLoaded;
+	private bool _isLoaded;
 #pragma warning restore CS0414
 
-		public WebView()
-		{
-			DefaultStyleKey = typeof(WebView);
-		}
-
-		#region CanGoBack
-
-		public bool CanGoBack
-		{
-			get { return (bool)GetValue(CanGoBackProperty); }
-			private set { SetValue(CanGoBackProperty, value); }
-		}
-
-		public static DependencyProperty CanGoBackProperty { get; } =
-			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
-
-		#endregion
-
-		#region CanGoForward
-
-		public bool CanGoForward
-		{
-			get { return (bool)GetValue(CanGoForwardProperty); }
-			private set { SetValue(CanGoForwardProperty, value); }
-		}
-
-		public static DependencyProperty CanGoForwardProperty { get; } =
-			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
-
-		#endregion
-
-		#region Source
-
-		public Uri Source
-		{
-			get { return (Uri)GetValue(SourceProperty); }
-			set { SetValue(SourceProperty, value); }
-		}
-
-		public static DependencyProperty SourceProperty { get; } =
-			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
-				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
-
-		#endregion
-
-		#region DocumentTitle
-#if __ANDROID__ || __IOS__ || __MACOS__
-		public string DocumentTitle
-		{
-			get { return (string)GetValue(DocumentTitleProperty); }
-			internal set { SetValue(DocumentTitleProperty, value); }
-		}
-
-		public static DependencyProperty DocumentTitleProperty { get; } =
-			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
-#endif
-		#endregion
-
-		#region IsScrollEnabled
-		public bool IsScrollEnabled
-		{
-			get { return (bool)GetValue(IsScrollEnabledProperty); }
-			set { SetValue(IsScrollEnabledProperty, value); }
-		}
-
-		public static DependencyProperty IsScrollEnabledProperty { get; } =
-			DependencyProperty.Register("IsScrollEnabled", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
-				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
-
-		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);
-		#endregion
-
-#pragma warning disable 67
-		public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;
-		public event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> NavigationCompleted;
-		public event TypedEventHandler<WebView, WebViewNewWindowRequestedEventArgs> NewWindowRequested;
-		public event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
-#pragma warning restore 67
-
-		//Remove pragma when implemented for Android
-#pragma warning disable 0067
-		public event WebViewNavigationFailedEventHandler NavigationFailed;
-#pragma warning restore 0067
-
-		public void GoBack()
-		{
-			GoBackPartial();
-		}
-
-		public void GoForward()
-		{
-			GoForwardPartial();
-		}
-
-		public void Navigate(Uri uri)
-		{
-			this.SetInternalSource(uri ?? BlankUri);
-		}
-
-		//
-		// Summary:
-		//     Loads the specified HTML content as a new document.
-		//
-		// Parameters:
-		//   text:
-		//     The HTML content to display in the WebView control.
-		public void NavigateToString(string text)
-		{
-			this.SetInternalSource(text ?? "");
-		}
-
-		public void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
-		{
-			if (requestMessage?.RequestUri == null)
-			{
-				throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
-			}
-
-			SetInternalSource(requestMessage);
-		}
-
-		public void Stop()
-		{
-			StopPartial();
-		}
-
-		partial void GoBackPartial();
-		partial void GoForwardPartial();
-		partial void NavigatePartial(Uri uri);
-		partial void NavigateToStringPartial(string text);
-		partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage);
-		partial void StopPartial();
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			_isLoaded = true;
-		}
-
-		private void SetInternalSource(object source)
-		{
-			_internalSource = source;
-
-			this.UpdateFromInternalSource();
-		}
-
-		private void UpdateFromInternalSource()
-		{
-			var uri = _internalSource as Uri;
-			if (uri != null)
-			{
-				NavigatePartial(uri);
-				return;
-			}
-
-			var html = _internalSource as string;
-			if (html != null)
-			{
-				NavigateToStringPartial(html);
-			}
-
-			var message = _internalSource as HttpRequestMessage;
-			if (message != null)
-			{
-				NavigateWithHttpRequestMessagePartial(message);
-			}
-		}
-
-		private static string ConcatenateJavascriptArguments(string[] arguments)
-		{
-			var argument = string.Empty;
-			if (arguments != null && arguments.Any())
-			{
-				argument = string.Join(",", arguments);
-			}
-
-			return argument;
-		}
-
-		internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
-		{
-			UnsupportedUriSchemeIdentified?.Invoke(this, args);
-		}
-
-		internal bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
+	public WebView()
+	{
+		DefaultStyleKey = typeof(WebView);
 	}
+
+	public void GoBack()
+	{
+		GoBackPartial();
+	}
+
+	public void GoForward()
+	{
+		GoForwardPartial();
+	}
+
+	public void Navigate(Uri uri)
+	{
+		this.SetInternalSource(uri ?? BlankUri);
+	}
+
+	//
+	// Summary:
+	//     Loads the specified HTML content as a new document.
+	//
+	// Parameters:
+	//   text:
+	//     The HTML content to display in the WebView control.
+	public void NavigateToString(string text)
+	{
+		this.SetInternalSource(text ?? "");
+	}
+
+	public void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
+	{
+		if (requestMessage?.RequestUri == null)
+		{
+			throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
+		}
+
+		SetInternalSource(requestMessage);
+	}
+
+	public void Stop()
+	{
+		StopPartial();
+	}
+
+	partial void GoBackPartial();
+	partial void GoForwardPartial();
+	partial void NavigatePartial(Uri uri);
+	partial void NavigateToStringPartial(string text);
+	partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage);
+	partial void StopPartial();
+
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+		_isLoaded = true;
+	}
+
+	private void SetInternalSource(object source)
+	{
+		_internalSource = source;
+
+		this.UpdateFromInternalSource();
+	}
+
+	private void UpdateFromInternalSource()
+	{
+		var uri = _internalSource as Uri;
+		if (uri != null)
+		{
+			NavigatePartial(uri);
+			return;
+		}
+
+		var html = _internalSource as string;
+		if (html != null)
+		{
+			NavigateToStringPartial(html);
+		}
+
+		var message = _internalSource as HttpRequestMessage;
+		if (message != null)
+		{
+			NavigateWithHttpRequestMessagePartial(message);
+		}
+	}
+
+	private static string ConcatenateJavascriptArguments(string[] arguments)
+	{
+		var argument = string.Empty;
+		if (arguments != null && arguments.Any())
+		{
+			argument = string.Join(",", arguments);
+		}
+
+		return argument;
+	}
+
+	internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
+	{
+		UnsupportedUriSchemeIdentified?.Invoke(this, args);
+	}
+
+	internal bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
 }
 #endif
