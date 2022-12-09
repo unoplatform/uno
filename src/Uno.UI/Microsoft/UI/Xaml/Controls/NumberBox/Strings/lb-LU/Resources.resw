@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NumberBoxDownSpinButtonName" xml:space="preserve">
-    <value>Decrease</value>
+    <value>Reduzéieren</value>
     <comment>Automation name for the down button</comment>
   </data>
   <data name="NumberBoxUpSpinButtonName" xml:space="preserve">
-    <value>Increase</value>
+    <value>Vergréisseren</value>
     <comment>Automation name for the up button</comment>
   </data>
   <data name="NumberBoxMaximumValueStatus" xml:space="preserve">

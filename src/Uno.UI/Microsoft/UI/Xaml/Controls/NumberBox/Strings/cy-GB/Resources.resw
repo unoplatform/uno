@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NumberBoxDownSpinButtonName" xml:space="preserve">
-    <value>Decrease</value>
+    <value>Lleihau</value>
     <comment>Automation name for the down button</comment>
   </data>
   <data name="NumberBoxUpSpinButtonName" xml:space="preserve">
-    <value>Increase</value>
+    <value>Cynyddu</value>
     <comment>Automation name for the up button</comment>
   </data>
   <data name="NumberBoxMaximumValueStatus" xml:space="preserve">
-    <value>Maximum</value>
+    <value>Uchafswm</value>
     <comment>Maximum value declaration</comment>
   </data>
   <data name="NumberBoxMinimumValueStatus" xml:space="preserve">
-    <value>Minimum</value>
+    <value>Isafswm</value>
     <comment>Minimum value declaration</comment>
   </data>
 </root>
