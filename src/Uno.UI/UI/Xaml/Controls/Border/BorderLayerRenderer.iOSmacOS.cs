@@ -31,15 +31,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	internal class BorderLayerRenderer
 	{
-<<<<<<< HEAD
 		private LayoutState _currentState;
-=======
+
 		// Creates a unique native CGColor for the transparent color, and make sure to keep a strong ref on it
 		// https://github.com/unoplatform/uno/issues/10283
 		private static readonly CGColor _transparent = Colors.Transparent;
-
-		private LayoutState _previousLayoutState;
->>>>>>> 7a9c89edf0 (fix: Attempt to fix possible crash when using GCColor)
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
