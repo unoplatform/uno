@@ -171,4 +171,12 @@
 	  <ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
 	</ItemGroup>
   </Target>
+
+	<!-- Workaround for https://github.com/xamarin/xamarin-macios/issues/17005 -->
+	<Target Name="_DisableRemoteBuildForLibraries" BeforeTargets="_SayHello" Condition="'$(OutputType)'=='Library'">
+		<PropertyGroup>
+			<IsRemoteBuild>false</IsRemoteBuild>
+			<ServerAddress></ServerAddress>
+		</PropertyGroup>
+	</Target>
 </Project>
