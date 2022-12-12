@@ -1,6 +1,6 @@
 ### Select your development environment
 
-Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platfom .NET applications with XAML and C# in no time. 
+Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and C# in no time. 
 
 The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials. 
 
