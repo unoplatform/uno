@@ -1285,7 +1285,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				Update(isIntermediate);
 
-				if (!isIntermediate)
+				if (!isIntermediate
+#if __IOS__ || __ANDROID__
+					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
+#endif
+				)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
 						|| VerticalSnapPointsType != SnapPointsType.None)
