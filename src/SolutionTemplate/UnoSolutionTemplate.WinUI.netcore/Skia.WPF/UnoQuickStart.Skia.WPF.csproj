@@ -5,8 +5,6 @@
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>$basetargetframework$-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-
-		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 	</PropertyGroup>
 
 	<ItemGroup Label="AssemblyInfo">
@@ -30,4 +28,14 @@
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ApplicationDefinition Include="Wpf\App.xaml" XamlRuntime="Wpf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

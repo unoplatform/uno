@@ -66,95 +66,94 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.CoreUtility">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Base\base.props" />
+    <None Include="Base\UnoQuickStart.Base.shproj" />
     <None Include="Server\Controllers\WeatherForecastController.cs" />
     <None Include="Server\Program.cs" />
     <None Include="Server\WeatherForecast.cs" />
     <None Include="Server\appsettings.Development.json" />
     <None Include="Server\appsettings.json" />
     <None Include="Server\UnoQuickStart.Server.csproj" />
-    <None Include="Skia.WPF\Platforms\Skia.Wpf\App.xaml.cs">
+    <None Include="Skia.WPF\Wpf\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
-    <None Include="Skia.WPF\Platforms\Skia.Wpf\MainWindow.xaml.cs">
+    <None Include="Skia.WPF\Wpf\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </None>
-    <None Include="Mobile\Platforms\Android\Assets\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Mobile\Platforms\Android\environment.conf" />
-    <None Include="Mobile\Platforms\iOS\Entitlements.plist" />
-    <None Include="Mobile\Platforms\iOS\Info.plist" />
-    <None Include="Mobile\Platforms\iOS\LaunchScreen.storyboard" />
-    <None Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
-    <None Include="Mobile\Platforms\iOS\Media.xcassets\LaunchImages.launchimage\Contents.json" />
-    <None Include="Mobile\Platforms\iOS\Resources\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Mobile\Platforms\MacCatalyst\Entitlements.plist" />
-    <None Include="Mobile\Platforms\MacCatalyst\Info.plist" />
-    <None Include="Mobile\Platforms\MacCatalyst\LaunchScreen.storyboard" />
-    <None Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Contents.json" />
-    <None Include="Mobile\Platforms\MacCatalyst\Resources\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\Contents.json" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\unologo.imageset\Contents.json" />
-    <None Include="Mobile\Platforms\macOS\Entitlements.plist" />
-    <None Include="Mobile\Platforms\macOS\Info.plist" />
-    <None Include="Mobile\Platforms\macOS\Resources\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Mobile\Android\Assets\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Mobile\Android\environment.conf" />
+    <None Include="Mobile\iOS\Entitlements.plist" />
+    <None Include="Mobile\iOS\Info.plist" />
+    <None Include="Mobile\iOS\LaunchScreen.storyboard" />
+    <None Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
+    <None Include="Mobile\iOS\Media.xcassets\LaunchImages.launchimage\Contents.json" />
+    <None Include="Mobile\iOS\Resources\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Mobile\MacCatalyst\Entitlements.plist" />
+    <None Include="Mobile\MacCatalyst\Info.plist" />
+    <None Include="Mobile\MacCatalyst\LaunchScreen.storyboard" />
+    <None Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Contents.json" />
+    <None Include="Mobile\MacCatalyst\Resources\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\Contents.json" />
+    <None Include="Mobile\macOS\Assets.xcassets\Contents.json" />
+    <None Include="Mobile\macOS\Assets.xcassets\unologo.imageset\Contents.json" />
+    <None Include="Mobile\macOS\Entitlements.plist" />
+    <None Include="Mobile\macOS\Info.plist" />
+    <None Include="Mobile\macOS\Resources\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\UnoQuickStart.Mobile.csproj" />
-    <None Include="Skia.Linux.FrameBuffer\Platforms\Skia.Framebuffer\Program.cs" />
+    <None Include="Skia.Linux.FrameBuffer\Program.cs" />
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
-    <None Include="Shared\Assets\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Skia.Gtk\Platforms\Skia.Gtk\Program.cs" />
-    <None Include="Mobile\Platforms\Android\Main.Android.cs" />
-    <None Include="Mobile\Platforms\Android\MainActivity.Android.cs" />
-    <None Include="Mobile\Platforms\iOS\Main.iOS.cs" />
-    <None Include="Mobile\Platforms\MacCatalyst\Main.maccatalyst.cs" />
-    <None Include="Mobile\Platforms\macOS\Main.macOS.cs" />
+    <None Include="Views\Assets\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Skia.Gtk\Program.cs" />
+    <None Include="Mobile\Android\Main.Android.cs" />
+    <None Include="Mobile\Android\MainActivity.Android.cs" />
+    <None Include="Mobile\iOS\Main.iOS.cs" />
+    <None Include="Mobile\MacCatalyst\Main.maccatalyst.cs" />
+    <None Include="Mobile\macOS\Main.macOS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Shared\Strings\en\Resources.resw">
+    <None Include="Views\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
-    <None Include="Wasm\Platforms\WebAssembly\Program.cs" />
-    <None Include="Shared\App.xaml.cs" />
-    <None Include="Shared\MainPage.xaml.cs" />
-    <None Include="Wasm\Platforms\WebAssembly\wwwroot\web.config" />
-    <None Include="WinUI\Platforms\Windows\app.manifest" />
-    <None Include="WinUI\Platforms\Windows\Package.appxmanifest">
+    <None Include="Wasm\Program.cs" />
+    <None Include="Base\App.xaml.cs" />
+    <None Include="Views\MainPage.xaml.cs" />
+    <None Include="Wasm\wwwroot\web.config" />
+    <None Include="Windows\app.manifest" />
+    <None Include="Windows\Package.appxmanifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="WinUI\Platforms\Windows\Properties\launchSettings.json" />
-    <None Include="WinUI\Platforms\Windows\Properties\PublishProfiles\win10-arm64.pubxml" />
-    <None Include="WinUI\Platforms\Windows\Properties\PublishProfiles\win10-x64.pubxml" />
-    <None Include="WinUI\Platforms\Windows\Properties\PublishProfiles\win10-x86.pubxml" />
-    <None Include="WinUI\UnoQuickStart.Windows.csproj" />
+    <None Include="Windows\Properties\launchSettings.json" />
+    <None Include="Windows\Properties\PublishProfiles\win10-arm64.pubxml" />
+    <None Include="Windows\Properties\PublishProfiles\win10-x64.pubxml" />
+    <None Include="Windows\Properties\PublishProfiles\win10-x86.pubxml" />
+    <None Include="Windows\UnoQuickStart.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="UnoApp.netcore.vstemplate">
       <SubType>Designer</SubType>
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <None Include="Shared\Shared.netcore.vstemplate" />
-    <VSTemplate Include="WinUI\WinUI.netcore.vstemplate">
+    <VSTemplate Include="Views\Views.netcore.vstemplate" />
+    <VSTemplate Include="Windows\WinUI.netcore.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shared\UnoQuickStart.Shared.shproj" />
+    <None Include="Views\UnoQuickStart.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shared\App.xaml">
+    <None Include="Base\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Shared\MainPage.xaml">
+    <None Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
@@ -178,62 +177,65 @@
     <VSTemplate Include="Skia.Linux.FrameBuffer\SkiaLinuxFrameBuffer.winui.netcore.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
-    <Content Include="Mobile\Platforms\Android\AndroidManifest.xml" />
-    <Content Include="Mobile\Platforms\Android\Assets\AboutAssets.txt" />
-    <Content Include="Mobile\Platforms\Android\Resources\AboutResources.txt" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-hdpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-ldpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-mdpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-tvdpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-xhdpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-xxhdpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\mipmap-xxxhdpi\icon.png" />
-    <Content Include="Mobile\Platforms\Android\Resources\values\Strings.xml" />
-    <Content Include="Mobile\Platforms\Android\Resources\values\Styles.xml" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon1024.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon120.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon152.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon167.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon180.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon20.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon29.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon40.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon58.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon60.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon76.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon80.png" />
-    <Content Include="Mobile\Platforms\iOS\Media.xcassets\AppIcons.appiconset\Icon87.png" />
-    <Content Include="Mobile\Platforms\iOS\Resources\Default-568h%402x.png" />
-    <Content Include="Mobile\Platforms\iOS\Resources\SplashScreen%402x.png" />
-    <Content Include="Mobile\Platforms\iOS\Resources\SplashScreen%403x.png" />
+    <VSTemplate Include="Base\Base.winui.netcore.vstemplate" />
+    <Content Include="Base\__PreviewImage.png" />
+    <Content Include="Base\__TemplateIcon.png" />
+    <Content Include="Mobile\Android\AndroidManifest.xml" />
+    <Content Include="Mobile\Android\Assets\AboutAssets.txt" />
+    <Content Include="Mobile\Android\Resources\AboutResources.txt" />
+    <Content Include="Mobile\Android\Resources\mipmap-hdpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\mipmap-ldpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\mipmap-mdpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\mipmap-tvdpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\mipmap-xhdpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\mipmap-xxhdpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\mipmap-xxxhdpi\icon.png" />
+    <Content Include="Mobile\Android\Resources\values\Strings.xml" />
+    <Content Include="Mobile\Android\Resources\values\Styles.xml" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon1024.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon120.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon152.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon167.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon180.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon20.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon29.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon40.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon58.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon60.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon76.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon80.png" />
+    <Content Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Icon87.png" />
+    <Content Include="Mobile\iOS\Resources\Default-568h%402x.png" />
+    <Content Include="Mobile\iOS\Resources\SplashScreen%402x.png" />
+    <Content Include="Mobile\iOS\Resources\SplashScreen%403x.png" />
     <VSTemplate Include="Mobile\Mobile.winui.netcore.vstemplate" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon1024.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon120.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon152.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon167.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon180.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon20.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon29.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon40.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon58.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon60.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon76.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon80.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon87.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Resources\Default-568h%402x.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Resources\SplashScreen%402x.png" />
-    <Content Include="Mobile\Platforms\MacCatalyst\Resources\SplashScreen%403x.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-128%402x.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-16.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-16%402x.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-256.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-256%402x.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-32.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-32%402x.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
-    <None Include="Mobile\Platforms\macOS\Assets.xcassets\unologo.imageset\unoplatform.jpg" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon1024.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon120.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon152.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon167.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon180.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon20.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon29.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon40.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon58.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon60.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon76.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon80.png" />
+    <Content Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Icon87.png" />
+    <Content Include="Mobile\MacCatalyst\Resources\Default-568h%402x.png" />
+    <Content Include="Mobile\MacCatalyst\Resources\SplashScreen%402x.png" />
+    <Content Include="Mobile\MacCatalyst\Resources\SplashScreen%403x.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-128%402x.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-16.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-16%402x.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-256.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-256%402x.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-32.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-32%402x.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
+    <None Include="Mobile\macOS\Assets.xcassets\unologo.imageset\unoplatform.jpg" />
     <Content Include="Mobile\__PreviewImage.png" />
     <Content Include="Mobile\__TemplateIcon.png" />
     <VSTemplate Include="Server\Server.netcore.vstemplate" />
@@ -246,34 +248,36 @@
     <VSTemplate Include="Skia.WPF\SkiaWpf.winui.netcore.vstemplate" />
     <Content Include="Skia.WPF\__PreviewImage.png" />
     <Content Include="Skia.WPF\__TemplateIcon.png" />
-    <Content Include="Wasm\Platforms\WebAssembly\Assets\SplashScreen.png" />
-    <Content Include="Wasm\Platforms\WebAssembly\LinkerConfig.xml" />
-    <Content Include="Wasm\Platforms\WebAssembly\manifest.webmanifest" />
-    <None Include="Wasm\Platforms\WebAssembly\Properties\launchSettings.json" />
-    <Content Include="Wasm\Platforms\WebAssembly\WasmCSS\Fonts.css" />
-    <Content Include="Wasm\Platforms\WebAssembly\WasmScripts\AppManifest.js" />
+    <Content Include="Views\__PreviewImage.png" />
+    <Content Include="Views\__TemplateIcon.png" />
+    <Content Include="Wasm\Assets\SplashScreen.png" />
+    <Content Include="Wasm\LinkerConfig.xml" />
+    <Content Include="Wasm\manifest.webmanifest" />
+    <None Include="Wasm\Properties\launchSettings.json" />
+    <Content Include="Wasm\WasmCSS\Fonts.css" />
+    <Content Include="Wasm\WasmScripts\AppManifest.js" />
     <Content Include="Wasm\__PreviewImage.png" />
     <Content Include="Wasm\__TemplateIcon.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\LockScreenLogo.scale-200.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\SplashScreen.scale-200.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\Square150x150Logo.scale-200.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\Square44x44Logo.scale-200.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\StoreLogo.png" />
-    <Content Include="WinUI\Platforms\Windows\Images\Wide310x150Logo.scale-200.png" />
-    <Content Include="WinUI\__PreviewImage.png" />
-    <Content Include="WinUI\__TemplateIcon.png" />
+    <Content Include="Windows\Images\LockScreenLogo.scale-200.png" />
+    <Content Include="Windows\Images\SplashScreen.scale-200.png" />
+    <Content Include="Windows\Images\Square150x150Logo.scale-200.png" />
+    <Content Include="Windows\Images\Square44x44Logo.scale-200.png" />
+    <Content Include="Windows\Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Windows\Images\StoreLogo.png" />
+    <Content Include="Windows\Images\Wide310x150Logo.scale-200.png" />
+    <Content Include="Windows\__PreviewImage.png" />
+    <Content Include="Windows\__TemplateIcon.png" />
     <Content Include="__PreviewImage.png" />
     <Content Include="__TemplateIcon.png" />
     <VSTemplate Include="Wasm\Wasm.winui.netcore.vstemplate" />
     <Content Include="Wasm\UnoQuickStart.Wasm.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Skia.WPF\Platforms\Skia.Wpf\App.xaml">
+    <None Include="Skia.WPF\Wpf\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Skia.WPF\Platforms\Skia.Wpf\MainWindow.xaml">
+    <None Include="Skia.WPF\Wpf\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>

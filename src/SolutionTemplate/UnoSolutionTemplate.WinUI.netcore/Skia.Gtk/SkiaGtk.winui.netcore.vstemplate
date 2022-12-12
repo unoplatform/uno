@@ -16,11 +16,7 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project File="UnoQuickStart.Skia.Gtk.csproj" TargetFileName="$ext_safeprojectname$.Skia.Gtk.csproj" ReplaceParameters="true">
-			<Folder Name="Platforms" TargetFolderName="Platforms">
-				<Folder Name="Skia.Gtk" TargetFolderName="Skia.Gtk">
-					<ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
-				</Folder>
-			</Folder>
+			<ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
 		</Project>
 	</TemplateContent>
 </VSTemplate>

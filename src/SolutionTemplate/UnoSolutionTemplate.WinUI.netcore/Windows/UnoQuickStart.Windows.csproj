@@ -12,12 +12,10 @@
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<WindowsPackageType>MSIX</WindowsPackageType>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-
-		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Platforms\Windows\Images\**" />
+		<Content Include="Images\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -27,7 +25,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 		<PackageReference Include="Uno.WinUI" Version="4.7.0-dev.417" />
 
-		<Manifest Include="Platforms\Windows\$(ApplicationManifest)" />
+		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,4 +41,10 @@
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22000.27" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22000.27" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+	
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

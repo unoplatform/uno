@@ -120,15 +120,7 @@
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\Properties\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj" />
 
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Shared\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Mobile\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Skia.Gtk\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Skia.Linux.FrameBuffer\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Skia.WPF\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\Wasm\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-		<_UnoAppnet6WinUITemplateSingleLocationFiles Include="..\UnoSolutionTemplate.WinUI.netcore\WinUI\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
-
-		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude);@(_UnoAppnet6WinUITemplateSingleLocationFiles)"/>
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -271,9 +263,7 @@
 
 		<RemoveDir Directories="$(IntermediateTemplatePath)" />
 
-		<Copy SourceFiles="@(_UnoAppnet6WinUITemplateSingleLocationFiles)" DestinationFolder="$(IntermediateTemplatePath)\UnoQuickStart.App\%(RecursiveDir)" />
 		<Copy SourceFiles="@(_UnoAppnet6WinUITemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
-		<Copy SourceFiles="..\UnoSolutionTemplate.Wizard.2022\Directory.Build-netcore.props" DestinationFiles="$(IntermediateTemplatePath)\Directory.Build.props" />
 
 		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
 		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
@@ -344,9 +334,9 @@
 						{
 							// Avoid value replacement with msbuild's CodeTaskFactory expansion
 							string pattern = string.Format("^{0}\\$if\\$\\(\\${0}\\${0} == True\\)", "(.*?)");
-
+							
 							s = Regex.Replace(s, pattern, @"$1<!--#if ($2)" + Environment.NewLine + "$1", RegexOptions.Multiline);
-
+							
 							s = s
 								.Replace("$endif$", "\n#endif -->");
 								;
@@ -397,7 +387,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Server", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Server", "Droid", "macOS", "Mobile", "Shared", "Views", "Base", "Windows", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
 
 					foreach(var platform in platforms)
 					{
@@ -405,7 +395,9 @@
 
 						if(Directory.Exists(source))
 						{
-							Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, SafeProjectName + "." + platform));
+							var targetName = platform == "Views" ? SafeProjectName : SafeProjectName + "." + platform;
+
+							Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, targetName));
 						}
 					}
 				]]>

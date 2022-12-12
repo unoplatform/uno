@@ -32,7 +32,6 @@
 		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != '$basetargetframework$-maccatalyst' and '$(TargetFramework)' != '$basetargetframework$-macos'">True</UseInterpreter>-->
 
 		<IsUnoHead>true</IsUnoHead>
-		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">14.0</SupportedOSPlatformVersion>
@@ -63,7 +62,7 @@
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 			</ItemGroup>
 			<ItemGroup>
-				<AndroidEnvironment Include="Platforms/Android/environment.conf" />
+				<AndroidEnvironment Include="Android/environment.conf" />
 			</ItemGroup>
 		</When>
 
@@ -108,4 +107,10 @@
 			</PropertyGroup>
 		</When>
 	</Choose>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+	
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>
