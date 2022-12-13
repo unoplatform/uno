@@ -41,7 +41,6 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
-  - template: templates/update-vs-components.yml
 
   - task: MSBuild@1
     inputs:
