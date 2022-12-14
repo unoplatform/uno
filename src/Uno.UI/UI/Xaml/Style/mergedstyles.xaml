@@ -894,6 +894,14 @@
       <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
+      <StaticResource x:Key="ToolTipForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="ToolTipBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
+      <StaticResource x:Key="ToolTipBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+      <Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
+      <Thickness x:Key="ToolTipBorderThemePadding">8,5,8,7</Thickness>
+      <SolidColorBrush x:Key="ToolTipBackgroundThemeBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="ToolTipBorderThemeBrush" Color="#FF808080" />
+      <SolidColorBrush x:Key="ToolTipForegroundThemeBrush" Color="#FF666666" />
     </ResourceDictionary>
     <ResourceDictionary x:Key="Light">
       <x:String x:Key="BreadcrumbBarChevronLeftToRight">&#xE974;</x:String>
@@ -1792,6 +1800,15 @@
       <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
+      <x:Double x:Key="ToolTipContentThemeFontSize">12</x:Double>
+      <StaticResource x:Key="ToolTipForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="ToolTipBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
+      <StaticResource x:Key="ToolTipBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+      <Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
+      <Thickness x:Key="ToolTipBorderThemePadding">8,5,8,7</Thickness>
+      <SolidColorBrush x:Key="ToolTipBackgroundThemeBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="ToolTipBorderThemeBrush" Color="#FF808080" />
+      <SolidColorBrush x:Key="ToolTipForegroundThemeBrush" Color="#FF666666" />
     </ResourceDictionary>
     <ResourceDictionary x:Key="HighContrast">
       <x:String x:Key="BreadcrumbBarChevronLeftToRight">&#xE974;</x:String>
@@ -2666,6 +2683,15 @@
       <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
+      <StaticResource x:Key="ToolTipForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="ToolTipBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
+      <StaticResource x:Key="ToolTipBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+      <Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
+      <Thickness x:Key="ToolTipBorderThemePadding">8,5,8,7</Thickness>
+      <x:Double x:Key="ToolTipContentThemeFontSize">12</x:Double>
+      <SolidColorBrush x:Key="ToolTipBackgroundThemeBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ToolTipBorderThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ToolTipForegroundThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
   <!--origin: Microsoft\UI\Xaml\Controls\Breadcrumb\BreadcrumbBar.xaml-->
@@ -15044,10 +15070,6 @@
   </Style>
   <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
   <!--origin: UI\Xaml\Controls\ToolTip\ToolTip.xaml-->
-  <SolidColorBrush x:Key="ToolTipForeground" Color="{StaticResource SystemBaseHighColor}" />
-  <SolidColorBrush x:Key="ToolTipBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
-  <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#000000" />
-  <Thickness x:Key="ToolTipBorderThemePadding">8,5,8,7</Thickness>
   <Style TargetType="ToolTip">
     <Setter Property="Foreground" Value="{ThemeResource ToolTipForeground}" />
     <Setter Property="Background" Value="{ThemeResource ToolTipBackground}" />

@@ -19947,11 +19947,11 @@
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ToolTipContentThemeFontSize}" />
     <Setter Property="Padding" Value="{ThemeResource ToolTipBorderThemePadding}" />
-    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ToolTip">
-          <ContentPresenter x:Name="LayoutRoot" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" BackgroundSizing="OuterBorderEdge" BorderBrush="{TemplateBinding BorderBrush}" MaxWidth="320" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" TextWrapping="Wrap" CornerRadius="{TemplateBinding CornerRadius}">
+          <ContentPresenter x:Name="LayoutRoot" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" BackgroundSizing="OuterBorderEdge" BorderBrush="{TemplateBinding BorderBrush}" MaxWidth="320" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" TextWrapping="Wrap" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="OpenStates">
                 <VisualState x:Name="Closed">
