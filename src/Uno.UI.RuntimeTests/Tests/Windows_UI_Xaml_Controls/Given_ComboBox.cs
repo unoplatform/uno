@@ -132,6 +132,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		/// <remarks>
+		/// This test is memory sensitive - if the memory usage exceeds FrameworkTemplatePool.HighMemoryThreshold,
+		/// the test will most likely faily as the template will be recycled. Currently the Samples app uses
+		/// HighMemoryThreshold of 0.9 (see App.ConfigureFeatureFlags).
+		/// </remarks>
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
