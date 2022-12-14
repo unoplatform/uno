@@ -107,6 +107,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel);
 
+		partial void OnVerticalOffsetChangedPartial(double oldVerticalOffset, double newVerticalOffset) =>
+			PopupPanel?.InvalidateMeasure();
+
+		partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
+			PopupPanel?.InvalidateMeasure();
+
 		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
 			base.UpdateThemeBindings(updateReason);
