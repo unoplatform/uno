@@ -4,12 +4,14 @@
 		$if$($UseAndroid$ == True)<TargetFrameworks>$basetargetframework$-android</TargetFrameworks>$endif$
 		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
 		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
-
-		<!-- Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401-->
+		
 		<!--
+		Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401
 		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
 		-->
+  	</PropertyGroup>
 
+  	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
 
