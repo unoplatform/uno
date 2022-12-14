@@ -62,7 +62,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		public override bool Execute()
 		{
-			Debugger.Launch();
+			// Debugger.Launch();
 
 			BuildReferences();
 			OutputPath = AlignPath(OutputPath);
