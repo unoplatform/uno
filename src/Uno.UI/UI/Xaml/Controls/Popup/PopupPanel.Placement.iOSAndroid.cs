@@ -16,16 +16,15 @@ using Android.Views;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives;
+
+partial class PopupPanel
 {
-	partial class PlacementPopupPanel
-	{
-		/// <summary>
-		/// A native view to use as the anchor, in the case that the managed <see cref="AnchorControl"/> is a proxy that's not actually
-		/// included in the visual tree.
-		/// </summary>
-		protected virtual View? NativeAnchor => null;
-	}
+	/// <summary>
+	/// A native view to use as the anchor, in the case that the managed <see cref="AnchorControl"/> is a proxy that's not actually
+	/// included in the visual tree.
+	/// </summary>
+	protected virtual View? NativeAnchor => null;	
 }
 
 #endif

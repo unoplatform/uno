@@ -21,12 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				Background = SolidColorBrushHelper.Transparent,
 			};
 		}
-
-		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget)
-		{
-			_popup.Anchor = placementTarget;
-		}
-
+		
 		internal PopupPanel GetPopupPanel() => _popup.PopupPanel;
 	}
 }

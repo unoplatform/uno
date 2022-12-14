@@ -4,48 +4,47 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives;
+
+internal partial class PopupRoot : Panel
 {
-	internal partial class PopupRoot : Panel
+	public PopupRoot()
 	{
-		public PopupRoot()
-		{
-		}
+	}
 
-		protected override void OnChildrenChanged()
-		{
-			base.OnChildrenChanged();
-		}
+	protected override void OnChildrenChanged()
+	{
+		base.OnChildrenChanged();
+	}
 
-		protected override Size MeasureOverride(Size availableSize)
+	protected override Size MeasureOverride(Size availableSize)
+	{
+		Size size = default;
+		foreach (var child in Children)
 		{
-			Size size = default;
-			foreach (var child in Children)
+			if (!(child is PopupPanel))
 			{
-				if (!(child is PopupPanel))
-				{
-					continue;
-				}
-				// Note that we should always be arranged with the full size of the window, so we don't care too much about the return value here.
-				size = MeasureElement(child, availableSize);
+				continue;
 			}
-			return size;
+			// Note that we should always be arranged with the full size of the window, so we don't care too much about the return value here.
+			size = MeasureElement(child, availableSize);
 		}
+		return size;
+	}
 
-		protected override Size ArrangeOverride(Size finalSize)
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		foreach (var child in Children)
 		{
-			foreach (var child in Children)
+			if (!(child is PopupPanel panel))
 			{
-				if (!(child is PopupPanel panel))
-				{
-					continue;
-				}
-
-				// Note: The popup alignment is ensure by the PopupPanel itself
-				ArrangeElement(child, new Rect(new Point(), finalSize));
+				continue;
 			}
 
-			return finalSize;
+			// Note: The popup alignment is ensure by the PopupPanel itself
+			ArrangeElement(child, new Rect(new Point(), finalSize));
 		}
+
+		return finalSize;
 	}
 }

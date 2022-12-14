@@ -90,8 +90,6 @@
 				.Property("Child", "UIElement", "null", frameworkPropertyOption: "ValueInheritsDataContext")
 				.Property("IsLightDismissEnabled", "bool", "false")
 				//.Property("ChildTransitions", "TransitionCollection", "null")
-				.Property("HorizontalOffset", "double", "0")
-				.Property("VerticalOffset", "double", "0")
 
 		.Namespace("Uno.UI.Controls.Legacy")
 			.Class("ListViewBase", condition: "XAMARIN_IOS")
