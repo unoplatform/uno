@@ -532,7 +532,7 @@ namespace Uno.UI
 
 			public static int ShowDelay { get; set; } = 1000;
 
-			public static int ShowDuration { get; set; } = 7000;
+			public static int ShowDuration { get; set; } = 5000;
 		}
 
 		public static class NativeFramePresenter
