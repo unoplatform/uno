@@ -72,3 +72,15 @@ When `ContentDialog` version is used, it uses the default `ContentDialog` style.
 ```c#
 WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyle";
 ```
+
+## ToolTips
+
+By default, `ToolTips` are disabled on all platforms except for WebAssembly. To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. E.g. to enable `ToolTips` on Skia, you can add the following in the end of the `App` constructor:
+
+```csharp
+#if __SKIA__
+Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+#endif
+```
+
+It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK/UWP will not adhere to this configuration.
