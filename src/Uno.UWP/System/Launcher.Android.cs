@@ -61,9 +61,11 @@ namespace Windows.System
 
 				var manager = Uno.UI.ContextHelper.Current.PackageManager;
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				var supportedResolvedInfos = manager.QueryIntentActivities(
 						intent,
 						PackageInfoFlags.MatchDefaultOnly);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 				canOpenUri = supportedResolvedInfos.Any();
 			}

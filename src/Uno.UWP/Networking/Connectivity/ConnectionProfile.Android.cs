@@ -48,12 +48,14 @@ namespace Windows.Networking.Connectivity
 			else
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
 				if (info?.IsConnected == true)
 				{
 					IsWwanConnectionProfile = IsConnectionWwan(info.Type);
 					IsWlanConnectionProfile = IsConnectionWlan(info.Type);
 				}
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 			}
 		}
@@ -73,7 +75,7 @@ namespace Windows.Networking.Connectivity
 
 		/// <summary>
 		/// Code based on Xamarin.Essentials implementation with some modifications.
-		/// </summary>		
+		/// </summary>
 		/// <returns>Connectivity level.</returns>
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{

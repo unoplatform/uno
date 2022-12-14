@@ -38,11 +38,13 @@ namespace Windows.Networking.Connectivity
 			else
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				_connectivityChangeBroadcastReceiver = new ConnectivityChangeBroadcastReceiver();
 
 				Application.Context.RegisterReceiver(
 					_connectivityChangeBroadcastReceiver,
 					new IntentFilter(AndroidConnectivityManager.ConnectivityAction));
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 			}
 

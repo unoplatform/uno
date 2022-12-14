@@ -56,7 +56,7 @@ namespace Windows.Media.Playback
 		{
 			((VideoSurface)RenderSurface).AddOnLayoutChangeListener(this);
 
-			// Register intent to pause media when audio become noisy (unplugged headphones, for example) 
+			// Register intent to pause media when audio become noisy (unplugged headphones, for example)
 			_noisyAudioStreamReceiver = new AudioPlayerBroadcastReceiver(this);
 			var intentFilter = new IntentFilter(AudioManager.ActionAudioBecomingNoisy);
 			Application.Context.RegisterReceiver(_noisyAudioStreamReceiver, intentFilter);
@@ -251,7 +251,9 @@ namespace Windows.Media.Playback
 		private void StartPlayingHandler()
 		{
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			var handler = new Handler();
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 			var runnable = new Runnable(() => { handler.Post(OnPlaying); });
