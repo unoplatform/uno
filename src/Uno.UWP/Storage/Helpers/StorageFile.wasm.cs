@@ -13,11 +13,14 @@ namespace Windows.Storage.Helpers;
 
 partial class StorageFileHelper
 {
+	private static string assets { get; set; } = string.Empty;
 	private static async Task<bool> FileExistsInPackage(string fileName)
 	{
-		var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
-
-		var assets = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
+		if (string.IsNullOrEmpty(assets))
+		{
+			var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
+			assets = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
+		}
 
 		var assetsHash = new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"), StringComparer.OrdinalIgnoreCase);
 

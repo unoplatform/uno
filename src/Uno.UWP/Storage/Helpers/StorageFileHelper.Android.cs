@@ -10,16 +10,20 @@ namespace Windows.Storage.Helpers;
 
 partial class StorageFileHelper
 {
+	private static List<string> files { get; set; } = new List<string>();
+
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
 		//Look in assets first***
 		var context = global::Android.App.Application.Context;
-		var assets = context.Assets;
 
 		//Get only the filename with extension and apply internal UNO naming rules so we are able to find the compiled resources by replacing '.' and '-' by underscore.
 		var normalizedFileName = Path.GetFileNameWithoutExtension(fileName).Replace('.', '_').Replace('-', '_') + Path.GetExtension(fileName);
-		var files = new List<string>();
-		ScanPackageAssets(assets!, files);
+		if (!files.Any())
+		{
+			ScanPackageAssets(context.Assets!, files);
+		}
+
 		if (files.Contains(normalizedFileName))
 		{
 			return Task.FromResult(true);
