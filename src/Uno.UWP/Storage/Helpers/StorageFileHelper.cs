@@ -10,5 +10,5 @@ public partial class StorageFileHelper
 	/// </summary>
 	/// <param name="fileName">relative file path</param>
 	/// <returns>A task that will complete with a result of true if file exists, otherwise with a result of false.</returns>
-	public static async Task<bool> Exists(string fileName) => await FileExistsInPackage(fileName);
+	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
 }

@@ -61,27 +61,29 @@ partial class StorageFileHelper
 		return Task.FromResult(false);
 	}
 
-
-	//This method will scan for all the assets within current package
-	//This method will return a list of {file}.{extension}
-	private static bool ScanPackageAssets(ICollection<string> files, string rootPath = "")
+	/// <summary>
+	/// This method will scan for all the assets within current package
+	/// </summary>
+	/// <param name="files">scanned files list</param>
+	/// <param name="rootPath">root path</param>
+	private static bool ScanPackageAssets(ICollection<string> scannedFiles, string rootPath = "")
 	{
 		try
 		{
-			var Paths = global::Android.App.Application.Context.Assets?.List(rootPath);
-			if (Paths?.Length > 0)
+			var paths = global::Android.App.Application.Context.Assets?.List(rootPath);
+			if (paths?.Length > 0)
 			{
-				foreach (var file in Paths)
+				foreach (var file in paths)
 				{
 					string path = string.IsNullOrWhiteSpace(rootPath) ? file : Path.Combine(rootPath, file);
-					if (!ScanPackageAssets(files, path))
+					if (!ScanPackageAssets(scannedFiles, path))
 					{
 						return false;
 					}
 
 					if (path.Contains('.'))
 					{
-						files.Add(Path.GetFileNameWithoutExtension(path) + Path.GetExtension(path));
+						scannedFiles.Add(Path.GetFileNameWithoutExtension(path) + Path.GetExtension(path));
 					}
 				}
 			}
