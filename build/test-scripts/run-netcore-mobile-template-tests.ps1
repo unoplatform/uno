@@ -65,8 +65,7 @@ $dotnetBuildNet6Configurations =
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", ""),
-    @("Skia.WPF", "", ""),
-    @("Server", "", "")
+    @("Skia.WPF", "", "")
 )
 
 # WinUI - Default
@@ -79,6 +78,9 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
     & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.App\UnoAppWinUI.$platform.csproj"
     Assert-ExitCodeIsZero
 }
+
+# Server project build (merge with above loop when .App folder is removed)
+& dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
 
  # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
  & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.App\UnoAppWinUI.Windows.csproj"
