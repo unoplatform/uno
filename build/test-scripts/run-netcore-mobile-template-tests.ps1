@@ -66,6 +66,7 @@ $dotnetBuildNet6Configurations =
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", ""),
     @("Skia.WPF", "", "")
+    @("Server", "", "")
 )
 
 # WinUI - Default
