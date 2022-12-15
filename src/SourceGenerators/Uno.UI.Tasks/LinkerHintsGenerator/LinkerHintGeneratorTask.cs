@@ -383,11 +383,29 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					? "net7.0"
 					: "netstandard2.0";
 
-				return
-					(unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
-						referencePath.StartsWith(unoUIPackageBasePath, StringComparison.Ordinal) ?
-							referencePath.Replace($"lib{separator}{runtimeTargetFramework}", $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}") :
-								referencePath;
+				var isUnoRuntimeEnabled = (unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
+						referencePath.StartsWith(unoUIPackageBasePath, StringComparison.Ordinal);
+
+				if (isUnoRuntimeEnabled)
+				{
+					var originalFolderPath = $"lib{separator}{runtimeTargetFramework}";
+					var preUno46FolderPart = $"uno-runtime{separator}{unoRuntimeIdentifier}";
+					var postUno46FolderPathPart = $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}";
+
+					var post46Path = referencePath.Replace(originalFolderPath, postUno46FolderPathPart);
+					var pre46Path = referencePath.Replace(originalFolderPath, preUno46FolderPart);
+
+					if (File.Exists(post46Path))
+					{
+						return post46Path;
+					}
+					else if (File.Exists(pre46Path))
+					{
+						return pre46Path;
+					}
+				}
+
+				return referencePath;
 			}
 		}
 
