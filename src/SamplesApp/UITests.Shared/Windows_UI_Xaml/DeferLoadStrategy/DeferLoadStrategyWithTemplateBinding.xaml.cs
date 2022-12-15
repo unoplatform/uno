@@ -18,7 +18,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.DeferLoadStrategy
 {
-	[SampleControlInfo("DeferLoadStrategy", "DeferLoadStrategyWithTemplateBinding", typeof(Presentation.SamplePages.DeferLoadStrategyViewModel))]
+	[SampleControlInfo("XAML", "DeferLoadStrategyWithTemplateBinding", typeof(Presentation.SamplePages.DeferLoadStrategyViewModel))]
 	public sealed partial class DeferLoadStrategyWithTemplateBinding : UserControl
 	{
 		public DeferLoadStrategyWithTemplateBinding()
