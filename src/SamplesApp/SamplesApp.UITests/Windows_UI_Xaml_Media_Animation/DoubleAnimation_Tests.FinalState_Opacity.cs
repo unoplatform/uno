@@ -14,19 +14,17 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 {
 	[TestFixture]
-	[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
+
+	// Disabled for Android: https://github.com/unoplatform/uno/issues/9080
+	// Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
+	[ActivePlatforms(Platform.Browser)]
 	public partial class DoubleAnimation_Tests : SampleControlUITestBase
 	{
 		private const string _finalStateOpacityTestControl = "UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_FinalState_Opacity";
 
 		[Test] [AutoRetry] public void When_Opacity_Completed_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
 		[Test] [AutoRetry] public void When_Opacity_Completed_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
-
-		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Disabled for Android: https://github.com/unoplatform/uno/issues/9080
-		public void When_Opacity_Paused_With_FillBehaviorStop_Then_Hold() => TestOpacityFinalState();
-
+		[Test] [AutoRetry] public void When_Opacity_Paused_With_FillBehaviorStop_Then_Hold() => TestOpacityFinalState();
 		[Test] [AutoRetry] public void When_Opacity_Paused_With_FillBehaviorHold_Then_Hold() => TestOpacityFinalState();
 		[Test] [AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorStop_Then_Rollback() => TestOpacityFinalState();
 		[Test] [AutoRetry] public void When_Opacity_Canceled_With_FillBehaviorHold_Then_Rollback() => TestOpacityFinalState();
