@@ -259,7 +259,7 @@ partial class CommandBarFlyoutCommandBar
 		{
 			if (overflowPopup is { } overflowPopup4)
 			{
-				void actualPlacementChangedHandler(object sender, object args)
+				void actualPlacementChangedHandler(object? sender, object? args)
 				{
 #if MUX_DEBUG
 					COMMANDBARFLYOUT_TRACE_VERBOSE(this, TRACE_MSG_METH_STR, METH_NAME, this, "OverflowPopup ActualPlacementChanged");
@@ -351,7 +351,7 @@ partial class CommandBarFlyoutCommandBar
 
 		if (m_openingStoryboard is not null)
 		{
-			void StopOpeningStoryboard(object sender, object args) => m_openingStoryboard.Stop();
+			void StopOpeningStoryboard(object? sender, object? args) => m_openingStoryboard.Stop();
 			m_openingStoryboard.Completed += StopOpeningStoryboard;
 			m_openingStoryboardCompletedRevoker.Disposable = Disposable.Create(() => m_openingStoryboard.Completed -= StopOpeningStoryboard);
 		}
@@ -403,7 +403,7 @@ partial class CommandBarFlyoutCommandBar
 		{
 			if (closingStoryboard.GetCurrentState() != ClockState.Active)
 			{
-				void OnCompleted(object sender, object args)
+				void OnCompleted(object? sender, object? args)
 				{
 					if (weakCommandBarFlyout.Target is not null)
 					{
@@ -1330,7 +1330,7 @@ partial class CommandBarFlyoutCommandBar
 
 	private void AttachEventsToSecondaryStoryboards()
 	{
-		void addDropShadowFunc(object sender, object args)
+		void addDropShadowFunc(object? sender, object? args)
 		{
 			if (SharedHelpers.IsAnimationsEnabled())
 			{
