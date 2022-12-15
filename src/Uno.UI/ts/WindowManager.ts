@@ -1328,6 +1328,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public measureViewNativeFast(htmlId: number, availableWidth: number, availableHeight: number, measureContent: boolean, pReturn: number) {
+
+			const result = this.measureViewInternal(htmlId, availableWidth, availableHeight, measureContent);
+
+			const desiredSize = new WindowManagerMeasureViewReturn();
+			desiredSize.DesiredWidth = result[0];
+			desiredSize.DesiredHeight = result[1];
+
+			desiredSize.marshal(pReturn);
+		}
+
 		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
 		private static MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
 
