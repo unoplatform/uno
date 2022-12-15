@@ -27,7 +27,7 @@ namespace Windows.Storage.Helpers
 		private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
 		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
 
-		private static async Task<HashSet<string>> GetAssets(CancellationToken ct)
+		internal static async Task<HashSet<string>> GetAssets(CancellationToken ct)
 		{
 			var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 

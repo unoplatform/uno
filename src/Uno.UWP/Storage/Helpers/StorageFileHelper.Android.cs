@@ -10,7 +10,7 @@ namespace Windows.Storage.Helpers;
 
 partial class StorageFileHelper
 {
-	private static List<string> files { get; set; } = new List<string>();
+	private static ICollection<string> _scannedFiles { get; set; } = new List<string>();
 
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
@@ -19,12 +19,12 @@ partial class StorageFileHelper
 
 		//Get only the filename with extension and apply internal UNO naming rules so we are able to find the compiled resources by replacing '.' and '-' by underscore.
 		var normalizedFileName = Path.GetFileNameWithoutExtension(fileName).Replace('.', '_').Replace('-', '_') + Path.GetExtension(fileName);
-		if (!files.Any())
+		if (!_scannedFiles.Any())
 		{
-			ScanPackageAssets(context.Assets!, files);
+			ScanPackageAssets(_scannedFiles);
 		}
 
-		if (files.Contains(normalizedFileName))
+		if (_scannedFiles.Contains(normalizedFileName))
 		{
 			return Task.FromResult(true);
 		}
@@ -64,17 +64,17 @@ partial class StorageFileHelper
 
 	//This method will scan for all the assets within current package
 	//This method will return a list of {file}.{extension}
-	private static bool ScanPackageAssets(AssetManager assets, List<string> files, string rootPath = "")
+	private static bool ScanPackageAssets(ICollection<string> files, string rootPath = "")
 	{
 		try
 		{
-			var Paths = assets?.List(rootPath);
+			var Paths = global::Android.App.Application.Context.Assets?.List(rootPath);
 			if (Paths?.Length > 0)
 			{
 				foreach (var file in Paths)
 				{
 					string path = string.IsNullOrWhiteSpace(rootPath) ? file : Path.Combine(rootPath, file);
-					if (!ScanPackageAssets(assets!, files, path))
+					if (!ScanPackageAssets(files, path))
 					{
 						return false;
 					}
