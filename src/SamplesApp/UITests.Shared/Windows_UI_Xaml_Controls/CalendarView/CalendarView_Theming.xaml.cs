@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
-	[Sample("Date Picking")]
+	[Sample("Pickers")]
     public sealed partial class CalendarView_Theming : Page
     {
         public CalendarView_Theming()
