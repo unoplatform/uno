@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
-		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
+		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>Platforms\WebAssembly\manifest.webmanifest</WasmPWAManifestFile>$endif$
 
 		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 	</PropertyGroup>
