@@ -572,6 +572,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setStyleNativeFast(htmlId: number, styles: string[]) {
+
+			const elementStyle = this.getView(htmlId).style;
+
+			const stylesLength = styles.length;
+
+			for (let i = 0; i < stylesLength; i += 2) {
+				elementStyle.setProperty(styles[i], styles[i + 1]);
+			}
+		}
+
 		/**
 		* Set a single CSS style of a html element
 		*
