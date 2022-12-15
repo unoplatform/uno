@@ -65,7 +65,7 @@ $dotnetBuildNet6Configurations =
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", ""),
-    @("Skia.WPF", "", "")
+    @("Skia.WPF", "", ""),
     @("Server", "", "")
 )
 
