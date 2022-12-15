@@ -186,6 +186,9 @@ namespace Uno.UI.RuntimeTests
 #if __MACOS__ // #9282 for macOS
 		[Ignore]
 #endif
+#if __SKIA__
+		[Ignore("Flaky on Skia targets, see https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task When_RepeatDuration()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
