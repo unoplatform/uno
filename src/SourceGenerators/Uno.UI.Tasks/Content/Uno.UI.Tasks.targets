@@ -30,7 +30,7 @@
 		<!--
 		Ensures that AssignLinkMetadata runs before AssignTargetPaths.
 		Otherwise, AssignTargetPath will generate a rooted path and will break embedded sources
-		LogicalPath metadata's behavior.
+		LogicalName metadata's behavior.
 		-->
 		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
 	</PropertyGroup>
