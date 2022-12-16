@@ -58,6 +58,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\nodpi-validationresource.jpeg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\BackArrow.scale-300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Asset With Spaces.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\SharedProjectEmbeddedFile.txt" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
@@ -74,5 +75,8 @@
     <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\" />
   </ItemGroup>
 </Project>
