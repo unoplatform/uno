@@ -1,12 +1,12 @@
 # Hosting Uno Platform WebAssembly apps on Azure Static Web Apps
 
-The Azure team has released a new service named [Azure Static Web Apps in Preview](https://docs.microsoft.com/en-us/azure/static-web-apps/overview).
+Deploying and hosting of Uno Platform WebApps can be accomplished using [Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/overview).
 
-This integration allows the publication of GitHub and Azure DevOps Git repositories to a service specialized for static web apps. It uses GitHub Actions or Azure DevOps to build and publish the application. The integration also supports the creation of temporary environments for Pull Requests, giving the ability to perform validations while a Pull Request is opened.
+This Azure service allows the publication of GitHub and Azure DevOps Git repositories to a service specialized for static web apps. It uses GitHub Actions or Azure DevOps to build and publish the application. The integration also supports the creation of temporary environments for Pull Requests, giving the ability to perform validations while a Pull Request is opened.
 
 You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
 
-## Publishing a WebAssembly app
+## Publishing Uno Platform WebAssembly app on Azure
 Here is how to publish an app from GitHub, using Uno Platform:
 -	In a new repository, create a Uno Platform app using the following command:
     ```
@@ -16,7 +16,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
     ```
 -	If the <TargetFramework> value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](https://github.com/unoplatform/uno/blob/master/doc/articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
 -	If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
--	Search for [Static Web Apps (Preview)](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
+-	Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
 -	Fill the required fields in the creation form:
 
     ![visual-studio-installer-web](../Assets/aswa-create.png)
