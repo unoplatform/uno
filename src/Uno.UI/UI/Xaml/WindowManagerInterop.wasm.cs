@@ -13,6 +13,10 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Uno.UI.Xaml
 {
 	/// <summary>
@@ -268,6 +272,15 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
+				
+				NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
+
+				var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);
+
+				return new Size(result.DesiredWidth, result.DesiredHeight);
+#else
 				var parms = new WindowManagerMeasureViewParams
 				{
 					HtmlId = htmlId,
@@ -279,6 +292,7 @@ namespace Uno.UI.Xaml
 				var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
 
 				return new Size(ret.DesiredWidth, ret.DesiredHeight);
+#endif
 			}
 		}
 
@@ -403,6 +417,9 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = styles[i].value;
 				}
 
+#if NET7_0_OR_GREATER
+				NativeMethods.SetStyles(htmlId, pairs);
+#else
 				var parms = new WindowManagerSetStylesParams
 				{
 					HtmlId = htmlId,
@@ -411,6 +428,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setStyleNative", parms);
+#endif
 			}
 		}
 
@@ -1462,5 +1480,16 @@ namespace Uno.UI.Xaml
 			Eraser = 5
 		}
 		#endregion
+
+#if NET7_0_OR_GREATER
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
+			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleNativeFast")]
+			internal static partial void SetStyles(IntPtr htmlId, string[] pairs);
+		}
+#endif
 	}
 }

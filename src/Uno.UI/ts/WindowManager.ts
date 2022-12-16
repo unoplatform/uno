@@ -572,6 +572,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setStyleNativeFast(htmlId: number, styles: string[]) {
+
+			const elementStyle = this.getView(htmlId).style;
+
+			const stylesLength = styles.length;
+
+			for (let i = 0; i < stylesLength; i += 2) {
+				elementStyle.setProperty(styles[i], styles[i + 1]);
+			}
+		}
+
 		/**
 		* Set a single CSS style of a html element
 		*
@@ -1326,6 +1337,17 @@ namespace Uno.UI {
 			ret2.marshal(pReturn);
 
 			return true;
+		}
+
+		public measureViewNativeFast(htmlId: number, availableWidth: number, availableHeight: number, measureContent: boolean, pReturn: number) {
+
+			const result = this.measureViewInternal(htmlId, availableWidth, availableHeight, measureContent);
+
+			const desiredSize = new WindowManagerMeasureViewReturn();
+			desiredSize.DesiredWidth = result[0];
+			desiredSize.DesiredHeight = result[1];
+
+			desiredSize.marshal(pReturn);
 		}
 
 		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
