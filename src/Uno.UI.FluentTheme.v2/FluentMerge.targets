@@ -1,76 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <PropertyGroup>
-	<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <_Uno_XamlMerge_Task_Version>1.1.0-dev.3</_Uno_XamlMerge_Task_Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<_Uno_XamlMerge_Task_Version>1.16.0-dev.16</_Uno_XamlMerge_Task_Version>
+	</PropertyGroup>
 
-  <PropertyGroup>
-	  <XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources_v2.xaml</XamlMergeOutputFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-      <PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" />
-  </ItemGroup>
-
-  <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-  <Target Name="GenerateThemeResourceV2File" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
-    <ItemGroup>
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs1_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs2_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />
-	  <!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SplitView_themeresources.xaml" />
-      <WinUIStylePageV2
-		  Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
-      <WinUIStylePageV2
-		  Remove="@(ExcludedTemplatesV2)" />
-    </ItemGroup>
+	<PropertyGroup>
+		<XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources_v2.xaml</XamlMergeOutputFile>
+	</PropertyGroup>
 
 	<ItemGroup>
-	  <XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
-    </ItemGroup>
+		<PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" />
+	</ItemGroup>
 
-  <Choose>
-	<When Condition="'$(TargetFramework)'=='net461'">
-	  <ItemGroup>
-		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-	  </ItemGroup>
-	</When>
-	<When Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
-	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+	<!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
+	<Target Name="GenerateThemeResourceV2File" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
+		<ItemGroup>
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip.xaml" />
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs1_themeresources.xaml" />
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs2_themeresources.xaml" />
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer.xaml" />
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />
+			<!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
+			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SplitView_themeresources.xaml" />
+			<WinUIStylePageV2
+				Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
+			<WinUIStylePageV2
+				Remove="@(ExcludedTemplatesV2)" />
+		</ItemGroup>
 
-		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-		<Page Remove="@(Page)" />
-	  </ItemGroup>
-	</When>
-	<Otherwise>
-	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+		<ItemGroup>
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+		</ItemGroup>
+	</Target>
 
-		<!-- remove files included by msbuild extras -->
-		<Page Remove="@(Page)" />
-		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-	  </ItemGroup>
-	</Otherwise>
-  </Choose>
+	<Choose>
+		<When Condition="'$(TargetFramework)'=='net461'">
+			<ItemGroup>
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+			</ItemGroup>
+		</When>
+		<When Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+
+				<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
+				<Page Remove="@(Page)" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+
+				<!-- remove files included by msbuild extras -->
+				<Page Remove="@(Page)" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 
-  <PropertyGroup>
-	<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-  </PropertyGroup>
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
 
-  <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
-  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
-          Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)'!='' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
+	<Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
+			Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)'!='' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
 
 </Project>

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<PropertyGroup>
-	<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
+		<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<_Uno_XamlMerge_Task_Version>1.1.0-dev.3</_Uno_XamlMerge_Task_Version>
+		<_Uno_XamlMerge_Task_Version>1.16.0-dev.16</_Uno_XamlMerge_Task_Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -30,40 +30,39 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+		<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" Exclude="@(ExcludedTemplates)" />
 	</ItemGroup>
 
-  <Choose>
-	<When Condition="'$(TargetFramework)'=='net461'">
-	  <ItemGroup>
-		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-	  </ItemGroup>
-	</When>
-	<When Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
-	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+	<Choose>
+		<When Condition="'$(TargetFramework)'=='net461'">
+			<ItemGroup>
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+			</ItemGroup>
+		</When>
+		<When Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
 
-		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-		<Page Remove="@(Page)" />
-	  </ItemGroup>
-	</When>
-	<Otherwise>
-	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+				<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
+				<Page Remove="@(Page)" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
 
-		<!-- remove files included by msbuild extras -->
-		<Page Remove="@(Page)" />
-		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-	  </ItemGroup>
-	</Otherwise>
-  </Choose>
+				<!-- remove files included by msbuild extras -->
+				<Page Remove="@(Page)" />
+				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
 
-  <PropertyGroup>
-	<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-  </PropertyGroup>
-
-  <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
 			Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)'!='' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
