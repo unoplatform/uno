@@ -78,7 +78,7 @@ var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new 
 var content = await FileIO.ReadTextAsync(file);
 ```
 
-UNO also supports the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage`:
+UNO also supports the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage` method:
 ```csharp
 var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```
