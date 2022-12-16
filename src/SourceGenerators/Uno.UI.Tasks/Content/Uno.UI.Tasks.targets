@@ -43,11 +43,17 @@
 		<PropertyGroup>
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
 		</PropertyGroup>
-		<ResourcesGenerationTask_v0 Resources="@(PRIResource)"
+
+		<AssignTargetPath Files="@(PRIResource)" RootFolder="$(MSBuildProjectDirectory)">
+			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
+		</AssignTargetPath>
+		
+		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(XamarinProjectType)"
 									 IntermediateOutputPath="$(IntermediateOutputPath)"
-									 DefaultLanguage="$(DefaultLanguage)">
+									 DefaultLanguage="$(DefaultLanguage)"
+									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
 			<Output TaskParameter="GeneratedFiles"
 							ItemName="GeneratedFiles" />
 		</ResourcesGenerationTask_v0>
