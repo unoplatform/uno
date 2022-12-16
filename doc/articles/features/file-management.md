@@ -78,11 +78,12 @@ var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new 
 var content = await FileIO.ReadTextAsync(file);
 ```
 
-UNO also supports the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage` method:
+Uno Platform also provides the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage`:
 ```csharp
 var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```
-
+> [!IMPORTANT]
+> `StorageFileHelper.ExistsInPackage` is only available for Uno Platform based targets, but not for WinAppSDK.
 ## Support for `RandomAccessStreamReference.CreateFromUri`
 
 Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 
