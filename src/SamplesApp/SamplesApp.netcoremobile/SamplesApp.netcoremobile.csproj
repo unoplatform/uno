@@ -14,8 +14,6 @@
 		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
-		<UseInterpreter>false</UseInterpreter>
-
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="'$(UnoSampleAppRuntimeIdentifiers)'!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
