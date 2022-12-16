@@ -107,10 +107,6 @@
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PRIResource Include="**\*.resw" />
-	</ItemGroup>
-
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
