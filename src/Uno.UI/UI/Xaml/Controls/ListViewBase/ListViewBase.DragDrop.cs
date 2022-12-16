@@ -14,6 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
@@ -291,6 +292,13 @@ namespace Windows.UI.Xaml.Controls
 						list.IndexOf,
 						(oldIndex, newIndex) => DoMove(list, oldIndex, newIndex));
 					break;
+
+				case ICollectionView view when !view.IsReadOnly:
+					ProcessMove(
+						view.Count,
+						view.IndexOf,
+						(oldIndex, newIndex) => DoMove(view, oldIndex, newIndex));
+					break;
 			}
 
 			void ProcessMove(
@@ -417,6 +425,20 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private static void DoMove(IList list, int oldIndex, int newIndex)
+		{
+			var item = list[oldIndex];
+			list.RemoveAt(oldIndex);
+			if (newIndex >= list.Count)
+			{
+				list.Add(item);
+			}
+			else
+			{
+				list.Insert(newIndex, item);
+			}
+		}
+
+		private static void DoMove(ICollectionView list, int oldIndex, int newIndex)
 		{
 			var item = list[oldIndex];
 			list.RemoveAt(oldIndex);
