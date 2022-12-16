@@ -12,6 +12,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	public class Given_ApplicationStorage
 	{
 		[TestMethod]
+		public async Task When_FileDoesNotExistsInPackage()
+		{
+			var fileExists = await StorageFileHelper.ExistsInPackage("Asset_InvalidFile.xml");
+
+			Assert.IsFalse(fileExists);
+		}
+
+		[TestMethod]
 		public async Task When_FileExistsInPackage_Nested()
 		{
 			var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");

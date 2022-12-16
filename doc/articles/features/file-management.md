@@ -14,6 +14,7 @@
 | `ApplicationData.Current.LocalFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `ApplicationData.Current.RoamingFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `CachedFileManager` | ✔ | partial | partial | partial | partial | partial | partial |
+| `StorageFileHelper` | X | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 
 ## Overview
 
@@ -75,6 +76,11 @@ Given a library or package named `MyLibray01`, the following can be used to read
 ```csharp
 var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx://MyLibray01/MyPackageFile.xml"));
 var content = await FileIO.ReadTextAsync(file);
+```
+
+UNO also supports the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage`:
+```csharp
+var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```
 
 ## Support for `RandomAccessStreamReference.CreateFromUri`
