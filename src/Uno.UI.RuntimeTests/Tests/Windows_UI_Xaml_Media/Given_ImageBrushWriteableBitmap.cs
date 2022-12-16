@@ -37,6 +37,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var sut = imageBrush.GetRelativeCoords(imageBrush.SUT);
 			
 			ImageAssert.HasColorAt(result, sut.CenterX, sut.CenterY, BlueViolet);
+#else
+			await Task.Yield();
 #endif
 		}
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
