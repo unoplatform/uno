@@ -25,12 +25,48 @@ namespace Windows.UI.Xaml.Media
 		private bool _imageSourceChanged;
 		private Windows.Foundation.Rect _lastDrawRect;
 		private readonly SerialDisposable _refreshPaint = new SerialDisposable();
+		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+
+		internal event Action ImageChanged;
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			switch (args.Property.Name)
+			{
+				case nameof(Stretch):
+				case nameof(AlignmentX):
+				case nameof(AlignmentY):
+				case nameof(RelativeTransform):
+					ImageChanged?.Invoke();
+					break;
+			}
+		}
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue)
 		{
+			if (newValue is not null)
+			{
+				newValue.InvalidateSource += OnInvalidateSource;
+				_sourceDisposable.Disposable = Disposable.Create(() => newValue.InvalidateSource -= OnInvalidateSource);
+
+				void OnInvalidateSource(object sdn, EventArgs args)
+				{
+					_imageSourceChanged = true;
+					_onImageLoaded?.Invoke();
+					ImageChanged?.Invoke();
+				}
+			}
+			else
+			{
+				_sourceDisposable.Disposable = null;
+			}
+
+
 			oldValue?.Dispose();
 			_imageSourceChanged = true;
 			_onImageLoaded?.Invoke();
+			ImageChanged?.Invoke();
 			return;
 		}
 
@@ -72,7 +108,7 @@ namespace Windows.UI.Xaml.Media
 
 			await RefreshImage(cd.Token, drawRect);
 		}
-
+		
 		private async Task RefreshImage(CancellationToken ct, Windows.Foundation.Rect drawRect)
 		{
 			if (ImageSource is ImageSource imageSource && (_imageSourceChanged || !imageSource.IsOpened) && !drawRect.HasZeroArea())

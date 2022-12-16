@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
-		private protected void InvalidateSource()
+		private protected void OnInvalidateSource()
 		{
 			_imageData = default;
 			if (_subscriptions.Count > 0 || this is SvgImageSource)

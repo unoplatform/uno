@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 						?? Window.Current.Content;
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
-					InvalidateSource();
+					OnInvalidateSource();
 #endif
 				}
 				catch (Exception error)
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer);
 #if __WASM__ || __SKIA__
-					InvalidateSource();
+					OnInvalidateSource();
 #endif
 				}
 				catch (Exception error)

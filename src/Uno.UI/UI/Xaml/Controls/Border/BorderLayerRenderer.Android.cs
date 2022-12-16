@@ -60,8 +60,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
-			var shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
+			var shouldDisposeEagerly = newState.BackgroundImageSource == null;
 			if (shouldDisposeEagerly)
 			{
 				// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
@@ -494,6 +493,8 @@ namespace Windows.UI.Xaml.Controls
 			public readonly Thickness Padding;
 			public readonly Color? BackgroundFallbackColor;
 
+			public readonly long? StateVersion;
+
 			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, Thickness padding)
 			{
 				Area = area;
@@ -506,6 +507,8 @@ namespace Windows.UI.Xaml.Controls
 				var imageBrushBackground = Background as ImageBrush;
 				BackgroundImageSource = imageBrushBackground?.ImageSource;
 
+				StateVersion = BackgroundImageSource?.StateVersion;
+
 				BackgroundColor = (Background as SolidColorBrush)?.Color;
 				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
 
@@ -515,6 +518,7 @@ namespace Windows.UI.Xaml.Controls
 			public bool Equals(LayoutState other)
 			{
 				return other != null
+					&& other.StateVersion == StateVersion
 					&& other.Area == Area
 					&& other.Background == Background
 					&& other.BackgroundImageSource == BackgroundImageSource

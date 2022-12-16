@@ -87,10 +87,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (newValue is WriteableBitmap wb)
 			{
-				wb.Invalidated += OnInvalidated;
-				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
+				newValue.InvalidateSource += OnInvalidateSource;
+				_sourceDisposable.Disposable = Disposable.Create(() => newValue.InvalidateSource -= OnInvalidateSource);
 
-				void OnInvalidated(object sdn, EventArgs args)
+				void OnInvalidateSource(object sdn, EventArgs args)
 				{
 					_openedSource = null;
 					TryOpenImage();
@@ -138,7 +138,6 @@ namespace Windows.UI.Xaml.Controls
 				
 				_sourceDisposable.Disposable = compositeDisposable;
 			}
-
 			TryOpenImage(forceReload);
 		}
 

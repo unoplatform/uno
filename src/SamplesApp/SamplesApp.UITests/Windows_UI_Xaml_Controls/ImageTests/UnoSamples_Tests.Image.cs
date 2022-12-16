@@ -436,6 +436,40 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreEqual(beforeLoad, afterClear, physicalRect, tolerance: PixelTolerance.Exclusive(1));
 		}
 
+		[Test]
+		[AutoRetry] 
+		public void BitmapImage_is_SetSource_After_Delay()
+		{ 
+			Run("Uno.UI.Samples.UITests.Image.ImageSourceDelay");
+
+			var SUT = _app.Marked("imgControl");
+			var txt = _app.Marked("txtStatus");
+			var btn1 = _app.Marked("btnLoadBmp1");
+			var btn2 = _app.Marked("btnLoadBmp2");
+
+			_app.WaitForElement(SUT, null, TimeSpan.FromSeconds(10),null, null);
+			_app.WaitForElement(txt);
+
+			_app.WaitForElement(btn1);
+			_app.WaitForElement(btn2);
+
+			_app.FastTap(btn1);
+
+			_app.WaitForText(txt, "Bmp1");
+
+			var screenRect = _app.GetPhysicalRect(SUT);
+
+			using var before = TakeScreenshot("Before");
+
+			_app.FastTap(btn2);
+
+			_app.WaitForText(txt, "Bmp2");
+
+			using var after = TakeScreenshot("After");
+
+			ImageAssert.AreNotEqual(before, after, screenRect);
+		}
+
 		private void WaitForBitmapOrSvgLoaded()
 		{
 			var isLoaded = _app.Marked("isLoaded");

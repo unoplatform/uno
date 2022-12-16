@@ -90,33 +90,18 @@ namespace Windows.UI.Xaml.Media
 			}
 			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
 			{
-				var disposables = new CompositeDisposable(5);
+				var disposables = new CompositeDisposable(6);
 				imageBrushCallback();
+				 
+				void ImageChanged()
+				{
+					imageBrushCallback();
+				}
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.ImageSourceProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
+				imageBrush.ImageChanged += ImageChanged;
+				Disposable.Create(() => imageBrush.ImageChanged -= ImageChanged)
+					.DisposeWith(disposables); 
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.StretchProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
-
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.AlignmentXProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
-
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.AlignmentYProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
-
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.RelativeTransformProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
 
 				return disposables;
 			}

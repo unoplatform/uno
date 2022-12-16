@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			using var r = ct.Register(() => tcs.TrySetCanceled());
 			using var s = Subscribe(OnChanged);
 
-			InvalidateSource();
+			OnInvalidateSource();
 
 			await tcs.Task;
 

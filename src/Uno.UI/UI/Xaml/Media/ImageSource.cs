@@ -8,9 +8,10 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
-using Uno.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI;
+using Uno.UI.Xaml.Media;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -25,6 +26,42 @@ namespace Windows.UI.Xaml.Media
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private protected static HttpClient _httpClient;
 		private protected ImageData _imageData;
+
+#if !(__NETSTD__)
+		internal event EventHandler InvalidateSource;
+		protected internal long StateVersion
+		{
+			get;
+			protected set ;
+		}
+
+		protected virtual void OnInvalidateSource()
+		{
+			StateVersion++;
+			InvalidateSource?.Invoke(this, EventArgs.Empty);
+		}
+
+		#region Stream DependencyProperty
+		internal Stream Stream
+		{
+			get { return (Stream)GetValue(StreamProperty); }
+			set { SetValue(StreamProperty, value); }
+		}
+
+		internal static DependencyProperty StreamProperty { get; } =
+			DependencyProperty.Register("Stream", typeof(Stream), typeof(ImageSource),
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.WeakStorage,
+					(s, e) => ((ImageSource)s)?.OnStreamChanged(e)));
+
+		internal void OnStreamChanged(DependencyPropertyChangedEventArgs e)
+		{
+			OnInvalidateSource();
+		}
+
+		#endregion
+
+#endif
+
 
 		public static class TraceProvider
 		{
@@ -54,11 +91,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			Downloader = DefaultDownloader;
 		}
-
-#if !(__NETSTD__)
-		internal Stream Stream { get; set; }
-#endif
-
+		 
 		internal string FilePath { get; private set; }
 
 		public bool UseTargetSize { get; set; }

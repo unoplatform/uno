@@ -59,7 +59,7 @@ public partial class SvgImageSource : ImageSource
 		}
 		InitFromUri(e.NewValue as Uri);
 #if __NETSTD__
-		InvalidateSource();
+		OnInvalidateSource();
 #endif
 	}
 
@@ -98,7 +98,7 @@ public partial class SvgImageSource : ImageSource
 			using var x = Subscribe(OnChanged);
 
 
-			InvalidateSource();
+			OnInvalidateSource();
 
 			return await tcs.Task;
 
