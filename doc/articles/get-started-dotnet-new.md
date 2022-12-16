@@ -3,9 +3,18 @@
 The Uno Platform provides a set of command-line templates to create cross-platform applications.
 
 To install the templates, type the following:
+
+# [**.NET 7**](#tab/net7)
+
 ```
 dotnet new install Uno.ProjectTemplates.Dotnet
 ```
+# [**.NET 6**](#tab/net6)
+
+```
+dotnet new -i Uno.ProjectTemplates.Dotnet
+```
+***
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
 
