@@ -188,12 +188,12 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <IsMonoAndroid>false</IsMonoAndroid>
-    <IsMonoAndroid Condition="
+    <IsAndroid>false</IsAndroid>
+    <IsAndroid Condition="
 		$(TargetFramework.ToLower().StartsWith('monoandroid'))
 		or '$(TargetFramework)'=='net6.0-android'
 		or '$(TargetFramework)'=='net7.0-android'
-		">true</IsMonoAndroid>
+		">true</IsAndroid>
 
     <IsXamarinIOS>false</IsXamarinIOS>
     <IsXamarinIOS Condition="

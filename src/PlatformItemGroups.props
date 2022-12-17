@@ -1,13 +1,6 @@
 <Project ToolsVersion="15.0">
 
   <PropertyGroup>
-    <_IsAndroid>false</_IsAndroid>
-    <_IsAndroid Condition="
-				$(IsMonoAndroid)
-				or '$(TargetFramework)'=='net6.0-android'
-				or '$(TargetFramework)'=='net7.0-android'
-				">true</_IsAndroid>
-
 	<_IsCatalyst>false</_IsCatalyst>
 	<_IsCatalyst Condition="
 				 $(_IsCatalyst)
@@ -33,7 +26,7 @@
 
     <_IsNet>false</_IsNet>
     <_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>
-	
+
 	<_IsNetCore>false</_IsNetCore>
 	<_IsNetCore Condition="'$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
 
@@ -58,13 +51,13 @@
     <SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(_IsAndroid)">
+  <PropertyGroup Condition="$(IsAndroid)">
     <DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;MONOANDROID5_0;XAMARIN_ANDROID</DefineConstants>
 	<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <AndroidResource Include="Resources\**\*.xml" Condition="$(_IsAndroid)" />
+    <AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
 
 	<None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" />
     <Compile Remove="**\*.netstd.cs" />
@@ -112,13 +105,13 @@
     <Compile Remove="**\*.Android.cs" />
     <Compile Include="**\*.Android.cs"
                      Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs"
-                     Condition="$(_IsAndroid)" />
+                     Condition="$(IsAndroid)" />
 
     <None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" />
     <Compile Remove="**\*.Xamarin.cs" />
     <Compile Include="**\*.Xamarin.cs"
                      Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs"
-                     Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsMacOS)" />
+                     Condition="$(IsAndroid) or $(_IsIOS) or $(_IsMacOS)" />
 
     <None Include="**\*.UWP.cs" Exclude="bin\**\*.UWP.cs;obj\**\*.UWP.cs" />
     <Compile Remove="**\*.UWP.cs" />
@@ -140,7 +133,7 @@
 
     <Page Include="**\*.xaml"
                 Exclude="bin/**/*.xaml;obj/**/*.xaml"
-                Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd) or $(_IsMacOS)" />
+                Condition="$(IsAndroid) or $(_IsIOS) or $(_IsUWP) or $(_IsNetStd) or $(_IsMacOS)" />
 
   </ItemGroup>
 

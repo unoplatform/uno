@@ -29,7 +29,7 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsMacOS)">
+	<ItemGroup Condition="$(IsAndroid) or $(_IsIOS) or $(_IsMacOS)">
 		<Reference Include="System.Memory" />
 	</ItemGroup>
 

@@ -33,7 +33,7 @@
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
+	<ItemGroup Condition=" $(IsAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
