@@ -1,8 +1,14 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
-  <PropertyGroup>
-		<TargetFramework>tizen50</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-tizen</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
+		<TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks>
+	</PropertyGroup>
+	
+	<Import Project="../netcore-build-tizen.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -28,7 +34,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" />
 	</ItemGroup>
 	

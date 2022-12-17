@@ -29,6 +29,7 @@
         │ net6.0-android or net7.0-android          │ .NET 6/7 Android        │ Uno.UI-netcore-mobile-only.slnf                                                    │
         │ net6.0-maccatalyst or net7.0-maccatalyst  │ .NET 6/7 macOS Catalyst │ Uno.UI-netcore-mobile-only.slnf                                                    │
         │ net6.0-macos or net7.0-macos              │ .NET 6/7 macOS AppKit   │ Uno.UI-netcore-mobile-only.slnf                                                    │
+        │ net6.0, net7.0                            │ .NET 6/7 Tizen          │ Uno.UI-Skia-only.slnf                                                              │        
         │ xamarinmac20                              │ macOS                   │ Uno.UI-macOS-only.slnf (VS for Windows), Uno.UI-vs4mac-macOS-only.sln (VS for Mac) │
         │ netstandard2.0 or net7.0                  │ Wasm+Skia Reference API │ Uno.UI-Reference-only.slnf                                                         │
         │ net461                                    │ Uno.UI.Tests            │ Uno.UI-UnitTests-only.slnf                                                         │

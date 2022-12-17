@@ -1,11 +1,12 @@
-﻿<Project Sdk="Tizen.NET.Sdk/1.1.6">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFramework>tizen50</TargetFramework>
+		<TargetFramework>net6.0-tizen</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
 	</PropertyGroup>
+
+	<Import Project="../../netcore-build-tizen.props"/>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>full</DebugType>

@@ -26,7 +26,7 @@ namespace Uno.UI.Runtime.Skia
 {
 	partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
-		private void OnKeyDown(object sender, EvasKeyEventArgs args)
+		private void OnKeyDown(object? sender, EvasKeyEventArgs args)
 		{
 			var (virtualKey, keyCode) = ParseKey(args);
 
@@ -53,7 +53,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnKeyUp(object sender, EvasKeyEventArgs args)
+		private void OnKeyUp(object? sender, EvasKeyEventArgs args)
 		{
 			var (virtualKey, keyCode) = ParseKey(args);
 

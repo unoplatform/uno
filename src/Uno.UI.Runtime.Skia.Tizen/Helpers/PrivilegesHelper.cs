@@ -31,7 +31,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.Helpers
 				var completionSource = new TaskCompletionSource<bool>();
 				if (PrivacyPrivilegeManager.GetResponseContext(privilege).TryGetTarget(out var context))
 				{
-					void OnResponseFetched(object sender, RequestResponseEventArgs e)
+					void OnResponseFetched(object? sender, RequestResponseEventArgs e)
 					{
 						completionSource.TrySetResult(e.result == RequestResult.AllowForever);
 					}
