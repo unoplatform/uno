@@ -119,7 +119,9 @@ namespace Windows.UI.Xaml
 			using var fullScreenMetrics = new DisplayMetrics();
 
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			display?.GetMetrics(outMetrics: fullScreenMetrics);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
