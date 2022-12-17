@@ -43,7 +43,7 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsXamarinMac)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />

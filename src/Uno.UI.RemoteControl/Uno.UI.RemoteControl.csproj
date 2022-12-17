@@ -74,7 +74,7 @@
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
@@ -138,7 +138,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="VS16_RemoveSystemBuffers" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+	<Target Name="VS16_RemoveSystemBuffers" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsXamarinMac))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />

@@ -121,7 +121,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsXamarinMac)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.Json" />
@@ -205,7 +205,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsXamarinMac))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />

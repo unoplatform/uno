@@ -60,7 +60,7 @@
 	<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(IsXamarinIOS)">
+  <PropertyGroup Condition="$(IsIOS)">
 	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
   </PropertyGroup>
 
@@ -92,7 +92,7 @@
 	<GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
 
-  <ItemGroup Condition=" ($(IsAndroid) or $(IsXamarinIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
+  <ItemGroup Condition=" ($(IsAndroid) or $(IsIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
 	<!-- remove files included by msbuild extras -->
 	<Page Remove="@(Page)" />
 	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />

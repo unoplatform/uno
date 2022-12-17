@@ -55,7 +55,7 @@
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
@@ -67,6 +67,6 @@
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'" />
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'" />
 
 </Project>
