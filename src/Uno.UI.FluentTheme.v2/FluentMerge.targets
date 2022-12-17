@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<_Uno_XamlMerge_Task_Version>1.16.0-dev.16</_Uno_XamlMerge_Task_Version>
+		<_Uno_XamlMerge_Task_Version>1.18.0-dev.18</_Uno_XamlMerge_Task_Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-	<Target Name="GenerateThemeResourceV2File" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
+	<Target Name="GenerateThemeResourceV2File" BeforeTargets="BeforeBuild;GenerateMergedXaml" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
 		<ItemGroup>
 			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
 			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip.xaml" />
@@ -28,14 +28,13 @@
 			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />
 			<!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
 			<ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\SplitView_themeresources.xaml" />
-			<WinUIStylePageV2
-				Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
-			<WinUIStylePageV2
-				Remove="@(ExcludedTemplatesV2)" />
 		</ItemGroup>
 
 		<ItemGroup>
-			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<!-- Important: Include files by order of priority to allow for key overrides to be applied properly -->
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\Priority01\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\Priority02\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
 		</ItemGroup>
 	</Target>
 

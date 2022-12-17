@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<_Uno_XamlMerge_Task_Version>1.16.0-dev.16</_Uno_XamlMerge_Task_Version>
+		<_Uno_XamlMerge_Task_Version>1.18.0-dev.18</_Uno_XamlMerge_Task_Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -29,9 +29,13 @@
 		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\SplitView_themeresources.xaml" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" Exclude="@(ExcludedTemplates)" />
-	</ItemGroup>
+		<ItemGroup>
+			<!-- Important: Include files by order of priority to allow for key overrides to be applied properly -->
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority01\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority02\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority06\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+		</ItemGroup>
 
 	<Choose>
 		<When Condition="'$(TargetFramework)'=='net461'">
