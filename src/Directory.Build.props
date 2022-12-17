@@ -202,12 +202,12 @@
 		or '$(TargetFramework)'=='net7.0-ios'
 		">true</IsIOS>
 
-    <IsXamarinMac>false</IsXamarinMac>
-    <IsXamarinMac Condition="
+    <IsMacOS>false</IsMacOS>
+    <IsMacOS Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinmac'))
 		or '$(TargetFramework)'=='net6.0-macos'
 		or '$(TargetFramework)'=='net7.0-macos'
-		">true</IsXamarinMac>
+		">true</IsMacOS>
   </PropertyGroup>
 
   <PropertyGroup>

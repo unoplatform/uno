@@ -43,7 +43,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.Json" />

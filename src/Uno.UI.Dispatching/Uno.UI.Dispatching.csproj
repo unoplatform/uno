@@ -67,7 +67,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsXamarinMac))">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsMacOS))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />

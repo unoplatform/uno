@@ -53,7 +53,7 @@
     <PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-  <ItemGroup Condition=" $(IsAndroid) or $(IsIOS) or $(IsXamarinMac) ">
+  <ItemGroup Condition=" $(IsAndroid) or $(IsIOS) or $(IsMacOS) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
@@ -70,7 +70,7 @@
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac) or '$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS) or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 			<Name>Uno.UI</Name>
 		</ProjectReference>
@@ -117,7 +117,7 @@
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or $(IsXamarinMac) or '$(TargetFramework)'=='netstandard2.0'" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS) or '$(TargetFramework)'=='netstandard2.0'" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 

@@ -61,7 +61,7 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS)">
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />

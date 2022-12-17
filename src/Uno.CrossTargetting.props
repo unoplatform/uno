@@ -71,7 +71,7 @@
 	<NoWarn>$(NoWarn);NU1703</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(IsXamarinMac)">
+  <PropertyGroup Condition="$(IsMacOS)">
 	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
   </PropertyGroup>
 

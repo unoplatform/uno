@@ -39,7 +39,7 @@
 		<ProjectReference Include="..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.Json" />
