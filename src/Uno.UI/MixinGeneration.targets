@@ -2,6 +2,27 @@
 <Project>
 
 	<PropertyGroup>
+		<IsAndroid>false</IsAndroid>
+		<IsAndroid Condition="
+			$(TargetFramework.ToLower().StartsWith('monoandroid'))
+			or '$(TargetFramework)'=='net6.0-android'
+			or '$(TargetFramework)'=='net7.0-android'
+			">true</IsAndroid>
+
+		<IsIOS>false</IsIOS>
+		<IsIOS Condition="
+			$(TargetFramework.ToLower().StartsWith('xamarinios'))
+			or '$(TargetFramework)'=='net6.0-ios'
+			or '$(TargetFramework)'=='net7.0-ios'
+			">true</IsIOS>
+
+		<IsMacOS>false</IsMacOS>
+		<IsMacOS Condition="
+			$(TargetFramework.ToLower().StartsWith('xamarinmac'))
+			or '$(TargetFramework)'=='net6.0-macos'
+			or '$(TargetFramework)'=='net7.0-macos'
+			">true</IsMacOS>
+
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
 
