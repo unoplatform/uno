@@ -16,6 +16,9 @@
 			or '$(TargetFramework)'=='net7.0-ios'
 			">true</IsIOS>
 
+		<IsCatalyst>false</IsCatalyst>
+		<IsCatalyst Condition="'$(TargetFramework)'=='net6.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">true</IsCatalyst>
+
 		<IsMacOS>false</IsMacOS>
 		<IsMacOS Condition="
 			$(TargetFramework.ToLower().StartsWith('xamarinmac'))
