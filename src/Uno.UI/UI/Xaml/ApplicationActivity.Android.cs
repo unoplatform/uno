@@ -178,7 +178,9 @@ namespace Windows.UI.Xaml
 		public void ExitFullscreen()
 		{
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			Window.DecorView.SystemUiVisibility = StatusBarVisibility.Visible;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 			Window.AddFlags(WindowManagerFlags.ForceNotFullscreen);
@@ -345,7 +347,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// This method is used by UI Test frameworks to get 
+		/// This method is used by UI Test frameworks to get
 		/// the Xamarin compatible name for a control in Java.
 		/// </summary>
 		/// <param name="type">A type full name</param>

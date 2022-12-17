@@ -156,12 +156,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
 			AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
-			
+
 
 		#region Navigation History
 
 		// On Windows, the WebView ignores "about:blank" entries from its navigation history.
-		// Because Android doesn't let you modify the navigation history, 
+		// Because Android doesn't let you modify the navigation history,
 		// we need CanGoBack, CanGoForward, GoBack and GoForward to take the above condition into consideration.
 
 		private void OnNavigationHistoryChanged()
@@ -297,6 +297,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 #pragma warning disable 0672, 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			public override void OnReceivedError(Android.Webkit.WebView view, [GeneratedEnum] ClientError errorCode, string description, string failingUrl)
 			{
 				_webViewSuccess = false;
@@ -304,10 +305,11 @@ namespace Windows.UI.Xaml.Controls
 
 				base.OnReceivedError(view, errorCode, description, failingUrl);
 			}
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 0672, 618
 
 			public override void OnPageFinished(Android.Webkit.WebView view, string url)
-			{				
+			{
 				_webView.DocumentTitle = view.Title;
 
 				_webView.OnNavigationHistoryChanged();
