@@ -31,10 +31,10 @@
 
 		<ItemGroup>
 			<!-- Important: Include files by order of priority to allow for key overrides to be applied properly -->
-			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
-			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority01\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
-			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority02\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
-			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority06\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\**\*.xaml" Exclude="@(ExcludedTemplates)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority01\**\*.xaml" Exclude="@(ExcludedTemplates)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority02\**\*.xaml" Exclude="@(ExcludedTemplates)" />
+			<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\Priority06\**\*.xaml" Exclude="@(ExcludedTemplates)" />
 		</ItemGroup>
 
 	<Choose>
