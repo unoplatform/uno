@@ -1,5 +1,5 @@
 ﻿using Windows.UI.ViewManagement;
-using TizenWindow = ElmSharp.Window;
+using TizenWindow = Tizen.NUI.Window;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia

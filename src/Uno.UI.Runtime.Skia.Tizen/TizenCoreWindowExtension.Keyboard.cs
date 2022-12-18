@@ -1,32 +1,33 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ElmSharp;
-using Windows.Devices.Input;
-using Windows.UI.Core;
-using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Uno.Extensions;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
-using TizenWindow = ElmSharp.Window;
-using Windows.System;
-using System.Threading;
-using SkiaSharp.Views.Tizen;
-using Windows.Graphics.Display;
-using Windows.Foundation;
-using Tizen.NUI;
 using Tizen.Uix.InputMethod;
+using Uno.Foundation.Logging;
+using Windows.System;
+using Windows.UI.Core;
+using static Tizen.NUI.Key;
 
 namespace Uno.UI.Runtime.Skia
 {
 	partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
-		private void OnKeyDown(object? sender, EvasKeyEventArgs args)
+		private bool Canvas_KeyEvent(object source, global::Tizen.NUI.BaseComponents.View.KeyEventArgs e)
+		{
+			if (e.Key.State == StateType.Down)
+			{
+				return OnKeyDown(e);
+			}
+			else if (e.Key.State == StateType.Up)
+			{
+				return OnKeyUp(e);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool OnKeyDown(global::Tizen.NUI.BaseComponents.View.KeyEventArgs args)
 		{
 			var (virtualKey, keyCode) = ParseKey(args);
 
@@ -34,7 +35,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"OnKeyDown: ({args.KeyName}/{keyCode}) -> {virtualKey}");
+					this.Log().Trace($"OnKeyDown: ({args.Key.KeyPressedName}/{keyCode}) -> {virtualKey}");
 				}
 
 				_ownerEvents.RaiseKeyDown(
@@ -51,9 +52,10 @@ namespace Uno.UI.Runtime.Skia
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
+			return true;
 		}
 
-		private void OnKeyUp(object? sender, EvasKeyEventArgs args)
+		private bool OnKeyUp(global::Tizen.NUI.BaseComponents.View.KeyEventArgs args)
 		{
 			var (virtualKey, keyCode) = ParseKey(args);
 
@@ -61,7 +63,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"OnKeyUp: ({args.KeyName}/{keyCode}) -> {virtualKey}");
+					this.Log().Trace($"OnKeyUp: ({args.Key.KeyPressedName}/{keyCode}) -> {virtualKey}");
 				}
 
 				_ownerEvents.RaiseKeyUp(
@@ -78,21 +80,15 @@ namespace Uno.UI.Runtime.Skia
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
+			return true;
 		}
 
-		private (VirtualKey, KeyCode) ParseKey(EvasKeyEventArgs e)
+		private (VirtualKey, KeyCode) ParseKey(global::Tizen.NUI.BaseComponents.View.KeyEventArgs e)
 		{
-			if (Enum.TryParse<KeyCode>(e.KeyName, true, out var keyCode))
-			{
-				return (ConvertKey(keyCode), keyCode);
-			}
-			else
-			{
-				return (VirtualKey.None, (KeyCode)0);
-			}
+			return (ConvertKey((KeyCode)e.Key.KeyCode), (KeyCode)e.Key.KeyCode);
 		}
 
-		private VirtualKey ConvertKey(object keyCode)
+		private VirtualKey ConvertKey(KeyCode keyCode)
 		{
 			// In this function, commented out lines correspond to VirtualKeys not yet
 			// mapped to their native counterparts. Uncomment and fix as needed.
@@ -232,7 +228,7 @@ namespace Uno.UI.Runtime.Skia
 				KeyCode.Num_Lock => VirtualKey.NumberKeyLock,
 				KeyCode.ScrollLock => VirtualKey.Scroll,
 				KeyCode.ShiftL => VirtualKey.LeftShift,
-				KeyCode.ShiftR	 => VirtualKey.RightShift,
+				KeyCode.ShiftR => VirtualKey.RightShift,
 				KeyCode.ControlL => VirtualKey.LeftControl,
 				KeyCode.ControlR => VirtualKey.RightControl,
 				KeyCode.AltL => VirtualKey.LeftMenu,

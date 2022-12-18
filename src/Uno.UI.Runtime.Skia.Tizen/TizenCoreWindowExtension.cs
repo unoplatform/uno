@@ -20,17 +20,19 @@ using SkiaSharp.Views.Tizen;
 using Windows.Graphics.Display;
 using Windows.Foundation;
 using Tizen.NUI;
+using System.Drawing;
 
 namespace Uno.UI.Runtime.Skia
 {
 	internal partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
 		private static int _currentFrameId;
+#pragma warning disable CS0169
 
 		private readonly Windows.UI.Core.CoreWindow _owner;
 		private readonly ICoreWindowEvents _ownerEvents;
 		private readonly DisplayInformation _displayInformation;
-		private readonly GestureLayer _gestureLayer;
+		private readonly GestureLayer? _gestureLayer;
 		private readonly UnoCanvas _canvas;
 
 		private PointerEventArgs? _previous;
@@ -51,14 +53,45 @@ namespace Uno.UI.Runtime.Skia
 			_canvas = canvas;
 			_displayInformation = DisplayInformation.GetForCurrentView();
 
-			canvas.KeyUp += OnKeyUp;
-			canvas.KeyDown += OnKeyDown;
+			canvas.KeyEvent += Canvas_KeyEvent;
+			canvas.TouchEvent += Canvas_TouchEvent;
+			
+			//_gestureLayer = new GestureLayer(canvas.);
+			//_gestureLayer.Attach(canvas);
+			//_gestureLayer.IsEnabled = true;
+			//SetupTapGesture();
+			//SetupMomentumGesture();
+		}		
 
-			_gestureLayer = new GestureLayer(canvas);
-			_gestureLayer.Attach(canvas);
-			_gestureLayer.IsEnabled = true;
-			SetupTapGesture();
-			SetupMomentumGesture();
+		private bool Canvas_TouchEvent(object source, global::Tizen.NUI.BaseComponents.View.TouchEventArgs e)
+		{
+	static float ToScaledDP(this float pixel)
+			{
+				return (float)(pixel / global::Tizen.UIExtensions.Common.DeviceInfo.ScalingFactor);
+			}
+
+			int touchCount = (int)e.Touch.GetPointCount();
+			var touchPoints = new PointF[touchCount];
+			for (uint i = 0; i < touchCount; i++)
+				touchPoints[i] = new PointF(ToScaledDP(e.Touch.GetLocalPosition(i).X), ToScaledDP(e.Touch.GetLocalPosition(i).Y));
+
+			switch (e.Touch.GetState(0))
+			{
+				case PointStateType.Motion:
+					TouchesMoved(touchPoints);
+					break;
+				case PointStateType.Down:
+					TouchesBegan(touchPoints);
+					break;
+				case PointStateType.Up:
+					TouchesEnded(touchPoints);
+					break;
+				case PointStateType.Interrupted:
+					TouchesCanceled();
+					break;
+			}
+
+			return false;
 		}
 
 		/// <inheritdoc />
@@ -68,17 +101,6 @@ namespace Uno.UI.Runtime.Skia
 		/// <inheritdoc />
 		public void ReleasePointerCapture(PointerIdentifier pointer)
 			=> this.Log().Warn("Pointer capture release is not supported on Tizen");
-
-		private void SetupTapGesture()
-		{
-			_gestureLayer.SetTapCallback(GestureLayer.GestureType.Tap, GestureLayer.GestureState.Start, OnTapStart);
-			_gestureLayer.SetTapCallback(GestureLayer.GestureType.Tap, GestureLayer.GestureState.End, OnTapEnd);
-		}
-
-		private void SetupMomentumGesture()
-		{
-			_gestureLayer.SetMomentumCallback(GestureLayer.GestureState.Move, OnMove);
-		}
 
 		private void OnMove(GestureLayer.MomentumData data)
 		{

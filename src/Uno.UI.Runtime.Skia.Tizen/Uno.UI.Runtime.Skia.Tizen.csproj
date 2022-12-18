@@ -35,6 +35,7 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" />
+		<PackageReference Include="Tizen.UIExtensions.NUI" Version="0.9.0" />
 	</ItemGroup>
 	
 	<ItemGroup>

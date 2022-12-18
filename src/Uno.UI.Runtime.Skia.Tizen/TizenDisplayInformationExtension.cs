@@ -1,7 +1,6 @@
-﻿using ElmSharp;
-using Tizen.System;
+﻿using Tizen.NUI;
 using Windows.Graphics.Display;
-
+#pragma warning disable CS0649
 namespace Uno.UI.Runtime.Skia
 {
 	internal class TizenDisplayInformationExtension : IDisplayInformationExtension
@@ -16,14 +15,14 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_displayInformation = (DisplayInformation)owner;
 			_window = window;
-			_profile = Elementary.GetProfile();
+			//_profile = Elementary.GetProfile();
 		}
 
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.Portrait;
 
-		public uint ScreenHeightInRawPixels => (uint)_window.ScreenSize.Height;
+		public uint ScreenHeightInRawPixels => (uint)_window.WindowSize.Height;
 
-		public uint ScreenWidthInRawPixels => (uint)_window.ScreenSize.Width;
+		public uint ScreenWidthInRawPixels => (uint)_window.WindowSize.Width;
 
 		public float LogicalDpi => _dpi ??= GetDpi();
 
@@ -42,9 +41,10 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 #pragma warning disable CS0618 // Type or member is obsolete
-			SystemInfo.TryGetValue("http://tizen.org/feature/screen.dpi", out int dpi);
+			// TODO:MZ:
+			//SystemInfo.TryGetValue("http://tizen.org/feature/screen.dpi", out int dpi);
 #pragma warning restore CS0618 // Type or member is obsolete
-			return dpi;
+			return 96;
 		}
 	}
 }
