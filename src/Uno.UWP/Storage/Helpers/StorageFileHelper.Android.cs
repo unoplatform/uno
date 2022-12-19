@@ -64,7 +64,7 @@ partial class StorageFileHelper
 	/// <summary>
 	/// This method will scan for all the assets within current package
 	/// </summary>
-	/// <param name="files">scanned files list</param>
+	/// <param name="scannedFiles">scanned files list</param>
 	/// <param name="rootPath">root path</param>
 	private static bool ScanPackageAssets(ICollection<string> scannedFiles, string rootPath = "")
 	{
