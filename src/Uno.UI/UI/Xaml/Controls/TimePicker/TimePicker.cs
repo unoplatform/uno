@@ -355,7 +355,7 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_bypassTimeAndSelectedTimeChanged = true;
-				TimeSpan? newSelectedTime = newTime == new TimeSpan(-1) ? null : newTime;
+				TimeSpan? newSelectedTime = newTime == new TimeSpan(-1) ? (TimeSpan?)null : newTime;
 				var oldSelectedTime = SelectedTime;
 				SelectedTime = newSelectedTime;
 				TimeChanged?.Invoke(this, new TimePickerValueChangedEventArgs(oldTime, newTime));
