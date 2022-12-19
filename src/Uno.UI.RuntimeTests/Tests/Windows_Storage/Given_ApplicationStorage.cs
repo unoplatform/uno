@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_ResourceFileExistsInPackage_Nested()
 		{
-			var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Icons/menu.png");
+			var fileExists = await Windows.Storage.Helpers.StorageFileHelper.ExistsInPackage("Assets/Icons/menu.png");
 
 			Assert.IsTrue(fileExists);
 		}
