@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<TargetFrameworks>$libarybasetargetframework$</TargetFrameworks>
 		$if$($UseWinUI$ == True)<TargetFrameworks>$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
-		$if$($UseAndroid$ == True)<TargetFrameworks>$basetargetframework$-android</TargetFrameworks>$endif$
+		$if$($UseAndroid$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-android</TargetFrameworks>$endif$
 		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
 		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
 		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
-		<TargetFrameworks>$(TargetFrameworks);$libarybasetargetframework$</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
