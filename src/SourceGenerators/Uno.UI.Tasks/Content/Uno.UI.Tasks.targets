@@ -13,6 +13,7 @@
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.AssignLinkMetadata_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
@@ -44,10 +45,29 @@
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
 		</PropertyGroup>
 
-		<AssignTargetPath Files="@(PRIResource)" RootFolder="$(MSBuildProjectDirectory)">
+		<ItemGroup>
+			<_UnoTempPRIResource Include="@(PRIResource)" />
+		</ItemGroup>
+
+		<!-- Assign the Link property so files defined in shared projects preserve their natural path structure -->
+		<AssignLinkMetadata_v0 Items="@(PRIResource)"
+							Condition="'@(PRIResource)' != '' and '%(PRIResource.DefiningProjectFullPath)' != '$(MSBuildProjectFullPath)'">
+			<Output TaskParameter="OutputItems" ItemName="_Temp" />
+		</AssignLinkMetadata_v0>
+
+		<ItemGroup>
+			<!-- remove new linked items so their new metadata is used instead -->
+			<_UnoTempPRIResource Remove="@(_Temp)" />
+			<_UnoTempPRIResource Include="@(_Temp)" />
+
+			<!-- Clear temporary group -->
+			<_Temp Remove="@(_Temp)" />
+		</ItemGroup>
+
+		<AssignTargetPath Files="@(_UnoTempPRIResource)" RootFolder="$(MSBuildProjectDirectory)">
 			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
 		</AssignTargetPath>
-		
+
 		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(XamarinProjectType)"
@@ -61,6 +81,9 @@
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
 			<AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
 			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
+
+			<!-- Clear temporary group -->
+			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
 		</ItemGroup>
 	</Target>
 
