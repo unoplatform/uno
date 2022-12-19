@@ -4,13 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
-<<<<<<< HEAD
 		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>$endif$
-=======
-		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>Platforms\WebAssembly\manifest.webmanifest</WasmPWAManifestFile>$endif$
-
-		<UnoSingleLocationProject>true</UnoSingleLocationProject>
->>>>>>> 1671dcd6f0 (fix(dotnetnew): Adjust Server template compilation conditionals)
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
