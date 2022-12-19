@@ -79,6 +79,9 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
     Assert-ExitCodeIsZero
 }
 
+# Server project build (merge with above loop when .App folder is removed)
+& dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
+
  # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
  & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
 Assert-ExitCodeIsZero
