@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if __IOS__ || MACCATALYST || MACOS
+#if __IOS__ || __MACCATALYST__ || __MACOS__
 using System.Reflection;
 using System.Threading;
 using System;
