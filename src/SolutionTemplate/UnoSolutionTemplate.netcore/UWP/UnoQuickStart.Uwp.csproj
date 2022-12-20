@@ -16,10 +16,6 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 	</ItemGroup>
 	<PropertyGroup>
-		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007, to remove when original VS issue is fixed. -->
-		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
-	</PropertyGroup>
-	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
 		<ProjectGuid>$guid1$</ProjectGuid>

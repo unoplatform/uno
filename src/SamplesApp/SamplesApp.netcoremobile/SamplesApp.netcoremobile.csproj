@@ -37,10 +37,6 @@
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<!-- Shows applied capabilities in a new VS project node -->
 		<ProjectCapability Include="DiagnoseCapabilities" />
