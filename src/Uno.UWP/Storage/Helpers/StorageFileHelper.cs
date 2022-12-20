@@ -16,7 +16,7 @@ public partial class StorageFileHelper
 	[NotImplemented("NET461")]
 	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
 
-#if NET461
+#if NET461 || __NETSTD_REFERENCE__
 	private static Task<bool> FileExistsInPackage(string fileName)
 		=> throw new NotImplementedException();
 #endif
