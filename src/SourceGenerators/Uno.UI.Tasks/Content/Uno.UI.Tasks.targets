@@ -26,6 +26,7 @@
 			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
 		</PropertyGroup>
 	</Target>
+
 	<PropertyGroup>
 		<!--
 		Ensures that AssignLinkMetadata runs before AssignTargetPaths.
@@ -34,6 +35,18 @@
 		-->
 		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
 	</PropertyGroup>
+
+	<Target Name="_PrepareUnoResourcesGeneration" BeforeTargets="BeforeBuild" Condition="'$(TargetFramework)'=='xamarinmac20' and '$(_IsUnoUISolution)'=='true'">
+		
+		<PropertyGroup>
+			<!--
+			AssignTargetPathsDependsOn is reset forcibly by a targets file included after this current file.
+			This does not happen when running through a nuget package.
+			-->
+			<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
+		</PropertyGroup>
+		
+	</Target>
 
 	<!--
 	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
