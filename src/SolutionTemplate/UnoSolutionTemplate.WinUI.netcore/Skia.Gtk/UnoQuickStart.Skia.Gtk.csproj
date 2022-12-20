@@ -4,13 +4,11 @@
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>$basetargetframework$</TargetFramework>
-		
-		<UnoSingleLocationProject>true</UnoSingleLocationProject>
 	</PropertyGroup>
 
-	<ItemGroup Condition="exists('Platforms\Windows')">
-		<EmbeddedResource Include="Platforms\Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
-		<Content Include="Platforms\Windows\Images\StoreLogo.png" />
+	<ItemGroup Condition="exists('..\$ext_safeprojectname$.Windows')">
+		<EmbeddedResource Include="..\$ext_safeprojectname$.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<Content Include="..\$ext_safeprojectname$.Windows\Images\StoreLogo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,5 +20,10 @@
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
 
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

@@ -32,7 +32,7 @@
 	</TemplateData>
 	<TemplateContent>
 		<ProjectCollection>
-			<ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.netcore.vstemplate</ProjectTemplateLink>
+			<ProjectTemplateLink ProjectName="$projectname$.Base" CopyParameters="true">Base\Base.winui.netcore.vstemplate</ProjectTemplateLink>
 			<SolutionFolder Name="Platforms">
 			</SolutionFolder>
 		</ProjectCollection>

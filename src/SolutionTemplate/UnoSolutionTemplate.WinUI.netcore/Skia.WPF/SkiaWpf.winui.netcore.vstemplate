@@ -16,13 +16,11 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project File="UnoQuickStart.Skia.Wpf.csproj" TargetFileName="$ext_safeprojectname$.Skia.Wpf.csproj" ReplaceParameters="true">
-			<Folder Name="Platforms" TargetFolderName="Platforms">
-				<Folder Name="Skia.Wpf" TargetFolderName="Skia.Wpf">
-					<ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">App.xaml</ProjectItem>
-					<ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">App.xaml.cs</ProjectItem>
-					<ProjectItem TargetFileName="MainWindow.xaml" ReplaceParameters="true">MainWindow.xaml</ProjectItem>
-					<ProjectItem TargetFileName="MainWindow.xaml.cs" ReplaceParameters="true">MainWindow.xaml.cs</ProjectItem>
-				</Folder>
+			<Folder Name="Wpf" TargetFolderName="Wpf">
+				<ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">App.xaml</ProjectItem>
+				<ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">App.xaml.cs</ProjectItem>
+				<ProjectItem TargetFileName="MainWindow.xaml" ReplaceParameters="true">MainWindow.xaml</ProjectItem>
+				<ProjectItem TargetFileName="MainWindow.xaml.cs" ReplaceParameters="true">MainWindow.xaml.cs</ProjectItem>
 			</Folder>
 		</Project>
 	</TemplateContent>

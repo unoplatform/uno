@@ -157,34 +157,30 @@
 		},
 		"android": {
 			"type": "generated",
-			"generator": "constant",
-			"dataType": "bool",
+			"generator": "casing",
 			"parameters": {
-				"value": "True"
+				"source": "mobile"
 			}
 		},
 		"ios": {
 			"type": "generated",
-			"generator": "constant",
-			"dataType": "bool",
+			"generator": "casing",
 			"parameters": {
-				"value": "True"
+				"source": "mobile"
 			}
 		},
 		"macos": {
 			"type": "generated",
-			"generator": "constant",
-			"dataType": "bool",
+			"generator": "casing",
 			"parameters": {
-				"value": "True"
+				"source": "mobile"
 			}
 		},
 		"maccatalyst": {
 			"type": "generated",
-			"generator": "constant",
-			"dataType": "bool",
+			"generator": "casing",
 			"parameters": {
-				"value": "True"
+				"source": "mobile"
 			}
 		},
 		"hosted": {
@@ -211,12 +207,31 @@
 			],
 			"replaces": "net6.0",
 			"defaultValue": "net6.0"
+		},
+		"libarybasetargetframework": {
+			"type": "generated",
+			"generator": "switch",
+			"replaces": "$libarybasetargetframework$",
+			"parameters": {
+				"evaluator": "C++",
+				"datatype": "string",
+				"cases": [
+					{
+						"condition": "(Framework == 'net6.0')",
+						"value": "netstandard2.0"
+					},
+					{
+						"condition": "(Framework != 'net6.0')",
+						"value": "net7.0"
+					}
+				]
+			}
 		}
 	},
 	"primaryOutputs": [
 		{
 			"condition": "mobile",
-			"path": "UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Mobile.csproj"
+			"path": "UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj"
 		},
 		{
 			"condition": "hosted",
@@ -224,23 +239,23 @@
 		},
 		{
 			"condition": "winui-desktop",
-			"path": "UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Windows.csproj"
+			"path": "UnoWinUIQuickStart.Windows\\UnoWinUIQuickStart.Windows.csproj"
 		},
 		{
 			"condition": "Wasm",
-			"path": "UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Wasm.csproj"
+			"path": "UnoWinUIQuickStart.Wasm\\UnoWinUIQuickStart.Wasm.csproj"
 		},
 		{
 			"condition": "skia-gtk",
-			"path": "UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Skia.Gtk.csproj"
+			"path": "UnoWinUIQuickStart.Skia.Gtk\\UnoWinUIQuickStart.Skia.Gtk.csproj"
 		},
 		{
 			"condition": "skia-wpf",
-			"path": "UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Skia.WPF.csproj"
+			"path": "UnoWinUIQuickStart.Skia.WPF\\UnoWinUIQuickStart.Skia.WPF.csproj"
 		},
 		{
 			"condition": "skia-linux-fb",
-			"path": "UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Skia.Linux.FrameBuffer.csproj"
+			"path": "UnoWinUIQuickStart.Skia.Linux.FrameBuffer\\UnoWinUIQuickStart.Skia.Linux.FrameBuffer.csproj"
 		}
 	],
 	"sources": [
@@ -258,40 +273,32 @@
 				{
 					"condition": "(!mobile)",
 					"exclude": [
-						"UnoWinUIQuickStart.App/Platforms/Android/**",
-						"UnoWinUIQuickStart.App/Platforms/iOS/**",
-						"UnoWinUIQuickStart.App/Platforms/MacCatalyst/**",
-						"UnoWinUIQuickStart.App/Platforms/macOS/**",
-						"UnoWinUIQuickStart.App/UnoWinUIQuickStart.Mobile.csproj"
+						"UnoWinUIQuickStart.Mobile/**"
 					]
 				},
 				{
 					"condition": "(!WebAssembly)",
 					"exclude": [
 						"UnoWinUIQuickStart.Server/**",
-						"UnoWinUIQuickStart.App/Platforms/WebAssembly/**",
-						"UnoWinUIQuickStart.App/UnoWinUIQuickStart.Mobile.csproj"
+						"UnoWinUIQuickStart.Wasm/**",
 					]
 				},
 				{
 					"condition": "(!skia-gtk)",
 					"exclude": [
-						"UnoWinUIQuickStart.App/Platforms/Skia.Gtk/**",
-						"UnoWinUIQuickStart.App/UnoWinUIQuickStart.Skia.Gtk.csproj"
+						"UnoWinUIQuickStart.Skia.Gtk/**",
 					]
 				},
 				{
 					"condition": "(!skia-wpf)",
 					"exclude": [
-						"UnoWinUIQuickStart/Platforms/Skia.WPF/**",
-						"UnoWinUIQuickStart.App/UnoWinUIQuickStart.Skia.WPF.csproj"
+						"UnoWinUIQuickStart.Skia.WPF/UnoWinUIQuickStart.Skia.WPF.csproj"
 					]
 				},
 				{
 					"condition": "(!skia-linux-fb)",
 					"exclude": [
-						"UnoWinUIQuickStart/Platforms/Skia.Linux.FrameBuffer/**",
-						"UnoWinUIQuickStart.App/UnoWinUIQuickStart.Skia.Linux.FrameBuffer.csproj"
+						"UnoWinUIQuickStart.Skia.Linux.FrameBuffer/**"
 					]
 				},
 				{

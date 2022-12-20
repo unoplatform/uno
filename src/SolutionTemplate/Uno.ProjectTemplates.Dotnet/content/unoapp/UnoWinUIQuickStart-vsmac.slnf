@@ -3,15 +3,15 @@
     "path": "UnoWinUIQuickStart.sln",
     "projects": [
 		#//#if (mobile)
-		"UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Mobile.csproj",
+		"UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj",
 		#//#endif
 
 		#//#if (WebAssembly)
-		"UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Wasm.csproj",
+		"UnoWinUIQuickStart.Wasm\\UnoWinUIQuickStart.Wasm.csproj",
 		#//#endif
 
 		#//#if (skia-gtk)
-		"UnoWinUIQuickStart.App\\UnoWinUIQuickStart.Skia.Gtk.csproj",
+		"UnoWinUIQuickStart.Skia.Gtk\\UnoWinUIQuickStart.Skia.Gtk.csproj",
 		#//#endif
     ]
   }

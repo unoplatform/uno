@@ -1,14 +1,14 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
 	<TemplateData>
-		<Name>UnoQuickStart.Shared</Name>
+		<Name>UnoQuickStart</Name>
 		<Description>
 		</Description>
-		<ProjectType>Code Sharing Projects</ProjectType>
+		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType>
 		</ProjectSubType>
 		<SortOrder>1000</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
-		<DefaultName>UnoQuickStart.Shared</DefaultName>
+		<DefaultName>UnoQuickStart</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>
 		<LocationField>Enabled</LocationField>
 		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
@@ -18,7 +18,7 @@
 		<PreviewImage>__PreviewImage.png</PreviewImage>
 	</TemplateData>
 	<TemplateContent>
-		<Project TargetFileName="$ext_safeprojectname$.Shared.shproj" File="UnoQuickStart.Shared.shproj" ReplaceParameters="true">
+		<Project TargetFileName="$ext_safeprojectname$.csproj" File="UnoQuickStart.csproj" ReplaceParameters="true">
 			<Folder Name="Assets" TargetFolderName="Assets">
 				<Folder Name="Fonts" TargetFolderName="Fonts">
 					<ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
@@ -29,8 +29,6 @@
 					<ProjectItem TargetFileName="Resources.resw" ReplaceParameters="true">Resources.resw</ProjectItem>
 				</Folder>
 			</Folder>
-			<ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">app.xaml</ProjectItem>
-			<ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">app.xaml.cs</ProjectItem>
 			<ProjectItem TargetFileName="MainPage.xaml" ReplaceParameters="true">mainpage.xaml</ProjectItem>
 			<ProjectItem TargetFileName="MainPage.xaml.cs" ReplaceParameters="true">mainpage.xaml.cs</ProjectItem>
 		</Project>

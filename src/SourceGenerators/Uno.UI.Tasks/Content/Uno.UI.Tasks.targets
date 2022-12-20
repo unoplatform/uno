@@ -17,25 +17,30 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
 
-	<!--
-  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
-
-  Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
-  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
-  -->
-	<Target Name="UnoResourcesGeneration"
-				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
-				DependsOnTargets="ResolveProjectReferences"
-				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
-
-		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
-
+	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
 		<PropertyGroup>
 			<!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
 			<DefaultLanguage Condition="'$(DefaultLanguage)'=='' and '$(DefaultApplicationLanguage)'!=''">$(DefaultApplicationLanguage)</DefaultLanguage>
 			<!-- Default to English if DefaultLanguage isn't set -->
 			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
+		</PropertyGroup>
+	</Target>
+	<!--
+	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
+
+	  Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
+	  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
+	-->
+	<Target Name="UnoResourcesGeneration"
+				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
+				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
+				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
+
+		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
+
+		<!-- String resources -->
+		<PropertyGroup>
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
 		</PropertyGroup>
 		<ResourcesGenerationTask_v0 Resources="@(PRIResource)"
@@ -54,8 +59,8 @@
 	</Target>
 
 	<Target Name="UnoAssetsGeneration"
-				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources"
-				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems"
+				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest"
+				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
 				Condition="
 				'$(DesignTimeBuild)' != 'true'
 				and '$(BuildingInsideUnoSourceGenerator)' == ''
@@ -69,6 +74,7 @@
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
+							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							Condition="'$(XamarinProjectType)'!=''">
@@ -76,6 +82,8 @@
 							ItemName="Assets" />
 			<Output TaskParameter="RetargetedAssets"
 							ItemName="RetargetedAssets" />
+			<Output TaskParameter="PartialAppManifests"
+							ItemName="PartialAppManifest" />
 		</RetargetAssets_v0>
 		<ItemGroup>
 			<Content Remove="@(Assets)" />

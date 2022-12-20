@@ -80,18 +80,20 @@ namespace UnoSolutionTemplate.Wizard
 				var platforms = solution.Projects.OfType<Project>().FirstOrDefault(p => p.Name == "Platforms");
 				if (platforms.Object is SolutionFolder platformsFolder)
 				{
-					var sharedProject = GetAllProjects().FirstOrDefault(p => p.Name == $"{_projectName}.Shared");
-					solution.Remove(sharedProject);
+					var baseProject = GetAllProjects().FirstOrDefault(p => p.Name == $"{_projectName}.Base");
+					solution.Remove(baseProject);
 
-					Directory.Move(Path.Combine(_targetPath, $"{_projectName}.Shared"), Path.Combine(_targetPath, _projectName));
+					File.Delete(Path.Combine(_targetPath, $"{_projectName}.Base", $"{_projectName}.Base.shproj"));
+
+					GenerateProject(solution, null, $"{_projectName}", $"{_projectName}", "Views.netcore.vstemplate");
 
 					if (_useWebAssembly)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", _projectName, "Wasm.winui.netcore.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Wasm", $"{_projectName}.Wasm", "Wasm.winui.netcore.vstemplate");
 
 						if (!_useWebAssemblyManifestJson)
 						{
-							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, _projectName, "manifest.webmanifest");
+							var webAssemblyManifestJsonPath = Path.Combine(_targetPath, $"{_projectName}.Wasm", "manifest.webmanifest");
 							File.Delete(webAssemblyManifestJsonPath);
 						}
 					}
@@ -103,27 +105,27 @@ namespace UnoSolutionTemplate.Wizard
 
 					if (_useiOS || _useCatalyst || _useAndroid || _useAppKit)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Mobile", _projectName, "Mobile.winui.netcore.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Mobile", $"{_projectName}.Mobile", "Mobile.winui.netcore.vstemplate");
 					}
 
 					if (_useGtk)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Gtk", _projectName, "SkiaGtk.winui.netcore.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Gtk", $"{_projectName}.Skia.Gtk", "SkiaGtk.winui.netcore.vstemplate");
 					}
 
 					if (_useFramebuffer)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Linux.FrameBuffer", _projectName, "SkiaLinuxFrameBuffer.winui.netcore.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Linux.FrameBuffer", $"{_projectName}.Skia.Linux.FrameBuffer", "SkiaLinuxFrameBuffer.winui.netcore.vstemplate");
 					}
 
 					if (_useWinUI)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Windows", _projectName, "WinUI.netcore.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Windows", $"{_projectName}.Windows", "WinUI.netcore.vstemplate");
 					}
 
 					if (_useWpf)
 					{
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", _projectName, "SkiaWpf.winui.netcore.vstemplate");
+						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", $"{_projectName}.Skia.Wpf", "SkiaWpf.winui.netcore.vstemplate");
 					}
 				}
 				else
@@ -133,7 +135,7 @@ namespace UnoSolutionTemplate.Wizard
 			}
 		}
 
-		private void GenerateProject(Solution2 solution, SolutionFolder platformsFolder, string projectFullName, string folderName, string templateName)
+		private void GenerateProject(Solution2 solution, SolutionFolder? platformsFolder, string projectFullName, string folderName, string templateName)
 		{
 			if (_projectName != null)
 			{
@@ -148,7 +150,14 @@ namespace UnoSolutionTemplate.Wizard
 				var workTemplateFilePath = DuplicateTemplate(solution, templateName);
 				AdjustCustomParameters(workTemplateFilePath, _projectName);
 
-				platformsFolder.AddFromTemplate(workTemplateFilePath, targetPath, projectFullName);
+				if (platformsFolder != null)
+				{
+					platformsFolder.AddFromTemplate(workTemplateFilePath, targetPath, projectFullName);
+				}
+				else
+				{
+					solution.AddFromTemplate(workTemplateFilePath, targetPath, projectFullName);
+				}
 			}
 			else
 			{
@@ -226,14 +235,6 @@ namespace UnoSolutionTemplate.Wizard
 				File.WriteAllText(nugetConfigPath, reader.ReadToEnd());
 			}
 
-			var directoryBuildPropsPath = Path.Combine(_targetPath, "..\\Directory.Build.props");
-
-			if (!File.Exists(directoryBuildPropsPath))
-			{
-				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream(FindManifestFileName("Directory.Build-netcore.props")));
-				File.WriteAllText(directoryBuildPropsPath, reader.ReadToEnd());
-			}
-
 			OpenWelcomePage();
 			SetStartupProject();
 			SetBuildableAndDeployable();
@@ -290,6 +291,8 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
 						replacementsDictionary["$basetargetframework$"] = _baseTargetFramework.ToString();
 						replacementsDictionary["$UseWebAssemblyManifestJson$"] = _useWebAssemblyManifestJson.ToString();
+
+						replacementsDictionary["$libarybasetargetframework$"] = _baseTargetFramework == "net6.0" ? "netstandard2.0" : _baseTargetFramework;
 
 						var version = GetVisualStudioReleaseVersion();
 

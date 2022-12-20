@@ -94,16 +94,17 @@
 			<_PackageToUpdate Include="Uno.UI" />
 			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
 
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.iOS.csproj"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.Wpf.Host.csproj"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.iOS.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Wpf.Host.csproj" Exclude="**\bin\**;**\obj\**"/>
 
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Mobile.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Windows.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Mobile.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Windows.csproj" Exclude="**\bin\**;**\obj\**"/>
+			<_sdkProject Include="..\src\SolutionTemplate\**\UnoQuickStart.csproj" />
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.netcore\CrossTargetedLibrary.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.netcore\CrossTargetedLibrary.csproj"/>

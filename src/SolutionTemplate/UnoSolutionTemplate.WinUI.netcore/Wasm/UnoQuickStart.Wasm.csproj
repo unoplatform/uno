@@ -4,9 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
-		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>Platforms\WebAssembly\manifest.webmanifest</WasmPWAManifestFile>$endif$
-
-		<UnoSingleLocationProject>true</UnoSingleLocationProject>
+		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -23,20 +21,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Platforms\WebAssembly\Assets\SplashScreen.png" />
+		<Content Include="Assets\SplashScreen.png" />
 		$if$($UseWebAssemblyManifestJson$ == True)
-		<Content Include="Platforms\WebAssembly\manifest.webmanifest" />
-		<Content Include="Platforms\WebAssembly\Assets\AppIcon-*.png" />
+		<Content Include="manifest.webmanifest" />
+		<Content Include="Assets\AppIcon-*.png" />
 		$endif$
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Platforms\WebAssembly\WasmCSS\Fonts.css" />
-		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
+		<EmbeddedResource Include="WasmCSS\Fonts.css" />
+		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
+		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,9 +44,9 @@
 
 		You can safely remove this ItemGroup completely.
 		-->
-		<None Include="Platforms\WebAssembly\Program.cs" />
-		<None Include="Platforms\WebAssembly\LinkerConfig.xml" />
-		<None Include="Platforms\WebAssembly\wwwroot\web.config" />
+		<None Include="Program.cs" />
+		<None Include="LinkerConfig.xml" />
+		<None Include="wwwroot\web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,8 +56,14 @@
 		<PackageReference Include="Uno.WinUI.WebAssembly" Version="4.7.0-dev.417" />
 		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.417" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.417" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.3" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.3" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.11" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.11" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>
