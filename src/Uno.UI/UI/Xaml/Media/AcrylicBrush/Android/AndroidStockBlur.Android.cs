@@ -57,8 +57,10 @@ namespace Uno.UI.Xaml.Media
             {
                 try
                 {
+#pragma warning disable CA1422 // Validate platform compatibility
                     _mRenderScript = RenderScript.Create(context);
                     _mBlurScript = ScriptIntrinsicBlur.Create(_mRenderScript, Element.U8_4(_mRenderScript));
+#pragma warning restore CA1422 // Validate platform compatibility
                 }
                 catch (Android.Renderscripts.RSRuntimeException)
                 {
@@ -77,6 +79,7 @@ namespace Uno.UI.Xaml.Media
 				}
 			}
 
+#pragma warning disable CA1422 // Validate platform compatibility
             _mBlurScript.SetRadius(radius);
 
             _mBlurInput = Allocation.CreateFromBitmap(
@@ -85,12 +88,13 @@ namespace Uno.UI.Xaml.Media
                 Allocation.MipmapControl.MipmapNone,
                 AllocationUsage.Script);
             _mBlurOutput = Allocation.CreateTyped(_mRenderScript, _mBlurInput.Type);
-
+#pragma warning restore CA1422 // Validate platform compatibility
             return true;
         }
 
         public void Release()
         {
+#pragma warning disable CA1422 // Validate platform compatibility
             if (_mBlurInput != null)
             {
                 _mBlurInput.Destroy();
@@ -114,14 +118,17 @@ namespace Uno.UI.Xaml.Media
                 _mRenderScript.Destroy();
                 _mRenderScript = null;
             }
+#pragma warning restore CA1422 // Validate platform compatibility
         }
 
         public void Blur(Bitmap input, Bitmap output)
         {
+#pragma warning disable CA1422 // Validate platform compatibility
             _mBlurInput.CopyFrom(input);
             _mBlurScript.SetInput(_mBlurInput);
             _mBlurScript.ForEach(_mBlurOutput);
 			_mBlurOutput.CopyTo(output);
+#pragma warning restore CA1422 // Validate platform compatibility
         }
     }
 }

@@ -16,7 +16,9 @@ namespace Uno.UI.Extensions
             else
             {
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
                 return (int)timePicker.CurrentHour;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
             }
         }
@@ -30,7 +32,9 @@ namespace Uno.UI.Extensions
             else
             {
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
                 timePicker.CurrentHour = (Java.Lang.Integer)hour;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
             }
         }
@@ -44,7 +48,9 @@ namespace Uno.UI.Extensions
             else
             {
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
                 return (int)timePicker.CurrentMinute;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
             }
         }
@@ -58,7 +64,9 @@ namespace Uno.UI.Extensions
             else
             {
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
                 timePicker.CurrentMinute = (Java.Lang.Integer)minute;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
             }
         }

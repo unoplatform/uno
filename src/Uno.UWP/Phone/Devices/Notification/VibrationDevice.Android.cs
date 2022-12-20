@@ -28,9 +28,11 @@ namespace Windows.Phone.Devices.Notification
 				{
 					throw new InvalidOperationException($"{Permission} needs to be declared in AndroidManifest.xml");
 				}
-#pragma warning disable CS0618 // VibratorServic is obsolete in API 31
+#pragma warning disable CS0618 // VibratorService is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 				var vibrator = Application.Context.GetSystemService(Context.VibratorService) as Vibrator;
-#pragma warning restore CS0618 // VibratorServic is obsolete in API 31
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore CS0618 // VibratorService is obsolete in API 31
 				if (vibrator != null && vibrator.HasVibrator)
 				{
 					_instance = new VibrationDevice(vibrator);
@@ -50,7 +52,9 @@ namespace Windows.Phone.Devices.Notification
 			else
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				_vibrator.Vibrate(time);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 			}
 		}

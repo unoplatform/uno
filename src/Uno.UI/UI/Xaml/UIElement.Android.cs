@@ -240,7 +240,7 @@ namespace Windows.UI.Xaml
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
 			var parent = this.GetVisualTreeParent();
-			switch (parent) 
+			switch (parent)
 			{
 				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
 
@@ -316,7 +316,7 @@ namespace Windows.UI.Xaml
 
 			if (bindableView != null)
 			{
-				// This cast is different for performance reasons. See the 
+				// This cast is different for performance reasons. See the
 				// UnoViewGroup java class for more details.
 				bindableView.Visibility = newNativeVisibility;
 				bindableView.RequestLayout();
@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml
 			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
 
 		/// <summary>
-		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
+		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type,
 		/// its native representation is returned. Otherwise, the <see cref="object.ToString"/> implementation is used/returned instead.
 		/// </summary>
 		/// <param name="dependencyPropertyName">The name of the target dependency property</param>
@@ -416,6 +416,7 @@ namespace Windows.UI.Xaml
 			}
 
 #pragma warning disable CS0618 // deprecated members
+#pragma warning disable CA1422 // Validate platform compatibility
 
 			var type = dpValue.GetType();
 			if (type == typeof(bool))
@@ -457,6 +458,7 @@ namespace Windows.UI.Xaml
 
 			// If all else fails, just return the string representation of the DP's value
 			return new Java.Lang.String(dpValue.ToString());
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // deprecated members
 		}
 
@@ -468,9 +470,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the first view matching <see cref="ViewOfInterestSelector"/> anywhere in the visual tree. Handy when debugging Uno.
 		/// </summary>
-		/// <remarks>This property is intended as a shortcut to inspect the properties of a specific view at runtime. Suggested usage: 
-		/// 1. Be debugging Uno. 2. Flag the view you want in xaml with 'Name = "TargetView", or set <see cref="ViewOfInterestSelector"/> 
-		/// to select the view you want. 3. Put a breakpoint in the <see cref="UIElement.NativeHitCheck"/> method. 4. Tap anywhere in the app. 
+		/// <remarks>This property is intended as a shortcut to inspect the properties of a specific view at runtime. Suggested usage:
+		/// 1. Be debugging Uno. 2. Flag the view you want in xaml with 'Name = "TargetView", or set <see cref="ViewOfInterestSelector"/>
+		/// to select the view you want. 3. Put a breakpoint in the <see cref="UIElement.NativeHitCheck"/> method. 4. Tap anywhere in the app.
 		/// 5. Inspect this property, or one of the typed versions below.</remarks>
 		public View ViewOfInterest
 		{

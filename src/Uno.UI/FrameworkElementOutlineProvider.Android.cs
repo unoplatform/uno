@@ -16,7 +16,9 @@ namespace Uno.UI
 			var path = cornerRadius.GetOutlinePath(rect);
 
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			outline.SetConvexPath(path);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 		}
 

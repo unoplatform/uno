@@ -16,7 +16,9 @@ namespace Uno.UI
 			var activity = ContextHelper.Current as Activity;
 			var decorView = activity.Window.DecorView;
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			var newUiOptions = (int)decorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 			if (((int)visibility & (int)SystemUiFlags.HideNavigation) == 0)

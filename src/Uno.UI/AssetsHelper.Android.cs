@@ -48,7 +48,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <remarks>
 		/// This is required because the enumeration of all assets is particularly
-		/// slow, and we can cache it since it does not change for a given package installation. 
+		/// slow, and we can cache it since it does not change for a given package installation.
 		/// </remarks>
 		private static void BuildAssetsMap()
 		{
@@ -91,7 +91,9 @@ namespace Uno.UI
 				if (File.Exists(_statsFilePath))
 				{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 					var appInfo = Android.App.Application.Context.PackageManager.GetApplicationInfo(Android.App.Application.Context.PackageName, 0);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 					var installedDate = System.IO.File.GetLastWriteTime(appInfo.SourceDir);
 
@@ -119,7 +121,7 @@ namespace Uno.UI
 					typeof(AssetsHelper).Log().Error($"Failed to read the assets cache file [{_statsFilePath}]", e);
 				}
 			}
-			
+
 			return false;
 		}
 

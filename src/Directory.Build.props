@@ -232,7 +232,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
       </PropertyGroup>
       <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
       </ItemGroup>
     </When>
     <Otherwise>

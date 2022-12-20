@@ -26,7 +26,9 @@ namespace Uno.AuthenticationBroker
 
 			// read the values
 			launched = extras?.GetBoolean(launchedExtra, false) ?? false;
+#pragma warning disable CA1422 // Validate platform compatibility
 			actualIntent = extras?.GetParcelable(actualIntentExtra) as Intent;
+#pragma warning restore CA1422 // Validate platform compatibility
 		}
 
 		protected override void OnResume()

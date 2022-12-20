@@ -119,7 +119,9 @@ namespace Windows.UI.Xaml
 			using var fullScreenMetrics = new DisplayMetrics();
 
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			display?.GetMetrics(outMetrics: fullScreenMetrics);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
@@ -285,7 +287,9 @@ namespace Windows.UI.Xaml
 			}
 
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			return ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 		}
 
@@ -311,7 +315,9 @@ namespace Windows.UI.Xaml
 			}
 
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			var uiFlags = (int)decorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 			return (uiFlags & (int)SystemUiFlags.HideNavigation) == 0
 				|| (uiFlags & (int)SystemUiFlags.LayoutHideNavigation) == 0;
