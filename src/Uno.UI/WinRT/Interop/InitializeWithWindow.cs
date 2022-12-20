@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO_WINUI
+using System;
 
 namespace WinRT.Interop;
 
@@ -10,3 +11,4 @@ public static class InitializeWithWindow
 		// when multi-window support is added #8341.
 	}
 }
+#endif

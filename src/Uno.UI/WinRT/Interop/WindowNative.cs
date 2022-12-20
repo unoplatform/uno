@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO_WINUI
+using System;
 
 namespace WinRT.Interop;
 
@@ -11,3 +12,4 @@ public static class WindowNative
 		return IntPtr.Zero;
 	}
 }
+#endif
