@@ -286,8 +286,8 @@ namespace Windows.UI.Xaml.Shapes
 					// Note: The logic would say to include the full StrokeThickness as it will "overflow" half on booth side of the path,
 					//		 but WinUI does include only the half of it.
 					var pathNaturalSize = new Size(
-						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Right + alignedHalfStrokeThickness,
-						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + alignedHalfStrokeThickness);
+						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Width + alignedHalfStrokeThickness,
+						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Height + alignedHalfStrokeThickness);
 					size = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
 					break;
 
