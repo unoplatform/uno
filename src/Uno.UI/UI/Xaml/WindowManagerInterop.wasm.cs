@@ -351,6 +351,44 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetStyleString
+
+		internal static void SetStyleString(IntPtr htmlId, string name, string value)
+		{
+			if (UseJavascriptEval)
+			{
+				WebAssemblyRuntime.InvokeJS($@"Uno.UI.WindowManager.current.setStyleString(""{name}"", ""{WebAssemblyRuntime.EscapeJs(value)}"");");
+			}
+			else
+			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetStyleString(htmlId, name, value);
+#else
+				var parms = new WindowManagerSetStyleStringParams
+				{
+					HtmlId = htmlId,
+					Name = name,
+					Value = value
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setStyleStringNative", parms);
+#endif
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetStyleStringParams
+		{
+			public IntPtr HtmlId;
+
+			public string Name;
+
+			public string Value;
+		}
+
+		#endregion
+
 		#region SetRectanglePosition
 
 		internal static void SetSvgElementRect(IntPtr htmlId, Rect rect)
@@ -1486,6 +1524,9 @@ namespace Uno.UI.Xaml
 		{
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
+			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleNativeFast")]
 			internal static partial void SetStyles(IntPtr htmlId, string[] pairs);

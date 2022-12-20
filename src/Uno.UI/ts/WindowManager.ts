@@ -597,6 +597,27 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setStyleString(htmlId: number, name: string, value: string): string {
+
+			this.getView(htmlId).style.setProperty(name, value);
+
+			return "ok";
+		}
+
+		public setStyleStringNative(pParams: number): boolean {
+
+			const params = WindowManagerSetStyleStringParams.unmarshal(pParams);
+
+			this.getView(params.HtmlId).style.setProperty(params.Name, params.Value);
+
+			return true;
+		}
+
+		public setStyleStringNativeFast(htmlId: number, name: string, value: string) {
+
+			this.getView(htmlId).style.setProperty(name, value);
+		}
+
 		public setArrangeProperties(elementId: number): string {
 			const element = this.getView(elementId);
 
