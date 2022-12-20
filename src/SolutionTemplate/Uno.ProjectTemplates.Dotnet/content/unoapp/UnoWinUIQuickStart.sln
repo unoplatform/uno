@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.WPF
 EndProject
 #//#endif
 
-#//#if (winui-desktop)
+#//#if (Windows)
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Windows", "UnoWinUIQuickStart.Windows\UnoWinUIQuickStart.Windows.csproj", "{1AA13270-F438-4864-9435-54FD806E10EA}"
 EndProject
 #//#endif
