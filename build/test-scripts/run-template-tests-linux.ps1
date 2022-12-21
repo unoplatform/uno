@@ -41,7 +41,7 @@ function Get-TemplateConfiguration(
     @($a, $b, $c, $d, $e, $f, $g, $h)
 }
 
-$default = @('-v', 'detailed')
+$default = @('-v', 'detailed', '-p:EnableWindowsTargeting=true')
 
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
