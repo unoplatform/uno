@@ -37,7 +37,7 @@ function Get-TemplateConfiguration(
     @($a, $b, $c, $d, $e, $f, $g, $h)
 }
 
-$default = @('-v', 'detailed', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG")
+$default = @('-v', 'detailed', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
 
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
