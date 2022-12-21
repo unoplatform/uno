@@ -33,10 +33,6 @@
     <PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="Uno.MonoAnalyzers" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj">

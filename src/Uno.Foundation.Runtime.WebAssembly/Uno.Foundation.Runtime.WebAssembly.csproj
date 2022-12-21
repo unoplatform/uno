@@ -37,9 +37,6 @@
 	
 	<ItemGroup>
     <PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="Uno.Diagnostics.Eventing" Version="1.0.0-dev.4" />
 	</ItemGroup>
 

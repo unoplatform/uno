@@ -86,9 +86,6 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 

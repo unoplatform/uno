@@ -20,7 +20,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 

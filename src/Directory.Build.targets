@@ -28,7 +28,6 @@
 	<PackageReference Update="xamarin.build.download" Version="0.10.0" PrivateAssets="all" />
 	<PackageReference Update="MSTest.TestAdapter" Version="2.2.7" />
 	<PackageReference Update="MSTest.TestFramework" Version="2.2.6" />
-	<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 	<PackageReference Update="System.Memory" Version="4.5.4" />
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />

@@ -33,7 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
