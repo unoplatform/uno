@@ -71,6 +71,26 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(NavigationViewItem);
 			SetValue(MenuItemsProperty, new List<object>());
+
+			this.Loaded += NavigationViewItem_Loaded;
+			this.Unloaded += NavigationViewItem_Unloaded;
+		}
+
+		private bool _isUnloaded = false;
+
+		private void NavigationViewItem_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (_isUnloaded)
+			{
+				_isUnloaded = false;
+				OnApplyTemplate();
+			}
+		}
+
+		private void NavigationViewItem_Unloaded(object sender, RoutedEventArgs e)
+		{
+			UnhookEventsAndClearFields();
+			_isUnloaded = true;			
 		}
 
 		internal void UpdateVisualStateNoTransition()
@@ -97,96 +117,96 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
-			if (GetNavigationView() is null)
-			{
-				// Postpone template application for later
-				return;
-			}
+			//// TODO: Uno specific: NavigationView may not be set yet, wait for later #4689
+			//if (GetNavigationView() is null)
+			//{
+			//	// Postpone template application for later
+			//	return;
+			//}
 
-			// Stop UpdateVisualState before template is applied. Otherwise the visuals may be unexpected
-			m_appliedTemplate = false;
+			//// Stop UpdateVisualState before template is applied. Otherwise the visuals may be unexpected
+			//m_appliedTemplate = false;
 
-			UnhookEventsAndClearFields();
+			//UnhookEventsAndClearFields();
 
-			base.OnApplyTemplate();
+			//base.OnApplyTemplate();
 
-			// Find selection indicator
-			// Retrieve pointers to stable controls 
-			//IControlProtected controlProtected = this;
-			m_helper.Init(this);
+			//// Find selection indicator
+			//// Retrieve pointers to stable controls 
+			////IControlProtected controlProtected = this;
+			//m_helper.Init(this);
 
-			var rootGrid = GetTemplateChild(c_rootGrid) as Grid;
-			if (rootGrid != null)
-			{
-				m_rootGrid = rootGrid;
+			//var rootGrid = GetTemplateChild(c_rootGrid) as Grid;
+			//if (rootGrid != null)
+			//{
+			//	m_rootGrid = rootGrid;
 
-				var flyoutBase = FlyoutBase.GetAttachedFlyout(rootGrid);
-				if (flyoutBase != null)
-				{
-					flyoutBase.Closing += OnFlyoutClosing;
-					m_flyoutClosingRevoker.Disposable = Disposable.Create(() => flyoutBase.Closing -= OnFlyoutClosing);
-				}
-			}
+			//	var flyoutBase = FlyoutBase.GetAttachedFlyout(rootGrid);
+			//	if (flyoutBase != null)
+			//	{
+			//		flyoutBase.Closing += OnFlyoutClosing;
+			//		m_flyoutClosingRevoker.Disposable = Disposable.Create(() => flyoutBase.Closing -= OnFlyoutClosing);
+			//	}
+			//}
 
-			HookInputEvents();
+			//HookInputEvents();
 
-			IsEnabledChanged += OnIsEnabledChanged;
-			m_isEnabledChangedRevoker.Disposable = Disposable.Create(() => IsEnabledChanged -= OnIsEnabledChanged);
+			//IsEnabledChanged += OnIsEnabledChanged;
+			//m_isEnabledChangedRevoker.Disposable = Disposable.Create(() => IsEnabledChanged -= OnIsEnabledChanged);
 
-			m_toolTip = (ToolTip)GetTemplateChild("ToolTip");
+			//m_toolTip = (ToolTip)GetTemplateChild("ToolTip");
 
-			var splitView = GetSplitView();
-			if (splitView != null)
-			{
-				PrepNavigationViewItem(splitView);
-			}
-			else
-			{
-				// If the NVI is not prepared in an ItemPresenter, it will not have reference to SplitView. So check OnLoaded
-				// if it the reference has been manually set in NavigationViewItemBase::OnLoaded(). 
-				Loaded -= OnLoaded;
-				Loaded += OnLoaded;
-			}
+			//var splitView = GetSplitView();
+			//if (splitView != null)
+			//{
+			//	PrepNavigationViewItem(splitView);
+			//}
+			//else
+			//{
+			//	// If the NVI is not prepared in an ItemPresenter, it will not have reference to SplitView. So check OnLoaded
+			//	// if it the reference has been manually set in NavigationViewItemBase::OnLoaded(). 
+			//	Loaded -= OnLoaded;
+			//	Loaded += OnLoaded;
+			//}
 
-			// Retrieve reference to NavigationView
-			var nvImpl = GetNavigationView();
-			if (nvImpl != null)
-			{
-				var repeater = GetTemplateChild(c_repeater) as ItemsRepeater;
-				if (repeater != null)
-				{
-					m_repeater = repeater;
+			//// Retrieve reference to NavigationView
+			//var nvImpl = GetNavigationView();
+			//if (nvImpl != null)
+			//{
+			//	var repeater = GetTemplateChild(c_repeater) as ItemsRepeater;
+			//	if (repeater != null)
+			//	{
+			//		m_repeater = repeater;
 
-					// Primary element setup happens in NavigationView
-					repeater.ElementPrepared += nvImpl.OnRepeaterElementPrepared;
-					m_repeaterElementPreparedRevoker.Disposable = Disposable.Create(() => repeater.ElementPrepared -= nvImpl.OnRepeaterElementPrepared);
-					repeater.ElementClearing += nvImpl.OnRepeaterElementClearing;
-					m_repeaterElementClearingRevoker.Disposable = Disposable.Create(() => repeater.ElementClearing -= nvImpl.OnRepeaterElementClearing);
+			//		// Primary element setup happens in NavigationView
+			//		repeater.ElementPrepared += nvImpl.OnRepeaterElementPrepared;
+			//		m_repeaterElementPreparedRevoker.Disposable = Disposable.Create(() => repeater.ElementPrepared -= nvImpl.OnRepeaterElementPrepared);
+			//		repeater.ElementClearing += nvImpl.OnRepeaterElementClearing;
+			//		m_repeaterElementClearingRevoker.Disposable = Disposable.Create(() => repeater.ElementClearing -= nvImpl.OnRepeaterElementClearing);
 
-					repeater.ItemTemplate = nvImpl.GetNavigationViewItemsFactory();
-				}
+			//		repeater.ItemTemplate = nvImpl.GetNavigationViewItemsFactory();
+			//	}
 
-				UpdateRepeaterItemsSource();
-			}
+			//	UpdateRepeaterItemsSource();
+			//}
 
-			m_flyoutContentGrid = (Grid)GetTemplateChild(c_flyoutContentGrid);
+			//m_flyoutContentGrid = (Grid)GetTemplateChild(c_flyoutContentGrid);
 
-			m_appliedTemplate = true;
+			//m_appliedTemplate = true;
 
-			UpdateItemIndentation();
-			UpdateVisualStateNoTransition();
-			ReparentRepeater();
-			// We dont want to update the repeater visibilty during OnApplyTemplate if NavigationView is in a mode when items are shown in a flyout
-			if (!ShouldRepeaterShowInFlyout())
-			{
-				ShowHideChildren();
-			}
+			//UpdateItemIndentation();
+			//UpdateVisualStateNoTransition();
+			//ReparentRepeater();
+			//// We dont want to update the repeater visibilty during OnApplyTemplate if NavigationView is in a mode when items are shown in a flyout
+			//if (!ShouldRepeaterShowInFlyout())
+			//{
+			//	ShowHideChildren();
+			//}
 
-			var visual = ElementCompositionPreview.GetElementVisual(this);
-			NavigationView.CreateAndAttachHeaderAnimation(visual);
+			//var visual = ElementCompositionPreview.GetElementVisual(this);
+			//NavigationView.CreateAndAttachHeaderAnimation(visual);
 
-			_fullyInitialized = true;
+			//_fullyInitialized = true;
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
@@ -214,7 +234,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var itemsSource = GetItemsSource();
 				m_itemsSourceViewCollectionChangedRevoker.Disposable = null;
 				repeater.ItemsSource = itemsSource;
-				repeater.ItemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
+				//repeater.ItemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 				m_itemsSourceViewCollectionChangedRevoker.Disposable = Disposable.Create(() => repeater.ItemsSourceView.CollectionChanged -= OnItemsSourceViewChanged);
 			}
 		}
@@ -279,53 +299,53 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateNavigationViewItemToolTip()
 		{
-			var toolTipContent = ToolTipService.GetToolTip(this);
+			//var toolTipContent = ToolTipService.GetToolTip(this);
 
-			// no custom tooltip, then use suggested tooltip
-			if (toolTipContent == null || toolTipContent == m_suggestedToolTipContent)
-			{
-				if (ShouldEnableToolTip())
-				{
-					// Don't SetToolTip with the same parameter because it close/re-open the ToolTip
-					if (toolTipContent != m_suggestedToolTipContent)
-					{
-						ToolTipService.SetToolTip(this, m_suggestedToolTipContent);
-					}
-				}
-				else
-				{
-					ToolTipService.SetToolTip(this, null);
-				}
-			}
+			//// no custom tooltip, then use suggested tooltip
+			//if (toolTipContent == null || toolTipContent == m_suggestedToolTipContent)
+			//{
+			//	if (ShouldEnableToolTip())
+			//	{
+			//		// Don't SetToolTip with the same parameter because it close/re-open the ToolTip
+			//		if (toolTipContent != m_suggestedToolTipContent)
+			//		{
+			//			ToolTipService.SetToolTip(this, m_suggestedToolTipContent);
+			//		}
+			//	}
+			//	else
+			//	{
+			//		ToolTipService.SetToolTip(this, null);
+			//	}
+			//}
 		}
 
 		private void SuggestedToolTipChanged(object newContent)
 		{
-			var potentialString = newContent;
-			bool validStringableToolTip = potentialString != null
-				&& potentialString is string stringData
-				&& !string.IsNullOrEmpty(stringData);
+			//var potentialString = newContent;
+			//bool validStringableToolTip = potentialString != null
+			//	&& potentialString is string stringData
+			//	&& !string.IsNullOrEmpty(stringData);
 
-			object newToolTipContent = null;
-			if (validStringableToolTip)
-			{
-				newToolTipContent = newContent;
-			}
+			//object newToolTipContent = null;
+			//if (validStringableToolTip)
+			//{
+			//	newToolTipContent = newContent;
+			//}
 
-			// Both customer and NavigationViewItem can update ToolTipContent by ToolTipService.SetToolTip or XAML
-			// If the ToolTipContent is not the same as m_suggestedToolTipContent, then it's set by customer.
-			// Customer's ToolTip take high priority, and we never override Customer's ToolTip.
-			var toolTipContent = ToolTipService.GetToolTip(this);
-			var oldToolTipContent = m_suggestedToolTipContent;
-			if (oldToolTipContent != null)
-			{
-				if (oldToolTipContent == toolTipContent)
-				{
-					ToolTipService.SetToolTip(this, null);
-				}
-			}
+			//// Both customer and NavigationViewItem can update ToolTipContent by ToolTipService.SetToolTip or XAML
+			//// If the ToolTipContent is not the same as m_suggestedToolTipContent, then it's set by customer.
+			//// Customer's ToolTip take high priority, and we never override Customer's ToolTip.
+			//var toolTipContent = ToolTipService.GetToolTip(this);
+			//var oldToolTipContent = m_suggestedToolTipContent;
+			//if (oldToolTipContent != null)
+			//{
+			//	if (oldToolTipContent == toolTipContent)
+			//	{
+			//		ToolTipService.SetToolTip(this, null);
+			//	}
+			//}
 
-			m_suggestedToolTipContent = newToolTipContent;
+			//m_suggestedToolTipContent = newToolTipContent;
 		}
 
 		private void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)

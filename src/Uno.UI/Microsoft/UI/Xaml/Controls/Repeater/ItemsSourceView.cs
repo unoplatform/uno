@@ -18,9 +18,24 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class ItemsSourceView : INotifyCollectionChanged
 {
-	public event NotifyCollectionChangedEventHandler CollectionChanged;
+	private NotifyCollectionChangedEventHandler _collectionChanged;
 
-	private int m_cachedSize  =  -1;
+	public event NotifyCollectionChangedEventHandler CollectionChanged
+	{
+		add
+		{
+			_collectionChanged += value;
+			global::System.Diagnostics.Debug.WriteLine("||| Add " + new global::System.Diagnostics.StackTrace());
+		}
+
+		remove
+		{
+			global::System.Diagnostics.Debug.WriteLine("||| Remove " + new global::System.Diagnostics.StackTrace());
+			_collectionChanged -= value;
+		}
+	}
+
+	private int m_cachedSize = -1;
 
 	#region IDataSource
 
@@ -59,7 +74,7 @@ public partial class ItemsSourceView : INotifyCollectionChanged
 	private protected void OnItemsSourceChanged(NotifyCollectionChangedEventArgs args)
 	{
 		m_cachedSize = GetSizeCore();
-		CollectionChanged?.Invoke(this, args);
+		_collectionChanged?.Invoke(this, args);
 	}
 	#endregion
 }

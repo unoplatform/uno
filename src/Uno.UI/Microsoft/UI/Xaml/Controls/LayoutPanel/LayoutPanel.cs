@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -17,8 +18,19 @@ namespace Microsoft.UI.Xaml.Controls
 		public LayoutPanel()
 		{
 			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
+			Unloaded += OnUnloaded;
 		}
 
+		private readonly SerialDisposable _layoutSubscriptionsRevoker = new SerialDisposable();
+
+		private void OnUnloaded(object sender, RoutedEventArgs args)
+		{
+#if HAS_UNO
+			// Uno specific: Ensure Layout subscriptions are unattached to avoid memory leaks
+			// because ItemsRepeater uses a "singleton" instance of default StackLayout.
+			_layoutSubscriptionsRevoker.Disposable = null;
+#endif
+		}
 
 		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -167,7 +179,7 @@ namespace Microsoft.UI.Xaml.Controls
 		void OnLayoutChanged(Layout oldValue, Layout newValue)
 		{
 			m_layoutContext ??= new LayoutPanelLayoutContext(this);
-
+			_layoutSubscriptionsRevoker.Disposable = null;
 			if (oldValue is { })
 			{
 				oldValue.UninitializeForContext(m_layoutContext);
@@ -180,6 +192,11 @@ namespace Microsoft.UI.Xaml.Controls
 				newValue.InitializeForContext(m_layoutContext);
 				newValue.MeasureInvalidated += InvalidateMeasureForLayout;
 				newValue.ArrangeInvalidated += InvalidateArrangeForLayout;
+				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
+					newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				});
 			}
 
 			InvalidateMeasure();

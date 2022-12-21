@@ -12,9 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_manager = manager;
 			m_parent = parent;
-			// TODO: MZ: What?
-			//m_source = manager;
-			//m_dataSource = manager;
 			m_source = null;
 			m_dataSource = null;
 		}

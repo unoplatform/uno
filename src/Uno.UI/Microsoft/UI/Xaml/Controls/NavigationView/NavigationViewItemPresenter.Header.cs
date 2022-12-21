@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationViewItemPresenter.h, commit fd22d7f
-
+#pragma warning disable CS0649
+#pragma warning disable CS0169
+#pragma warning disable CS0414
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 

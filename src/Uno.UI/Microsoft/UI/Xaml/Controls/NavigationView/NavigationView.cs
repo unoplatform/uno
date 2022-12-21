@@ -1181,7 +1181,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					parent = GetParentNavigationViewItemForContainer(parent);
 				}
-				
+
 				AnimateSelectionChanged(indicatorTarget);
 
 				CloseFlyoutIfRequired(nvi);
@@ -1328,90 +1328,90 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnRepeaterElementPrepared(ItemsRepeater ir, ItemsRepeaterElementPreparedEventArgs args)
 		{
-#if !HAS_UNO_WINUI
-			// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
-			// Certain items are disallowed in a NavigationView's items list. Check for them.
-			if (args.Element is Windows.UI.Xaml.Controls.NavigationViewItemBase)
-			{
-				throw new InvalidOperationException("MenuItems contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
-			}
-#endif
+//#if !HAS_UNO_WINUI
+//			// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
+//			// Certain items are disallowed in a NavigationView's items list. Check for them.
+//			if (args.Element is Windows.UI.Xaml.Controls.NavigationViewItemBase)
+//			{
+//				throw new InvalidOperationException("MenuItems contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
+//			}
+//#endif
 
-			if (args.Element is NavigationViewItemBase nvib)
-			{
-				var nvibImpl = nvib;
-				nvibImpl.SetNavigationViewParent(this);
-				nvibImpl.IsTopLevelItem = IsTopLevelItem(nvib);
+//			if (args.Element is NavigationViewItemBase nvib)
+//			{
+//				var nvibImpl = nvib;
+//				nvibImpl.SetNavigationViewParent(this);
+//				nvibImpl.IsTopLevelItem = IsTopLevelItem(nvib);
 
-				NavigationViewRepeaterPosition GetPosition(ItemsRepeater ir)
-				{
-					if (IsTopNavigationView())
-					{
-						if (ir == m_topNavRepeater)
-						{
-							return NavigationViewRepeaterPosition.TopPrimary;
-						}
-						if (ir == m_topNavFooterMenuRepeater)
-						{
-							return NavigationViewRepeaterPosition.TopFooter;
-						}
-						return NavigationViewRepeaterPosition.TopOverflow;
-					}
-					if (ir == m_leftNavFooterMenuRepeater)
-					{
-						return NavigationViewRepeaterPosition.LeftFooter;
-					}
-					return NavigationViewRepeaterPosition.LeftNav;
-				}
-				// Visual state info propagation
-				var position = GetPosition(ir);
-				nvibImpl.Position = position;
+//				NavigationViewRepeaterPosition GetPosition(ItemsRepeater ir)
+//				{
+//					if (IsTopNavigationView())
+//					{
+//						if (ir == m_topNavRepeater)
+//						{
+//							return NavigationViewRepeaterPosition.TopPrimary;
+//						}
+//						if (ir == m_topNavFooterMenuRepeater)
+//						{
+//							return NavigationViewRepeaterPosition.TopFooter;
+//						}
+//						return NavigationViewRepeaterPosition.TopOverflow;
+//					}
+//					if (ir == m_leftNavFooterMenuRepeater)
+//					{
+//						return NavigationViewRepeaterPosition.LeftFooter;
+//					}
+//					return NavigationViewRepeaterPosition.LeftNav;
+//				}
+//				// Visual state info propagation
+//				var position = GetPosition(ir);
+//				nvibImpl.Position = position;
 
-				var parentNVI = GetParentNavigationViewItemForContainer(nvib);
-				if (parentNVI != null)
-				{
-					var parentNVIImpl = parentNVI;
-					var itemDepth = parentNVIImpl.ShouldRepeaterShowInFlyout() ? 0 : parentNVIImpl.Depth + 1;
-					nvibImpl.Depth = itemDepth;
-				}
+//				var parentNVI = GetParentNavigationViewItemForContainer(nvib);
+//				if (parentNVI != null)
+//				{
+//					var parentNVIImpl = parentNVI;
+//					var itemDepth = parentNVIImpl.ShouldRepeaterShowInFlyout() ? 0 : parentNVIImpl.Depth + 1;
+//					nvibImpl.Depth = itemDepth;
+//				}
 
-				else
-				{
-					nvibImpl.Depth = 0;
-				}
+//				else
+//				{
+//					nvibImpl.Depth = 0;
+//				}
 
-				// Apply any custom container styling
-				ApplyCustomMenuItemContainerStyling(nvib, ir, args.Index);
+//				// Apply any custom container styling
+//				ApplyCustomMenuItemContainerStyling(nvib, ir, args.Index);
 
-				if (args.Element is NavigationViewItem nvi)
-				{
-					int GetChildDepth(NavigationViewRepeaterPosition position, NavigationViewItemBase nvibImpl)
-					{
-						if (position == NavigationViewRepeaterPosition.TopPrimary)
-						{
-							return 0;
-						}
-						return nvibImpl.Depth + 1;
+//				if (args.Element is NavigationViewItem nvi)
+//				{
+//					int GetChildDepth(NavigationViewRepeaterPosition position, NavigationViewItemBase nvibImpl)
+//					{
+//						if (position == NavigationViewRepeaterPosition.TopPrimary)
+//						{
+//							return 0;
+//						}
+//						return nvibImpl.Depth + 1;
 
-					}
+//					}
 
-					// Propagate depth to children items if they exist
-					var childDepth = GetChildDepth(position, nvibImpl);
-					nvi.PropagateDepthToChildren(childDepth);
+//					// Propagate depth to children items if they exist
+//					var childDepth = GetChildDepth(position, nvibImpl);
+//					nvi.PropagateDepthToChildren(childDepth);
 
-					SetNavigationViewItemRevokers(nvi);
-				}
+//					SetNavigationViewItemRevokers(nvi);
+//				}
 
-#if IS_UNO
-				// TODO: Uno specific - remove when #4689 is fixed
-				// This ensures the item is properly initialized and the selected item is displayed
-				nvibImpl.Reinitialize();
-				if (SelectedItem != null && m_activeIndicator == null)
-				{
-					AnimateSelectionChanged(SelectedItem);
-				}
-#endif
-			}
+//#if IS_UNO
+//				// TODO: Uno specific - remove when #4689 is fixed
+//				// This ensures the item is properly initialized and the selected item is displayed
+//				nvibImpl.Reinitialize();
+//				if (SelectedItem != null && m_activeIndicator == null)
+//				{
+//					AnimateSelectionChanged(SelectedItem);
+//				}
+//#endif
+//			}
 		}
 
 		private void ApplyCustomMenuItemContainerStyling(NavigationViewItemBase nvib, ItemsRepeater ir, int index)
@@ -2129,21 +2129,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateSettingsItemToolTip()
 		{
-			var settingsItem = m_settingsItem;
-			if (settingsItem != null)
-			{
-				if (!IsTopNavigationView() && IsPaneOpen)
-				{
-					ToolTipService.SetToolTip(settingsItem, null);
-				}
-				else
-				{
-					var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
-					var toolTip = new ToolTip();
-					toolTip.Content = localizedSettingsName;
-					ToolTipService.SetToolTip(settingsItem, toolTip);
-				}
-			}
+			//var settingsItem = m_settingsItem;
+			//if (settingsItem != null)
+			//{
+			//	if (!IsTopNavigationView() && IsPaneOpen)
+			//	{
+			//		ToolTipService.SetToolTip(settingsItem, null);
+			//	}
+			//	else
+			//	{
+			//		var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
+			//		var toolTip = new ToolTip();
+			//		toolTip.Content = localizedSettingsName;
+			//		ToolTipService.SetToolTip(settingsItem, toolTip);
+			//	}
+			//}
 		}
 
 		// Updates the PaneTitleHolder.Visibility and PaneTitleTextBlock.Parent properties based on the PaneDisplayMode, PaneTitle and IsPaneToggleButtonVisible properties.
@@ -4411,10 +4411,21 @@ namespace Microsoft.UI.Xaml.Controls
 				coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
 				coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
 			}
+
+			UnhookEventsAndClearFields(false);
+			_wasUnloaded = true;
 		}
+
+		private bool _wasUnloaded = false;
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
+			if (_wasUnloaded)
+			{
+				OnApplyTemplate();
+				_wasUnloaded = true;
+			}
+			
 			if (m_updateVisualStateForDisplayModeFromOnLoaded)
 			{
 				m_updateVisualStateForDisplayModeFromOnLoaded = false;

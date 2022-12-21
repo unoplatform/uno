@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference NavigationView.h, commit 3ac8fc1
+#pragma warning disable CS0649
+#pragma warning disable CS0169
+#pragma warning disable CS0414
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -41,7 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private NavigationViewItemsFactory m_navigationViewItemsFactory = null;
 
 		// Visual components
-
 		private Button m_paneToggleButton;
 		private SplitView m_rootSplitView;
 		private NavigationViewItem m_settingsItem;

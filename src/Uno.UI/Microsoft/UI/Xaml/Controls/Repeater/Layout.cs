@@ -9,8 +9,37 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Layout : DependencyObject
 	{
-		public event TypedEventHandler<Layout, object> MeasureInvalidated;
-		public event TypedEventHandler<Layout, object> ArrangeInvalidated;
+		public int MeasureCounter { get; set; }
+		public event TypedEventHandler<Layout, object> _MeasureInvalidated;
+		public event TypedEventHandler<Layout, object> _ArrangeInvalidated;
+		public event TypedEventHandler<Layout, object> MeasureInvalidated
+		{
+			add
+			{
+				_MeasureInvalidated += value;
+				MeasureCounter++;
+			}
+			remove
+			{
+				_MeasureInvalidated -= value;
+				MeasureCounter--;
+			}
+		}
+
+		public int ArrangeCounter { get; set; }
+		public event TypedEventHandler<Layout, object> ArrangeInvalidated
+		{
+			add
+			{
+				_ArrangeInvalidated += value;
+				ArrangeCounter++;
+				global::System.Diagnostics.Debug.WriteLine("UP" + MeasureCounter);
+			}
+			remove { _ArrangeInvalidated -= value;
+				ArrangeCounter--;
+				global::System.Diagnostics.Debug.WriteLine("DOWN" + ArrangeCounter);
+			}
+		}
 
 		internal string LayoutId { get; set; }
 
@@ -103,9 +132,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		protected void InvalidateMeasure()
-			=> MeasureInvalidated?.Invoke(this, null);
+			=> _MeasureInvalidated?.Invoke(this, null);
 
 		protected void InvalidateArrange()
-			=> ArrangeInvalidated?.Invoke(this, null);
+			=> _ArrangeInvalidated?.Invoke(this, null);
 	}
 }

@@ -32,57 +32,57 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected override void OnApplyTemplate()
 		{
-			//IControlProtected controlProtected = this;
+//			//IControlProtected controlProtected = this;
 
-			// Retrieve pointers to stable controls
-			m_helper = new NavigationViewItemHelper<NavigationViewItemPresenter>(this);
-			m_helper.Init(this);
+//			// Retrieve pointers to stable controls
+//			m_helper = new NavigationViewItemHelper<NavigationViewItemPresenter>(this);
+//			m_helper.Init(this);
 
-			var contentGrid = GetTemplateChild(c_contentGrid) as Grid;
-			if (contentGrid != null)
-			{
-				m_contentGrid = contentGrid;
-			}
+//			var contentGrid = GetTemplateChild(c_contentGrid) as Grid;
+//			if (contentGrid != null)
+//			{
+//				m_contentGrid = contentGrid;
+//			}
 
-			m_infoBadgePresenter = GetTemplateChild(c_infoBadgePresenter) as ContentPresenter;
+//			m_infoBadgePresenter = GetTemplateChild(c_infoBadgePresenter) as ContentPresenter;
 
-			var navigationViewItem = GetNavigationViewItem();
-			if (navigationViewItem != null)
-			{
-#if IS_UNO
-				// TODO: Uno specific: We may be reapplying the template, in which case
-				// we need to unsubscribe the previous Tapped event handler.
-				// Can be removed when #4689.
-				if (m_expandCollapseChevron != null)
-				{
-					m_expandCollapseChevron.Tapped -= navigationViewItem.OnExpandCollapseChevronTapped;
-				}
-#endif
+//			var navigationViewItem = GetNavigationViewItem();
+//			if (navigationViewItem != null)
+//			{
+//#if IS_UNO
+//				// TODO: Uno specific: We may be reapplying the template, in which case
+//				// we need to unsubscribe the previous Tapped event handler.
+//				// Can be removed when #4689.
+//				if (m_expandCollapseChevron != null)
+//				{
+//					m_expandCollapseChevron.Tapped -= navigationViewItem.OnExpandCollapseChevronTapped;
+//				}
+//#endif
 
-				var expandCollapseChevron = GetTemplateChild(c_expandCollapseChevron) as Grid;
-				if (expandCollapseChevron != null)
-				{
-					m_expandCollapseChevron = expandCollapseChevron;
-					expandCollapseChevron.Tapped += navigationViewItem.OnExpandCollapseChevronTapped;
-				}
-				navigationViewItem.UpdateVisualStateNoTransition();
+//				var expandCollapseChevron = GetTemplateChild(c_expandCollapseChevron) as Grid;
+//				if (expandCollapseChevron != null)
+//				{
+//					m_expandCollapseChevron = expandCollapseChevron;
+//					expandCollapseChevron.Tapped += navigationViewItem.OnExpandCollapseChevronTapped;
+//				}
+//				navigationViewItem.UpdateVisualStateNoTransition();
 
 
-				// We probably switched displaymode, so restore width now, otherwise the next time we will restore is when the CompactPaneLength changes
-				var navigationView = navigationViewItem.GetNavigationView();
-				if (navigationView != null)
-				{
-					if (navigationView.PaneDisplayMode != NavigationViewPaneDisplayMode.Top)
-					{
-						UpdateCompactPaneLength(m_compactPaneLengthValue, true);
-					}
-				}
-			}
+//				// We probably switched displaymode, so restore width now, otherwise the next time we will restore is when the CompactPaneLength changes
+//				var navigationView = navigationViewItem.GetNavigationView();
+//				if (navigationView != null)
+//				{
+//					if (navigationView.PaneDisplayMode != NavigationViewPaneDisplayMode.Top)
+//					{
+//						UpdateCompactPaneLength(m_compactPaneLengthValue, true);
+//					}
+//				}
+//			}
 
-			m_chevronExpandedStoryboard = (Storyboard)GetTemplateChild(c_expandCollapseRotateExpandedStoryboard);
-			m_chevronCollapsedStoryboard = (Storyboard)GetTemplateChild(c_expandCollapseRotateCollapsedStoryboard);
+//			m_chevronExpandedStoryboard = (Storyboard)GetTemplateChild(c_expandCollapseRotateExpandedStoryboard);
+//			m_chevronCollapsedStoryboard = (Storyboard)GetTemplateChild(c_expandCollapseRotateCollapsedStoryboard);
 
-			UpdateMargin();
+//			UpdateMargin();
 		}
 
 		internal void RotateExpandCollapseChevron(bool isExpanded)

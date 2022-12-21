@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.cpp, commit 1cf9f1c
-
+#pragma warning disable CS0649
+#pragma warning disable CS0169
+#pragma warning disable CS0414
 #pragma warning disable 105 // remove when moving to WinUI tree
 
 using System;
@@ -125,6 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ItemsRepeater()
 		{
+			this.SetValue(LayoutProperty, new StackLayout(), DependencyPropertyValuePrecedences.DefaultValue);
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeater);
 
 			_repeaterChildren = new UIElementCollection(this);
@@ -511,7 +514,7 @@ namespace Microsoft.UI.Xaml.Controls
 				OnItemTemplateChanged(args.OldValue, args.NewValue);
 			}
 			else if (property == LayoutProperty)
-			{
+			{				
 				OnLayoutChanged(args.OldValue as Layout, args.NewValue as Layout);
 			}
 			else if (property == AnimatorProperty)
@@ -802,6 +805,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnLayoutChanged(Layout oldValue, Layout newValue)
 		{
+			if (m_viewManager is null)
+			{
+				return;
+			}
+
 			if (m_isLayoutInProgress)
 			{
 				throw new InvalidOperationException("Layout cannot be changed during layout.");

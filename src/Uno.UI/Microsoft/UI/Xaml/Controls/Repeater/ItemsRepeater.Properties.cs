@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Layout (DP - With default callback)
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(ItemsRepeater), new FrameworkPropertyMetadata(
-				defaultValue: new StackLayout(),
+				defaultValue: null,
 				propertyChangedCallback: OnPropertyChanged
 			));
 

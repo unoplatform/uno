@@ -1,5 +1,7 @@
 ﻿// MUX reference NavigationViewItem.h, commit fd22d7f
-
+#pragma warning disable CS0649
+#pragma warning disable CS0169
+#pragma warning disable CS0414
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Windows.ApplicationModel.Core;
