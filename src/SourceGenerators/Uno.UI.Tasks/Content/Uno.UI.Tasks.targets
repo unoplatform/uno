@@ -43,11 +43,36 @@
 		<PropertyGroup>
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
 		</PropertyGroup>
-		<ResourcesGenerationTask_v0 Resources="@(PRIResource)"
+
+		<ItemGroup>
+			<_UnoTempPRIResource Include="@(PRIResource)" />
+		</ItemGroup>
+
+		<!-- Assign the Link property so files defined in shared projects preserve their natural path structure -->
+		<AssignLinkMetadata Items="@(PRIResource)"
+							Condition="'@(PRIResource)' != '' and '%(PRIResource.DefiningProjectFullPath)' != '$(MSBuildProjectFullPath)'">
+			<Output TaskParameter="OutputItems" ItemName="_Temp" />
+		</AssignLinkMetadata>
+
+		<ItemGroup>
+			<!-- remove new linked items so their new metadata is used instead -->
+			<_UnoTempPRIResource Remove="@(_Temp)" />
+			<_UnoTempPRIResource Include="@(_Temp)" />
+
+			<!-- Clear temporary group -->
+			<_Temp Remove="@(_Temp)" />
+		</ItemGroup>
+
+		<AssignTargetPath Files="@(_UnoTempPRIResource)" RootFolder="$(MSBuildProjectDirectory)">
+			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
+		</AssignTargetPath>
+
+		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(XamarinProjectType)"
 									 IntermediateOutputPath="$(IntermediateOutputPath)"
-									 DefaultLanguage="$(DefaultLanguage)">
+									 DefaultLanguage="$(DefaultLanguage)"
+									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
 			<Output TaskParameter="GeneratedFiles"
 							ItemName="GeneratedFiles" />
 		</ResourcesGenerationTask_v0>
@@ -55,6 +80,9 @@
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
 			<AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
 			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
+
+			<!-- Clear temporary group -->
+			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
 		</ItemGroup>
 	</Target>
 
