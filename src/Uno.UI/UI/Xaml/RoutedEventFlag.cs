@@ -60,7 +60,7 @@ namespace Uno.UI.Xaml
 		Holding = 1UL << 51, 
 
 		// Context menu
-		// ContextRequested = 1UL << 61, => Reserved for future usage 
+		ContextRequested = 1UL << 61,
 		// ContextCanceled  = 1UL << 62, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 	}
 
@@ -109,8 +109,8 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.RightTapped
 			| RoutedEventFlag.Holding;
 
-		private const RoutedEventFlag _isContextMenu = (RoutedEventFlag)0b0011_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000;
-			//   RoutedEventFlag.ContextRequested
+		private const RoutedEventFlag _isContextMenu = // 0b0011_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000
+			RoutedEventFlag.ContextRequested;
 			// | RoutedEventFlag.ContextCanceled;
 
 		[Pure]
