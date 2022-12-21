@@ -1,6 +1,6 @@
 ﻿namespace Windows.Web;
 
-public partial enum WebErrorStatus
+public enum WebErrorStatus
 {
 	Unknown = 0,
 	CertificateCommonNameIsIncorrect = 1,

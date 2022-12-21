@@ -23,5 +23,7 @@ public partial class CoreWebView2WebMessageReceivedEventArgs : EventArgs
 	public bool TryGetWebMessageAsString(out string webMessageAsString)
 	{
 		// TODO:MZ: Implement
+		webMessageAsString = null;
+		return false;
 	}
 }
