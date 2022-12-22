@@ -63,6 +63,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private async Task When_Switch_Theme_Inner(Func<Brush, Color> backgroundColorGetter)
 		{
+#if HAS_UNO
+			var originalToolTipsSetting = Uno.UI.FeatureConfiguration.ToolTip.UseToolTips;
+			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+#endif
 			try
 			{
 				var textBlock = new TextBlock();
@@ -98,6 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups();
+				Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = originalToolTipsSetting;
 #endif
 			}
 		}
