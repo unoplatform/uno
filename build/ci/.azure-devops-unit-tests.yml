@@ -13,7 +13,14 @@ jobs:
 
   strategy:
     matrix:
-      Default_Compiler:
+      UWP:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP 
+        ADDITIONAL_FLAGS: ''
+
+      WinUI:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI 
         ADDITIONAL_FLAGS: ''
 
       # Keep for future previews
@@ -34,6 +41,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
     parameters:
