@@ -1301,6 +1301,21 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				var clipRectValue = clipRect ?? default;
+
+				NativeMethods.ArrangeElement(
+					htmlId,
+					rect.Top,
+					rect.Left,
+					rect.Width,
+					rect.Height,
+					clipRect.HasValue,
+					clipRectValue.Top,
+					clipRectValue.Left,
+					clipRectValue.Bottom,
+					clipRectValue.Right);
+#else
 				var parms = new WindowManagerArrangeElementParams()
 				{
 					HtmlId = htmlId,
@@ -1320,6 +1335,7 @@ namespace Uno.UI.Xaml
 				}
 
 				TSInteropMarshaller.InvokeJS("Uno:arrangeElementNative", parms);
+#endif
 			}
 		}
 
@@ -1522,6 +1538,19 @@ namespace Uno.UI.Xaml
 #if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
+			internal static partial void ArrangeElement(
+				IntPtr htmlId,
+				double top,
+				double left,
+				double width,
+				double height,
+				bool clip,
+				double clipTop,
+				double clipLeft,
+				double clipBottom,
+				double clipRight);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
 
