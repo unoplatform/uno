@@ -1047,6 +1047,55 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(22, slider.Value);
 		}
 
+		[TestMethod]
+		public void When_Binding_And_ClearValue()
+		{
+			var SUT = new MyControl();
+
+			SUT.SetBinding(MyControl.MyPropertyProperty, new Binding { Path = new PropertyPath(".") });
+
+			SUT.DataContext = 42;
+
+			Assert.AreEqual(42, SUT.MyProperty);
+
+			SUT.ClearValue(MyControl.MyPropertyProperty);
+
+			SUT.DataContext = 43;
+
+			Assert.AreEqual(0, SUT.MyProperty);
+		}
+
+		[TestMethod]
+		public void When_Binding_And_ClearValue_With_Events()
+		{
+			List<int> myPropertyHistory = new();
+			var SUT = new MyControl();
+
+			SUT.SetBinding(MyControl.MyPropertyProperty, new Binding { Path = new PropertyPath(".") });
+
+			SUT.RegisterPropertyChangedCallback(
+				MyControl.MyPropertyProperty,
+				(s, e) => {
+					myPropertyHistory.Add(SUT.MyProperty);
+				});
+
+			SUT.DataContext = 42;
+
+			Assert.AreEqual(42, SUT.MyProperty);
+			Assert.AreEqual(1, myPropertyHistory.Count);
+			Assert.AreEqual(42, myPropertyHistory[0]);
+
+			SUT.ClearValue(MyControl.MyPropertyProperty);
+
+			Assert.AreEqual(2, myPropertyHistory.Count);
+			Assert.AreEqual(0, myPropertyHistory[1]);
+
+			SUT.DataContext = 43;
+
+			Assert.AreEqual(2, myPropertyHistory.Count);
+			Assert.AreEqual(0, SUT.MyProperty);
+		}
+
 		public partial class BaseTarget : DependencyObject
 		{
 			private List<object> _dataContextChangedList = new List<object>();

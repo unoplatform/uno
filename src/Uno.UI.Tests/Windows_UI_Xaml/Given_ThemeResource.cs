@@ -591,6 +591,51 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
 		}
 
+		[TestMethod]
+		public void When_TemplateBinding_And_VisualState_Setter_ClearValue()
+		{
+			var SUT = new When_TemplateBinding_And_VisualState_Setter_ClearValue();
+			SUT.topLevel.Content = "test";
+			SUT.topLevel.ApplyTemplate();
+			 
+			var inner = SUT.FindName("innerContent") as ContentPresenter;
+			Assert.IsNotNull(inner);
+			Assert.AreEqual("Default Value", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "NewState", true);
+			Assert.AreEqual("42", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "DefaultState", true);
+			Assert.AreEqual("Default Value", inner.Tag);
+
+			SUT.topLevel.Tag = "Updated value";
+			Assert.AreEqual("Updated value", inner.Tag);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_And_VisualState_Setter_ClearValue()
+		{
+			var SUT = new When_StaticResource_And_VisualState_Setter_ClearValue();
+			SUT.topLevel.Content = "test";
+			SUT.topLevel.ApplyTemplate();
+			 
+			var inner = SUT.FindName("innerContent") as ContentPresenter;
+			Assert.IsNotNull(inner);
+			Assert.AreEqual("my static resource", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "NewState", true);
+			Assert.AreEqual("42", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "DefaultState", true);
+			Assert.AreEqual("my static resource", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "NewState", true);
+			Assert.AreEqual("42", inner.Tag);
+
+			VisualStateManager.GoToState(SUT.topLevel, "DefaultState", true);
+			Assert.AreEqual("my static resource", inner.Tag);
+		}
+
 		/// <summary>
 		/// Use Fluent styles for the duration of the test.
 		/// </summary>
