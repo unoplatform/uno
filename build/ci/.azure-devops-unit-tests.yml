@@ -9,7 +9,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Pipeline_Validations
+  dependsOn: winui_convert_tree
 
   strategy:
     matrix:
