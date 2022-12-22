@@ -62,9 +62,6 @@
 				<ProjectItem ReplaceParameters="true" TargetFileName="environment.conf">environment.conf</ProjectItem>
 				<Folder Name="Assets" TargetFolderName="Assets">
 					<ProjectItem ReplaceParameters="true" TargetFileName="AboutAssets.txt">AboutAssets.txt</ProjectItem>
-					<Folder Name="Fonts" TargetFolderName="Fonts">
-						<ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
-					</Folder>
 				</Folder>
 				<ProjectItem ReplaceParameters="true" TargetFileName="AndroidManifest.xml">AndroidManifest.xml</ProjectItem>
 				<Folder Name="Resources" TargetFolderName="Resources">

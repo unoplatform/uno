@@ -86,6 +86,16 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_UnoExcludeFromAndroidContentCheck" BeforeTargets="_CheckForContent" Condition="'$(MonoAndroidAssetsPrefix)'!=''">
+		<!--
+		Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
+		https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
+		-->
+		<ItemGroup>
+			<Content Update="@(Content)" ExcludeFromContentCheck="true" />
+		</ItemGroup>
+	</Target>
+
 	<Target Name="UnoAssetsGeneration"
 				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest"
 				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
