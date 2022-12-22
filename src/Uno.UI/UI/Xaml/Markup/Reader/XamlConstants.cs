@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		public const string BundleResourcePrefix = "ms-appx:///";
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
-		public const string RootWUINamespace = "Windows.UI";
+		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
 		public const string RootMUINamespace = "Windows.UI";
 		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
