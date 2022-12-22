@@ -357,7 +357,7 @@ namespace Uno.UI.Xaml
 		{
 			if (UseJavascriptEval)
 			{
-				WebAssemblyRuntime.InvokeJS($@"Uno.UI.WindowManager.current.setStyleString(""{name}"", ""{WebAssemblyRuntime.EscapeJs(value)}"");");
+				WebAssemblyRuntime.InvokeJS($@"Uno.UI.WindowManager.current.setStyleString({htmlId}, ""{name}"", ""{WebAssemblyRuntime.EscapeJs(value)}"");");
 			}
 			else
 			{
