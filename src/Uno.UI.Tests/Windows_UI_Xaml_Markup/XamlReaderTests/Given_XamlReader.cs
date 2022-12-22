@@ -1532,6 +1532,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(SUT["MyCustomFirstBrush"]);
 		}
 
+		[TestMethod]
+		public void When_ResourceDictionary_With_Theme_And_No_Static()
+		{
+			var s = GetContent(nameof(When_ResourceDictionary_With_Theme_And_No_Static));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
+
+			Assert.AreEqual(2, SUT.ThemeDictionaries.Count);
+			Assert.IsNotNull(SUT["PrimaryColor"]);
+		}
+
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
 		/// </summary>
