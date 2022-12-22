@@ -20,6 +20,8 @@ namespace Uno.UI.SourceGenerators.ImplementedRoutedEvents;
 [Generator]
 public class ImplementedRoutedEventsGenerator : ISourceGenerator
 {
+	internal static bool IsUnitTest { get; set; }
+
 	public void Initialize(GeneratorInitializationContext context)
 	{
 		// No initialization required.
@@ -27,7 +29,9 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 	public void Execute(GeneratorExecutionContext context)
 	{
-		if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
+		if (
+			IsUnitTest
+			|| (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context)))
 		{
 			var uiElementSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.UIElement);
 			if (uiElementSymbol is null)
