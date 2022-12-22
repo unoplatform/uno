@@ -51,6 +51,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if !__IOS__ // Disabled due to #10791
 		[TestMethod]
 		public Task When_Switch_Theme_UWP() => When_Switch_Theme_Inner(brush => (brush as SolidColorBrush).Color);
 
@@ -69,8 +70,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			try
 			{
-				var textBlock = new TextBlock();
-				var SUT = new ToolTip();
+				var textBlock = new TextBlock() { Text = "Test" };
+				var SUT = new ToolTip()
+				{
+					Content = "I'm a ToolTip!"
+				};
 				ToolTipService.SetToolTip(textBlock, SUT);
 				var stackPanel = new StackPanel
 				{
@@ -84,6 +88,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForIdle();
 
 				SUT.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
 
 				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(textBlock.XamlRoot);
 				var popup = popups[0];
@@ -106,5 +112,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
+#endif
 	}
 }
