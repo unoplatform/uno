@@ -1511,6 +1511,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(FillRule.EvenOdd, geometry.FillRule);
 		}
 
+		[TestMethod]
+		public void When_ThemeResource_With_StaticResource()
+		{
+			var s = GetContent(nameof(When_ThemeResource_With_StaticResource));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+			Assert.IsNotNull(SUT.Resources["Color1"]);
+			Assert.IsNotNull(SUT.Resources["Color2"]);
+		}
+
+		[TestMethod]
+		public void When_ResourceDictionary_With_Theme_And_Static()
+		{
+			var s = GetContent(nameof(When_ResourceDictionary_With_Theme_And_Static));
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
+
+			Assert.AreEqual(2, SUT.ThemeDictionaries.Count);
+			Assert.IsNotNull(SUT["CustomSecondBrush"]);
+			Assert.IsNotNull(SUT["MyCustomFirstBrush"]);
+		}
+
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
 		/// </summary>
