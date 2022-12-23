@@ -431,6 +431,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setAttributesNativeFast(htmlId: number, pairs: string[]) {
+
+			const element = this.getView(htmlId);
+
+			const length = pairs.length;
+
+			for (let i = 0; i < length; i += 2) {
+				element.setAttribute(pairs[i], pairs[i + 1]);
+			}
+		}
+
 		/**
 			* Set an attribute for an element.
 			*/

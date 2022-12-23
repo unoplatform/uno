@@ -673,6 +673,9 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = attributes[i].value;
 				}
 
+#if NET7_0_OR_GREATER
+				NativeMethods.SetAttributes(htmlId, pairs);
+#else
 				var parms = new WindowManagerSetAttributesParams()
 				{
 					HtmlId = htmlId,
@@ -681,6 +684,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setAttributesNative", parms);
+#endif
 			}
 		}
 
@@ -1553,6 +1557,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
+			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
