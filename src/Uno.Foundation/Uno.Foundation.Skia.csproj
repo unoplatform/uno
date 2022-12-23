@@ -22,7 +22,6 @@
 	<ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="Uno.Diagnostics.Eventing" Version="1.0.0-dev.4" />
 	</ItemGroup>

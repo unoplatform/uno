@@ -45,7 +45,6 @@
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 	

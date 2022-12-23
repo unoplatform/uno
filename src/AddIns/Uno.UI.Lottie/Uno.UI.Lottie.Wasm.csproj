@@ -38,7 +38,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" Condition="!$(_IsNetCore)" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>

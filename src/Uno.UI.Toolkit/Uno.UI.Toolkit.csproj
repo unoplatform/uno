@@ -66,7 +66,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="xamarin.build.download" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">

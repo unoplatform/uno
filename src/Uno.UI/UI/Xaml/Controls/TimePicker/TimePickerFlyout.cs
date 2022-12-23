@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -7,6 +8,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 #if !__ANDROID__ && !__IOS__
 		protected override Control CreatePresenter() => throw new NotImplementedException();
+#endif
+
+#if __ANDROID__ || __IOS__
+		public event TypedEventHandler<TimePickerFlyout, TimePickedEventArgs> TimePicked;
 #endif
 
 		protected override void OnConfirmed() => throw new NotImplementedException();
