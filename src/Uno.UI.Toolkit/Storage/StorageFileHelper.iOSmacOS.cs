@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#if __IOS__ || __MACCATALYST__ || __MACOS__
 using System.Reflection;
 using System.Threading;
 using System;
@@ -15,7 +14,7 @@ partial class StorageFileHelper
 {
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
-		var directoryName = global::System.IO.Path.GetDirectoryName(fileName) + string.Empty;
+		var directoryName = global::System.IO.Path.GetDirectoryName(fileName) ?? string.Empty;
 		var fn = global::System.IO.Path.GetFileNameWithoutExtension(fileName);
 		var fileExtension = global::System.IO.Path.GetExtension(fileName);
 
@@ -24,5 +23,3 @@ partial class StorageFileHelper
 		return Task.FromResult(resourcePathname != null);
 	}
 }
-
-#endif

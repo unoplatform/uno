@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#if __ANDROID__
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace Uno.UI.Toolkit;
 
 partial class StorageFileHelper
 {
-	private static ICollection<string> _scannedFiles { get; set; } = new List<string>();
+	private static ICollection<string>? _scannedFiles { get; set; }
 
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
@@ -20,8 +19,9 @@ partial class StorageFileHelper
 
 		//Get only the filename with extension and apply internal UNO naming rules so we are able to find the compiled resources by replacing '.' and '-' by underscore.
 		var normalizedFileName = Path.GetFileNameWithoutExtension(fileName).Replace('.', '_').Replace('-', '_') + Path.GetExtension(fileName);
-		if (!_scannedFiles.Any())
+		if (_scannedFiles is null)
 		{
+			_scannedFiles = new List<string>();
 			ScanPackageAssets(_scannedFiles);
 		}
 
@@ -76,7 +76,7 @@ partial class StorageFileHelper
 			{
 				foreach (var file in paths)
 				{
-					string path = string.IsNullOrWhiteSpace(rootPath) ? file : Path.Combine(rootPath, file);
+					string path = string.IsNullOrEmpty(rootPath) ? file : Path.Combine(rootPath, file);
 					if (!ScanPackageAssets(scannedFiles, path))
 					{
 						return false;
@@ -84,7 +84,7 @@ partial class StorageFileHelper
 
 					if (path.Contains('.'))
 					{
-						scannedFiles.Add(Path.GetFileNameWithoutExtension(path) + Path.GetExtension(path));
+						scannedFiles.Add(Path.GetFileName(path));
 					}
 				}
 			}
@@ -98,4 +98,3 @@ partial class StorageFileHelper
 	}
 }
 
-#endif
