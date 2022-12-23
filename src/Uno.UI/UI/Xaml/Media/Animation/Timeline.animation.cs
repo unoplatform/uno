@@ -74,6 +74,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void SetValue(object value) => _owner?.SetValue(value);
 			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
 			private object GetValue() => _owner?.GetValue();
+			private object GetNonAnimatedValue() => _owner?.GetNonAnimatedValue();
 
 			public void Begin()
 			{
@@ -431,7 +432,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 				else
 				{
-					var value = GetValue();
+					var value = GetNonAnimatedValue();
 
 					if (value != null)
 					{

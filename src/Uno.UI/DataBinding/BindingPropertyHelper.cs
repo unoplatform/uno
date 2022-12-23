@@ -1019,7 +1019,7 @@ namespace Uno.UI.DataBinding
 
 			if (dp != null)
 			{
-				return (instance) => DependencyObjectExtensions.GetValueUnderPrecedence((DependencyObject)instance, dp, precedence);
+				return (instance) => DependencyObjectExtensions.GetValueUnderPrecedence((DependencyObject)instance, dp, precedence).value;
 			}
 
 			{
