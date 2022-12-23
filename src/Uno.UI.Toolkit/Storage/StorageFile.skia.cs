@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace Windows.Storage.Helpers;
+namespace Uno.UI.Toolkit;
 
 partial class StorageFileHelper
 {

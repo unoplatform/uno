@@ -7,7 +7,7 @@ using System.Threading;
 using Android.Content.Res;
 using System.Threading.Tasks;
 
-namespace Windows.Storage.Helpers;
+namespace Uno.UI.Toolkit;
 
 partial class StorageFileHelper
 {

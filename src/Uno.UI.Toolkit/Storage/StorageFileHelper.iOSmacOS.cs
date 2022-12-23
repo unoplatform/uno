@@ -9,7 +9,7 @@ using System.Linq;
 using Foundation;
 using System.Threading.Tasks;
 
-namespace Windows.Storage.Helpers;
+namespace Uno.UI.Toolkit;
 
 partial class StorageFileHelper
 {

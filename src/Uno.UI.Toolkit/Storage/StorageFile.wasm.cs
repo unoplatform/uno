@@ -1,8 +1,9 @@
 #nullable enable
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage.Helpers;
 
-namespace Windows.Storage.Helpers;
+namespace Uno.UI.Toolkit;
 
 partial class StorageFileHelper
 {
