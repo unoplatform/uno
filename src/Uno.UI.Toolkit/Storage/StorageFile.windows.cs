@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP
+﻿#if WINDOWS_UWP || WINDOWS
 #nullable enable
 
 using System.Threading;
