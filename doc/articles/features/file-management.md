@@ -14,7 +14,7 @@
 | `ApplicationData.Current.LocalFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `ApplicationData.Current.RoamingFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `CachedFileManager` | ✔ | partial | partial | partial | partial | partial | partial |
-| `StorageFileHelper` | X | ✔ | ✔| ✔ | ✔| ✔ |✔ |
+| `StorageFileHelper` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 
 ## Overview
 
@@ -82,8 +82,7 @@ Uno Platform also provides the ability to determine if an asset or resource exis
 ```csharp
 var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```
-> [!IMPORTANT]
-> `StorageFileHelper.ExistsInPackage` is only available for Uno Platform based targets, but not for WinAppSDK.
+
 ## Support for `RandomAccessStreamReference.CreateFromUri`
 
 Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 

@@ -7,7 +7,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	[TestClass]
 	public class Given_ApplicationStorage
 	{
-#if !WINDOWS && !WINDOWS_UWP
+
 		[TestMethod]
 		public async Task When_FileDoesNotExistsInPackage()
 		{
@@ -39,7 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 			Assert.IsTrue(fileExists);
 		}
-#endif
 
 		[TestMethod]
 		public async Task When_GetFileFromApplicationUriAsync_RootPath()
