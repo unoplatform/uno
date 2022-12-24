@@ -67,7 +67,7 @@ jobs:
 
   - ${{ if ne(variables.UnoDisableNet6Mobile, 'true') }}:
     - template: templates/dotnet6-mobile-install-windows.yml
-  - ${{ ne(variables.UnoDisableNet7Mobile, 'true') }}:
+  - ${{ if ne(variables.UnoDisableNet7Mobile, 'true') }}:
     - template: templates/dotnet7-mobile-install-windows.yml
 
   - template: templates/install-windows-sdk.yml
