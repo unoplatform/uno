@@ -75,7 +75,7 @@ public class Given_DependencyObjectGenerator
 			}
 			""";
 
-		await new CSharpSourceGeneratorTest<DependencyObjectGenerator, MSTestVerifier>()
+		await new Verify.Test
 		{
 			TestState =
 			{
