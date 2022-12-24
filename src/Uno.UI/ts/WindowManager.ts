@@ -431,6 +431,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setAttributesNativeFast(htmlId: number, pairs: string[]) {
+
+			const element = this.getView(htmlId);
+
+			const length = pairs.length;
+
+			for (let i = 0; i < length; i += 2) {
+				element.setAttribute(pairs[i], pairs[i + 1]);
+			}
+		}
+
 		/**
 			* Set an attribute for an element.
 			*/
@@ -712,25 +723,51 @@ namespace Uno.UI {
 		public arrangeElementNative(pParams: number): boolean {
 
 			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
+
+			this.arrangeElementNativeFast(
+				params.HtmlId,
+				params.Top,
+				params.Left,
+				params.Width,
+				params.Height,
+				params.Clip,
+				params.ClipTop,
+				params.ClipLeft,
+				params.ClipBottom,
+				params.ClipRight);
+
+			return true;
+		}
+
+		public arrangeElementNativeFast(
+			htmlId: number,
+			top: number,
+			left: number,
+			width: number,
+			height: number,
+			clip: boolean,
+			clipTop: number,
+			clipLeft: number,
+			clipBottom: number,
+			clipRight: number) {
+
+			const element = this.getView(htmlId);
 
 			const style = element.style;
 
 			style.position = "absolute";
-			style.top = params.Top + "px";
-			style.left = params.Left + "px";
-			style.width = params.Width === NaN ? "auto" : params.Width + "px";
-			style.height = params.Height === NaN ? "auto" : params.Height + "px";
+			style.top = top + "px";
+			style.left = left + "px";
+			style.width = width === NaN ? "auto" : width + "px";
+			style.height = height === NaN ? "auto" : height + "px";
 
-			if (params.Clip) {
-				style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
+			if (clip) {
+				style.clip = `rect(${clipTop}px, ${clipRight}px, ${clipBottom}px, ${clipLeft}px)`;
 			} else {
 				style.clip = "";
 			}
 
 			this.setAsArranged(element);
-
-			return true;
 		}
 
 		private setAsArranged(element: HTMLElement | SVGElement) {
