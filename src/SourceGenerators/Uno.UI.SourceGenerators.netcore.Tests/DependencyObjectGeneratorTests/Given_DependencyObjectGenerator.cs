@@ -18,18 +18,6 @@ public class Given_DependencyObjectGenerator
 	private static readonly ReferenceAssemblies _Net60AndroidWithUno = ReferenceAssemblies.Net.Net60Android.AddPackages(_unoPackage);
 	private static readonly ReferenceAssemblies _Net60WithUno = ReferenceAssemblies.Net.Net60.AddPackages(_unoPackage);
 
-	[TestInitialize]
-	public void Initialize()
-	{
-		DependencyObjectGenerator.IsUnitTest = true;
-	}
-
-	[TestCleanup]
-	public void Cleanup()
-	{
-		DependencyObjectGenerator.IsUnitTest = false;
-	}
-
 	private async Task TestAndroid(string testCode, params DiagnosticResult[] expectedDiagnostics)
 	{
 		var test = new Verify.Test
