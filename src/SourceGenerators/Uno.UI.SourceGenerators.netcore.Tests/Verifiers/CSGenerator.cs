@@ -15,7 +15,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			{
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", """
 					is_global = true
-					build_property.Configuration = Debug
+					build_property.Configuration = Release
 					"""));
 			}
 			public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
