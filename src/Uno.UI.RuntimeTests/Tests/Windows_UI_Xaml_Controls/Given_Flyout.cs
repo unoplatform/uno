@@ -715,6 +715,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Opening_XamlRootIsSet()
+		{
+			var flyout = new Flyout();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+
+				var capture = default(XamlRoot);
+
+				flyout.Opening += (s, e) => capture = (s as Flyout).XamlRoot;
+
+				flyout.ShowAt(host);
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout.Hide();
+
+				Assert.AreEqual(host.XamlRoot, capture, "Flyout did not inherit the XamlRoot from its placementTarget.");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();

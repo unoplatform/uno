@@ -13,6 +13,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
 #if XAMARIN_IOS
@@ -234,6 +235,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FrameworkElement Target { get; private set; }
 
+		public XamlRoot XamlRoot { get; set; }
+
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
 		/// </summary>
@@ -297,6 +300,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+			XamlRoot = placementTarget?.XamlRoot;
 			_popup.PlacementTarget = placementTarget;
 
 			if (showOptions != null)
