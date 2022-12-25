@@ -20,6 +20,7 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
 
   - template: templates/install-windows-sdk.yml
