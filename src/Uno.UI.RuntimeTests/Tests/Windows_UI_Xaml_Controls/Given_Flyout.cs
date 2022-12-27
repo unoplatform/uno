@@ -648,7 +648,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				TestServices.WindowHelper.WindowContent = button;
 				await TestServices.WindowHelper.WaitForIdle();
 
-				
+
 				var innerBorder = new Border()
 				{
 					Width = 100,
@@ -695,7 +695,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				};
 				flyout.Content = innerBorder;
 				flyout.Opening += (sender, args) => ((Flyout)sender).Hide();
-				
+
 				void OnClosing(object sender, FlyoutBaseClosingEventArgs args)
 				{
 					args.Cancel = cancelClosing;
@@ -704,7 +704,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.ShowAt(button);
 
 				await TestServices.WindowHelper.WaitForIdle();
-				
+
 				Assert.IsTrue(flyout.IsOpen);
 				Assert.IsTrue(innerBorder.IsLoaded);
 			}
@@ -736,6 +736,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.Hide();
 
 				Assert.AreEqual(host.XamlRoot, capture, "Flyout did not inherit the XamlRoot from its placementTarget.");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_UIElement_ContextFlyout_XamlRoot()
+		{
+			var flyout = new Flyout();
+			var host = new Button() { Content = "Asd" };
+			host.ContextFlyout = flyout;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+		}
+
+		[TestMethod]
+		public async Task When_UIElement_Flyout_XamlRoot()
+		{
+			var flyout = new Flyout();
+			var host = new Button() { Content = "Asd" };
+			host.Flyout = flyout;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+		}
+
+		[TestMethod]
+		public async Task When_Flyout_Popup_XamlRoot()
+		{
+			var flyout = new Flyout();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				flyout.Content = new Button() { Content = "Test" };
+				
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+
+				flyout.ShowAt(host);
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].Child.XamlRoot);
 			}
 			finally
 			{

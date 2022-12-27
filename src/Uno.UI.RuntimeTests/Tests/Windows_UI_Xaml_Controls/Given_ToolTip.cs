@@ -120,5 +120,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_ToolTip_Popup_XamlRoot()
+		{
+			var toolTip = new ToolTip();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				toolTip.Content = new Button() { Content = "Test" };
+
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+
+				ToolTipService.SetToolTip(host, toolTip);
+				toolTip.IsOpen = true;
+				
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(host.XamlRoot, toolTip.XamlRoot);
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].Child.XamlRoot);
+			}
+			finally
+			{
+				toolTip.IsOpen = false;
+			}
+		}
 	}
 }
