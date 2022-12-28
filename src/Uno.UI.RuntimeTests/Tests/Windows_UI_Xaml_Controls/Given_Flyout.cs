@@ -744,7 +744,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_UIElement_ContextFlyout_XamlRoot()
+		public async Task When_Button_ContextFlyout_XamlRoot()
 		{
 			var flyout = new Flyout();
 			var host = new Button() { Content = "Asd" };
@@ -757,7 +757,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_UIElement_Flyout_XamlRoot()
+		public async Task When_SplitButton_Flyout_XamlRoot()
+		{
+			var flyout = new Flyout();
+			var host = new Microsoft.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
+			host.Flyout = flyout;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+		}
+
+		[TestMethod]
+		public async Task When_Button_Flyout_XamlRoot()
 		{
 			var flyout = new Flyout();
 			var host = new Button() { Content = "Asd" };
