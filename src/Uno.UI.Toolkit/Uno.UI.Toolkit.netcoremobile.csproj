@@ -29,12 +29,6 @@
 		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
-	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions.
-	(Introduced with support libraries 28.0.0.1) -->
-	<PropertyGroup>
-		<XamarinAndroidSupportSkipVerifyVersions>true</XamarinAndroidSupportSkipVerifyVersions>
-	</PropertyGroup>
-
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
