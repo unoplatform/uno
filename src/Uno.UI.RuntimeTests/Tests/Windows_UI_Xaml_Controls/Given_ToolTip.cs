@@ -124,6 +124,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToolTip_Popup_XamlRoot()
 		{
+#if HAS_UNO
+			var originalToolTipsSetting = Uno.UI.FeatureConfiguration.ToolTip.UseToolTips;
+			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+#endif
 			var toolTip = new ToolTip();
 			try
 			{
@@ -148,6 +152,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				toolTip.IsOpen = false;
+#if HAS_UNO
+				Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = originalToolTipsSetting;
+#endif
 			}
 		}
 	}
