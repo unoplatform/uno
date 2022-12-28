@@ -214,7 +214,7 @@
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
-    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618;CS1998;CS4014</WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -229,7 +229,6 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
         <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
