@@ -787,6 +787,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForIdle();
 
 				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].Child.XamlRoot);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AttachedFlyout_Popup_XamlRoot()
+		{
+			var flyout = new Flyout();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				flyout.Content = new Button() { Content = "Test" };
+				FlyoutBase.SetAttachedFlyout(host, flyout);
+
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+				
+				Assert.IsNull(flyout.XamlRoot);
+				FlyoutBase.ShowAttachedFlyout(host);
+
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
 				Assert.AreEqual(host.XamlRoot, popups[0].XamlRoot);
 				Assert.AreEqual(host.XamlRoot, popups[0].Child.XamlRoot);
 			}
