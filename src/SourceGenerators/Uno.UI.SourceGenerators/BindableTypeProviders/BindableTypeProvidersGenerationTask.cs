@@ -593,23 +593,21 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateTypeTable(IndentedStringBuilder writer)
 			{
-				foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
-				{
-					writer.AppendLineIndented($"private global::Uno.UI.DataBinding.IBindableType _bindableType{type.Value.Index:000};");
-				}
+				var types = _typeMap.Where(k => !k.Key.IsGenericType);
+				writer.AppendLineIndented($"private global::Uno.UI.DataBinding.IBindableType[] _bindableTypes = new global::Uno.UI.DataBinding.IBindableType[{types.Count()}];");
 
 				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
 				{
 					using (writer.BlockInvariant(@"switch(fullName)"))
 					{
-						foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
+						foreach (var type in types)
 						{
 							_cancellationToken.ThrowIfCancellationRequested();
 
 							var typeIndexString = $"{type.Value.Index:000}";
 
 							writer.AppendLineIndented($"case \"{type.Key}\":");
-							using (writer.BlockInvariant($"if(_bindableType{typeIndexString} == null)"))
+							using (writer.BlockInvariant($"if(_bindableTypes[{typeIndexString}] == null)"))
 							{
 								if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
 								{
@@ -619,10 +617,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 									writer.AppendLineIndented($"if(global::{linkerHintsClassName}.{safeTypeName})");
 								}
 
-								writer.AppendLineIndented($"_bindableType{typeIndexString} = MetadataBuilder_{typeIndexString}.Build();");
+								writer.AppendLineIndented($"_bindableTypes[{typeIndexString}] = MetadataBuilder_{typeIndexString}.Build();");
 							}
 
-							writer.AppendLineIndented($"return _bindableType{typeIndexString};");
+							writer.AppendLineIndented($"return _bindableTypes[{typeIndexString}];");
 						}
 
 						writer.AppendLineIndented("default:");
