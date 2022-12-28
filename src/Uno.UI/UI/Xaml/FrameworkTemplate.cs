@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Markup;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -25,6 +26,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner);
 
+	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject
 	{
 		internal readonly FrameworkTemplateBuilder? _viewFactory;

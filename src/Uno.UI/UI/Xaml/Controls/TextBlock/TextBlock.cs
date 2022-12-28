@@ -29,7 +29,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Text")]
+	[ContentProperty(Name = nameof(Inlines))]
 	public partial class TextBlock : DependencyObject
 	{
 		private InlineCollection _inlines;

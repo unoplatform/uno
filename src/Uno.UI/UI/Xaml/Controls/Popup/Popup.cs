@@ -12,7 +12,7 @@ using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
-[ContentProperty(Name = "Child")]
+[ContentProperty(Name = nameof(Child))]
 public partial class Popup
 {
 	private PopupPlacementMode _actualPlacement;
