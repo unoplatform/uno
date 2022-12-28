@@ -8813,7 +8813,7 @@
 			<Member
 				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet.get_Size()"
 				reason="Not part of UWP API" />
-			
+
 			<!-- BEGIN .NET 6 ios updated native ctors -->
 			<Member fullName="System.Void Windows.UI.Xaml.Application..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
 			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
@@ -8953,7 +8953,7 @@
 		<Properties>
 			<Member
 				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValue()"
-				reason="Not part of public API" />		
+				reason="Not part of public API" />
 			<Member
 				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValueProperty()"
 				reason="Not part of public API" />
@@ -8970,7 +8970,7 @@
 			<!-- END iOS 16 workaround -->
 		</Properties>
 	</IgnoreSet>
-	  
+
 	<IgnoreSet baseVersion="4.5">
 	  <Types>
 		  <!-- BEGIN Android Resources ignore -->
@@ -9011,7 +9011,7 @@
 	  </Types>
 	  <Methods>
 	  	<Member fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryStore..ctor()" reason="Not present in WinUI" />
-		  
+
 		<!-- BEGIN Android 13 breaking change -->
 		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.add_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
 		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.remove_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
@@ -9040,13 +9040,20 @@
 		</Fields>
 
 		<Properties>
+			<Member fullName="System.String Windows.UI.Xaml.Markup.ContentPropertyAttribute::Name()"
+					reason="Converted to a field to match UWP" />
 		</Properties>
 
 		<Methods>
-			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)" 
+			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)"
 					reason="Externally unused API for android layouting" />
-		<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()" 
+			<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()"
 				reason="Window constructor does not exist in UWP" />
+
+			<Member fullName="System.String Windows.UI.Xaml.Markup.ContentPropertyAttribute.get_Name()"
+					reason="Converted to a field to match UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Markup.ContentPropertyAttribute.set_Name(System.String value)"
+					reason="Converted to a field to match UWP" />
 		</Methods>
 	</IgnoreSet>
 

@@ -12,15 +12,14 @@ namespace Windows.UI.Xaml.Markup;
 public sealed partial class ContentPropertyAttribute : Attribute
 {
 	/// <summary>
-	/// Initializes a new instance of the ContentPropertyAttribute class.
+	/// Initializes a new instance of the <see cref="ContentPropertyAttribute" /> class.
 	/// </summary>
 	public ContentPropertyAttribute()
 	{
-
 	}
 
 	/// <summary>
 	/// Gets or sets the Content property name.
 	/// </summary>
-	public string Name { get; set; }
+	public string Name;
 }
