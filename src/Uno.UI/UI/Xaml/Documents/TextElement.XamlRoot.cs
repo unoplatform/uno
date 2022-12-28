@@ -9,16 +9,21 @@ namespace Windows.UI.Xaml.Documents;
 
 public partial class TextElement
 {
-	private ManagedWeakReference? _visualTreeCacheWeakReference;
-
 	/// <summary>
 	/// Gets or sets the XamlRoot in which this element is being viewed.
 	/// </summary>
-	public XamlRoot? XamlRoot
+	public 
+#if __WASM__
+	new
+#endif
+	XamlRoot? XamlRoot
 	{
 		get => XamlRoot.GetForElement(this);
 		set => XamlRoot.SetForElement(this, XamlRoot, value);
 	}
+
+#if !__WASM__
+	private ManagedWeakReference? _visualTreeCacheWeakReference;
 
 	internal VisualTree? VisualTreeCache
 	{
@@ -26,4 +31,5 @@ public partial class TextElement
 			_visualTreeCacheWeakReference.Target as VisualTree : null;
 		set => _visualTreeCacheWeakReference = WeakReferencePool.RentWeakReference(this, value);
 	}
+#endif
 }
