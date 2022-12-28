@@ -451,7 +451,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 					break;
 
 				default:
-					// Start with a clean slate				
+					// Start with a clean slate
 					// Hide the first parameter
 					parameter1.Header = "";
 					parameter1.IsEnabled = false;
@@ -643,7 +643,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <summary>
 		/// Helper function to populate a dropdown lists with options
 		/// </summary>
-		/// <param name="list">The parameter list to populate</param>
 		/// <param name="numberOfOptions">Number of options in the list</param>
 		/// <param name="listName">The header to display to the user</param>
 		private void PopulateParameterList(NumberBox numberBox, int numberOfOptions, string listName)
@@ -790,7 +789,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		}
 
 		private async Task PlayNoteAsync(byte noteNumber, int duration = Skip, byte velocity = 127)
-		{			
+		{
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOnMessage(0, noteNumber, velocity));
 			await Task.Delay(duration);
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOffMessage(0, noteNumber, velocity));

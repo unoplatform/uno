@@ -8,6 +8,7 @@
     <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
     <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
+
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
