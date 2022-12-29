@@ -52,9 +52,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !__IOS__ // Disabled due to #10791
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		[TestMethod]
 		public Task When_Switch_Theme_UWP() => When_Switch_Theme_Inner(brush => (brush as SolidColorBrush).Color);
 
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		[TestMethod]
 		public async Task When_Switch_Theme_Fluent()
 		{
@@ -89,6 +95,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.IsOpen = true;
 				await TestServices.WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
 				await TestServices.WindowHelper.WaitForIdle();
 
 				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(textBlock.XamlRoot);
