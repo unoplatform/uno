@@ -89,10 +89,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
-#pragma warning disable 649 // Unused member
-		private readonly bool _forceGeneration;
-#pragma warning restore 649 // Unused member
-
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
 			// To easily debug XAML code generation:
@@ -275,7 +271,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
 #endif
 
-				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
+				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
