@@ -145,9 +145,6 @@ updates:
   - dependency-name: Microsoft.Extensions.Logging.Console
     versions:
     - ">= 3.0.a, < 3.1"
-  - dependency-name: Com.Airbnb.Android.Lottie
-    versions:
-    - ">= 3.4.a, < 3.5"
   - dependency-name: Microsoft.Build.Utilities.Core
     versions:
     - ">= 16.a, < 17"
@@ -331,9 +328,6 @@ updates:
   - dependency-name: Xamarin.AndroidX.Browser
     versions:
     - ">= 1.2.a, < 1.3"
-  - dependency-name: Com.Airbnb.Android.Lottie
-    versions:
-    - ">= 3.5.a, < 3.6"
   - dependency-name: Microsoft.Graph
     versions:
     - "> 3.12.0, < 4"
@@ -418,9 +412,6 @@ updates:
   - dependency-name: Xamarin.AndroidX.Fragment
     versions:
     - "> 1.3.0.1"
-  - dependency-name: Com.Airbnb.Android.Lottie
-    versions:
-    - "> 3.0.4"
   - dependency-name: System.ComponentModel.Composition
     versions:
     - ">= 5.0.a, < 5.1"
