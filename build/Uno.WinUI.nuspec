@@ -830,11 +830,6 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.dll" target="uno-runtime\net7.0\skia" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net7.0\skia" />
 
-	<!-- Unsupported android targets -->
-	<file src="_._" target="lib\MonoAndroid10.0" />
-	<file src="_._" target="lib\MonoAndroid90" />
-	<file src="_._" target="lib\MonoAndroid80" />
-
 	<!-- Analyzers -->
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers" />
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers" />
