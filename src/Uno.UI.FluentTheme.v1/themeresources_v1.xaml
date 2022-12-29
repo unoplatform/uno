@@ -1,6 +1,6 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:wasm="http://uno.ui/wasm" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:ios="http://uno.ui/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="wasm netstdref d" xmlns:wasm="http://uno.ui/wasm" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:ios="http://uno.ui/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
-    <ResourceDictionary xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" x:Key="Default">
+    <ResourceDictionary x:Key="Default">
       <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
       <SolidColorBrush x:Key="SystemControlHighlightListAccentVeryHighBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.9" />
       <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumLowBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.75" />
@@ -1482,7 +1482,7 @@
       <Thickness x:Key="TreeViewItemBorderThemeThickness">1</Thickness>
       <x:Double x:Key="TreeViewItemMinHeight">32</x:Double>
     </ResourceDictionary>
-    <ResourceDictionary xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" x:Key="Light">
+    <ResourceDictionary x:Key="Light">
       <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
       <SolidColorBrush x:Key="SystemControlHighlightListAccentVeryHighBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.9" />
       <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumLowBrush" Color="{ThemeResource SystemAccentColor}" Opacity="0.75" />
@@ -2964,7 +2964,7 @@
       <Thickness x:Key="TreeViewItemBorderThemeThickness">1</Thickness>
       <x:Double x:Key="TreeViewItemMinHeight">32</x:Double>
     </ResourceDictionary>
-    <ResourceDictionary xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" x:Key="HighContrast">
+    <ResourceDictionary x:Key="HighContrast">
       <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
       <SolidColorBrush x:Key="SystemControlHighlightListAccentVeryHighBrush" Color="{ThemeResource SystemColorHighlightColor}" />
       <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumLowBrush" Color="{ThemeResource SystemColorHighlightColor}" />
@@ -4446,6 +4446,7 @@
       <x:Double x:Key="TreeViewItemMinHeight">32</x:Double>
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
+  <!--origin: Resources\Version1\Priority01\Common_themeresources_v1.xaml-->
   <Thickness x:Key="DateTimeFlyoutBorderPadding">0</Thickness>
   <DataTemplate x:Key="DefaultInputValidationErrorTemplate">
     <ItemsControl ItemsSource="{Binding ValidationErrors}">
@@ -4464,8 +4465,11 @@
     </FontIcon>
   </DataTemplate>
   <x:String x:Key="RequiredHeaderContent">*</x:String>
+  <!--origin: Resources\Version1\Priority01\TextControlsCommon_themeresources.xaml-->
   <TextCommandBarFlyout x:Key="TextControlCommandBarContextFlyout" Placement="BottomEdgeAlignedLeft" />
   <TextCommandBarFlyout x:Key="TextControlCommandBarSelectionFlyout" Placement="TopEdgeAlignedLeft" />
+  <!--origin: Resources\Version1\Priority02\AcrylicBrush_themeresources.xaml-->
+  <!--origin: Resources\Version1\Priority02\MenuFlyout_themeresources.xaml-->
   <Thickness x:Key="MenuFlyoutScrollerMargin">0,4,0,4</Thickness>
   <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
   <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
@@ -5335,6 +5339,7 @@
   <Style TargetType="MenuFlyoutItem" BasedOn="{StaticResource MenuFlyoutItemRevealStyle}" />
   <Style TargetType="MenuFlyoutSubItem" BasedOn="{StaticResource MenuFlyoutSubItemRevealStyle}" />
   <Style TargetType="ToggleMenuFlyoutItem" BasedOn="{StaticResource ToggleMenuFlyoutItemRevealStyle}" />
+  <!--origin: Resources\Version1\Priority02\PasswordBox_themeresources.xaml-->
   <Thickness x:Key="PasswordBoxTopHeaderMargin">0,0,0,4</Thickness>
   <Style TargetType="PasswordBox" BasedOn="{StaticResource DefaultPasswordBoxStyle}" />
   <Style x:Key="DefaultPasswordBoxStyle" TargetType="PasswordBox">
@@ -5561,6 +5566,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\Priority02\RichEditBox_themeresources.xaml-->
   <Thickness x:Key="RichEditBoxTopHeaderMargin">0,0,0,4</Thickness>
   <Style TargetType="RichEditBox" BasedOn="{StaticResource DefaultRichEditBoxStyle}" />
   <Style x:Key="DefaultRichEditBoxStyle" TargetType="RichEditBox">
@@ -5663,6 +5669,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\Priority02\TextBox_themeresources.xaml-->
   <Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
   <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
   <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
@@ -5875,6 +5882,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\Priority06\RevealBrush_themeresources.xaml-->
   <Thickness x:Key="CommandBarMoreButtonMargin">14,19,14,0</Thickness>
   <x:Double x:Key="AppBarButtonContentHeight">16</x:Double>
   <x:Double x:Key="AppBarThemeMinHeight">56</x:Double>
@@ -7118,6 +7126,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\AppBarButton_themeresources.xaml-->
   <Thickness x:Key="AppBarButtonContentViewboxMargin">12,10,0,10</Thickness>
   <Thickness x:Key="AppBarButtonContentViewboxCompactMargin">0,12,0,12</Thickness>
   <Thickness x:Key="AppBarButtonContentViewboxCollapsedMargin">0,12,0,4</Thickness>
@@ -7378,6 +7387,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\AppBarToggleButton_themeresources.xaml-->
   <Thickness x:Key="AppBarToggleButtonOverflowTextTouchMargin">0,9,0,12</Thickness>
   <Thickness x:Key="AppBarToggleButtonOverflowCheckTouchMargin">12,10,12,10</Thickness>
   <Thickness x:Key="AppBarToggleButtonOverflowCheckMargin">12,4,12,4</Thickness>
@@ -7699,6 +7709,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\AutoSuggestBox_themeresources.xaml-->
   <Thickness x:Key="AutoSuggestBoxTopHeaderMargin">0,0,0,4</Thickness>
   <Style TargetType="TextBox" x:Key="AutoSuggestBoxTextBoxStyle">
     <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
@@ -7957,6 +7968,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\Button_themeresources.xaml-->
   <Thickness x:Key="ButtonPadding">8,5,8,6</Thickness>
   <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}" />
   <Style x:Key="DefaultButtonStyle" TargetType="Button">
@@ -8099,6 +8111,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\CalendarDatePicker_themeresources.xaml-->
   <Style TargetType="CalendarDatePicker" BasedOn="{StaticResource DefaultCalendarDatePicker}" />
   <Style x:Key="DefaultCalendarDatePicker" TargetType="CalendarDatePicker">
     <wasm:Setter Property="CalendarViewStyle" Value="{StaticResource CalendarViewCrippledAnimationStyle}" />
@@ -8231,6 +8244,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\CalendarView_themeresources.xaml-->
   <Style TargetType="CalendarViewDayItem">
     <Setter Property="MinWidth" Value="40" />
     <Setter Property="MinHeight" Value="40" />
@@ -8984,6 +8998,7 @@
       </Setter.Value>
     </Setter>
   </wasm:Style>
+  <!--origin: Resources\Version1\PriorityDefault\CheckBox_themeresources.xaml-->
   <Style TargetType="CheckBox" BasedOn="{StaticResource DefaultCheckBoxStyle}" />
   <Style x:Key="DefaultCheckBoxStyle" TargetType="CheckBox">
     <Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
@@ -9309,6 +9324,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ColorPicker.xaml-->
   <Style TargetType="controls:ColorPicker" BasedOn="{StaticResource DefaultColorPickerStyle}" />
   <Style x:Key="DefaultColorPickerStyle" TargetType="controls:ColorPicker">
     <Setter Property="MaxWidth" Value="392" />
@@ -9732,10 +9748,12 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ColorPicker_themeresources.xaml-->
   <Style x:Key="ColorPickerBorderStyle" TargetType="Shape">
     <Setter Property="Stroke" Value="{ThemeResource SystemControlForegroundListLowBrush}" />
     <Setter Property="StrokeThickness" Value="2" />
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ColorSpectrum.xaml-->
   <Style TargetType="primitives:ColorSpectrum">
     <Setter Property="ManipulationMode" Value="None" />
     <Setter Property="UseSystemFocusVisuals" Value="False" />
@@ -9818,6 +9836,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ComboBox_themeresources.xaml-->
   <Thickness x:Key="ComboBoxTopHeaderMargin">0,0,0,4</Thickness>
   <x:Int32 x:Key="ComboBoxPopupMaxNumberOfItems">15</x:Int32>
   <x:Int32 x:Key="ComboBoxPopupMaxNumberOfItemsThatCanBeShownOnOneSide">7</x:Int32>
@@ -10138,6 +10157,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\CommandBarFlyout.xaml-->
   <Style x:Key="DefaultCommandBarFlyoutCommandBarStyle" TargetType="primitives:CommandBarFlyoutCommandBar">
     <Setter Property="Background" Value="{ThemeResource SystemControlAcrylicElementBrush}" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -10524,6 +10544,7 @@
     </Setter>
   </Style>
   <Style TargetType="primitives:CommandBarFlyoutCommandBar" BasedOn="{StaticResource DefaultCommandBarFlyoutCommandBarStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\CommandBarFlyout_themeresources.xaml-->
   <Style x:Key="CommandBarFlyoutAppBarButtonStyleBase" TargetType="AppBarButton">
     <Setter Property="Background" Value="{ThemeResource CommandBarFlyoutButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -10953,6 +10974,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Center" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\CommandBar_themeresources.xaml-->
   <Thickness x:Key="CommandBarOverflowPresenterMargin">0,4,0,4</Thickness>
   <Style x:Key="EllipsisButton" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource AppBarEllipsisButtonBackground}" />
@@ -12553,6 +12575,7 @@
   </Style>
   <Style x:Key="XamlCommandBar" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
   <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
+  <!--origin: Resources\Version1\PriorityDefault\ContentDialog_themeresources.xaml-->
   <Style TargetType="ContentDialog" BasedOn="{StaticResource DefaultContentDialogStyle}" />
   <Style x:Key="DefaultContentDialogStyle" TargetType="ContentDialog">
     <Setter Property="Foreground" Value="{ThemeResource ContentDialogForeground}" />
@@ -12770,6 +12793,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\CornerRadius_themeresources.xaml-->
   <primitives:CornerRadiusFilterConverter x:Key="TopCornerRadiusFilterConverter" Filter="Top" />
   <primitives:CornerRadiusFilterConverter x:Key="RightCornerRadiusFilterConverter" Filter="Right" />
   <primitives:CornerRadiusFilterConverter x:Key="BottomCornerRadiusFilterConverter" Filter="Bottom" />
@@ -12780,6 +12804,7 @@
   <primitives:CornerRadiusToThicknessConverter x:Key="BottomThicknessFilterConverter" ConversionKind="FilterLeftAndRightFromBottom" />
   <primitives:CornerRadiusToThicknessConverter x:Key="LeftThicknessFilterConverter" ConversionKind="FilterTopAndBottomFromLeft" />
   <primitives:CornerRadiusToThicknessConverter x:Key="RightThicknessFilterConverter" ConversionKind="FilterTopAndBottomFromRight" />
+  <!--origin: Resources\Version1\PriorityDefault\DatePicker_themeresources.xaml-->
   <Thickness x:Key="DatePickerTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="DatePickerFlyoutPresenterHighlightHeight">40</x:Double>
   <x:Double x:Key="DatePickerFlyoutPresenterItemHeight">40</x:Double>
@@ -12982,6 +13007,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\DateTimePickerFlyout_themeresources.xaml-->
   <Style x:Key="DateTimePickerFlyoutButtonStyle" TargetType="ButtonBase">
     <Setter Property="Background" Value="{ThemeResource DateTimePickerFlyoutButtonBackground}" />
     <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
@@ -13029,6 +13055,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\DropDownButton.xaml-->
   <Style x:Key="DefaultDropDownButtonStyle" TargetType="controls:DropDownButton">
     <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
@@ -13115,6 +13142,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\FlipViewItem_themeresources.xaml-->
   <Style TargetType="FlipViewItem" BasedOn="{StaticResource DefaultFlipViewItemStyle}" />
   <Style x:Key="DefaultFlipViewItemStyle" TargetType="FlipViewItem">
     <Setter Property="Background" Value="{ThemeResource FlipViewItemBackground}" />
@@ -13131,6 +13159,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\FlipView_themeresources.xaml-->
   <Style x:Key="DefaultFlipViewStyle" TargetType="FlipView">
     <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
     <Setter Property="BorderThickness" Value="0" />
@@ -13318,6 +13347,7 @@
   </Style>
   <wasm:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
   <skia:Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\FlyoutPresenter_themeresources.xaml-->
   <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" />
   <Style x:Key="DefaultFlyoutPresenterStyle" TargetType="FlyoutPresenter">
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -13349,6 +13379,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ListBox_themeresources.xaml-->
   <Thickness x:Key="ListBoxItemPadding">12,9,12,12</Thickness>
   <Style TargetType="ListBoxItem" BasedOn="{StaticResource DefaultListBoxItemStyle}" />
   <Style x:Key="DefaultListBoxItemStyle" TargetType="ListBoxItem">
@@ -13494,6 +13525,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ListViewItem_themeresources.xaml-->
   <Style x:Key="DefaultListViewItemStyle" TargetType="ListViewItem">
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -13984,6 +14016,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\MediaTransportControls_themeresources.xaml-->
   <not_mux:Style TargetType="MediaTransportControls" BasedOn="{StaticResource DefaultMediaTransportControlsStyle}" />
   <not_mux:Style x:Key="DefaultMediaTransportControlsStyle" TargetType="MediaTransportControls">
     <Setter Property="IsTabStop" Value="False" />
@@ -14765,6 +14798,7 @@
       </Setter.Value>
     </Setter>
   </not_mux:Style>
+  <!--origin: Resources\Version1\PriorityDefault\MenuBar.xaml-->
   <Style TargetType="controls:MenuBar" BasedOn="{StaticResource DefaultMenuBarStyle}" />
   <Style x:Key="DefaultMenuBarStyle" TargetType="controls:MenuBar">
     <Setter Property="Background" Value="{ThemeResource MenuBarBackground}" />
@@ -14786,6 +14820,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\MenuBarItem.xaml-->
   <Style TargetType="controls:MenuBarItem">
     <Setter Property="Background" Value="{ThemeResource MenuBarItemBackground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource MenuBarItemBorderThickness}" />
@@ -14841,9 +14876,12 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\MenuBar_themeresources.xaml-->
   <x:Double x:Key="MenuBarHeight">40</x:Double>
+  <!--origin: Resources\Version1\PriorityDefault\NavigationBackButton_rs1_themeresources_v1.xaml-->
   <x:Double x:Key="NavigationBackButtonWidth">40</x:Double>
   <x:Double x:Key="NavigationBackButtonHeight">40</x:Double>
+  <!--origin: Resources\Version1\PriorityDefault\NavigationBackButton_v1.xaml-->
   <Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource NavigationViewBackButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
@@ -14913,6 +14951,7 @@
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
     <Setter Property="Margin" Value="4,2,0,2" />
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\NavigationView_rs1_themeresources_v1.xaml-->
   <Thickness x:Key="NavigationViewAutoSuggestBoxMargin">10,0,16,0</Thickness>
   <Thickness x:Key="TopNavigationViewAutoSuggestBoxMargin">12,0,12,0</Thickness>
   <x:Double x:Key="PaneToggleButtonSize">40</x:Double>
@@ -15840,6 +15879,8 @@
     <Setter Property="Margin" Value="{ThemeResource NavigationViewHeaderMargin}" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\NavigationView_rs2_themeresources_v1.xaml-->
+  <!--origin: Resources\Version1\PriorityDefault\NavigationView_v1.xaml-->
   <Style TargetType="controls:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -16333,6 +16374,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\NumberBox.xaml-->
   <Style TargetType="controls:NumberBox">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
@@ -16604,12 +16646,14 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\NumberBox_themeresources.xaml-->
   <Thickness x:Key="NumberBoxSpinButtonBorderThickness">0,1,1,1</Thickness>
   <Thickness x:Key="NumberBoxIconMargin">10,0,0,0</Thickness>
   <x:Double x:Key="NumberBoxPopupHorizonalOffset">-20</x:Double>
   <x:Double x:Key="NumberBoxPopupVerticalOffset">-16</x:Double>
   <x:Double x:Key="NumberBoxPopupShadowDepth">16</x:Double>
   <Thickness x:Key="NumberBoxPopupIndicatorMargin">0,0,8,0</Thickness>
+  <!--origin: Resources\Version1\PriorityDefault\PersonPicture.xaml-->
   <Style TargetType="controls:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
   <Style x:Key="DefaultPersonPictureStyle" TargetType="controls:PersonPicture">
     <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
@@ -16690,6 +16734,8 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\PersonPicture_themeresources.xaml-->
+  <!--origin: Resources\Version1\PriorityDefault\Pivot_themeresources.xaml-->
   <Style TargetType="Pivot" BasedOn="{StaticResource DefaultPivotStyle}" />
   <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
     <Setter Property="Margin" Value="0" />
@@ -17083,6 +17129,7 @@
     <Setter Property="FontSize" Value="{ThemeResource TextStyleLargeFontSize}" />
     <Setter Property="Margin" Value="{StaticResource PivotPortraitThemePadding}" />
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ProgressBar.xaml-->
   <Style TargetType="controls:ProgressBar">
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
     <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
@@ -17243,6 +17290,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ProgressBar_themeresources.xaml-->
   <unouwp:Style TargetType="ProgressBar" BasedOn="{StaticResource DefaultProgressBarStyle}" />
   <Style x:Key="DefaultProgressBarStyle" TargetType="ProgressBar">
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
@@ -17461,8 +17509,11 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ProgressRing_themeresources.xaml-->
   <x:Double x:Key="ProgressRingStrokeThickness">4</x:Double>
+  <!--origin: Resources\Version1\PriorityDefault\RadioButton.xaml-->
   <Style TargetType="RadioButton" BasedOn="{StaticResource DefaultRadioButtonStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\RadioButtons.xaml-->
   <Style TargetType="controls:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
   <Style x:Key="DefaultRadioButtonsStyle" TargetType="controls:RadioButtons">
     <Setter Property="IsTabStop" Value="False" />
@@ -17483,8 +17534,10 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\RadioButtons_themeresources.xaml-->
   <x:Double x:Key="RadioButtonsColumnSpacing">7</x:Double>
   <x:Double x:Key="RadioButtonsRowSpacing">3</x:Double>
+  <!--origin: Resources\Version1\PriorityDefault\RadioButton_themeresources.xaml-->
   <Style x:Key="DefaultRadioButtonStyle" TargetType="RadioButton">
     <Setter Property="Background" Value="{ThemeResource RadioButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource RadioButtonForeground}" />
@@ -17628,6 +17681,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\RatingControl.xaml-->
   <Style TargetType="controls:RatingControl">
     <Setter Property="Height" Value="32" />
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
@@ -17702,6 +17756,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\RatingControl_themeresources.xaml-->
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
     <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
@@ -17716,6 +17771,7 @@
   <DataTemplate x:Key="ForegroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />
   </DataTemplate>
+  <!--origin: Resources\Version1\PriorityDefault\RepeatButton_themeresources.xaml-->
   <Style TargetType="RepeatButton" BasedOn="{StaticResource DefaultRepeatButtonStyle}" />
   <Style x:Key="DefaultRepeatButtonStyle" TargetType="RepeatButton">
     <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
@@ -17786,6 +17842,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ScrollBar_themeresources.xaml-->
   <primitives:CornerRadiusFilterConverter x:Key="TopLeftCornerRadiusDoubleValueConverter8x" Filter="TopLeftValue" Scale="8" />
   <primitives:CornerRadiusFilterConverter x:Key="BottomRightCornerRadiusDoubleValueConverter8x" Filter="BottomRightValue" Scale="8" />
   <Style TargetType="ScrollBar" BasedOn="{StaticResource DefaultScrollBarStyle}" />
@@ -18337,6 +18394,7 @@
       </Setter.Value>
     </win:Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\Slider_themeresources.xaml-->
   <Thickness x:Key="SliderTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="SliderPreContentMargin">15</x:Double>
   <x:Double x:Key="SliderPostContentMargin">15</x:Double>
@@ -18542,6 +18600,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\SplitButton.xaml-->
   <Style x:Key="SplitButtonStyle" TargetType="controls:SplitButton">
     <Setter Property="Background" Value="{ThemeResource SplitButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource SplitButtonForeground}" />
@@ -18747,8 +18806,10 @@
   </Style>
   <Style TargetType="controls:SplitButton" BasedOn="{StaticResource SplitButtonStyle}" />
   <Style TargetType="controls:ToggleSplitButton" BasedOn="{StaticResource SplitButtonStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\SplitButton_themeresources.xaml-->
   <x:Double x:Key="SplitButtonPrimaryButtonSize">32</x:Double>
   <x:Double x:Key="SplitButtonSecondaryButtonSize">32</x:Double>
+  <!--origin: Resources\Version1\PriorityDefault\SwipeControl.xaml-->
   <Style x:Key="DefaultSwipeControlStyle" TargetType="controls:SwipeControl">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Background" Value="Transparent" />
@@ -18771,6 +18832,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\SwipeControl_themeresources.xaml-->
   <Style x:Key="SwipeItemStyle" TargetType="AppBarButton">
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -18812,6 +18874,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\TabView_themeresources_v1.xaml-->
   <Thickness x:Key="TabViewHeaderPadding">8,8,4,0</Thickness>
   <Thickness x:Key="TabViewItemHeaderPadding">12,8,10,8</Thickness>
   <x:Double x:Key="TabViewItemMaxWidth">240</x:Double>
@@ -18827,6 +18890,7 @@
   <Thickness x:Key="TabViewItemScrollButtonPadding">6,4,10,5</Thickness>
   <x:Double x:Key="TabViewShadowDepth">16</x:Double>
   <Thickness x:Key="TabViewItemSeparatorMargin">0,6,0,6</Thickness>
+  <!--origin: Resources\Version1\PriorityDefault\TabView_v1.xaml-->
   <Style TargetType="controls:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
   <Style x:Key="DefaultTabViewStyle" TargetType="controls:TabView">
     <Setter Property="VerticalAlignment" Value="Top" />
@@ -19269,6 +19333,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\TimePicker_themeresources.xaml-->
   <Thickness x:Key="TimePickerTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="TimePickerFlyoutPresenterHighlightHeight">40</x:Double>
   <x:Double x:Key="TimePickerFlyoutPresenterAcceptDismissHostGridHeight">41</x:Double>
@@ -19474,6 +19539,7 @@
       </Setter.Value>
     </Setter>
   </win:Style>
+  <!--origin: Resources\Version1\PriorityDefault\ToggleButton_themeresources.xaml-->
   <Style TargetType="ToggleButton" BasedOn="{StaticResource DefaultToggleButtonStyle}" />
   <Style x:Key="DefaultToggleButtonStyle" TargetType="ToggleButton">
     <Setter Property="Background" Value="{ThemeResource ToggleButtonBackground}" />
@@ -19660,6 +19726,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ToggleSwitch_themeresources.xaml-->
   <Thickness x:Key="ToggleSwitchTopHeaderMargin">0,0,0,0</Thickness>
   <x:Double x:Key="ToggleSwitchPreContentMargin">6</x:Double>
   <x:Double x:Key="ToggleSwitchPostContentMargin">6</x:Double>
@@ -19938,6 +20005,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\ToolTip_themeresources.xaml-->
   <Style TargetType="ToolTip" BasedOn="{StaticResource DefaultToolTipStyle}" />
   <Style x:Key="DefaultToolTipStyle" TargetType="ToolTip">
     <Setter Property="Foreground" Value="{ThemeResource ToolTipForeground}" />
@@ -19971,6 +20039,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\TreeView.xaml-->
   <DataTemplate x:Key="TreeViewItemDataTemplate">
     <Grid Height="44">
       <TextBlock Text="{Binding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
@@ -20000,6 +20069,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
+  <!--origin: Resources\Version1\PriorityDefault\TreeViewItem.xaml-->
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}" x:Key="MUX_TreeViewItemStyle">
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}" />
@@ -20122,6 +20192,8 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Resources\Version1\PriorityDefault\TreeView_themeresources.xaml-->
+  <!--origin: Resources\Version1\PriorityDefault\TwoPaneView_v1.xaml-->
   <Style x:Key="DefaultTwoPaneViewStyle" TargetType="controls:TwoPaneView">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />

@@ -51,6 +51,7 @@
 
 
 	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 	</ItemGroup>
