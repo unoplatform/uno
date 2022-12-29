@@ -32,9 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var tb = new TextBox();
 			tb.InputScope = null;
-#if !MONOANDROID80
 			tb.ImeOptions = Android.Views.InputMethods.ImeAction.Search;
-#endif
 		}
 #endif
 
