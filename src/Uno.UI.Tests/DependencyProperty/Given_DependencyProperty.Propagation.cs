@@ -206,7 +206,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			SUT.SubObject = sub;
 
 			// The behavior of UWP is undefined. The datacontext is pass through unknown means tp
-			// non-visual elements, to allow binding. But if defined through code, the datacontext 
+			// non-visual elements, to allow binding. But if defined through code, the datacontext
 			// is not flowing. We're reproducing this behavior here.
 			Assert.AreEqual(0, sub.MyProperty);
 		}
@@ -349,7 +349,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			Assert.AreEqual(77, o1.MyProperty);
 			Assert.AreEqual(78, o2.MyProperty);
 		}
-		
+
 		[TestMethod]
 		public void When_DependencyObject_Bindable_Removed()
 		{
@@ -581,7 +581,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				propertyType: typeof(MyObjectWithExplicitDefaultValue),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: null, 
+					defaultValue: null,
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnSameTypeObjectChanged(e)
 				)
 		);
@@ -611,7 +611,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				propertyType: typeof(int),
 				ownerType: typeof(MyObjectWithExplicitDefaultValue),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: 77, 
+					defaultValue: 77,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((MyObjectWithExplicitDefaultValue)s)?.OnMyPropertyChanged(e)
 				)
@@ -642,7 +642,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 	public class PropagationContext2 : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged { add { } remove { } }
 	}
 
 	public class OppositeConverter : IValueConverter
