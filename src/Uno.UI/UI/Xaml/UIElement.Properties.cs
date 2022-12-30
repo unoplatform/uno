@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml
 			set => SetVisibilityValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.LogicalChild)]
 		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();
 
 		public FlyoutBase ContextFlyout

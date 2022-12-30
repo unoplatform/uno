@@ -5,17 +5,25 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml;
+namespace Windows.UI.Xaml.Documents;
 
-public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
+public partial class TextElement
 {
-	private ManagedWeakReference? _visualTreeCacheWeakReference;
-
-	public XamlRoot? XamlRoot
+	/// <summary>
+	/// Gets or sets the XamlRoot in which this element is being viewed.
+	/// </summary>
+	public 
+#if __WASM__
+	new
+#endif
+	XamlRoot? XamlRoot
 	{
 		get => XamlRoot.GetForElement(this);
 		set => XamlRoot.SetForElement(this, XamlRoot, value);
 	}
+
+#if !__WASM__
+	private ManagedWeakReference? _visualTreeCacheWeakReference;
 
 	internal VisualTree? VisualTreeCache
 	{
@@ -23,4 +31,5 @@ public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 			_visualTreeCacheWeakReference.Target as VisualTree : null;
 		set => _visualTreeCacheWeakReference = WeakReferencePool.RentWeakReference(this, value);
 	}
+#endif
 }

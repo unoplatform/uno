@@ -5,12 +5,15 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
-public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
+public partial class FlyoutBase
 {
 	private ManagedWeakReference? _visualTreeCacheWeakReference;
 
+	/// <summary>
+	/// Gets or sets the XamlRoot in which this flyout is being viewed.
+	/// </summary>
 	public XamlRoot? XamlRoot
 	{
 		get => XamlRoot.GetForElement(this);

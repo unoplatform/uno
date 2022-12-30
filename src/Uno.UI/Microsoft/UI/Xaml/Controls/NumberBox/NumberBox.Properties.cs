@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectionFlyoutProperty { get; } =
-			DependencyProperty.Register(nameof(SelectionFlyout), typeof(FlyoutBase), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(SelectionFlyout), typeof(FlyoutBase), typeof(NumberBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.LogicalChild));
 
 		public SolidColorBrush SelectionHighlightColor
 		{

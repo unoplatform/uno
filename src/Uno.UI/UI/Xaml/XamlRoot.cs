@@ -1,9 +1,11 @@
 #nullable enable
 
+using System;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml;
 
@@ -105,5 +107,36 @@ public sealed partial class XamlRoot
 	internal void NotifyChanged()
 	{
 		Changed?.Invoke(this, new XamlRootChangedEventArgs());
+	}
+
+	internal static XamlRoot? GetForElement(DependencyObject element)
+	{
+		XamlRoot? result = null;
+
+		var visualTree = VisualTree.GetForElement(element);
+		if (visualTree is not null)
+		{
+			result = visualTree.GetOrCreateXamlRoot();
+		}
+		
+		return result;
+	}
+
+	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
+	{
+		if (currentRoot == newRoot)
+		{
+			return;
+		}
+
+		if (currentRoot is not null)
+		{
+			throw new InvalidOperationException("Cannot change XamlRoot for existing element");
+		}
+
+		if (newRoot is not null)
+		{
+			element.SetVisualTree(newRoot.VisualTree);
+		}
 	}
 }
