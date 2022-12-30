@@ -62,6 +62,11 @@ namespace Windows.UI.Xaml.Controls
 			_callbackSubscriptions.Disposable = disposables;
 		}
 
+		partial void OnDataContextChangedPartial()
+		{
+			NativePanel?.UpdateHeaderAndFooter();
+		}
+
 		partial void CleanUpNativePanel(NativeListViewBase panel)
 		{
 			_callbackSubscriptions.Disposable = null;
