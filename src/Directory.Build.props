@@ -188,26 +188,26 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <IsMonoAndroid>false</IsMonoAndroid>
-    <IsMonoAndroid Condition="
+    <IsAndroid>false</IsAndroid>
+    <IsAndroid Condition="
 		$(TargetFramework.ToLower().StartsWith('monoandroid'))
 		or '$(TargetFramework)'=='net6.0-android'
 		or '$(TargetFramework)'=='net7.0-android'
-		">true</IsMonoAndroid>
+		">true</IsAndroid>
 
-    <IsXamarinIOS>false</IsXamarinIOS>
-    <IsXamarinIOS Condition="
+    <IsIOS>false</IsIOS>
+    <IsIOS Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinios'))
 		or '$(TargetFramework)'=='net6.0-ios'
 		or '$(TargetFramework)'=='net7.0-ios'
-		">true</IsXamarinIOS>
+		">true</IsIOS>
 
-    <IsXamarinMac>false</IsXamarinMac>
-    <IsXamarinMac Condition="
+    <IsMacOS>false</IsMacOS>
+    <IsMacOS Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinmac'))
 		or '$(TargetFramework)'=='net6.0-macos'
 		or '$(TargetFramework)'=='net7.0-macos'
-		">true</IsXamarinMac>
+		">true</IsMacOS>
   </PropertyGroup>
 
   <PropertyGroup>
