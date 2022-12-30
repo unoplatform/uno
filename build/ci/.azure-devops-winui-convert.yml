@@ -6,7 +6,7 @@ jobs:
   displayName: 'WinUI Converted Tree Generation'
 
   pool: ${{ parameters.poolName }}
-  
+
   dependsOn: Pipeline_Validations
 
   variables:
@@ -17,7 +17,7 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
     UNO_UWP_BUILD: false
-    XAML_FLAVOR_BUILD: WinUI 
+    XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -45,7 +45,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
+      msbuildArguments: /r /m /warnaserror /v:m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

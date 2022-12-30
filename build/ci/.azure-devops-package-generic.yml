@@ -5,7 +5,7 @@ jobs:
 - job: generic_win_build
   displayName: 'Build Generic Binaries'
   timeoutInMinutes: 90
-  
+
   dependsOn: winui_convert_tree
 
   pool: ${{ parameters.poolName }}
@@ -14,11 +14,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -42,7 +42,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-   
+
   - task: NuGetToolInstaller@0
     inputs:
       versionSpec: 4.9.1
@@ -59,7 +59,7 @@ jobs:
 
   - powershell: .\build\Install-WindowsSdkISO.ps1 18362
     displayName: Insider SDK
-    
+
   # Required for the Wasm uitests project
   - task: NodeTool@0
 
@@ -74,7 +74,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /nr:false /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD)-prepare.binlog
+      msbuildArguments: /r /m /warnaserror /v:m /nr:false /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD)-prepare.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -86,7 +86,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:BuildGeneric "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
+      msbuildArguments: /r /m /warnaserror /v:m /t:BuildGeneric "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-$(XAML_FLAVOR_BUILD).binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -116,7 +116,7 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts-generic
       ArtifactType: Container
-  
+
   # - task: PublishBuildArtifacts@1
   #   displayName: Publish Tizen Artifacts
   #   condition: always()

@@ -18,11 +18,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -36,12 +36,12 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-    
+
   - template: templates/optimize-roslyn-mono.yml
   - template: templates/dotnet-install.yml
 
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /warnaserror /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
 
     displayName: 'Build sample app (net7.0)'
 

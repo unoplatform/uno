@@ -13,7 +13,7 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
-    
+
   dependsOn: Pipeline_Validations
 
   pool:
@@ -22,7 +22,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
-    
+
   - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
@@ -46,7 +46,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
+      msbuildArguments: /r /warnaserror /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -78,7 +78,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-  
+
   dependsOn: macOS
 
   pool:
@@ -87,7 +87,7 @@ jobs:
   steps:
   - checkout: none
     clean: true
-    
+
   - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
@@ -102,18 +102,18 @@ jobs:
       targetType: inline
       script: |
         brew install coreutils
-  
+
   - script: |
         cd $(build.sourcesdirectory)/build/uno-macos-artifacts
         installer -pkg SamplesApp.macOS-1.0.pkg -target CurrentUserHomeDirectory
-    
+
     displayName: Install SamplesApp
 
   - script: |
       timeout 70m /Applications/SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS --runtime-tests=$(build.sourcesdirectory)/build/macOS-runtime-tests-results.xml
 
     displayName: Run macOS Runtime Tests
-  
+
   - task: PublishTestResults@2
     displayName: Publish macOS Runtime Tests
     condition: always()
@@ -131,7 +131,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-  
+
   dependsOn: macOS
 
   pool:
@@ -140,7 +140,7 @@ jobs:
   steps:
   - checkout: none
     clean: true
-    
+
   - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
@@ -148,7 +148,7 @@ jobs:
     inputs:
         artifactName: uno-macos-artifacts
         downloadPath: '$(build.sourcesdirectory)/build'
-  
+
   - task: PowerShell@2
     displayName: 'Install coreutils'
     inputs:
@@ -159,7 +159,7 @@ jobs:
   - script: |
         cd $(build.sourcesdirectory)/build/uno-macos-artifacts
         installer -pkg SamplesApp.macOS-1.0.pkg -target CurrentUserHomeDirectory
-    
+
     displayName: Install SamplesApp
 
   - script: |

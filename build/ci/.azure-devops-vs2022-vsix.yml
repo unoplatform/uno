@@ -31,7 +31,7 @@ jobs:
     displayName: Build 2022 VSIX
     inputs:
       solution: Build/Uno.UI.Build.csproj
-      msbuildArguments: /r /m /t:Build2022VSIX "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-vsix2022.binlog
+      msbuildArguments: /r /m /warnaserror /t:Build2022VSIX "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-vsix2022.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

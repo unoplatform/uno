@@ -10,7 +10,7 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
-$default = @('/ds', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/warnaserror', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
 $debug = $default + '/p:Configuration=Debug' + '/r'
@@ -92,13 +92,13 @@ popd
 # XAML Trimming build smoke test
 # See https://github.com/unoplatform/uno/issues/9632
 # dotnet new unoapp-uwp-net6 -n MyAppXamlTrim
-# 
+#
 # dotnet publish -c Debug -r win-x64 -p:PublishTrimmed=true -p:SelfContained=true -p:UnoXamlResourcesTrimming=true MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\MyAppXamlTrim.Skia.Gtk.csproj
 # Assert-ExitCodeIsZero
-# 
+#
 # dotnet run -c Debug --project src\Uno.XamlTrimmingValidator\Uno.XamlTrimmingValidator.csproj -- --hints-file=build\assets\MyAppXamlTrim-hints.txt --target-assembly=MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\bin\Debug\net6.0\win-x64\publish\Uno.UI.dll
 # Assert-ExitCodeIsZero
-# 
+#
 # & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
 # Assert-ExitCodeIsZero
 

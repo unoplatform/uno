@@ -19,7 +19,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    
+
     - name: Setup .NET Core v6
       uses: actions/setup-dotnet@v1
       with:
@@ -63,7 +63,7 @@ jobs:
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+        msbuild Uno.UI.Build.csproj /v:m /warnaserror "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
 
     - name: commit
       run: |

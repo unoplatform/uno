@@ -4,10 +4,10 @@ parameters:
 jobs:
 - job: SamplesApp_UITests_Build
   displayName: 'Build SamplesApp UI Tests'
-  
+
   pool:
     vmImage: ${{ parameters.vmImage }}
-    
+
   dependsOn: Pipeline_Validations
 
   variables:
@@ -33,7 +33,7 @@ jobs:
     displayName: 'Build UI Tests'
     inputs:
       solution: src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
-      msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /m /warnaserror /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: CopyFiles@2
     displayName: 'Publish Wasm UITest binaries'
@@ -44,7 +44,7 @@ jobs:
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
-      
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)

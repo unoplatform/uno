@@ -6,7 +6,7 @@ parameters:
     - "NugetPackages-Artifacts-reference"
     - "NugetPackages-Artifacts-skia"
     - "NugetPackages-Artifacts-wasm"
-    
+
 jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
@@ -24,11 +24,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -58,12 +58,12 @@ jobs:
         displayName: Download build artifact ${{ artifact }}
         inputs:
           artifactName: ${{ artifact }}
-          downloadPath: '$(Agent.WorkFolder)' 
+          downloadPath: '$(Agent.WorkFolder)'
 
   - task: ExtractFiles@1
     displayName: Restore binaries structure
     inputs:
-      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip'
       destinationFolder: $(build.sourcesdirectory)
       cleanDestinationFolder: false
       overwriteExistingFiles: true
@@ -74,7 +74,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-generate-packages.binlog
+      msbuildArguments: /r /m /warnaserror /v:m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

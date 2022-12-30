@@ -43,7 +43,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r "/p:Configuration=Release"
+      msbuildArguments: /r /warnaserror "/p:Configuration=Release"
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false

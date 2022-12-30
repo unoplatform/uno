@@ -11,7 +11,7 @@ export UNO_UITEST_IOSBUNDLE_PATH="$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY
 
 pushd $BUILD_SOURCESDIRECTORY
-msbuild /m /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+msbuild /m /r /warnaserror /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 popd
 
 # Comment out the following line to avoid full rebuild for subsequent runs

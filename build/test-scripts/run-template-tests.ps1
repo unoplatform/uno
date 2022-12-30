@@ -43,7 +43,7 @@ function Get-TemplateConfiguration(
 
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
-$default = @('/ds', '/r', '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/r', '/warnaserror', '/p:PackageCertificateKeyFile=')
 
 $debug = $default + '/p:Configuration=Debug'
 
@@ -130,7 +130,7 @@ Assert-ExitCodeIsZero
 
 # XF - Default
 # 7z x build\assets\xfapp-uwp-4.8.0.1451.zip -oXFApp
-# 
+#
 # pushd XFApp
 # dotnet new wasmxfhead
 # & $msbuild /ds /r /p:Configuration=Debug XFApp.Wasm\XFApp.Wasm.csproj
