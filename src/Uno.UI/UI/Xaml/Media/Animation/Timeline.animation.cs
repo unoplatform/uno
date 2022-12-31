@@ -66,14 +66,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			private T? By => AnimationOwner?.By;
 			private IEasingFunction EasingFunction => AnimationOwner?.EasingFunction;
 			private bool EnableDependentAnimation => AnimationOwner?.EnableDependentAnimation ?? false;
-			private DependencyObject Target => _owner?.Target;
 			private BindingPath PropertyInfo => _owner?.PropertyInfo;
 
 			private string[] GetTraceProperties() => _owner?.GetTraceProperties();
 			private void ClearValue() => _owner?.ClearValue();
 			private void SetValue(object value) => _owner?.SetValue(value);
 			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
-			private object GetValue() => _owner?.GetValue();
 			private object GetNonAnimatedValue() => _owner?.GetNonAnimatedValue();
 
 			public void Begin()
@@ -480,7 +478,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			partial void DisposePartial();
 
 			partial void OnFrame();
-			partial void HoldValue();
 			partial void UseHardware();
 		}
 	}

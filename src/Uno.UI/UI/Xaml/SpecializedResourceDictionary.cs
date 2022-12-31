@@ -258,34 +258,6 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private void CopyTo(KeyValuePair<object, object>[] array, int index)
-		{
-			if (array == null)
-			{
-				throw new ArgumentNullException("ExceptionArgument.array");
-			}
-
-			if ((uint)index > (uint)array.Length)
-			{
-				throw new IndexOutOfRangeException("IndexArgumentOutOfRange_NeedNonNegNumException");
-			}
-
-			if (array.Length - index < Count)
-			{
-				throw new ArgumentException("ExceptionResource.Arg_ArrayPlusOffTooSmall");
-			}
-
-			int count = _count;
-			Entry[] entries = _entries;
-			for (int i = 0; i < count; i++)
-			{
-				if (entries![i].next >= -1)
-				{
-					array[index++] = new KeyValuePair<object, object>(entries[i].key, entries[i].value);
-				}
-			}
-		}
-
 		public Enumerator GetEnumerator() => new Enumerator(this, Enumerator.KeyValuePair);
 
 		private ref object FindValue(in ResourceKey key)
@@ -734,15 +706,6 @@ namespace Windows.UI.Xaml
 
 			_count = newCount;
 			_freeCount = 0;
-		}
-
-		private static bool IsCompatibleKey(object key)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("ExceptionArgument.key");
-			}
-			return key is object;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -91,128 +91,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
-		#region IItemsContainerProvider
-
-		void
-			FindItemByPropertyImpl(
-				IRawElementProviderSimple startAfter,
-				AutomationProperty automationProperty,
-				DependencyObject value,
-				out IRawElementProviderSimple returnValue)
-		{
-			LoopingSelector pOwnerNoRef = null;
-			IList<object> spItemsCollection = default;
-
-			returnValue = null;
-
-			GetOwnerAsInternalPtrNoRef(out pOwnerNoRef);
-			if (pOwnerNoRef is { })
-			{
-				spItemsCollection = pOwnerNoRef.Items;
-			}
-
-			if (spItemsCollection is { })
-			{
-				var startIdx = 0;
-				var totalItems = 0;
-				//string nameProperty;
-				//AutomationPeerProtected spThisAsProtected;
-
-				// For the Name and IsSelected property search cases we cache these
-				// values outside of the loop. Otherwise these variables remain unused.
-				var isSelected = false;
-				string strNameToFind = default;
-				DependencyObject spSelectedItem = default;
-
-				AutomationHelper.AutomationPropertyEnum propertyAsEnum =
-					AutomationHelper.AutomationPropertyEnum.EmptyProperty;
-
-				totalItems = spItemsCollection.Count;
-				FindStartIndex(
-					startAfter,
-					spItemsCollection,
-					out startIdx);
-				//(AutomationHelper.ConvertPropertyToEnum(
-				//	automationProperty,
-				//	&propertyAsEnum));
-				propertyAsEnum = AutomationHelper.ConvertPropertyToEnum(automationProperty);
-
-				//(QueryInterface(
-				//	__uuidof(IAutomationPeerProtected),
-				//	&spThisAsProtected));
-
-				if (propertyAsEnum == AutomationHelper.AutomationPropertyEnum.NameProperty && value is { })
-				{
-					//Private.ValueBoxer.UnboxString(value, strNameToFind);
-					strNameToFind = value.ToString();
-				}
-				else if (propertyAsEnum == AutomationHelper.AutomationPropertyEnum.IsSelectedProperty && value is { })
-				{
-					//PropertyValue spValueAsPropertyValue;
-					//value.QueryInterface<PropertyValue>(spValueAsPropertyValue);
-
-					//spValueAsPropertyValue.GetBoolean(isSelected);
-					spSelectedItem = pOwnerNoRef.SelectedItem as DependencyObject;
-				}
-
-				for (int itemIdx = startIdx + 1; itemIdx < totalItems; itemIdx++)
-				{
-					var breakOnPeer = false;
-
-					LoopingSelectorItemDataAutomationPeer spItemDataAP;
-					{
-						DependencyObject spItem;
-						//spItemsCollection.GetAt(itemIdx, &spItem);
-						spItem = spItemsCollection[itemIdx] as DependencyObject;
-						GetDataAutomationPeerForItem(spItem, out spItemDataAP);
-					}
-
-					switch (propertyAsEnum)
-					{
-						case AutomationHelper.AutomationPropertyEnum.EmptyProperty:
-							breakOnPeer = true;
-							break;
-						case AutomationHelper.AutomationPropertyEnum.NameProperty:
-						{
-							AutomationPeer spAutomationPeer;
-							//spItemDataAP.As(spAutomationPeer);
-							spAutomationPeer = spItemDataAP;
-							string strNameToCompare;
-							strNameToCompare = spAutomationPeer.GetName();
-							if (strNameToCompare == strNameToFind)
-							{
-								breakOnPeer = true;
-							}
-						}
-							break;
-						case AutomationHelper.AutomationPropertyEnum.IsSelectedProperty:
-						{
-							DependencyObject spItem;
-							((LoopingSelectorItemDataAutomationPeer)spItemDataAP).GetItem(out spItem);
-							if (isSelected && spSelectedItem == spItem ||
-							    !isSelected && spSelectedItem != spItem)
-							{
-								breakOnPeer = true;
-							}
-						}
-							break;
-					}
-
-					if (breakOnPeer)
-					{
-						AutomationPeer spItemPeerAsAP;
-
-						//spItemDataAP.As(spItemPeerAsAP);
-						spItemPeerAsAP = spItemDataAP;
-						returnValue = ProviderFromPeer(spItemPeerAsAP);
-						break;
-					}
-				}
-			}
-		}
-
-		#endregion
-
 		~LoopingSelectorAutomationPeer()
 		{
 			ClearPeerMap();
@@ -296,13 +174,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 			//spReturnValue.CopyTo(returnValue);
 			return spReturnValue;
-		}
-
-		void GetClassNameCoreImpl(out string returnValue)
-		{
-			//if (returnValue == null) throw new ArgumentNullException();
-			//wrl_wrappers.Hstring("LoopingSelector").CopyTo(returnValue);
-			returnValue = "LoopingSelector";
 		}
 
 		#endregion
@@ -530,16 +401,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 				{
 					pIndex = index;
 				}
-			}
-		}
-
-		void TryScrollItemIntoView(DependencyObject pItem)
-		{
-			LoopingSelector pOwnerNoRef = null;
-			GetOwnerAsInternalPtrNoRef(out pOwnerNoRef);
-			if (pOwnerNoRef is { })
-			{
-				pOwnerNoRef.AutomationTryScrollItemIntoView(pItem);
 			}
 		}
 

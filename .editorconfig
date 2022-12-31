@@ -400,10 +400,4 @@ dotnet_diagnostic.CA1309.severity = none
 dotnet_diagnostic.CA2101.severity = none
 
 # IDE0051: Remove unused private member
-# Enable once all violations are fixed.
 dotnet_diagnostic.IDE0051.severity = warning
-
-[src/Uno.UI/**/*.cs]
-# IDE0051: Remove unused private member
-# Enable once all violations are fixed.
-dotnet_diagnostic.IDE0051.severity = none

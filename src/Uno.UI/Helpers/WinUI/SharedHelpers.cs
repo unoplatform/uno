@@ -609,12 +609,6 @@ namespace Uno.UI.Helpers.WinUI
 			return doIntersect;
 		}
 
-		object FindResourceOrNull(string resource, ResourceDictionary resources)
-		{
-			object boxedResource = resource;
-			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : null;
-		}
-
 		// When checkVisibility is True, IsAncestor additionally checks if any UIElement from the 'child'
 		// to the 'parent' chain is Collapsed. It returns False when that is the case.
 		public static bool IsAncestor(

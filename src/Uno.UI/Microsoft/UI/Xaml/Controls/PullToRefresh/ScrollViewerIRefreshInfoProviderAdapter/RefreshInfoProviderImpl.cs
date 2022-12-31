@@ -55,6 +55,7 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 		}
 	}
 
+#if false
 	/////////////////////////////////////////////////////
 	///////   IInteractionTrackerOwnerOverrides  ////////
 	/////////////////////////////////////////////////////
@@ -107,6 +108,7 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId());
 	}
+#endif
 
 	/////////////////////////////////////////////////////
 	////////////   IRefreshInfoProvider  ////////////////
