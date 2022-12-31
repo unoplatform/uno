@@ -230,6 +230,9 @@
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
         <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<!-- Enable CodeStyle analyzers -->
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
