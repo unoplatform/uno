@@ -382,6 +382,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+#if !NETFRAMEWORK
 		private List<KeyValuePair<string, string>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
@@ -449,6 +450,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return null;
 		}
+#endif
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links, CancellationToken ct)
 		{

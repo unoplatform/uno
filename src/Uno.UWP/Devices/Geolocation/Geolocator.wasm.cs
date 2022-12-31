@@ -18,13 +18,13 @@ using NativeMethods = __Windows.Devices.Geolocation.Geolocator.NativeMethods;
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
-	{		
+	{
 		private const string JsType = "Windows.Devices.Geolocation.Geolocator";
 		private const uint Wgs84SpatialReferenceId = 4326;
 
 		private static List<TaskCompletionSource<GeolocationAccessStatus>> _pendingAccessRequests = new List<TaskCompletionSource<GeolocationAccessStatus>>();
 		private static ConcurrentDictionary<string, TaskCompletionSource<Geoposition>> _pendingGeopositionRequests = new ConcurrentDictionary<string, TaskCompletionSource<Geoposition>>();
-		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();		
+		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();
 
 		private string _positionChangedRequestId;
 
@@ -153,6 +153,15 @@ namespace Windows.Devices.Geolocation
 			return 0;
 		}
 
+		/// <summary>
+		/// Invokes <see cref="PositionChanged" /> event
+		/// </summary>
+		/// <param name="geoposition">Geoposition</param>
+		private void OnPositionChanged(Geoposition geoposition)
+		{
+			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
+		}
+
 #if NET7_0_OR_GREATER
 		[JSExport]
 #endif
@@ -169,7 +178,7 @@ namespace Windows.Devices.Geolocation
 				BroadcastStatusChanged(positionStatus);
 				switch (positionStatus)
 				{
-					case PositionStatus.NoData:						
+					case PositionStatus.NoData:
 						geopositionCompletionSource.SetException(
 							new Exception("This operation returned because the timeout period expired."));
 						break;

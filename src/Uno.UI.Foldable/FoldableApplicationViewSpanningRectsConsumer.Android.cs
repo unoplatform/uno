@@ -26,11 +26,10 @@ namespace Uno.UI.Foldable
 	/// </remarks>
 	public partial class FoldableApplicationViewSpanningRects : Java.Lang.Object, AndroidX.Core.Util.IConsumer
 	{
-		const string TAG = "DualScreen-JWM"; // Jetpack Window Manager
 		WindowInfoTrackerCallbackAdapter windowInfoTrackerCallbackAdapter;
 		IWindowMetricsCalculator windowMetricsCalculator;
 
-		/// <summary>Rectangle that describes the coordinates of the hinge or fold on a dual-screen device</summary>	
+		/// <summary>Rectangle that describes the coordinates of the hinge or fold on a dual-screen device</summary>
 		public Android.Graphics.Rect FoldBounds { get; set; }
 		/// <summary>Deprecated - hinges and folds can be across the vertical or horizontal axis, so orientation is not relevant for determining spanning rectangles</summary>
 		[Obsolete("Can't surface this in a device agnostic way, not sure we need it when we have FoldOrientation via Window Manager. Has not been deleted since it was part of the original public API")]
@@ -43,27 +42,7 @@ namespace Uno.UI.Foldable
 		private FoldingFeatureState FoldState;
 		private FoldingFeatureOcclusionType FoldOcclusionType;
 		private FoldingFeatureOrientation FoldOrientation;
-		private bool IsOccluding
-		{
-			get
-			{
-				return FoldOcclusionType == FoldingFeatureOcclusionType.Full;
-			}
-		}
-		private bool IsFlat
-		{
-			get
-			{
-				return FoldState == FoldingFeatureState.Flat;
-			}
-		}
-		private bool IsVertical
-		{
-			get
-			{
-				return FoldOrientation == FoldingFeatureOrientation.Vertical;
-			}
-		}
+
 		//private EventHandler<NativeFold> _layoutChanged;
 		//// ENDHACK
 		//public event EventHandler<NativeFold> LayoutChanged
@@ -154,7 +133,7 @@ namespace Uno.UI.Foldable
 						IsFlat = foldingFeature.State == FoldingFeatureState.Flat,
 						IsVertical = IsFoldVertical
 					};
-					
+
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						var summary = "\n    IsSeparating: " + foldingFeature.IsSeparating

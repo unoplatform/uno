@@ -14,6 +14,8 @@
 		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<NoWarn>$(NoWarn);IDE0051</NoWarn>
 	</PropertyGroup>
 
 	<Import Project="../../netcore-build.props"/>
