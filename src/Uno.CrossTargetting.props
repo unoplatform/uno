@@ -76,7 +76,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsAndroid)">
-    <DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;MONOANDROID5_0;XAMARIN_ANDROID</DefineConstants>
+    <DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;XAMARIN_ANDROID</DefineConstants>
 	<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
