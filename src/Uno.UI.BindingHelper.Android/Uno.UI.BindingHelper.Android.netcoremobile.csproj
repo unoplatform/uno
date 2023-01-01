@@ -70,19 +70,6 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
-	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml" Condition="'$(MSBuildVersion)' &lt; '16.8'">
-
-		<!--
-		This is required to ensure the first pass of the BindingsGenerator task is
-		executed properly (inside of ExportJarToXml). If not, the second pass in the
-		GenerateBindings target is not given proper api mappings, ending in the generation
-		of an empty assembly.
-		-->
-
-		<Delete Files="$(IntermediateOutputPath)\api.xml" />
-	</Target>
-
 	<ItemGroup>
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings" />
@@ -108,8 +95,6 @@
 		</ItemGroup>
 		<PropertyGroup>
 			<_JavaVersion>1.8</_JavaVersion>
-
-			<_JavaVersion Condition="'$(MSBuildVersion)' &lt; '15.4'">1.7</_JavaVersion>
 
 			<_JavaCBinPath>javac</_JavaCBinPath>
 			<_JavaCBinPath Condition="Exists('$(_JavaSdkDirectory)bin\javac.exe')">$(_JavaSdkDirectory)bin\javac.exe</_JavaCBinPath>
