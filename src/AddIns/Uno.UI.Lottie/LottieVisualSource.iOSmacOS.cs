@@ -19,8 +19,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private LOTAnimationView? _animation;
 
-		public bool UseHardwareAcceleration { get; set; } = true;
-
 		private Uri? _lastSource;
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 

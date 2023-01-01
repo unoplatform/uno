@@ -41,8 +41,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			public override void OnAnimationStart(Animator? animation) => _lottieVisualSource.SetIsPlaying(true);
 		}
 
-		public bool UseHardwareAcceleration { get; set; } = true;
-
 		private Uri? _lastSource;
 		private (double fromProgress, double toProgress, bool looped)? _playState;
 
