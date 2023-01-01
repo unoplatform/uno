@@ -10,9 +10,7 @@
 		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworksCI);net5.0-windows10.0.18362.0</TargetFrameworksCI>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Toolkit</AssemblyName>

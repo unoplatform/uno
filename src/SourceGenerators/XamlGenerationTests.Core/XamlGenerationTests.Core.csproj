@@ -9,9 +9,7 @@
 		<DefaultLanguage>en-US</DefaultLanguage>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks"/>

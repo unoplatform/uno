@@ -27,10 +27,6 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Remove="WasmScripts\*.js" />

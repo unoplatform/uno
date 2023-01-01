@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows</TargetFrameworks>		
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>
 		<!--
 		Enable implicit dotnet runtime forward rolling, as the specifed target framework
 		project may run with only a later version of the .NET runtime installed.
@@ -11,7 +11,7 @@
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
 		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
-	
+
 	<ItemGroup Label="AssemblyInfo">
 		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
 			<_Parameter1>false</_Parameter1>
@@ -24,9 +24,7 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<Import Project="../../netcore-build-windows.props"/>
 
