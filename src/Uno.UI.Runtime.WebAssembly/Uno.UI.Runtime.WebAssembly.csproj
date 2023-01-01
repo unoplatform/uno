@@ -2,12 +2,11 @@
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props"/>
 	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
@@ -37,7 +36,7 @@
 		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
@@ -45,7 +44,7 @@
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
+
 	<ItemGroup>
 		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>
