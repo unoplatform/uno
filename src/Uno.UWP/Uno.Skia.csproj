@@ -13,10 +13,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
-
 	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
 		<RootNamespace>Windows</RootNamespace>
