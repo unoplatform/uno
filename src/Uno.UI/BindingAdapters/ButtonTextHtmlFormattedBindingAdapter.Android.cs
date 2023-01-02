@@ -24,7 +24,9 @@ namespace Uno.UI.DataBindingAdapters
 				if (html != null)
 				{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 					button.SetText(Html.FromHtml(html), TextView.BufferType.Spannable);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 				}
 			}

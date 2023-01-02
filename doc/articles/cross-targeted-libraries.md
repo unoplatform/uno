@@ -66,3 +66,7 @@ Adding a new conditional symbol via the Visual Studio UI may result in it only b
     <DefineConstants>UNO_1213</DefineConstants>
   </PropertyGroup>
 ```
+
+## Using WebAssembly-specific attributes
+
+When using the cross-targeting template, it becomes possible to use WebAssembly-only features, such as [`HtmlElementAttribute`](interop/wasm-javascript-1.md) or `JSInvoke`. In such cases, you'll need to add a reference to the `Uno.WinUI.Runtime.WebAssembly` nuget package.

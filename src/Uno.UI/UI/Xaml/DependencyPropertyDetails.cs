@@ -336,6 +336,8 @@ namespace Windows.UI.Xaml
 					{
 						_stack[(int)DependencyPropertyValuePrecedences.Local] = _fastLocalValue;
 					}
+
+					_fastLocalValue = null;
 				}
 
 				return _stack;

@@ -15,6 +15,12 @@
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('net461'))">$(UnoTargetFrameworkOverride);net461</TargetFrameworks>
+		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('netstandard2.0'))">$(UnoTargetFrameworkOverride);netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
 		<!--
 		This target is used to build the with the net6-only filter, but uses netcore
@@ -32,11 +38,6 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Remove="Test\**\*.cs" />
-		<None Remove="Test\**\*.*" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<Reference Remove="System.Xaml" />

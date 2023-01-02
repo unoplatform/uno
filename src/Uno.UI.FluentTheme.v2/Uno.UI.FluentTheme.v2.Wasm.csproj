@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<!--
+			Set to false as a temporary workaround for:
+			themeresources_v2_50f32f2e6363bfb659944a5be6882cf5.cs(50425,16): error CS1029: #error: 'Property Scale does not exist on {using:Microsoft.UI.Xaml.Controls.Primitives}CornerRadiusFilterConverter, name is Scale, preferrednamespace using:Microsoft.UI.Xaml.Controls.Primitives
+			Remove this workaround when fixing https://github.com/unoplatform/uno/issues/10596
+		-->
+		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props"/>
 	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>

@@ -11,8 +11,6 @@ namespace Windows.UI.Core
 {
 	public sealed partial class CoreDispatcher
 	{
-		internal bool IsThreadingSupported { get; } = Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_CONFIGURATION").StartsWith("threads", StringComparison.OrdinalIgnoreCase);
-
 		/// <summary>
 		/// Provide a action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>

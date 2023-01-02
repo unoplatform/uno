@@ -10,6 +10,7 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml;
 using Windows.UI;
 using FluentAssertions;
+using MUXControlsTestApp.Utilities;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -31,9 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var tb = new TextBox();
 			tb.InputScope = null;
-#if !MONOANDROID80
 			tb.ImeOptions = Android.Views.InputMethods.ImeAction.Search;
-#endif
 		}
 #endif
 
@@ -473,5 +472,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Text_Set_On_Initial_Load()
+		{
+			var initialText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			var textBox = new TextBox
+			{
+				Text = initialText
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			var contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(textBox);
+			// This will no longer be true when we support non-native text box input - test will have to be updated for this option
+			Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
+			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
+		}
+#endif
 	}
 }

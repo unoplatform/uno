@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>net461</TargetFrameworks>
-		<NoWarn>67</NoWarn>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
@@ -53,8 +52,6 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
-
-	<Import Project="..\Common.targets" />
 
 	<Import Project="..\Common_ViewLibraryProps\Globbing.props" />
 

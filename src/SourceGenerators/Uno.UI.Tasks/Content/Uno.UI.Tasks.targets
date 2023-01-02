@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">..\Uno.UI.Tasks</UnoUIMSBuildTasksPath>
+		<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">Uno.UI.Tasks</UnoUIMSBuildTasksPath>
 		<UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
 	</PropertyGroup>
 
@@ -17,32 +17,62 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
 
-	<!--
-  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
-
-  Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
-  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
-  -->
-	<Target Name="UnoResourcesGeneration"
-				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
-				DependsOnTargets="ResolveProjectReferences"
-				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
-
-		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
-
+	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
 		<PropertyGroup>
 			<!-- LEGACY: Old projects define DefaultApplicationLanguage instead of DefaultLanguage -->
 			<DefaultLanguage Condition="'$(DefaultLanguage)'=='' and '$(DefaultApplicationLanguage)'!=''">$(DefaultApplicationLanguage)</DefaultLanguage>
 			<!-- Default to English if DefaultLanguage isn't set -->
 			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
+		</PropertyGroup>
+	</Target>
+	<!--
+	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
+
+	  Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
+	  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
+	-->
+	<Target Name="UnoResourcesGeneration"
+				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
+				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
+				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
+
+		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
+
+		<!-- String resources -->
+		<PropertyGroup>
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
 		</PropertyGroup>
-		<ResourcesGenerationTask_v0 Resources="@(PRIResource)"
+
+		<ItemGroup>
+			<_UnoTempPRIResource Include="@(PRIResource)" />
+		</ItemGroup>
+
+		<!-- Assign the Link property so files defined in shared projects preserve their natural path structure -->
+		<AssignLinkMetadata Items="@(PRIResource)"
+							Condition="'@(PRIResource)' != '' and '%(PRIResource.DefiningProjectFullPath)' != '$(MSBuildProjectFullPath)'">
+			<Output TaskParameter="OutputItems" ItemName="_Temp" />
+		</AssignLinkMetadata>
+
+		<ItemGroup>
+			<!-- remove new linked items so their new metadata is used instead -->
+			<_UnoTempPRIResource Remove="@(_Temp)" />
+			<_UnoTempPRIResource Include="@(_Temp)" />
+
+			<!-- Clear temporary group -->
+			<_Temp Remove="@(_Temp)" />
+		</ItemGroup>
+
+		<AssignTargetPath Files="@(_UnoTempPRIResource)" RootFolder="$(MSBuildProjectDirectory)">
+			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
+		</AssignTargetPath>
+
+		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(XamarinProjectType)"
 									 IntermediateOutputPath="$(IntermediateOutputPath)"
-									 DefaultLanguage="$(DefaultLanguage)">
+									 DefaultLanguage="$(DefaultLanguage)"
+									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
 			<Output TaskParameter="GeneratedFiles"
 							ItemName="GeneratedFiles" />
 		</ResourcesGenerationTask_v0>
@@ -50,12 +80,25 @@
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
 			<AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
 			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
+
+			<!-- Clear temporary group -->
+			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoExcludeFromAndroidContentCheck" BeforeTargets="_CheckForContent" Condition="'$(MonoAndroidAssetsPrefix)'!=''">
+		<!--
+		Disables "XA0101 build action is not supported" as Uno handles Content items explicitly
+		https://github.com/xamarin/xamarin-android/blob/311b41e864a0162895d079477cb9398fbec5ca6e/src/Xamarin.Android.Build.Tasks/Xamarin.Android.Common.targets#L833
+		-->
+		<ItemGroup>
+			<Content Update="@(Content)" ExcludeFromContentCheck="true" />
 		</ItemGroup>
 	</Target>
 
 	<Target Name="UnoAssetsGeneration"
-				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources"
-				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems"
+				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest"
+				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
 				Condition="
 				'$(DesignTimeBuild)' != 'true'
 				and '$(BuildingInsideUnoSourceGenerator)' == ''
@@ -69,6 +112,7 @@
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
+							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							Condition="'$(XamarinProjectType)'!=''">
@@ -76,6 +120,8 @@
 							ItemName="Assets" />
 			<Output TaskParameter="RetargetedAssets"
 							ItemName="RetargetedAssets" />
+			<Output TaskParameter="PartialAppManifests"
+							ItemName="PartialAppManifest" />
 		</RetargetAssets_v0>
 		<ItemGroup>
 			<Content Remove="@(Assets)" />
@@ -157,7 +203,7 @@
 		</ItemGroup>
 
 		<PropertyGroup>
-			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
+			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
 
 			
 			<_UnoLinkerHintGeneratorILLinkerPath

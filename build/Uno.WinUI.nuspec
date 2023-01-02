@@ -392,7 +392,7 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.BindingHelper.Android.dll" target="lib\MonoAndroid13.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.BindingHelper.Android.pdb" target="lib\MonoAndroid13.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.dll" target="lib\MonoAndroid13.0" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.pdb" target="lib\MonoAndroid13.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.pdb" target="lib\MonoAndroid13.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.Composition.dll" target="lib\MonoAndroid13.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.Composition.pdb" target="lib\MonoAndroid13.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.UI.Dispatching.dll" target="lib\MonoAndroid13.0" />
@@ -401,13 +401,13 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\Uno.Xaml.pdb" target="lib\MonoAndroid13.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid13.0\*.xml" target="lib\MonoAndroid13.0" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.dll" target="lib\MonoAndroid13.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.pdb" target="lib\MonoAndroid13.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.pdb" target="lib\MonoAndroid13.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.v1.dll" target="lib\MonoAndroid13.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.v1.pdb" target="lib\MonoAndroid13.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.v1.pdb" target="lib\MonoAndroid13.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.v2.dll" target="lib\MonoAndroid13.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.v2.pdb" target="lib\MonoAndroid13.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid13.0\Uno.UI.FluentTheme.v2.pdb" target="lib\MonoAndroid13.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid13.0\Uno.UI.Toolkit.dll" target="lib\MonoAndroid13.0" />
-	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid13.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid13.0" />
+	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid13.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid13.0\pdb_move_to_debug" />
 
 	<!-- Android 12.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.dll" target="lib\MonoAndroid12.0" />
@@ -419,7 +419,7 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.BindingHelper.Android.dll" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.BindingHelper.Android.pdb" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.dll" target="lib\MonoAndroid12.0" />
-	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.pdb" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.pdb" target="lib\MonoAndroid12.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.Composition.dll" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.Composition.pdb" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.Dispatching.dll" target="lib\MonoAndroid12.0" />
@@ -428,11 +428,11 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.Xaml.pdb" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\*.xml" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.dll" target="lib\MonoAndroid12.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.pdb" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.pdb" target="lib\MonoAndroid12.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.v1.dll" target="lib\MonoAndroid12.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.v1.pdb" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.v1.pdb" target="lib\MonoAndroid12.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.v2.dll" target="lib\MonoAndroid12.0" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.v2.pdb" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\MonoAndroid12.0\Uno.UI.FluentTheme.v2.pdb" target="lib\MonoAndroid12.0\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid12.0\Uno.UI.Toolkit.dll" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid12.0\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid12.0" />
 
@@ -444,7 +444,7 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Foundation.Logging.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Foundation.Logging.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.dll" target="lib\xamarinios10" />
-	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.pdb" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.pdb" target="lib\xamarinios10\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.Composition.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.Composition.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.Dispatching.dll" target="lib\xamarinios10" />
@@ -453,11 +453,11 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\bin\Release\xamarinios10\*.xml" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.dll" target="lib\xamarinios10" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.pdb" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.pdb" target="lib\xamarinios10\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.v1.dll" target="lib\xamarinios10" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.v1.pdb" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.v1.pdb" target="lib\xamarinios10\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.v2.dll" target="lib\xamarinios10" />
-	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.v2.pdb" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinios10\Uno.UI.FluentTheme.v2.pdb" target="lib\xamarinios10\pdb_move_to_debug" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
 
@@ -830,11 +830,6 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.dll" target="uno-runtime\net7.0\skia" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net7.0\skia" />
 
-	<!-- Unsupported android targets -->
-	<file src="_._" target="lib\MonoAndroid10.0" />
-	<file src="_._" target="lib\MonoAndroid90" />
-	<file src="_._" target="lib\MonoAndroid80" />
-
 	<!-- Analyzers -->
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers" />
 	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers" />
@@ -881,92 +876,13 @@
 	<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-macos" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net5.0-windows" />
 
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinios10" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinmac20" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\netstandard2.0" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-android30.0" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-ios" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-macos" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-android30.0" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-ios" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-maccatalyst" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net7.0-macos" />
-	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net5.0-windows" />
-
-	<file src="uno.winui.common.targets" target="buildTransitive\MonoAndroid" />
-	<file src="uno.winui.common.targets" target="buildTransitive\xamarinios10" />
-	<file src="uno.winui.common.targets" target="buildTransitive\xamarinmac20" />
-	<file src="uno.winui.common.targets" target="buildTransitive\netstandard2.0" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net7.0" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-android30.0" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-ios" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-macos" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-android30.0" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-ios" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-maccatalyst" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net7.0-macos" />
-	<file src="uno.winui.common.targets" target="buildTransitive\net5.0-windows" />
-
-	<file src="uno.winui.single-project.targets" target="buildTransitive\MonoAndroid" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\xamarinios10" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\xamarinmac20" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\netstandard2.0" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-android30.0" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-ios" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-macos" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-android30.0" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-ios" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-maccatalyst" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net7.0-macos" />
-	<file src="uno.winui.single-project.targets" target="buildTransitive\net5.0-windows" />
-
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\MonoAndroid" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\xamarinios10" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\xamarinmac20" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\netstandard2.0" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-android30.0" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-ios" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-macos" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-android30.0" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-ios" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-maccatalyst" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net7.0-macos" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
-
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\MonoAndroid" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\xamarinios10" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\xamarinmac20" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\netstandard2.0" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net7.0" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-android30.0" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-ios" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net6.0-macos" />
-	<file src="uno.winui.winappsdk.targets" target="buildTransitive\net5.0-windows" />
-
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\MonoAndroid" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\xamarinios10" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\xamarinmac20" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\netstandard2.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-android30.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-ios" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-maccatalyst" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net6.0-macos" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-android30.0" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-ios" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-maccatalyst" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net7.0-macos" />
-	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive\net5.0-windows" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
+	<file src="uno.winui.common.targets" target="buildTransitive" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive" />
+	<file src="uno.winui.single-location-project.targets" target="buildTransitive" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
+	<file src="uno.winui.winappsdk.targets" target="buildTransitive" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />

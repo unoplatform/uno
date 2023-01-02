@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Helpers;
+using System.Diagnostics;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -86,38 +87,31 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Stop()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Pause()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Resume()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void SetProgress(double progress)
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Load()
-		{
-			throw new NotImplementedException();
-		}
+			=> ThrowNotImplementedOnNonTestPlatforms();
 
 		public void Unload()
+			=> ThrowNotImplementedOnNonTestPlatforms();
+
+		private static void ThrowNotImplementedOnNonTestPlatforms()
 		{
+#if !NET461
 			throw new NotImplementedException();
+#endif
 		}
 
 		public Size Measure(Size availableSize)
@@ -131,7 +125,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private Task InnerUpdate(CancellationToken ct)
 		{
-			throw new NotSupportedException("Lottie on this platform is not supported yet.");
+			ThrowNotImplementedOnNonTestPlatforms();
+			return Task.CompletedTask;
 		}
 #endif
 

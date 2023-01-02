@@ -172,6 +172,11 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		public new void PasteFromClipboard() => base.PasteFromClipboard();
+
 		#region IsPasswordRevealButtonEnabled DependencyProperty
 		public bool IsPasswordRevealButtonEnabled
 		{

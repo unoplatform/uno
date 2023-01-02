@@ -159,7 +159,8 @@ namespace Windows.UI.Xaml.Shapes
 
 					parent.Children.InsertAtTop(borderVisual);
 				}
-				
+
+				owner.ClippingIsSetByCornerRadius = true;
 				parent.Clip = compositor.CreateRectangleClip(
 					0, 0, (float)area.Width, (float)area.Height,
 					fullCornerRadius.Outer.TopLeft, fullCornerRadius.Outer.TopRight, fullCornerRadius.Outer.BottomRight, fullCornerRadius.Outer.BottomLeft);

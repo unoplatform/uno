@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnCommandParameterChanged));
 
 		public static DependencyProperty FlyoutProperty { get ; } =
-			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnFlyoutChanged));
+			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.LogicalChild, OnFlyoutChanged));
 
 		private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

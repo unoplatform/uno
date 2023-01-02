@@ -7,19 +7,17 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
 		<!-- This assembly is provided as a type forwarder to Uno.UI -->
 		<AssemblyName>Uno.UI.Wasm</AssemblyName>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<IsPackable>false</IsPackable>
 
 		<Description>This assembly provides type forwarders for Uno.UI 2.x compatibility</Description>

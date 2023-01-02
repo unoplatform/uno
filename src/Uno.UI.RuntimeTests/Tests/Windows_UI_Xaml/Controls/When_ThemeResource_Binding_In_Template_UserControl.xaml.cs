@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
+namespace Uno.UI.RuntimeTests
 {
 	public sealed partial class When_ThemeResource_Binding_In_Template_UserControl : UserControl
 	{

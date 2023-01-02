@@ -2,7 +2,7 @@
   "solution": {
     "path": "UnoWinUIQuickStart.sln",
     "projects": [
-		"UnoWinUIQuickStart.Shared\\UnoWinUIQuickStart.Shared.shproj",
+		"UnoWinUIQuickStart\\UnoWinUIQuickStart.csproj",
 
 		#//#if (mobile)
 		"UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj",
@@ -13,6 +13,10 @@
 		#//#endif
 
 		#//#if (skia-gtk)
+		"UnoWinUIQuickStart.Skia.Gtk\\UnoWinUIQuickStart.Skia.Gtk.csproj",
+		#//#endif
+
+		#//#if (hosted)
 		"UnoWinUIQuickStart.Skia.Gtk\\UnoWinUIQuickStart.Skia.Gtk.csproj",
 		#//#endif
     ]

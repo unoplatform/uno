@@ -38,7 +38,9 @@ namespace Windows.UI.ViewManagement
 			{
 				var activity = ContextHelper.Current as Activity;
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 				int uiVisibility = (int)activity.Window.DecorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
 				var isForegroundDark = (int)SystemUiFlags.LightStatusBar == (uiVisibility & (int)SystemUiFlags.LightStatusBar);
@@ -114,7 +116,9 @@ namespace Windows.UI.ViewManagement
 #pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
 			var decorView = activity.Window.DecorView;
+#pragma warning disable CA1422 // Validate platform compatibility
 			var uiOptions = (int)decorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 			var newUiOptions = (int)uiOptions;
 
 			if (_isShown.HasValue)
@@ -143,7 +147,9 @@ namespace Windows.UI.ViewManagement
 				}
 			}
 
+#pragma warning disable CA1422 // Validate platform compatibility
 			decorView.SystemUiVisibility = (StatusBarVisibility)newUiOptions;
+#pragma warning restore CA1422 // Validate platform compatibility
 			activity.OnConfigurationChanged(activity.Resources.Configuration);
 #pragma warning restore 618
 		}

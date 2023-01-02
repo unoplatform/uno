@@ -13,6 +13,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
 #if XAMARIN_IOS
@@ -47,6 +48,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal bool IsTargetPositionSet => m_isTargetPositionSet;
 
 		private bool m_isPositionedForDateTimePicker;
+
+		private bool m_openingCanceled;
 
 		[NotImplemented]
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
@@ -118,7 +121,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup.Child is FrameworkElement child)
 			{
-				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target, PopupPositionInTarget);
+				SizeChangedEventHandler handler = (_, __) => SetPopupPosition(Target, PopupPositionInTarget);
 
 				child.SizeChanged += handler;
 
@@ -244,11 +247,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void Hide(bool canCancel)
 		{
-			if (!IsOpen)
-			{
-				return;
-			}
-
 			if (canCancel)
 			{
 				bool cancel = false;
@@ -258,6 +256,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					return;
 				}
 			}
+
+			m_openingCanceled = true;
 
 			Close();
 			IsOpen = false;
@@ -298,6 +298,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+			XamlRoot = placementTarget?.XamlRoot;
+			_popup.XamlRoot = XamlRoot;
+			_popup.PlacementTarget = placementTarget;
 
 			if (showOptions != null)
 			{
@@ -340,8 +343,30 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
+			_popup.DesiredPlacement = EffectivePlacement switch
+			{
+				FlyoutPlacementMode.Top => PopupPlacementMode.Top,
+				FlyoutPlacementMode.Bottom => PopupPlacementMode.Bottom,
+				FlyoutPlacementMode.Left => PopupPlacementMode.Left,
+				FlyoutPlacementMode.Right => PopupPlacementMode.Right,
+				FlyoutPlacementMode.TopEdgeAlignedLeft => PopupPlacementMode.TopEdgeAlignedLeft,
+				FlyoutPlacementMode.TopEdgeAlignedRight => PopupPlacementMode.TopEdgeAlignedRight,
+				FlyoutPlacementMode.BottomEdgeAlignedLeft => PopupPlacementMode.BottomEdgeAlignedLeft,
+				FlyoutPlacementMode.BottomEdgeAlignedRight => PopupPlacementMode.BottomEdgeAlignedRight,
+				FlyoutPlacementMode.LeftEdgeAlignedTop => PopupPlacementMode.LeftEdgeAlignedTop,
+				FlyoutPlacementMode.LeftEdgeAlignedBottom => PopupPlacementMode.LeftEdgeAlignedBottom,
+				FlyoutPlacementMode.RightEdgeAlignedTop => PopupPlacementMode.RightEdgeAlignedTop,
+				FlyoutPlacementMode.RightEdgeAlignedBottom => PopupPlacementMode.RightEdgeAlignedBottom,
+				_ => PopupPlacementMode.Auto,
+			};
+
 			OnOpening();
-			Opening?.Invoke(this, EventArgs.Empty);
+
+			if (m_openingCanceled)
+			{
+				return;
+			}
+
 			Open();
 			SynchronizeContentTemplatedParent();
 			IsOpen = true;
@@ -370,7 +395,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				content.TemplatedParent = TemplatedParent;
 			}
 		}
-		
+
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;
@@ -386,7 +411,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private protected virtual void OnOpening() { }
+		private protected virtual void OnOpening()
+		{
+			m_openingCanceled = false;
+			Opening?.Invoke(this, EventArgs.Empty);
+		}
 
 		internal virtual void OnClosing(ref bool cancel)
 		{
@@ -424,13 +453,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			EnsurePopupCreated();
 
-			SetPopupPositionPartial(Target, PopupPositionInTarget);
+			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
 
 			_popup.IsOpen = true;
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget);
+		private void SetPopupPosition(FrameworkElement placementTarget, Point? positionInTarget)
+		{
+			_popup.PlacementTarget = placementTarget;
+
+			if (positionInTarget is Point position)
+			{
+				_popup.HorizontalOffset = position.X;
+				_popup.VerticalOffset = position.Y;
+			}
+		}
 
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
 			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
@@ -454,6 +492,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			element.SetValue(AttachedFlyoutProperty, value);
 		}
+
+		public static DependencyProperty AttachedFlyoutProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"AttachedFlyout",
+				typeof(FlyoutBase),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(null));
 
 		public static void ShowAttachedFlyout(FrameworkElement flyoutOwner)
 		{
@@ -681,7 +726,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//		// Nudge down if necessary to avoid the exclusion rect
 			//		if (!RectUtil.AreDisjoint(m_exclusionRect, { (float)(horizontalOffset), (float)(verticalOffset), presenterSize.Width, presenterSize.Height }))
-   //         {
+			//         {
 			//			verticalOffset = m_exclusionRect.Y + m_exclusionRect.Height;
 			//		}
 			//	}
@@ -771,7 +816,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					//// Nudge down if necessary to avoid the exclusion rect
 					//if (!RectUtil.AreDisjoint(m_exclusionRect, { (float)(horizontalOffset), (float)(verticalOffset), presenterSize.Width, presenterSize.Height }))
-     //       {
+					//       {
 					//	verticalOffset = m_exclusionRect.Y + m_exclusionRect.Height;
 					//}
 				}
@@ -805,63 +850,70 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return presenterRect;
 		}
 
-		internal static PreferredJustification GetJustificationFromPlacementMode(FlyoutPlacementMode placement)
+		internal static PreferredJustification GetJustificationFromPlacementMode(PopupPlacementMode placement, bool fullPlacementRequested)
 		{
+			if (fullPlacementRequested)
+			{
+				return PreferredJustification.Center;
+			}
+
 			switch (placement)
 			{
-				case FlyoutPlacementMode.Full:
-				case FlyoutPlacementMode.Top:
-				case FlyoutPlacementMode.Bottom:
-				case FlyoutPlacementMode.Left:
-				case FlyoutPlacementMode.Right:
+				case PopupPlacementMode.Top:
+				case PopupPlacementMode.Bottom:
+				case PopupPlacementMode.Left:
+				case PopupPlacementMode.Right:
 					return PreferredJustification.Center;
-				case FlyoutPlacementMode.TopEdgeAlignedLeft:
-				case FlyoutPlacementMode.BottomEdgeAlignedLeft:
+				case PopupPlacementMode.TopEdgeAlignedLeft:
+				case PopupPlacementMode.BottomEdgeAlignedLeft:
 					return PreferredJustification.Left;
-				case FlyoutPlacementMode.TopEdgeAlignedRight:
-				case FlyoutPlacementMode.BottomEdgeAlignedRight:
+				case PopupPlacementMode.TopEdgeAlignedRight:
+				case PopupPlacementMode.BottomEdgeAlignedRight:
 					return PreferredJustification.Right;
-				case FlyoutPlacementMode.LeftEdgeAlignedTop:
-				case FlyoutPlacementMode.RightEdgeAlignedTop:
+				case PopupPlacementMode.LeftEdgeAlignedTop:
+				case PopupPlacementMode.RightEdgeAlignedTop:
 					return PreferredJustification.Top;
-				case FlyoutPlacementMode.LeftEdgeAlignedBottom:
-				case FlyoutPlacementMode.RightEdgeAlignedBottom:
+				case PopupPlacementMode.LeftEdgeAlignedBottom:
+				case PopupPlacementMode.RightEdgeAlignedBottom:
 					return PreferredJustification.Bottom;
 				default:
 					if (typeof(FlyoutBase).Log().IsEnabled(LogLevel.Error))
 					{
-						typeof(FlyoutBase).Log().LogError("Unsupported FlyoutPlacementMode");
+						typeof(FlyoutBase).Log().LogError("Unsupported PopupPlacementMode");
 					}
 					return PreferredJustification.Center;
 			}
 		}
 
-		internal static MajorPlacementMode GetMajorPlacementFromPlacement(FlyoutPlacementMode placement)
+		internal static MajorPlacementMode GetMajorPlacementFromPlacement(PopupPlacementMode placement, bool fullPlacementRequested)
 		{
+			if (fullPlacementRequested)
+			{
+				return MajorPlacementMode.Full;
+			}
+
 			switch (placement)
 			{
-				case FlyoutPlacementMode.Full:
-					return MajorPlacementMode.Full;
-				case FlyoutPlacementMode.Top:
-				case FlyoutPlacementMode.TopEdgeAlignedLeft:
-				case FlyoutPlacementMode.TopEdgeAlignedRight:
+				case PopupPlacementMode.Top:
+				case PopupPlacementMode.TopEdgeAlignedLeft:
+				case PopupPlacementMode.TopEdgeAlignedRight:
 					return MajorPlacementMode.Top;
-				case FlyoutPlacementMode.Bottom:
-				case FlyoutPlacementMode.BottomEdgeAlignedLeft:
-				case FlyoutPlacementMode.BottomEdgeAlignedRight:
+				case PopupPlacementMode.Bottom:
+				case PopupPlacementMode.BottomEdgeAlignedLeft:
+				case PopupPlacementMode.BottomEdgeAlignedRight:
 					return MajorPlacementMode.Bottom;
-				case FlyoutPlacementMode.Left:
-				case FlyoutPlacementMode.LeftEdgeAlignedTop:
-				case FlyoutPlacementMode.LeftEdgeAlignedBottom:
+				case PopupPlacementMode.Left:
+				case PopupPlacementMode.LeftEdgeAlignedTop:
+				case PopupPlacementMode.LeftEdgeAlignedBottom:
 					return MajorPlacementMode.Left;
-				case FlyoutPlacementMode.Right:
-				case FlyoutPlacementMode.RightEdgeAlignedTop:
-				case FlyoutPlacementMode.RightEdgeAlignedBottom:
+				case PopupPlacementMode.Right:
+				case PopupPlacementMode.RightEdgeAlignedTop:
+				case PopupPlacementMode.RightEdgeAlignedBottom:
 					return MajorPlacementMode.Right;
 				default:
 					if (typeof(FlyoutBase).Log().IsEnabled(LogLevel.Error))
 					{
-						typeof(FlyoutBase).Log().LogError("Unsupported FlyoutPlacementMode");
+						typeof(FlyoutBase).Log().LogError("Unsupported PopupPlacementMode");
 					}
 					return MajorPlacementMode.Full;
 			}

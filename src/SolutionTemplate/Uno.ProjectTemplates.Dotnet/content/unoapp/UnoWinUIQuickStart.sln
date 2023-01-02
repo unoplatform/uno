@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 15.0.26124.0
 
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnoWinUIQuickStart.Shared", "UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart", "UnoWinUIQuickStart\UnoWinUIQuickStart.csproj", "{A5B8155A-119F-4794-B551-C6F3CF7E5411}"
 EndProject
 
 #//#if (mobile)
@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Skia.WPF
 EndProject
 #//#endif
 
-#//#if (winui-desktop)
+#//#if (Windows)
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoWinUIQuickStart.Windows", "UnoWinUIQuickStart.Windows\UnoWinUIQuickStart.Windows.csproj", "{1AA13270-F438-4864-9435-54FD806E10EA}"
 EndProject
 #//#endif
@@ -47,7 +47,6 @@ Global
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid3$}*SharedItemsImports = 4
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{40ea03f7-8a22-4143-b251-79bac3eb13d2}*SharedItemsImports = 5
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid5$}*SharedItemsImports = 5
-		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid1$}*SharedItemsImports = 4
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{$guid4$}*SharedItemsImports = 4
 		UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems*{a5b8155a-118f-4794-b551-c6f3cf7e5411}*SharedItemsImports = 5
@@ -313,6 +312,35 @@ Global
 		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x64.Build.0 = Release|Any CPU
 		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x86.ActiveCfg = Release|Any CPU
 		{40EA03F7-8A22-4143-B251-79BAC3EB13D2}.Release|x86.Build.0 = Release|Any CPU
+
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|ARM.Build.0 = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|ARM64.Build.0 = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|iPhone.Build.0 = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|x64.Build.0 = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5B8155A-119F-4794-B551-C6F3CF7E5411}.Release|x86.Build.0 = Release|Any CPU
 
 		{40EA03F7-8A22-1234-B251-79BAC3EB13D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{40EA03F7-8A22-1234-B251-79BAC3EB13D2}.Debug|Any CPU.Build.0 = Debug|Any CPU

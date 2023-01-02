@@ -4,14 +4,27 @@
 		$if$($UseAndroid$ == True)<TargetFrameworks>$basetargetframework$-android</TargetFrameworks>$endif$
 		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
 		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
-
-		<!-- Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401-->
+		
 		<!--
+		Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401
 		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
 		-->
+  	</PropertyGroup>
 
+  	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
+
+		<!-- Display name -->
+		<ApplicationTitle>$ext_safeprojectname$</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.$ext_safeprojectname$</ApplicationId>
+		<ApplicationIdGuid>$guid1$</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
 
 		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
 		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
@@ -36,11 +49,11 @@
   	</PropertyGroup>
 
   	<ItemGroup>
-    	<PackageReference Include="Uno.WinUI" Version="4.2.6" />
-		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
+    	<PackageReference Include="Uno.WinUI" Version="4.7.0-dev.417" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.417" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.417" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.7.0-dev.417" />
 	</ItemGroup>
 
 	<Choose>
@@ -51,7 +64,7 @@
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 			</ItemGroup>
 			<ItemGroup>
-				    <AndroidEnvironment Include="Android/environment.conf" />
+				<AndroidEnvironment Include="Android/environment.conf" />
 			</ItemGroup>
 		</When>
 
@@ -92,9 +105,14 @@
 
 		<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
 			<PropertyGroup>
+				<TrimMode Condition="'$(Configuration)'=='Release'">link</TrimMode>
 			</PropertyGroup>
 		</When>
 	</Choose>
-
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
+	
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+	
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

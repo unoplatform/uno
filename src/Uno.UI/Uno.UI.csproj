@@ -2,6 +2,12 @@
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<!--
+			Set to false as a temporary workaround for:
+			mergedstyles_071591b3676f22ac4e4712a47cc7d18f.cs(1466,14): error CS1029: #error: 'Property for contract7Present:CornerRadius cannot be found on Windows.UI.Xaml.Controls.Button' [/Users/runner/work/1/s/src/Uno.UI/Uno.UI.netcoremobile.csproj::TargetFramework=net6.0-android]
+			Remove this workaround when fixing https://github.com/unoplatform/uno/issues/10596
+		-->
+		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -115,7 +121,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.Json" />
@@ -199,7 +205,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsMacOS))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />

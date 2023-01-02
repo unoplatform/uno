@@ -30,6 +30,13 @@ See [Uno's code conventions and common patterns here](../contributing/guidelines
 
 See how to implement a new [feature here](../contributing/guidelines/implementing-a-new winui-winrt-feature.md).
 
+## Experimenting with Samples App
+
+The [Samples App](../../../src/SamplesApp) is the development app contained in the Uno.UI solution. It serves as a UI and Runtime Tests host, as well as a playground for validating other API scenarios.
+
+This app is available live at these locations, built from the default branch:
+- WebAssembly: https://aka.platform.uno/wasm-samples-app
+
 ## Adding tests
 
 Uno's stability rests upon a comprehensive testing suite. A code contribution usually isn't complete without a test.

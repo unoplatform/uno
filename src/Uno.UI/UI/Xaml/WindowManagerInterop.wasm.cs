@@ -13,6 +13,10 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Uno.UI.Xaml
 {
 	/// <summary>
@@ -268,6 +272,15 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
+				
+				NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
+
+				var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);
+
+				return new Size(result.DesiredWidth, result.DesiredHeight);
+#else
 				var parms = new WindowManagerMeasureViewParams
 				{
 					HtmlId = htmlId,
@@ -279,6 +292,7 @@ namespace Uno.UI.Xaml
 				var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
 
 				return new Size(ret.DesiredWidth, ret.DesiredHeight);
+#endif
 			}
 		}
 
@@ -333,6 +347,44 @@ namespace Uno.UI.Xaml
 			public string Name;
 
 			public double Value;
+		}
+
+		#endregion
+
+		#region SetStyleString
+
+		internal static void SetStyleString(IntPtr htmlId, string name, string value)
+		{
+			if (UseJavascriptEval)
+			{
+				WebAssemblyRuntime.InvokeJS($@"Uno.UI.WindowManager.current.setStyleString({htmlId}, ""{name}"", ""{WebAssemblyRuntime.EscapeJs(value)}"");");
+			}
+			else
+			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetStyleString(htmlId, name, value);
+#else
+				var parms = new WindowManagerSetStyleStringParams
+				{
+					HtmlId = htmlId,
+					Name = name,
+					Value = value
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setStyleStringNative", parms);
+#endif
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetStyleStringParams
+		{
+			public IntPtr HtmlId;
+
+			public string Name;
+
+			public string Value;
 		}
 
 		#endregion
@@ -403,6 +455,9 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = styles[i].value;
 				}
 
+#if NET7_0_OR_GREATER
+				NativeMethods.SetStyles(htmlId, pairs);
+#else
 				var parms = new WindowManagerSetStylesParams
 				{
 					HtmlId = htmlId,
@@ -411,6 +466,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setStyleNative", parms);
+#endif
 			}
 		}
 
@@ -617,6 +673,9 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = attributes[i].value;
 				}
 
+#if NET7_0_OR_GREATER
+				NativeMethods.SetAttributes(htmlId, pairs);
+#else
 				var parms = new WindowManagerSetAttributesParams()
 				{
 					HtmlId = htmlId,
@@ -625,6 +684,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setAttributesNative", parms);
+#endif
 			}
 		}
 
@@ -1245,6 +1305,21 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				var clipRectValue = clipRect ?? default;
+
+				NativeMethods.ArrangeElement(
+					htmlId,
+					rect.Top,
+					rect.Left,
+					rect.Width,
+					rect.Height,
+					clipRect.HasValue,
+					clipRectValue.Top,
+					clipRectValue.Left,
+					clipRectValue.Bottom,
+					clipRectValue.Right);
+#else
 				var parms = new WindowManagerArrangeElementParams()
 				{
 					HtmlId = htmlId,
@@ -1264,6 +1339,7 @@ namespace Uno.UI.Xaml
 				}
 
 				TSInteropMarshaller.InvokeJS("Uno:arrangeElementNative", parms);
+#endif
 			}
 		}
 
@@ -1462,5 +1538,35 @@ namespace Uno.UI.Xaml
 			Eraser = 5
 		}
 		#endregion
+
+#if NET7_0_OR_GREATER
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
+			internal static partial void ArrangeElement(
+				IntPtr htmlId,
+				double top,
+				double left,
+				double width,
+				double height,
+				bool clip,
+				double clipTop,
+				double clipLeft,
+				double clipBottom,
+				double clipRight);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
+			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
+			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
+			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleNativeFast")]
+			internal static partial void SetStyles(IntPtr htmlId, string[] pairs);
+		}
+#endif
 	}
 }

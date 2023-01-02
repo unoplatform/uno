@@ -15,7 +15,7 @@
 
 		<!--
 		IL Linking is disabled in Debug configuration.
-		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-WebAssembly.html
 		-->
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
@@ -26,10 +26,6 @@
 		<Content Include="manifest.webmanifest" />
 		<Content Include="Assets\AppIcon-*.png" />
 		$endif$
-	</ItemGroup>
-
-	<ItemGroup>
-		<UpToDateCheckInput Include="..\$ext_safeprojectname$.Shared\**\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -57,14 +53,17 @@
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-		<PackageReference Include="Uno.WinUI.WebAssembly" Version="4.2.6" />
-		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.3" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.3" />
+		<PackageReference Include="Uno.WinUI.WebAssembly" Version="4.7.0-dev.417" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.417" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.417" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.11" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.11" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
 
-	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />
-
+	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

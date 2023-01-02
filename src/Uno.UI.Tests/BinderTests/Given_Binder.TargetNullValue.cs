@@ -129,7 +129,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public class ViewModel : System.ComponentModel.INotifyPropertyChanged
 		{
-			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged { add { } remove { } }
 
 			public string NullValue => null;
 

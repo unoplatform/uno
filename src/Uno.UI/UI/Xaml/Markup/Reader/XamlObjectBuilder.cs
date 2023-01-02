@@ -133,6 +133,16 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 					}
 
+					if (rootInstance is null)
+					{
+						// This is a top level dictionary, where explicit members need to
+						// be process explicitly (other types are processed below).
+						foreach (var member in control.Members.Where(m => m != unknownContent))
+						{
+							ProcessNamedMember(control, rd, member, rd);
+						}
+					}
+
 					return rd;
 				}
 				else
@@ -148,6 +158,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
+			else if (type == typeof(Media.Geometry) && unknownContentValue is string geometryStringValue)
+			{
+				var generated = Uno.Media.Parsers.ParseGeometry(geometryStringValue);
+
+				return (Media.Geometry)generated;
+			}
 			else if (
 				_genericConvertibles.Contains(type)
 				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
@@ -158,6 +174,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var instance = component ?? Activator.CreateInstance(type)!;
 				rootInstance ??= instance;
+
+				var instanceAsFrameworkElement = instance as FrameworkElement;
+
+				if (instanceAsFrameworkElement is not null)
+				{
+					instanceAsFrameworkElement.IsParsing = true;
+				}
 
 				IDisposable? TryProcessStyle()
 				{
@@ -196,6 +219,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 						ProcessNamedMember(control, instance, member, rootInstance);
 					}
 				}
+
+				instanceAsFrameworkElement?.CreationComplete();
 
 				return instance;
 			}
@@ -567,7 +592,15 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
+				if (propertyInfo.PropertyType == typeof(ResourceDictionary)
+					|| (
+						propertyInfo.DeclaringType == typeof(ResourceDictionary)
+						&& (
+							propertyInfo.Name == nameof(ResourceDictionary.ThemeDictionaries)
+							|| propertyInfo.Name == nameof(ResourceDictionary.MergedDictionaries)
+						)
+					)
+				)
 				{
 					var methods = propertyInfo.PropertyType.GetMethods();
 					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })

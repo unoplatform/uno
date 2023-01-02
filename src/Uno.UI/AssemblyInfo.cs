@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Uno.Foundation.Diagnostics.CodeAnalysis;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
@@ -27,3 +28,6 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 
 [assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RuntimeTypeMetadataUpdateHandler))]
+
+[assembly: AdditionalLinkerHint("System.Dynamic.ExpandoObject")]
+[assembly: AdditionalLinkerHint("System.Dynamic.DynamicObject")]

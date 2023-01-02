@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public static void SetCssStyle(this UIElement element, string name, string value)
 		{
-			WindowManagerInterop.SetStyles(element.HtmlId, new[] {(name, value)});
+			WindowManagerInterop.SetStyleString(element.HtmlId, name, value);
 		}
 
 		/// <summary>

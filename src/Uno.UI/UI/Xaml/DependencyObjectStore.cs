@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Uno.UI;
 using System.Collections;
 using System.Globalization;
+using Windows.ApplicationModel.Calls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -464,6 +465,8 @@ namespace Windows.UI.Xaml
 					// Resolve the stack once for the instance, for performance.
 					propertyDetails ??= _properties.GetPropertyDetails(property);
 
+					TryClearBinding(value, propertyDetails);
+
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
@@ -512,6 +515,21 @@ namespace Windows.UI.Xaml
 			{
 				// The store has lost its current instance, renove it from its parent.
 				Parent = null;
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void TryClearBinding(object? value, DependencyPropertyDetails propertyDetails)
+		{
+			if (object.ReferenceEquals(value, DependencyProperty.UnsetValue))
+			{
+				var hasTemplatedParentBinding =
+					propertyDetails.GetBinding()?.ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent;
+
+				if (!hasTemplatedParentBinding)
+				{
+					propertyDetails.ClearBinding();
+				}
 			}
 		}
 
@@ -1390,7 +1408,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
+		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
 			if (containingDictionary != null)
 			{

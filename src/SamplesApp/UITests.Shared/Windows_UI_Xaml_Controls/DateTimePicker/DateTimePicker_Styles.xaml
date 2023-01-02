@@ -13,8 +13,6 @@
 	<!-- DatePicker Style -->
 	<Style x:Key="DatePickerStyle"
 		   TargetType="DatePicker">
-		<ios:Setter Property="FlyoutPlacement"
-					Value="Full" />
 		<Setter Property="Orientation"
 				Value="Horizontal" />
 		<Setter Property="IsTabStop"

@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <IsPackable>false</IsPackable>
-    <NoWarn>67</NoWarn>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
@@ -49,8 +48,6 @@
   <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
   <Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
-
-  <Import Project="..\Common.targets" />
 
   <ItemGroup>
     <ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />

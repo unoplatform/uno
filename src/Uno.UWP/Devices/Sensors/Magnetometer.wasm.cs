@@ -1,7 +1,6 @@
 ﻿#if __WASM__
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
 
@@ -13,7 +12,6 @@ namespace Windows.Devices.Sensors
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		[DynamicDependency(nameof(DispatchReading))]
 		private Magnetometer()
 		{
 		}

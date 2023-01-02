@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[Sample]
+	[Sample("Flyouts")]
 	public sealed partial class Flyout_Content_ThemeResource : Page
 	{
         public Flyout_Content_ThemeResource()

@@ -83,7 +83,7 @@ Here's what to look for:
 ## Advanced performance Tracing
 
 ### Profiling applications
-A profiling guide for Uno Platform apps is [available here](articles/guides/profiling-applications.md).
+A profiling guide for Uno Platform apps is [available here](guides/profiling-applications.md).
 
 ### FrameworkTemplatePool
 The framework template pool manages the pooling of ControlTemplates and DataTemplates, and in most cases, the recycling of controls should be high.

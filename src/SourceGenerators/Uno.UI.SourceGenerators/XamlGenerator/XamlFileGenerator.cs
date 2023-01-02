@@ -1079,11 +1079,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static void BuildxBindEventHandlerInitializers(IIndentedStringBuilder writer, List<EventHandlerBackingFieldDefinition> xBindEventsHandlers, string prefix = "")
+		private void BuildxBindEventHandlerInitializers(IIndentedStringBuilder writer, List<EventHandlerBackingFieldDefinition> xBindEventsHandlers, string prefix = "")
 		{
 			foreach (var xBindEventHandler in xBindEventsHandlers)
 			{
-				writer.AppendLineIndented($"{prefix}{xBindEventHandler.Name}?.Invoke(owner, owner.{xBindEventHandler.ComponentName});");
+				var ownerParameter = _isHotReloadEnabled ? "owner," : "";
+
+				writer.AppendLineIndented($"{prefix}{xBindEventHandler.Name}?.Invoke({ownerParameter} owner.{xBindEventHandler.ComponentName});");
 
 				// Only needs to happen once per visual tree creation
 				writer.AppendLineIndented($"{prefix}{xBindEventHandler.Name} = null;");
@@ -2878,7 +2880,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (_xamlResourcesTrimming)
 			{
-				var styleTargetType = resource.Type.Name == "Style"
+				var styleTargetType = (resource.Type.Name == "Style" || resource.Type.Name == "ControlTemplate")
 						? resource.Members.FirstOrDefault(m => m.Member.Name == "TargetType")?.Value as string
 						: null;
 
@@ -3804,7 +3806,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						
 						AddXBindEventHandlerToScope(builderName, ownerName, eventSymbol.ContainingType, componentDefinition);
 
-						using (writer.BlockInvariant($"__that.{builderName} = (__that, __owner) => "))
+						var handlerParameters = _isHotReloadEnabled ? "(__that, __owner)" : "(__owner)";
+
+						using (writer.BlockInvariant($"__that.{builderName} = {handlerParameters} => "))
 						{
 							//
 							// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
@@ -6698,7 +6702,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				throw new InvalidOperationException("The component definition cannot be null.");
 			}
 
-			var builderDelegateType = $"global::System.Action<{ownerTypeName}, {declaringType.ToDisplayString(NullableFlowState.None, SymbolDisplayFormat.FullyQualifiedFormat)}>";
+			var thatParameter = _isHotReloadEnabled ? $"{ownerTypeName}, " : "";
+
+			var builderDelegateType = $"global::System.Action<{thatParameter}{declaringType.ToDisplayString(NullableFlowState.None, SymbolDisplayFormat.FullyQualifiedFormat)}>";
 			var definition = new EventHandlerBackingFieldDefinition(builderDelegateType, fieldName, Accessibility.Private, componentDefinition.MemberName);
 
 			CurrentScope.xBindEventsHandlers.Add(definition);

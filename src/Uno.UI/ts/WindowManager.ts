@@ -61,7 +61,7 @@ namespace Uno.UI {
 		private static buildReadyPromise(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
 				Promise.all(
-					[WindowManager.buildSplashScreen()]
+					[WindowManager.buildSplashScreen(), ExportManager.initialize()]
 				).then(() => resolve(true))
 			});
 		}
@@ -431,6 +431,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setAttributesNativeFast(htmlId: number, pairs: string[]) {
+
+			const element = this.getView(htmlId);
+
+			const length = pairs.length;
+
+			for (let i = 0; i < length; i += 2) {
+				element.setAttribute(pairs[i], pairs[i + 1]);
+			}
+		}
+
 		/**
 			* Set an attribute for an element.
 			*/
@@ -572,6 +583,17 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setStyleNativeFast(htmlId: number, styles: string[]) {
+
+			const elementStyle = this.getView(htmlId).style;
+
+			const stylesLength = styles.length;
+
+			for (let i = 0; i < stylesLength; i += 2) {
+				elementStyle.setProperty(styles[i], styles[i + 1]);
+			}
+		}
+
 		/**
 		* Set a single CSS style of a html element
 		*
@@ -584,6 +606,27 @@ namespace Uno.UI {
 			element.style.setProperty(params.Name, this.handleToString(params.Value));
 
 			return true;
+		}
+
+		public setStyleString(htmlId: number, name: string, value: string): string {
+
+			this.getView(htmlId).style.setProperty(name, value);
+
+			return "ok";
+		}
+
+		public setStyleStringNative(pParams: number): boolean {
+
+			const params = WindowManagerSetStyleStringParams.unmarshal(pParams);
+
+			this.getView(params.HtmlId).style.setProperty(params.Name, params.Value);
+
+			return true;
+		}
+
+		public setStyleStringNativeFast(htmlId: number, name: string, value: string) {
+
+			this.getView(htmlId).style.setProperty(name, value);
 		}
 
 		public setArrangeProperties(elementId: number): string {
@@ -680,25 +723,51 @@ namespace Uno.UI {
 		public arrangeElementNative(pParams: number): boolean {
 
 			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
+
+			this.arrangeElementNativeFast(
+				params.HtmlId,
+				params.Top,
+				params.Left,
+				params.Width,
+				params.Height,
+				params.Clip,
+				params.ClipTop,
+				params.ClipLeft,
+				params.ClipBottom,
+				params.ClipRight);
+
+			return true;
+		}
+
+		public arrangeElementNativeFast(
+			htmlId: number,
+			top: number,
+			left: number,
+			width: number,
+			height: number,
+			clip: boolean,
+			clipTop: number,
+			clipLeft: number,
+			clipBottom: number,
+			clipRight: number) {
+
+			const element = this.getView(htmlId);
 
 			const style = element.style;
 
 			style.position = "absolute";
-			style.top = params.Top + "px";
-			style.left = params.Left + "px";
-			style.width = params.Width === NaN ? "auto" : params.Width + "px";
-			style.height = params.Height === NaN ? "auto" : params.Height + "px";
+			style.top = top + "px";
+			style.left = left + "px";
+			style.width = width === NaN ? "auto" : width + "px";
+			style.height = height === NaN ? "auto" : height + "px";
 
-			if (params.Clip) {
-				style.clip = `rect(${params.ClipTop}px, ${params.ClipRight}px, ${params.ClipBottom}px, ${params.ClipLeft}px)`;
+			if (clip) {
+				style.clip = `rect(${clipTop}px, ${clipRight}px, ${clipBottom}px, ${clipLeft}px)`;
 			} else {
 				style.clip = "";
 			}
 
 			this.setAsArranged(element);
-
-			return true;
 		}
 
 		private setAsArranged(element: HTMLElement | SVGElement) {
@@ -1326,6 +1395,17 @@ namespace Uno.UI {
 			ret2.marshal(pReturn);
 
 			return true;
+		}
+
+		public measureViewNativeFast(htmlId: number, availableWidth: number, availableHeight: number, measureContent: boolean, pReturn: number) {
+
+			const result = this.measureViewInternal(htmlId, availableWidth, availableHeight, measureContent);
+
+			const desiredSize = new WindowManagerMeasureViewReturn();
+			desiredSize.DesiredWidth = result[0];
+			desiredSize.DesiredHeight = result[1];
+
+			desiredSize.marshal(pReturn);
 		}
 
 		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;

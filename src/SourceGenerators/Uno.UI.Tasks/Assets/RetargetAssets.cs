@@ -16,7 +16,7 @@ namespace Uno.UI.Tasks.Assets
 	/// <remarks>
 	/// Currently supports .png, .jpg, .jpeg and .gif.
 	/// </remarks>
-	public class RetargetAssets_v0 : Task
+	public partial class RetargetAssets_v0 : Task
 	{
 		private const int HighDPIThresholdScale = 150;
 
@@ -25,6 +25,9 @@ namespace Uno.UI.Tasks.Assets
 
 		[Required]
 		public string TargetPlatform { get; set; }
+
+		[Required]
+		public string IntermediateOutputPath { get; set; }
 
 		public string AndroidAssetsPrefix { get; set; }
 
@@ -39,6 +42,9 @@ namespace Uno.UI.Tasks.Assets
 
 		[Output]
 		public ITaskItem[] RetargetedAssets { get; set; }
+
+		[Output]
+		public ITaskItem[] PartialAppManifests { get; set; }
 
 		public override bool Execute()
 		{
@@ -63,86 +69,121 @@ namespace Uno.UI.Tasks.Assets
 			}
 
 			Assets = ContentItems.ToArray();
-			RetargetedAssets = Assets
-				.Select(asset => ProcessContentItem(asset, resourceToTargetPath, pathEncoder))
-				.Where(a => a != null)
-				.ToArray();
+
+			ProcessContentItems(Assets, resourceToTargetPath, pathEncoder);
 
 			return true;
 		}
 
-		private TaskItem ProcessContentItem(ITaskItem asset, Func<ResourceCandidate, string> resourceToTargetPath, Func<string, string> pathEncoder)
+		private void ProcessContentItems(ITaskItem[] assets, Func<ResourceCandidate, string> resourceToTargetPath, Func<string, string> pathEncoder)
 		{
-			if (
-				!asset.MetadataNames.OfType<string>().Contains("Link")
-				&& !asset.MetadataNames.OfType<string>().Contains("TargetPath")
-				&& !asset.MetadataNames.OfType<string>().Contains("DefiningProjectDirectory")
-			)
+			List<TaskItem> retargetdAssets = new();
+			List<string> fontAssets = new();
+
+			foreach (var asset in assets)
 			{
-				Log.LogMessage($"Skipping '{asset.ItemSpec}' because 'Link', 'TargetPath' or 'DefiningProjectDirectory' metadata is not set.");
-				return null;
-			}
-
-			var fullPath = asset.GetMetadata("FullPath");
-			var relativePath = asset.GetMetadata("Link") is { Length: > 0 } link
-				? link
-				: asset.GetMetadata("TargetPath");
-
-			if (string.IsNullOrEmpty(relativePath))
-			{
-				relativePath = fullPath.Replace(asset.GetMetadata("DefiningProjectDirectory"), "");
-			}
-
-			relativePath = AlignPath(relativePath);
-
-			if (IsImageAsset(asset.ItemSpec))
-			{
-				var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
-
-				if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), out var scale) && scale > HighDPIThresholdScale)
+				if (
+					!asset.MetadataNames.OfType<string>().Contains("Link")
+					&& !asset.MetadataNames.OfType<string>().Contains("TargetPath")
+					&& !asset.MetadataNames.OfType<string>().Contains("DefiningProjectDirectory")
+				)
 				{
-					Log.LogMessage($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
-					return null;
+					Log.LogMessage($"Skipping '{asset.ItemSpec}' because 'Link', 'TargetPath' or 'DefiningProjectDirectory' metadata is not set.");
+					continue;
 				}
 
-				var targetPath = resourceToTargetPath(resourceCandidate);
+				var fullPath = asset.GetMetadata("FullPath");
+				var relativePath = asset.GetMetadata("Link") is { Length: > 0 } link
+					? link
+					: asset.GetMetadata("TargetPath");
 
-				if (targetPath == null)
+				if (string.IsNullOrEmpty(relativePath))
 				{
-					Log.LogMessage($"Skipping '{asset.ItemSpec}' as it's not supported on {TargetPlatform}.");
-					return null;
+					relativePath = fullPath.Replace(asset.GetMetadata("DefiningProjectDirectory"), "");
 				}
 
-				Log.LogMessage($"Retargeting image '{asset.ItemSpec}' to '{targetPath}'.");
-				return new TaskItem(
-					asset.ItemSpec,
-					new Dictionary<string, string>() {
-						{ "LogicalName", targetPath },
-						{ "AssetType", "image" }
-					});
-			}
-			else
-			{
-				var encodedRelativePath = pathEncoder(relativePath);
+				relativePath = AlignPath(relativePath);
 
-				Log.LogMessage($"Retargeting generic '{asset.ItemSpec}' to '{encodedRelativePath}'.");
-				return new TaskItem(
-					asset.ItemSpec,
-					new Dictionary<string, string>() {
-						{ "LogicalName", encodedRelativePath },
-						{ "AssetType", "generic" }
-					});
+				if (IsImageAsset(asset.ItemSpec))
+				{
+					var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
+
+					if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), out var scale) && scale > HighDPIThresholdScale)
+					{
+						Log.LogMessage($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
+						continue;
+					}
+
+					var targetPath = resourceToTargetPath(resourceCandidate);
+
+					if (targetPath == null)
+					{
+						Log.LogMessage($"Skipping '{asset.ItemSpec}' as it's not supported on {TargetPlatform}.");
+						continue;
+					}
+
+					Log.LogMessage($"Retargeting image '{asset.ItemSpec}' to '{targetPath}'.");
+
+					var item = new TaskItem(
+						asset.ItemSpec,
+						new Dictionary<string, string>
+						{
+							["LogicalName"] = targetPath,
+							["AssetType"] = "image"
+						});
+
+					retargetdAssets.Add(item);
+				}
+				else if (IsFontAsset(asset.ItemSpec))
+				{
+					var encodedRelativePath = pathEncoder(relativePath);
+
+					Log.LogMessage($"Retargeting font '{asset.ItemSpec}' to '{encodedRelativePath}'.");
+
+					fontAssets.Add(encodedRelativePath);
+
+					retargetdAssets.Add(
+						new(
+							asset.ItemSpec,
+							new Dictionary<string, string>
+							{
+								["LogicalName"] = encodedRelativePath,
+								["AssetType"] = "generic"
+							}));
+				}
+				else
+				{
+					var encodedRelativePath = pathEncoder(relativePath);
+
+					Log.LogMessage($"Retargeting generic '{asset.ItemSpec}' to '{encodedRelativePath}'.");
+
+					retargetdAssets.Add(
+						new(
+							asset.ItemSpec,
+							new Dictionary<string, string>
+							{
+								["LogicalName"] = encodedRelativePath,
+								["AssetType"] = "generic",
+							}));
+				}
 			}
+
+			RetargetedAssets = retargetdAssets.ToArray();
+			PartialAppManifests = GenerateFontPartialManifest(fontAssets);
 		}
+
+
+		private bool IsFontAsset(string path)
+			=> Path.GetExtension(path).ToLowerInvariant() is ".ttf"
+				or ".otf"
+				or ".woff"
+				or ".woff2";
 
 		private static bool IsImageAsset(string path)
-		{
-			var extension = Path.GetExtension(path).ToLowerInvariant();
-			return extension == ".png"
-				|| extension == ".jpg"
-				|| extension == ".jpeg"
-				|| extension == ".gif";
-		}
+			=> Path.GetExtension(path).ToLowerInvariant() is ".png"
+				or ".jpg"
+				or ".jpeg"
+				or ".gif";
 
 		private static string AlignPath(string path)
 			=> path

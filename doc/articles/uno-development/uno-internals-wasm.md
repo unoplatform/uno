@@ -22,4 +22,4 @@ Part of Uno for WASM is defined in Typescript (which transpiles to JavaScript), 
 
 Calls into JavaScript from C# generally access methods in the `WindowManagerInterop` .NET class, which calls methods on the `WindowManager` TypeScript class using the `WebAssemblyRuntime.InvokeJS()` method.
 
-Callbacks into C# from JavaScript can be defined using the `mono_bind_static_method` wrapper. C# methods that will be called from JavaScript should be marked with `[Preserve]` attribute, and they must be added to the [LinkerDefinition](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/LinkerDefinition.Wasm.xml) file.
+Callbacks into C# from JavaScript can be defined using the `mono_bind_static_method` wrapper. C# methods that will be called from JavaScript must be added to the [LinkerDefinition](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/LinkerDefinition.Wasm.xml) file.

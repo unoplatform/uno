@@ -24,7 +24,6 @@ namespace Windows.Networking.Connectivity
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
 		
-		[Preserve]
 		public static int DispatchStatusChanged()
 		{
 			OnNetworkStatusChanged();

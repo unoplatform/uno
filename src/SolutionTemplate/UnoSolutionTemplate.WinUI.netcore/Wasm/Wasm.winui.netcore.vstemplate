@@ -19,9 +19,6 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project TargetFileName="$ext_safeprojectname$.Wasm.csproj" File="UnoQuickStart.Wasm.csproj" ReplaceParameters="true">
-			<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
-			<ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
-	  		<ProjectItem ReplaceParameters="true" TargetFileName="manifest.webmanifest">manifest.webmanifest</ProjectItem>
 			<Folder Name="Properties" TargetFolderName="Properties">
 				<ProjectItem TargetFileName="launchSettings.json" ReplaceParameters="true">launchSettings.json</ProjectItem>
 			</Folder>
@@ -42,6 +39,9 @@
 			<Folder Name="WasmScripts" TargetFolderName="WasmScripts">
 				<ProjectItem ReplaceParameters="true" TargetFileName="AppManifest.js">AppManifest.js</ProjectItem>
 			</Folder>
+			<ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
+			<ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
+	  		<ProjectItem ReplaceParameters="true" TargetFileName="manifest.webmanifest">manifest.webmanifest</ProjectItem>
 		</Project>
 	</TemplateContent>
 </VSTemplate>

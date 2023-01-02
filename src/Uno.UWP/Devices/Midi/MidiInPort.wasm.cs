@@ -42,7 +42,6 @@ namespace Windows.Devices.Midi
 			WebAssemblyRuntime.InvokeJS(removeListenerCommand);
 		}
 
-		[Preserve]
 		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
 #if DEBUG

@@ -43,7 +43,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 		}
 
-		[Preserve]
 		public static int DispatchStateChanged(string id, string name, bool isInput, bool isConnected)
 		{
 			if (isInput)

@@ -8,9 +8,7 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
@@ -61,7 +59,6 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\..\Common.targets" />
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
 

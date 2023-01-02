@@ -2,9 +2,14 @@
 using Uno;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Uno.Devices.Sensors.Helpers;
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
+using NativeMethods = __Windows.Devices.Sensors.Accelerometer.NativeMethods;
+#endif
 
 namespace Windows.Devices.Sensors
 {
@@ -17,7 +22,6 @@ namespace Windows.Devices.Sensors
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		[DynamicDependency(nameof(DispatchReading))]
 		private Accelerometer()
 		{
 		}
@@ -26,9 +30,13 @@ namespace Windows.Devices.Sensors
 
 		private static Accelerometer TryCreateInstance()
 		{
+#if NET7_0_OR_GREATER
+			var initialized = NativeMethods.Initialize();
+#else
 			var command = $"{JsType}.initialize()";
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-			if (bool.Parse(initialized) == true)
+			var initialized = bool.Parse(Uno.Foundation.WebAssemblyRuntime.InvokeJS(command));
+#endif
+			if (initialized)
 			{
 				return new Accelerometer();
 			}
@@ -57,8 +65,12 @@ namespace Windows.Devices.Sensors
 			//we have already started reading previously
 			if (_shaken == null || _readingChanged == null)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.StartReading();
+#else
 				var command = $"{JsType}.startReading()";
 				Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+#endif
 			}
 		}
 
@@ -68,8 +80,12 @@ namespace Windows.Devices.Sensors
 			//we only stop when both are null
 			if (_shaken == null && _readingChanged == null)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.StopReading();
+#else
 				var command = $"{JsType}.stopReading()";
 				Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+#endif
 			}
 		}
 
@@ -84,6 +100,9 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">Accelerometer Y</param>
 		/// <param name="z">Accelerometer Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchReading(float x, float y, float z)
 		{
 			if ( _instance == null)

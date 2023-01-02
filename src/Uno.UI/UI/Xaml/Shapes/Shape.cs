@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			}
 
-#region Stroke Dependency Property
+		#region Stroke Dependency Property
 		public Brush Stroke
 		{
 			get => (Brush)this.GetValue(StrokeProperty);
@@ -112,9 +112,9 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-#endregion
+		#endregion
 
-#region StrokeThickness Dependency Property
+		#region StrokeThickness Dependency Property
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
@@ -133,9 +133,9 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-#endregion
+		#endregion
 
-#region Stretch Dependency Property
+		#region Stretch Dependency Property
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -155,9 +155,9 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-#endregion
+		#endregion
 
-#region StrokeDashArray Dependency Property
+		#region StrokeDashArray Dependency Property
 		public DoubleCollection StrokeDashArray
 		{
 			get => (DoubleCollection)this.GetValue(StrokeDashArrayProperty);
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 			)
 		);
-#endregion
+		#endregion
 
 #if LEGACY_SHAPE_MEASURE
 		protected virtual void OnFillChanged(Brush newValue)

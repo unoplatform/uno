@@ -22,7 +22,6 @@ namespace Windows.Media.SpeechRecognition
 
 		private TaskCompletionSource<SpeechRecognitionResult> _currentCompletionSource;
 
-		[Preserve]
 		public static int DispatchStatus(string instanceId, string state)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -35,7 +34,6 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
-		[Preserve]
 		public static int DispatchError(string instanceId, string error)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -56,7 +54,6 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
-		[Preserve]
 		public static int DispatchHypothesis(string instanceId, string hypothesis)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -66,7 +63,6 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
-		[Preserve]
 		public static int DispatchResult(string instanceId, string result, double confidence)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))

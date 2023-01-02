@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetStyle(string name, string value)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
+			Uno.UI.Xaml.WindowManagerInterop.SetStyleString(HtmlId, name, value);
 		}
 
 		protected internal void SetStyle(string name, double value)

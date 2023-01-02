@@ -15,11 +15,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.AppCenter" Version="5.0.0" />
+		<PackageReference Include="Microsoft.AppCenter" Version="5.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageReference Include="NUnit" Version="3.13.3" />
-		<PackageReference Include="NUnit.Engine" Version="3.14.0" />
+		<PackageReference Include="NUnit.Engine" Version="3.16.0" />
 		<PackageReference Include="Refit" Version="6.3.2" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
@@ -27,13 +27,6 @@
 
 	<ItemGroup>
 		<Folder Include="Properties\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-		<Reference Include="System.Windows.Forms" />
-		<Reference Include="WindowsBase" />
 	</ItemGroup>
 
 </Project>

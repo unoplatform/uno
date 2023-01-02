@@ -4,22 +4,21 @@ using System.Runtime.Serialization;
 
 namespace Uno.ApplicationModel.Contacts.Internal
 {
-	[DataContract]
 	internal class WasmContact
 	{
-		[DataMember(Name = "id")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("id")]
 		public string? Id { get; set; }
 
-		[DataMember(Name = "email")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("email")]
 		public string[]? Email { get; set; }
 
-		[DataMember(Name = "name")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("name")]
 		public string[]? Name { get; set; }
 
-		[DataMember(Name = "tel")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("tel")]
 		public string[]? Tel { get; set; }
 
-		[DataMember(Name = "address")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("address")]
 		public WasmContactAddress[]? Address { get; set; }
 	}
 }

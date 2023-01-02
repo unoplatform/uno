@@ -26,8 +26,10 @@ namespace Windows.Services.Maps
 			//Get the locale directly instead of using ApplicationLanguages.Language.ToLanguageTag() and converting to Locale.
 			//ToLanguageTag() causes a bug in Xamarin, fixed in Xamarin 4. NoSuchMethodError Java exception is thrown
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 			var locale = context.Resources.Configuration.Locale ?? Locale.Default;
 #pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning restore CA1422 // Validate platform compatibility
 
 			_geocoder = new Geocoder(context, locale);
         }
@@ -47,7 +49,7 @@ namespace Windows.Services.Maps
                 queryPoint.Position.Longitude,
                 maxResults: MaxResults
             );
-                        
+
             var locations = addresses.Select(loc =>
             {
                 var point = new Geopoint(new BasicGeoposition

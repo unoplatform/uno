@@ -506,6 +506,11 @@ namespace SamplesApp
 #if __SKIA__
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 #endif
+
+#if HAS_UNO
+			// Allow template pool to work under higher memory load for CI.
+			FrameworkTemplatePool.HighMemoryThreshold = 0.9f;
+#endif
 		}
 
 

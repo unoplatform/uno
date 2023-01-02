@@ -7,7 +7,6 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
 	<Import Project="../../targetframework-override.props"/>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
@@ -25,10 +24,6 @@
 	<PropertyGroup>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -54,7 +49,6 @@
 	  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 	</ItemGroup>
 
-	<Import Project="..\..\Common.targets" />
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>

@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private readonly Func<XamlMember, Type?> _findPropertyTypeByXamlMember;
 		private readonly Func<Type?, PropertyInfo?> _findContentProperty;
 
-		public static ImmutableDictionary<string, string[]> KnownNamespaces { get; }
+		private static ImmutableDictionary<string, string[]> KnownNamespaces { get; }
 			= new Dictionary<string, string[]>
 			{
 				{

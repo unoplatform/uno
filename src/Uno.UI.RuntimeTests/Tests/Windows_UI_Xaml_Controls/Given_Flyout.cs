@@ -616,6 +616,237 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = null;
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public void When_Hide_Always_Closing()
+		{
+			Flyout flyout = new Flyout();
+			var closingCalled = false;
+			flyout.Closing += (sender, args) => closingCalled = true;
+
+			flyout.Hide();
+			Assert.IsTrue(closingCalled);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_Canceled()
+		{
+			Flyout flyout = new Flyout();
+			try
+			{
+				var button = new Button()
+				{
+					Content = "Test"
+				};
+				TestServices.WindowHelper.WindowContent = button;
+				await TestServices.WindowHelper.WaitForIdle();
+
+
+				var innerBorder = new Border()
+				{
+					Width = 100,
+					Height = 100
+				};
+				flyout.Content = innerBorder;
+				flyout.Opening += (sender, args) => ((Flyout)sender).Hide();
+				flyout.ShowAt(button);
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(flyout.IsOpen);
+				Assert.IsFalse(innerBorder.IsLoaded);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_And_Closing_Canceled()
+		{
+			Flyout flyout = new Flyout();
+			bool cancelClosing = true;
+			try
+			{
+				var button = new Button()
+				{
+					Content = "Test"
+				};
+				TestServices.WindowHelper.WindowContent = button;
+				await TestServices.WindowHelper.WaitForIdle();
+
+
+				var innerBorder = new Border()
+				{
+					Width = 100,
+					Height = 100
+				};
+				flyout.Content = innerBorder;
+				flyout.Opening += (sender, args) => ((Flyout)sender).Hide();
+
+				void OnClosing(object sender, FlyoutBaseClosingEventArgs args)
+				{
+					args.Cancel = cancelClosing;
+				}
+				flyout.Closing += OnClosing;
+				flyout.ShowAt(button);
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(flyout.IsOpen);
+				Assert.IsTrue(innerBorder.IsLoaded);
+			}
+			finally
+			{
+				cancelClosing = false;
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Opening_XamlRootIsSet()
+		{
+			var flyout = new Flyout();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+
+				var capture = default(XamlRoot);
+
+				flyout.Opening += (s, e) => capture = (s as Flyout).XamlRoot;
+
+				flyout.ShowAt(host);
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout.Hide();
+
+				Assert.AreEqual(host.XamlRoot, capture, "Flyout did not inherit the XamlRoot from its placementTarget.");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Button_ContextFlyout_XamlRoot()
+		{
+			var flyout = new Flyout();
+			var host = new Button() { Content = "Asd" };
+			host.ContextFlyout = flyout;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+		}
+
+		[TestMethod]
+		public async Task When_SplitButton_Flyout_XamlRoot()
+		{
+			var flyout = new Flyout();
+			var host = new Microsoft.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
+			host.Flyout = flyout;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+		}
+
+		[TestMethod]
+		public async Task When_Button_Flyout_XamlRoot()
+		{
+			var flyout = new Flyout();
+			var host = new Button() { Content = "Asd" };
+			host.Flyout = flyout;
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Flyout_Popup_XamlRoot()
+		{
+			var flyout = new Flyout();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				flyout.Content = new Button() { Content = "Test" };
+				
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+
+				flyout.ShowAt(host);
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].Child.XamlRoot);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_AttachedFlyout_Popup_XamlRoot()
+		{
+			var flyout = new Flyout();
+			try
+			{
+				var host = new Button() { Content = "Asd" };
+				flyout.Content = new Button() { Content = "Test" };
+				FlyoutBase.SetAttachedFlyout(host, flyout);
+
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(host);
+				
+				Assert.IsNull(flyout.XamlRoot);
+				FlyoutBase.ShowAttachedFlyout(host);
+
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, flyout.XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].XamlRoot);
+				Assert.AreEqual(host.XamlRoot, popups[0].Child.XamlRoot);
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
