@@ -26,15 +26,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="Test\**\*.cs" />
-		<None Remove="Test\**\*.*" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<Reference Remove="System.Xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 

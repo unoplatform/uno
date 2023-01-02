@@ -52,13 +52,13 @@
 	<Compile Remove="**\*.wasm.cs" />
 	<Compile Include="**\*.wasm.cs"
                      Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs"
-                     Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'" />
+                     Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'" />
 
 	<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" />
 	<Compile Remove="**\*.skia.cs" />
 	<Compile Include="**\*.skia.cs"
                      Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs"
-                     Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'" />
+                     Condition="'$(UnoRuntimeIdentifier)'=='Skia'" />
 
 	<None Include="**\*.netstdref.cs" Exclude="bin\**\*.netstdref.cs;obj\**\*.netstdref.cs" />
 	<Compile Remove="**\*.netstdref.cs" />
