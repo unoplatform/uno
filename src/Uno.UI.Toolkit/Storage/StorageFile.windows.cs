@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP || WINDOWS
+﻿#if WINDOWS_UWP || WINDOWS || WINUI
 #nullable enable
 
 using System.Threading;
