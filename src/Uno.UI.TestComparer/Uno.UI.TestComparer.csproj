@@ -29,11 +29,4 @@
 		<Folder Include="Properties\" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-		<Reference Include="System.Windows.Forms" />
-		<Reference Include="WindowsBase" />
-	</ItemGroup>
-
 </Project>
