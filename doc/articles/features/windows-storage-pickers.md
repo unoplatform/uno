@@ -38,19 +38,21 @@ If you are using Uno.WinUI (Windows App SDK-based form of Uno Platform), you nee
 var picker = new FileOpenPicker();
 ...
 // Initialize for window before picker displays
-// Get the current window's HWND by passing in the Window object
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+// Get the current window's HWND by passing a Window object
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
 // Associate the HWND with the file picker
 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
 
 await picker.PickSingleFileAsync();
 ```
 
-To get the Window, you need to retrieve it. For single-window apps it is easiest to make the `_window` field in the `App.xaml.cs` file `internal static` and then use it for this purpose:
+To get the `Window` instance in single-window apps it is easiest to create a `internal static MainWindow` property in the `App.xaml.cs` file, initialize it in `OnLaunched` and then use it for this purpose:
 
 ```csharp
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 ```
+
+The latest Uno Platform app templates already contain such `MainWindow` property, so you can use it out of the box.
 
 ## Examples
 
@@ -61,7 +63,7 @@ var folderPicker = new FolderPicker();
 folderPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 folderPicker.FileTypeFilter.Add("*");
 #if HAS_UNO_WINUI
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
 #endif
 StorageFolder pickedFolder = await folderPicker.PickSingleFolderAsync();
@@ -88,7 +90,7 @@ fileOpenPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 fileOpenPicker.FileTypeFilter.Add(".txt");
 fileOpenPicker.FileTypeFilter.Add(".csv");
 #if HAS_UNO_WINUI
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
 #endif
 StorageFile pickedFile = await fileOpenPicker.PickSingleFileAsync();
@@ -113,7 +115,7 @@ fileOpenPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 fileOpenPicker.FileTypeFilter.Add(".jpg");
 fileOpenPicker.FileTypeFilter.Add(".png");
 #if HAS_UNO_WINUI
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
 #endif
 var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
@@ -141,7 +143,7 @@ fileSavePicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 fileSavePicker.SuggestedFileName = "myfile.txt";
 fileSavePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".txt", ".text" });
 #if HAS_UNO_WINUI
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
 #endif
 StorageFile saveFile = await fileSavePicker.PickSaveFileAsync();
@@ -220,7 +222,7 @@ savePicker.FileTypeChoices.Add("Text file", new List<string>() { ".txt" });
 savePicker.SuggestedFileName = "New Document";
 
 #if HAS_UNO_WINUI
-var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App._window);
+var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
 #endif
 
