@@ -29,8 +29,4 @@
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Remove="Test\**\*.cs" />
-		<None Remove="Test\**\*.*" />
-	</ItemGroup>
 </Project>
