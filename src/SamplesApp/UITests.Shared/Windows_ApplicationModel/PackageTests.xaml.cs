@@ -14,6 +14,7 @@ namespace UITests.Shared.Windows_ApplicationModel
 		{
 			this.InitializeComponent();
 			DisplayName = SafeSet(() => Package.Current.DisplayName);
+			InstalledPath = SafeSet(() => Package.Current.InstalledPath);
 			var packageId = Package.Current.Id;
 			Architecture = SafeSet(() => packageId.Architecture);
 			FamilyName = SafeSet(() => packageId.FamilyName);
@@ -42,6 +43,8 @@ namespace UITests.Shared.Windows_ApplicationModel
 		}
 
 		public string DisplayName { get; }
+
+		public string InstalledPath { get; }
 
 		public string Architecture { get; }
 
