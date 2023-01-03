@@ -32,21 +32,22 @@ On platforms where the additional features are not supported yet, setting them w
 
 ## Uno.WinUI-specific Initialization
 
-If your app is using **Uno.WinUI** (Windows App SDK-based form of Uno Platform), you need to make sure the pickers are initialized for the current window, otherwise the code would fail on Windows. This is done using `WinRT.Interop` and is required for all file and folder pickers. For example in casde of `FileOpenPicker`:
+If you are using Uno.WinUI (Windows App SDK-based form of Uno Platform), you need to make sure the pickers are initialized for the current window, otherwise the code would fail on Windows. This is done using `WinRT.Interop` and is required for all file and folder pickers. For example, in case of `FileOpenPicker`:
 
 ```csharp
 var picker = new FileOpenPicker();
+
 // ...
 
 // Get the current window's HWND by passing a Window object
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
 // Associate the HWND with the file picker
-WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 
 await picker.PickSingleFileAsync();
 ```
 
-To get the `Window` instance in single-window apps it is easiest to create a `internal static MainWindow` property in the `App.xaml.cs` file, initialize it in `OnLaunched` and then use it for this purpose:
+To get the `Window` instance in single-window apps, it is easiest to create an `internal static MainWindow` property in the `App.xaml.cs` file, initialize it in `OnLaunched`, and then use it for this purpose:
 
 ```csharp
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
@@ -67,7 +68,7 @@ folderPicker.FileTypeFilter.Add("*");
 
 // For Uno.WinUI-based apps
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
 
 StorageFolder pickedFolder = await folderPicker.PickSingleFolderAsync();
 if (pickedFolder != null)
@@ -95,7 +96,7 @@ fileOpenPicker.FileTypeFilter.Add(".csv");
 
 // For Uno.WinUI-based apps
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+WinRT.Interop.InitializeWithWindow.Initialize(fileOpenPicker, hwnd);
 
 StorageFile pickedFile = await fileOpenPicker.PickSingleFileAsync();
 if (pickedFile != null)
@@ -121,7 +122,7 @@ fileOpenPicker.FileTypeFilter.Add(".png");
 
 // For Uno.WinUI-based apps
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+WinRT.Interop.InitializeWithWindow.Initialize(fileOpenPicker, hwnd);
 
 var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
 if (pickedFiles.Count > 0)
@@ -150,7 +151,7 @@ fileSavePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".txt", ".
 
 // For Uno.WinUI-based apps
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+WinRT.Interop.InitializeWithWindow.Initialize(fileSavePicker, hwnd);
 
 StorageFile saveFile = await fileSavePicker.PickSaveFileAsync();
 if (saveFile != null)
@@ -229,7 +230,7 @@ savePicker.SuggestedFileName = "New Document";
 
 // For Uno.WinUI-based apps
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
-WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
 
 // For download picker, no dialog is actually triggered here
 // and a temporary file is returned immediately.
