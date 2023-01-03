@@ -9,7 +9,7 @@ partial class StorageFileHelper
 {
 	private static async Task<bool> FileExistsInPackage(string fileName)
 	{
-		var assets = await AssetsManager._assets.Value;
+		var assets = await AssetsManager.Assets.Value;
 		return assets?.Contains(fileName) ?? false;
 	}
 }

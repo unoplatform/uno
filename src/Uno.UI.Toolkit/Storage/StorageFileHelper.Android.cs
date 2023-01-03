@@ -35,7 +35,7 @@ partial class StorageFileHelper
 		var normalizedResName = fileName.ToLowerInvariant();
 		var nameArray = normalizedResName.Split("/");
 		normalizedResName = Path.GetFileNameWithoutExtension(normalizedResName).Replace('.', '_').Replace('-', '_');
-		if (nameArray?.Length > 1)
+		if (nameArray.Length > 1)
 		{
 			//Replace original filename in our array by our normalized resource filename.
 			nameArray[nameArray.Length - 1] = normalizedResName;

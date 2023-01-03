@@ -24,7 +24,7 @@ namespace Windows.Storage.Helpers
 {
 	internal partial class AssetsManager
 	{
-		internal static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
+		internal static Lazy<Task<HashSet<string>>> Assets { get; } = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
 		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
 
 		private static async Task<HashSet<string>> GetAssets(CancellationToken ct)
@@ -39,7 +39,7 @@ namespace Windows.Storage.Helpers
 		public static async Task<string> DownloadAsset(CancellationToken ct, string assetPath)
 		{
 			var updatedPath = assetPath.TrimStart("/");
-			var assetSet = await _assets.Value;
+			var assetSet = await Assets.Value;
 
 			if (assetSet.Contains(updatedPath))
 			{
