@@ -83,7 +83,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(PaddingProperty, value); }
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -172,7 +172,7 @@ namespace Uno.UI.Controls.Legacy
 			set { SetValue(ItemContainerStyleProperty, value); }
 		}
 
-		public static DependencyProperty ItemContainerStyleProperty =
+		public static DependencyProperty ItemContainerStyleProperty { get; } =
 			DependencyProperty.Register(
 				"ItemContainerStyle",
 				typeof(Style),
@@ -292,7 +292,7 @@ namespace Uno.UI.Controls.Legacy
 					case ListViewSelectionMode.Single:
 						var selectedItem = BindableAdapter.SelectedItems.FirstOrDefault();
 
-						// Unselect the current item only if a new selection is made or 
+						// Unselect the current item only if a new selection is made or
 						// the option to unselect the current item is activated.
 						if (selectedItem != null && (selectedItem != newSelection || UnselectOnClick))
 						{
@@ -337,7 +337,7 @@ namespace Uno.UI.Controls.Legacy
 			if (heightMode == MeasureSpecMode.Unspecified)
 			{
 				// By default, given an Unspecified available height, the GridView will be measured to take the height of a single row.
-				// Therefore, we need the code below to ensure the GridView takes the height of all its items. 
+				// Therefore, we need the code below to ensure the GridView takes the height of all its items.
 				heightMeasureSpec = ViewHelper.MakeMeasureSpec(int.MaxValue, MeasureSpecMode.AtMost);
 			}
 

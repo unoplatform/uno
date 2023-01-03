@@ -16,7 +16,7 @@ namespace Windows.Graphics.Display
 
 		private NSObject _didChangeStatusBarOrientationObserver;
 
-		public static UIInterfaceOrientationMask[] PreferredOrientations =
+		private static readonly UIInterfaceOrientationMask[] _preferredOrientations =
 		{
 			UIInterfaceOrientationMask.Portrait,
 			UIInterfaceOrientationMask.LandscapeRight,
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 		public DisplayOrientations CurrentOrientation => GetCurrentOrientation();
 
 		/// <summary>
-		//// Gets the native orientation of the display monitor, 
+		//// Gets the native orientation of the display monitor,
 		///  which is typically the orientation where the buttons
 		///  on the device match the orientation of the monitor.
 		/// </summary>
@@ -68,7 +68,7 @@ namespace Windows.Graphics.Display
 		}
 
 		/// <summary>
-		/// Sets the NativeOrientation property 
+		/// Sets the NativeOrientation property
 		/// to appropriate value based on user interface idiom
 		/// </summary>
 		private DisplayOrientations GetNativeOrientation()
@@ -182,7 +182,7 @@ namespace Windows.Graphics.Display
 			{
 				//Rotate to the most preferred orientation that is requested
 				//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to initially rotate to Portrait rather than PortraitUpsideDown
-				var toOrientation = PreferredOrientations.FirstOrDefault(ori => toOrientationMask.HasFlag(ori)).ToUIInterfaceOrientation();
+				var toOrientation = _preferredOrientations.FirstOrDefault(ori => toOrientationMask.HasFlag(ori)).ToUIInterfaceOrientation();
 
 				UIDevice.CurrentDevice
 					.SetValueForKey(
