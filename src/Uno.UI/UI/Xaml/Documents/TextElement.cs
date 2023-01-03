@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(BaseLineAlignmentProperty, value);
 		}
 
-		public static DependencyProperty BaseLineAlignmentProperty =
+		public static DependencyProperty BaseLineAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"BaseLineAlignment",
 				typeof(BaseLineAlignment),
@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml.Documents
 		public string Name { get; set; }
 #endif
 
-		/// <summary>	
+		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
 		/// </summary>
 		/// <returns>FrameworkElement or <see langword="null"/>.</returns>
