@@ -24,10 +24,10 @@ namespace Windows.Storage.Helpers
 {
 	internal partial class AssetsManager
 	{
-		private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
+		internal static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(() => GetAssets(CancellationToken.None));
 		private static readonly ConcurrentEntryManager _assetsGate = new ConcurrentEntryManager();
 
-		internal static async Task<HashSet<string>> GetAssets(CancellationToken ct)
+		private static async Task<HashSet<string>> GetAssets(CancellationToken ct)
 		{
 			var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 

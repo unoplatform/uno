@@ -3,6 +3,9 @@ using System.Threading;
 using System;
 using System.Threading.Tasks;
 using Uno;
+using System.Reflection;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Uno.UI.Toolkit;
 
@@ -18,5 +21,23 @@ public partial class StorageFileHelper
 #if NET461 || __NETSTD_REFERENCE__
 	private static Task<bool> FileExistsInPackage(string fileName)
 		=> throw new NotImplementedException();
+#endif
+
+#if __SKIA || WINDOWS || WINDOWS_UWP || WINUI
+	private static Task<bool> FileExistsInPackage(string fileName)
+	{
+		var executingPath = Assembly.GetExecutingAssembly().Location;
+		if (!string.IsNullOrEmpty(executingPath))
+		{
+			var path = Path.GetDirectoryName(executingPath);
+			if (!string.IsNullOrEmpty(path))
+			{
+				var fullPath = Path.Combine(path, fileName);
+				return Task.FromResult(File.Exists(fullPath));
+			}
+		}
+
+		return Task.FromResult(false);
+	}
 #endif
 }

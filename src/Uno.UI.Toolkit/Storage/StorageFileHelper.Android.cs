@@ -33,33 +33,26 @@ partial class StorageFileHelper
 		//If not asset found and we detect "/" in filename means we are looking for a nested resource file.
 		//In this case we need to replace '/, -, .' by '_' and remove filename extension before trying to pull it from app resources.
 		var normalizedResName = fileName.ToLowerInvariant();
-		var nameArray = normalizedResName.Split("/")?.ToList();
+		var nameArray = normalizedResName.Split("/");
 		normalizedResName = Path.GetFileNameWithoutExtension(normalizedResName).Replace('.', '_').Replace('-', '_');
-		if (nameArray?.Count > 1)
+		if (nameArray?.Length > 1)
 		{
 			//Replace original filename in our array by our normalized resource filename.
-			nameArray[nameArray.Count - 1] = normalizedResName;
+			nameArray[nameArray.Length - 1] = normalizedResName;
 			//Join our normalized elements without extension
 			normalizedResName = string.Join("_", nameArray);
 		}
 
 		//Look in drawable resources***
 		var resources = context.Resources;
-		int resId = 0;
-		resId = resources?.GetIdentifier(normalizedResName, "drawable", context.PackageName) ?? 0;
-		if (resId != 0)
+		int resId = resources?.GetIdentifier(normalizedResName, "drawable", context.PackageName) ?? 0;
+		if (resId == 0)
 		{
-			return Task.FromResult(true);
+			//Look in mipmap resources***
+			resId = resources?.GetIdentifier(normalizedResName, "mipmap", context.PackageName) ?? 0;
 		}
 
-		//Look in mipmap resources***
-		resId = resources?.GetIdentifier(normalizedResName, "mipmap", context.PackageName) ?? 0;
-		if (resId != 0)
-		{
-			return Task.FromResult(true);
-		}
-
-		return Task.FromResult(false);
+		return Task.FromResult(resId != 0);
 	}
 
 	/// <summary>
@@ -90,9 +83,8 @@ partial class StorageFileHelper
 			}
 			return true;
 		}
-		catch
+		catch(IOException)
 		{
-			//in case of IOException just return false
 			return false;
 		}
 	}
