@@ -6,6 +6,8 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
+		private StorageFolder _installedLocation;
+
 		internal Package()
 		{
 		}
@@ -29,7 +31,7 @@ namespace Windows.ApplicationModel
 #if __WASM__
 		[Uno.NotImplemented("__WASM__")]
 #endif
-		public StorageFolder InstalledLocation => new StorageFolder(GetInstalledPath());
+		public StorageFolder InstalledLocation => _installedLocation ??= new StorageFolder(GetInstalledPath());
 
 		/// <summary>
 		/// Gets the current package's path in the original install folder for the current package.
