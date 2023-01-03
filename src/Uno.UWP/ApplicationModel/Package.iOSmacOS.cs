@@ -21,8 +21,7 @@ namespace Windows.ApplicationModel
 		private bool GetInnerIsDevelopmentMode() => false; //detection not possible on macOS
 #endif
 
-		private string GetInstalledLocation()
-			=> NSBundle.MainBundle.BundlePath;
+		private string GetInstalledPath() => NSBundle.MainBundle.BundlePath;
 
 		private DateTimeOffset GetInstallDate()
 		{
