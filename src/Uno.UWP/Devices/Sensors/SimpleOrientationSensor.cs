@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 	{
 		#region Static
 
-		public static SimpleOrientationSensor _instance;
+		private static SimpleOrientationSensor _instance;
 
 		public static SimpleOrientationSensor GetDefault()
 		{
