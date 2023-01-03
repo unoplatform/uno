@@ -399,6 +399,9 @@ dotnet_diagnostic.CA1309.severity = none
 # CA2101: Specify marshalling for P/Invoke string arguments
 dotnet_diagnostic.CA2101.severity = none
 
+# CA2211: Non-constant fields should not be visible
+dotnet_diagnostic.CA2211.severity = error
+
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = error
 
