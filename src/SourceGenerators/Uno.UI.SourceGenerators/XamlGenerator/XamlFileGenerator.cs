@@ -1215,24 +1215,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string BuildControlInitializerDeclaration(XamlObjectDefinition topLevelControl)
-		{
-			if (IsPage(topLevelControl.Type))
-			{
-				return "protected override void InitializeComponent()";
-			}
-			else if (_skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type, checkInheritance: false))
-			{
-				string contentTypeDisplayString = GetImplicitChildTypeDisplayString(topLevelControl);
-
-				return "public {0} GetContent()".InvariantCultureFormat(contentTypeDisplayString);
-			}
-			else
-			{
-				return "private void InitializeComponent()";
-			}
-		}
-
 		private string GetImplicitChildTypeDisplayString(XamlObjectDefinition topLevelControl)
 		{
 			var contentType = FindImplicitContentMember(topLevelControl)?.Objects.FirstOrDefault()?.Type;

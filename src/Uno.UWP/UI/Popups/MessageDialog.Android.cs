@@ -74,7 +74,7 @@ public partial class MessageDialog
 		}
 	}
 
-	partial void ValidateCommandsNative()
+	private void ValidateCommandsNative()
 	{
 		// On Android, providing more than 3 commands will skip all but the first two and the last.
 		// We intercept this bad situation right away.

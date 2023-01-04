@@ -763,23 +763,6 @@ namespace Uno.UWPSyncGenerator
 			return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + (originalTypeSymbol is IArrayTypeSymbol ? "[]" : "");
 		}
 
-		private string MapGenericParameters(ImmutableArray<ITypeSymbol> genericParameters, ITypeSymbol typeSymbol)
-		{
-			var typeName = typeSymbol.ToString();
-
-			foreach (var typeRef in genericParameters.Select((param, index) => new { param, index }))
-			{
-				typeName = typeName.Replace($"__helper{typeRef.index}__", SanitizeType(typeRef.param));
-			}
-
-			if (typeName.StartsWith("System.", StringComparison.Ordinal))
-			{
-				typeName = "global::" + typeName;
-			}
-
-			return typeName;
-		}
-
 		protected string BuildInterfaces(INamedTypeSymbol type)
 		{
 			var ifaces = new List<string>();

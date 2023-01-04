@@ -22,9 +22,7 @@
 		<_AndroidGenerateManagedBindings>true</_AndroidGenerateManagedBindings>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
 	<PropertyGroup>

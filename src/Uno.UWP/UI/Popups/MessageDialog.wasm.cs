@@ -26,8 +26,4 @@ public partial class MessageDialog
 			ct => Task.FromResult<IUICommand>(new UICommand("OK")) // TODO: Localize (PBI 28711)
 		);
 	}
-
-	partial void ValidateCommandsNative()
-	{
-	}
 }

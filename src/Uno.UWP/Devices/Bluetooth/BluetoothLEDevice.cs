@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -10,17 +10,14 @@ namespace Windows.Devices.Bluetooth
 	public partial class BluetoothLEDevice : global::System.IDisposable
 	{
 
-		public ulong BluetoothAddress { get; internal set; }
-		public BluetoothAddressType BluetoothAddressType { get; internal set; }
-		public BluetoothConnectionStatus ConnectionStatus { get; internal set; }
-		public string Name { get; internal set; }
-		public BluetoothLEAppearance Appearance { get; internal set; }
+		public ulong BluetoothAddress { get; }
+		public BluetoothAddressType BluetoothAddressType { get; }
+		public BluetoothConnectionStatus ConnectionStatus { get; }
+		public string Name { get; }
+		public BluetoothLEAppearance Appearance { get; }
 
-		private BluetoothLEDevice(string name, BluetoothLEAppearance appearance)
+		private BluetoothLEDevice()
 		{
-			// dummy for Error CS8618  Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
-			Name = name;
-			Appearance = appearance;
 		}
 
 		#region "device selectors"

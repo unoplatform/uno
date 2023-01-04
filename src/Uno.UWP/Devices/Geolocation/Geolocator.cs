@@ -76,7 +76,7 @@ namespace Windows.Devices.Geolocation
 		/// <summary>
 		/// Gets or sets the location manually entered into the system by the user, to be utilized if no better options exist.
 		/// </summary>
-		public static BasicGeoposition? DefaultGeoposition { get; set; }		
+		public static BasicGeoposition? DefaultGeoposition { get; set; }
 
 		/// <summary>
 		/// The accuracy level at which the Geolocator provides location updates.
@@ -84,7 +84,7 @@ namespace Windows.Devices.Geolocation
 		/// <remarks>
 		/// Does not overwrite <see cref="DesiredAccuracyInMeters"/> directly.
 		/// Default is equivalent to 500 meters, High is equivalent to 10 meters
-		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
+		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see>
 		/// </remarks>
 		public PositionAccuracy DesiredAccuracy
 		{
@@ -103,7 +103,7 @@ namespace Windows.Devices.Geolocation
 		/// </summary>
 		/// <remarks>
 		/// Does not overwrite <see cref="DesiredAccuracy"/>. When set to null, <see cref="DesiredAccuracy" /> is reapplied.
-		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
+		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see>
 		/// </remarks>
 		public uint? DesiredAccuracyInMeters
 		{
@@ -150,7 +150,7 @@ namespace Windows.Devices.Geolocation
 					OnActualDesiredAccuracyInMetersChanged();
 				}
 			}
-		}		
+		}
 
 		/// <summary>
 		/// Broadcasts status change to all subscribed Geolocator instances
@@ -173,15 +173,6 @@ namespace Windows.Devices.Geolocation
 		partial void StopPositionChanged();
 
 		partial void OnActualDesiredAccuracyInMetersChanged();
-
-		/// <summary>
-		/// Invokes <see cref="PositionChanged" /> event
-		/// </summary>
-		/// <param name="geoposition">Geoposition</param>
-		private void OnPositionChanged(Geoposition geoposition)
-		{
-			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
-		}
 
 		/// <summary>
 		/// Invokes <see cref="StatusChanged" /> event

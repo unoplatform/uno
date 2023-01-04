@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-		
+
 		<!--
 		Enable implicit dotnet runtime forward rolling, as a net5
 		project may run with net6 only SDK installed
@@ -9,9 +9,7 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<Import Project="../../netcore-build-windows.props" />
 

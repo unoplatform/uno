@@ -11,17 +11,15 @@
 
 		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		
+
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<ItemGroup>
 		<CompilerVisibleProperty Include="TSBindingsPath" />
@@ -43,7 +41,7 @@
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
- 
+
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
@@ -56,7 +54,7 @@
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 		<TypeScriptCompile Include="tsBindings\**\*.ts;tsBindings\**\*.tsx" />
 	</ItemGroup>
-	
+
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>

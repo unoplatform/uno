@@ -8,15 +8,11 @@
 		<TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
-
 	<Import Project="../targetframework-override.props"/>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project="Common.props"/>
 </Project>

@@ -8,9 +8,7 @@
 	<Deterministic>true</Deterministic>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.XamlHost</PackageId>

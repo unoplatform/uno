@@ -7,7 +7,6 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props" />
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
@@ -15,10 +14,6 @@
 		<AssemblyName>Uno.UI.Dispatching</AssemblyName>
 		<DefineConstants>$(DefineConstants);IS_UNO_UI_DISPATCHING_PROJECT</DefineConstants>
   </PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
 
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Dispatching</RootNamespace>

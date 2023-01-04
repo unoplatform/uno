@@ -44,10 +44,12 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__ || __WASM__
 		private static void OnContentChanged()
 		{
 			_contentChanged?.Invoke(null, null);
 		}
+#endif
 	}
 }
 #endif

@@ -3,14 +3,12 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
-		
+
 		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>

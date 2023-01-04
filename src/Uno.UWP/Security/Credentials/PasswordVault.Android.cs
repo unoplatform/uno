@@ -173,11 +173,6 @@ This usually means that the device is using an API older than 18 (4.3). More det
 		{
 			private const string _notSupported = @"RSA/ECB/PKCS1Padding with asymetric key is considered not secure and will not  be supported for device under API level 23";
 
-			private const string _lowLevelDeviceTransform = "RSA/ECB/PKCS1Padding";
-			private const string _provider = "AndroidKeyStore";
-			private const string _alias = "uno_passwordvault";
-
-
 			public UnSecureKeyStorePersister(string filePath = null)
 				: base(filePath)
 			{

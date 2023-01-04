@@ -7,9 +7,7 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
@@ -59,7 +57,7 @@
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
-	
+
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
 	<ItemGroup>

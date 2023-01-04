@@ -59,14 +59,14 @@ namespace Windows.Storage.Pickers
 		/// Shows the file picker so that the user can pick one file.
 		/// </summary>
 		/// <param name="pickerOperationId">This argument is ignored and has no effect.</param>
-		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/> 
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/>
 		/// object that represents the file that the user picked.</returns>
 		public IAsyncOperation<StorageFile?> PickSingleFileAsync(string pickerOperationId) => PickSingleFileAsync();
 
 		/// <summary>
 		/// Shows the file picker so that the user can pick one file.
 		/// </summary>
-		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/> 
+		/// <returns>When the call to this method completes successfully, it returns a <see cref="StorageFile"/>
 		/// object that represents the file that the user picked.</returns>
 		public IAsyncOperation<StorageFile?> PickSingleFileAsync()
 		{
@@ -86,7 +86,6 @@ namespace Windows.Storage.Pickers
 
 			return AsyncOperation.FromTask(cancellationToken => PickMultipleFilesTaskAsync(cancellationToken));
 		}
-#endif
 
 		private void ValidateConfiguration()
 		{
@@ -95,5 +94,6 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("You must provide at least a general file type filter ('*')");
 			}
 		}
+#endif
 	}
 }

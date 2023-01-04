@@ -22,9 +22,9 @@ namespace Uno.UI.Dispatching
 	/// Defines a priority-based UI Thread scheduler.
 	/// </summary>
 	/// <remarks>
-	/// This implementation is based on the fact that the native queue will 
+	/// This implementation is based on the fact that the native queue will
 	/// only contain one instance of the callback for the current core dispatcher.
-	/// 
+	///
 	/// This gives the native events, such as touch, the priority over managed-side queued
 	/// events, and will allow a properly prioritized processing of idle events.
 	/// </remarks>
@@ -83,7 +83,10 @@ namespace Uno.UI.Dispatching
 		private readonly object _gate = new object();
 
 		private int _globalCount;
+
+#pragma warning disable CS0649 // Field 'CoreDispatcher._currentPriority' is never assigned to, and will always have its default value - assigned conditionally.
 		private CoreDispatcherPriority _currentPriority;
+#pragma warning restore CS0649 // Field 'CoreDispatcher._currentPriority' is never assigned to, and will always have its default value
 
 		internal bool ShouldRaiseRenderEvents => Rendering != null;
 		/// <summary>
@@ -262,6 +265,7 @@ namespace Uno.UI.Dispatching
 			return Interlocked.Decrement(ref _globalCount);
 		}
 
+#if __ANDROID__ || __WASM__ || __SKIA__ || __MACOS__ || __IOS__ || NET461
 		private void DispatchItems()
 		{
 			UIAsyncOperation? operation = null;
@@ -387,6 +391,19 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
+		private CoreDispatcherSynchronizationContext GetSyncContext(CoreDispatcherPriority priority)
+		{
+			switch (priority)
+			{
+				case CoreDispatcherPriority.High: return _highSyncCtx;
+				case CoreDispatcherPriority.Normal: return _normalSyncCtx;
+				case CoreDispatcherPriority.Low: return _lowSyncCtx;
+				case CoreDispatcherPriority.Idle: return _idleSyncCtx;
+				default: throw new ArgumentOutOfRangeException(nameof(priority));
+			}
+		}
+#endif
+
 		/// <summary>
 		/// Wakes up the dispatcher.
 		/// </summary>
@@ -400,18 +417,6 @@ namespace Uno.UI.Dispatching
 			}
 
 			DecrementGlobalCount();
-		}
-
-		private CoreDispatcherSynchronizationContext GetSyncContext(CoreDispatcherPriority priority)
-		{
-			switch (priority)
-			{
-				case CoreDispatcherPriority.High: return _highSyncCtx;
-				case CoreDispatcherPriority.Normal: return _normalSyncCtx;
-				case CoreDispatcherPriority.Low: return _lowSyncCtx;
-				case CoreDispatcherPriority.Idle: return _idleSyncCtx;
-				default: throw new ArgumentOutOfRangeException(nameof(priority));
-			}
 		}
 	}
 }

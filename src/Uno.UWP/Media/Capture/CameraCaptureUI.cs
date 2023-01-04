@@ -28,6 +28,7 @@ namespace Windows.Media.Capture
 			return AsyncOperation.FromTask(ct => CaptureFile(ct, mode));
 		}
 
+#if __ANDROID__ || __IOS__
 		private static async Task<StorageFile> CreateTempImage(Stream source, string extension)
 		{
 			var filePath = Path.Combine(Windows.Storage.ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + extension);
@@ -42,5 +43,6 @@ namespace Windows.Media.Capture
 
 			return await StorageFile.GetFileFromPathAsync(filePath);
 		}
+#endif
 	}
 }
