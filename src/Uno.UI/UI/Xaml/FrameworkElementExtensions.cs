@@ -368,6 +368,12 @@ namespace Windows.UI.Xaml
 				return true;
 			}
 
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CalendarViewBaseItem_Available && frameworkElement is CalendarViewBaseItem cbi)
+			{
+				borderThickness = cbi.GetItemBorderThickness();
+				return true;
+			}
+
 			borderThickness = default;
 			return false;
 		}

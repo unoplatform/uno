@@ -219,10 +219,7 @@ namespace Windows.UI.Xaml
 		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
-			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
-					? rect.DeflateBy(parent.GetBorderThickness())
-					: rect;
+			LayoutSlotWithMarginsAndAlignments = rect;
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
