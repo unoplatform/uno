@@ -324,6 +324,14 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// This method retrieves the actual border thickness of given FrameworkElement.
+		/// Note that for Control.BorderThickness is not actually applied unless
+		/// it is used somewhere within the ControlTemplate.
+		/// </summary>
+		/// <param name="frameworkElement">Framework element.</param>
+		/// <param name="borderThickness">Thickness.</param>
+		/// <returns>Whether the given element has an actual border.</returns>
 		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
 			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
