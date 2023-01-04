@@ -13,12 +13,13 @@ namespace Windows.ApplicationModel
 	{
 		private const string BundleDisplayNameKey = "CFBundleDisplayName";
 
-		public string DisplayName => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey]?.ToString() ?? string.Empty;
+		private string GetDisplayName() =>
+			NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey]?.ToString() ?? string.Empty;
 
 #if __IOS__
-		private bool GetInnerIsDevelopmentMode() => IsAdHoc;
+		private bool GetIsDevelopmentMode() => IsAdHoc;
 #else
-		private bool GetInnerIsDevelopmentMode() => false; //detection not possible on macOS
+		private bool GetIsDevelopmentMode() => false; //detection not possible on macOS
 #endif
 
 		private string GetInstalledLocation()

@@ -11,13 +11,13 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
-		public string DisplayName =>
+		private string GetDisplayName() =>
 			Application.Context.ApplicationInfo.LoadLabel(Application.Context.PackageManager);
 
 		private string GetInstalledLocation()
 			=> "assets://" + ContextHelper.Current.PackageCodePath;
 
-		private bool GetInnerIsDevelopmentMode()
+		private bool GetIsDevelopmentMode()
 		{
 			try
 			{

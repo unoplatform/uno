@@ -21,9 +21,9 @@ namespace Windows.ApplicationModel
 		private string _logo = "ms-appx://logo";
 		private bool _manifestParsed;
 
-		private bool GetInnerIsDevelopmentMode() => false;
+		private bool GetIsDevelopmentMode() => false;
 
-		private DateTimeOffset GetInstallDate() => DateTimeOffset.Now;
+		private DateTimeOffset GetInstallDate() => new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
 		private string GetInstalledLocation()
 		{
@@ -37,22 +37,16 @@ namespace Windows.ApplicationModel
 			}
 		}
 
-		public string DisplayName
+		private string GetDisplayName()
 		{
-			get
-			{
-				TryParsePackageManifest();
-				return _displayName;
-			}
+			TryParsePackageManifest();
+			return _displayName;
 		}
 
-		public Uri Logo
+		private Uri GetLogo()
 		{
-			get
-			{
-				TryParsePackageManifest();
-				return new Uri(_logo, UriKind.RelativeOrAbsolute);
-			}
+			TryParsePackageManifest();
+			return new Uri(_logo, UriKind.RelativeOrAbsolute);
 		}
 
 		internal static void SetEntryAssembly(Assembly entryAssembly)
@@ -62,7 +56,7 @@ namespace Windows.ApplicationModel
 
 		private void TryParsePackageManifest()
 		{
-			if(_entryAssembly != null && !_manifestParsed)
+			if (_entryAssembly != null && !_manifestParsed)
 			{
 				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
 
