@@ -12,9 +12,7 @@
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
