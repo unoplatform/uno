@@ -7,6 +7,7 @@ using Gtk;
 using Pango;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Foundation.Collections;
@@ -177,8 +178,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			var width = (int)_contentElement.ActualWidth;
-			var height = (int)_contentElement.ActualHeight;
+			var width = (int)(_contentElement.ActualWidth - _contentElement.Padding.Horizontal());
+			var height = (int)(_contentElement.ActualHeight - _contentElement.Padding.Vertical());
 
 			if (_lastSize.Width != width || _lastSize.Height != height)
 			{
@@ -201,7 +202,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
-			var point = transformToRoot.TransformPoint(new Point(0, 0));
+			var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
 			var pointX = point.X;
 			var pointY = point.Y;
 
