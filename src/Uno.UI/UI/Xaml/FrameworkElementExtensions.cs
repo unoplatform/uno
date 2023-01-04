@@ -326,27 +326,9 @@ namespace Windows.UI.Xaml
 
 		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
 			{
-				borderThickness = g.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
-			{
-				borderThickness = sp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
-			{
-				borderThickness = rp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
-			{
-				borderThickness = lp.BorderThickness;
+				borderThickness = p.BorderThicknessInternal;
 				return true;
 			}
 
@@ -368,27 +350,9 @@ namespace Windows.UI.Xaml
 
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
 			{
-				borderThickness = g.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
-			{
-				borderThickness = sp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
-			{
-				borderThickness = rp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
-			{
-				borderThickness = lp.BorderThickness;
+				borderThickness = p.BorderThicknessInternal;
 				return true;
 			}
 
