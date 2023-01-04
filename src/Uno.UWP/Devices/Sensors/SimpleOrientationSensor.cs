@@ -21,7 +21,9 @@ namespace Windows.Devices.Sensors
 
 		#endregion
 
+#pragma warning disable CS0649 // Field 'SimpleOrientationSensor._currentOrientation' is never assigned to, and will always have its default value - Assigned only in Android and iOS.
 		private SimpleOrientation _currentOrientation;
+#pragma warning restore CS0649 // Field 'SimpleOrientationSensor._currentOrientation' is never assigned to, and will always have its default value
 
 		/// <summary>
 		/// Represents a simple orientation sensor.
@@ -57,8 +59,11 @@ namespace Windows.Devices.Sensors
 		/// <summary>
 		/// Occurs each time the simple orientation sensor reports a new sensor reading.
 		/// </summary>
+#pragma warning disable CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used - Used only in Android and iOS.
 		public event Foundation.TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> OrientationChanged;
+#pragma warning restore CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used
 
+#if __ANDROID__ || __IOS__
 		private void SetCurrentOrientation(SimpleOrientation orientation)
 		{
 			if (CoreDispatcher.Main.HasThreadAccess)
@@ -121,5 +126,6 @@ namespace Windows.Devices.Sensors
 
 			return previous;
 		}
+#endif
 	}
 }

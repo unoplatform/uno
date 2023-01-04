@@ -108,20 +108,6 @@ namespace Windows.Media.Capture
 				: true;
 		}
 
-		private async Task ValidateCameraAccess()
-		{
-			if (!IsUsageKeyDefined("NSCameraUsageDescription"))
-			{
-				throw new InvalidOperationException("Info.plist must define NSCameraUsageDescription");
-			}
-
-			var isAllowed = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaTypes.Video.GetConstant());
-			if (!isAllowed)
-			{
-				throw new UnauthorizedAccessException();
-			}
-		}
-
 		private async Task ValidatePhotoLibraryAccess()
 		{
 			if (!IsUsageKeyDefined("NSPhotoLibraryUsageDescription"))

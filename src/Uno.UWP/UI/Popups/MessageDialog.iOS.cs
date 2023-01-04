@@ -70,9 +70,4 @@ public partial class MessageDialog
 			return await result.Task;
 		}
 	}
-
-	partial void ValidateCommandsNative()
-	{		
-		// On iOS, there is no limit. The items will be in a scrollable list.
-	}
 }
