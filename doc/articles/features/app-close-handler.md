@@ -25,12 +25,17 @@ SystemNavigationManagerPreview.CloseRequested += App_CloseRequested;
 private async void App_CloseRequested(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
 {
     var deferral = e.GetDeferral();
-    var dialog = new MessageDialog("Are you sure you want to exit?", "Exit");
-    var confirmCommand = new UICommand("Yes");
-    var cancelCommand = new UICommand("No");
-    dialog.Commands.Add(confirmCommand);
-    dialog.Commands.Add(cancelCommand);
-    if (await dialog.ShowAsync() == cancelCommand)
+    var dialog = new ContentDialog()
+    {
+        Title = "Exit",
+        Content = "Are you sure you want to exit?",
+        XamlRoot = this.XamlRoot,
+        PrimaryButtonText = "Yes",
+        SecondaryButtonText = "No",
+        DefaultButton = ContentDialogButton.Secondary
+    };
+
+    if (await dialog.ShowAsync() == ContentDialogResult.Secondary)
     {
         //cancel close by handling the event
         e.Handled = true;
