@@ -235,8 +235,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FrameworkElement Target { get; private set; }
 
-		public XamlRoot XamlRoot { get; set; }
-
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
 		/// </summary>
@@ -301,6 +299,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			Target = placementTarget;
 			XamlRoot = placementTarget?.XamlRoot;
+			_popup.XamlRoot = XamlRoot;
 			_popup.PlacementTarget = placementTarget;
 
 			if (showOptions != null)
@@ -493,6 +492,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			element.SetValue(AttachedFlyoutProperty, value);
 		}
+
+		public static DependencyProperty AttachedFlyoutProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"AttachedFlyout",
+				typeof(FlyoutBase),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(null));
 
 		public static void ShowAttachedFlyout(FrameworkElement flyoutOwner)
 		{

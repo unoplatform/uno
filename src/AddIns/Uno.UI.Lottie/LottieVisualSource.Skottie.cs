@@ -1,6 +1,12 @@
 ﻿#nullable enable
 
 #if HAS_SKOTTIE
+
+// SkiaSharp.Views.Uno uses the underlying canvas for hardware acceleration.
+#if !__SKIA__ && !__MACCATALYST__
+#define USE_HARDWARE_ACCELERATION
+#endif
+
 using System;
 using System.Threading;
 using Windows.Foundation;
@@ -29,19 +35,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private UIElement? _renderSurface;
 		private SkiaSharp.Skottie.Animation? _animation;
-		private SKXamlCanvas? _softwareCanvas;
 
 
 		private DispatcherQueueTimer? _timer;
 		private object _gate = new();
 
-#if !__MACCATALYST__
+#if USE_HARDWARE_ACCELERATION
 		private SKSwapChainPanel? _hardwareCanvas;
-#endif
-
-		public bool UseHardwareAcceleration { get; set; }
-#if !__SKIA__ // SkiaSharp.Views.Uno uses the underlying canvas for hardware acceleration.
-			= true;
+#else
+		private SKXamlCanvas? _softwareCanvas;
 #endif
 
 		private Uri? _lastSource;
@@ -194,28 +196,24 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			ClearRenderSurface();
 
-#if !__MACCATALYST__
-			if (UseHardwareAcceleration)
-			{
-				_hardwareCanvas = new();
-				_hardwareCanvas.PaintSurface += OnHardwareCanvas_PaintSurface;
+#if USE_HARDWARE_ACCELERATION
+			_hardwareCanvas = new();
+			_hardwareCanvas.PaintSurface += OnHardwareCanvas_PaintSurface;
 
-				AdjustHardwareCanvasOpacity();
-
-				return _hardwareCanvas;
-			}
-			else
+#if __ANDROID__ || __IOS__
+			AdjustHardwareCanvasOpacity();
 #endif
-			{
-				_softwareCanvas = new();
-				_softwareCanvas.PaintSurface += OnSoftwareCanvas_PaintSurface;
-				return _softwareCanvas;
-			}
+			return _hardwareCanvas;
+#else
+			_softwareCanvas = new();
+			_softwareCanvas.PaintSurface += OnSoftwareCanvas_PaintSurface;
+			return _softwareCanvas;
+#endif
 		}
 
+#if USE_HARDWARE_ACCELERATION && (__ANDROID__ || __IOS__)
 		private void AdjustHardwareCanvasOpacity()
 		{
-#if __ANDROID__
 			if (_hardwareCanvas != null)
 			{
 				void UpdateTransparency(object s, object e)
@@ -223,57 +221,41 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					// The SKGLTextureView is opaque by default, so we poke at the tree
 					// to change the opacity of the first view of the SKSwapChainPanel
 					// to make it transparent.
+#if __ANDROID__
 					if (_hardwareCanvas.ChildCount == 1
 						&& _hardwareCanvas.GetChildAt(0) is Android.Views.TextureView texture)
 					{
 						texture.SetOpaque(false);
 					}
-
-					_hardwareCanvas.Loaded -= UpdateTransparency;
-				}
-
-				_hardwareCanvas.Loaded += UpdateTransparency;
-			}
-#elif __IOS__ && !__MACCATALYST__
-			if (_hardwareCanvas != null)
-			{
-				void UpdateTransparency(object s, object e)
-				{
-					// The SKGLTextureView is opaque by default, so we poke at the tree
-					// to change the opacity of the first view of the SKSwapChainPanel
-					// to make it transparent.
+#elif __IOS__
 					if (_hardwareCanvas.Subviews.Length == 1
 						&& _hardwareCanvas.Subviews[0] is GLKit.GLKView texture)
 					{
 						texture.Opaque = false;
 					}
+#endif
 
 					_hardwareCanvas.Loaded -= UpdateTransparency;
 				}
 
 				_hardwareCanvas.Loaded += UpdateTransparency;
 			}
-#endif
 		}
+#endif
 
 		private void ClearRenderSurface()
 		{
-#if !__MACCATALYST__
-			if (UseHardwareAcceleration)
+#if USE_HARDWARE_ACCELERATION
+			if (_hardwareCanvas != null)
 			{
-				if (_hardwareCanvas != null)
-				{
-					_hardwareCanvas.PaintSurface -= OnHardwareCanvas_PaintSurface;
-				}
+				_hardwareCanvas.PaintSurface -= OnHardwareCanvas_PaintSurface;
 			}
-			else
+#else
+			if (_softwareCanvas != null)
+			{
+				_softwareCanvas.PaintSurface -= OnSoftwareCanvas_PaintSurface;
+			}
 #endif
-			{
-				if(_softwareCanvas != null)
-				{
-					_softwareCanvas.PaintSurface -= OnSoftwareCanvas_PaintSurface;
-				}
-			}
 		}
 
 		private void OnSoftwareCanvas_PaintSurface(object? sender, SKPaintSurfaceEventArgs e)
@@ -349,7 +331,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 
 			var frameTime = TimeSpan.FromSeconds((_stopwatch.Elapsed + playState.GetFromProgressUsingDuration(_animation.Duration)).TotalSeconds * _player.PlaybackRate);
-			
+
 			if (frameTime > playState.GetToProgressUsingDuration(_animation.Duration))
 			{
 				if (playState.Looped)
@@ -366,7 +348,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					Stop();
 				}
 			}
-			
+
 			return frameTime;
 		}
 
@@ -401,16 +383,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void Invalidate()
 		{
-#if !__MACCATALYST__
-			if (UseHardwareAcceleration)
-			{
-				_hardwareCanvas?.Invalidate();
-			}
-			else
+#if USE_HARDWARE_ACCELERATION
+			_hardwareCanvas?.Invalidate();
+#else
+			_softwareCanvas?.Invalidate();
 #endif
-			{
-				_softwareCanvas?.Invalidate();
-			}
 		}
 
 		public void Stop()
@@ -446,7 +423,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_stopwatch.Start();
 			_timer?.Start();
-			
+
 			SetIsPlaying(true);
 		}
 

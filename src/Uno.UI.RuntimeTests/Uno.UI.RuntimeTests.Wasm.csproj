@@ -8,7 +8,6 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props" />
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
@@ -54,14 +53,14 @@
 		<Content Include="Assets\**" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(_IsNetStd) or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(_IsNetStd) or $(IsMacOS)">
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Wasm.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />

@@ -190,16 +190,6 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 		}
 
-		private void OnMapElementsChanged(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateMapPolygons();
-		}
-
-		private void OnMapElementsCollectionChanged(NotifyCollectionChangedEventArgs args)
-		{
-			UpdateMapPolygons();
-		}
-
 		private void SetUpOverlayRenderer()
 		{
 			// We do not support GetViewForOverlay.
@@ -238,65 +228,6 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 
 			return null;
-		}
-
-		private void UpdateMapPolygons()
-		{
-			if (_internalMapView != null && _owner != null)
-			{
-				_internalMapView.RemoveOverlays(_overlayRenderers.Keys.ToArray());
-
-				_overlayRenderers.Values.DisposeAll();
-				_overlayRenderers.Clear();
-
-				_elementsDisposable.Disposable = new CompositeDisposable(
-					_owner.MapElements
-					.Select(e => e.RegisterDisposablePropertyChangedCallback((wr, p, args) => UpdateMapPolygons()))
-				);
-
-				foreach (var polygon in _owner.MapElements)
-				{
-					if (polygon is MapPolyline mapPolyline)
-					{
-						AddPolyline(mapPolyline);
-					}
-				}
-			}
-		}
-
-		private void AddPolyline(MapPolyline polyline)
-		{
-			var coordinates = polyline
-				.Path
-				.Positions
-				.Select(point => point.ToLocation())
-				.ToArray();
-
-			var strokeColor = (UIColor)polyline.StrokeColor;
-
-			if (strokeColor == null)
-			{
-				throw new KeyNotFoundException("Stroke color key not found in resources.");
-			}
-
-			var overlay = MKPolyline.FromCoordinates(coordinates);
-			var renderer = new MKPolylineRenderer(overlay)
-			{
-				StrokeColor = strokeColor,
-				LineWidth = (nfloat)polyline.StrokeThickness
-			};
-
-			if (polyline.StrokeThickness != 0 && polyline.StrokeDashed)
-			{
-				renderer.LineDashPattern = new NSNumber[]
-				{
-					polyline.StrokeThickness,
-					4
-				};
-			}
-
-			_overlayRenderers.Add(overlay, renderer);
-			_internalMapView.AddOverlay(overlay);
 		}
 
 		private class MapControlAnnotation : MKAnnotation

@@ -17,9 +17,7 @@
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
 	<PropertyGroup>
@@ -55,12 +53,12 @@
 			<EmbeddedJar Include="$(IntermediateOutputPath)unojars\uno.ui-$(TargetFramework).jar" />
 		</ItemGroup>
 	</Target>
-	
+
 	<ItemGroup>
 		<!-- This feature does not take androidx dependencies in (yet? https://github.com/xamarin/xamarin-android/blob/3b164b02772a13204ecb244b7be542505d4f2cb6/Documentation/guides/BindingJavaSource.md)  -->
 		<AndroidJavaSource Remove="Uno\**\*.java" />
 	</ItemGroup>
-	
+
 	<Target Name="_CleanJavaGenerated" BeforeTargets="Clean">
 		<Message Text="Removing java generated" />
 		<ItemGroup>
@@ -148,9 +146,9 @@
 
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="$(IsMonoAndroid)">
+	<ItemGroup Condition="$(IsAndroid)">
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsMonoAndroid)" />
+	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsAndroid)" />
 
 </Project>

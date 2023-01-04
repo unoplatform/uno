@@ -94,5 +94,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.ActualWidth);
 			Assert.AreNotEqual(0, SUT.ActualHeight);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Inlines_XamlRoot()
+		{
+			var SUT = new InlineTextInSpan();
+			WindowHelper.WindowContent = SUT;
+			var panel = (StackPanel)SUT.Content;
+			var span = (Span)((TextBlock)panel.Children.Single()).Inlines.Single();
+			var inlines = span.Inlines;
+			foreach (var inline in inlines)
+			{
+				Assert.AreEqual(SUT.XamlRoot, inline.XamlRoot);
+			}
+		}
 	}
 }

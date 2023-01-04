@@ -111,6 +111,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
         //    }
         //}
 
+#if false
         /// <summary>
         /// Transform bounds relative to FrameworkElement
         /// </summary>
@@ -141,6 +142,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
             return origin;
         }
+#endif
 
         //private bool _onTakeFocusRequested;
 
@@ -178,6 +180,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
             }
         }
 
+#if false
         private void OnThreadFilterMessage(ref System.Windows.Interop.MSG msg, ref bool handled)
         {
             if (handled)
@@ -191,6 +194,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
             //    handled = desktopWindowXamlSourceNative.PreTranslateMessage(msg);
             //}
         }
+#endif
 
         //protected override bool HasFocusWithinCore()
         //{

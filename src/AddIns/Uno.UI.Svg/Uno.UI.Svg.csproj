@@ -11,9 +11,7 @@
 		<RootNamespace>Uno.UI.Svg</RootNamespace>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<None Remove="buildTransitive\Uno.UI.Svg.targets" />
@@ -33,7 +31,7 @@
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
+	<ItemGroup Condition=" $(IsAndroid) or $(IsIOS) or $(IsMacOS) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>

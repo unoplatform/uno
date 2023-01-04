@@ -32,7 +32,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 	public class Binding_Converter_DataTempate_Model : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged { add { } remove { } }
 
 		private int myVar;
 
@@ -50,7 +50,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		{
 			return $"v:{value?.ToString()} p:{parameter?.ToString()}";
 		}
-		 
+
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			return "Converted Back";

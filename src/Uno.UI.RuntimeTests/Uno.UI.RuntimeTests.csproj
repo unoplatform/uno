@@ -9,7 +9,6 @@
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
-		<NoWarn>$(NoWarn);CS0168;CS0219;CS0067;CS0162</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
@@ -55,14 +54,14 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS)">
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='xamarinmac20'">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 		<Reference Include="System.json" />

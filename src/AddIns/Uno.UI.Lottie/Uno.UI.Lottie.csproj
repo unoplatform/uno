@@ -8,9 +8,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
@@ -26,7 +24,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
+	<ItemGroup Condition=" $(IsAndroid) or $(IsIOS) or $(IsMacOS) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>

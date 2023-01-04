@@ -2,27 +2,26 @@
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
-	
+
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props" />
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<DefineConstants>$(DefineConstants);IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT</DefineConstants>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
-	
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>
-	
+
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -33,18 +32,18 @@
 		<Description>This package provides the .NET interoperability support for WebAssembly in Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
+
 	<ItemGroup>
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
 		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
@@ -80,7 +79,7 @@
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
-		
+
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />

@@ -22,9 +22,7 @@
 		<_AndroidGenerateManagedBindings>true</_AndroidGenerateManagedBindings>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
 	<PropertyGroup>
@@ -156,9 +154,9 @@
 
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="$(IsMonoAndroid)">
+	<ItemGroup Condition="$(IsAndroid)">
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsMonoAndroid)" />
+	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsAndroid)" />
 
 </Project>

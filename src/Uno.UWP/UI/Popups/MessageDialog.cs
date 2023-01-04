@@ -120,7 +120,7 @@ public sealed partial class MessageDialog
 
 	private void ValidateCommands()
 	{
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __ANDROID__
 		if (WinRTFeatureConfiguration.MessageDialog.UseNativeDialog)
 		{
 			ValidateCommandsNative();
@@ -135,6 +135,4 @@ public sealed partial class MessageDialog
 				"On WinUI/UWP adding more commands will cause an exception.");
 		}
 	}
-
-	partial void ValidateCommandsNative();
 }

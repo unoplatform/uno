@@ -35,7 +35,6 @@ Updating these dependencies will require consumers to upgrade their dependencies
 
 These dependencies require care and human testing:
 
-- [Com.Airbnb.Android.Lottie](https://github.com/unoplatform/uno/pull/1201#issuecomment-511499023). This dependency reduces the number of supported SDKs (monoandroid80 is not supported). This dependency will be updated once `monoandroid80` support is dropped from Uno.
 - [CommonServiceLocator](https://github.com/unoplatform/uno/pull/1174#issuecomment-507659717). This specific dependency needs to be removed from Uno.
 - [`cef.redist.x86`](https://github.com/unoplatform/uno/pull/1173#issuecomment-507662267) needs to be kept in alignment with `CefSharp.Wpf`
 - [CefSharp.Wpf](https://github.com/unoplatform/uno/pull/1173#issuecomment-507662267) needs to be kept in alignment with `cef.redist.x86`
