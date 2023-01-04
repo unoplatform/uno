@@ -324,6 +324,48 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
+		{
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
+			{
+				borderThickness = g.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
+			{
+				borderThickness = sp.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
+			{
+				borderThickness = rp.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
+			{
+				borderThickness = lp.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				borderThickness = cp.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				borderThickness = b.BorderThickness;
+				return true;
+			}
+
+			borderThickness = default;
+			return false;
+		}
+
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
 			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
@@ -365,12 +407,6 @@ namespace Windows.UI.Xaml
 			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
 			{
 				borderThickness = b.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CalendarViewBaseItem_Available && frameworkElement is CalendarViewBaseItem cbi)
-			{
-				borderThickness = cbi.GetItemBorderThickness();
 				return true;
 			}
 
