@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Core;
 
 namespace Windows.Devices.Sensors
 {
@@ -97,7 +98,16 @@ namespace Windows.Devices.Sensors
 
 		private void OnReadingChanged(AccelerometerReading reading)
 		{
-			_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
+			if (CoreDispatcher.Main.HasThreadAccess)
+			{
+				_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
+			}
+			else
+			{
+				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => {
+					_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
+				});
+			}
 		}
 
 		internal void OnShaken(DateTimeOffset timestamp)

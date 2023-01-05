@@ -37,7 +37,11 @@ namespace Windows.Devices.Sensors
 
 		private void StartReadingChanged()
 		{
-			_motionManager.StartAccelerometerUpdates(new NSOperationQueue(), AccelerometerDataReceived);
+			var nsoperationqueue = NSOperationQueue.CurrentQueue == null || NSOperationQueue.CurrentQueue == NSOperationQueue.MainQueue
+				? new NSOperationQueue()
+				: NSOperationQueue.CurrentQueue;
+
+			_motionManager.StartAccelerometerUpdates(nsoperationqueue, AccelerometerDataReceived);
 		}
 
 		private void StopReadingChanged()
