@@ -26,8 +26,6 @@
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
 	</ItemGroup>

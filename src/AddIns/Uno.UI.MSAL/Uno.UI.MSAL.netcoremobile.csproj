@@ -58,7 +58,6 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
 	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

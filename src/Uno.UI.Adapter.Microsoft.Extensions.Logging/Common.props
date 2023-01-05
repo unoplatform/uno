@@ -16,8 +16,6 @@
     <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" PrivateAssets="all" />
   </ItemGroup>
 
-  <Import Project="..\Uno.CrossTargetting.props" />
-
   <ItemGroup>
     <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
       <LogicalName>$(AssemblyName).xml</LogicalName>

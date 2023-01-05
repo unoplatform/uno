@@ -49,8 +49,6 @@
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<!-- Remove already included XAML -->
 		<Page Remove="@(Page)" />

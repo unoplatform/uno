@@ -28,8 +28,6 @@
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>

@@ -29,8 +29,6 @@
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>

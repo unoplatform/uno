@@ -42,8 +42,6 @@
 		<TransformFile Include="Transforms\EnumMethods.xml" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<Target Name="_CompileUnoJavaCreateOutputs" BeforeTargets="Build" AfterTargets="Restore">
 		<!--
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up,

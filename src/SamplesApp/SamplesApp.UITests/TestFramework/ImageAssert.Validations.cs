@@ -13,7 +13,7 @@ using NUnit.Framework;
 using Uno.UITest;
 using static System.Math;
 
-#if HAS_UNO || NETFX_CORE
+#if IS_RUNTIME_UI_TESTS
 using Windows.UI;
 
 using Rectangle = System.Drawing.Rectangle;
@@ -127,7 +127,7 @@ public static partial class ImageAssert
 	{
 		var expectedColor = expectation.Values[pixel.Y, pixel.X];
 
-#if HAS_UNO || NETFX_CORE
+#if IS_RUNTIME_UI_TESTS
 		if (expectedColor == Colors.Transparent)
 #else
 		if (expectedColor.IsEmpty)

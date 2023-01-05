@@ -26,8 +26,6 @@
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>

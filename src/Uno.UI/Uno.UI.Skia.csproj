@@ -64,8 +64,6 @@
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<None Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml;$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml" />
 

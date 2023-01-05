@@ -29,8 +29,6 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>

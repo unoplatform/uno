@@ -20,8 +20,6 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>

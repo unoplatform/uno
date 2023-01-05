@@ -34,7 +34,6 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="..\..\build\uno.winui.cross-runtime.targets"/>
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 

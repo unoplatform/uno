@@ -27,8 +27,6 @@
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>

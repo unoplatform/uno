@@ -1,6 +1,6 @@
 <Project ToolsVersion="15.0">
   <Import Project="TargetFrameworkSelection.targets" />
-
+  <Import Project="Uno.CrossTargetting.props" />
   <PropertyGroup>
 	<!-- Override the product attribute to include the UnoRuntimeIdentifier that is defined by projects -->
 	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>

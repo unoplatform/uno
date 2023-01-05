@@ -31,7 +31,6 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 </Project>

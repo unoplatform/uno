@@ -105,8 +105,6 @@
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<None Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml;$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml" />
 

@@ -41,8 +41,6 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 	  <ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />

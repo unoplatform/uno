@@ -43,8 +43,6 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>

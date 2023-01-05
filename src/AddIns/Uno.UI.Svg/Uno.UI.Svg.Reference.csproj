@@ -25,8 +25,6 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />

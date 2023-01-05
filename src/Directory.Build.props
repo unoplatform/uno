@@ -42,17 +42,7 @@
 
     <UNO_UWP_BUILD>true</UNO_UWP_BUILD>
     <DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
-    <DefineConstants Condition="
-		$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('monoandroid'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-android'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net7.0-android'))
-		">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
-    <DefineConstants Condition="
-		$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-ios'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net7.0-ios'))
-		">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 
@@ -262,5 +252,4 @@
       </ItemGroup>
     </When>
   </Choose>
-
 </Project>

@@ -29,8 +29,6 @@
 	  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>

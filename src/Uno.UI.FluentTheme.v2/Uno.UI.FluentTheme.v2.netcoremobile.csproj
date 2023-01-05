@@ -37,7 +37,6 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="FluentMerge.targets" />
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

@@ -31,8 +31,6 @@
 	  <Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
