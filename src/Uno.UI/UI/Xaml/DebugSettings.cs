@@ -21,10 +21,5 @@ namespace Windows.UI.Xaml
 		public bool IsTextPerformanceVisualizationEnabled { get; set; }
 
 		public event BindingFailedEventHandler BindingFailed;
-
-		private void OnBindingFailed(BindingFailedEventArgs args)
-		{
-			BindingFailed?.Invoke(this, args);
-		}
 	}
 }

@@ -293,7 +293,7 @@ public partial class RefreshContainer : ContentControl
 					IRefreshInfoProvider result = SearchTreeForIRefreshInfoProviderRecursiveHelper(m_root, depth);
 					if (result != null)
 					{
-						return result;						
+						return result;
 					}
 					depth++;
 				}
@@ -382,6 +382,7 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
+#if false
 	//Private interface implementations
 	private IRefreshInfoProviderAdapter RefreshInfoProviderAdapter()
 	{
@@ -396,4 +397,5 @@ public partial class RefreshContainer : ContentControl
 		m_hasDefaultRefreshInfoProviderAdapter = false;
 		OnRefreshInfoProviderAdapterChanged();
 	}
+#endif
 }

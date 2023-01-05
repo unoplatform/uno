@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Flag indicating whether the ScrollBar must react to user input or not.
 		bool m_isIgnoringUserInput;
 
-		// Flag indicating whether the mouse is over the 
+		// Flag indicating whether the mouse is over the
 		bool m_isPointerOver;
 
 		// Used to prevent GoToState(true /*bUseTransitions*/) calls while applying the template.
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		// Apply a template to the 
+		// Apply a template to the
 		protected override void OnApplyTemplate()
 		{
 			string strAutomationName;
@@ -601,7 +601,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 
-		// Create ScrollBarAutomationPeer to represent the 
+		// Create ScrollBarAutomationPeer to represent the
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ScrollBarAutomationPeer(this);
@@ -831,10 +831,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => m_isIgnoringUserInput = value;
 		}
 
-		private UIElement ElementHorizontalTemplate => m_tpElementHorizontalTemplate;
-
-		private UIElement ElementVerticalTemplate => m_tpElementVerticalTemplate;
-
 		// Called whenever the Thumb drag operation is started.
 		private void OnThumbDragStarted(
 			object pSender,
@@ -1051,7 +1047,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		//Update scrollbar visibility based on what input device is active and the orientation
-		//of the 
+		//of the
 		void UpdateScrollBarVisibility()
 		{
 			OnOrientationChanged();
@@ -1313,34 +1309,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				if (m_tpElementVerticalPanningThumbVisibility.HasValue) m_tpElementVerticalPanningThumb.Visibility = m_tpElementVerticalPanningThumbVisibility.Value;
 			}
 		}
-
-		// during a SemanticZoomOperation we want to be able to block the scrollbar
-		// without stomping over the user value
-		void BlockIndicatorFromShowing()
-		{
-			if (!m_blockIndicators)
-			{
-				m_blockIndicators = true;
-				ChangeVisualState(false);
-			}
-		}
-
-		void ResetBlockIndicatorFromShowing()
-		{
-			m_blockIndicators = false;
-
-			// Don't change state; stay in NoIndicator. The next ScrollViewer.ShowIndicators()
-			// call will drive our next GoToState() call, with transitions.
-		}
-
-		void AdjustDragValue(double delta)
-		{
-
-			// If somebody is calling this when not dragging, are they confused?
-			var dragging = IsDragging;
-
-			m_dragValue += delta;
-		}
-
 	}
 }

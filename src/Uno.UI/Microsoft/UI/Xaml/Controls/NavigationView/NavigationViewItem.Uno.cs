@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
@@ -47,3 +48,4 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
+#endif

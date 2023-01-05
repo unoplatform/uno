@@ -470,33 +470,6 @@ namespace Windows.UI.Xaml
 			return output.ToArray();
 		}
 
-		private static DependencyProperty[] InternalGetDependencyObjectPropertiesForType(Type type)
-		{
-			var output = new List<DependencyProperty>();
-
-			var props = GetPropertiesForType(type);
-
-			for (int i = 0; i < props.Length; i++)
-			{
-				var prop = props[i];
-				var propertyOptions = (prop.GetMetadata(type) as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.None;
-
-				if (
-					(
-						// We must include explicitly marked properties for now, until the
-						// metadata generator can provide this information.
-						propertyOptions.HasValueInheritsDataContext()
-					)
-					&& !propertyOptions.HasValueDoesNotInheritDataContext()
-				)
-				{
-					output.Add(prop);
-				}
-			}
-
-			return output.ToArray();
-		}
-
 		internal static DependencyProperty Register(string v, Type type1, Type type2, PropertyMetadata propertyMetadata, object updateSourceOnChanged)
 		{
 			throw new NotImplementedException();

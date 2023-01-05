@@ -225,10 +225,12 @@ namespace Windows.UI.Xaml
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
+#if DEBUG
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			OnGenericPropertyUpdatedPartial(args);
 		}
+#endif
 
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading

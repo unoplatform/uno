@@ -33,8 +33,12 @@ public partial class RefreshVisualizer
 	private bool m_isInteractingForRefresh = false;
 	private double m_executionRatio = 0.8;
 	private double m_interactionRatio = 0.0;
+
+#if !HAS_UNO
 	private Compositor? m_compositor = null;
-	private Panel? m_containerPanel = null;
+#endif
+
+	//private Panel? m_containerPanel = null;
 	private Panel? m_root = null;
 	private float m_startingRotationAngle = 0.0f;
 	private RefreshPullDirection m_pullDirection = RefreshPullDirection.TopToBottom;

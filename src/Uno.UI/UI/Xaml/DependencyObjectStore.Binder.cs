@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml
 				//Example: Button A contains a Flyout with Button B inside of it
 				//	Button B has a binding to the Flyout itself
 				//	We should not propagate Button B's DataContext to the Flyout
-				//	since its real parent is actually Button A 
+				//	since its real parent is actually Button A
 				if (parent != null && parent != ActualInstance)
 				{
 					continue;
@@ -185,9 +185,6 @@ namespace Windows.UI.Xaml
 		internal void ApplyElementNameBindings()
 			=> _properties.ApplyElementNameBindings();
 
-		private string GetOwnerDebugString()
-			=> ActualInstance?.GetType().ToString() ?? "[collected]";
-
 		static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.
@@ -201,8 +198,8 @@ namespace Windows.UI.Xaml
 		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
 		/// </summary>
 		/// <remarks>
-		/// Calling this method will specifically restore <see cref="UI.Xaml.Data.Binding.ElementName"/> 
-		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which are not restored as part of the 
+		/// Calling this method will specifically restore <see cref="UI.Xaml.Data.Binding.ElementName"/>
+		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which are not restored as part of the
 		/// normal <see cref="DataContext"/> change flow.
 		/// </remarks>
 		public void RestoreBindings()
@@ -213,10 +210,10 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Clears the bindings for the current binder.
 		/// </summary>
-		/// <remarks> 
-		/// This method is used as an out-of-band replacement for setting the DataContext to null, which 
+		/// <remarks>
+		/// This method is used as an out-of-band replacement for setting the DataContext to null, which
 		/// in the case of two-way bindings, would send the fallback value if it has been set.
-		/// This method may also clear <see cref="UI.Xaml.Data.Binding.ElementName"/> 
+		/// This method may also clear <see cref="UI.Xaml.Data.Binding.ElementName"/>
 		/// and <see cref="UI.Xaml.Data.Binding.Source"/> bindings, which need to be restored
 		/// using the <see cref="RestoreBindings()"/> method.
 		/// </remarks>
@@ -266,7 +263,7 @@ namespace Windows.UI.Xaml
 
 			if (dataContextBinding != null && precedence == DependencyPropertyValuePrecedences.Inheritance)
 			{
-				// Set the DataContext for the bindings using the current DataContext, except for the 
+				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.
 				//
 				// This is to avoid recursion when the datacontext.
@@ -460,7 +457,7 @@ namespace Windows.UI.Xaml
 
 				if (property == null)
 				{
-					// Create a stub property so the BindingPropertyHelper is able to pick up 
+					// Create a stub property so the BindingPropertyHelper is able to pick up
 					// the plain C# properties.
 					property = DependencyProperty.Register(
 						dependencyProperty,

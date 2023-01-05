@@ -53,11 +53,11 @@ public partial class PipsPager : Control
 	private const string c_pipsPagerRepeaterName = "PipsPagerItemsRepeater";
 	private const string c_pipsPagerScrollViewerName = "PipsPagerScrollViewer";
 
-	private const string c_pipsPagerVerticalOrientationButtonWidthPropertyName = "PipsPagerVerticalOrientationButtonWidth";
-	private const string c_pipsPagerVerticalOrientationButtonHeightPropertyName = "PipsPagerVerticalOrientationButtonHeight";
+	//private const string c_pipsPagerVerticalOrientationButtonWidthPropertyName = "PipsPagerVerticalOrientationButtonWidth";
+	//private const string c_pipsPagerVerticalOrientationButtonHeightPropertyName = "PipsPagerVerticalOrientationButtonHeight";
 
-	private const string c_pipsPagerHorizontalOrientationButtonWidthPropertyName = "PipsPagerHorizontalOrientationButtonWidth";
-	private const string c_pipsPagerHorizontalOrientationButtonHeightPropertyName = "PipsPagerHorizontalOrientationButtonHeight";
+	//private const string c_pipsPagerHorizontalOrientationButtonWidthPropertyName = "PipsPagerHorizontalOrientationButtonWidth";
+	//private const string c_pipsPagerHorizontalOrientationButtonHeightPropertyName = "PipsPagerHorizontalOrientationButtonHeight";
 
 	private const string c_pipsPagerHorizontalOrientationVisualState = "HorizontalOrientationView";
 	private const string c_pipsPagerVerticalOrientationVisualState = "VerticalOrientationView";
@@ -437,6 +437,7 @@ public partial class PipsPager : Control
 		}
 	}
 
+#if false
 	private void OnElementIndexChanged(ItemsRepeater itemsRepeater, ItemsRepeaterElementIndexChangedEventArgs args)
 	{
 		var pip = args.Element;
@@ -447,6 +448,7 @@ public partial class PipsPager : Control
 			AutomationProperties.SetPositionInSet(pip, newIndex + 1);
 		}
 	}
+#endif
 
 	private void OnMaxVisualIndicatorsChanged()
 	{

@@ -202,6 +202,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		private static string ConcatenateJavascriptArguments(string[] arguments)
 		{
 			var argument = string.Empty;
@@ -212,6 +213,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return argument;
 		}
+#endif
 
 		internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
 		{
