@@ -22,8 +22,6 @@
 		<AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
-		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
-		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -36,8 +34,6 @@
 		<AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
 		<AndroidLinkMode>None</AndroidLinkMode>
 		<AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
-		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
-		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 		<BundleAssemblies>false</BundleAssemblies>
 	</PropertyGroup>
