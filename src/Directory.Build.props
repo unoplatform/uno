@@ -61,7 +61,7 @@
 	<MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(UsingMicrosoftNETSDK)' == 'true'">
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
@@ -235,9 +235,6 @@
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
         <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-		<!-- Enable CodeStyle analyzers -->
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
@@ -247,6 +244,8 @@
       <PropertyGroup>
         <!-- Even if we didn't install the NuGet package, we get the analyzers from the .NET SDK -->
         <EnableNetAnalyzers>false</EnableNetAnalyzers>
+		<!-- IDE0051: private member is unused. TODO: Remove this NoWarn to enable IDE0051 for samples/test projects -->
+		<NoWarn>$(NoWarn);IDE0051</NoWarn>
       </PropertyGroup>
     </Otherwise>
   </Choose>
