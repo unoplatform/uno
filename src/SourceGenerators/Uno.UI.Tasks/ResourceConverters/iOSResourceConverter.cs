@@ -3,24 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-#if HAS_UNO
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-#endif
-
 namespace Windows.ApplicationModel.Resources.Core
 {
 	/// <summary>
 	/// Converts a resource candidate to an iOS resource path.
 	/// </summary>
-	internal class iOSResourceConverter
+	internal static class iOSResourceConverter
 	{
 		public static string Convert(ResourceCandidate resourceCandidate, string defaultLanguage)
 		{
 			try
 			{
 				ValidatePlatform(resourceCandidate);
-				
+
 				var language = GetLanguage(resourceCandidate);
 				var directory = Path.GetDirectoryName(resourceCandidate.LogicalPath);
 				var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(resourceCandidate.LogicalPath);
@@ -29,14 +24,8 @@ namespace Windows.ApplicationModel.Resources.Core
 
 				return Path.Combine(language, directory, $"{fileNameWithoutExtension}{scale}{extension}");
 			}
-#if HAS_UNO
-			catch (Exception ex)
-			{
-				ex.Log().Info($"Couldn't convert {resourceCandidate.ValueAsString} to an iOS resource path.", ex);
-#else
 			catch (Exception)
 			{
-#endif
 				return null;
 			}
 		}
