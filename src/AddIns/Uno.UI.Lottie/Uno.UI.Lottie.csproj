@@ -36,7 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'MonoAndroid12.0' ">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="4.1.0" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="4.2.2" PrivateAssets="none" />
 		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 	</ItemGroup>
 
