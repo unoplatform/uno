@@ -104,13 +104,4 @@
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-
-	<Target Name="Issue3897Workaround"
-		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "
-		AfterTargets="_RemoveLegacyDesigner">
-		<!-- See https://github.com/unoplatform/uno/issues/3897 and https://github.com/xamarin/xamarin-android/issues/5069 for more details -->
-		<ItemGroup>
-			<Compile Remove="$(_AndroidResourceDesignerFile)"/>
-		</ItemGroup>
-	</Target>
 </Project>
