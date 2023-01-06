@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class NativeView_Page
+	public sealed partial class NativeView_Page : Page
 	{
 		public NativeView_Page()
 		{

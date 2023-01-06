@@ -18,7 +18,11 @@ namespace UITests.Toolkit
 			this.InitializeComponent();
 		}
 
-		public int Elevation
+		public
+#if __ANDROID__
+		new
+#endif
+		int Elevation
 		{
 			get => _elevation;
 			set

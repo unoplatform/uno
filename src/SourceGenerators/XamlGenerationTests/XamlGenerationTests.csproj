@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
-
-		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<!-- {0} does not explicitly define the {1} base type in code behind. -->
+		<NoWarn>$(NoWarn);UXAML0002;CS1030</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -590,7 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var dpName = SUT.GetValue(FrameworkElement.NameProperty);
 			Assert.AreEqual("Test", dpName);
 		}
-		
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_Set_NameProperty()
@@ -733,7 +733,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class ObservableLayoutingControl : FrameworkElement
 	{
-		public event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
+		public
+#if __ANDROID__
+		new
+#endif
+		event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
 
 		public event TypedEventHandler<ObservableLayoutingControl, Size> OnArrange;
 

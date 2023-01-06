@@ -86,7 +86,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// x:Name cache for the lookups performed in the document.
 		/// </summary>
 		private Dictionary<string, List<XamlObjectDefinition>> _nameCache = new();
-		
+
 		/// <summary>
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
 		/// </summary>
@@ -394,6 +394,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, _analyzerSuppressions);
 
+			writer.AppendLineIndented("#pragma warning disable CS0114");
+			writer.AppendLineIndented("#pragma warning disable CS0108");
 			writer.AppendLineIndented("using System;");
 			writer.AppendLineIndented("using System.Collections.Generic;");
 			writer.AppendLineIndented("using System.Diagnostics;");
@@ -499,7 +501,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)
 		{
 			writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
-			
+
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
 				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.Index}();");
@@ -586,7 +588,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Processes the 'App.xaml' file.
 		/// </summary>
 		private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
-		{			
+		{
 			writer.AppendLineIndented($"var __that = this;");
 
 			TryAnnotateWithGeneratorSource(writer);
@@ -597,7 +599,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLine();
 			ApplyLiteralProperties(); //
 			writer.AppendLine();
-			
+
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
 
@@ -3672,7 +3674,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						?.Parameters
 						.Select(p => member.Value + "_" + p.Name)
 						.ToArray();
-					
+
 					var parms = parmsNames.JoinBy(",");
 
 					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "__that";
@@ -3785,7 +3787,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						EnsureXClassName();
 
 						var ownerName = CurrentScope.ClassName;
-						
+
 						AddXBindEventHandlerToScope(builderName, ownerName, eventSymbol.ContainingType, componentDefinition);
 
 						var handlerParameters = _isHotReloadEnabled ? "(__that, __owner)" : "(__owner)";
@@ -4902,7 +4904,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "Windows.UI.Xaml.Media.ImageSource":
 						// We have an implicit conversion from string to ImageSource.
-						// 
+						//
 						return $"\"{memberValue}\"";
 				}
 
@@ -6106,7 +6108,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					} while (current is not null);
 				}
 			}
-			
+
 			return null;
 		}
 
@@ -6288,7 +6290,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
 
 										writer.AppendLineIndented($"var owner = this;");
-										
+
 										if (_isHotReloadEnabled)
 										{
 											// Attach the current context to itself to avoid having a closure in the lambda
@@ -6676,7 +6678,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				parent.Components.Add(new ComponentEntry(CurrentScope.Components.Last().MemberName, objectDefinition));
 			}
 		}
-		
+
 		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
 		{
 			if(componentDefinition is null)

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml; 
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
@@ -811,7 +811,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 			await helper.PrepareLoadedEvent();
@@ -875,7 +875,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 
@@ -943,7 +943,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			Grid rootPanel = null;
 
-			Windows.Globalization.Calendar calendar = null;
+			//Windows.Globalization.Calendar calendar = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 
@@ -1578,7 +1578,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 			CalendarPanel calendarPanel = null;
 			ScrollViewer scrollViewer = null;
-			UIElement calendarItem = null;
+			//UIElement calendarItem = null;
 			var helper = new CalendarHelper.CalendarViewHelper();
 
 			CalendarView cv = await helper.GetCalendarView();
@@ -1673,7 +1673,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 			CalendarPanel calendarPanel = null;
 			ScrollViewer scrollViewer = null;
-			UIElement calendarItem = null;
+			//UIElement calendarItem = null;
 			var helper = new CalendarHelper.CalendarViewHelper();
 
 			CalendarView cv = await helper.GetCalendarView();
@@ -2411,7 +2411,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				int[] snapPoints // each mode we test the first 3 snap points
 				)[] testData)[] modes =
 				{
-				
+
 					(
 						"MonthViewPanel", "MonthViewScrollViewer", CalendarViewDisplayMode.Month,
 						new [] {
@@ -2421,7 +2421,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 										{
 											5, 9, 13
 										}
-									
+
 								),
 								// dimension 4 x 7, regular snap point (per row).
 								(
@@ -2429,7 +2429,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 										{
 											1, 2, 3
 										}
-									
+
 								)
 						}
 					),
@@ -3008,7 +3008,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 			  cv.RequestedTheme = xaml.ElementTheme.Light;
 			});
-	
+
 			LOG_OUTPUT("Validate light theme");
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "light");
@@ -3075,7 +3075,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		{
 			ControlHelper.ValidateUIElementTree(
 					new Size(400, 600),
-					1, 
+					1,
 				// Test setup.
 				async ()=>
 			{
@@ -4475,7 +4475,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -4514,7 +4514,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -5065,7 +5065,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 			int changeCount = 0;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
@@ -5253,7 +5253,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			foreach(var dimension in dimensions)
 			{
-				CalendarPanel calendarPanel = null;
+				//CalendarPanel calendarPanel = null;
 				var helper = new CalendarHelper.CalendarViewHelper();
 
 				CalendarView cv = await helper.GetCalendarView();
@@ -5470,7 +5470,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			// The expected FlowDirection for each calendar id:
-			(string first, FlowDirection second)[] calendarFlowDirections = 
+			(string first, FlowDirection second)[] calendarFlowDirections =
 			{
 				(
 					"PersianCalendar", FlowDirection.RightToLeft
