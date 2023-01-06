@@ -112,36 +112,36 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		//}
 
 #if false
-        /// <summary>
-        /// Transform bounds relative to FrameworkElement
-        /// </summary>
-        /// <param name="sibling1">base rectangle</param>
-        /// <param name="sibling2">second of pair to transform</param>
-        /// <returns>result of transformed rectangle</returns>
-        private static WF.Rect BoundsRelativeTo(FrameworkElement sibling1, System.Windows.Media.Visual sibling2)
-        {
-            WF.Rect origin = default(WF.Rect);
+		/// <summary>
+		/// Transform bounds relative to FrameworkElement
+		/// </summary>
+		/// <param name="sibling1">base rectangle</param>
+		/// <param name="sibling2">second of pair to transform</param>
+		/// <returns>result of transformed rectangle</returns>
+		private static WF.Rect BoundsRelativeTo(FrameworkElement sibling1, System.Windows.Media.Visual sibling2)
+		{
+			WF.Rect origin = default(WF.Rect);
 
-            if (sibling1 != null)
-            {
-                // TransformToVisual can throw an exception if two elements don't have a common ancestor
-                try
-                {
-                    var transform = sibling1.TransformToVisual(sibling2);
-                    var systemWindowsRect = transform.TransformBounds(
-                        new Rect(0, 0, sibling1.ActualWidth, sibling1.ActualHeight));
-                    origin.X = systemWindowsRect.X;
-                    origin.Y = systemWindowsRect.Y;
-                    origin.Width = systemWindowsRect.Width;
-                    origin.Height = systemWindowsRect.Height;
-                }
-                catch (System.InvalidOperationException)
-                {
-                }
-            }
+			if (sibling1 != null)
+			{
+				// TransformToVisual can throw an exception if two elements don't have a common ancestor
+				try
+				{
+					var transform = sibling1.TransformToVisual(sibling2);
+					var systemWindowsRect = transform.TransformBounds(
+						new Rect(0, 0, sibling1.ActualWidth, sibling1.ActualHeight));
+					origin.X = systemWindowsRect.X;
+					origin.Y = systemWindowsRect.Y;
+					origin.Width = systemWindowsRect.Width;
+					origin.Height = systemWindowsRect.Height;
+				}
+				catch (System.InvalidOperationException)
+				{
+				}
+			}
 
-            return origin;
-        }
+			return origin;
+		}
 #endif
 
 		//private bool _onTakeFocusRequested;
@@ -181,19 +181,19 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		}
 
 #if false
-        private void OnThreadFilterMessage(ref System.Windows.Interop.MSG msg, ref bool handled)
-        {
-            if (handled)
-            {
-                return;
-            }
+		private void OnThreadFilterMessage(ref System.Windows.Interop.MSG msg, ref bool handled)
+		{
+			if (handled)
+			{
+				return;
+			}
 
-            //var desktopWindowXamlSourceNative = _xamlSource.GetInterop<IDesktopWindowXamlSourceNative2>();
-            //if (desktopWindowXamlSourceNative != null)
-            //{
-            //    handled = desktopWindowXamlSourceNative.PreTranslateMessage(msg);
-            //}
-        }
+			//var desktopWindowXamlSourceNative = _xamlSource.GetInterop<IDesktopWindowXamlSourceNative2>();
+			//if (desktopWindowXamlSourceNative != null)
+			//{
+			//    handled = desktopWindowXamlSourceNative.PreTranslateMessage(msg);
+			//}
+		}
 #endif
 
 		//protected override bool HasFocusWithinCore()

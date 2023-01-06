@@ -987,7 +987,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// A more readable version of the expression:
 
-			/m_swipeAnimation.set(m_compositor.CreateExpressionAnimation("isHorizontal ?"
+			/ m_swipeAnimation.set(m_compositor.CreateExpressionAnimation("isHorizontal ?"
 			"Vector3(tracker.isFarOpen || tracker.blockNearContent ? Clamp(-tracker.Position.X, -this.Target.Size.X, 0) :"
 			"tracker.isNearOpen  || tracker.blockFarContent ? Clamp(-tracker.Position.X,  0, this.Target.Size.X) :"
 			"Clamp(-tracker.Position.X, (tracker.hasRightContent ? -10000 : 0), (tracker.hasLeftContent ? 10000 : 0)), 0, 0) :"
@@ -1013,7 +1013,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//A more readable version of the expression:
 
-			/m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(foregroundVisual." + GetAnimationTarget() + " * 0.5) + (isHorizontal ?"
+			/ m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(foregroundVisual." + GetAnimationTarget() + " * 0.5) + (isHorizontal ?"
 			"Vector3((isNearContent ? -0.5, 0.5) * this.Target.Size.X, 0, 0) : "
 			"Vector3(0, (isNearContent ? -0.5, 0.5) * this.Target.Size.Y, 0))"));
 			*/
@@ -1030,7 +1030,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//A more readable version of the expression:
 
-			/m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(L"isHorizontal ?
+			/ m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(L"isHorizontal ?
 			Max(swipeRootVisual.Size.X + (isNearContent ? tracker.Position.X : -tracker.Position.X), 0) :
 			Max(swipeRootVisual.Size.Y + (isNearContent ? tracker.Position.Y : -tracker.Position.Y), 0)"));*/
 

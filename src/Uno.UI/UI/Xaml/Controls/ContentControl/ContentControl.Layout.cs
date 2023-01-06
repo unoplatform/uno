@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			if(!IsContentPresenterBypassEnabled)
+			if (!IsContentPresenterBypassEnabled)
 			{
 				return base.MeasureOverride(availableSize);
 			}

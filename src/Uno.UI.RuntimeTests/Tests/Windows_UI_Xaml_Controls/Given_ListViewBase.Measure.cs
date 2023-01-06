@@ -294,7 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 #if NETFX_CORE
 				// For some reason on UWP the initial ChangeView may not work
-				ScrollBy(SUT, 40); 
+				ScrollBy(SUT, 40);
 #endif
 				return sv.VerticalOffset;
 			}

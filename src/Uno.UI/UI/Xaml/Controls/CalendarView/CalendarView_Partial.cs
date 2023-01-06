@@ -1545,13 +1545,13 @@ namespace Windows.UI.Xaml.Controls
 							targetDate = dateOfFirstVisibleItem;
 							spHost.AddUnits(targetDate, distance);
 #if DEBUG && false
-						if (SUCCEEDED(hr))
-						{
-							// targetDate should be still in valid range.
-							var temp = targetDate;
-							CoerceDate(temp);
-							global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
-						}
+							if (SUCCEEDED(hr))
+							{
+								// targetDate should be still in valid range.
+								var temp = targetDate;
+								CoerceDate(temp);
+								global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
+							}
 
 #endif
 						}

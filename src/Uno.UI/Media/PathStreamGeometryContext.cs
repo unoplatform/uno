@@ -125,10 +125,10 @@ namespace Uno.Media
 
 #if __IOS__
 			bezierPath.AddArc(
-				center, 
-				(nfloat)radius, 
-				(nfloat)startAngle, 
-				(nfloat)endAngle, 
+				center,
+				(nfloat)radius,
+				(nfloat)startAngle,
+				(nfloat)endAngle,
 				sweepDirection == SweepDirection.Clockwise
 			);
 

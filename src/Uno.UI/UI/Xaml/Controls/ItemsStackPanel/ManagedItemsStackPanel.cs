@@ -52,7 +52,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-	#region Orientation DependencyProperty
+		#region Orientation DependencyProperty
 
 		public Orientation Orientation
 		{
@@ -60,7 +60,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(OrientationProperty, value); }
 		}
 
-		public static DependencyProperty OrientationProperty { get ; } =
+		public static DependencyProperty OrientationProperty { get; } =
 			DependencyProperty.Register(
 				"Orientation",
 				typeof(Orientation),
@@ -81,9 +81,9 @@ namespace Uno.UI.Controls
 		partial void OnOrientationChangedPartial(Orientation oldOrientation, Orientation newOrientation);
 		partial void OnOrientationChangedPartialNative(Orientation oldOrientation, Orientation newOrientation);
 
-	#endregion
+		#endregion
 
-	#region CacheLength DependencyProperty
+		#region CacheLength DependencyProperty
 
 		public double CacheLength
 		{
@@ -91,7 +91,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(CacheLengthProperty, value); }
 		}
 
-		public static DependencyProperty CacheLengthProperty { get ; } =
+		public static DependencyProperty CacheLengthProperty { get; } =
 			DependencyProperty.Register(
 				"CacheLength",
 				typeof(double),
@@ -112,7 +112,7 @@ namespace Uno.UI.Controls
 		partial void OnCacheLengthChangedPartial(double oldCacheLength, double newCacheLength);
 		partial void OnCacheLengthChangedPartialNative(double oldCacheLength, double newCacheLength);
 
-	#endregion
+		#endregion
 
 #if __IOS__
 		public override void SetSuperviewNeedsLayout()

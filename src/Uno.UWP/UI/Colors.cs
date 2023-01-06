@@ -9,7 +9,7 @@ using Color = global::Windows.UI.Color;
 namespace Windows.UI
 {
 #if HAS_UNO_WINUI && !IS_UNO_UI_PROJECT
-    internal
+	internal
 #else
 	public
 #endif

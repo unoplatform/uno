@@ -6,6 +6,6 @@
 		where TArgs : RoutedEventArgs;
 
 #if __WASM__
-	public delegate bool RoutedEventHandlerWithHandled (object sender, RoutedEventArgs e);
+	public delegate bool RoutedEventHandlerWithHandled(object sender, RoutedEventArgs e);
 #endif
 }

@@ -19,11 +19,11 @@ namespace UnoXFQuickStart.Wasm
 		{
 			//-:cnd:noEmit
 #if DEBUG
-            factory
-                .WithFilter(new FilterLoggerSettings
-                    {
-                        { "Uno", LogLevel.Warning },
-                        { "Windows", LogLevel.Warning },
+			factory
+				.WithFilter(new FilterLoggerSettings
+					{
+						{ "Uno", LogLevel.Warning },
+						{ "Windows", LogLevel.Warning },
 
 						// Generic Xaml events
 						// { "Windows.UI.Xaml", LogLevel.Debug },
@@ -44,8 +44,8 @@ namespace UnoXFQuickStart.Wasm
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
 					}
-                )
-                .AddConsole(LogLevel.Trace);
+				)
+				.AddConsole(LogLevel.Trace);
 #else
 			factory
 				.AddConsole(LogLevel.Error);

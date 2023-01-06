@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	/// <remarks>This control is added in the visual tree, in place of the original content.</remarks>
 	public partial class ElementStub : FrameworkElement
-    {
+	{
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		ManagedWeakReference _contentReference;
 
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
 			}

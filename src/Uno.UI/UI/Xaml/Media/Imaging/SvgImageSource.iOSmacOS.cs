@@ -157,7 +157,7 @@ partial class SvgImageSource
 		}
 
 		bool IsSuccessful(nint status) => status < 300;
-		
+
 		return ImageData.Empty;
 #else
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

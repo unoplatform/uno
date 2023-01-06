@@ -116,7 +116,7 @@ namespace Uno.UI.Toolkit
 		}
 
 #if HAS_UNO
-		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
+		public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 			"Background",
 			typeof(Brush),
 			typeof(ElevatedView),
@@ -133,7 +133,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-		public new static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
+		public new static DependencyProperty CornerRadiusProperty { get; } = DependencyProperty.Register(
 			"CornerRadius",
 			typeof(CornerRadius),
 			typeof(ElevatedView),

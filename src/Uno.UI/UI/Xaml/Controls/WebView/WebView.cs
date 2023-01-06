@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(WebView);
 		}
 
-#region CanGoBack
+		#region CanGoBack
 
 		public bool CanGoBack
 		{
@@ -49,9 +49,9 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty CanGoBackProperty { get; } =
 			DependencyProperty.Register("CanGoBack", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
-#endregion
+		#endregion
 
-#region CanGoForward
+		#region CanGoForward
 
 		public bool CanGoForward
 		{
@@ -62,9 +62,9 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty CanGoForwardProperty { get; } =
 			DependencyProperty.Register("CanGoForward", typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
-#endregion
+		#endregion
 
-#region Source
+		#region Source
 
 		public Uri Source
 		{
@@ -76,9 +76,9 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("Source", typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 				(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
 
-#endregion
+		#endregion
 
-#region DocumentTitle
+		#region DocumentTitle
 #if __ANDROID__ || __IOS__ || __MACOS__
 		public string DocumentTitle
 		{
@@ -89,9 +89,9 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty DocumentTitleProperty { get; } =
 			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
 #endif
-#endregion
+		#endregion
 
-#region IsScrollEnabled
+		#region IsScrollEnabled
 		public bool IsScrollEnabled
 		{
 			get { return (bool)GetValue(IsScrollEnabledProperty); }
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 				(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
 
 		partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);
-#endregion
+		#endregion
 
 #pragma warning disable 67
 		public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;

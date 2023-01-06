@@ -212,7 +212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
-}
+	}
 #endif
 
 	public class When_Flipview_DataTemplateSelector_DataContext

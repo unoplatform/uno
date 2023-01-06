@@ -34,19 +34,19 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle
 		{
 
 #if __IOS__
-            UIView parent = this;
-            while (parent.HasParent())
-            {
-	            parent = parent.Superview;
-            }
+			UIView parent = this;
+			while (parent.HasParent())
+			{
+				parent = parent.Superview;
+			}
 
-            var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
+			var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
 
-            var uiLabels = navigationBar?.FindSubviewsOfType<UILabel>();
+			var uiLabels = navigationBar?.FindSubviewsOfType<UILabel>();
 
-            var result = uiLabels?.Any(x => x.Text == "Back") ?? true;
+			var result = uiLabels?.Any(x => x.Text == "Back") ?? true;
 
-            InfoTextBlock.Text = result ? "FAILED" : "PASSED";
+			InfoTextBlock.Text = result ? "FAILED" : "PASSED";
 #endif
 		}
 	}

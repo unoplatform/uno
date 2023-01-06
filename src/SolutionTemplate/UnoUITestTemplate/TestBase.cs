@@ -21,7 +21,7 @@ namespace UnoUITestsLibrary
 			AppInitializer.TestEnvironment.CurrentPlatform = Constants.CurrentPlatform;
 
 #if DEBUG
-            AppInitializer.TestEnvironment.WebAssemblyHeadless = false;
+			AppInitializer.TestEnvironment.WebAssemblyHeadless = false;
 #endif
 
 			// Start the app only once, so the tests runs don't restart it

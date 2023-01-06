@@ -31,13 +31,13 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 		public void OnButtonClicked(object sender, object args)
 		{
 #if __IOS__
-	        UIView parent = this;
-	        while (parent.HasParent())
-	        {
-		        parent = parent.Superview;
-	        }
+			UIView parent = this;
+			while (parent.HasParent())
+			{
+				parent = parent.Superview;
+			}
 
-	        var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
+			var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
 
 			var image = (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
 				? navigationBar.CompactAppearance.BackIndicatorImage

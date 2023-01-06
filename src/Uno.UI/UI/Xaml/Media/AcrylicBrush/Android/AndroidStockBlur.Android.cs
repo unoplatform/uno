@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml.Media
 	internal class AndroidStockBlur : IBlurImpl
 	{
 #if DEBUG
-        private const bool DEBUG = true;
+		private const bool DEBUG = true;
 #else
 		private const bool DEBUG = false;
 #endif

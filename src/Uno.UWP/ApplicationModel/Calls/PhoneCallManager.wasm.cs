@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			var uri = new Uri($"tel:{phoneNumber}");
 			var command = $"Uno.UI.WindowManager.current.open(\"{uri.AbsoluteUri}\");";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);			
+			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
 	}
 }

@@ -274,7 +274,7 @@ namespace Uno.UI.Xaml
 			{
 #if NET7_0_OR_GREATER
 				using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
-				
+
 				NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
 
 				var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);

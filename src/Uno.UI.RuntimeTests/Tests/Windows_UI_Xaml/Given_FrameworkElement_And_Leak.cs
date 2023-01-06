@@ -128,8 +128,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
-				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
-				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
+			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
+			var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
 			Type GetType(string s)
@@ -202,8 +202,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 #if TRACK_REFS
-				Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
-				Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
+			Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
+			Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
 
 			var retainedMessage = "";
@@ -231,7 +231,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if NET5_0 || __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
-				if(p.Key is FrameworkElement fe)
+				if (p.Key is FrameworkElement fe)
 				{
 					return $"{fe}/{fe.Name}";
 				}

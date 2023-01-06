@@ -34,7 +34,7 @@ namespace $ext_safeprojectname$
 		this.InitializeComponent();
 
 #if HAS_UNO || NETFX_CORE
-            this.Suspending += OnSuspending;
+		this.Suspending += OnSuspending;
 #endif
 	}
 
@@ -51,15 +51,15 @@ namespace $ext_safeprojectname$
 	protected override void OnLaunched(LaunchActivatedEventArgs args)
 	{
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                // this.DebugSettings.EnableFrameRateCounter = true;
-            }
+		if (System.Diagnostics.Debugger.IsAttached)
+		{
+			// this.DebugSettings.EnableFrameRateCounter = true;
+		}
 #endif
 
 #if NET5_0 && WINDOWS && !HAS_UNO
-            MainWindow = new Window();
-            MainWindow.Activate();
+		MainWindow = new Window();
+		MainWindow.Activate();
 #else
 		MainWindow = Windows.UI.Xaml.Window.Current;
 #endif
@@ -132,7 +132,7 @@ namespace $ext_safeprojectname$
 		var factory = LoggerFactory.Create(builder =>
 		{
 #if __WASM__
-                builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+			builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #elif __IOS__ && !__MACCATALYST__
                 builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
 #elif NETFX_CORE
@@ -180,7 +180,7 @@ namespace $ext_safeprojectname$
 		global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 
 #if HAS_UNO
-			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+		global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
 	}
 }

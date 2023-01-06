@@ -91,12 +91,12 @@ namespace Uno.UI.RemoteControl.HotReload
 					switch (instance)
 					{
 #if __IOS__
-                        case UserControl userControl:
-                            if (XamlReader.LoadUsingXClass(fileContent) is UIKit.UIView newInstance)
-                            {
-                                SwapViews(userControl, newInstance);
-                            }
-                            break;
+						case UserControl userControl:
+							if (XamlReader.LoadUsingXClass(fileContent) is UIKit.UIView newInstance)
+							{
+								SwapViews(userControl, newInstance);
+							}
+							break;
 #endif
 						case ContentControl content:
 							if (XamlReader.LoadUsingXClass(fileContent) is ContentControl newContent)

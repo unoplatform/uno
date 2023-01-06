@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class UnoWKWebView : WKWebView, INativeWebView
 #if __MACOS__
-		,IHasSizeThatFits
+		, IHasSizeThatFits
 #endif
 	{
 		private WebView _parentWebView;
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			var height = Math.Min(availableSize.Height, FittingSize.Height);
 			var width = Math.Min(availableSize.Width, FittingSize.Width);
 			return new CGSize(width, height);
-		} 
+		}
 #endif
 
 		public void RegisterNavigationEvents(WebView xamlWebView)

@@ -129,7 +129,7 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
 #if __ANDROID__ || __IOS__ || __MACOS__
-				// opt-in for iOS/Android/macOS
+			// opt-in for iOS/Android/macOS
 #else
 				= true;
 #endif

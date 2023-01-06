@@ -248,7 +248,7 @@ namespace Windows.UI.Xaml.Controls
 				_rootGrid.Tapped -= OnRootGridTapped;
 				_rootGrid.Tapped += OnRootGridTapped;
 			}
-			
+
 			if (_mediaPlayer != null)
 			{
 				BindMediaPlayer();

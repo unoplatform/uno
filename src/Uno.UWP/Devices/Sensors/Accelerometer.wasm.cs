@@ -105,7 +105,7 @@ namespace Windows.Devices.Sensors
 #endif
 		public static int DispatchReading(float x, float y, float z)
 		{
-			if ( _instance == null)
+			if (_instance == null)
 			{
 				throw new InvalidOperationException("Accelerometer:DispatchReading can be called only after Accelerometer is initialized");
 			}
@@ -118,7 +118,7 @@ namespace Windows.Devices.Sensors
 						x / Gravity * -1,
 						y / Gravity * -1,
 						z / Gravity * -1,
-						now));				
+						now));
 			}
 			_instance._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
 			return 0;

@@ -100,7 +100,7 @@ namespace Uno.Helpers
 				}
 				else
 				{
-					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");					
+					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");
 				}
 			}
 

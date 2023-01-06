@@ -158,63 +158,63 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-					int width = _cachedDisplayMetrics.WidthPixels;
-					int height = _cachedDisplayMetrics.HeightPixels;
+				int width = _cachedDisplayMetrics.WidthPixels;
+				int height = _cachedDisplayMetrics.HeightPixels;
 
-					if (width == height)
-					{
-						//square device, can't tell orientation
-						return DisplayOrientations.None;
-					}
+				if (width == height)
+				{
+					//square device, can't tell orientation
+					return DisplayOrientations.None;
+				}
 
-					if (NativeOrientation == DisplayOrientations.Portrait)
+				if (NativeOrientation == DisplayOrientations.Portrait)
+				{
+					switch (_cachedRotation)
 					{
-						switch (_cachedRotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.PortraitFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.LandscapeFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else if (NativeOrientation == DisplayOrientations.Landscape)
-					{
-						//device is landscape or square
-						switch (_cachedRotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.LandscapeFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.PortraitFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else
-					{
-						//fallback
-						return DisplayOrientations.None;
+						case SurfaceOrientation.Rotation0:
+							return DisplayOrientations.Portrait;
+						case SurfaceOrientation.Rotation90:
+							return DisplayOrientations.Landscape;
+						case SurfaceOrientation.Rotation180:
+							return DisplayOrientations.PortraitFlipped;
+						case SurfaceOrientation.Rotation270:
+							return DisplayOrientations.LandscapeFlipped;
+						default:
+							//invalid rotation
+							return DisplayOrientations.None;
 					}
 				}
+				else if (NativeOrientation == DisplayOrientations.Landscape)
+				{
+					//device is landscape or square
+					switch (_cachedRotation)
+					{
+						case SurfaceOrientation.Rotation0:
+							return DisplayOrientations.Landscape;
+						case SurfaceOrientation.Rotation90:
+							return DisplayOrientations.Portrait;
+						case SurfaceOrientation.Rotation180:
+							return DisplayOrientations.LandscapeFlipped;
+						case SurfaceOrientation.Rotation270:
+							return DisplayOrientations.PortraitFlipped;
+						default:
+							//invalid rotation
+							return DisplayOrientations.None;
+					}
+				}
+				else
+				{
+					//fallback
+					return DisplayOrientations.None;
+				}
+			}
 		}
 
 		private IWindowManager CreateWindowManager()
 		{
-			if(ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
+			if (ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
 			{
-				return windowService.JavaCast<IWindowManager>();;
+				return windowService.JavaCast<IWindowManager>(); ;
 			}
 
 			throw new InvalidOperationException("Failed to get the system Window Service");
@@ -277,11 +277,11 @@ namespace Windows.Graphics.Display
 			{
 				HeightPixels = windowMetric.Bounds.Height();
 				WidthPixels = windowMetric.Bounds.Width();
-				if(configuration != null)
+				if (configuration != null)
 				{
 					Xdpi = configuration.DensityDpi;
 					Ydpi = configuration.DensityDpi;
-					Density = configuration.DensityDpi/160;
+					Density = configuration.DensityDpi / 160;
 					ScaledDensity = Density;
 					DensityDpi = ConvertIntToDensityEnum(configuration.DensityDpi);
 				}

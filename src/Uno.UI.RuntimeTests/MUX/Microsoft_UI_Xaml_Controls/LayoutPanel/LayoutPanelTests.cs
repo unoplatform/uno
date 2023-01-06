@@ -30,179 +30,179 @@ using NonVirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.NonVirtualizingL
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 #if false
-    [TestClass]
-    public partial class LayoutPanelTests : MUXApiTestBase
-    {
+	[TestClass]
+	public partial class LayoutPanelTests : MUXApiTestBase
+	{
 		[ClassInitialize]
-        [TestProperty("Classification", "Integration")]
-        public static void ClassInitialize(TestContext context) { }
+		[TestProperty("Classification", "Integration")]
+		public static void ClassInitialize(TestContext context) { }
 
-        [TestMethod]
-        public void VerifyPaddingAndBorderThicknessLayoutOffset()
-        {
-            RunOnUIThread.Execute(() =>
-            {
-                double width = 400;
-                double height = 400;
-                Thickness borderThickness = new Thickness(5, 10, 15, 20);
-                Thickness padding = new Thickness(2, 4, 6, 8);
+		[TestMethod]
+		public void VerifyPaddingAndBorderThicknessLayoutOffset()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				double width = 400;
+				double height = 400;
+				Thickness borderThickness = new Thickness(5, 10, 15, 20);
+				Thickness padding = new Thickness(2, 4, 6, 8);
 
-                LayoutPanel panel = new LayoutPanel();
-                panel.Width = width;
-                panel.Height = height;
-                panel.BorderBrush = new SolidColorBrush(Colors.Red);
-                panel.BorderThickness = borderThickness;
-                panel.Padding = padding;
+				LayoutPanel panel = new LayoutPanel();
+				panel.Width = width;
+				panel.Height = height;
+				panel.BorderBrush = new SolidColorBrush(Colors.Red);
+				panel.BorderThickness = borderThickness;
+				panel.Padding = padding;
 
-                var button = new Button { Content = "Button", VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch };
-                var expectedButtonLayoutSlot = new Rect
-                {
-                    Width = width - borderThickness.Left - borderThickness.Right - padding.Left - padding.Right,
-                    Height = height - borderThickness.Top - borderThickness.Bottom - padding.Top - padding.Bottom,
-                    X = borderThickness.Left + padding.Left,
-                    Y = borderThickness.Top + padding.Top,
-                };
-                panel.Children.Add(button);
+				var button = new Button { Content = "Button", VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch };
+				var expectedButtonLayoutSlot = new Rect
+				{
+					Width = width - borderThickness.Left - borderThickness.Right - padding.Left - padding.Right,
+					Height = height - borderThickness.Top - borderThickness.Bottom - padding.Top - padding.Bottom,
+					X = borderThickness.Left + padding.Left,
+					Y = borderThickness.Top + padding.Top,
+				};
+				panel.Children.Add(button);
 
-                Content = panel;
-                Content.UpdateLayout();
+				Content = panel;
+				Content.UpdateLayout();
 
-                Verify.AreEqual(expectedButtonLayoutSlot, LayoutInformation.GetLayoutSlot(button), "Verify LayoutSlot of child Button");
-            });
-        }
+				Verify.AreEqual(expectedButtonLayoutSlot, LayoutInformation.GetLayoutSlot(button), "Verify LayoutSlot of child Button");
+			});
+		}
 
-        [TestMethod]
-        public void VerifyPaddingAndBorderThicknessLayoutOffset_StackLayout()
-        {
-            RunOnUIThread.Execute(() =>
-            {
-                double width = 400;
-                double height = 400;
-                Thickness borderThickness = new Thickness(5, 10, 15, 20);
-                Thickness padding = new Thickness(2, 4, 6, 8);
+		[TestMethod]
+		public void VerifyPaddingAndBorderThicknessLayoutOffset_StackLayout()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				double width = 400;
+				double height = 400;
+				Thickness borderThickness = new Thickness(5, 10, 15, 20);
+				Thickness padding = new Thickness(2, 4, 6, 8);
 
-                LayoutPanel panel = new LayoutPanel();
-                panel.Layout = new StackLayout();
-                panel.Width = width;
-                panel.Height = height;
-                panel.BorderBrush = new SolidColorBrush(Colors.Red);
-                panel.BorderThickness = borderThickness;
-                panel.Padding = padding;
+				LayoutPanel panel = new LayoutPanel();
+				panel.Layout = new StackLayout();
+				panel.Width = width;
+				panel.Height = height;
+				panel.BorderBrush = new SolidColorBrush(Colors.Red);
+				panel.BorderThickness = borderThickness;
+				panel.Padding = padding;
 
-                double unpaddedWidth = width - borderThickness.Left - borderThickness.Right - padding.Left - padding.Right;
-                double itemHeight = 50;
-                double unpaddedX = borderThickness.Left + padding.Left;
-                double unpaddedY = borderThickness.Top + padding.Top;
+				double unpaddedWidth = width - borderThickness.Left - borderThickness.Right - padding.Left - padding.Right;
+				double itemHeight = 50;
+				double unpaddedX = borderThickness.Left + padding.Left;
+				double unpaddedY = borderThickness.Top + padding.Top;
 
-                var button1 = new Button { Content = "Button", Height = itemHeight, HorizontalAlignment = HorizontalAlignment.Stretch };
-                var button2 = new Button { Content = "Button", Height = itemHeight, HorizontalAlignment = HorizontalAlignment.Stretch };
-                var expectedButton1LayoutSlot = new Rect
-                {
-                    Width = unpaddedWidth,
-                    Height = itemHeight,
-                    X = unpaddedX,
-                    Y = unpaddedY,
-                };
-                var expectedButton2LayoutSlot = new Rect
-                {
-                    Width = unpaddedWidth,
-                    Height = itemHeight,
-                    X = unpaddedX,
-                    Y = unpaddedY + itemHeight,
-                };
-                panel.Children.Add(button1);
-                panel.Children.Add(button2);
+				var button1 = new Button { Content = "Button", Height = itemHeight, HorizontalAlignment = HorizontalAlignment.Stretch };
+				var button2 = new Button { Content = "Button", Height = itemHeight, HorizontalAlignment = HorizontalAlignment.Stretch };
+				var expectedButton1LayoutSlot = new Rect
+				{
+					Width = unpaddedWidth,
+					Height = itemHeight,
+					X = unpaddedX,
+					Y = unpaddedY,
+				};
+				var expectedButton2LayoutSlot = new Rect
+				{
+					Width = unpaddedWidth,
+					Height = itemHeight,
+					X = unpaddedX,
+					Y = unpaddedY + itemHeight,
+				};
+				panel.Children.Add(button1);
+				panel.Children.Add(button2);
 
-                Content = panel;
-                Content.UpdateLayout();
+				Content = panel;
+				Content.UpdateLayout();
 
-                Verify.AreEqual(expectedButton1LayoutSlot, LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
-                Verify.AreEqual(expectedButton2LayoutSlot, LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
-            });
-        }
+				Verify.AreEqual(expectedButton1LayoutSlot, LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
+				Verify.AreEqual(expectedButton2LayoutSlot, LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
+			});
+		}
 
-        [TestMethod]
-        public void VerifySwitchingLayoutDynamically()
-        {
-            LayoutPanel panel = null;
-            Button button1 = null;
-            Button button2 = null;
+		[TestMethod]
+		public void VerifySwitchingLayoutDynamically()
+		{
+			LayoutPanel panel = null;
+			Button button1 = null;
+			Button button2 = null;
 
-            RunOnUIThread.Execute(() =>
-            {
-                Log.Comment("Create LayoutPanel with StackLayout");
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Create LayoutPanel with StackLayout");
 
-                panel = new LayoutPanel() { Width = 400, Height = 400 };
+				panel = new LayoutPanel() { Width = 400, Height = 400 };
 
-                var stackLayout = new StackLayout
-                {
-                    Orientation = Orientation.Vertical
-                };
-                panel.Layout = stackLayout;
-                
-                button1 = new Button { Height = 100, Content = "1" };
-                button2 = new Button { Height = 100, Content = "2" };
-                panel.Children.Add(button1);
-                panel.Children.Add(button2);
+				var stackLayout = new StackLayout
+				{
+					Orientation = Orientation.Vertical
+				};
+				panel.Layout = stackLayout;
 
-                Content = panel;
-                Content.UpdateLayout();
+				button1 = new Button { Height = 100, Content = "1" };
+				button2 = new Button { Height = 100, Content = "2" };
+				panel.Children.Add(button1);
+				panel.Children.Add(button2);
 
-                Log.Comment("Verify layout for StackLayout:");
-                Verify.AreEqual(new Rect(0, 0, 400, 100), LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
-                Verify.AreEqual(new Rect(0, 100, 400, 100), LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
-            });
+				Content = panel;
+				Content.UpdateLayout();
 
-            IdleSynchronizer.Wait();
+				Log.Comment("Verify layout for StackLayout:");
+				Verify.AreEqual(new Rect(0, 0, 400, 100), LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
+				Verify.AreEqual(new Rect(0, 100, 400, 100), LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
+			});
 
-            RunOnUIThread.Execute(() =>
-            {
-                Log.Comment("Switch LayoutPanel to UniformGridLayout");
-                UniformGridLayout gridLayout = new UniformGridLayout();
-                gridLayout.MinItemWidth = 100;
-                gridLayout.MinItemHeight = 100;
-                panel.Layout = gridLayout;
+			IdleSynchronizer.Wait();
 
-                Content.UpdateLayout();
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Switch LayoutPanel to UniformGridLayout");
+				UniformGridLayout gridLayout = new UniformGridLayout();
+				gridLayout.MinItemWidth = 100;
+				gridLayout.MinItemHeight = 100;
+				panel.Layout = gridLayout;
 
-                Log.Comment("Verify layout for UniformGridLayout:");
-                Verify.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
-                Verify.AreEqual(new Rect(100, 0, 100, 100), LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
-            });
-        }
+				Content.UpdateLayout();
 
-        [TestMethod]
-        public void VerifyCustomNonVirtualizingLayout()
-        {
-            LayoutPanel panel = null;
-            Button button1 = null;
-            Button button2 = null;
+				Log.Comment("Verify layout for UniformGridLayout:");
+				Verify.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
+				Verify.AreEqual(new Rect(100, 0, 100, 100), LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
+			});
+		}
 
-            RunOnUIThread.Execute(() =>
-            {
-                Log.Comment("Create LayoutPanel with MyCustomNonVirtualizingStackLayout");
+		[TestMethod]
+		public void VerifyCustomNonVirtualizingLayout()
+		{
+			LayoutPanel panel = null;
+			Button button1 = null;
+			Button button2 = null;
 
-                panel = new LayoutPanel() { Width = 400, Height = 400 };
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Create LayoutPanel with MyCustomNonVirtualizingStackLayout");
 
-                var customStackLayout = new MyCustomNonVirtualizingStackLayout();
-                panel.Layout = customStackLayout;
+				panel = new LayoutPanel() { Width = 400, Height = 400 };
 
-                button1 = new Button { Height = 100, Width = 400, Content = "1" };
-                button2 = new Button { Height = 100, Width = 400, Content = "2" };
-                panel.Children.Add(button1);
-                panel.Children.Add(button2);
+				var customStackLayout = new MyCustomNonVirtualizingStackLayout();
+				panel.Layout = customStackLayout;
 
-                Content = panel;
-                Content.UpdateLayout();
+				button1 = new Button { Height = 100, Width = 400, Content = "1" };
+				button2 = new Button { Height = 100, Width = 400, Content = "2" };
+				panel.Children.Add(button1);
+				panel.Children.Add(button2);
 
-                Log.Comment("Verify layout for StackLayout:");
-                Verify.AreEqual(new Rect(0, 0, 400, 100), LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
-                Verify.AreEqual(new Rect(0, 100, 400, 100), LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
-            });
+				Content = panel;
+				Content.UpdateLayout();
 
-            IdleSynchronizer.Wait();
-        }
-    }
+				Log.Comment("Verify layout for StackLayout:");
+				Verify.AreEqual(new Rect(0, 0, 400, 100), LayoutInformation.GetLayoutSlot(button1), "Verify LayoutSlot of child 1");
+				Verify.AreEqual(new Rect(0, 100, 400, 100), LayoutInformation.GetLayoutSlot(button2), "Verify LayoutSlot of child 2");
+			});
+
+			IdleSynchronizer.Wait();
+		}
+	}
 #endif
 
 	public class MyCustomNonVirtualizingStackLayout : NonVirtualizingLayout

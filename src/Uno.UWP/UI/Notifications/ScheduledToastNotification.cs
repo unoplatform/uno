@@ -53,7 +53,7 @@ namespace Windows.UI.Notifications
 		}
 
 #if __ANDROID__
-		public  NotificationMirroring NotificationMirroring { get; set; }
+		public NotificationMirroring NotificationMirroring { get; set; }
 
 		public global::System.DateTimeOffset? ExpirationTime { get; set; }
 #endif

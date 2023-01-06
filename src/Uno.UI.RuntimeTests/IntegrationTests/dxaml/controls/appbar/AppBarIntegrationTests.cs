@@ -2091,13 +2091,13 @@ namespace Windows.UI.Tests.Enterprise
 		//	{
 		//		var root = (FrameworkElement)XamlReader.Load(@"
 		//			<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""  xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-  //                      Background=""LightBlue"" Width=""400"" Height=""400"">
-  //                      <StackPanel>
-  //                          <AppBar  x:Name=""appBar"">
-  //                              <AppBarButton x:Name=""appBarButton"" Icon=""Add"" Label=""Add""/>
-  //                          </AppBar>
-  //                      </StackPanel>
-  //                  </Grid>
+		//                      Background=""LightBlue"" Width=""400"" Height=""400"">
+		//                      <StackPanel>
+		//                          <AppBar  x:Name=""appBar"">
+		//                              <AppBarButton x:Name=""appBarButton"" Icon=""Add"" Label=""Add""/>
+		//                          </AppBar>
+		//                      </StackPanel>
+		//                  </Grid>
 		//		");
 
 		//		appBar = (AppBar)root.FindName("appBar");

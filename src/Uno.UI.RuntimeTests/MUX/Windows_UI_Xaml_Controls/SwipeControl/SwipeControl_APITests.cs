@@ -150,39 +150,39 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 #if false
 		[TestMethod]
-        public void MarkupDefinedSwipeItemDoesNotCrash()
-        {
-            if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone3))
-            {
-                Log.Warning("Test is disabled pre RS3.");
-                return;
-            }
+		public void MarkupDefinedSwipeItemDoesNotCrash()
+		{
+			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone3))
+			{
+				Log.Warning("Test is disabled pre RS3.");
+				return;
+			}
 
-            RunOnUIThread.Execute(() =>
-            {
-                var rootGrid = (Windows.UI.Xaml.Controls.Grid)XamlReader.LoadWithInitialTemplateValidation(
-                "<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
-                    "<GridView> " +
-                        "<GridViewItem> " +
-                            "<SwipeControl> " +
-                                "<SwipeControl.RightItems> " +
-                                    "<SwipeItems> " +
-                                        "<SwipeItem " +
-                                            "Background='#E81123' " +
-                                            "Foreground='White' " +
-                                            "Text='Remove'/> " +
-                                    "</SwipeItems> " +
-                                "</SwipeControl.RightItems> " +
-                                "<Grid Width='200' Height='200' Background='green'/> " +
-                            "</SwipeControl> " +
-                        "</GridViewItem> " +
-                    "</GridView> " +
-                "</Grid>");
+			RunOnUIThread.Execute(() =>
+			{
+				var rootGrid = (Windows.UI.Xaml.Controls.Grid)XamlReader.LoadWithInitialTemplateValidation(
+				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
+					"<GridView> " +
+						"<GridViewItem> " +
+							"<SwipeControl> " +
+								"<SwipeControl.RightItems> " +
+									"<SwipeItems> " +
+										"<SwipeItem " +
+											"Background='#E81123' " +
+											"Foreground='White' " +
+											"Text='Remove'/> " +
+									"</SwipeItems> " +
+								"</SwipeControl.RightItems> " +
+								"<Grid Width='200' Height='200' Background='green'/> " +
+							"</SwipeControl> " +
+						"</GridViewItem> " +
+					"</GridView> " +
+				"</Grid>");
 
-                Content = rootGrid;
-                Content.UpdateLayout();
-            });
-        }
+				Content = rootGrid;
+				Content.UpdateLayout();
+			});
+		}
 #endif
 	}
 }

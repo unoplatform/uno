@@ -137,9 +137,9 @@ namespace Windows.UI.Xaml.Controls
 		//private void UpdateTextBlockAlignments();
 
 #if DEBUG && false
-        // DateTime has an int64 member which is not intutive enough. This method will convert it
-        // into numbers that we can easily read.
-        private void SetDateForDebug( DateTime value);
+		// DateTime has an int64 member which is not intutive enough. This method will convert it
+		// into numbers that we can easily read.
+		private void SetDateForDebug(DateTime value);
 #endif
 
 		//protected:

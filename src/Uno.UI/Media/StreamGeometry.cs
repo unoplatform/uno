@@ -62,45 +62,57 @@ namespace Uno.Media
 #endif
 
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
-		public override UIImage ToNativeImage ()
+		public override UIImage ToNativeImage()
 		{
-			return (bezierPath == null) ? null : ToNativeImage (bezierPath.Bounds.Size);
+			return (bezierPath == null) ? null : ToNativeImage(bezierPath.Bounds.Size);
 		}
 
-		public override UIImage ToNativeImage (CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness))
+		public override UIImage ToNativeImage(CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness))
 		{
-			if (bezierPath == null) {
+			if (bezierPath == null)
+			{
 				return null;
 			}
 
 			CGSize imageSize = bezierPath.Bounds.Size;
-			if ((int)imageSize.Width <= 0 && (int)imageSize.Height <= 0) {
+			if ((int)imageSize.Width <= 0 && (int)imageSize.Height <= 0)
+			{
 				return null;
 			}
 
-			if (nfloat.IsNaN (targetSize.Width) && nfloat.IsNaN (targetSize.Height)) {
+			if (nfloat.IsNaN(targetSize.Width) && nfloat.IsNaN(targetSize.Height))
+			{
 				targetSize = new CGSize(0.85f * imageSize.Width, 0.85f * imageSize.Height);
-			} else if (nfloat.IsNaN (targetSize.Width)) {
+			}
+			else if (nfloat.IsNaN(targetSize.Width))
+			{
 				targetSize.Width = (imageSize.Width / imageSize.Height) * targetSize.Height;
-			} else if (nfloat.IsNaN (targetSize.Height)) {
+			}
+			else if (nfloat.IsNaN(targetSize.Height))
+			{
 				targetSize.Height = (imageSize.Height / imageSize.Width) * targetSize.Width;
 			}
 
-			if ((int)targetSize.Width <= 0 && (int)targetSize.Height <= 0) {
+			if ((int)targetSize.Width <= 0 && (int)targetSize.Height <= 0)
+			{
 				return null;
 			}
 
 			nfloat scale = 1f;
 			var translate = CGPoint.Empty;
 
-			if (!imageSize.Equals (targetSize)) {
+			if (!imageSize.Equals(targetSize))
+			{
 				var scaleX = targetSize.Width / imageSize.Width;
 				var scaleY = targetSize.Height / imageSize.Height;
-				scale = (nfloat)Math.Min (targetSize.Width / imageSize.Width, targetSize.Height / imageSize.Height);
+				scale = (nfloat)Math.Min(targetSize.Width / imageSize.Width, targetSize.Height / imageSize.Height);
 
-				if (scaleX > scaleY) {
+				if (scaleX > scaleY)
+				{
 					translate.X = (targetSize.Width - (imageSize.Width * scale)) * 0.5f;
-				} else if (scaleX < scaleY) {
+				}
+				else if (scaleX < scaleY)
+				{
 					translate.Y = (targetSize.Height - (imageSize.Height * scale)) * 0.5f;
 				}
 			}
@@ -108,18 +120,19 @@ namespace Uno.Media
 			UIImage image;
 
 #if __IOS__
-			UIGraphics.BeginImageContextWithOptions (targetSize, false, 0);
-			using (var context = UIGraphics.GetCurrentContext ()) {
-				context.TranslateCTM (translate.X, translate.Y);
-				context.ScaleCTM (scale, scale);
+			UIGraphics.BeginImageContextWithOptions(targetSize, false, 0);
+			using (var context = UIGraphics.GetCurrentContext())
+			{
+				context.TranslateCTM(translate.X, translate.Y);
+				context.ScaleCTM(scale, scale);
 
 				context.InterpolationQuality = CGInterpolationQuality.High;
-				context.SetFillColor ((color ?? UIColor.Black).CGColor);
+				context.SetFillColor((color ?? UIColor.Black).CGColor);
 				bezierPath.UsesEvenOddFillRule = (FillRule == FillRule.EvenOdd);
-				bezierPath.Fill ();
+				bezierPath.Fill();
 
-				image = UIGraphics.GetImageFromCurrentImageContext ();
-				UIGraphics.EndImageContext ();
+				image = UIGraphics.GetImageFromCurrentImageContext();
+				UIGraphics.EndImageContext();
 			}
 #elif __MACOS__
 			// macOS TODO

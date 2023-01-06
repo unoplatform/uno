@@ -39,18 +39,18 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
 		public void OnCalculateSizeClicked(object sender, RoutedEventArgs e)
 		{
 #if __IOS__
-	        UIView parent = this;
-	        while (parent.HasParent())
-	        {
-		        parent = parent.Superview;
-	        }
+			UIView parent = this;
+			while (parent.HasParent())
+			{
+				parent = parent.Superview;
+			}
 
-	        var titleView  = parent.FindFirstChild<TitleView>();
-	        var titleViewParent = titleView.Superview;
+			var titleView = parent.FindFirstChild<TitleView>();
+			var titleViewParent = titleView.Superview;
 
-	        //When the error occurs the TitleView Frame.Width get bigger than its parent Frame.Width
-	        //making the TitleView overlap any AppBarButton of the CommandBar
-	        Result.Text = titleView.Frame.Width > titleViewParent.Frame.Width ? "FAILED" : "PASSED";
+			//When the error occurs the TitleView Frame.Width get bigger than its parent Frame.Width
+			//making the TitleView overlap any AppBarButton of the CommandBar
+			Result.Text = titleView.Frame.Width > titleViewParent.Frame.Width ? "FAILED" : "PASSED";
 #endif
 		}
 	}

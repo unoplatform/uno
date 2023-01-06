@@ -134,7 +134,7 @@ namespace SamplesApp
 
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
 #if __SKIA__ && DEBUG
-			AppendRepositoryPathToTitleBar();			
+			AppendRepositoryPathToTitleBar();
 #endif
 
 			HandleLaunchArguments(e);
@@ -145,7 +145,7 @@ namespace SamplesApp
 		{
 			var fullPath = Package.Current.InstalledLocation.Path;
 			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
-			var repositoryPath = fullPath;			
+			var repositoryPath = fullPath;
 			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
 			{
 				repositoryPath = fullPath.Substring(0, index);
@@ -248,10 +248,11 @@ namespace SamplesApp
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
 						{
 							ThreadPool.QueueUserWorkItem(
-								_ => {
-								Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
-								throw new Exception($"Watchdog failed");
-							});
+								_ =>
+								{
+									Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
+									throw new Exception($"Watchdog failed");
+								});
 						}
 
 						await Task.Delay(TimeSpan.FromSeconds(5));

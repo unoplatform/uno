@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Services
 			Assert.AreEqual("SamplesApp", ResourceHelper.ResourcesService.Get("ApplicationName"));
 			Assert.AreEqual("ValidResource (en)", ResourceHelper.ResourcesService.Get("Given_ResourceService.ValidResource"));
 		}
-		
+
 		[TestMethod]
 		public void When_Get_ResourceFromResw()
 		{

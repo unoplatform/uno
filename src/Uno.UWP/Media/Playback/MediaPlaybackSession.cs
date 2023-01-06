@@ -4,7 +4,7 @@ using Windows.Foundation;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlaybackSession 
+	public partial class MediaPlaybackSession
 	{
 		public Windows.Media.Playback.MediaPlayer MediaPlayer { get; }
 
@@ -29,12 +29,12 @@ namespace Windows.Media.Playback
 				{
 					_position = value;
 				}
-				
+
 				MediaPlayer.Position = _position;
 				PositionChanged?.Invoke(this, _position);
 			}
 		}
-		
+
 		internal TimeSpan PositionFromPlayer
 		{
 			set

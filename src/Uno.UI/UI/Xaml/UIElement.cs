@@ -610,8 +610,8 @@ namespace Windows.UI.Xaml
 			var bounds = Windows.UI.Xaml.Window.Current.Bounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
-				root.Measure(bounds.Size);
-				root.Arrange(bounds);
+			root.Measure(bounds.Size);
+			root.Arrange(bounds);
 #elif __ANDROID__
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{

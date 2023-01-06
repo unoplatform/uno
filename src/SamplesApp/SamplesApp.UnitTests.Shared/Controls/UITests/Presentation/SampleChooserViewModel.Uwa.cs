@@ -36,7 +36,7 @@ namespace SampleControl.Presentation
 		public void PrintViewHierarchy(FrameworkElement c, StringBuilder sb, int level = 0)
 		{
 			var children = c.GetChildren().ToImmutableArray();
-            for (int i = 0; i < children.Length; i++)
+			for (int i = 0; i < children.Length; i++)
 			{
 				var v = children[i];
 				var vElement = (FrameworkElement)v;

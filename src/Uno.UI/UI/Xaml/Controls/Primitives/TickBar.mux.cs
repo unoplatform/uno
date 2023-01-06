@@ -49,7 +49,7 @@ public sealed partial class TickBar
 		double currentY = 0;
 
 #if TICKBAR_DBG
-			Trace(L"BEGIN TickBar::ArrangeOverride()");
+		Trace(L"BEGIN TickBar::ArrangeOverride()");
 #endif // TICKBAR_DBG
 
 		if (TemplatedParent == null)
@@ -70,9 +70,9 @@ public sealed partial class TickBar
 			singlePixelWidthScaled = 1 / zoomScale;
 
 #if TICKBAR_DBG
-				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-					L"zoomScale=%.2f, singlePixelWidthScaled=%.2f", zoomScale, singlePixelWidthScaled);
-				Trace(g_szTickBarDbg);
+			swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+				L"zoomScale=%.2f, singlePixelWidthScaled=%.2f", zoomScale, singlePixelWidthScaled);
+			Trace(g_szTickBarDbg);
 #endif // TICKBAR_DBG
 
 			var orientation = spParentSlider.Orientation;
@@ -107,15 +107,15 @@ public sealed partial class TickBar
 			tickMarkInterval = DoubleUtil.Max(1, visualRange / numIntervals);
 
 #if TICKBAR_DBG
-				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-					L"finalLength=%.2f, thumbLength=%.2f", finalLength, thumbLength);
-				Trace(g_szTickBarDbg);
-				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-					L"visualRange=%.2f, numIntervals=%.2f", visualRange, numIntervals);
-				Trace(g_szTickBarDbg);
-				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-					L"tickMarkNumber=%d, tickMarkInterval=%.2f", tickMarkNumber, tickMarkInterval);
-				Trace(g_szTickBarDbg);
+			swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+				L"finalLength=%.2f, thumbLength=%.2f", finalLength, thumbLength);
+			Trace(g_szTickBarDbg);
+			swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+				L"visualRange=%.2f, numIntervals=%.2f", visualRange, numIntervals);
+			Trace(g_szTickBarDbg);
+			swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+				L"tickMarkNumber=%d, tickMarkInterval=%.2f", tickMarkNumber, tickMarkInterval);
+			Trace(g_szTickBarDbg);
 #endif // TICKBAR_DBG
 
 			if (DoubleUtil.LessThan(tickMarkInterval, MIN_TICKMARK_GAP))
@@ -129,13 +129,13 @@ public sealed partial class TickBar
 				tickMarkNumber /= ratioOfLogicalToVisibleTickMarks;
 
 #if TICKBAR_DBG
-					Trace(L"tickMarkInterval < MIN_TICKMARK_GAP... will use smallest multiple of tickMarkInterval that is > MIN_TICKMARK_GAP");
-					swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-						L"ratioOfLogicalToVisibleTickMarks=%d", ratioOfLogicalToVisibleTickMarks);
-					Trace(g_szTickBarDbg);
-					swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-						L"tickMarkNumber=%d, tickMarkInterval=%.2f", tickMarkNumber, tickMarkInterval);
-					Trace(g_szTickBarDbg);
+				Trace(L"tickMarkInterval < MIN_TICKMARK_GAP... will use smallest multiple of tickMarkInterval that is > MIN_TICKMARK_GAP");
+				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+					L"ratioOfLogicalToVisibleTickMarks=%d", ratioOfLogicalToVisibleTickMarks);
+				Trace(g_szTickBarDbg);
+				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+					L"tickMarkNumber=%d, tickMarkInterval=%.2f", tickMarkNumber, tickMarkInterval);
+				Trace(g_szTickBarDbg);
 #endif // TICKBAR_DBG
 			}
 
@@ -197,9 +197,9 @@ public sealed partial class TickBar
 			bIsDirectionReversed = spParentSlider.IsDirectionReversed;
 
 #if TICKBAR_DBG
-				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-					L"finalSize.Width=%.2f, finalSize.Height=%.2f", finalSize.Width, finalSize.Height);
-				Trace(g_szTickBarDbg);
+			swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+				L"finalSize.Width=%.2f, finalSize.Height=%.2f", finalSize.Width, finalSize.Height);
+			Trace(g_szTickBarDbg);
 #endif // TICKBAR_DBG
 
 			for (; j < tickMarkNumber; ++j)
@@ -236,9 +236,9 @@ public sealed partial class TickBar
 				// tick mark, and do not pass the rounded value to our next calculation.
 
 #if TICKBAR_DBG
-					swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
-						L"  TM:%d, currentX=%.2f, currentY=%.2f", j, currentX, currentY);
-					Trace(g_szTickBarDbg);
+				swprintf_s(g_szTickBarDbg, g_szTickBarDbgLen,
+					L"  TM:%d, currentX=%.2f, currentY=%.2f", j, currentX, currentY);
+				Trace(g_szTickBarDbg);
 #endif // TICKBAR_DBG
 
 				// account for the 1px tick mark thickness
@@ -253,7 +253,7 @@ public sealed partial class TickBar
 			}
 
 #if TICKBAR_DBG
-				Trace(L"  END TickBar::ArrangeOverride()");
+			Trace(L"  END TickBar::ArrangeOverride()");
 #endif // TICKBAR_DBG
 		}
 

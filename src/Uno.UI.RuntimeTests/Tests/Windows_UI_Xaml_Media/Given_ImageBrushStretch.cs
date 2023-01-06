@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			const string Greenish = "#FF0ED145";
 			const string White = "#FFFFFFFF";
 #if __MACOS__
-				Assert.Inconclusive(); // Colors are not interpreted the same way on MacOS
+			Assert.Inconclusive(); // Colors are not interpreted the same way on MacOS
 #endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{

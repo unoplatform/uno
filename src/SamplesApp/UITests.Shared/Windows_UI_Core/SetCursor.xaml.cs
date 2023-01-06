@@ -42,7 +42,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
 
-			
+
 
 			Box.SelectionChanged += HandleSelection;
 #endif

@@ -237,8 +237,8 @@ namespace Windows.UI.Xaml.Controls
 #else
 				PerformPointerUpAction();
 #endif
+				}
 			}
-		}
 
 		private protected override void OnRightTappedUnhandled(RightTappedRoutedEventArgs pArgs)
 		{

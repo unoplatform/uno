@@ -625,14 +625,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
 #if NETSTANDARD
-							var diagnostic = Diagnostic.Create(
-								XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
-								null,
-								message);
+						var diagnostic = Diagnostic.Create(
+							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
+							null,
+							message);
 
-							_generatorContext.ReportDiagnostic(diagnostic);
+						_generatorContext.ReportDiagnostic(diagnostic);
 
-							return Array.Empty<string>();
+						return Array.Empty<string>();
 #else
 						throw new InvalidOperationException(message, e);
 #endif

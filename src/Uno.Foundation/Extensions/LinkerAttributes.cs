@@ -34,7 +34,7 @@ namespace System.Diagnostics.CodeAnalysis
 		AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct,
 		Inherited = false)]
 #if SYSTEM_PRIVATE_CORELIB
-    public
+	public
 #else
 	internal
 #endif
@@ -65,7 +65,7 @@ namespace System.Diagnostics.CodeAnalysis
 	/// </summary>
 	[Flags]
 #if SYSTEM_PRIVATE_CORELIB
-    public
+	public
 #else
 	internal
 #endif
@@ -163,7 +163,7 @@ namespace System.Diagnostics.CodeAnalysis
 		AttributeTargets.Constructor | AttributeTargets.Field | AttributeTargets.Method,
 		AllowMultiple = true, Inherited = false)]
 #if SYSTEM_PRIVATE_CORELIB
-    public
+	public
 #else
 	internal
 #endif
@@ -292,7 +292,7 @@ namespace System.Diagnostics.CodeAnalysis
 	/// </remarks>
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Class, Inherited = false)]
 #if SYSTEM_PRIVATE_CORELIB
-    public
+	public
 #else
 	internal
 #endif
@@ -333,7 +333,7 @@ namespace System.Diagnostics.CodeAnalysis
 	/// </remarks>
 	[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
 #if SYSTEM_PRIVATE_CORELIB
-    public
+	public
 #else
 	internal
 #endif

@@ -299,17 +299,17 @@ namespace Windows.UI.Xaml
 			try
 			{
 #endif
-			// Dispatch to right object, if we can find it
-			if (GetElementFromHandle(handle) is UIElement element)
-			{
-				return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
-			}
-			else
-			{
-				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
-			}
+				// Dispatch to right object, if we can find it
+				if (GetElementFromHandle(handle) is UIElement element)
+				{
+					return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
+				}
+				else
+				{
+					Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
+				}
 
-			return (int)HtmlEventDispatchResult.NotDispatched;
+				return (int)HtmlEventDispatchResult.NotDispatched;
 #if DEBUG
 			}
 			catch (Exception error)

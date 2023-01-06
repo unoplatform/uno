@@ -103,13 +103,13 @@ namespace Uno.Conversion
 			FieldInfo unkownFieldInfo = null;
 
 #if false //!HAS_TYPEINFO && !HAS_CRIPPLEDREFLECTION && !WINDOWS_UWP
-            var comparisonType =
-                culture == null
-                    ? StringComparison.InvariantCultureIgnoreCase
-                    : StringComparison.CurrentCultureIgnoreCase;
+			var comparisonType =
+				culture == null
+					? StringComparison.InvariantCultureIgnoreCase
+					: StringComparison.CurrentCultureIgnoreCase;
 
-            var fields = enumType.GetFields();
-            using (culture == null ? null : new Localisation.CultureContext(culture))
+			var fields = enumType.GetFields();
+			using (culture == null ? null : new Localisation.CultureContext(culture))
 #elif !HAS_TYPEINFO && HAS_CRIPPLEDREFLECTION
             var comparisonType =
 				culture == null

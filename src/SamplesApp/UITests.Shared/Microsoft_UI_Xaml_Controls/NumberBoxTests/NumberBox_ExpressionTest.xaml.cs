@@ -80,7 +80,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				Status.Text = "Running";
 				Report("Starting tests...");
 
-				foreach(var expression in _expressions)
+				foreach (var expression in _expressions)
 				{
 					TestNumberBox.Text = "";
 					await Task.Yield();
@@ -91,7 +91,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 					{
 						if (expression.Value.IsNaN())
 						{
-							if(TestNumberBox.Text != "")
+							if (TestNumberBox.Text != "")
 							{
 								throw new InvalidOperationException($"Expected error, found {TestNumberBox.Text}.");
 							}
@@ -105,7 +105,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 						}
 						Report($"expression {expression.Key} = {expression.Value} Success.", isFailed: false);
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
 						Report($"expression {expression.Key} = {expression.Value} FAILED:  {ex.Message}", isFailed: true);
 						errorCount++;

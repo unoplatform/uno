@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel
 #pragma warning restore CS0618 // Type or member is obsolete
 				return !installer.HasValue();
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return false;
 			}

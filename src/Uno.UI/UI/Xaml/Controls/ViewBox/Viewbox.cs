@@ -149,7 +149,7 @@ public partial class Viewbox // Viewbox.cpp
 
 		//IFC(CFrameworkElement::AddChild(pChild));
 
-	//Cleanup:
+		//Cleanup:
 		//RRETURN(hr);
 	}
 #endif
@@ -238,143 +238,143 @@ public partial class Viewbox // Viewbox.cpp
 	_Check_return_
 	HRESULT
 	CViewbox::Child(
-		_In_ CDependencyObject *pObject,
+		_In_ CDependencyObject * pObject,
 		_In_ XUINT32 cArgs,
-		_Inout_updates_(cArgs) CValue *ppArgs,
+		_Inout_updates_(cArgs) CValue* ppArgs,
 		_In_opt_ IInspectable* pValueOuter,
-		_Out_ CValue *pResult)
+		_Out_ CValue* pResult)
 	{
 		HRESULT hr = S_OK;
-		CViewbox* pViewbox = NULL;
+	CViewbox* pViewbox = NULL;
 
-		IFC(DoPointerCast(pViewbox, pObject));
+	IFC(DoPointerCast(pViewbox, pObject));
 
 		if (cArgs == 0)
 		{
 			// Getting the child
 			CUIElement* pChild = NULL;
-			hr = pViewbox->GetChild(&pChild);
+	hr = pViewbox->GetChild(&pChild);
 			if (SUCCEEDED(hr))
 			{
 				pResult->SetObjectNoRef(pChild);
-			}
+}
 			else
 			{
 				pResult->SetNull();
-				IFC(hr);
+IFC(hr);
 			}
 		}
 		else if (cArgs == 1 && ppArgs->GetType() == valueObject)
-		{
-			// Setting the child
-			CUIElement* pChild;
-			IFC(DoPointerCast(pChild, ppArgs->AsObject()));
-			IFC(pViewbox->SetChild(pChild));
-		}
-		else if (cArgs == 1 && ppArgs->GetType() == valueNull)
-		{
-			IFC(pViewbox->SetChild(NULL));
-		}
-		else
-		{
-			IFC(E_INVALIDARG);
-		}
-	Cleanup:
-		RRETURN(hr);
+{
+	// Setting the child
+	CUIElement* pChild;
+	IFC(DoPointerCast(pChild, ppArgs->AsObject()));
+	IFC(pViewbox->SetChild(pChild));
+}
+else if (cArgs == 1 && ppArgs->GetType() == valueNull)
+{
+	IFC(pViewbox->SetChild(NULL));
+}
+else
+{
+	IFC(E_INVALIDARG);
+}
+Cleanup:
+RRETURN(hr);
 	}
 
 	/// <summary>
 	/// Remove any existing child and set the new child tree.
 	/// </summary>
 	void SetChild(UIElement pChild)
-	{
-		//HRESULT hr = S_OK;
-		//CUIElement* pExistingLogicalChild = NULL;
+{
+	//HRESULT hr = S_OK;
+	//CUIElement* pExistingLogicalChild = NULL;
 
-		//var pExistingLogicalChild = GetChild();
-		//if (null != pExistingLogicalChild)
-		//{
-		//	RemoveLogicalChild(pExistingLogicalChild);
-		//}
+	//var pExistingLogicalChild = GetChild();
+	//if (null != pExistingLogicalChild)
+	//{
+	//	RemoveLogicalChild(pExistingLogicalChild);
+	//}
 
-		m_pContainerVisual.Child = pChild;
-		//if (NULL != pChild)
-		//{
-		//	IFC(AddLogicalChild(pChild));
-		//}
-
-	//Cleanup:
-		//ReleaseInterface(pExistingLogicalChild);
-		//RRETURN(hr);
-	}
-
-	/// <summary>
-	/// This will return the first (and only) child, or NULL if the there is no Child yet.
-	/// </summary>
-	UIElement GetChild()
-	{
-		//HRESULT hr = S_OK;
-
-		//IFCPTR(ppChild);
-		return m_pContainerVisual.Child;
+	m_pContainerVisual.Child = pChild;
+	//if (NULL != pChild)
+	//{
+	//	IFC(AddLogicalChild(pChild));
+	//}
 
 	//Cleanup:
-		//	RRETURN(hr);
-	}
+	//ReleaseInterface(pExistingLogicalChild);
+	//RRETURN(hr);
+}
+
+/// <summary>
+/// This will return the first (and only) child, or NULL if the there is no Child yet.
+/// </summary>
+UIElement GetChild()
+{
+	//HRESULT hr = S_OK;
+
+	//IFCPTR(ppChild);
+	return m_pContainerVisual.Child;
+
+	//Cleanup:
+	//	RRETURN(hr);
+}
 #endif
 
-	/// <summary>
-	/// Returns the desired size for layout purposes.
-	/// </summary>
-	protected override Size MeasureOverride(Size availableSize)
-	{
-		Size childDesiredSize = default, scale = default, infiniteSize = default;
+/// <summary>
+/// Returns the desired size for layout purposes.
+/// </summary>
+protected override Size MeasureOverride(Size availableSize)
+{
+	Size childDesiredSize = default, scale = default, infiniteSize = default;
 
-		//IFCEXPECT_RETURN(m_pContainerVisual);
+	//IFCEXPECT_RETURN(m_pContainerVisual);
 
-		infiniteSize.Width = double.PositiveInfinity;
-		infiniteSize.Height = double.PositiveInfinity;
+	infiniteSize.Width = double.PositiveInfinity;
+	infiniteSize.Height = double.PositiveInfinity;
 
-		m_pContainerVisual.Measure(infiniteSize);
-		//m_pContainerVisual.EnsureLayoutStorage();
+	m_pContainerVisual.Measure(infiniteSize);
+	//m_pContainerVisual.EnsureLayoutStorage();
 
-		// Desired size would be my child's desired size plus the border
-		childDesiredSize.Width = m_pContainerVisual.DesiredSize.Width;
-		childDesiredSize.Height = m_pContainerVisual.DesiredSize.Height;
+	// Desired size would be my child's desired size plus the border
+	childDesiredSize.Width = m_pContainerVisual.DesiredSize.Width;
+	childDesiredSize.Height = m_pContainerVisual.DesiredSize.Height;
 
-		scale = ComputeScaleFactor(availableSize, childDesiredSize);
-		//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Width));
-		//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Height));
+	scale = ComputeScaleFactor(availableSize, childDesiredSize);
+	//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Width));
+	//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Height));
 
-		Size desiredSize = default;
-		desiredSize.Width = scale.Width * childDesiredSize.Width;
-		desiredSize.Height = scale.Height * childDesiredSize.Height;
+	Size desiredSize = default;
+	desiredSize.Width = scale.Width * childDesiredSize.Width;
+	desiredSize.Height = scale.Height * childDesiredSize.Height;
 
-		return desiredSize;
-	}
+	return desiredSize;
+}
 
-	/// <summary>
-	/// Returns the final render size for layout purposes.
-	/// </summary>
-	protected override Size ArrangeOverride(Size finalSize)
-	{
-		//IFCEXPECT(m_pContainerVisual);
+/// <summary>
+/// Returns the final render size for layout purposes.
+/// </summary>
+protected override Size ArrangeOverride(Size finalSize)
+{
+	//IFCEXPECT(m_pContainerVisual);
 
-		// Determine the scale factor given the final size
-		//m_pContainerVisual.EnsureLayoutStorage();
-		var desiredSize = m_pContainerVisual.DesiredSize;
-		var scale = ComputeScaleFactor(finalSize, desiredSize);
+	// Determine the scale factor given the final size
+	//m_pContainerVisual.EnsureLayoutStorage();
+	var desiredSize = m_pContainerVisual.DesiredSize;
+	var scale = ComputeScaleFactor(finalSize, desiredSize);
 
-		// Scale the ChildElement by the necessary factor
-		m_pScaleTransform.ScaleX = scale.Width;
-		m_pScaleTransform.ScaleY = scale.Height;
+	// Scale the ChildElement by the necessary factor
+	m_pScaleTransform.ScaleX = scale.Width;
+	m_pScaleTransform.ScaleY = scale.Height;
 
-		// Position the Child to fill the Viewbox
-		m_pContainerVisual.Arrange(new Rect(default, desiredSize));
+	// Position the Child to fill the Viewbox
+	m_pContainerVisual.Arrange(new Rect(default, desiredSize));
 
-		finalSize.Width = scale.Width * desiredSize.Width;
-		finalSize.Height = scale.Height * desiredSize.Height;
+	finalSize.Width = scale.Width * desiredSize.Width;
+	finalSize.Height = scale.Height * desiredSize.Height;
 
-		return finalSize;
-	}
+	return finalSize;
+}
 }

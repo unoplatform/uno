@@ -46,7 +46,7 @@ namespace Uno.Extensions.ValueType
 			var type = typeof(T);
 
 #if WINDOWS_UWP
-            if (type.GetTypeInfo().IsEnum)
+			if (type.GetTypeInfo().IsEnum)
 #else
 			if (type.IsEnum)
 #endif

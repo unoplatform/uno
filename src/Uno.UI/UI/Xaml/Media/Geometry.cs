@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
-		public static implicit operator UIImage (Geometry g)
+		public static implicit operator UIImage(Geometry g)
 		{
 			return g.ToNativeImage();
 		}
