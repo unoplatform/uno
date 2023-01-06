@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Shapes
 					//    |  \ |
 					//    |   \|
 					//    ------
-					//    
+					//
 					// while with another Stretch mode you will have:
 					//    ------
 					//    |\   |

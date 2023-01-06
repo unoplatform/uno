@@ -183,7 +183,7 @@ namespace Uno.UI.Toolkit
 					const float blur = 0.5f;
 
 					var shadow = compositor.CreateDropShadow();
-					shadow.Offset = new Vector3((float)elevation*x, (float)elevation*y, -(float)elevation);
+					shadow.Offset = new Vector3((float)elevation * x, (float)elevation * y, -(float)elevation);
 					shadow.BlurRadius = (float)(blur * elevation);
 
 					shadow.Mask = uiElement switch

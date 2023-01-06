@@ -53,9 +53,9 @@ internal partial struct ImageData
 	}
 #elif __WASM__
 	public static ImageData FromDataUri(string dataUri) => new ImageData(ImageDataKind.DataUri, dataUri);
-	
+
 	public static ImageData FromUrl(Uri url, ImageSource source) => new ImageData(url.ToString(), source);
-	
+
 	public static ImageData FromUrl(string url, ImageSource source) => new ImageData(url, source);
 
 	private ImageData(ImageDataKind kind, string value)
@@ -77,7 +77,7 @@ internal partial struct ImageData
 		{
 			return ImageData.Empty;
 		}
-		
+
 		return new ImageData(bitmap);
 	}
 

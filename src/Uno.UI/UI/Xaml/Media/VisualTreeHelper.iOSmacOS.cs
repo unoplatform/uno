@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media
 #if __IOS__
 				currentSuperview?.InsertSubview(newView, currentPosition);
 #elif __MACOS__
-				currentSuperview?.AddSubview(newView, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition-1)]);
+				currentSuperview?.AddSubview(newView, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition - 1)]);
 #endif
 			}
 		}

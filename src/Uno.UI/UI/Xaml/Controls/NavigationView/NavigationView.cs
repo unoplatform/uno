@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 		static string c_menuItemsHost = "MenuItemsHost";
 		static string c_settingsName = "SettingsNavPaneItem";
 		static string c_settingsNameTopNav = "SettingsTopNavPaneItem";
-		// static string c_selectionIndicatorName = "SelectionIndicator"; // 
+		// static string c_selectionIndicatorName = "SelectionIndicator"; //
 		static string c_paneContentGridName = "PaneContentGrid";
 		static string c_rootGridName = "RootGrid";
 		static string c_contentGridName = "ContentGrid";
@@ -431,16 +431,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Unlike other control, NavigationView only move items into/out of overflow on MeasureOverride. 
+		// Unlike other control, NavigationView only move items into/out of overflow on MeasureOverride.
 		// and the actual measure is done by base.MeasureOverride.
 		// We can't move items in LayoutUpdated or OnLoaded, otherwise it would trig another MeasureOverride.
-		// Because of Items Container restriction, apps may crash if we move the same item out of overflow, 
+		// Because of Items Container restriction, apps may crash if we move the same item out of overflow,
 		// and then move it back to overflow in the same measureoveride(busy, unlink failure, in transition...).
 		// TopNavigationViewLayoutState is used to guarantee above will not happen
-		// 
-		// Because of ItemsStackPanel and overflow, we need to run MeasureOverride multiple times. RequestInvalidateMeasureOnNextLayoutUpdate is helping with this.  
+		//
+		// Because of ItemsStackPanel and overflow, we need to run MeasureOverride multiple times. RequestInvalidateMeasureOnNextLayoutUpdate is helping with this.
 		// Here is a typical scenario:
-		//  MeasureOverride(RequestInvalidateMeasureOnNextLayoutUpdate and register LayoutUpdated) . LayoutUpdated(unregister LayoutUpdated) . InvalidMeasure 
+		//  MeasureOverride(RequestInvalidateMeasureOnNextLayoutUpdate and register LayoutUpdated) . LayoutUpdated(unregister LayoutUpdated) . InvalidMeasure
 		//   . Another MeasureOverride(register LayoutUpdated) . LayoutUpdated(unregister LayoutUpdated) . Done
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -1027,7 +1027,7 @@ namespace Windows.UI.Xaml.Controls
 							OnAnimationComplete(sender, args);
 						};
 #else
-						OnAnimationComplete(null, null);
+					OnAnimationComplete(null, null);
 #endif
 				}
 				else
@@ -1181,7 +1181,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		//SFF = SelectionFollowsFocus 
+		//SFF = SelectionFollowsFocus
 		//SOI = SelectsOnInvoked
 		//
 		//                  !SFF&SOI     SFF&SOI     !SFF&&!SOI     SFF&&!SOI
@@ -1303,7 +1303,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						UndoSelectionAndRevertSelectionTo(prevItem, nextActualItem);
 
-						// Undo only happened when customer clicked a selectionsuppressed item. 
+						// Undo only happened when customer clicked a selectionsuppressed item.
 						// To simplify the logic, OnItemClick didn't raise the event and it's been delayed to here.
 						RaiseItemInvoked(nextActualItem, isSettingsItem);
 					}
@@ -1459,7 +1459,7 @@ namespace Windows.UI.Xaml.Controls
 		//    TopNav . Minimal
 		//    PaneDisplayMode.Left || (PaneDisplayMode.var && DisplayMode.Expanded) . Expanded
 		//    PaneDisplayMode.LeftCompact || (PaneDisplayMode.var && DisplayMode.Compact) . Compact
-		//    Map others to Minimal or MinimalWithBackButton 
+		//    Map others to Minimal or MinimalWithBackButton
 		NavigationViewVisualStateDisplayMode GetVisualStateDisplayMode(NavigationViewDisplayMode displayMode)
 		{
 			var paneDisplayMode = PaneDisplayMode;
@@ -1482,7 +1482,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// In minimal mode, when the NavView is closed, the HeaderContent doesn't have
-			// its own dedicated space, and must 'share' the top of the NavView with the 
+			// its own dedicated space, and must 'share' the top of the NavView with the
 			// pane toggle button ('hamburger' button) and the back button.
 			if (ShouldShowBackButton())
 			{
@@ -1887,7 +1887,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (m_appliedTemplate && IsTopNavigationView())
 			{
-				// In above ChangeSelection function, m_shouldIgnoreNextSelectionChange is set to true first and then set to false when leaving the function scope. 
+				// In above ChangeSelection function, m_shouldIgnoreNextSelectionChange is set to true first and then set to false when leaving the function scope.
 				// When customer select an item by API, SelectionChanged event is raised in ChangeSelection and customer may change the layout.
 				// MeasureOverride is executed but it did nothing since m_shouldIgnoreNextSelectionChange is true in ChangeSelection function.
 				// InvalidateMeasure to make MeasureOverride happen again
@@ -1980,7 +1980,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = NavigationViewItemOrSettingsContentFromData(item);
 			if (container != null)
 			{
-				// If we unselect an item, ListView doesn't tolerate setting the SelectedItem to null. 
+				// If we unselect an item, ListView doesn't tolerate setting the SelectedItem to null.
 				// Instead we remove IsSelected from the item itself, and it make ListView to unselect it.
 				// If we select an item, we follow the unselect to simplify the code.
 				container.IsSelected = selected;
@@ -2240,13 +2240,13 @@ namespace Windows.UI.Xaml.Controls
 					break;
 				case TopNavigationViewLayoutState.InitStep2: // Realized virtualization items
 					{
-						// Bug 18196691: For some reason(eg: customer hide topnav grid or it's parent from code directly), 
+						// Bug 18196691: For some reason(eg: customer hide topnav grid or it's parent from code directly),
 						// The 2nd item may never been realized. and it will enter into a layout_cycle.
 						// For performance reason, we don't go through the visualtree to determine if ListView is actually visible or not
 						// m_measureOnInitStep2Count is used to avoid the cycle
 
 						// In our test environment, m_measureOnInitStep2Count should <= 2 since we didn't hide anything from code
-						// so the assert count is different from s_measureOnInitStep2CountThreshold 
+						// so the assert count is different from s_measureOnInitStep2CountThreshold
 						// global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
 
 						if (m_measureOnInitStep2Count >= s_measureOnInitStep2CountThreshold || !IsTopNavigationFirstMeasure())
@@ -2386,7 +2386,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var widthAtLeastToBeRemoved = desiredWidth + selectedOverflowItemWidth - actualWidth;
 
-				// calculate items to be removed from primary because a overflow item is selected. 
+				// calculate items to be removed from primary because a overflow item is selected.
 				// SelectedItem is assumed to be removed from primary first, then added it back if it should not be removed
 				var itemsToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, null /*excludeItems*/);
 				m_itemsRemovedFromMenuFlyout = itemsToBeRemoved;
@@ -2505,7 +2505,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				i++;
 			}
-			// Keep at one item is not in primary list. Two possible reason: 
+			// Keep at one item is not in primary list. Two possible reason:
 			//  1, Most likely it's caused by m_topNavigationRecoveryGracePeriod
 			//  2, virtualization and it doesn't have cached width
 			if (i == size && !toBeMoved.Empty())
@@ -2567,7 +2567,7 @@ namespace Windows.UI.Xaml.Controls
 							}
 							else
 							{
-								// item is virtualized but not realized.                    
+								// item is virtualized but not realized.
 							}
 						}
 
@@ -2682,7 +2682,7 @@ namespace Windows.UI.Xaml.Controls
 				//{
 				//	//  Explicitly disabling BackUI on NavigationView
 				//	TraceLoggingWrite(
-				//		g_hTelemetryProvider,  
+				//		g_hTelemetryProvider,
 				//		"NavigationView_DisableBackUI",
 				//		TraceLoggingDescription("Developer explicitly disables the BackUI on NavigationView"));
 				//}
@@ -2761,7 +2761,7 @@ namespace Windows.UI.Xaml.Controls
 					// Work around for issue where NavigationViewItem doesn't report
 					// its initial IsSelected state properly on RS2 and older builds.
 					//
-					// Without this, the visual state is proper, but the actual 
+					// Without this, the visual state is proper, but the actual
 					// IsSelected reported by the NavigationViewItem is not.
 					if (!SharedHelpers.IsRS3OrHigher())
 					{
@@ -2987,8 +2987,8 @@ namespace Windows.UI.Xaml.Controls
 		void UpdateHeaderVisibility(NavigationViewDisplayMode displayMode)
 		{
 			bool showHeader = AlwaysShowHeader || displayMode == NavigationViewDisplayMode.Minimal;
-			// Like bug 17517627, Customer like WallPaper Studio 10 expects a HeaderContent visual even if Header() is null. 
-			// App crashes when they have dependency on that visual, but the crash is not directly state that it's a header problem.   
+			// Like bug 17517627, Customer like WallPaper Studio 10 expects a HeaderContent visual even if Header() is null.
+			// App crashes when they have dependency on that visual, but the crash is not directly state that it's a header problem.
 			// NavigationView doesn't use quirk, but we determine the version by themeresource.
 			// As a workaround, we 'quirk' it for RS4 or before release. if it's RS4 or before, HeaderVisible is not related to Header().
 			// If theme resource is RS5 or later, we will not show header if header is null.
@@ -3369,7 +3369,7 @@ namespace Windows.UI.Xaml.Controls
 			DisplayModeChanged?.Invoke(this, eventArgs);
 		}
 
-		// This method attaches the series of animations which are fired off dependent upon the amount 
+		// This method attaches the series of animations which are fired off dependent upon the amount
 		// of space give and the length of the strings involved. It occurs upon re-rendering.
 		internal static void CreateAndAttachHeaderAnimation(Visual visual)
 		{

@@ -323,58 +323,58 @@ UIElement GetChild()
 }
 #endif
 
-/// <summary>
-/// Returns the desired size for layout purposes.
-/// </summary>
-protected override Size MeasureOverride(Size availableSize)
-{
-	Size childDesiredSize = default, scale = default, infiniteSize = default;
+	/// <summary>
+	/// Returns the desired size for layout purposes.
+	/// </summary>
+	protected override Size MeasureOverride(Size availableSize)
+	{
+		Size childDesiredSize = default, scale = default, infiniteSize = default;
 
-	//IFCEXPECT_RETURN(m_pContainerVisual);
+		//IFCEXPECT_RETURN(m_pContainerVisual);
 
-	infiniteSize.Width = double.PositiveInfinity;
-	infiniteSize.Height = double.PositiveInfinity;
+		infiniteSize.Width = double.PositiveInfinity;
+		infiniteSize.Height = double.PositiveInfinity;
 
-	m_pContainerVisual.Measure(infiniteSize);
-	//m_pContainerVisual.EnsureLayoutStorage();
+		m_pContainerVisual.Measure(infiniteSize);
+		//m_pContainerVisual.EnsureLayoutStorage();
 
-	// Desired size would be my child's desired size plus the border
-	childDesiredSize.Width = m_pContainerVisual.DesiredSize.Width;
-	childDesiredSize.Height = m_pContainerVisual.DesiredSize.Height;
+		// Desired size would be my child's desired size plus the border
+		childDesiredSize.Width = m_pContainerVisual.DesiredSize.Width;
+		childDesiredSize.Height = m_pContainerVisual.DesiredSize.Height;
 
-	scale = ComputeScaleFactor(availableSize, childDesiredSize);
-	//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Width));
-	//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Height));
+		scale = ComputeScaleFactor(availableSize, childDesiredSize);
+		//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Width));
+		//IFCEXPECT_ASSERT_RETURN(!IsInfiniteF(scale.Height));
 
-	Size desiredSize = default;
-	desiredSize.Width = scale.Width * childDesiredSize.Width;
-	desiredSize.Height = scale.Height * childDesiredSize.Height;
+		Size desiredSize = default;
+		desiredSize.Width = scale.Width * childDesiredSize.Width;
+		desiredSize.Height = scale.Height * childDesiredSize.Height;
 
-	return desiredSize;
-}
+		return desiredSize;
+	}
 
-/// <summary>
-/// Returns the final render size for layout purposes.
-/// </summary>
-protected override Size ArrangeOverride(Size finalSize)
-{
-	//IFCEXPECT(m_pContainerVisual);
+	/// <summary>
+	/// Returns the final render size for layout purposes.
+	/// </summary>
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		//IFCEXPECT(m_pContainerVisual);
 
-	// Determine the scale factor given the final size
-	//m_pContainerVisual.EnsureLayoutStorage();
-	var desiredSize = m_pContainerVisual.DesiredSize;
-	var scale = ComputeScaleFactor(finalSize, desiredSize);
+		// Determine the scale factor given the final size
+		//m_pContainerVisual.EnsureLayoutStorage();
+		var desiredSize = m_pContainerVisual.DesiredSize;
+		var scale = ComputeScaleFactor(finalSize, desiredSize);
 
-	// Scale the ChildElement by the necessary factor
-	m_pScaleTransform.ScaleX = scale.Width;
-	m_pScaleTransform.ScaleY = scale.Height;
+		// Scale the ChildElement by the necessary factor
+		m_pScaleTransform.ScaleX = scale.Width;
+		m_pScaleTransform.ScaleY = scale.Height;
 
-	// Position the Child to fill the Viewbox
-	m_pContainerVisual.Arrange(new Rect(default, desiredSize));
+		// Position the Child to fill the Viewbox
+		m_pContainerVisual.Arrange(new Rect(default, desiredSize));
 
-	finalSize.Width = scale.Width * desiredSize.Width;
-	finalSize.Height = scale.Height * desiredSize.Height;
+		finalSize.Width = scale.Width * desiredSize.Width;
+		finalSize.Height = scale.Height * desiredSize.Height;
 
-	return finalSize;
-}
+		return finalSize;
+	}
 }
