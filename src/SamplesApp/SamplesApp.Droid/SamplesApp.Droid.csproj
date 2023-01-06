@@ -20,8 +20,6 @@
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AndroidUseAapt2>true</AndroidUseAapt2>
-    <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
-    <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
