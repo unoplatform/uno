@@ -22,26 +22,26 @@ namespace UITests.Shared.Windows_System.Display
 	[SampleControlInfo("Windows.System", "Display.DisplayRequest",
 		description: "Demonstrates DisplayRequest class to keep screen awake. Make sure to test without debugger attached (that keeps screen on all the time).")]
 	public sealed partial class DisplayRequest : UserControl
-    {
-	    private static int _currentlyActive = 0;
+	{
+		private static int _currentlyActive = 0;
 		private static UwpDisplayRequest _displayRequest = new UwpDisplayRequest();
 
-        public DisplayRequest()
-        {
-            this.InitializeComponent();
-        }
+		public DisplayRequest()
+		{
+			this.InitializeComponent();
+		}
 
-        private void RequestActive_Click(object sender, RoutedEventArgs e)
-        {
+		private void RequestActive_Click(object sender, RoutedEventArgs e)
+		{
 			_displayRequest.RequestActive();
 			ActiveRequestCounter.Text = $"Currently active {(++_currentlyActive).ToString()} request";
 
 		}
 
-        private void RequestRelease_Click(object sender, RoutedEventArgs e)
-        {
+		private void RequestRelease_Click(object sender, RoutedEventArgs e)
+		{
 			_displayRequest.RequestRelease();
 			ActiveRequestCounter.Text = $"Currently active {(--_currentlyActive).ToString()} request";
 		}
-    }
+	}
 }

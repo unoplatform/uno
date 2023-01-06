@@ -18,10 +18,10 @@ namespace UITests.Windows_UI_Xaml_Controls.RelativePanelTests
 {
 	[Sample("RelativePanel", Description = "Both ellipse and text should be vertically centered within their container and the app should not crash")]
 	public sealed partial class RelativePanel_MultipleCenterAlign : Page
-    {
-        public RelativePanel_MultipleCenterAlign()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public RelativePanel_MultipleCenterAlign()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

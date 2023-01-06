@@ -7,11 +7,11 @@ namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 	[Sample("AutoSuggestBox")]
 
 	public sealed partial class AutoSuggestBox_Icons : Page
-    {
-        public AutoSuggestBox_Icons()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public AutoSuggestBox_Icons()
+		{
+			this.InitializeComponent();
+		}
 
 		public void SwitchIconClick(object sender, RoutedEventArgs e)
 		{

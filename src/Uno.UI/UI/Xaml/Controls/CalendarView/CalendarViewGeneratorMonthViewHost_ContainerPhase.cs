@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spContainer = (CalendarViewDayItem)pContainer;
 
-			if (spContainer is {})
+			if (spContainer is { })
 			{
 				// is this a new style container? We can know by looking at the virtualizationInformation struct which is
 				// a ModernCollectionBase concept
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 				pVirtualizationInformation = (spContainer as UIElement).GetVirtualizationInformation();
 
-				global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is {});
+				global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is { });
 
 				spArgs = (spContainer as CalendarViewDayItem).GetBuildTreeArgs();
 				spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// raise the event. This is the synchronous version. we will raise it 'async' as well when we have time
 			// but we guarantee calling it after prepare
-			
+
 			CalendarViewDayItemChangingEventSourceType? pEventSource = null;
 
 			Owner.GetCalendarViewDayItemChangingEventSourceNoRef(out pEventSource);
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var pCalendarPanel = Panel;
 
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					// we are going to do different types of work:
 					// 1. process incremental visualization
@@ -449,7 +449,7 @@ namespace Windows.UI.Xaml.Controls
 							continue;
 						}
 
-						spContainerAsCalendarViewDayItem = (CalendarViewDayItem) spContainer;
+						spContainerAsCalendarViewDayItem = (CalendarViewDayItem)spContainer;
 
 						pVirtualizationInformation = (spContainer as UIElement)?.GetVirtualizationInformation();
 						spArgs = (spContainerAsCalendarViewDayItem as CalendarViewDayItem).GetBuildTreeArgs();
@@ -465,7 +465,7 @@ namespace Windows.UI.Xaml.Controls
 						// we might have skipped getting the args, let's do that now.
 						spContainer = spMapping.ContainerFromIndex(cacheStart + currentPositionInVector);
 
-						spContainerAsCalendarViewDayItem = (CalendarViewDayItem) spContainer;
+						spContainerAsCalendarViewDayItem = (CalendarViewDayItem)spContainer;
 						pVirtualizationInformation = (spContainer as UIElement)?.GetVirtualizationInformation();
 
 						spArgs = (spContainerAsCalendarViewDayItem as CalendarViewDayItem).GetBuildTreeArgs();
@@ -484,7 +484,7 @@ namespace Windows.UI.Xaml.Controls
 
 						// guaranteed to have pVirtualizationInformation by now
 
-						global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is {});
+						global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is { });
 
 						measureSize = pVirtualizationInformation!.MeasureSize;
 
@@ -492,7 +492,7 @@ namespace Windows.UI.Xaml.Controls
 						spCallback = spArgsConcrete.Callback;
 
 						// raise event
-						if (spCallback is {})
+						if (spCallback is { })
 						{
 							spArgsConcrete.WantsCallBack = false;
 							// clear out the delegate
@@ -630,7 +630,7 @@ namespace Windows.UI.Xaml.Controls
 				ClearContainerForItem(spContainer as CalendarViewDayItem, null /* spItem */);
 
 				// potentially raise the event
-				if (spContainer is {})
+				if (spContainer is { })
 				{
 					RaiseContainerContentChangingOnRecycle(spContainer as UIElement, null);
 				}
@@ -650,7 +650,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var pCalendarPanel = Panel;
 
-			if (pCalendarPanel is {})
+			if (pCalendarPanel is { })
 			{
 				// go through everyone that might have work registered for a prepare
 				int cacheStart, cacheEnd = 0;

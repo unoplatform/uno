@@ -42,8 +42,8 @@ namespace Windows.Graphics.Imaging
 		public IAsyncAction FlushAsync() =>
 			AsyncAction.FromTask(ct =>
 			{
-				 _softwareBitmap?.Bitmap?
-				.Compress(_imageFormat, 100, _stream.AsStream());
+				_softwareBitmap?.Bitmap?
+			   .Compress(_imageFormat, 100, _stream.AsStream());
 				return Task.CompletedTask;
 			});
 
@@ -55,7 +55,7 @@ namespace Windows.Graphics.Imaging
 
 		public void SetPixelData(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)
 		{
-			if (pixelFormat!= BitmapPixelFormat.Rgba8
+			if (pixelFormat != BitmapPixelFormat.Rgba8
 				&& pixelFormat != BitmapPixelFormat.Bgra8)
 			{
 				throw new NotSupportedException($"The {pixelFormat} pixels format is not supported.");

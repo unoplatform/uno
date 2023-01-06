@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			// MinValue: We make sure to have the LastIndex lower than FirstIndex so enumerating from FirstIndex to i ** <= ** LastIndex
 			// (like in ForeachChildInPanel) we make sure to not consider -1 as a valid index.
-			internal int LastIndex { get; private set; } = int.MinValue; 
+			internal int LastIndex { get; private set; } = int.MinValue;
 
 			private bool IsInRange(int itemIndex)
 				=> itemIndex >= FirstIndex && itemIndex <= LastIndex;
@@ -218,68 +218,68 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					case GenerationState.InRange:
 					inRange:
-					{
-						var entryIndex = GetEntryIndex(index);
-						var entry = _entries[entryIndex];
-
-						if (entryIndex == _generationRecyclableAfter.at && _generationRecyclableAfter.count > 0)
 						{
-							// Finally a container which was eligible for recycling is still valid ... we saved it in extremis!
-							_generationRecyclableAfter.at++;
-							_generationRecyclableAfter.count--;
-						}
-						else
-						{
-							_generationUnusedInRange.at++;
-							_generationUnusedInRange.count--;
-						}
+							var entryIndex = GetEntryIndex(index);
+							var entry = _entries[entryIndex];
 
-						global::System.Diagnostics.Debug.Assert(entry.Index == index);
+							if (entryIndex == _generationRecyclableAfter.at && _generationRecyclableAfter.count > 0)
+							{
+								// Finally a container which was eligible for recycling is still valid ... we saved it in extremis!
+								_generationRecyclableAfter.at++;
+								_generationRecyclableAfter.count--;
+							}
+							else
+							{
+								_generationUnusedInRange.at++;
+								_generationUnusedInRange.count--;
+							}
 
-						return (entry, CacheEntryKind.Kept);
-					}
+							global::System.Diagnostics.Debug.Assert(entry.Index == index);
+
+							return (entry, CacheEntryKind.Kept);
+						}
 
 					case GenerationState.Before:
 					case GenerationState.After:
 					after:
-					{
-						var item = _host![index];
-
-						CacheEntry entry;
-						CacheEntryKind kind;
-						if (_generationRecyclableBefore.count > 0)
 						{
-							entry = _entries[_generationRecyclableBefore.at];
-							kind = CacheEntryKind.Recycled;
+							var item = _host![index];
 
-							_generationRecyclableBefore.at++;
-							_generationRecyclableBefore.count--;
+							CacheEntry entry;
+							CacheEntryKind kind;
+							if (_generationRecyclableBefore.count > 0)
+							{
+								entry = _entries[_generationRecyclableBefore.at];
+								kind = CacheEntryKind.Recycled;
+
+								_generationRecyclableBefore.at++;
+								_generationRecyclableBefore.count--;
+							}
+							else if (_generationRecyclableAfter.count > 0)
+							{
+								entry = _entries[_generationRecyclableAfter.at + _generationRecyclableAfter.count - 1];
+								kind = CacheEntryKind.Recycled;
+
+								_generationRecyclableAfter.count--;
+
+								global::System.Diagnostics.Debug.Assert(entry.Index > index);
+							}
+							else
+							{
+								var container = (UIElement)_host.GetContainerForItem(item, null);
+								entry = new CacheEntry(container);
+								kind = CacheEntryKind.New;
+
+								_entries.Add(entry);
+							}
+
+							entry.Index = index;
+							entry.Item = item;
+
+							_host.PrepareItemContainer(entry.Container, item);
+
+							return (entry, kind);
 						}
-						else if (_generationRecyclableAfter.count > 0)
-						{
-							entry = _entries[_generationRecyclableAfter.at + _generationRecyclableAfter.count - 1];
-							kind = CacheEntryKind.Recycled;
-
-							_generationRecyclableAfter.count--;
-
-							global::System.Diagnostics.Debug.Assert(entry.Index > index);
-						}
-						else
-						{
-							var container = (UIElement)_host.GetContainerForItem(item, null);
-							entry = new CacheEntry(container);
-							kind = CacheEntryKind.New;
-
-							_entries.Add(entry);
-						}
-
-						entry.Index = index;
-						entry.Item = item;
-
-						_host.PrepareItemContainer(entry.Container, item);
-
-						return (entry, kind);
-					}
 				}
 
 				throw new InvalidOperationException("Non reachable case.");
@@ -735,7 +735,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return finalSize;
 		}
-#endregion
+		#endregion
 
 		private static void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 			=> (sender as CalendarPanel)?.OnEffectiveViewportChanged(args);

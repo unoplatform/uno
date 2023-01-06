@@ -22,14 +22,14 @@ using Uno.UI.Controls;
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 {
 	public sealed partial class CommandBar_Page2 : Page
-    {
-        public CommandBar_Page2()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public CommandBar_Page2()
+		{
+			this.InitializeComponent();
+		}
 
-        public void OnButtonClicked(object sender, object args)
-        {
+		public void OnButtonClicked(object sender, object args)
+		{
 #if __IOS__
 	        UIView parent = this;
 	        while (parent.HasParent())
@@ -46,5 +46,5 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 			ExpectedImage.Source = image;
 #endif
 		}
-    }
+	}
 }

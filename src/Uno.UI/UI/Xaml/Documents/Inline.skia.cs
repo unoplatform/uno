@@ -136,10 +136,10 @@ namespace Windows.UI.Xaml.Documents
 			{
 				var size = skTypeFace.GetTableSize(tag);
 
-				if(size == 0)
-                {
+				if (size == 0)
+				{
 					return null;
-                }
+				}
 
 				var data = Marshal.AllocCoTaskMem(size);
 

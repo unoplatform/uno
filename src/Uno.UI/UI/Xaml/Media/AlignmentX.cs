@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media
 	/// Describes how content is positioned horizontally in a container.
 	/// </summary>
 	public enum AlignmentX
-    {
+	{
 		/// <summary>
 		/// The contents align toward the left of the container.
 		/// </summary>

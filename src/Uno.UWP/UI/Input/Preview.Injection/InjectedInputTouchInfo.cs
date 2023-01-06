@@ -7,7 +7,7 @@ using Windows.UI.Core;
 
 namespace Windows.UI.Input.Preview.Injection;
 
-public partial class InjectedInputTouchInfo 
+public partial class InjectedInputTouchInfo
 {
 	public InjectedInputTouchParameters TouchParameters { get; set; }
 

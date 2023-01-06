@@ -14,8 +14,8 @@ namespace UnoIslands.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-			
+
 			DataContext = new MainWindowViewModel();
 		}
-	}	
+	}
 }

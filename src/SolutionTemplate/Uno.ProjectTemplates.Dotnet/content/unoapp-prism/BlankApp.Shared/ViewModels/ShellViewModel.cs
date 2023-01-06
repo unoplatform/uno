@@ -8,11 +8,11 @@ using System.Text;
 
 namespace BlankApp.ViewModels
 {
-    public class ShellViewModel : ViewModelBase
-    {
-        public ShellViewModel()
-        {
-            Title = "Main Page";
-        }
-    }
+	public class ShellViewModel : ViewModelBase
+	{
+		public ShellViewModel()
+		{
+			Title = "Main Page";
+		}
+	}
 }

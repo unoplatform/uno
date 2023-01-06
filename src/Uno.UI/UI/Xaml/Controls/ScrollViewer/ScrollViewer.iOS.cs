@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnAfterArrange();
 
-			if (_pendingChangeView is {} req)
+			if (_pendingChangeView is { } req)
 			{
 				var success = ChangeViewNative(req.horizontal, req.vertical, null, req.disableAnimation);
 				if (success || !IsArrangeDirty)

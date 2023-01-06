@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Polyline),
 			new FrameworkPropertyMetadata(
 				defaultValue: default(PointCollection),
-			    options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 #if LEGACY_SHAPE_MEASURE
 				propertyChangedCallback: (s, e) =>
 				{

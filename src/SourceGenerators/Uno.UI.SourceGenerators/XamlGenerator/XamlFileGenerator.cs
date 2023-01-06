@@ -86,7 +86,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// x:Name cache for the lookups performed in the document.
 		/// </summary>
 		private Dictionary<string, List<XamlObjectDefinition>> _nameCache = new();
-		
+
 		/// <summary>
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
 		/// </summary>
@@ -499,7 +499,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)
 		{
 			writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
-			
+
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
 				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.Index}();");
@@ -586,7 +586,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Processes the 'App.xaml' file.
 		/// </summary>
 		private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
-		{			
+		{
 			writer.AppendLineIndented($"var __that = this;");
 
 			TryAnnotateWithGeneratorSource(writer);
@@ -597,7 +597,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLine();
 			ApplyLiteralProperties(); //
 			writer.AppendLine();
-			
+
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
 
@@ -757,7 +757,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					BuildResourceLoaderFromFilePath(writer, referenceFilePath);
 				}
-				else if(reference is CompilationReference cr)
+				else if (reference is CompilationReference cr)
 				{
 					// Skip local references for non-compiled targets (it can
 					// happen when using C# hot reload)
@@ -778,7 +778,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// disposing the assembly crashes the mono runtime under macos.
 			using
 #endif
-				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
+			var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
 
 			if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri", StringComparison.Ordinal)))
 			{
@@ -3672,7 +3672,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						?.Parameters
 						.Select(p => member.Value + "_" + p.Name)
 						.ToArray();
-					
+
 					var parms = parmsNames.JoinBy(",");
 
 					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "__that";
@@ -3785,7 +3785,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						EnsureXClassName();
 
 						var ownerName = CurrentScope.ClassName;
-						
+
 						AddXBindEventHandlerToScope(builderName, ownerName, eventSymbol.ContainingType, componentDefinition);
 
 						var handlerParameters = _isHotReloadEnabled ? "(__that, __owner)" : "(__owner)";
@@ -6106,7 +6106,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					} while (current is not null);
 				}
 			}
-			
+
 			return null;
 		}
 
@@ -6288,7 +6288,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
 
 										writer.AppendLineIndented($"var owner = this;");
-										
+
 										if (_isHotReloadEnabled)
 										{
 											// Attach the current context to itself to avoid having a closure in the lambda
@@ -6297,10 +6297,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
-										    if (_isHotReloadEnabled)
-										    {
-											    writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
-										    }
+											if (_isHotReloadEnabled)
+											{
+												writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
+											}
 
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
@@ -6676,10 +6676,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				parent.Components.Add(new ComponentEntry(CurrentScope.Components.Last().MemberName, objectDefinition));
 			}
 		}
-		
+
 		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
 		{
-			if(componentDefinition is null)
+			if (componentDefinition is null)
 			{
 				throw new InvalidOperationException("The component definition cannot be null.");
 			}

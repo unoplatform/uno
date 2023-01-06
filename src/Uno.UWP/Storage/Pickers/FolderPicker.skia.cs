@@ -9,7 +9,7 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker
-    {
+	{
 		private IFolderPickerExtension? _folderPickerExtension;
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _folderPickerExtension);

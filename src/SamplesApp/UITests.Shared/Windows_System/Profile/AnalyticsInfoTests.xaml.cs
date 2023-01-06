@@ -7,13 +7,13 @@ namespace UITests.Shared.Windows_System.Profile
 	[SampleControlInfo("Windows.System", "Profile.AnalyticsInfo",
 		   description: "Shows properties of AnalyticsInfo")]
 	public sealed partial class AnalyticsInfoTests : UserControl
-    {
-        public AnalyticsInfoTests()
-        {
-            this.InitializeComponent();
-            DeviceFormTextBlock.Text = AnalyticsInfo.DeviceForm;
-            DeviceFamilyTextBlock.Text = AnalyticsInfo.VersionInfo.DeviceFamily;
-            DeviceFamilyVersionTextBlock.Text = AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
+	{
+		public AnalyticsInfoTests()
+		{
+			this.InitializeComponent();
+			DeviceFormTextBlock.Text = AnalyticsInfo.DeviceForm;
+			DeviceFamilyTextBlock.Text = AnalyticsInfo.VersionInfo.DeviceFamily;
+			DeviceFamilyVersionTextBlock.Text = AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
 
 			try
 			{
@@ -30,5 +30,5 @@ namespace UITests.Shared.Windows_System.Profile
 				DecodedDeviceFamilyVersionTextBlock.Text = "Invalid version string";
 			}
 		}
-    }
+	}
 }

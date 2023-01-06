@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = 1d, ChangedCallback = true)]
-		public static DependencyProperty OpacityProperty { get ; } = CreateOpacityProperty();
+		public static DependencyProperty OpacityProperty { get; } = CreateOpacityProperty();
 
 		protected virtual void OnOpacityChanged(double oldValue, double newValue)
 		{
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty RelativeTransformProperty { get ; } = CreateRelativeTransformProperty();
+		public static DependencyProperty RelativeTransformProperty { get; } = CreateRelativeTransformProperty();
 
 		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
 		{

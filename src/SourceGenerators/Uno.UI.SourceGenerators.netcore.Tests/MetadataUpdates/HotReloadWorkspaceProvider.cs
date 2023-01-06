@@ -49,7 +49,8 @@ internal class HotReloadWorkspace
 		}
 		else
 		{
-			_sourceFiles[project] = new() {
+			_sourceFiles[project] = new()
+			{
 				[fileName] = content
 			};
 		}
@@ -58,7 +59,7 @@ internal class HotReloadWorkspace
 		Directory.CreateDirectory(basePath);
 		File.WriteAllText(filePath, content, Encoding.UTF8);
 
-		if(_currentSolution is not null)
+		if (_currentSolution is not null)
 		{
 			var documents = _currentSolution
 				.Projects
@@ -84,7 +85,7 @@ internal class HotReloadWorkspace
 				[fileName] = content
 			};
 		}
-		
+
 		var basePath = Path.Combine(_baseWorkFolder, project);
 		Directory.CreateDirectory(basePath);
 		var filePath = Path.Combine(basePath, fileName);
@@ -124,7 +125,7 @@ internal class HotReloadWorkspace
 		var currentSolution = workspace.CurrentSolution;
 		var frameworkReferences = BuildFrameworkReferences();
 		var references = BuildUnoReferences().Concat(frameworkReferences);
-		
+
 		var generatorReference = new MyGeneratorReference(
 			ImmutableArray.Create<ISourceGenerator>(new XamlGenerator.XamlCodeGenerator()));
 
@@ -199,7 +200,7 @@ internal class HotReloadWorkspace
 					foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
 					{
 						globalConfigBuilder.Append($"""
-							[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\","/")}]
+							[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
 							build_metadata.AdditionalFiles.SourceItemGroup = Page
 							""");
 					}
@@ -209,11 +210,11 @@ internal class HotReloadWorkspace
 						name: ".globalconfig",
 						filePath: "/.globalconfig",
 						text: SourceText.From(globalConfigBuilder.ToString())
-					); ;	
+					); ;
 				}
 			}
 		}
-	
+
 
 		// Materialize the first build
 		foreach (var p in currentSolution.Projects)
@@ -231,7 +232,7 @@ internal class HotReloadWorkspace
 
 				throw new InvalidOperationException($"Compilation errors: {string.Join("\n", errors)}");
 			}
-			
+
 			var emitResult = c.Emit(
 				p.CompilationOutputInfo.AssemblyPath!,
 				pdbPath: Path.ChangeExtension(p.CompilationOutputInfo.AssemblyPath, ".pdb"));
@@ -252,7 +253,7 @@ internal class HotReloadWorkspace
 
 	public async Task<UpdateResult> Update()
 	{
-		if(_hotReloadService is null || _currentSolution is null)
+		if (_hotReloadService is null || _currentSolution is null)
 		{
 			throw new InvalidOperationException($"Initialize must be called before Update");
 		}
@@ -297,7 +298,7 @@ internal class HotReloadWorkspace
 			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
 			.FirstOrDefault(File.Exists);
 
-		if(unoTarget is null)
+		if (unoTarget is null)
 		{
 			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
 		}

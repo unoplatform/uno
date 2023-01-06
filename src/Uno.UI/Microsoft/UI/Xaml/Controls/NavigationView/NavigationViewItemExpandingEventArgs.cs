@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides event data for the NavigationViewItem.Expanding event.
 	/// </summary>
 	public partial class NavigationViewItemExpandingEventArgs
-    {
+	{
 		private readonly NavigationView? m_navigationView;
 		private object? m_expandingItem = null;
 

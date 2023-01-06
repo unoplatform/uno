@@ -55,12 +55,12 @@ namespace Windows.UI.Xaml
 							?.GetBindableTypeByFullName(qualifiedTypeName)
 							?.Type;
 
-						if(type == null)
+						if (type == null)
 						{
 							// If not available, search through Reflection
 							type = CanUseTypeGetType ? Type.GetType(qualifiedTypeName) : null;
 
-							if(type == null)
+							if (type == null)
 							{
 								foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
 								{

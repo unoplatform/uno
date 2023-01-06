@@ -33,7 +33,7 @@ namespace Uno.AuthenticationBroker
 
 			var schemes = this.GetApplicationCustomSchemes().ToArray();
 
-			if(schemes.Length == 0)
+			if (schemes.Length == 0)
 			{
 				throw new InvalidOperationException("No custom scheme found for this application.");
 			}

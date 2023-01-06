@@ -11,18 +11,18 @@ namespace XamlGenerationTests.Shared
 		}
 	}
 
-    [MarkupExtensionReturnType(ReturnType = typeof(int))]
-    public class FontIcon : MarkupExtension
-    {
-        public string Glyph { get; set; }
+	[MarkupExtensionReturnType(ReturnType = typeof(int))]
+	public class FontIcon : MarkupExtension
+	{
+		public string Glyph { get; set; }
 
-        protected override object ProvideValue()
-        {
-            return new Windows.UI.Xaml.Controls.FontIcon()
-            {
-                Glyph = Glyph,
-                FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe UI")
-            };
-        }
-    }
+		protected override object ProvideValue()
+		{
+			return new Windows.UI.Xaml.Controls.FontIcon()
+			{
+				Glyph = Glyph,
+				FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe UI")
+			};
+		}
+	}
 }

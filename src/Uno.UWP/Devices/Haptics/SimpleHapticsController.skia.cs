@@ -7,7 +7,7 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Devices.Haptics
 {
 	public partial class SimpleHapticsController
-    {
+	{
 		private ISimpleHapticsControllerExtension _simpleHapticsControllerExtension = null!;
 
 		partial void InitPlatform()

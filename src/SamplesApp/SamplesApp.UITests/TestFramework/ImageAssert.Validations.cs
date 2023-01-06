@@ -165,7 +165,7 @@ public static partial class ImageAssert
 
 		return false;
 	}
-#endregion
+	#endregion
 
 	private static Rectangle Normalize(Rectangle rect, Size size)
 		=> new(

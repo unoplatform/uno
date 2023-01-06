@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(newValue, resourceDictionary[key]);
 		}
-		
+
 #if HAS_UNO // uses uno specifics code
 		[TestMethod]
 		[RunsOnUIThread]

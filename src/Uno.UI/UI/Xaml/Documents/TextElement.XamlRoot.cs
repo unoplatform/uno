@@ -12,7 +12,7 @@ public partial class TextElement
 	/// <summary>
 	/// Gets or sets the XamlRoot in which this element is being viewed.
 	/// </summary>
-	public 
+	public
 #if __WASM__
 	new
 #endif

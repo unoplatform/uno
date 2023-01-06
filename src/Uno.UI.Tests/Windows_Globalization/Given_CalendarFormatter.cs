@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("day month year", "hu-HU", "{year.full}. {month.numeric}. {day.integer(2)}.")]
 		public void When_UsingVariousLanguages(string format, string language, string expectedPattern)
 		{
-			var sut = new DateTimeFormatter(format, new[] {language});
+			var sut = new DateTimeFormatter(format, new[] { language });
 
 			var firstPattern = sut.Patterns[0];
 

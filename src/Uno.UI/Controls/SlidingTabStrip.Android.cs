@@ -28,7 +28,7 @@ namespace Uno.UI.Controls
 		private SlidingTabLayout.ITabColorizer _customTabColorizer;
 		private readonly SimpleTabColorizer _defaultTabColorizer;
 
-		public SlidingTabStrip(Android.Content.Context context) 
+		public SlidingTabStrip(Android.Content.Context context)
 			: this(context, null)
 		{
 		}
@@ -44,7 +44,7 @@ namespace Uno.UI.Controls
 			context.Theme.ResolveAttribute(Android.Resource.Attribute.ColorForeground, outValue, true);
 			var themeForegroundColor = outValue.Data;
 
-			_defaultBottomBorderColor = SetColorAlpha(themeForegroundColor,	DefaultBottomBorderColorAlpha);
+			_defaultBottomBorderColor = SetColorAlpha(themeForegroundColor, DefaultBottomBorderColorAlpha);
 
 			_defaultTabColorizer = new SimpleTabColorizer();
 			_defaultTabColorizer.SetIndicatorColors(DefaultSelectedIndicatorColor);
@@ -82,7 +82,7 @@ namespace Uno.UI.Controls
 		{
 			var height = Height;
 			var childCount = ChildCount;
-			var tabColorizer = _customTabColorizer ??  _defaultTabColorizer;
+			var tabColorizer = _customTabColorizer ?? _defaultTabColorizer;
 
 			// Thick colored underline below the current selection
 			if (childCount > 0)
@@ -103,7 +103,7 @@ namespace Uno.UI.Controls
 					// Draw the selection partway between the tabs
 					var nextTitle = GetChildAt(_selectedPosition + 1);
 					left = (int)(_selectionOffset * nextTitle.Left + (1.0f - _selectionOffset) * left);
-					right = (int)(_selectionOffset * nextTitle.Right +(1.0f - _selectionOffset) * right);
+					right = (int)(_selectionOffset * nextTitle.Right + (1.0f - _selectionOffset) * right);
 				}
 
 				_selectedIndicatorPaint.Color = color;
@@ -142,12 +142,12 @@ namespace Uno.UI.Controls
 
 		private class SimpleTabColorizer : SlidingTabLayout.ITabColorizer
 		{
-			private Color[] _indicatorColors;  
+			private Color[] _indicatorColors;
 
 			public Color GetIndicatorColor(int position)
 			{
 				return _indicatorColors[position % _indicatorColors.Length];
-			} 
+			}
 
 			public void SetIndicatorColors(params Color[] colors)
 			{

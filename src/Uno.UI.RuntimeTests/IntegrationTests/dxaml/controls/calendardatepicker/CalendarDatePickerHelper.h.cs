@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Tests.Common
 				EnsurePickerCreated();
 				m_openedRegistration.Attach(
 					m_cp,
-					( sender,  e) =>
+					(sender, e) =>
 					{
 						OnOpened();
 					});

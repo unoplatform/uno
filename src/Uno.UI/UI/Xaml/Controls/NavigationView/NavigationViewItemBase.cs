@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var parentSelector = this.FindFirstParent<SelectorItem>();
 
-					SetBinding(IsSelectedProperty, new Binding { Path = "IsSelected", Source = parentSelector, Mode=BindingMode.TwoWay });
+					SetBinding(IsSelectedProperty, new Binding { Path = "IsSelected", Source = parentSelector, Mode = BindingMode.TwoWay });
 				}
 			}
 		}

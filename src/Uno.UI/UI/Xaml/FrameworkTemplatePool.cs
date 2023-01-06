@@ -295,7 +295,7 @@ namespace Windows.UI.Xaml
 				}
 				if (shouldCleanUpTemplateRoot)
 				{
-					PropagateOnTemplateReused(instance); 
+					PropagateOnTemplateReused(instance);
 				}
 
 				var item = instance as View;

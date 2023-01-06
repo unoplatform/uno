@@ -13,8 +13,8 @@ namespace Windows.UI.Xaml.Media
 		internal static DependencyPropertyChangedEventArgs CreateInitialChangedEventArgs(this Transform transform, DependencyProperty property)
 		{
 			return new DependencyPropertyChangedEventArgs(
-                property,
-                null,
+				property,
+				null,
 				DependencyPropertyValuePrecedences.DefaultValue,
 				transform.GetValue(property),
 				transform.GetCurrentHighestValuePrecedence(property)

@@ -175,7 +175,7 @@ namespace UnoSolutionTemplate.Wizard
 			nsManager.AddNamespace("d", defaultNS);
 
 			var customParametersNode = doc.SelectSingleNode("//d:CustomParameters", nsManager);
-			if(customParametersNode == null)
+			if (customParametersNode == null)
 			{
 				var templateContent = doc.SelectSingleNode("//d:TemplateContent", nsManager);
 				customParametersNode = doc.CreateElement("CustomParameters", defaultNS);
@@ -296,7 +296,7 @@ namespace UnoSolutionTemplate.Wizard
 
 						var version = GetVisualStudioReleaseVersion();
 
-						if(version < new Version(17, 3) && (_useiOS || _useAndroid || _useCatalyst || _useAppKit))
+						if (version < new Version(17, 3) && (_useiOS || _useAndroid || _useCatalyst || _useAppKit))
 						{
 							MessageBox.Show("iOS, Android, Mac Catalyst, and mac AppKit are only supported starting from Visual Studio 17.3 Preview 1 or later.", "Unable to create the solution");
 							throw new WizardCancelledException();
@@ -461,11 +461,11 @@ namespace UnoSolutionTemplate.Wizard
 			{
 				if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
 				{
-						var x86Config = val.SolutionConfigurations
-							.Cast<SolutionConfiguration2>()
-							.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
+					var x86Config = val.SolutionConfigurations
+						.Cast<SolutionConfiguration2>()
+						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
 
-						x86Config?.Activate();
+					x86Config?.Activate();
 				}
 				else
 				{

@@ -19,12 +19,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(ListViewViewModel), Description = "On Android, the TextBlock is trimmed and the button doesn't appear.")]
+	[Sample("GridView", ViewModelType = typeof(ListViewViewModel), Description = "On Android, the TextBlock is trimmed and the button doesn't appear.")]
 	public sealed partial class GridView_Item_TextBlock_And_Button : UserControl
-    {
-        public GridView_Item_TextBlock_And_Button()
-        {
+	{
+		public GridView_Item_TextBlock_And_Button()
+		{
 			this.InitializeComponent();
-        }
-    }
+		}
+	}
 }

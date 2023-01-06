@@ -194,7 +194,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				await folder.CreateFileAsync("test.txt");
 
 				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
-				
+
 				Assert.AreEqual("test (2).txt", createdFile.Name);
 			}
 			finally
@@ -368,7 +368,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			Directory.CreateDirectory(path);
 			return path;
 		}
-		
+
 		public async Task<StorageFile> GetFile(string filePath)
 			=> await StorageFile.GetFileFromPathAsync(filePath);
 	}

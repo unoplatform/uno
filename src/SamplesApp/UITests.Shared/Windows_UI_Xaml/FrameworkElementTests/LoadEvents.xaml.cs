@@ -32,11 +32,11 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 				return;
 			}
 
-			var block = (TextBlock) sender;
+			var block = (TextBlock)sender;
 			block.Text = "[PENDING] Loaded event received, try to unload it...";
 			block.Loaded -= OnUnloadTextLoaded;
 
-			_unloadTextParent = (Panel) block.Parent;
+			_unloadTextParent = (Panel)block.Parent;
 
 			await block.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _unloadTextParent.Children.Remove(block));
 		}

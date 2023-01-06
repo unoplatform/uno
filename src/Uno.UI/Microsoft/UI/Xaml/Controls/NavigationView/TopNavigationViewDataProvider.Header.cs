@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 	};
 
 	internal partial class TopNavigationViewDataProvider
-    {
+	{
 		private ItemsSourceView m_dataSource;
 		private object m_rawDataSource;
 

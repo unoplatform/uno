@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media
 
 		private void OnPropertyChanged(ManagedWeakReference? instance, DependencyProperty property, DependencyPropertyChangedEventArgs? args)
 		{
-			if(_svgElement == null)
+			if (_svgElement == null)
 			{
 				return;
 			}

@@ -17,18 +17,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	{
 		private const string _finalStateTransformsTestControl = "UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_FinalState_Transforms";
 
-		[Test] [AutoRetry] public void When_Transforms_Completed_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
-		[Test] [AutoRetry] public void When_Transforms_Completed_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
+		[Test][AutoRetry] public void When_Transforms_Completed_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
+		[Test][AutoRetry] public void When_Transforms_Completed_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // Disabled for Android and iOS: https://github.com/unoplatform/uno/issues/9080
 		public void When_Transforms_Paused_With_FillBehaviorStop_Then_Hold() => TestTransformsFinalState();
-		
-		[Test] [AutoRetry] public void When_Transforms_Paused_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
 
-		[Test] [AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
-		[Test] [AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorHold_Then_Rollback() => TestTransformsFinalState();
+		[Test][AutoRetry] public void When_Transforms_Paused_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
+
+		[Test][AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
+		[Test][AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorHold_Then_Rollback() => TestTransformsFinalState();
 
 		private void TestTransformsFinalState([CallerMemberName] string testName = null)
 		{

@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Input.Preview.Injection;
 
-public partial struct InjectedInputRectangle 
+public partial struct InjectedInputRectangle
 {
 	public int Left;
 

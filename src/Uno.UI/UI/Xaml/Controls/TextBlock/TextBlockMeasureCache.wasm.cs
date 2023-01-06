@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			List<MeasureKey> keysToRemove = new();
 
-			foreach(var item in _queue)
+			foreach (var item in _queue)
 			{
 				if (item.FontFamily.CssFontName == fontFamily.CssFontName)
 				{
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			foreach(var keyToRemove in keysToRemove)
+			foreach (var keyToRemove in keysToRemove)
 			{
 				_queue.Remove(keyToRemove);
 				_entries.Remove(keyToRemove);

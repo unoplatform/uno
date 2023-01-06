@@ -23,11 +23,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		{
 			Detach(); // Detach any previous handler
 
-			_eventInfo.GetAddMethod()!.Invoke(element, new object[] {handler});
+			_eventInfo.GetAddMethod()!.Invoke(element, new object[] { handler });
 
 			return _last = Disposable.Create(() =>
 			{
-				_eventInfo.GetRemoveMethod()!.Invoke(element, new object[] {handler});
+				_eventInfo.GetRemoveMethod()!.Invoke(element, new object[] { handler });
 			});
 		}
 

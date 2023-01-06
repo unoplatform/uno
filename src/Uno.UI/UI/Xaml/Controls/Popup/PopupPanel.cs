@@ -136,7 +136,7 @@ internal partial class PopupPanel : Panel
 			{
 				return PlacementArrangeOverride(Popup, finalSize);
 			}
-			
+
 			// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
 			// Note: we do not prevent overflow of the popup on any side as UWP does not!
 			//		 (And actually it also lets the view appear out of the window ...)

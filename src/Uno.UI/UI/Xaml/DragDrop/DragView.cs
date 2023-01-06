@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 		{
 			get { return (string)GetValue(GlyphProperty); }
 			set { SetValue(GlyphProperty, value); }
-		} 
+		}
 		#endregion
 
 		#region GlyphVisibility
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml
 		{
 			get => (Visibility)GetValue(TooltipVisibilityProperty);
 			set => SetValue(TooltipVisibilityProperty, value);
-		} 
+		}
 		#endregion
 
 		private readonly DragUI? _ui;
@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml
 			// UWP does not allow new lines (trim to the first line, even if blank) and trims the text.
 			var caption = viewOverride
 				.Caption
-				?.Split(new[] {'\r', '\n'}, StringSplitOptions.None)
+				?.Split(new[] { '\r', '\n' }, StringSplitOptions.None)
 				.FirstOrDefault()
 				?.Trim();
 

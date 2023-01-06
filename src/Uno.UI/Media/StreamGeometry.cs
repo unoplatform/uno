@@ -145,6 +145,6 @@ namespace Uno.Media
 #endif
 		}
 
-#endregion
+		#endregion
 	}
 }

@@ -12,10 +12,10 @@ namespace Uno.UI.Runtime.Skia.Native
 	[StructLayout(LayoutKind.Sequential)]
 	struct fb_bitfield
 	{
-		public __u32 offset;		/* beginning of bitfield	*/
-		public __u32 length;		/* length of bitfield		*/
+		public __u32 offset;        /* beginning of bitfield	*/
+		public __u32 length;        /* length of bitfield		*/
 
-		public __u32 msb_right;		/* != 0 : Most significant bit is */
-									/* right */
+		public __u32 msb_right;     /* != 0 : Most significant bit is */
+		/* right */
 	}
 }

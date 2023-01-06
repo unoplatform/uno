@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Extensions
 
 			uri = uri.TrimEndUriSlash();
 
-			var actualLen = uri.ToString().Length;	
+			var actualLen = uri.ToString().Length;
 
 			Assert.AreNotEqual(initialLen, actualLen);
 		}

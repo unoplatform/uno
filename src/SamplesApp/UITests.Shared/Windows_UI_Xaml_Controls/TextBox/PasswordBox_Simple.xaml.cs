@@ -17,7 +17,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 
 		public void ChangeRevealMode(object sender, object args)
 		{
-			passBox.PasswordRevealMode = (PasswordRevealMode) (++currentMode % 3);
+			passBox.PasswordRevealMode = (PasswordRevealMode)(++currentMode % 3);
 		}
 	}
 }

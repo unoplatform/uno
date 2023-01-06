@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 			}
 #endif
-			}
+		}
 
 		#region Stroke Dependency Property
 		public Brush Stroke

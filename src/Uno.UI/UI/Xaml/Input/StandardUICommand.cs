@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Input
 		/// Initializes a new instance of the StandardUICommand class.
 		/// </summary>
 		public StandardUICommand()
-		{	
+		{
 		}
 
 		/// <summary>
@@ -36,6 +36,6 @@ namespace Windows.UI.Xaml.Input
 				nameof(Kind),
 				typeof(StandardUICommandKind),
 				typeof(StandardUICommand),
-				new FrameworkPropertyMetadata(default(StandardUICommandKind)));		
+				new FrameworkPropertyMetadata(default(StandardUICommandKind)));
 	}
 }

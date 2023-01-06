@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PagerControl
-    {
+	{
 		private int m_lastSelectedPageIndex = -1;
 		private int m_lastNumberOfPagesCount = 0;
 

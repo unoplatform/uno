@@ -91,7 +91,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench
 
 		[Benchmark]
 		public void Complex_MultiDimension_Measure_And_Arrange_Auto()
-			{
+		{
 			Complex_MultiDimension_Measure_And_Arrange(new GridLength(0, GridUnitType.Auto));
 		}
 

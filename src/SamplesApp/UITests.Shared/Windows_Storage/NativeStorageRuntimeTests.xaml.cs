@@ -28,7 +28,7 @@ namespace UITests.Windows_Storage
 
 		private void DataContextChangedHandler(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
-			var newViewModel = args.NewValue as NativeStorageRuntimeTestsViewModel;			
+			var newViewModel = args.NewValue as NativeStorageRuntimeTestsViewModel;
 			ViewModel = newViewModel;
 			if (newViewModel != null)
 			{

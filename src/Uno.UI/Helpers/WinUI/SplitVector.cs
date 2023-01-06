@@ -121,7 +121,7 @@ namespace Uno.UI.Helpers.WinUI
 		public int Size() { return m_indexesInOriginalVector.Count; }
 
 		TVectorId m_vectorID;
-		IList<T> m_vector = new	ObservableCollection<T>();
+		IList<T> m_vector = new ObservableCollection<T>();
 		List<int> m_indexesInOriginalVector = new List<int>();
 		Func<T, int> m_indexFunctionFromDataSource;
 	}

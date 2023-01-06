@@ -4,7 +4,7 @@ using System.Text;
 using Windows.UI;
 
 // Do not remove or change for the WinUI conversion tool (space is required).
-using Color = global::Windows .UI.Color;
+using Color = global::Windows.UI.Color;
 
 namespace Windows.UI
 {
@@ -16,7 +16,7 @@ namespace Windows.UI
 	static partial class Colors
 	{
 		private static Dictionary<string, Color> _colorMap = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
-		
+
 		public static Color FromARGB(byte a, byte r, byte g, byte b)
 		{
 			return Color.FromArgb(a, r, g, b);

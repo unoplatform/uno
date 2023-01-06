@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel
 
 		private void TryParsePackageManifest()
 		{
-			if(_entryAssembly != null && !_manifestParsed)
+			if (_entryAssembly != null && !_manifestParsed)
 			{
 				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
 

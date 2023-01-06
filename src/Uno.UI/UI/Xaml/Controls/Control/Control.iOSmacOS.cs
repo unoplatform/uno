@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control
 	{
-		public Control ()
+		public Control()
 		{
 			InitializeControl();
 			Initialize();
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RegisterSubView(View child)
 		{
-			if(Subviews.Length != 0)
+			if (Subviews.Length != 0)
 			{
 				throw new Exception("A Xaml control may not contain more than one child.");
 			}

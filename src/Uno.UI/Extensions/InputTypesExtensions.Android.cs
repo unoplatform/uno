@@ -3,10 +3,10 @@
 namespace Uno.UI.Extensions
 {
 	public static class InputTypesExtensions
-    {
+	{
 		public static bool HasPasswordFlag(this InputTypes inputTypes)
 		{
-			if(inputTypes.HasFlag(InputTypes.NumberVariationPassword)
+			if (inputTypes.HasFlag(InputTypes.NumberVariationPassword)
 				|| inputTypes.HasFlag(InputTypes.TextVariationPassword)
 				|| inputTypes.HasFlag(InputTypes.TextVariationVisiblePassword)
 				|| inputTypes.HasFlag(InputTypes.TextVariationWebPassword))
@@ -16,5 +16,5 @@ namespace Uno.UI.Extensions
 
 			return false;
 		}
-    }
+	}
 }

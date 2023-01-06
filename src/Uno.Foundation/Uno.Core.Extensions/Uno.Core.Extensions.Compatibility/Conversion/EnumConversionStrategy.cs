@@ -22,85 +22,85 @@ using Uno.Extensions;
 
 namespace Uno.Conversion
 {
-    /// <summary>
-    /// Will convert to and from enum, usually with strings
-    /// </summary>
-    /// <remarks>
-    /// System.ComponentModel.DescriptionAttribute is can be used as result
-    /// or parsing value, if not empty.
-    /// A description attribute with "?" is considered default value.
-    /// </remarks>
-    internal sealed class EnumConversionStrategy : IConversionStrategy
-    {
-        private static Func<Type, string, CultureInfo, string> _findValue;
+	/// <summary>
+	/// Will convert to and from enum, usually with strings
+	/// </summary>
+	/// <remarks>
+	/// System.ComponentModel.DescriptionAttribute is can be used as result
+	/// or parsing value, if not empty.
+	/// A description attribute with "?" is considered default value.
+	/// </remarks>
+	internal sealed class EnumConversionStrategy : IConversionStrategy
+	{
+		private static Func<Type, string, CultureInfo, string> _findValue;
 
-        static EnumConversionStrategy()
-        {
-            _findValue = SourceFindValue;
-            _findValue = _findValue.AsLockedMemoized();
-        }
+		static EnumConversionStrategy()
+		{
+			_findValue = SourceFindValue;
+			_findValue = _findValue.AsLockedMemoized();
+		}
 
-        #region IConversionStrategy Members
+		#region IConversionStrategy Members
 
-        public bool CanConvert(object value, Type toType, CultureInfo culture = null)
-        {
+		public bool CanConvert(object value, Type toType, CultureInfo culture = null)
+		{
 #if HAS_CRIPPLEDREFLECTION
 			if (toType.GetTypeInfo().IsEnum)
 #else
-            if (toType.IsEnum)
+			if (toType.IsEnum)
 #endif
-            {
-                // NOTE: To be tested
-                var text = _findValue(toType, value as string ?? value.ToString(), culture);
+			{
+				// NOTE: To be tested
+				var text = _findValue(toType, value as string ?? value.ToString(), culture);
 
-                return text != null;
-            }
+				return text != null;
+			}
 
-            //TODO Support value == null
-            return value != null &&
+			//TODO Support value == null
+			return value != null &&
 #if HAS_CRIPPLEDREFLECTION
 				   value.GetType().GetTypeInfo().IsEnum &&
 #else
-                   value.GetType().IsEnum &&
+				   value.GetType().IsEnum &&
 #endif
-                   toType == typeof(string);
-        }
+				   toType == typeof(string);
+		}
 
-        public object Convert(object value, Type toType, CultureInfo culture = null)
-        {
+		public object Convert(object value, Type toType, CultureInfo culture = null)
+		{
 #if HAS_CRIPPLEDREFLECTION
 			if (toType.GetTypeInfo().IsEnum)
 #else
-            if (toType.IsEnum)
+			if (toType.IsEnum)
 #endif
-            {
-                // NOTE: To be tested
-                var text = _findValue(toType, value as string ?? value.ToString(), culture);
+			{
+				// NOTE: To be tested
+				var text = _findValue(toType, value as string ?? value.ToString(), culture);
 
-                return Enum.Parse(toType, text, true);
-            }
+				return Enum.Parse(toType, text, true);
+			}
 
 #if HAS_CRIPPLEDREFLECTION
 
 			return value?.ToString(); ;
 #else
-            else
-            {
-                var text = value.ToString();
+			else
+			{
+				var text = value.ToString();
 
-                var attribute = value.Reflection().GetDescriptor(text).FindAttribute<DescriptionAttribute>();
+				var attribute = value.Reflection().GetDescriptor(text).FindAttribute<DescriptionAttribute>();
 
-                return attribute == null ? text : attribute.Description;
-            }
+				return attribute == null ? text : attribute.Description;
+			}
 #endif
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private static string SourceFindValue(Type enumType, string text, CultureInfo culture)
-        {
-            text = text.Trim();
-            FieldInfo unkownFieldInfo = null;
+		private static string SourceFindValue(Type enumType, string text, CultureInfo culture)
+		{
+			text = text.Trim();
+			FieldInfo unkownFieldInfo = null;
 
 #if false //!HAS_TYPEINFO && !HAS_CRIPPLEDREFLECTION && !WINDOWS_UWP
             var comparisonType =
@@ -118,20 +118,20 @@ namespace Uno.Conversion
 
 			var fields = enumType.GetTypeInfo().GetFields();
 #else
-            var comparisonType =
+			var comparisonType =
 				culture == null
 					? StringComparison.OrdinalIgnoreCase
 					: StringComparison.CurrentCultureIgnoreCase;
 
 			var fields = enumType.GetTypeInfo().DeclaredFields;
 #endif
-            {
-                foreach (var field in fields)
-                {
-                    if (field.Name.Equals(text, comparisonType))
-                    {
-                        return text;
-                    }
+			{
+				foreach (var field in fields)
+				{
+					if (field.Name.Equals(text, comparisonType))
+					{
+						return text;
+					}
 
 #if !HAS_CRIPPLEDREFLECTION
 					var attribute = field.GetDescriptor().FindAttribute<DescriptionAttribute>();
@@ -153,7 +153,7 @@ namespace Uno.Conversion
 				}
 			}
 
-            return unkownFieldInfo == null ? null : unkownFieldInfo.Name;
-        }
-    }
+			return unkownFieldInfo == null ? null : unkownFieldInfo.Name;
+		}
+	}
 }

@@ -11,12 +11,12 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 {
 	[Sample("Focus", ViewModelType = typeof(Focus_FocusVisualViewModel))]
 	internal sealed partial class Focus_FocusVisual : Page
-    {
-        public Focus_FocusVisual()
-        {
-            InitializeComponent();
+	{
+		public Focus_FocusVisual()
+		{
+			InitializeComponent();
 			DataContextChanged += Focus_FocusVisual_DataContextChanged;
-        }
+		}
 
 		public Focus_FocusVisualViewModel ViewModel { get; private set; }
 

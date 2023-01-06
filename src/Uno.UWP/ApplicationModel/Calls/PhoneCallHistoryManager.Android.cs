@@ -26,8 +26,8 @@ public static partial class PhoneCallHistoryManager
 	/// <exception cref="InvalidOperationException">When application package is invalid.</exception>
 	/// <exception cref="UnauthorizedAccessException"></exception>
 	public static IAsyncOperation<PhoneCallHistoryStore?> RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) =>
-		RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore?>();	
-	
+		RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore?>();
+
 	private static async Task<PhoneCallHistoryStore?> RequestStoreAsyncTask(PhoneCallHistoryStoreAccessType accessType)
 	{
 		if (accessType == PhoneCallHistoryStoreAccessType.AppEntriesReadWrite)

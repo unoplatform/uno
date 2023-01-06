@@ -152,7 +152,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		protected void OnRemoveAt(int startIndex, int count)
 		{
-			for (int i = startIndex + count-1; i >= startIndex; i--)
+			for (int i = startIndex + count - 1; i >= startIndex; i--)
 			{
 				OnRemoveAt(i);
 			}
@@ -192,14 +192,14 @@ namespace Uno.UI.Helpers.WinUI
 			var vectorID = m_flags[index];
 
 			// Update mapping on all Vectors and Remove Item on vectorID vector;
-			foreach(var vector in m_splitVectors)
+			foreach (var vector in m_splitVectors)
 			{
 				if (vector != null)
 				{
 					vector.OnRawDataRemove(index, vectorID);
 				}
 			}
-        
+
 			m_flags.RemoveAt(index);
 			m_attachedData.RemoveAt(index);
 		}
@@ -222,7 +222,7 @@ namespace Uno.UI.Helpers.WinUI
 			var data = GetAt(index);
 
 			// Update mapping on all Vectors and Insert Item on vectorID vector;
-			foreach(var vector in  m_splitVectors)
+			foreach (var vector in m_splitVectors)
 			{
 				if (vector != null)
 				{
@@ -256,5 +256,5 @@ namespace Uno.UI.Helpers.WinUI
 		List<TVectorId> m_flags = new List<TVectorId>();
 		List<AttachedDataType> m_attachedData = new List<AttachedDataType>();
 		SplitVector<T, TVectorId>[] m_splitVectors;
-}
+	}
 }

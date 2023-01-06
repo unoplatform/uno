@@ -61,12 +61,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			container.RemoveView((View)objectValue);
-			
+
 			if (itemView?.ChildCount > 0 && itemView.IsGeneratedContainer)
 			{
-                // Reset the DataContext from the item, which may have been set by the FlipView. 
-                // Since we're manually removing the content, the DataContext may not be reset by 
-                // the parent FlipViewItem and will be recycled incorrectly if the DataContext is set.
+				// Reset the DataContext from the item, which may have been set by the FlipView. 
+				// Since we're manually removing the content, the DataContext may not be reset by 
+				// the parent FlipViewItem and will be recycled incorrectly if the DataContext is set.
 				(itemView.TemplatedRoot as DependencyObject)?.ClearValue(FrameworkElement.DataContextProperty);
 
 				//The FlipView doesn't recycle its items on Android, but removing the child view will free up its template to be reused by 

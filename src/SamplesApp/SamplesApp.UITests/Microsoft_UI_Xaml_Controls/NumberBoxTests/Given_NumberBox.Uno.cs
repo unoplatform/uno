@@ -7,7 +7,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
 	public partial class NumberBoxTests
-    {
+	{
 		[Test]
 		[AutoRetry]
 		public void NumberBox_Header()

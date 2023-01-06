@@ -76,17 +76,17 @@ namespace Uno.UI.Lottie
 
 			return
 				(from Match match in matches
-					let bindingCaptures = match.Groups[BindingNameSelector].Captures
+				 let bindingCaptures = match.Groups[BindingNameSelector].Captures
 #if NETFRAMEWORK || __NETSTD__
 						.Cast<Capture>()
 #endif
-					let propertyCaptures = match.Groups[PropertyNameSelector].Captures
+				 let propertyCaptures = match.Groups[PropertyNameSelector].Captures
 #if NETFRAMEWORK || __NETSTD__
 						.Cast<Capture>()
 #endif
 				 from pair in propertyCaptures
 						.Zip(bindingCaptures, (p, b) => (p.Value, b.Value))
-					select pair).ToArray();
+				 select pair).ToArray();
 		}
 	}
 }

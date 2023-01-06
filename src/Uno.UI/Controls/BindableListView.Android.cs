@@ -52,7 +52,7 @@ namespace Uno.UI.Controls
 			base.OnAttachedToWindow();
 
 			SetupItemClickListener();
-        }
+		}
 
 		protected override void OnDetachedFromWindow()
 		{
@@ -107,7 +107,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty ItemsSourceProperty { get ; } =
+		public static DependencyProperty ItemsSourceProperty { get; } =
 			DependencyProperty.Register("ItemsSource", typeof(object), typeof(BindableListView), new FrameworkPropertyMetadata(null, OnItemsSourceChanged));
 
 		private static void OnItemsSourceChanged(object d, DependencyPropertyChangedEventArgs e)

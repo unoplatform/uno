@@ -57,10 +57,10 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
 		{
 			var messages = from module in modules
-				from type in GetNamespaceTypes(module)
-				let attr = type.FindAttributeFlattened(_interopMessageSymbol)
-				where attr is not null && type.TypeKind is TypeKind.Struct
-				select (type, attr);
+						   from type in GetNamespaceTypes(module)
+						   let attr = type.FindAttributeFlattened(_interopMessageSymbol)
+						   where attr is not null && type.TypeKind is TypeKind.Struct
+						   select (type, attr);
 
 			messages = messages.ToArray();
 
@@ -82,7 +82,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 				using (ns is null ? null : sb.BlockInvariant($"namespace {ns}"))
 				{
-					using (sb.BlockInvariant($"{(ns is null ? "": "export ")}class {message.type.Name}"))
+					using (sb.BlockInvariant($"{(ns is null ? "" : "export ")}class {message.type.Name}"))
 					{
 						sb.AppendLineIndented($"/* Pack={packValue} */");
 

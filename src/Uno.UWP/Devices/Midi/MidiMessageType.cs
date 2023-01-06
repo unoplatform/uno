@@ -4,7 +4,7 @@
 	/// Provides constants used to map MIDI message types
 	/// into their corresponding byte codes.
 	/// </summary>
-	public enum MidiMessageType 
+	public enum MidiMessageType
 	{
 		None = 0,
 		NoteOff = 128,

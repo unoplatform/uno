@@ -20,10 +20,10 @@ namespace UITests.Windows_UI_Xaml_Controls.ItemsControl
 {
 	[Sample("ItemsControl")]
 	public sealed partial class ItemsControl_ItemContainerStyle : UserControl
-    {
-        public ItemsControl_ItemContainerStyle()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ItemsControl_ItemContainerStyle()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

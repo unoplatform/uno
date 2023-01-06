@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InitializeScrollbars(null);
 
-				if(FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
+				if (FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
 				{
 					ScrollBarDefaultDelayBeforeFade = (int)FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay.Value.TotalMilliseconds;
 				}

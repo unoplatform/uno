@@ -18,12 +18,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(ListViewViewModel), IgnoreInSnapshotTests = true)]
-    public sealed partial class GridView_HeaderFooterTemplate : UserControl
-    {
-        public GridView_HeaderFooterTemplate()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[Sample("GridView", ViewModelType = typeof(ListViewViewModel), IgnoreInSnapshotTests = true)]
+	public sealed partial class GridView_HeaderFooterTemplate : UserControl
+	{
+		public GridView_HeaderFooterTemplate()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

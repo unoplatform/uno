@@ -23,19 +23,19 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
 	[SampleControlInfo(category: "Image", viewModelType: typeof(ImageSourceUrlMsAppDataSchemeViewModel))]
 	internal sealed partial class ImageSourceUrlMsAppDataScheme : Page
-    {
-        public ImageSourceUrlMsAppDataScheme()
-        {
-            this.InitializeComponent();
+	{
+		public ImageSourceUrlMsAppDataScheme()
+		{
+			this.InitializeComponent();
 			this.DataContextChanged += ImageSourceUrlMsAppDataScheme_DataContextChanged;
-        }
+		}
 
 		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			if (DataContext is ImageSourceUrlMsAppDataSchemeViewModel viewModel)
 			{
 				await viewModel.LoadAsync();
-			}			
+			}
 		}
 	}
 

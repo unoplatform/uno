@@ -60,7 +60,7 @@ namespace Windows.Globalization.DateTimeFormatting
 			_map_cache = new Dictionary<string, IDictionary<string, string>>();
 			_patterns_cache = new Dictionary<(string language, string template), string>();
 
-			_defaultPatterns = new []
+			_defaultPatterns = new[]
 			{
 				"{month.full}‎ ‎{day.integer}‎, ‎{year.full}",
 				"{day.integer}‎ ‎{month.full}‎, ‎{year.full}",
@@ -75,7 +75,7 @@ namespace Windows.Globalization.DateTimeFormatting
 		}
 
 		public DateTimeFormatter(string formatTemplate)
-			:this(formatTemplate, languages: null)
+			: this(formatTemplate, languages: null)
 		{
 		}
 
@@ -170,7 +170,7 @@ namespace Windows.Globalization.DateTimeFormatting
 
 		private IDictionary<string, string> BuildLookup(string language)
 		{
-			if(_map_cache.TryGetValue(language, out var map))
+			if (_map_cache.TryGetValue(language, out var map))
 			{
 				return map;
 			}

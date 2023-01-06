@@ -1,57 +1,57 @@
 namespace Windows.Media.SpeechRecognition
 {
-	public enum SpeechRecognitionResultStatus 
+	public enum SpeechRecognitionResultStatus
 	{
 		Success,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		TopicLanguageNotSupported,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		GrammarLanguageMismatch,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		GrammarCompilationFailure,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		AudioQualityFailure,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		UserCanceled,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		Unknown,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		TimeoutExceeded,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		PauseLimitExceeded,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		NetworkFailure,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		MicrophoneUnavailable
 	}
 }

@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		// Using a DependencyProperty as the backing store for FromHorizontalOffset.  This enables animation, styling, binding, etc...
-		public static DependencyProperty FromHorizontalOffsetProperty { get ; } =
+		public static DependencyProperty FromHorizontalOffsetProperty { get; } =
 			DependencyProperty.Register("FromHorizontalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40f));
 
 		#endregion
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		// Using a DependencyProperty as the backing store for FromVerticalOffset.  This enables animation, styling, binding, etc...
-		public static DependencyProperty FromVerticalOffsetProperty { get ; } =
+		public static DependencyProperty FromVerticalOffsetProperty { get; } =
 			DependencyProperty.Register("FromVerticalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0f));
 
 		#endregion
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		// Using a DependencyProperty as the backing store for IsStaggeringEnabled.  This enables animation, styling, binding, etc...
-		public static DependencyProperty IsStaggeringEnabledProperty { get ; } =
+		public static DependencyProperty IsStaggeringEnabledProperty { get; } =
 			DependencyProperty.Register("IsStaggeringEnabled", typeof(bool), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(true));
 
 		#endregion
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			storyBoard.Children.Add(animation);
 		}
 
-		internal override void AttachToStoryboardAnimation(Storyboard sb, IFrameworkElement element, TimeSpan beginTime, int xOffset,int yOffset)
+		internal override void AttachToStoryboardAnimation(Storyboard sb, IFrameworkElement element, TimeSpan beginTime, int xOffset, int yOffset)
 		{
 			if (!IsStaggeringEnabled)
 			{

@@ -6,7 +6,7 @@ using Uno.Disposables;
 namespace Uno.Storage.Streams.Internal
 {
 	internal class StreamAccessScope
-    {
+	{
 		private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
 		public IDisposable Begin()
@@ -28,5 +28,5 @@ namespace Uno.Storage.Streams.Internal
 				_semaphore.Release();
 			});
 		}
-    }
+	}
 }

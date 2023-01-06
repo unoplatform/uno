@@ -30,10 +30,10 @@ namespace Uno.Presentation.Resources
 
 		public void Register(object name, Func<object> builder)
 		{
-			lock(_gate)
+			lock (_gate)
 			{
-			_resources[name] = builder.AsMemoized();
-		}
+				_resources[name] = builder.AsMemoized();
+			}
 		}
 
 		/// <summary>
@@ -48,12 +48,12 @@ namespace Uno.Presentation.Resources
 				var resource = _resources.UnoGetValueOrDefault(name, () => null)();
 
 				if (resource == null)
-			{
-				resource = LookupExternalResouce(name);
-			}
+				{
+					resource = LookupExternalResouce(name);
+				}
 
-			return resource;
-		}
+				return resource;
+			}
 		}
 
 		private object LookupExternalResouce(string name)
@@ -75,21 +75,21 @@ namespace Uno.Presentation.Resources
 		{
 			lock (_gate)
 			{
-			Func<object> value;
-			if (_resources.TryGetValue(name, out value))
-			{
-				return value();
-			}
-			else
-			{
-				var resource = LookupExternalResouce(name);
+				Func<object> value;
+				if (_resources.TryGetValue(name, out value))
+				{
+					return value();
+				}
+				else
+				{
+					var resource = LookupExternalResouce(name);
 
 					if (resource != null)
-				{
-					return resource;
-				}
+					{
+						return resource;
+					}
 
-				throw new KeyNotFoundException("Cannot find resource with key '{0}'.".InvariantCultureFormat(name));
+					throw new KeyNotFoundException("Cannot find resource with key '{0}'.".InvariantCultureFormat(name));
 				}
 			}
 		}

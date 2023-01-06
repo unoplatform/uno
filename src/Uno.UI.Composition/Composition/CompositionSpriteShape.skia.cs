@@ -68,7 +68,7 @@ namespace Windows.UI.Composition
 				// Cleanup
 				// - Brushes can change, we cant leave color and shader garbage
 				//	 from last rendering around for the next pass.
-				paint.Color = SKColors.White;	// Transparent color wouldnt draw anything
+				paint.Color = SKColors.White;   // Transparent color wouldnt draw anything
 				if (paint.Shader != null)
 				{
 					paint.Shader.Dispose();
@@ -77,7 +77,7 @@ namespace Windows.UI.Composition
 			}
 
 			paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
-			
+
 			return paint;
 		}
 	}

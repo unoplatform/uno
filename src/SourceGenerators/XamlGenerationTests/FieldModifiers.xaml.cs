@@ -17,15 +17,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace XamlGenerationTests.Shared
 {
-    public partial class FieldModifiers : UserControl
-    {
-        public FieldModifiers()
-        {
-            this.InitializeComponent();
+	public partial class FieldModifiers : UserControl
+	{
+		public FieldModifiers()
+		{
+			this.InitializeComponent();
 
 			privateMember.ToString();
 		}
-    }
+	}
 
 	class AccessibilityTest
 	{

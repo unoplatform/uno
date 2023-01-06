@@ -85,7 +85,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			=> Write("[Starting]");
 
 		private void OnManipStarted(object sender, ManipulationStartedRoutedEventArgs e)
-			=> Write($"[Started] {F(e.Position, new ManipulationDelta{Scale = 1f}, e.Cumulative)}");
+			=> Write($"[Started] {F(e.Position, new ManipulationDelta { Scale = 1f }, e.Cumulative)}");
 
 		private void OnManipDelta(object sender, ManipulationDeltaRoutedEventArgs e)
 			=> Write($"[Delta] {F(e.Position, e.Delta, e.Cumulative)}");

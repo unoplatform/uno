@@ -2,7 +2,7 @@ using System;
 
 namespace Windows.Devices.Sensors
 {
-	public  partial class MagnetometerReading 
+	public partial class MagnetometerReading
 	{
 		internal MagnetometerReading(
 			float magneticFieldX,
@@ -18,13 +18,13 @@ namespace Windows.Devices.Sensors
 			Timestamp = timestamp;
 		}
 
-		public  global::Windows.Devices.Sensors.MagnetometerAccuracy DirectionalAccuracy { get; }
+		public global::Windows.Devices.Sensors.MagnetometerAccuracy DirectionalAccuracy { get; }
 
-		public  float MagneticFieldX { get; }
+		public float MagneticFieldX { get; }
 
-		public  float MagneticFieldY { get; }
+		public float MagneticFieldY { get; }
 
-		public  float MagneticFieldZ { get; }
+		public float MagneticFieldZ { get; }
 
 		public DateTimeOffset Timestamp { get; }
 	}

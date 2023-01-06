@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml; 
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
@@ -1309,7 +1309,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			var viewChangedRegistration = CreateSafeEventRegistration<ScrollViewer, EventHandler<ScrollViewerViewChangedEventArgs>>("ViewChanged");
 
 			using var _ = viewChangedRegistration.Attach(scrollViewer,
-				( sender,  e) =>
+				(sender, e) =>
 				{
 					if (!e.IsIntermediate)
 					{
@@ -1618,11 +1618,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// now test year view and decacde view
 
-			CalendarViewDisplayMode[] modes = {CalendarViewDisplayMode.Year, CalendarViewDisplayMode.Decade};
+			CalendarViewDisplayMode[] modes = { CalendarViewDisplayMode.Year, CalendarViewDisplayMode.Decade };
 
-			string[] panelNames = {"YearViewPanel", "DecadeViewPanel"};
+			string[] panelNames = { "YearViewPanel", "DecadeViewPanel" };
 
-			string[] scrollViewerNames = {"YearViewScrollViewer", "DecadeViewScrollViewer"};
+			string[] scrollViewerNames = { "YearViewScrollViewer", "DecadeViewScrollViewer" };
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -2198,7 +2198,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				("DecadeViewPanel", CalendarViewDisplayMode.Decade),
 			};
 
-			foreach(var mode in modes)
+			foreach (var mode in modes)
 			{
 				await RunOnUIThread(() =>
 				{
@@ -2411,7 +2411,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				int[] snapPoints // each mode we test the first 3 snap points
 				)[] testData)[] modes =
 				{
-				
+
 					(
 						"MonthViewPanel", "MonthViewScrollViewer", CalendarViewDisplayMode.Month,
 						new [] {
@@ -2421,7 +2421,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 										{
 											5, 9, 13
 										}
-									
+
 								),
 								// dimension 4 x 7, regular snap point (per row).
 								(
@@ -2429,7 +2429,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 										{
 											1, 2, 3
 										}
-									
+
 								)
 						}
 					),
@@ -2866,7 +2866,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				nextButton = Button(TreeHelper.GetVisualChildByName(calendarView, "NextButton"));
 				TestServices.VERIFY_IS_NOT_NULL(nextButton);
 			});
-			pointerEnteredRegistration.Attach(nextButton, (s, e) => {
+			pointerEnteredRegistration.Attach(nextButton, (s, e) =>
+			{
 				pointerEnteredEvent.Set();
 			});
 
@@ -2955,7 +2956,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "decade");
 
-			var calendarIdentifiers = new []
+			var calendarIdentifiers = new[]
 				{
 					"PersianCalendar",
 					//"GregorianCalendar", // skip this. this is the default calendar and we've verified already.
@@ -3075,9 +3076,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		{
 			ControlHelper.ValidateUIElementTree(
 					new Size(400, 600),
-					1, 
+					1,
 				// Test setup.
-				async ()=>
+				async () =>
 			{
 				var helper = new CalendarHelper.CalendarViewHelper();
 				Xaml.Controls.CalendarView cv = await helper.GetCalendarView();
@@ -3260,7 +3261,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 
-			foreach(var cid in cids)
+			foreach (var cid in cids)
 			{
 				LOG_OUTPUT("Begin Testing CalendarIdentifier to %s", cid);
 				// change calendar identifier
@@ -4908,7 +4909,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "5"); //Today+Hover
-			// move mouse away to avoid any unexpected hover state.
+																										 // move mouse away to avoid any unexpected hover state.
 			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
 
 			TestServices.InputHelper.DynamicPressCenter(todayItem, 0, 0, PointerFinger.Finger1);
@@ -5251,7 +5252,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			LOG_OUTPUT("Begin Testing CalendarIdentifier: %s", cid);
 
-			foreach(var dimension in dimensions)
+			foreach (var dimension in dimensions)
 			{
 				CalendarPanel calendarPanel = null;
 				var helper = new CalendarHelper.CalendarViewHelper();
@@ -5295,7 +5296,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					nextButton = Button(helper.GetTemplateChild("NextButton"));
 				});
 
-				foreach(var mode in modes)
+				foreach (var mode in modes)
 				{
 					LOG_OUTPUT(" Change DisplayMode to %s", mode.displayMode.ToString());
 
@@ -5470,7 +5471,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			// The expected FlowDirection for each calendar id:
-			(string first, FlowDirection second)[] calendarFlowDirections = 
+			(string first, FlowDirection second)[] calendarFlowDirections =
 			{
 				(
 					"PersianCalendar", FlowDirection.RightToLeft

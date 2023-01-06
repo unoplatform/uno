@@ -101,7 +101,7 @@ namespace DirectUI
 			int sign = 1;
 			var pResult = 1;
 
-			global::System.Diagnostics.Debug.Assert(m_spCalendar is {});
+			global::System.Diagnostics.Debug.Assert(m_spCalendar is { });
 
 			lhs = lhs.ToUniversalTime(); // UNO
 			rhs = rhs.ToUniversalTime(); // UNO

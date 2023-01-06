@@ -30,7 +30,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 
 			new Storyboard
 			{
-				Children = { animation}
+				Children = { animation }
 			}.Begin();
 		}
 

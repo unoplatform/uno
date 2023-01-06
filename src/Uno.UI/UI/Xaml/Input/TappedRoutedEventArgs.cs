@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Input
 		private readonly Point _position;
 
 		public TappedRoutedEventArgs() { }
-		
+
 		internal TappedRoutedEventArgs(UIElement originalSource, TappedEventArgs args)
 			: base(originalSource)
 		{

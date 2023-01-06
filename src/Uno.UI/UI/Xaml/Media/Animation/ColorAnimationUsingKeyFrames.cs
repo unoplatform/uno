@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_currentAnimator = targetAnimator;
 			}
 
-			if(_currentAnimator == null)
+			if (_currentAnimator == null)
 			{
 				return;
 			}

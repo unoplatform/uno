@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 			LayoutId = "FlowLayout";
 		}
 
-#region IVirtualizingLayoutOverrides
+		#region IVirtualizingLayoutOverrides
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)
 		{
 			var state = context.LayoutState;
@@ -111,9 +111,9 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
-#endregion
+		#endregion
 
-#region IFlowLayoutOverrides
+		#region IFlowLayoutOverrides
 
 		protected virtual Size GetMeasureSize(int index, Size availableSize)
 		{
@@ -283,9 +283,9 @@ namespace Microsoft.UI.Xaml.Controls
 			flowState.OnLineArranged(startIndex, countInLine, lineSize, context);
 		}
 
-#endregion
+		#endregion
 
-#region IFlowLayoutAlgorithmDelegates
+		#region IFlowLayoutAlgorithmDelegates
 
 		Size IFlowLayoutAlgorithmDelegates.Algorithm_GetMeasureSize(int index, Size availableSize, VirtualizingLayoutContext context)
 		{
@@ -371,7 +371,7 @@ namespace Microsoft.UI.Xaml.Controls
 				context);
 		}
 
-#endregion
+		#endregion
 
 		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{

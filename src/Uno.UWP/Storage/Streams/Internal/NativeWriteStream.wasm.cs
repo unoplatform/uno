@@ -62,7 +62,7 @@ namespace Uno.Storage.Streams.Internal
 		public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
 		{
 			return _cacheStream.ReadAsync(buffer, offset, count, cancellationToken);
-		}		
+		}
 
 		private async Task CopyToTargetAsync()
 		{

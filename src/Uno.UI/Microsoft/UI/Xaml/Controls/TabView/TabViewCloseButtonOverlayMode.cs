@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Defines constants that describe the behavior of the close button contained within each TabViewItem.
 	/// </summary>
 	public enum TabViewCloseButtonOverlayMode
-    {
+	{
 		/// <summary>
 		/// Behavior is defined by the framework. Default.
 		/// This value maps to Always.

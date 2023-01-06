@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Using .avi", description: "Test .avi video")]
 	public sealed partial class MediaPlayerElement_Avi_Extension : UserControl
-    {
-        public MediaPlayerElement_Avi_Extension()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_Avi_Extension()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

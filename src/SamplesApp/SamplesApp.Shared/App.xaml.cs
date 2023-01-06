@@ -131,7 +131,7 @@ namespace SamplesApp
 			AssertIssue8641NativeOverlayInitialized();
 
 			Windows.UI.Xaml.Window.Current.Activate();
-			
+
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
 #if __SKIA__ && DEBUG
 			AppendRepositoryPathToTitleBar();			

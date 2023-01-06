@@ -218,7 +218,7 @@ namespace Uno
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Transactionally set an item of an ImmutableDictionary.
 		/// </summary>

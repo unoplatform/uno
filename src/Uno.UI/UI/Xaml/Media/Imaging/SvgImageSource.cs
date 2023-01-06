@@ -50,7 +50,7 @@ public partial class SvgImageSource : ImageSource
 #endif
 		InitPartial();
 	}
-	
+
 	private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
 	{
 		if (!object.Equals(e.OldValue, e.NewValue))
@@ -87,7 +87,7 @@ public partial class SvgImageSource : ImageSource
 				//Same behavior as windows, although the documentation does not mention it!!!
 				throw new ArgumentException(nameof(streamSource));
 			}
-			
+
 			_lastStatus = null;
 
 #if __NETSTD__
@@ -141,7 +141,7 @@ public partial class SvgImageSource : ImageSource
 		{
 			stream.Position = 0;
 		}
-		
+
 		var memoryStream = new MemoryStream();
 		await stream.CopyToAsync(memoryStream, 81920, ct);
 		var data = memoryStream.ToArray();

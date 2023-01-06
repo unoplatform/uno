@@ -904,7 +904,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				// further up in the tree.
 			}
 
-			if(bindingNode == null && templateBindingNode == null && xBindNode == null)
+			if (bindingNode == null && templateBindingNode == null && xBindNode == null)
 			{
 				throw new InvalidOperationException("Unable to find Binding or TemplateBinding or x:Bind node");
 			}

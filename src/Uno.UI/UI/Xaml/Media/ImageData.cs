@@ -20,7 +20,7 @@ namespace Uno.UI.Xaml.Media;
 internal partial struct ImageData
 {
 	public static ImageData FromBytes(byte[] data) => new(data);
-	
+
 	private ImageData(byte[] data)
 	{
 		Kind = ImageDataKind.ByteArray;
@@ -109,7 +109,7 @@ internal partial struct ImageData
 #elif __ANDROID__
 	public Bitmap? Bitmap { get; } = null;
 #endif
-	
+
 	public override string ToString() =>
 		Kind switch
 		{

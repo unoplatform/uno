@@ -57,7 +57,7 @@ namespace Uno.UI.Runtime.Skia
 
 					return isAvailable && !isMacOs;
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Information))
 					{

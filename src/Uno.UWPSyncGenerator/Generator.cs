@@ -86,21 +86,21 @@ namespace Uno.UWPSyncGenerator
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation", StringComparison.Ordinal)
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.WinUI", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Foundation", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Windowing", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
-                          || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
-                          let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Foundation", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Windowing", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
+						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
 

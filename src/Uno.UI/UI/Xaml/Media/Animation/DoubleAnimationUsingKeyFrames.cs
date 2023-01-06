@@ -29,12 +29,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			get => (bool)this.GetValue(EnableDependentAnimationProperty);
 			set => this.SetValue(EnableDependentAnimationProperty, value);
 		}
-		public static DependencyProperty EnableDependentAnimationProperty { get ; } =
+		public static DependencyProperty EnableDependentAnimationProperty { get; } =
 			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new FrameworkPropertyMetadata(false));
 
 		public DoubleAnimationUsingKeyFrames()
 		{
-			KeyFrames = new DoubleKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false); 
+			KeyFrames = new DoubleKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false);
 		}
 
 		public DoubleKeyFrameCollection KeyFrames { get; }
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 			}
 		}
-		
+
 		void ITimeline.Pause()
 		{
 			if (State == TimelineState.Paused)
@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				{
 					_finalValue = toValue;
 				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);				
+				var animator = AnimatorFactory.Create(this, fromValue, toValue);
 				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Media.Animation
 						OnFrame((IValueAnimator)sender);
 					};
 				}
-				
+
 				var i = index;
 
 #if __ANDROID_19__
@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			OnCompleted();
 		}
-		
+
 
 		/// <summary>
 		/// Dispose the Double animation.

@@ -24,12 +24,12 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    internal class FieldDescriptor : ValueMemberDescriptor<FieldInfo>
-    {
-        public FieldDescriptor(FieldInfo fi)
-            : base(fi)
-        {
-        }
+	internal class FieldDescriptor : ValueMemberDescriptor<FieldInfo>
+	{
+		public FieldDescriptor(FieldInfo fi)
+			: base(fi)
+		{
+		}
 
 		public override Type Type => MemberInfo.FieldType;
 
@@ -70,7 +70,7 @@ namespace Uno.Reflection
 		/// parameter types before the call. Invalid parameters could result in unexpected behavior.
 		/// </remarks>
 		public static Action<object, object> ToCompiledSetValue(RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, bool strict)
-        {
+		{
 #if NET6_0_OR_GREATER
 			var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
 
@@ -147,7 +147,7 @@ namespace Uno.Reflection
 		/// parameter types before the call. An invalid parameter could result in unexpected behavior.
 		/// </remarks>
 		public static Func<object, object> ToCompiledGetValue(RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, bool strict)
-        {
+		{
 #if NET6_0_OR_GREATER
             var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
 

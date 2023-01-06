@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 {
 	[Sample("PullToRefresh")]
-    public sealed partial class RefreshContainerScrollTop : Page
-    {
-        public RefreshContainerScrollTop()
-        {
-            this.InitializeComponent();
+	public sealed partial class RefreshContainerScrollTop : Page
+	{
+		public RefreshContainerScrollTop()
+		{
+			this.InitializeComponent();
 
 			for (int i = 0; i < 40; i++)
 			{

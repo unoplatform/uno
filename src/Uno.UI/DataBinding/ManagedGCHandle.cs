@@ -28,7 +28,7 @@ namespace Uno.UI.DataBinding
 			get => _handle.IsAllocated ? _handle.Target : null;
 			set
 			{
-				if(!_handle.IsAllocated)
+				if (!_handle.IsAllocated)
 				{
 					_handle = GCHandle.Alloc(value, GCHandleType.Weak);
 				}
@@ -54,7 +54,7 @@ namespace Uno.UI.DataBinding
 				return;
 			}
 
-			if(_handle.IsAllocated)
+			if (_handle.IsAllocated)
 			{
 				_handle.Free();
 			}

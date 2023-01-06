@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Data;
 
 namespace XamlGenerationTests.Shared
 {
-    public partial class NonDPAssignable : FrameworkElement
+	public partial class NonDPAssignable : FrameworkElement
 	{
 		public Binding MyBinding { get; set; }
 

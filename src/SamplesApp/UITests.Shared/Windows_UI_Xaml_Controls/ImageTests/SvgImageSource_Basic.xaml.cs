@@ -34,8 +34,8 @@ public sealed partial class SvgImageSource_Basic : Page
 	private async void SvgImageSource_Basic_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		await SvgImageSourceHelpers.CopySourcesToAppDataAsync();
-	}	
-	
+	}
+
 	public SampleSvgSource[] Sources { get; } = new SampleSvgSource[]
 	{
 		new("Couch (ms-appx)", new Uri("ms-appx:///Assets/Formats/couch.svg")),

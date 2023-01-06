@@ -61,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if(Math.Round(desiredContainer.Width) != 0 && Math.Round(desiredContainer.Height) != 0)
+				if (Math.Round(desiredContainer.Width) != 0 && Math.Round(desiredContainer.Height) != 0)
 				{
 					break;
 				}
@@ -167,7 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
 
-			Assert.IsTrue(img.ActualHeight > 0);			
+			Assert.IsTrue(img.ActualHeight > 0);
 		}
 
 		[TestMethod]
@@ -188,7 +188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 100,
 				Background = new SolidColorBrush(Colors.White)
 			};
-			
+
 			var SUT = new Image()
 			{
 				Width = 100,
@@ -201,7 +201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = parent;
 			await WindowHelper.WaitForLoaded(parent);
 			var result = await TakeScreenshot(parent);
-						
+
 			var sample = SUT.GetRelativeCoords(parent);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;

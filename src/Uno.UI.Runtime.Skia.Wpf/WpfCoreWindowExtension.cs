@@ -42,7 +42,7 @@ namespace Uno.UI.Skia.Platform
 			if (_host is null)
 			{
 				return;
-			}			
+			}
 
 			// Hook for native events
 			_host.Loaded += HookNative;

@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Estimation and virtualization related methods.
 
 		// Estimate how many items we need to traverse to get from our reference point to a suitable anchor item for the window.
-		public void 
+		public void
 			EstimateElementIndex(
 				ElementType elementType,
 				EstimationReference headerReference,
@@ -340,7 +340,7 @@ namespace Windows.UI.Xaml.Controls
 			out bool hasSnapPointOnElement)
 		{
 			hasSnapPointOnElement = false;
-			global::System.Diagnostics.Debug.Assert(m_snapPointFilterFunction is {});
+			global::System.Diagnostics.Debug.Assert(m_snapPointFilterFunction is { });
 
 			hasSnapPointOnElement = m_snapPointFilterFunction(elementIndex);
 
@@ -429,7 +429,7 @@ namespace Windows.UI.Xaml.Controls
 		// our Parent(SCP)'s  desired size is determined by the min cell size.
 		public Size GetDesiredViewportSize()
 		{
-			Size desiredViewportSize = new Size(m_cellMinSize.Width* m_cols, m_cellMinSize.Height* m_rows);
+			Size desiredViewportSize = new Size(m_cellMinSize.Width * m_cols, m_cellMinSize.Height * m_rows);
 			return desiredViewportSize;
 		}
 

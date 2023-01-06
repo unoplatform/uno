@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace XamlGenerationTests.Shared
 {
-    public sealed partial class BindingElementNameOuterTests : UserControl
-    {
-        public BindingElementNameOuterTests()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class BindingElementNameOuterTests : UserControl
+	{
+		public BindingElementNameOuterTests()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

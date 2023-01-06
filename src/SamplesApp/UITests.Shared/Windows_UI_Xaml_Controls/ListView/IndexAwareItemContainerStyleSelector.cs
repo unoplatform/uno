@@ -18,18 +18,18 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		{
 			var itemsControl = ItemsControl.ItemsControlFromItemContainer(container);
 			var index = itemsControl.IndexFromContainer(container);
-			
+
 			if (index == 0)
 			{
 				return FirstItemStyle;
 			}
-			
+
 			var itemsCount = itemsControl.Items?.Count ?? (itemsControl.ItemsSource as IEnumerable)?.Cast<object>().Count() ?? 0;
 			if (index == itemsCount - 1)
 			{
 				return LastItemStyle;
 			}
-			
+
 			return OtherItemsStyle;
 		}
 	}

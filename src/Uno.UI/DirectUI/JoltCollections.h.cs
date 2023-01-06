@@ -11,7 +11,7 @@ using Windows.UI.Core;
 namespace DirectUI
 {
 
-#region Iterator
+	#region Iterator
 	// FUTURE: Could we just use the WRL implementations here?
 	internal abstract class IteratorBase<T> : IEnumerator<T>
 	{
@@ -120,7 +120,7 @@ namespace DirectUI
 
 		//~IteratorBase()
 		//{
-			//IsDebuggerPresent(); // TODO UNO
+		//IsDebuggerPresent(); // TODO UNO
 		//}
 
 		protected abstract T GetCurrent();
@@ -134,7 +134,7 @@ namespace DirectUI
 		//}
 
 		private IVectorView<T> m_tpView;
-		private uint  m_nCurrentIndex;
+		private uint m_nCurrentIndex;
 	}
 
 	internal class Iterator<T>
@@ -1405,7 +1405,7 @@ namespace DirectUI
 		//	return ValueTypeView<T>.IndexOf(value, index, found);
 		//}
 
-		public virtual void SetAt(uint index,  T item)
+		public virtual void SetAt(uint index, T item)
 		{
 			this.CheckThread();
 
@@ -1423,7 +1423,7 @@ namespace DirectUI
 			RaiseVectorChanged(CollectionChange.ItemChanged, index);
 		}
 
-		public virtual void InsertAt(uint index,  T item)
+		public virtual void InsertAt(uint index, T item)
 		{
 			this.CheckThread();
 
@@ -1445,12 +1445,12 @@ namespace DirectUI
 
 		}
 
-		public virtual void Append( T item)
+		public virtual void Append(T item)
 		{
 			this.CheckThread();
 
 			this.m_vector.Add(item);
-			RaiseVectorChanged(CollectionChange.ItemInserted, (uint) this.m_vector.Count - 1);
+			RaiseVectorChanged(CollectionChange.ItemInserted, (uint)this.m_vector.Count - 1);
 
 		}
 
@@ -1584,7 +1584,7 @@ namespace DirectUI
 	//	}
 
 	//}
-#endregion
+	#endregion
 
 	internal class TrackerCollection<T> : List<T>, IVector<T>
 	{

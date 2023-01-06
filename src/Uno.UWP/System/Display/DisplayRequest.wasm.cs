@@ -7,8 +7,8 @@ using Uno.Foundation;
 
 namespace Windows.System.Display
 {
-    public partial class DisplayRequest
-    {
+	public partial class DisplayRequest
+	{
 		private const string JsType = "Windows.System.Display.DisplayRequest";
 
 		partial void ActivateScreenLock()

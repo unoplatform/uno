@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 					case ColorPickerHsvChannel.Hue:
 						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithColorName);
-						 break;
+						break;
 					case ColorPickerHsvChannel.Saturation:
 						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringSaturationSliderWithColorName);
 						break;

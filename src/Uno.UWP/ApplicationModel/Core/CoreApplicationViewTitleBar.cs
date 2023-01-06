@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.Core
 #if !__ANDROID__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreApplicationViewTitleBar
+	public partial class CoreApplicationViewTitleBar
 	{
 #pragma warning disable 67
 		internal event Action ExtendViewIntoTitleBarChanged;
@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.Core
 
 #if !__ANDROID__
 		[global::Uno.NotImplemented]
-		public  bool ExtendViewIntoTitleBar
+		public bool ExtendViewIntoTitleBar
 		{
 			get
 			{
@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Core
 #endif
 
 		[global::Uno.NotImplemented]
-		public  double Height
+		public double Height
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Core
 		}
 
 		[global::Uno.NotImplemented]
-		public  bool IsVisible
+		public bool IsVisible
 		{
 			get
 			{
@@ -50,7 +50,7 @@ namespace Windows.ApplicationModel.Core
 		}
 
 		[global::Uno.NotImplemented]
-		public  double SystemOverlayLeftInset
+		public double SystemOverlayLeftInset
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.Core
 		}
 
 		[global::Uno.NotImplemented]
-		public  double SystemOverlayRightInset
+		public double SystemOverlayRightInset
 		{
 			get
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Core
 		}
 
 		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, object> IsVisibleChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, object> IsVisibleChanged
 		{
 			[global::Uno.NotImplemented]
 			add
@@ -85,7 +85,7 @@ namespace Windows.ApplicationModel.Core
 		}
 
 		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, object> LayoutMetricsChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, object> LayoutMetricsChanged
 		{
 			[global::Uno.NotImplemented]
 			add

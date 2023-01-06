@@ -7,7 +7,7 @@ using Windows.UI.Core;
 
 namespace Windows.UI.Input.Preview.Injection;
 
-public partial class InjectedInputMouseInfo 
+public partial class InjectedInputMouseInfo
 {
 	public uint TimeOffsetInMilliseconds { get; set; }
 

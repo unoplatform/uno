@@ -39,9 +39,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public TreeViewItem()
 		{
 			DefaultStyleKey = typeof(TreeViewItem);
-			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());			
+			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
 		}
-		
+
 		// IControlOverrides
 		protected override void OnKeyDown(KeyRoutedEventArgs e)
 		{
@@ -504,7 +504,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var listControl = treeView.ListControl;
 				if (listControl.IsMultiselect)
-				{					
+				{
 					UpdateMultipleSelection(state);
 				}
 				else

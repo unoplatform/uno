@@ -8,8 +8,8 @@ using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    internal sealed class NativeValueAnimatorAdapter : IValueAnimator
-    {
+	internal sealed class NativeValueAnimatorAdapter : IValueAnimator
+	{
 		private readonly Dictionary<EventHandler, EventHandler<ValueAnimator.AnimatorUpdateEventArgs>> _updateHandlers = new Dictionary<EventHandler, EventHandler<ValueAnimator.AnimatorUpdateEventArgs>>();
 		private readonly Dictionary<EventHandler, EventHandler<Animator.AnimationPauseEventArgs>> _pauseHandlers = new Dictionary<EventHandler, EventHandler<Animator.AnimationPauseEventArgs>>();
 		private readonly Dictionary<EventHandler, EventHandler> _endHandlers = new Dictionary<EventHandler, EventHandler>();
@@ -114,7 +114,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			add
 			{
-				EventHandler handler = (snd, e) => {
+				EventHandler handler = (snd, e) =>
+				{
 					try
 					{
 						value(this, e);
@@ -145,7 +146,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			add
 			{
-				EventHandler handler = (snd, e) => {
+				EventHandler handler = (snd, e) =>
+				{
 					try
 					{
 						value(this, e);
@@ -185,7 +187,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get => _adaptee.CurrentPlayTime;
 			set => _adaptee.CurrentPlayTime = value;
-		} 
+		}
 
 		/// <inheritdoc />
 		public bool IsRunning => _adaptee.IsRunning;

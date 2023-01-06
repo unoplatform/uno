@@ -1,6 +1,6 @@
 namespace Windows.ApplicationModel.Chat
 {
-	public   enum ChatMessageKind 
+	public enum ChatMessageKind
 	{
 		Standard,
 		FileTransferRequest,

@@ -8,8 +8,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Shapes
 {
-    public partial class Shape
-    {
+	public partial class Shape
+	{
 
-    }
+	}
 }

@@ -361,7 +361,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var sut = new Border
 			{
 				Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x80, 0x18)),
-				Clip = new RectangleGeometry{Rect = new Rect(50,50,100,100)}
+				Clip = new RectangleGeometry { Rect = new Rect(50, 50, 100, 100) }
 			};
 			using var vp = VP(sut);
 
@@ -762,7 +762,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Content = new Grid
 					{
 						Height = 1024,
-						Clip = new RectangleGeometry{Rect = new Rect(50,50,100,100)},
+						Clip = new RectangleGeometry { Rect = new Rect(50, 50, 100, 100) },
 						Children =
 						{
 							(sut = new Border
@@ -835,7 +835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Margin = new Thickness(x, y, 0, 0),
 					HorizontalAlignment = HorizontalAlignment.Left,
 					VerticalAlignment = VerticalAlignment.Top,
-					RenderTransform = new TranslateTransform{ X = 50, Y = 25}
+					RenderTransform = new TranslateTransform { X = 50, Y = 25 }
 				}
 			};
 
@@ -896,7 +896,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					{
 						Height = 1024,
 						Children =
-						{ 
+						{
 							(sut = new Border
 							{
 								HorizontalAlignment = HorizontalAlignment.Left,
@@ -1144,7 +1144,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						return;
 					}
 
-					if (VisualTreeHelper.GetParent(elt as DependencyObject) is {} parent)
+					if (VisualTreeHelper.GetParent(elt as DependencyObject) is { } parent)
 					{
 						Subscribe(parent);
 					}

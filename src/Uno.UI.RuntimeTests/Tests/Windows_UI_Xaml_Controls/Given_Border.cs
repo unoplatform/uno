@@ -134,12 +134,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var result = await TakeScreenshot(SUT);
 			var sample = SUT.GetRelativeCoords(SUT.Sample1);
 			var eighth = sample.Width / 8;
-			
+
 			ImageAssert.HasPixels(
 				result,
 				ExpectedPixels.At(sample.X + eighth, sample.Y + eighth).Named("top left corner").WithPixelTolerance(2, 2).Pixel(white),
 				ExpectedPixels.At(sample.Right - eighth, sample.Y + eighth).Named("top right corner").WithPixelTolerance(2, 2).Pixel(white),
-				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").WithPixelTolerance(2,2).Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").WithPixelTolerance(2, 2).Pixel(white),
 				ExpectedPixels.At(sample.X + eighth, sample.Bottom - eighth).Named("bottom left corner").WithPixelTolerance(2, 2).Pixel(white)
 			);
 
@@ -306,7 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var inner = new Border() { CornerRadius = CornerRadiusHelper.FromUniformRadius(40), Width = 80, Height = 80 };
 			inner.Child = new Windows.UI.Xaml.Shapes.Rectangle() { Fill = new SolidColorBrush(Colors.Red), Width = 80, Height = 80 };
 			SUT.Child = inner;
-			
+
 			var snapshot = await TakeScreenshot(SUT);
 
 			ImageAssert.HasPixels(
@@ -383,8 +383,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var firstBorderRect = SUT.GetRelativeCoords(SUT.FirstBorder);
 			var secondBorderRect = SUT.GetRelativeCoords(SUT.SecondBorder);
-			var rect = new Rectangle((int)firstBorderRect.X , (int)firstBorderRect.Y,
-				(int)firstBorderRect.Width + 1,(int)firstBorderRect.Height + 1);
+			var rect = new Rectangle((int)firstBorderRect.X, (int)firstBorderRect.Y,
+				(int)firstBorderRect.Width + 1, (int)firstBorderRect.Height + 1);
 
 			await WindowHelper.WaitForIdle();
 
@@ -393,7 +393,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					rect,
 					 Windows.UI.Color.FromArgb(255, 216, 216, 255),
 					 tolerance: 20
-					) ;
+					);
 
 			ImageAssert.HasPixels(
 					screenshot,

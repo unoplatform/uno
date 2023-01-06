@@ -19,10 +19,10 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
 	[SampleControlInfo("ContentControl", "ContentControl_WithPadding")]
 	public sealed partial class ContentControl_WithPadding : UserControl
-    {
-        public ContentControl_WithPadding()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ContentControl_WithPadding()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

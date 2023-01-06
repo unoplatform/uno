@@ -24,13 +24,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
-#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER)  || HAS_SKOTTIE || __WASM__
+#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE || __WASM__
 		private static HttpClient? _httpClient;
 #endif
 
 		private AnimatedVisualPlayer? _player;
 
-		public static DependencyProperty UriSourceProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty UriSourceProperty { get; } = DependencyProperty.Register(
 			"UriSource",
 			typeof(Uri),
 			typeof(LottieVisualSourceBase),
@@ -45,7 +45,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			set => SetValue(UriSourceProperty, value);
 		}
 
-		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty OptionsProperty { get; } = DependencyProperty.Register(
 			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSourceBase), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
 		[NotImplemented]
@@ -186,7 +186,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
-#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER)  || HAS_SKOTTIE
+#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE
 		private void SetIsPlaying(bool isPlaying) => _player?.SetValue(AnimatedVisualPlayer.IsPlayingProperty, isPlaying);
 #endif
 
@@ -237,7 +237,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		partial void InnerMeasure(Size size);
 
-#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER)  || HAS_SKOTTIE || __WASM__
+#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE || __WASM__
 		private async Task<IInputStream?> TryLoadDownloadJson(Uri uri, CancellationToken ct)
 		{
 			if (TryLoadEmbeddedJson(uri, ct) is { } json)

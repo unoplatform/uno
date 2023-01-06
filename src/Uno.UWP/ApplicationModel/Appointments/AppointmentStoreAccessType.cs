@@ -13,7 +13,7 @@ public enum AppointmentStoreAccessType
 	/// </summary>
 	[NotImplemented]
 	AppCalendarsReadWrite,
-	
+
 	/// <summary>
 	/// The appointment store has read-only access to all calendars on the device.
 	/// </summary>

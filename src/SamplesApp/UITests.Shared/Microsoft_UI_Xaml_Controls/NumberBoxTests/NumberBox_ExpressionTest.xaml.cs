@@ -129,7 +129,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			var color = new SolidColorBrush(Colors.LightGray);
 			var prefix = "";
 
-			if(isFailed == true)
+			if (isFailed == true)
 			{
 				color = new SolidColorBrush(Colors.Red);
 				prefix = "❌ ";

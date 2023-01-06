@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 #else
 			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;
 			FrameworkTemplatePool.IsPoolingEnabled = true;
-			return Disposable.Create(() => FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled); 
+			return Disposable.Create(() => FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled);
 #endif
 		}
 

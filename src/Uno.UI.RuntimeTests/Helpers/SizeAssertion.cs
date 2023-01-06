@@ -64,7 +64,7 @@ namespace Uno.UI
 			return new AndConstraint<SizeAssertion>(this);
 		}
 
-		private void Validate(double expected, double value, double? epsilon, string because, object[] becauseArgs,  string field)
+		private void Validate(double expected, double value, double? epsilon, string because, object[] becauseArgs, string field)
 		{
 			var ep = epsilon ?? _epsilon;
 			var d = SizeAssertionExtensions.CheckDifference(expected, value, ep);
@@ -184,7 +184,7 @@ namespace Uno.UI
 			return new AndConstraint<RectAssertion>(this);
 		}
 
-		public AndConstraint<RectAssertion> HaveSize(Size expectedSize, double? epsilon = null, string because = null,  params object[] becauseArgs)
+		public AndConstraint<RectAssertion> HaveSize(Size expectedSize, double? epsilon = null, string because = null, params object[] becauseArgs)
 		{
 			new Size(_rect.Width, _rect.Height).Should(_epsilon).Be(expectedSize, epsilon, because, becauseArgs);
 

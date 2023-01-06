@@ -31,7 +31,7 @@ namespace Uno.Extensions
 		/// Note: Considerer using memoization if called often.
 		/// </remarks>
 		public static string[] GetNames<T>()
-        {
+		{
 #if WINDOWS_UWP || HAS_CRIPPLEDREFLECTION
             return Enum.GetNames(typeof (T));
 #else

@@ -15,14 +15,14 @@ namespace Windows.Storage
 	{
 		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
-			if(uri.Scheme != "ms-appx")
+			if (uri.Scheme != "ms-appx")
 			{
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
 			var path = Uri.UnescapeDataString(uri.PathAndQuery);
 
-			if(uri.Host is { Length: > 0 } host)
+			if (uri.Host is { Length: > 0 } host)
 			{
 				path = host + "/" + path.TrimStart("/");
 			}

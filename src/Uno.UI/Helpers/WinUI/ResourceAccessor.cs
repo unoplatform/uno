@@ -54,7 +54,7 @@ namespace Uno.UI.Helpers.WinUI
 		public static string GetLocalizedStringResource(string resourceName)
 		{
 #if !IS_UNO
-			return s_resourceMap.GetValue(resourceName, s_resourceContext).ToString ();
+			return s_resourceMap.GetValue(resourceName, s_resourceContext).ToString();
 #else
 			return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(resourceName);
 #endif

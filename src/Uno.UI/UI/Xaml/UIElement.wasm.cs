@@ -363,7 +363,7 @@ namespace Windows.UI.Xaml
 			{
 				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
-			
+
 			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
 			{
 				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, newValue);
@@ -378,7 +378,7 @@ namespace Windows.UI.Xaml
 			get => GetNameValue();
 			set => SetNameValue(value);
 		}
-		
+
 		#endregion
 
 		partial void OnUidChangedPartial()
@@ -694,7 +694,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
+			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)

@@ -8,10 +8,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 	[SampleControlInfo("TextBlock", "SimpleText_MaxLines_Different_Font_Size")]
 	public sealed partial class SimpleText_MaxLines_Different_Font_Size : UserControl
 	{
-        public SimpleText_MaxLines_Different_Font_Size()
-        {
-            this.InitializeComponent();
-        }
+		public SimpleText_MaxLines_Different_Font_Size()
+		{
+			this.InitializeComponent();
+		}
 
 		private void MaxLinesUp(object sender, object args)
 		{

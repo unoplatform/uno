@@ -4,7 +4,7 @@ using System.Text;
 
 namespace XamlGenerationTests.Shared
 {
-   public  partial class ContentDialogTest
+	public partial class ContentDialogTest
 	{
 		public ContentDialogTest()
 		{

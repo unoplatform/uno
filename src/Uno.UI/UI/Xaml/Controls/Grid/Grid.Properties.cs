@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Row Property
 		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty RowProperty { get ; } = CreateRowProperty();
+		public static DependencyProperty RowProperty { get; } = CreateRowProperty();
 
 		public static int GetRow(View view) => GetRowValue(view);
 
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Column Property
 		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty ColumnProperty { get ; } = CreateColumnProperty();
+		public static DependencyProperty ColumnProperty { get; } = CreateColumnProperty();
 
 		public static int GetColumn(View view) => GetColumnValue(view);
 
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region RowSpan Property
 		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty RowSpanProperty { get ; } = CreateRowSpanProperty();
+		public static DependencyProperty RowSpanProperty { get; } = CreateRowSpanProperty();
 
 		public static int GetRowSpan(View view) => GetRowSpanValue(view as UIElement);
 
@@ -192,13 +192,13 @@ namespace Windows.UI.Xaml.Controls
 
 		#region ColumnSpan Property
 		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
-		public static DependencyProperty ColumnSpanProperty { get ; } = CreateColumnSpanProperty();
+		public static DependencyProperty ColumnSpanProperty { get; } = CreateColumnSpanProperty();
 
 		public static int GetColumnSpan(View view) => GetColumnSpanValue(view as UIElement);
 
 		public static void SetColumnSpan(View view, int columnSpan)
 		{
-			if(columnSpan <= 0)
+			if (columnSpan <= 0)
 			{
 				throw new ArgumentException("The value must be above zero", nameof(columnSpan));
 			}

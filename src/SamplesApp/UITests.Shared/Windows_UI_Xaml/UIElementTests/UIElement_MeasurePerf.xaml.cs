@@ -134,10 +134,10 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			root.Children.Add(grid);
 
 			var background = new Rectangle
-				{
-					Fill = new SolidColorBrush(Colors.Gray),
-					Opacity = 0.1d
-				};
+			{
+				Fill = new SolidColorBrush(Colors.Gray),
+				Opacity = 0.1d
+			};
 
 			Grid.SetColumnSpan(background, 3);
 			grid.Children.Add(background);
@@ -181,7 +181,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			{
 				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 				var el = new Button { Width = 2 };
-				Grid.SetColumn(el, 2+i);
+				Grid.SetColumn(el, 2 + i);
 				grid.Children.Add(el);
 			}
 

@@ -793,7 +793,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var host = new Button() { Content = "Asd" };
 				flyout.Content = new Button() { Content = "Test" };
-				
+
 				TestServices.WindowHelper.WindowContent = host;
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.WindowHelper.WaitForLoaded(host);
@@ -829,7 +829,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				TestServices.WindowHelper.WindowContent = host;
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.WindowHelper.WaitForLoaded(host);
-				
+
 				Assert.IsNull(flyout.XamlRoot);
 				FlyoutBase.ShowAttachedFlyout(host);
 

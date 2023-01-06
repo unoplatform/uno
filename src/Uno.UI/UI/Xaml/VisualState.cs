@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(!(GetValue(SettersProperty) is SetterBaseCollection collection))
+				if (!(GetValue(SettersProperty) is SetterBaseCollection collection))
 				{
 					collection = Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
 				}
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(!(GetValue(StateTriggersProperty) is IList<StateTriggerBase> list))
+				if (!(GetValue(StateTriggersProperty) is IList<StateTriggerBase> list))
 				{
 					var stateTriggers = new DependencyObjectCollection<StateTriggerBase>(this, isAutoPropertyInheritanceEnabled: false);
 					stateTriggers.VectorChanged += OnStateTriggerCollectionChanged;
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
-		internal static DependencyProperty StateTriggersProperty { get ; } =
+		internal static DependencyProperty StateTriggersProperty { get; } =
 			DependencyProperty.Register(
 				name: "StateTriggers",
 				propertyType: typeof(IList<StateTriggerBase>),
@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml
 					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 				}
 
-				foreach(var setter in Setters)
+				foreach (var setter in Setters)
 				{
 					if (setter is IDependencyObjectStoreProvider setterProvider)
 					{

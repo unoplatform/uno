@@ -24,20 +24,20 @@ using Uno.UI.Controls;
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
 {
 	public sealed partial class CommandBar_Page2 : Page
-    {
-	    public CommandBar_Page2()
-	    {
-		    this.InitializeComponent();
-	    }
+	{
+		public CommandBar_Page2()
+		{
+			this.InitializeComponent();
+		}
 
-	    public void OnBackButtonClicked(object sender, object args)
-	        => Frame.GoBack();
+		public void OnBackButtonClicked(object sender, object args)
+			=> Frame.GoBack();
 
-        public void OnButtonClicked(object sender, RoutedEventArgs e)
-	        => Frame.Navigate(typeof(CommandBar_Page3));
+		public void OnButtonClicked(object sender, RoutedEventArgs e)
+			=> Frame.Navigate(typeof(CommandBar_Page3));
 
-        public void OnCalculateSizeClicked(object sender, RoutedEventArgs e)
-        {
+		public void OnCalculateSizeClicked(object sender, RoutedEventArgs e)
+		{
 #if __IOS__
 	        UIView parent = this;
 	        while (parent.HasParent())
@@ -52,6 +52,6 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
 	        //making the TitleView overlap any AppBarButton of the CommandBar
 	        Result.Text = titleView.Frame.Width > titleViewParent.Frame.Width ? "FAILED" : "PASSED";
 #endif
-        }
-    }
+		}
+	}
 }

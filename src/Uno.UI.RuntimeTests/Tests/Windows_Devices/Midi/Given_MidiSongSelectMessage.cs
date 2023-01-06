@@ -9,7 +9,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 	[TestClass]
 	public class Given_MidiSongSelectMessage
 	{
-        [TestMethod]
+		[TestMethod]
 		public void When_RawData()
 		{
 			var message = new MidiSongSelectMessage(62);

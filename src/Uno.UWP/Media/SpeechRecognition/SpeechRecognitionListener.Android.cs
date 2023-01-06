@@ -35,12 +35,12 @@ namespace Windows.Media.SpeechRecognition
 		{
 			this.EndOfSpeech?.Invoke();
 		}
-		
+
 		public void OnError(SpeechRecognizerError error)
 		{
 			this.Error?.Invoke(error);
 		}
-		
+
 		public void OnEvent(int eventType, Bundle @params)
 		{
 		}
@@ -122,7 +122,7 @@ namespace Windows.Media.SpeechRecognition
 			}
 
 			result.Alternates = alternates.OrderByDescending(a => a.RawConfidence).ToList();
-			
+
 			action?.Invoke(result);
 		}
 	}

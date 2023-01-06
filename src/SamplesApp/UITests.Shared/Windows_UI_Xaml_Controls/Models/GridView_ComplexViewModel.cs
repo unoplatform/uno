@@ -17,7 +17,7 @@ namespace Uno.UI.Samples.Content.UITests.GridView
 			SampleItems = GetSampleItems(coreDispatcher);
 		}
 
-		public object SampleItems { get; } 
+		public object SampleItems { get; }
 
 		private GridView_ComplexItemViewModel[] GetSampleItems(CoreDispatcher coreDispatcher)
 		{

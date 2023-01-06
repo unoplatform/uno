@@ -28,9 +28,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 
 		// DropTargetProvider
-		string IDropTargetProvider.DropEffect => ((TreeViewList)Owner).GetDropTargetDropEffect();		
+		string IDropTargetProvider.DropEffect => ((TreeViewList)Owner).GetDropTargetDropEffect();
 
-		string[] IDropTargetProvider.DropEffects => throw new NotImplementedException();	
+		string[] IDropTargetProvider.DropEffects => throw new NotImplementedException();
 
 		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
@@ -49,9 +49,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 
 		// ISelectionProvider
-		bool ISelectionProvider.CanSelectMultiple => IsMultiselect ? true : base.CanSelectMultiple;		
+		bool ISelectionProvider.CanSelectMultiple => IsMultiselect ? true : base.CanSelectMultiple;
 
-		bool ISelectionProvider.IsSelectionRequired => IsMultiselect ? false : base.CanSelectMultiple;		
+		bool ISelectionProvider.IsSelectionRequired => IsMultiselect ? false : base.CanSelectMultiple;
 
 		IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 		{

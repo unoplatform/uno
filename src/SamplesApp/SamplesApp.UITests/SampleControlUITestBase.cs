@@ -71,9 +71,9 @@ namespace SamplesApp.UITests
 
 		public void ValidateAppMode()
 		{
-			if(GetCurrentFixtureAttributes<TestAppModeAttribute>().FirstOrDefault() is TestAppModeAttribute testAppMode)
+			if (GetCurrentFixtureAttributes<TestAppModeAttribute>().FirstOrDefault() is TestAppModeAttribute testAppMode)
 			{
-				if(
+				if (
 					_totalTestFixtureCount != 0
 					&& testAppMode.CleanEnvironment
 					&& testAppMode.Platform == AppInitializer.GetLocalPlatform()
@@ -311,8 +311,8 @@ namespace SamplesApp.UITests
 					var testMethodInfo = classType.GetMethod(currentTest.MethodName);
 
 					if (testMethodInfo is { } mi &&
-					    mi.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
-						    ActivePlatformsAttribute[] methodAttributes)
+						mi.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
+							ActivePlatformsAttribute[] methodAttributes)
 					{
 						foreach (var attr in methodAttributes)
 						{

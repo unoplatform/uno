@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 {
-    public sealed partial class RefreshContainerNavigationSecondPage : Page
-    {
-        public RefreshContainerNavigationSecondPage()
-        {
-            this.InitializeComponent();
+	public sealed partial class RefreshContainerNavigationSecondPage : Page
+	{
+		public RefreshContainerNavigationSecondPage()
+		{
+			this.InitializeComponent();
 		}
-		
+
 		private void ButtonClick(object sender, RoutedEventArgs e)
 		{
 			Frame.GoBack();

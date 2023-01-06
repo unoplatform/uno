@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public PivotItemFragment(PivotItem item)
 		{
-			if(item == null)
+			if (item == null)
 			{
 				throw new ArgumentNullException(nameof(item));
 			}
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 				Update();
 			}
 		}
-		
+
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
 			_created = true;

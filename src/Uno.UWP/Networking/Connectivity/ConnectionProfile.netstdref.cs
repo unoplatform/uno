@@ -1,7 +1,7 @@
 ﻿namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile
-    {
+	{
 		internal static ConnectionProfile GetInternetConnectionProfile() =>
 			new ConnectionProfile();
 

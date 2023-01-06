@@ -35,7 +35,7 @@ namespace Windows.Graphics.Imaging
 			, Storage.Streams.IRandomAccessStream stream) =>
 			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
 			{
-				if(!_encoderMap.TryGetValue(encoderId,out var imageFormat))
+				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{
 					throw new NotImplementedException($"Encoder {encoderId} in not implemented.", new ArgumentException(nameof(encoderId)));
 				}

@@ -6,8 +6,8 @@ using Uno.Extensions;
 
 namespace Windows.UI.Core
 {
-    internal class WeakEventHelper
-    {
+	internal class WeakEventHelper
+	{
 		/// <summary>
 		/// Defines a event raise method.
 		/// </summary>
@@ -54,7 +54,7 @@ namespace Windows.UI.Core
 			// does not link the callee to the caller.
 			var instanceRef = new WeakReference<IList<GenericEventHandler>>(list);
 
-			Action removeHandler = () => 
+			Action removeHandler = () =>
 			{
 				var thatList = instanceRef.GetTarget();
 

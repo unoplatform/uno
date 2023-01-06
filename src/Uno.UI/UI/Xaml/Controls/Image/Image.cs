@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 					bitmapSource.StreamLoaded += ForceReloadSource;
 					compositeDisposable.Add(() => bitmapSource.StreamLoaded -= ForceReloadSource);
 				}
-				
+
 				_sourceDisposable.Disposable = compositeDisposable;
 			}
 

@@ -10,14 +10,14 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.LongTitle
 {
-    public sealed partial class CommandBar_Page3 : Page
-    {
-	    public CommandBar_Page3()
-	    {
-		    this.InitializeComponent();
-	    }
+	public sealed partial class CommandBar_Page3 : Page
+	{
+		public CommandBar_Page3()
+		{
+			this.InitializeComponent();
+		}
 
-	    public void OnButtonClicked(object sender, RoutedEventArgs e)
-	        => Frame.GoBack();
-    }
+		public void OnButtonClicked(object sender, RoutedEventArgs e)
+			=> Frame.GoBack();
+	}
 }

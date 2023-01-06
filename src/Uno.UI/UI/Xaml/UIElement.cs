@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml
 		}
 
 		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
-		{			
+		{
 			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var result))
 			{
 				return result;
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 			}
 
 			UIElementGeneratedProxy.RegisterImplementedRoutedEvents(type, implementedRoutedEvents);
-			
+
 			return implementedRoutedEvents;
 		}
 

@@ -22,10 +22,10 @@ namespace Uno.UI
 		{
 			DynamicMethod dynamicMethod = new DynamicMethod(
 				string.Empty,
-				typeof(object), 
-				new Type[] { 
-					typeof(object), 
-                    typeof(object[])
+				typeof(object),
+				new Type[] {
+					typeof(object),
+					typeof(object[])
 				},
 				methodInfo.DeclaringType.Module,
 				true

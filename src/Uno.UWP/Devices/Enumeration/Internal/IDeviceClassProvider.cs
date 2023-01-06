@@ -23,6 +23,6 @@ namespace Uno.Devices.Enumeration.Internal
 
 		event EventHandler<object> WatchStopped;
 
-		event EventHandler<DeviceInformationUpdate> WatchUpdated;		
+		event EventHandler<DeviceInformationUpdate> WatchUpdated;
 	}
 }

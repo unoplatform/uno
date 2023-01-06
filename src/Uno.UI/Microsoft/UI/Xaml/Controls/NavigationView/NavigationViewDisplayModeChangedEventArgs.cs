@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides data for the NavigationView.DisplayModeChanged event.
 	/// </summary>
 	public sealed partial class NavigationViewDisplayModeChangedEventArgs
-    {
+	{
 		internal NavigationViewDisplayModeChangedEventArgs(NavigationViewDisplayMode displayMode) =>
 			DisplayMode = displayMode;
 

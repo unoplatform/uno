@@ -15,4 +15,4 @@ namespace Windows.Storage
 	}
 }
 
-#endif 
+#endif

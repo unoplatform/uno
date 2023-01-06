@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		#region HitTestVisibility
+#region HitTestVisibility
 		internal void UpdateHitTest()
 		{
 			this.CoerceValue(HitTestVisibilityProperty);
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml
 			this.ClearValue(HitTestVisibilityProperty);
 		}
 
-		#endregion
+#endregion
 
 		partial void CapturePointerNative(Pointer pointer)
 			=> XamlRoot?.VisualTree.ContentRoot.InputManager!.SetPointerCapture(pointer.UniqueId);

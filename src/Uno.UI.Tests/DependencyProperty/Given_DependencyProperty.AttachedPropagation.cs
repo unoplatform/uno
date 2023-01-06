@@ -64,7 +64,8 @@ namespace Uno.UI.Tests.AttachedPropagation
 			int propagatedValue = -1;
 			child1.RegisterPropertyChangedCallback(
 				MyAttachedPropType.MyPropertyProperty,
-				(s, e) => {
+				(s, e) =>
+				{
 					propagatedValue = MyAttachedPropType.GetMyProperty(child1);
 				}
 			);
@@ -85,7 +86,8 @@ namespace Uno.UI.Tests.AttachedPropagation
 			int propagatedValue = -1;
 			child1.RegisterPropertyChangedCallback(
 				MyAttachedPropType.MyPropertyProperty,
-				(s, e) => {
+				(s, e) =>
+				{
 					propagatedValue = MyAttachedPropType.GetMyProperty(child1);
 				}
 			);
@@ -127,7 +129,7 @@ namespace Uno.UI.Tests.AttachedPropagation
 
 		private static void OnPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			
+
 		}
 	}
 }

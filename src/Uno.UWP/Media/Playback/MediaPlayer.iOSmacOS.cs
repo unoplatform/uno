@@ -218,7 +218,7 @@ namespace Windows.Media.Playback
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-				
+
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 				_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
@@ -246,7 +246,7 @@ namespace Windows.Media.Playback
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
 				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
-				
+
 				MediaOpened?.Invoke(this, null);
 
 			}
@@ -278,7 +278,7 @@ namespace Windows.Media.Playback
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(new char[] { '/' }));
-			}		
+			}
 
 			if (uri.IsLocalResource())
 			{
@@ -298,11 +298,11 @@ namespace Windows.Media.Playback
 			{
 				return NSUrl.CreateFileUrl(uri.PathAndQuery, relativeToUrl: null);
 			}
-			
+
 			return new NSUrl(uri.ToString());
 		}
 
-#endregion
+		#endregion
 
 		public void Play()
 		{

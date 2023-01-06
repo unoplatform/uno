@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	public  partial class DurationHelper 
+	public partial class DurationHelper
 	{
 		public static Duration Automatic
 			=> Duration.Automatic;
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 		public static bool Equals(Duration target, Duration value)
 			=> Duration.Equals(target, value);
 
-		public static Duration Subtract( Duration target,  Duration duration)
+		public static Duration Subtract(Duration target, Duration duration)
 			=> target.Subtract(duration);
 	}
 }

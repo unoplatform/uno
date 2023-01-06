@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(IsIndeterminateProperty, value); }
 		}
 
-		public static DependencyProperty IsIndeterminateProperty { get ; } =
+		public static DependencyProperty IsIndeterminateProperty { get; } =
 			DependencyProperty.Register(
 				"IsIndeterminate",
 				typeof(bool),
@@ -57,9 +57,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsIndeterminateChangedPartial(bool oldValue, bool newValue);
 
-#endregion
+		#endregion
 
-#region ShowError
+		#region ShowError
 
 		public bool ShowError
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowErrorProperty, value); }
 		}
 
-		public static DependencyProperty ShowErrorProperty { get ; } =
+		public static DependencyProperty ShowErrorProperty { get; } =
 			DependencyProperty.Register(
 				"ShowError",
 				typeof(bool),
@@ -83,9 +83,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonStates();
 		}
 
-#endregion
+		#endregion
 
-#region ShowPaused
+		#region ShowPaused
 
 		public bool ShowPaused
 		{
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ShowPausedProperty, value); }
 		}
 
-		public static DependencyProperty ShowPausedProperty { get ; } =
+		public static DependencyProperty ShowPausedProperty { get; } =
 			DependencyProperty.Register(
 				"ShowPaused",
 				typeof(bool),
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCommonStates();
 		}
 
-#endregion
+		#endregion
 
 		protected override void OnApplyTemplate()
 		{
@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, "Updating", false);
 			}
 		}
-		
+
 		// TODO
 		// public ProgressBarTemplateSettings TemplateSettings { get; }
 	}

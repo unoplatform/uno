@@ -20,13 +20,13 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="options"></param>
 		/// <returns></returns>
-		public static bool HasValueInheritsDataContext(this FrameworkPropertyMetadataOptions options) 
+		public static bool HasValueInheritsDataContext(this FrameworkPropertyMetadataOptions options)
 			=> (options & FrameworkPropertyMetadataOptions.ValueInheritsDataContext) != 0;
 
 		/// <summary>
 		/// Determines if the conversion of a set value to the type of a <see cref="DependencyProperty"/> should be performed.
 		/// </summary>
-		public static bool HasAutoConvert(this FrameworkPropertyMetadataOptions options) 
+		public static bool HasAutoConvert(this FrameworkPropertyMetadataOptions options)
 			=> (options & FrameworkPropertyMetadataOptions.AutoConvert) != 0;
 
 		/// <summary>

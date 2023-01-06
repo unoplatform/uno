@@ -35,9 +35,9 @@ partial class SvgImageSource
 			if (Stream != null)
 			{
 				Stream.Position = 0;
-				using var data = NSData.FromStream(Stream);		
+				using var data = NSData.FromStream(Stream);
 				var bytes = data.ToArray();
-				return ImageData.FromBytes(bytes);				
+				return ImageData.FromBytes(bytes);
 			}
 
 			if (FilePath.HasValue())
@@ -177,7 +177,7 @@ partial class SvgImageSource
 			var bytes = data.ToArray();
 			return Task.FromResult(ImageData.FromBytes(bytes));
 		}
-		
+
 		return Task.FromResult(ImageData.Empty);
 #endif
 	}

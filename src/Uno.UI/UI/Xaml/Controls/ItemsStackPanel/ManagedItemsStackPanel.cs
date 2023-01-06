@@ -52,7 +52,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		#region Orientation DependencyProperty
+	#region Orientation DependencyProperty
 
 		public Orientation Orientation
 		{
@@ -81,9 +81,9 @@ namespace Uno.UI.Controls
 		partial void OnOrientationChangedPartial(Orientation oldOrientation, Orientation newOrientation);
 		partial void OnOrientationChangedPartialNative(Orientation oldOrientation, Orientation newOrientation);
 
-		#endregion
+	#endregion
 
-		#region CacheLength DependencyProperty
+	#region CacheLength DependencyProperty
 
 		public double CacheLength
 		{
@@ -112,7 +112,7 @@ namespace Uno.UI.Controls
 		partial void OnCacheLengthChangedPartial(double oldCacheLength, double newCacheLength);
 		partial void OnCacheLengthChangedPartialNative(double oldCacheLength, double newCacheLength);
 
-		#endregion
+	#endregion
 
 #if __IOS__
 		public override void SetSuperviewNeedsLayout()
@@ -140,6 +140,6 @@ namespace Uno.UI.Controls
 #endif
 	}
 #else
-		public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
+	public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
 #endif
 }

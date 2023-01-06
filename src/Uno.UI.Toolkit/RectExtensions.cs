@@ -8,7 +8,7 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Toolkit.Extensions
 {
-    internal static class RectExtensions
+	internal static class RectExtensions
 	{
 #if !XAMARIN && !UNO_REFERENCE_API && !NET461
 		/// <summary>
@@ -30,7 +30,7 @@ namespace Uno.UI.Toolkit.Extensions
 			{
 				return DisplayOrientations.None;
 			}
-		} 
+		}
 #endif
 	}
 }

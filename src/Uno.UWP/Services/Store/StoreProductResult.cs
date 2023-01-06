@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Windows.Services.Store
 {
 	public sealed class StoreProductResult
-    {
+	{
 		internal StoreProductResult() { }
 
 		public StoreProduct Product { get; internal set; }

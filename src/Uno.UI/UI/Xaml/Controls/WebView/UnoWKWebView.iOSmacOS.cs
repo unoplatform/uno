@@ -255,7 +255,8 @@ namespace Windows.UI.Xaml.Controls
 			};
 			alert.AddButton(OkString);
 			alert.AddButton(CancelString);
-			alert.BeginSheetForResponse(webview.Window, (result) => {
+			alert.BeginSheetForResponse(webview.Window, (result) =>
+			{
 				var okButtonClicked = result == 1000;
 				completionHandler(okButtonClicked);
 			});
@@ -300,7 +301,8 @@ namespace Windows.UI.Xaml.Controls
 			alert.AccessoryView = textField;
 			alert.AddButton(OkString);
 			alert.AddButton(CancelString);
-			alert.BeginSheetForResponse(webview.Window, (result) => {
+			alert.BeginSheetForResponse(webview.Window, (result) =>
+			{
 				var okButtonClicked = result == 1000;
 				completionHandler(okButtonClicked ? textField.StringValue : null);
 			});

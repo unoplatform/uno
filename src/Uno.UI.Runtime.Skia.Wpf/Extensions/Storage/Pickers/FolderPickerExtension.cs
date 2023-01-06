@@ -46,14 +46,14 @@ namespace Uno.Extensions.Storage.Pickers
 			IntPtr pidl = NativeMethods.SHBrowseForFolder(ref pbi);
 			if (pidl != IntPtr.Zero)
 			{
-                try
-                {
+				try
+				{
 					var path = NativeMethods.SHGetPathFromIDListLong(pidl);
 					if (!string.IsNullOrEmpty(path))
 						return Task.FromResult<StorageFolder?>(new StorageFolder(path!));
-                }
+				}
 				finally
-                {
+				{
 					Marshal.FreeCoTaskMem(pidl);
 				}
 			}
@@ -63,7 +63,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 		private uint FolderBrowserDialog_BrowseCallbackProc(IntPtr hwnd, uint msg, IntPtr lParam, IntPtr lpData)
 		{
-			
+
 			switch (msg)
 			{
 				case NativeMethods.BFFM_INITIALIZED:
@@ -99,7 +99,7 @@ namespace Uno.Extensions.Storage.Pickers
 					}
 					break;
 			}
-			
+
 			return 0;
 		}
 
@@ -135,11 +135,11 @@ namespace Uno.Extensions.Storage.Pickers
 			}
 
 
-			[DllImport("shell32", EntryPoint ="SHBrowseForFolderW", CharSet=CharSet.Unicode)]
+			[DllImport("shell32", EntryPoint = "SHBrowseForFolderW", CharSet = CharSet.Unicode)]
 			internal static extern IntPtr SHBrowseForFolder(ref BROWSEINFO lpbi);
 
 			internal static string? SHGetPathFromIDListLong(IntPtr pidl)
-            {
+			{
 				if (pidl == IntPtr.Zero)
 					return null;
 
@@ -162,9 +162,9 @@ namespace Uno.Extensions.Storage.Pickers
 					return Marshal.PtrToStringUni(buffer);
 				}
 				finally
-                {
+				{
 					Marshal.FreeHGlobal(buffer);
-                }
+				}
 			}
 
 			[DllImport("shell32")]

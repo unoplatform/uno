@@ -15,7 +15,7 @@ namespace Uno.UI.Controls
 {
 	public partial class NativeFramePresenter : FrameworkElement
 	{
-		#region IsNavigationBarHidden DependencyProperty
+#region IsNavigationBarHidden DependencyProperty
 
 		/// <summary>
 		/// Provides a Xaml access to the <see cref="UINavigationController.NavigationBarHidden"/> property.
@@ -40,7 +40,7 @@ namespace Uno.UI.Controls
 		private void OnIsNavigationBarHiddenChanged(DependencyPropertyChangedEventArgs e) 
 			=> NavigationController.NavigationBarHidden = (bool)e.NewValue;
 
-		#endregion
+#endregion
 	}
 }
 #endif

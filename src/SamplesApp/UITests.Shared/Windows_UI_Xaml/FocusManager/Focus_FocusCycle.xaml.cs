@@ -38,7 +38,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 				{
 					controlName = (nextElement as ContentControl)?.Content?.ToString() ?? "N/A";
 				}
-				MoveResultTextBlock.Text = $"Found focus target {nextElement.GetType().Name} with name {controlName}, focus {(focusMoved.Succeeded ? "moved" : "did not move" )}";
+				MoveResultTextBlock.Text = $"Found focus target {nextElement.GetType().Name} with name {controlName}, focus {(focusMoved.Succeeded ? "moved" : "did not move")}";
 			}
 			else
 			{

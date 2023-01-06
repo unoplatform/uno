@@ -71,7 +71,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 				return HashBuilder.Build(macAddr);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Debug.Fail($"Failed to get Mac address: {e}");
 
@@ -81,7 +81,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 		private string GetProductVersion()
 		{
-			if(this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute)).FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
+			if (this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute)).FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
 			{
 				return attribute.InformationalVersion;
 			}

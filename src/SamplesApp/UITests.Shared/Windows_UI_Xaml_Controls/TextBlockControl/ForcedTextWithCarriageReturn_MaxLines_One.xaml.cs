@@ -8,10 +8,10 @@ namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
 	[SampleControlInfo("TextBlock", "ForcedTextWithCarriageReturn_MaxLines_One")]
 	public sealed partial class ForcedTextWithCarriageReturn_MaxLines_One : UserControl
-    {
+	{
 		public ForcedTextWithCarriageReturn_MaxLines_One()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 			this.Loaded += Page_Loaded;
 		}
 

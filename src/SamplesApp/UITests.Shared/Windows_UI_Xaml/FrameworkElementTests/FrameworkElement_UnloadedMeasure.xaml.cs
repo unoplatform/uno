@@ -32,10 +32,11 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 				Width = 200,
 				Height = 200,
 				Background = new SolidColorBrush(Colors.Red),
-				Child = new TextBlock { Text = "Some text", TextWrapping = TextWrapping.WrapWholeWords, MaxLines=10 },
+				Child = new TextBlock { Text = "Some text", TextWrapping = TextWrapping.WrapWholeWords, MaxLines = 10 },
 			};
 
-			var _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+			var _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
 				myControl.Content = content;
 				content.Measure(new Size(10, 100));
 

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 	/// capturing lambda to be passed as a callback, and not have to unintended memory leaks
 	/// on either the sender or receiver of the callback.
 	/// </remarks>
-    internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
+	internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
 	{
 		public DispatcherConditionalDisposable(object target, WeakReference conditionSource) : base(target, conditionSource)
 		{

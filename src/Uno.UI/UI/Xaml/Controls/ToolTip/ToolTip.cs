@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 					_popup.Closed += (sender, e) => IsOpen = false;
 				}
 
-				return _popup; 
+				return _popup;
 			}
 		}
 

@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Samples.Shared.Content.UITests
 {
-	[Sample("Brushes", Description= "List with ImageBrush background in items")]
+	[Sample("Brushes", Description = "List with ImageBrush background in items")]
 	public sealed partial class ImageBrushInList : UserControl
 	{
 		public ImageBrushInList()

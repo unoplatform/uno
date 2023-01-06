@@ -22,7 +22,7 @@ namespace Uno.Foundation.Logging
 
 		internal Logger CreateLogger(string name)
 		{
-			if(ExternalLoggerFactory == null)
+			if (ExternalLoggerFactory == null)
 			{
 				return _nullLogger;
 			}

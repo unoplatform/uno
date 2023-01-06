@@ -597,7 +597,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new When_TemplateBinding_And_VisualState_Setter_ClearValue();
 			SUT.topLevel.Content = "test";
 			SUT.topLevel.ApplyTemplate();
-			 
+
 			var inner = SUT.FindName("innerContent") as ContentPresenter;
 			Assert.IsNotNull(inner);
 			Assert.AreEqual("Default Value", inner.Tag);
@@ -618,7 +618,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new When_StaticResource_And_VisualState_Setter_ClearValue();
 			SUT.topLevel.Content = "test";
 			SUT.topLevel.ApplyTemplate();
-			 
+
 			var inner = SUT.FindName("innerContent") as ContentPresenter;
 			Assert.IsNotNull(inner);
 			Assert.AreEqual("my static resource", inner.Tag);

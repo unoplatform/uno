@@ -11,7 +11,7 @@ namespace Uno.UI.Runtime.Skia
 		public ApplicationExtension(Application owner)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
-		}		
+		}
 
 #pragma warning disable CS0067 // The event is never used
 		public event EventHandler? SystemThemeChanged;

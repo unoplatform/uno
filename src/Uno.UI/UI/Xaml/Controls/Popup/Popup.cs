@@ -264,7 +264,7 @@ public partial class Popup
 	/// Raised when the ActualPlacement property changes.
 	/// </summary>
 	public event EventHandler<object> ActualPlacementChanged;
-	
+
 	private void ApplyLightDismissOverlayMode()
 	{
 		if (PopupPanel != null)

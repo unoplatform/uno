@@ -42,7 +42,7 @@ namespace SamplesApp.UITests
 			TakeScreenshot("Popup - Dismissable - 2 - Open");
 			Assert.AreEqual("Test", PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.TapCoordinates(10,100);
+			_app.TapCoordinates(10, 100);
 
 			// Assert after dismiss
 			TakeScreenshot("Popup - Dismissable - 3 - Dismissable");

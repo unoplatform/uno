@@ -47,9 +47,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public async Task When_Verify_Canvas_With_Outer_Clip()
 		{
-			#if __MACOS__ //Color are not interpreted the same way in Mac
+#if __MACOS__ //Color are not interpreted the same way in Mac
 				Assert.Inconclusive();
-			#endif
+#endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
@@ -76,12 +76,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Verify_Canvas_ZIndex()
 		{
-			#if __MACOS__
+#if __MACOS__
 				Assert.Inconclusive(); //Color are not interpreted the same way in Mac
-			#endif
-			#if __ANDROID__
+#endif
+#if __ANDROID__
 				Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
-			#endif
+#endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -110,9 +110,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAtChild(bitmap, greenBorderRect1, (float)greenBorderRect1.Width - 1, (float)greenBorderRect1.Height / 2, Blue);
 
 			var greenBorderRect2 = canvas.Get_CanvasBorderGreen1();
-			ImageAssert.HasColorAtChild(bitmap,greenBorderRect2, (float)greenBorderRect2.Width / 2, (float)greenBorderRect2.Height / 2, Brown);
-			ImageAssert.HasColorAtChild(bitmap,greenBorderRect2, (float)greenBorderRect2.Width - 1, greenBorderRect2.Height / 2, Blue);
-			
+			ImageAssert.HasColorAtChild(bitmap, greenBorderRect2, (float)greenBorderRect2.Width / 2, (float)greenBorderRect2.Height / 2, Brown);
+			ImageAssert.HasColorAtChild(bitmap, greenBorderRect2, (float)greenBorderRect2.Width - 1, greenBorderRect2.Height / 2, Blue);
+
 			var greenBorderRect3 = canvas.Get_CanvasBorderGreen3();
 			ImageAssert.HasColorAtChild(bitmap, greenBorderRect3, (float)greenBorderRect3.Width / 2, (float)greenBorderRect3.Height / 2, Brown);
 			ImageAssert.HasColorAtChild(bitmap, greenBorderRect3, (float)greenBorderRect3.Width - 1, (float)greenBorderRect3.Height / 2, Blue);
@@ -122,9 +122,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Verify_Canvas_In_Canvas()
 		{
-			#if __MACOS__
+#if __MACOS__
 				Assert.Inconclusive(); //Color are not interpreted the same way in Mac
-			# endif
+#endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";

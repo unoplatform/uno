@@ -9,5 +9,5 @@
 			SetValue(currentAnimator.AnimatedValue);
 		}
 
-}
+	}
 }

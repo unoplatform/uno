@@ -5,9 +5,9 @@ namespace XamlGenerationTests.Shared
 {
 	public sealed partial class Flyout_Content_ThemeResource : Page
 	{
-        public Flyout_Content_ThemeResource()
-        {
-            this.InitializeComponent();
-        }
-    }
+		public Flyout_Content_ThemeResource()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

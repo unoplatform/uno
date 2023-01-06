@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public partial class DoubleAnimation
-    {
+	public partial class DoubleAnimation
+	{
 	}
 }

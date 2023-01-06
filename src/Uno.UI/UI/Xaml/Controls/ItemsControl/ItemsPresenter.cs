@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal override bool CanHaveChildren() => true;
-		
+
 		internal static double OffsetToIndex(double offset) => Math.Max(0, offset - 2);
 
 		internal static double IndexToOffset(int index) => index >= 0 ? index + 2 : 0;

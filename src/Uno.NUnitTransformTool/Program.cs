@@ -34,11 +34,11 @@ namespace Uno.ReferenceImplComparer
 			var failedNodes = doc.SelectNodes("//test-case[@result='Failed']")!;
 
 			var builder = new StringBuilder();
-			foreach(var failedNode in failedNodes.OfType<XmlElement>())
+			foreach (var failedNode in failedNodes.OfType<XmlElement>())
 			{
 				builder.AppendLine(failedNode.GetAttribute("fullname"));
 			}
-				
+
 			// Add a dummy line to be used to rerun the test running in case 
 			// tests get canceled. This condition happens when running nunit-console
 			// and the retry attribute which markes runners as cancelled and fails any

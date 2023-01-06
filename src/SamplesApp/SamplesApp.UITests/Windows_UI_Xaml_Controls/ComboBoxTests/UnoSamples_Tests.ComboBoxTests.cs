@@ -282,7 +282,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		public void ComboBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Description", skipInitialScreenshot: true);
-			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];			
+			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];
 			using var screenshot = TakeScreenshot("ComboBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, comboBox.Rect.X + comboBox.Rect.Width / 2, comboBox.Rect.Y + comboBox.Rect.Height - 150, Color.Red);
 		}

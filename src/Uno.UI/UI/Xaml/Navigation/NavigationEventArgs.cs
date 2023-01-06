@@ -8,11 +8,11 @@ namespace Windows.UI.Xaml.Navigation
 	public sealed partial class NavigationEventArgs
 	{
 		internal NavigationEventArgs(
-			object content, 
+			object content,
 			NavigationMode navigationMode,
 			NavigationTransitionInfo navigationTransitionInfo,
 			object parameter,
-			Type sourcePageType, 
+			Type sourcePageType,
 			Uri uri
 		)
 		{

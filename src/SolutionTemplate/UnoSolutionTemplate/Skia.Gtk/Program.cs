@@ -5,18 +5,18 @@ using Uno.UI.Runtime.Skia;
 namespace $ext_safeprojectname$.Skia.Gtk
 {
 	public sealed class Program
+{
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
+		ExceptionManager.UnhandledException += delegate (UnhandledExceptionArgs expArgs)
 		{
-			ExceptionManager.UnhandledException += delegate (UnhandledExceptionArgs expArgs)
-			{
-				Console.WriteLine("GLIB UNHANDLED EXCEPTION" + expArgs.ExceptionObject.ToString());
-				expArgs.ExitApplication = true;
-			};
+			Console.WriteLine("GLIB UNHANDLED EXCEPTION" + expArgs.ExceptionObject.ToString());
+			expArgs.ExitApplication = true;
+		};
 
-			var host = new GtkHost(() => new App());
+		var host = new GtkHost(() => new App());
 
-			host.Run();
-		}
+		host.Run();
 	}
+}
 }

@@ -361,7 +361,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				=> $"src={(args.OriginalSource as FrameworkElement)?.Name ?? args.OriginalSource.GetType().Name} ";
 
 			private static string F(ManipulationDelta delta, ManipulationDelta cumulative)
-				=>  $"X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00}) "
+				=> $"X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00}) "
 				+ $"| Y=(Σ:{cumulative.Translation.Y:' '000.00;'-'000.00} / Δ:{delta.Translation.Y:' '00.00;'-'00.00}) ";
 
 			private static string F(global::Windows.Foundation.Point pt)

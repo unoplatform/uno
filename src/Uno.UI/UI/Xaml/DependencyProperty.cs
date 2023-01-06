@@ -332,7 +332,7 @@ namespace Windows.UI.Xaml
 
 			var propertyInfo = DependencyPropertyDescriptor.Parse(name);
 
-			if(propertyInfo != null)
+			if (propertyInfo != null)
 			{
 				type = propertyInfo.OwnerType;
 				name = propertyInfo.Name;
@@ -340,7 +340,7 @@ namespace Windows.UI.Xaml
 
 			do
 			{
-				if(_registry.TryGetValue(type, name, out var result))
+				if (_registry.TryGetValue(type, name, out var result))
 				{
 					return result;
 				}

@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 			_app.WaitForElement(colorChange);
 
 			using var initial = TakeScreenshot("Initial");
-			
+
 			ImageAssert.HasColorInRectangle(initial, icon1.Rect.ToRectangle(), Color.Red);
 			ImageAssert.HasColorInRectangle(initial, icon2.Rect.ToRectangle(), Color.Blue);
 

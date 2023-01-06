@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				// No is passed back to the caller.
 				ppOwnerNoRef = (LoopingSelectorItem)(spOwner);
 			}
-			
+
 		}
 
 		#region AutomationPeerOverrides
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 			DependencyObject returnValue = default;
 			if (patternInterface == PatternInterface.ScrollItem ||
-			    patternInterface == PatternInterface.SelectionItem)
+				patternInterface == PatternInterface.SelectionItem)
 			{
 				returnValue = (LoopingSelectorItemAutomationPeer)(this);
 				//AddRef();
@@ -334,7 +334,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 					if (spAutomationPeer is { })
 					{
 						//AutomationPeer spAutomationPeerAsProtected;
-						IRawElementProviderSimple  spProvider = default;
+						IRawElementProviderSimple spProvider = default;
 
 						//spAutomationPeer.As(spAutomationPeerAsProtected);
 						//spAutomationPeerAsProtected = spAutomationPeer;
@@ -370,7 +370,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 
 
-			
+
 		}
 
 		#endregion

@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-	public sealed partial class Border_AntiAlias: Page
+	public sealed partial class Border_AntiAlias : Page
 	{
 		public Border_AntiAlias()
 		{

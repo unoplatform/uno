@@ -7,7 +7,7 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlayer
 	{
-		#region Properties
+#region Properties
 
 		private IMediaPlaybackSource _source;
 		public IMediaPlaybackSource Source
@@ -67,9 +67,9 @@ namespace Windows.Media.Playback
 
 		public MediaPlaybackSession PlaybackSession { get; }
 
-		#endregion
+#endregion
 
-		#region Events
+#region Events
 
 		public event TypedEventHandler<MediaPlayer, object> SourceChanged;
 		
@@ -87,7 +87,7 @@ namespace Windows.Media.Playback
 
 		public event TypedEventHandler<MediaPlayer, double> VideoRatioChanged;
 
-		#endregion
+#endregion
 
 		public MediaPlayer()
 		{

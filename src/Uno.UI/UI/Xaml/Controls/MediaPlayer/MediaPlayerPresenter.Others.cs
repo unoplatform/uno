@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{
-		
+
 	}
 }
 #endif

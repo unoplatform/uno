@@ -37,7 +37,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void InitList()
 		{
-			#if NET461 || __WASM__ || __MACOS__
+#if NET461 || __WASM__ || __MACOS__
 			var _enumval = Enum.GetValues(typeof(Windows.UI.Core.CoreCursorType));
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
@@ -45,7 +45,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 			
 
 			Box.SelectionChanged += HandleSelection;
-			#endif
+#endif
 		}
 
 		private void HandleSelection(object sender, object args)

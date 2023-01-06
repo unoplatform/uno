@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
-    public class Given_XamlRoot
+	public class Given_XamlRoot
 	{
 		[TestMethod]
 		[RunsOnUIThread]

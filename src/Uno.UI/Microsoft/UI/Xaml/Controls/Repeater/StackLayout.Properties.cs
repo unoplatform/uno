@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get { return (bool)GetValue(DisableVirtualizationProperty); }
 			set { SetValue(DisableVirtualizationProperty, value); }
-		} 
+		}
 		#endregion
 	}
 }
