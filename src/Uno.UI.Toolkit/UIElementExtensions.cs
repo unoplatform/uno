@@ -119,7 +119,7 @@ namespace Uno.UI.Toolkit
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;
 				}
-				else if(view.Layer != null)
+				else if (view.Layer != null)
 				{
 					view.Layer.ShadowOpacity = 0;
 				}

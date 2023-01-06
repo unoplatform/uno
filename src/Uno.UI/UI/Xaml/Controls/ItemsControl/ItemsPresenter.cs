@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ItemsPresenter()
 		{
-			// A content presenter does not propagate its own templated 
+			// A content presenter does not propagate its own templated
 			// parent. The content's TemplatedParent has already been set by the
 			// content presenter to its own templated parent.
 
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Indicates whether the ItemsPresenter is actually enclosed in the scrollable area of the 
+		/// Indicates whether the ItemsPresenter is actually enclosed in the scrollable area of the
 		/// ItemsControl (or derived type). This is always true on Windows, but on Uno it's not the case
 		/// for controls which delegate to a native implementation (eg <see cref="ListViewBase"/>).
 		/// </summary>
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN_IOS || __MACOS__
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
-			this.AddView(_itemsPanel);
+				this.AddView(_itemsPanel);
 #elif UNO_REFERENCE_API || NET461
 				AddChild(_itemsPanel);
 #endif

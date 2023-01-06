@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
 #elif __IOS__ || __MACOS__
-				_layoutRoot.RemoveFromSuperview();
+					_layoutRoot.RemoveFromSuperview();
 #endif
 
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
@@ -168,9 +168,9 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__
 					this.AddView(_layoutRoot);
 #elif __IOS__
-				this.Add(_layoutRoot);
+					this.Add(_layoutRoot);
 #elif __MACOS__
-				this.AddSubview(_layoutRoot);
+					this.AddSubview(_layoutRoot);
 #endif
 				}
 			}

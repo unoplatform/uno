@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 #if __ANDROID__
 using View = Android.Views.ViewGroup;
 #elif __IOS__
-using View  = UIKit.UIView;
+using View = UIKit.UIView;
 using UIKit;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			&& Owner is View view
 			&& AutomationProperties.GetAccessibilityView(Owner) != AccessibilityView.Raw)
 			{
-				/// We get our name by aggregating the name of all our children. 
+				/// We get our name by aggregating the name of all our children.
 				/// See <see cref="FeatureConfiguration.AutomationPeer.UseSimpleAccessibility" /> for details.
 				return string.Join(", ", view
 					.EnumerateAllChildren()

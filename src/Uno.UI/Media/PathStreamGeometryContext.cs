@@ -95,7 +95,7 @@ namespace Uno.Media
 			var startPoint = bezierPath.CurrentPoint;
 			var endPoint = point1;
 
-			var controlPoint1 = new CGPoint(startPoint.X + ((point2.X - startPoint.X) * 2.0 / 3.0),  startPoint.Y + (point2.Y - startPoint.Y) * 2.0 / 3.0);
+			var controlPoint1 = new CGPoint(startPoint.X + ((point2.X - startPoint.X) * 2.0 / 3.0), startPoint.Y + (point2.Y - startPoint.Y) * 2.0 / 3.0);
 			var controlPoint2 = new CGPoint(endPoint.X + ((point2.X - endPoint.X) * 2.0 / 3.0), endPoint.Y + (point2.Y - endPoint.Y) * 2.0 / 3.0);
 			bezierPath.CurveTo(point1, controlPoint1, controlPoint2);
 #elif __ANDROID__
@@ -133,9 +133,9 @@ namespace Uno.Media
 			);
 
 #elif __MACOS__
-//Ugly workaround. check if all vars are defined
-			if (!double.IsNaN(radius) && !double.IsNaN(startAngle) && !double.IsNaN(endAngle)) {
-
+			//Ugly workaround. check if all vars are defined
+			if (!double.IsNaN(radius) && !double.IsNaN(startAngle) && !double.IsNaN(endAngle))
+			{
 				//Convert to degrees in a 0 =< x =< 360 deg range
 				startAngle = MathEx.ToDegreeNormalized(startAngle);
 				endAngle = MathEx.ToDegreeNormalized(endAngle);
