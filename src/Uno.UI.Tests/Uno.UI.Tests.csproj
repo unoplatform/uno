@@ -111,11 +111,16 @@
 		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
 		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
 		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
+		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\AndroidResourceConverter.cs">
+			<Link>Resources\AndroidResourceConverter.cs</Link>
+		</Compile>
+		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\iOSResourceConverter.cs">
+			<Link>Resources\iOSResourceConverter.cs</Link>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
 		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
@@ -149,6 +154,11 @@
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<OutputItemType>Analyzer</OutputItemType>
+		</ProjectReference>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
 
