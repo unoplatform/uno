@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$libarybasetargetframework$</TargetFrameworks>
-		$if$($UseWinUI$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
+		$if$($UseWinUI$ == True)<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
 		$if$($UseAndroid$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-android</TargetFrameworks>$endif$
 		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
 		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
