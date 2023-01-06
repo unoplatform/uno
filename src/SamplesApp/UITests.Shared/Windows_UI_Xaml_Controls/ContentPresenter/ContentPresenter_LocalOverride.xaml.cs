@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
     {
         public ContentPresenter_LocalOverride()
         {
-#if HAS_UNO
+#if !WINDOWS_UWP
 			FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
 #endif
             this.InitializeComponent();

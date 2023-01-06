@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Uno.Logging;

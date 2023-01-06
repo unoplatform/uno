@@ -12,7 +12,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 	[SampleControlInfo("WebView", "WebView_JavascriptInvoke", typeof(WebViewViewModel))]
 	public sealed partial class WebView_JavascriptInvoke : UserControl
 	{
-#if HAS_UNO
+#if !WINDOWS_UWP
 		public WebView_JavascriptInvoke()
 		{
 			this.InitializeComponent();

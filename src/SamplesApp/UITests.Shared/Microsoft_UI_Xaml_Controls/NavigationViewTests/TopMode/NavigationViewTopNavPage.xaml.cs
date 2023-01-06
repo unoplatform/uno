@@ -48,7 +48,7 @@ namespace MUXControlsTestApp
         }
 
         protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)

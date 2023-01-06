@@ -28,7 +28,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 
 		public ToolTip_DynamicContent()
 		{
-#if HAS_UNO
+#if !WINDOWS_UWP
 			FeatureConfiguration.ToolTip.UseToolTips = true;
 #endif
 			this.InitializeComponent();

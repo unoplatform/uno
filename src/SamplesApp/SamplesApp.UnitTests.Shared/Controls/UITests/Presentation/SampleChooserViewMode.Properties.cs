@@ -396,7 +396,7 @@ namespace SampleControl.Presentation
 				{
 					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
 				}
-#if HAS_UNO
+#if !WINDOWS_UWP
 				// Force the in app styles to reload
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);

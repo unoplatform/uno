@@ -34,7 +34,7 @@ namespace UnoIslands
 
             this.InitializeComponent();
         }
-		
+
         /// <summary>
         /// Configures global Uno Platform logging
         /// </summary>
@@ -90,7 +90,7 @@ namespace UnoIslands
 
             global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
         }

@@ -1,4 +1,4 @@
-﻿#if HAS_UNO
+﻿#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 

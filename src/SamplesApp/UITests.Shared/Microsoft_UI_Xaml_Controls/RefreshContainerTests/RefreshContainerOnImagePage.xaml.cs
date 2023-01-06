@@ -25,7 +25,7 @@ using RefreshInteractionRatioChangedEventArgs = Microsoft.UI.Xaml.Controls.Refre
 using RefreshStateChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 using Uno.UI.Samples.Controls;
-#if HAS_UNO
+#if !WINDOWS_UWP
 using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainerPrivate;
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
@@ -44,14 +44,14 @@ namespace MUXControlsTestApp
             timer.Interval = new TimeSpan(0, 0, 0, 0, 800);
             timer.Tick += Timer_Tick;
         }
-        
+
         private DispatcherTimer timer = new DispatcherTimer();
         bool containerHasHandler = true;
         private bool delayRefresh = true;
         private int refreshCount = 0;
 
 		protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			 override void OnNavigatedFrom(NavigationEventArgs e)
@@ -63,10 +63,10 @@ namespace MUXControlsTestApp
         private void OnMainPageLoaded(object sender, RoutedEventArgs e)
         {
             this.RefreshContainer.Visualizer.SizeChanged += RefreshVisualizer_SizeChanged;
-#if HAS_UNO
+#if !WINDOWS_UWP
 			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter = new ImageIRefreshInfoProviderAdapter(this.RefreshContainer.PullDirection, new AnimationHandler(RefreshContainer, this.RefreshContainer.PullDirection));
 #endif
-			
+
             this.RefreshContainer.Visualizer.RefreshStateChanged += RefreshVisualizer_RefreshStateChanged;
             ResetStatesComboBox();
             ResetInteractionRatiosComboBox();
@@ -98,12 +98,12 @@ namespace MUXControlsTestApp
 
         private void RefreshVisualizer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-#if HAS_UNO
+#if !WINDOWS_UWP
 			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter = new ImageIRefreshInfoProviderAdapter(this.RefreshContainer.PullDirection, new AnimationHandler(this.RefreshContainer, this.RefreshContainer.PullDirection));
 #endif
         }
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private void RefreshInfoProvider_InteractionRatioChanged(IRefreshInfoProvider sender, RefreshInteractionRatioChangedEventArgs args)
         {
             UpdateInteractionRatiosComboBox(args.InteractionRatio);
@@ -114,7 +114,7 @@ namespace MUXControlsTestApp
         {
             this.RefreshContainer.RequestRefresh();
         }
-        
+
         private void RefreshOnVisualizerButton_Click(object sender, RoutedEventArgs e)
         {
             this.RefreshContainer.Visualizer.RequestRefresh();
@@ -137,7 +137,7 @@ namespace MUXControlsTestApp
                     this.RefreshContainer.PullDirection = RefreshPullDirection.TopToBottom;
                     break;
             }
-#if HAS_UNO
+#if !WINDOWS_UWP
 			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter = new ImageIRefreshInfoProviderAdapter(this.RefreshContainer.PullDirection, new AnimationHandler(RefreshContainer, this.RefreshContainer.PullDirection));
 #endif
         }
@@ -175,7 +175,7 @@ namespace MUXControlsTestApp
                     }
             }
         }
-        
+
         private void AddOrRemoveRefreshDelayButton_Click(object sender, RoutedEventArgs e)
         {
             delayRefresh = !delayRefresh;
@@ -198,7 +198,7 @@ namespace MUXControlsTestApp
 
         private void AdaptButton_Click(object sender, RoutedEventArgs e)
         {
-#if HAS_UNO
+#if !WINDOWS_UWP
             if (((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider != null)
             {
                 ((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged -= RefreshInfoProvider_InteractionRatioChanged;

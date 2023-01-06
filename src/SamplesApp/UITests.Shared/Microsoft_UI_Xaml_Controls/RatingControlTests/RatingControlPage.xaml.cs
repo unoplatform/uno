@@ -83,7 +83,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			//CheckBox cb = checkBox as CheckBox;
 			//FrameDetails.Text = Window.Current.Bounds.ToString() + " " + cb.IsChecked.ToString();
 
-#if !HAS_UNO
+#if !WINDOWS_UWP
 			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.RatingControl"))
 			{
 				var wuxcRatingControl = new Windows.UI.Xaml.Controls.RatingControl();

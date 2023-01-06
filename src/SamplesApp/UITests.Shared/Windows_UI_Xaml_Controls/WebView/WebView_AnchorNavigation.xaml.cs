@@ -11,7 +11,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		{
 			InitializeComponent();
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			webView.Navigate(new Uri("https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html"));
 			webView.NavigationStarting += WebView_NavigationStarting;
 			webView.NavigationCompleted += WebView_NavigationCompleted;

@@ -20,7 +20,7 @@ using Windows.UI.Popups;
 using Uno.Extensions;
 using Uno.UI.Samples.Tests;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 using MUXControlsTestApp;
 #else
@@ -50,7 +50,7 @@ namespace SampleControl.Presentation
 		private const int _numberOfRecentSamplesVisible = 0;
 #endif
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
@@ -94,7 +94,7 @@ namespace SampleControl.Presentation
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
 #endif
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			// Disable all pooling so that controls get collected quickly.
 			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
@@ -860,12 +860,12 @@ description: {sample.Description}";
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
 			FrameworkElement container = null;
-			
+
 			var frameRequested =
 				newContent.UsesFrame &&
 				typeof(Page).IsAssignableFrom(newContent.ControlType);
 			if (frameRequested)
-			{				
+			{
 				var frame = new Frame();
 				frame.Navigate(newContent.ControlType);
 				container = frame;

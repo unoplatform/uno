@@ -21,7 +21,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			this.InitializeComponent();
 
 			_expressions = new Dictionary<string, double>
-			{ 
+			{
 			   // Valid expressions. None of these should evaluate to the reset value.
 				{ "5", 5 },
 				{ "-358", -358 },
@@ -71,7 +71,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			TestsResults.Children.Clear();
 			await Task.Yield();
-#if HAS_UNO
+#if !WINDOWS_UWP
 			RunButton.IsEnabled = false;
 			var errorCount = 0;
 

@@ -13,7 +13,7 @@ using System.ComponentModel;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -39,7 +39,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 	internal class ImageFilePathModel : ViewModelBase
 	{
 #pragma warning disable CS0109
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ImageFilePathModel));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));
@@ -47,8 +47,8 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 #pragma warning restore CS0109
 
-#if HAS_UNO
-		private static readonly Size ImageSize = new Size(200, 200); 
+#if !WINDOWS_UWP
+		private static readonly Size ImageSize = new Size(200, 200);
 #endif
 		private static readonly _Color ShapeColor = Colors.Tomato;
 		private const string StoredFolderName = "SampleImages";
@@ -87,12 +87,12 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		}
 
 		private
-#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+#if !WINDOWS_UWP && !__WASM__ && !__SKIA__ && !__MACOS__
 			async
 #endif
 			Task<string> GetAndCreateFilePath(CancellationToken ct)
 		{
-#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+#if !WINDOWS_UWP && !__WASM__ && !__SKIA__ && !__MACOS__
 			var bitmap = CreateBitmap();
 
 			_log.Warn(bitmap.ToString());

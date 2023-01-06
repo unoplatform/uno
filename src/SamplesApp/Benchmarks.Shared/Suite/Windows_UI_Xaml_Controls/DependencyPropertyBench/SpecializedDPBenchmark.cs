@@ -22,7 +22,7 @@ namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.DependencyPropert
 			Border.TagProperty.GetMetadata(typeof(Border));
 		}
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 		[Benchmark()]
 		public void Property_ByName()
 		{

@@ -59,7 +59,7 @@ namespace MUXControlsTestApp
         }
 
         protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)
@@ -69,7 +69,7 @@ namespace MUXControlsTestApp
             //MaterialHelperTestApi.SimulateDisabledByPolicy = false;
             base.OnNavigatedFrom(e);
         }
-        
+
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             m_menuItems.Add(new NavigationViewItem() { Content = "New Menu Item" });
@@ -157,9 +157,9 @@ namespace MUXControlsTestApp
                 ContentStackPanel.Padding = new Thickness(0, topNavHeight, 0, 0);
                 ContentScrollViewer.Margin = new Thickness(0, topNavHeight, 0, 0);
                 ContentScrollViewer.Padding = new Thickness(0, -topNavHeight, 0, 0);
-            }            
+            }
         }
-        
+
         private void MoveContentUnderTopnavTitleBar_Click(object sender, RoutedEventArgs e)
         {
             var topNavArea = FindVisualChildByName(NavView, "TopNavArea") as FrameworkElement;
@@ -174,7 +174,7 @@ namespace MUXControlsTestApp
                 //AppTitleBar
                 //testFrame.ChangeBarVisibility(Visibility.Visible);
                 CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
-                
+
                 // Reset values
                 Grid.SetRow(topNavArea, 0);
                 ContentScrollViewer.Height = double.NaN;
@@ -187,7 +187,7 @@ namespace MUXControlsTestApp
                 //AppTitleBar
                 //testFrame.ChangeBarVisibility(Visibility.Collapsed);
                 CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-                
+
                 Grid.SetRow(topNavArea, 1);
                 ContentScrollViewer.Height = 200;
                 ContentStackPanel.Padding = new Thickness(0, topNavHeight, 0, 0);
@@ -253,7 +253,7 @@ namespace MUXControlsTestApp
         {
             ItemInvokedText.Text = string.Empty;
         }
-        
+
         private void OnNavItemInvoked(object sender, NavigationViewItemInvokedEventArgs e)
         {
             ItemInvokedText.Text = e.InvokedItem as string;

@@ -31,7 +31,7 @@ using RefreshRequestedEventArgs = Microsoft.UI.Xaml.Controls.RefreshRequestedEve
 using RefreshStateChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs;
 using RefreshVisualizerOrientation = Microsoft.UI.Xaml.Controls.RefreshVisualizerOrientation;
 using Uno.UI.Samples.Controls;
-#if HAS_UNO
+#if !WINDOWS_UWP
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
 using RefreshVizualizer_TestUI;
 #endif
@@ -83,7 +83,7 @@ namespace MUXControlsTestApp
         }
 
 		protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)
@@ -164,7 +164,7 @@ namespace MUXControlsTestApp
         {
             this.Loaded -= MainPageLoaded;
             this.RefreshVisualizer.RefreshRequested += RefreshVisualizer_RefreshRequested;
-#if HAS_UNO
+#if !WINDOWS_UWP
 			var adapter = new SliderRefreshInfoProviderAdapter(this.Slider, adapterTimer);
             ((IRefreshVisualizerPrivate)this.RefreshVisualizer).InfoProvider = adapter.adapt();
 #endif

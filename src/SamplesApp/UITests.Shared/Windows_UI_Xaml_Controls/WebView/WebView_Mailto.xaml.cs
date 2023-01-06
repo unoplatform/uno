@@ -10,7 +10,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		{
 			InitializeComponent();
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			var html = "<a href=\"mailto:uno-platform-test@platform.uno?subject=Tests\">open mailto link</a>";
 			webView.NavigateToString(html);
 #endif

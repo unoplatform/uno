@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Windows.UI.Xaml.Controls;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -16,7 +16,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 	public sealed partial class ListView_ItemClick : UserControl
 	{
 #pragma warning disable CS0109
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));

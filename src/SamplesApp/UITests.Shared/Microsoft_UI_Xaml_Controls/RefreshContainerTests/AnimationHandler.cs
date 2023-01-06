@@ -1,4 +1,4 @@
-﻿#if HAS_UNO
+﻿#if !WINDOWS_UWP
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
@@ -117,11 +117,11 @@ namespace MUXControlsTestApp
                     infoProviderVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, 0.0f, 0.0f));
                 }
                 else
-                { 
+                {
                     refreshVisualizerVisual.Offset = new Vector3(0.0f);
                     infoProviderVisual.Offset = new Vector3(0.0f);
                 }
-                
+
                 string animatedProperty = GetAnimatedPropertyName();
                 refreshVisualizerVisual.StartAnimation(animatedProperty, refreshVisualizerVisualOffsetAnimation);
                 infoProviderVisual.StartAnimation(animatedProperty, infoProviderOffsetAnimation);

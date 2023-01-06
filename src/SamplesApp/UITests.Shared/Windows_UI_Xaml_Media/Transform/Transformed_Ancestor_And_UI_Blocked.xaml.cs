@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -31,7 +31,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 	public sealed partial class Transformed_Ancestor_And_UI_Blocked : UserControl
 	{
 #pragma warning disable CS0109
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Transformed_Ancestor_And_UI_Blocked));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(Transformed_Ancestor_And_UI_Blocked));

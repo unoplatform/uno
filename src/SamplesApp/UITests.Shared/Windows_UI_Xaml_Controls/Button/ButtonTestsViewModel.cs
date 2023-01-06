@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 using ICommand = System.Windows.Input.ICommand;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -20,7 +20,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	internal class ButtonTestsViewModel : ViewModelBase
 	{
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));

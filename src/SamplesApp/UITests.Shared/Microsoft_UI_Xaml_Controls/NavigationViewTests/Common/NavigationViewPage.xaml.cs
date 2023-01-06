@@ -87,7 +87,7 @@ namespace MUXControlsTestApp
         }
 
         protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)
@@ -406,7 +406,7 @@ namespace MUXControlsTestApp
                 {
                     InvokedItemState.Text = "ItemWasSelectedInItemInvoked";
                 }
-            } 
+            }
             else
             {
                 InvokedItemState.Text = "Error:ItemUnselectedInItemInvoked";
@@ -707,14 +707,14 @@ namespace MUXControlsTestApp
                 if (control != null)
                 {
                     margin = control.Margin.ToString();
-                }                
+                }
             }
             HeaderContentMarginResult.Text = margin;
         }
 
         private void GetNavViewActiveVisualStates_Click(object sender, RoutedEventArgs e)
         {
-            var visualstates = Utilities.VisualStateHelper.GetCurrentVisualStateName(NavView);           
+            var visualstates = Utilities.VisualStateHelper.GetCurrentVisualStateName(NavView);
             NavViewActiveVisualStatesResult.Text = string.Join(",", visualstates);
         }
 
@@ -757,7 +757,7 @@ namespace MUXControlsTestApp
         }
 
         private void GetTopLevelNavViewItemContentPresenterMarginButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             if (FindVisualChildByName(HasChildItem, "ContentPresenter") is ContentPresenter presenter)
             {
                 NavViewItemContentPresenterMarginTextBlock.Text = presenter.Margin.ToString();

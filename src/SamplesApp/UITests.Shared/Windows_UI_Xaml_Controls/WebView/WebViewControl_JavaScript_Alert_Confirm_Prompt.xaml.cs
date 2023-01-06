@@ -7,7 +7,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 	[SampleControlInfo("WebView", "Javascript_AlertConfirmPrompt")]
 	public sealed partial class WebViewControlJavaScriptAlertConfirmPrompt : UserControl
 	{
-#if HAS_UNO
+#if !WINDOWS_UWP
 		public WebViewControlJavaScriptAlertConfirmPrompt()
 		{
 			InitializeComponent();

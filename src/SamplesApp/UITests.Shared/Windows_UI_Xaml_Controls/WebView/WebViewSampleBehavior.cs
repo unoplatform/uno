@@ -1,4 +1,4 @@
-﻿#if HAS_UNO
+﻿#if !WINDOWS_UWP
 using System;
 using Windows.UI.Xaml;
 using WebViewUno = Windows.UI.Xaml.Controls.WebView;
@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		{
 			obj.SetValue(SourceUriProperty, value);
 		}
-		
+
 		public static DependencyProperty SourceUriProperty { get ; } =
 			DependencyProperty.RegisterAttached("SourceUri", typeof(string), typeof(WebViewSampleBehavior), new PropertyMetadata("", OnSourceUriChanged));
 

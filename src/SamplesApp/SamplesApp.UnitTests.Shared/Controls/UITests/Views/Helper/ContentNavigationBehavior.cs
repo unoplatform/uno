@@ -4,7 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-#elif HAS_UNO || UNO_REFERENCE_API
+#elif !WINDOWS_UWP || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 #else
@@ -55,7 +55,7 @@ namespace Uno.UI.Samples.Helper
 		{
 			var elem = d as FrameworkElement;
 
-			// We set the true/false value based on IsHitTestVisible (since it's 
+			// We set the true/false value based on IsHitTestVisible (since it's
 			// bound and manipulated at run-time in SampleChooserControl.xaml)
 			SetCanNavigateBack(elem, elem.IsHitTestVisible);
 

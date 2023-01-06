@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.WebView
 		{
 			this.InitializeComponent();
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			VisualStateManager.GoToState(test, "Loading", true);
 #endif
 		}

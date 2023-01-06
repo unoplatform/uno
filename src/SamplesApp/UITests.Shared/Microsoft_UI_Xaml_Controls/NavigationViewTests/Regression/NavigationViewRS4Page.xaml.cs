@@ -46,7 +46,7 @@ namespace MUXControlsTestApp
         }
 
         protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)
@@ -450,8 +450,8 @@ namespace MUXControlsTestApp
         {
             NavView.Header = null;
 
-            var found = Utilities.VisualStateHelper.ContainsVisualState(NavView, "HeaderVisible");           
-            TestResult.Text = found ? "FoundHeaderContent" : "NoHeaderContent";           
+            var found = Utilities.VisualStateHelper.ContainsVisualState(NavView, "HeaderVisible");
+            TestResult.Text = found ? "FoundHeaderContent" : "NoHeaderContent";
         }
 
         private void BackButtonVisibilityCheckbox_Checked(object sender, RoutedEventArgs e)

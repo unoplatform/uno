@@ -16,7 +16,7 @@ using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
 using System.Collections.ObjectModel;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -28,7 +28,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 	[Bindable]
 	internal class ListViewViewModel : ViewModelBase
 	{
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private Uno.Foundation.Logging.Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(ListViewViewModel));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ListViewViewModel));

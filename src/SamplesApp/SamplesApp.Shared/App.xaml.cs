@@ -37,7 +37,7 @@ using Uno.Foundation.Extensibility;
 using MUXControlsTestApp.Utilities;
 #endif
 
-#if !HAS_UNO
+#if WINDOWS_UWP
 using Uno.Logging;
 #endif
 
@@ -54,7 +54,7 @@ namespace SamplesApp
 	/// </summary>
 	sealed public partial class App : Application
 	{
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private static Uno.Foundation.Logging.Logger _log;
 #else
 		private static ILogger _log;
@@ -89,7 +89,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
 		protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
@@ -262,7 +262,7 @@ namespace SamplesApp
 #endif
 
 		protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override async void OnActivated(IActivatedEventArgs e)
@@ -408,7 +408,7 @@ namespace SamplesApp
 
 		public static void ConfigureFilters()
 		{
-#if HAS_UNO
+#if !WINDOWS_UWP
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => _log.Error("UnobservedTaskException", e.Exception);
 			AppDomain.CurrentDomain.UnhandledException += (s, e) => _log.Error("UnhandledException", e.ExceptionObject as Exception);
 #endif
@@ -485,7 +485,7 @@ namespace SamplesApp
 
 
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
-#if HAS_UNO
+#if !WINDOWS_UWP
 			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			_log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(App));
 #else
@@ -509,7 +509,7 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 #endif
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			// Allow template pool to work under higher memory load for CI.
 			FrameworkTemplatePool.HighMemoryThreshold = 0.9f;
 #endif
@@ -555,7 +555,7 @@ namespace SamplesApp
 							Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
 #endif
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 							// Disable the TextBox caret for new instances
 							Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
 #endif
@@ -578,7 +578,7 @@ namespace SamplesApp
 						}
 						finally
 						{
-#if HAS_UNO
+#if !WINDOWS_UWP
 							// Restore the caret for new instances
 							Uno.UI.FeatureConfiguration.TextBox.HideCaret = false;
 #endif

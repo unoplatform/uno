@@ -15,7 +15,7 @@ using Uno.UI.Samples.Controls;
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -28,7 +28,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 	public sealed partial class DoubleAnimationTestsControl : UserControl
 	{
-#if HAS_UNO
+#if !WINDOWS_UWP
 #pragma warning disable CS0109
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
 #pragma warning restore CS0109

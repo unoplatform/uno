@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Samples.Controls;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using TwoPaneView = Microsoft.UI.Xaml.Controls.TwoPaneView;
 using TwoPaneViewMode = Microsoft.UI.Xaml.Controls.TwoPaneViewMode;
 using TwoPaneViewPriority = Microsoft.UI.Xaml.Controls.TwoPaneViewPriority;
@@ -40,7 +40,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
         {
             this.InitializeComponent();
 
-#if HAS_UNO
+#if !WINDOWS_UWP
             DisplayRegionHelperTestApi.SimulateDisplayRegions = false;
 
             TwoPaneView.ModeChanged += TwoPaneView_ModeChanged;
@@ -48,7 +48,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 #endif
         }
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
         {
             ConfigurationTextBlock.Text = TwoPaneView.Mode.ToString();

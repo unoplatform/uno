@@ -12,7 +12,7 @@ using Windows.UI;
 using System.Collections.ObjectModel;
 
 using RadioButtons = Microsoft.UI.Xaml.Controls.RadioButtons;
-#if HAS_UNO
+#if !WINDOWS_UWP
 using RadioButtonsTestHooks = Microsoft.UI.Private.Controls.RadioButtonsTestHooks;
 #endif
 using System.Collections;
@@ -40,7 +40,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 		private void RadioButtonsPage_Loaded(object sender, RoutedEventArgs e)
 		{
 			m_loaded = true;
-#if HAS_UNO
+#if !WINDOWS_UWP
 			RadioButtonsTestHooks.SetTestHooksEnabled(TestRadioButtons, true);
 			RadioButtonsTestHooks.LayoutChanged += RadioButtonsTestHooks_LayoutChanged;
 #endif
@@ -53,7 +53,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 
 		private void RadioButtonsTestHooks_LayoutChanged(RadioButtons sender, object args)
 		{
-#if HAS_UNO
+#if !WINDOWS_UWP
 			LayoutNumberOfRowsTextBlock.Text = RadioButtonsTestHooks.GetRows(sender).ToString();
 			LayoutNumberOfColumnsTextBlock.Text = RadioButtonsTestHooks.GetColumns(sender).ToString();
 			LayoutNumberOfLargerColumnsTextBlock.Text = RadioButtonsTestHooks.GetLargerColumns(sender).ToString();

@@ -71,7 +71,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		}
 
 		protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			async override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs args)
@@ -283,7 +283,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			e.Data.Properties.Add(DataIdentifier, e.Tab);
 			e.Data.Properties.Add(DataTabView, sender as TabView);
 
-			// And indicate that we can move it 
+			// And indicate that we can move it
 			e.Data.RequestedOperation = DataPackageOperation.Move;
 		}
 

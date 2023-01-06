@@ -36,7 +36,7 @@ using RefreshInteractionRatioChangedEventArgs = Microsoft.UI.Xaml.Controls.Refre
 using RefreshStateChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 using Uno.UI.Samples.Controls;
-#if HAS_UNO
+#if !WINDOWS_UWP
 using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainerPrivate;
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
@@ -67,7 +67,7 @@ namespace MUXControlsTestApp
         }
 
         protected
-#if HAS_UNO
+#if !WINDOWS_UWP
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)
@@ -101,7 +101,7 @@ namespace MUXControlsTestApp
             this.RVRefreshRequestedComboBox.SelectedIndex = 0;
             this.RVRefreshRequestedComboBoxSwitcher.Click += RVRefreshRequestedComboBoxSwitcher_Click;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 			//((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
 #endif
             var boarderChild = VisualTreeHelper.GetChild(listView, 0);
@@ -167,7 +167,7 @@ namespace MUXControlsTestApp
         {
             this.ScrollerOffset.Text = e.NextView.VerticalOffset.ToString();
         }
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private void RefreshInfoProvider_InteractionRatioChanged(IRefreshInfoProvider sender, RefreshInteractionRatioChangedEventArgs args)
         {
             this.InteractionRatio.Text = args.InteractionRatio.ToString();
@@ -276,7 +276,7 @@ namespace MUXControlsTestApp
 
         private void AdaptButton_Click(object sender, RoutedEventArgs e)
         {
-#if HAS_UNO
+#if !WINDOWS_UWP
 			((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider = ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.AdaptFromTree(this.listView, this.RefreshContainer.Visualizer.RenderSize);
 
             ((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter.SetAnimations(this.RefreshContainer.Visualizer);

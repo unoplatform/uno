@@ -5,7 +5,7 @@ using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-#if HAS_UNO
+#if !WINDOWS_UWP
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
@@ -17,7 +17,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 	public partial class FindNameTestControl : Control
 	{
 #pragma warning disable CS0109
-#if HAS_UNO
+#if !WINDOWS_UWP
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(FindNameTestControl));
 #else
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(FindNameTestControl));

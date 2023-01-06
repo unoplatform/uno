@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
-#if HAS_UNO
+#if !WINDOWS_UWP
 using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
 #endif
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
@@ -42,7 +42,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		public SplitButtonPage()
 		{
 			this.InitializeComponent();
-#if HAS_UNO
+#if !WINDOWS_UWP
 			SplitButtonTestHelper.SimulateTouch = false;
 #endif
 
@@ -96,14 +96,14 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 
 		private void SimulateTouchCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
-#if HAS_UNO
+#if !WINDOWS_UWP
 			SplitButtonTestHelper.SimulateTouch = true;
 #endif
 		}
 
 		private void SimulateTouchCheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
-#if HAS_UNO
+#if !WINDOWS_UWP
 			SplitButtonTestHelper.SimulateTouch = false;
 #endif
 		}
