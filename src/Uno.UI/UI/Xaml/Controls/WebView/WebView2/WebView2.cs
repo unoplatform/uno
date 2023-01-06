@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
+using Microsoft.Web.WebView2.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -36,10 +37,16 @@ public partial class WebView2 : Control
 	private bool _isLoaded;
 #pragma warning restore CS0414
 
-	public WebView()
+	public WebView2()
 	{
-		DefaultStyleKey = typeof(WebView);
+		DefaultStyleKey = typeof(WebView2);
 	}
+
+	public IAsyncAction EnsureCoreWebView2Async() => AsyncAction.FromTask(ct => Task.CompletedTask); //TODO:MZ:
+
+	public CoreWebView2 CoreWebView2 { get; } = new(); //TODO:MZ:
+
+	public IAsyncOperation<string> ExecuteScriptAsync(string javascriptCode) => AsyncOperation.FromTask(ct => Task.FromResult("")); //TODO:MZ:
 
 	public void GoBack()
 	{
@@ -139,7 +146,7 @@ public partial class WebView2 : Control
 
 	internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
 	{
-		UnsupportedUriSchemeIdentified?.Invoke(this, args);
+		//UnsupportedUriSchemeIdentified?.Invoke(this, args); TODO:MZ:
 	}
 
 	internal bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);

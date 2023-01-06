@@ -20,7 +20,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		private void WebView2_NavigationStarting(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
 		{
-			NavigationStartingTextBlock.Text = args.Uri;
+			NavigationStartingTextBlock.Text = args.Uri.ToString();
 		}
 
 		private void WebView2_NavigationCompleted(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)

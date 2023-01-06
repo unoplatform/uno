@@ -12,7 +12,7 @@ public partial class WebView : Control
 	}
 
 	public static DependencyProperty CanGoBackProperty { get; } =
-		DependencyProperty.Regiater(nameof(CanGoBack), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
+		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 	public bool CanGoForward
 	{
@@ -21,7 +21,7 @@ public partial class WebView : Control
 	}
 
 	public static DependencyProperty CanGoForwardProperty { get; } =
-		DependencyProperty.Regiater(nameof(CanGoForward), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
+		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
 	public Uri Source
 	{
@@ -30,7 +30,7 @@ public partial class WebView : Control
 	}
 
 	public static DependencyProperty SourceProperty { get; } =
-		DependencyProperty.Regiater(nameof(Source), typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
+		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 			(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
 
 #if __ANDROID__ || __IOS__ || __MACOS__
@@ -51,7 +51,7 @@ public partial class WebView : Control
 	}
 
 	public static DependencyProperty IsScrollEnabledProperty { get; } =
-		DependencyProperty.Regiater(nameof(IsScrollEnabled), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
+		DependencyProperty.Register(nameof(IsScrollEnabled), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
 			(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
 
 	partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);

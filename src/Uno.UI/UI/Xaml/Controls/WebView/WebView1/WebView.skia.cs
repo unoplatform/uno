@@ -6,7 +6,6 @@ using Uno.UI;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
-using Uno.UI.Web;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;

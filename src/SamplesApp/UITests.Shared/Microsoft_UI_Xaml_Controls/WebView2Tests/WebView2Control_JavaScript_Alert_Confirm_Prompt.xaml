@@ -11,6 +11,6 @@
 	d:DesignWidth="400">
 
 	<Grid>
-		<mux:WebView2 x:Name="MyWebView" />
+		<mux:WebView2 x:Name="MyWebView2" />
 	</Grid>
 </UserControl>

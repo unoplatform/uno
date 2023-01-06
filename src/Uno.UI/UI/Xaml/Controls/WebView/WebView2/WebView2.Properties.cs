@@ -4,7 +4,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
-
+#pragma warning disable CS0067 //TODO:MZ:Undo
 public partial class WebView2
 {
 	public bool CanGoBack
@@ -14,7 +14,7 @@ public partial class WebView2
 	}
 
 	public static DependencyProperty CanGoBackProperty { get; } =
-		DependencyProperty.Regiater(nameof(CanGoBack), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
+		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
 
 	public bool CanGoForward
 	{
@@ -23,7 +23,7 @@ public partial class WebView2
 	}
 
 	public static DependencyProperty CanGoForwardProperty { get; } =
-		DependencyProperty.Regiater(nameof(CanGoForward), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
+		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
 
 	public Uri Source
 	{
@@ -32,8 +32,8 @@ public partial class WebView2
 	}
 
 	public static DependencyProperty SourceProperty { get; } =
-		DependencyProperty.Regiater(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
-			(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
+		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
+			(s, e) => ((WebView2)s)?.Navigate((Uri)e.NewValue)));
 
 	/// <summary>
 	/// Occurs when the core WebView2 process fails.

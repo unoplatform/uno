@@ -27,11 +27,11 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 			if (webView2 != null)
 			{
-				UnregisterEvents(webView);
+				UnregisterEvents(webView2);
 
 				if ((bool)e.NewValue)
 				{
-					RegisterEvents(webView);
+					RegisterEvents(webView2);
 				}
 			}
 		}
@@ -59,17 +59,17 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 		{
 			webView.NavigationStarting += WebView2_NavigationStarting;
 			webView.NavigationCompleted += WebView2_NavigationCompleted;
-			webView.NavigationFailed += WebView2_NavigationFailed;
+			//webView.NavigationFailed += WebView2_NavigationFailed;//TODO:MZ:
 		}
 
 		private static void UnregisterEvents(Microsoft.UI.Xaml.Controls.WebView2 webView)
 		{
 			webView.NavigationStarting -= WebView2_NavigationStarting;
 			webView.NavigationCompleted -= WebView2_NavigationCompleted;
-			webView.NavigationFailed -= WebView2_NavigationFailed;
+			//webView.NavigationFailed -= WebView2_NavigationFailed; //TODO:MZ:
 		}
 
-		private static void WebView2_NavigationStarting(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreMicrosoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
+		private static void WebView2_NavigationStarting(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
 		{
 			var message = $"NavigationStarting @ {args.Uri} [{sender.Source}]";
 
@@ -77,21 +77,21 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 			sender.Log().Debug(message);
 		}
 
-		private static void WebView2_NavigationFailed(object sender, Microsoft.UI.Xaml.Controls.WebView2NavigationFailedEventArgs e)
+		//private static void WebView2_NavigationFailed(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationFailedEventArgs e)
+		//{
+		//	//var webView2 = sender as Microsoft.UI.Xaml.Controls.WebView2;
+		//	//var message = $"NavigationFailed {e.WebErrorStatus} @ {e.Uri} [{webView.Source}]";
+
+		//	//SetMessage(webView, message);
+		//	//sender.Log().Debug(message); //TODO:MZ:
+		//}
+
+		private static void WebView2_NavigationCompleted(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
 		{
-			var webView2 = sender as Microsoft.UI.Xaml.Controls.WebView2;
-			var message = $"NavigationFailed {e.WebErrorStatus} @ {e.Uri} [{webView.Source}]";
+			//var message = $"NavigationCompleted @ {args.Uri} [{sender.Source}]";
 
-			SetMessage(webView, message);
-			sender.Log().Debug(message);
-		}
-
-		private static void WebView2_NavigationCompleted(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreMicrosoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
-		{
-			var message = $"NavigationCompleted @ {args.Uri} [{sender.Source}]";
-
-			SetMessage(sender, message);
-			sender.Log().Debug(message);
+			//SetMessage(sender, message);
+			//sender.Log().Debug(message); //TODO:MZ:
 		}
 	}
 }
