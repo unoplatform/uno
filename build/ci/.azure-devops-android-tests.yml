@@ -194,7 +194,7 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
+    displayName: 'Download Android SamplesApp UnitTests'
     inputs:
         artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
@@ -245,9 +245,10 @@ jobs:
     displayName: Run Android Tests
 
   - task: PublishTestResults@2
+    displayName: Publish UI Test Results
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME)/$(UITEST_RUNTIME_TEST_GROUP) Test Run (FAIL_TESTS_ON_NO_RERUN $(FAIL_TESTS_ON_NO_RERUN))'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(TARGETPLATFORM_NAME) $(UITEST_TEST_MODE_NAME) Test Run $(UNO_UITEST_BUCKET_ID)  (rerun $(FAIL_TESTS_ON_NO_RERUN))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # don't fail on failed tests, second run will do it
@@ -262,15 +263,17 @@ jobs:
     condition: eq(variables.ALLOW_RERUN, 'true')
 
   - task: PublishTestResults@2
+    displayName: Publish UI Test rerun Results
     condition: eq(variables.ALLOW_RERUN, 'true')
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test ReRun'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(TARGETPLATFORM_NAME) $(UITEST_TEST_MODE_NAME) Test Rerun $(UNO_UITEST_BUCKET_ID)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       failTaskOnFailedTests: $(FAILBUILD_ON_FAILURE)
   ## end second run
 
   - task: PublishTestResults@2
+    displayName: Publish Runtime Test Results
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
