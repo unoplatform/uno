@@ -1,5 +1,6 @@
 <Project ToolsVersion="15.0">
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   <Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
@@ -57,25 +58,7 @@
 
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
-
-	<MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!--This override is used to validate the use of specific version of the C# Compiler-->
-	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
-	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <LangVersion>11.0</LangVersion>
-
-    <!--
-    Roslyn generation is enabled by default for all uno projects (inside uno.ui only)
-    -->
-    <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
-</PropertyGroup>
 
   <!--
   Adjust the output paths for runtime project in order for those
