@@ -8,9 +8,10 @@
     <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
     <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
+	<NoWarn>$(NoWarn);WMC1500</NoWarn> <!-- '{0}' is deprecated: {0}Property may be altered or unavailable for releases after Windows 10.0. Instead, use {1}. -->
 	<NoWarn>$(NoWarn);WMC1501</NoWarn> <!-- {0} is for evaluation purposes only and is subject to change or removal in future updates. -->
+	<NoWarn>$(NoWarn);WMC1506</NoWarn> <!-- OneWay bindings require at least one of their steps to support raising notifications when their value changes (TODO: This should be fixed) -->
 	<NoWarn>$(NoWarn);MSB3277</NoWarn> <!-- Found conflicts between different versions of "{0}" that could not be resolved. (TODO: See if this can be fixed) -->
-
 	<!-- Disables NETSDK1138: The target framework 'net5.0' is out of support and will not receive security updates in the future. -->
 	<CheckEolTargetFramework>false</CheckEolTargetFramework>
 
