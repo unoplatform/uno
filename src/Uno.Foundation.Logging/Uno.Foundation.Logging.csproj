@@ -17,8 +17,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
-
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
 		<!-- Manual packaging during CI -->

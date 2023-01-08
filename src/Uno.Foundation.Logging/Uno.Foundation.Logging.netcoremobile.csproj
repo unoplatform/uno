@@ -7,14 +7,12 @@
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Uno.Foundation.Logging</AssemblyName>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
-		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
-	
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		
+
 		<!-- Manual packaging during CI -->
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
@@ -42,7 +40,7 @@
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
-		
+
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
