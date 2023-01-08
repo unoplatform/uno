@@ -30,8 +30,6 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
-		<Reference Include="System.Xml" />
-		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
 
 	<ItemGroup>
