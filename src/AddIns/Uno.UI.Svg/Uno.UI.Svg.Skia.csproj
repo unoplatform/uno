@@ -10,7 +10,6 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 
 		<AssemblyName>Uno.UI.Svg</AssemblyName>

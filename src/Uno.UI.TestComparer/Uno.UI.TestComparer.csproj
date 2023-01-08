@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0-windows</TargetFramework>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<UseWPF>true</UseWPF>
 		<NoWarn>SYSLIB0014</NoWarn>

@@ -11,8 +11,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -25,7 +23,6 @@
 		<Deterministic>true</Deterministic>
 
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>

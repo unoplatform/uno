@@ -9,7 +9,6 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
 		<RootNamespace>Windows.Foundation</RootNamespace>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>

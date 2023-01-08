@@ -5,7 +5,6 @@
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">

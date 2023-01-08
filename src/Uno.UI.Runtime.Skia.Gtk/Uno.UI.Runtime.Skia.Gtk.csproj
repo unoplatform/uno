@@ -27,8 +27,6 @@
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

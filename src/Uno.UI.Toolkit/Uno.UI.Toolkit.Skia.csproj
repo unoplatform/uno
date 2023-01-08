@@ -14,7 +14,6 @@
 		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<DefaultLanguage>en-US</DefaultLanguage>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
