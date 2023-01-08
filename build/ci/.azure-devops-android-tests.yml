@@ -110,6 +110,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
+  displayName: 'Run Android Tests'
   dependsOn:
   - Android_Build_For_Tests
   - Android_Build_NetCoreMobile_For_Tests
@@ -132,7 +133,7 @@ jobs:
       #  UITEST_TEST_MODE_NAME: Automated
 
       ${{ each testBucket in parameters.automatedTestsBuckets }}:
-        Android_9.0_Group_${{ testBucket }}:
+        'Android 9.0 Group ${{ testBucket }}':
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_NAME: Automated
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
@@ -145,7 +146,7 @@ jobs:
           JobDiplayName: 'Android $(ANDROID_VERSION) api $(ANDROID_SIMULATOR_APILEVEL) $(TARGETPLATFORM_NAME) UI Tests Group $(UNO_UITEST_BUCKET_ID)'
 
       ${{ each testGroup in parameters.runtimeTestsGroups }}:
-        Android_9.0_RuntimeTests_${{ testGroup }}:
+        'Android 9.0 RuntimeTests ${{ testGroup }}':
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_NAME: RuntimeTests
           UNO_UITEST_BUCKET_ID: RuntimeTests
@@ -160,7 +161,7 @@ jobs:
           JobDiplayName: 'Android $(ANDROID_VERSION) api $(ANDROID_SIMULATOR_APILEVEL) $(TARGETPLATFORM_NAME) Runtime Tests Group $(UITEST_RUNTIME_TEST_GROUP)'
 
 
-      Android_9.0_Snapshots:
+      'Android 9.0 Snapshots':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
