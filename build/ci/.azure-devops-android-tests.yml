@@ -110,7 +110,6 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
-  displayName: 'Run $(JobDiplayName)'
   dependsOn:
   - Android_Build_For_Tests
   - Android_Build_NetCoreMobile_For_Tests
