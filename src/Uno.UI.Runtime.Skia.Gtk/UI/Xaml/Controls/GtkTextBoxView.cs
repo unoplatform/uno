@@ -9,6 +9,7 @@ using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using Windows.UI.Text;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
@@ -50,12 +51,12 @@ internal abstract class GtkTextBoxView : ITextBoxView
 			new SinglelineTextBoxView(textBox is PasswordBox) :
 			new MultilineTextBoxView();
 
-	public void AddToTextInputLayer()
+	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		var layer = GetWindowTextInputLayer();
-		if (RootWidget.Parent != layer)
+		if (GetOverlayLayer(xamlRoot) is { } layer && RootWidget.Parent != layer)
 		{
 			layer.Put(RootWidget, 0, 0);
+			layer.ShowAll();
 		}
 	}
 
@@ -101,18 +102,8 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		}
 	}
 
-	internal static Fixed GetWindowTextInputLayer(GtkWindow window)
-	{
-		if (_owner?.TextBox?.XamlRoot is not { } xamlRoot)
-		{
-			return null;
-		}
-
-		var host = XamlRootMap.GetHostForRoot(xamlRoot);
-		return host?.NativeOverlayLayer;
-		var overlay = (Overlay)((EventBox)window.Child).Child;
-		return overlay.Children.OfType<Fixed>().First();
-	}
+	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
+		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 	private void SetFont(FontWeight fontWeight, double fontSize)
 	{

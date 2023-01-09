@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly ITextBoxViewExtension? _textBoxExtension;
+		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal ITextBoxViewExtension? Extension => _textBoxExtension;
+		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
 		public TextBox? TextBox
 		{

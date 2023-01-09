@@ -67,6 +67,17 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls
 
 				}
 			}
+
+
+
+			// Display
+
+			if (_isPasswordBox)
+			{
+				textInputLayer.Children.Add(_currentPasswordBoxInputWidget!);
+				_currentPasswordBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Collapsed : Visibility.Visible;
+				_currentTextBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Visible : Visibility.Collapsed;
+			}
 		}
 	}
 }

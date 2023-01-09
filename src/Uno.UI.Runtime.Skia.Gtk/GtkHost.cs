@@ -36,6 +36,9 @@ using Windows.ApplicationModel;
 using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using Gdk;
+using System.Linq;
+using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -81,6 +84,15 @@ namespace Uno.UI.Runtime.Skia
 
 		internal static UnoEventBox EventBox => _eventBox;
 
+		internal Fixed NativeOverlayLayer
+		{
+			get
+			{
+				var overlay = (Overlay)((EventBox)_window.Child).Child;
+				return overlay.Children.OfType<Fixed>().FirstOrDefault();
+			}
+		}
+
 		internal IRenderSurface RenderSurface => _renderSurface;
 
 		/// <summary>
@@ -106,7 +118,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
-			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o, _window));
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));

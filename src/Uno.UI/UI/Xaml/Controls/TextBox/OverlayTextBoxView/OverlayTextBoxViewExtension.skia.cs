@@ -32,12 +32,12 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		_textBoxViewFactory = textBoxViewFactory ?? throw new ArgumentNullException(nameof(textBoxViewFactory));
 	}
 
-	public abstract bool IsOverlayLayerInitialized { get; }
+	public abstract bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
 	public void StartEntry()
 	{
 		if (_owner.TextBox is not { } textBox ||
-			GetWindowTextInputLayer() is not { } textInputLayer)
+			_owner.TextBox.XamlRoot is not { } xamlRoot)
 		{
 			// The parent TextBox must exist as source of properties.
 			return;
@@ -47,15 +47,14 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 		EnsureTextBoxView(textBox);
 		ObserveNativeTextChanges();
-		_textBoxView!.AddToTextInputLayer(textInputLayer);
 		_lastSize = new Size(-1, -1);
 		_lastPosition = new Point(-1, -1);
 		UpdateNativeView();
 		SetNativeText(textBox.Text);
 		InvalidateLayout();
 
-		textInputLayer.ShowAll(); //!!!!
-		_textBoxView!.SetFocus(true);
+		_textBoxView!.AddToTextInputLayer(xamlRoot);		
+		_textBoxView.SetFocus(true);
 
 		// Selection is now handled by native control
 		if (_selectionStartCache != null && _selectionLengthCache != null)
@@ -76,7 +75,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	{
 		_textChangedDisposable.Disposable = null;
 		if (_textBoxView is null ||
-			GetWindowTextInputLayer() is not { } textInputLayer)
+			!_textBoxView.IsDisplayed)
 		{
 			// No entry in progress
 			return;

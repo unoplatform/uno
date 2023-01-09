@@ -1,8 +1,10 @@
-﻿namespace Uno.UI.Xaml.Controls.Extensions;
+﻿using Windows.UI.Xaml;
+
+namespace Uno.UI.Xaml.Controls.Extensions;
 
 internal interface IOverlayTextBoxViewExtension
 {
-	bool IsOverlayLayerInitialized { get; }
+	bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
 	void StartEntry();
 

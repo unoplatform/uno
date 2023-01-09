@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
@@ -11,7 +12,7 @@ internal interface ITextBoxView
 
 	void SetFocus(bool isFocused);
 
-	void AddToTextInputLayer(WpfCanvas layer);
+	void AddToTextInputLayer(XamlRoot xamlRoot);
 
 	void RemoveFromTextInputLayer();
 

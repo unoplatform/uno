@@ -1,65 +1,58 @@
 ﻿#nullable enable
 
 using System;
-using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
+using Uno.UI.XamlHost.Skia.WPF.Hosting;
 using Windows.UI.Text;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
+using WpfElement = System.Windows.UIElement;
+using WpfCanvas = System.Windows.Controls.Canvas;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
 internal abstract class WpfTextBoxView : ITextBoxView
 {
 	public WpfTextBoxView()
-	{
-		
+	{		
 	}
 
 	/// <summary>
-	/// Represents the root widget of the input layout.
+	/// Represents the root element of the input layout.
 	/// </summary>
-	protected abstract Widget RootWidget { get; }
+	protected abstract WpfElement RootElement { get; }
 
 	/// <summary>
 	/// Represents the actual input widget.
 	/// </summary>
-	protected abstract Widget InputWidget { get; }
+	protected abstract WpfElement InputElement { get; }
 
 	public abstract string Text { get; set; }
 
-	public bool IsDisplayed => RootWidget.Parent is not null;
+	public bool IsDisplayed => RootElement.GetParent() is not null;
 
 	public static ITextBoxView Create(TextBox textBox) =>
 		textBox is not PasswordBox ?
 			new TextTextBoxView() :
 			new PasswordTextBoxView();
 
-	public void AddToTextInputLayer(Fixed layer)
+	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (textInputLayer.Children.Count == 0)
+		if (GetOverlayLayer(xamlRoot) is { } layer && RootElement.GetParent() != layer)
 		{
-			textInputLayer.Children.Add(_currentTextBoxInputWidget!);
+			layer.Children.Add(RootElement);
 
-			if (_isPasswordBox)
-			{
-				textInputLayer.Children.Add(_currentPasswordBoxInputWidget!);
-				_currentPasswordBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Collapsed : Visibility.Visible;
-				_currentTextBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Visible : Visibility.Collapsed;
-			}
 		}
 	}
 
 	public void RemoveFromTextInputLayer()
 	{
-		if (RootWidget.Parent is Fixed layer)
+		if (RootElement.GetParent() is WpfCanvas layer)
 		{
-			layer.Remove(RootWidget);
+			layer.Children.Remove(RootElement);
 		}
-
-		RemoveForegroundCssProvider();
 	}
 
 	public abstract (int start, int end) GetSelectionBounds();
@@ -72,7 +65,6 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public virtual void UpdateProperties(TextBox textBox)
 	{
-
 		if ((_isPasswordBox && _currentPasswordBoxInputWidget == null) || _currentTextBoxInputWidget == null)
 		{
 			// If the input widget does not exist, we don't need to update it.
@@ -165,6 +157,9 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		}
 	}
 
+	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
+		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+
 	private void SetFont(FontWeight fontWeight, double fontSize)
 	{
 		var fontDescription = new FontDescription
@@ -243,8 +238,6 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		{
 			return _currentTextBoxInputWidget?.SelectionLength ?? 0;
 		}
-
 		return 0;
 	}
-
 }

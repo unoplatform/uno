@@ -6,27 +6,32 @@ using System.Threading.Tasks;
 using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.WPF.Controls;
 using Windows.UI.Xaml.Controls;
+using WpfElement = System.Windows.UIElement;
+using WpfCanvas = System.Windows.Controls.Canvas;
+using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls
 {
 	internal class TextTextBoxView : WpfTextBoxView
 	{
+		private readonly WpfTextViewTextBox _textBox = new();
+
+		public TextTextBoxView()
+		{			
+		}
+
 		public override string Text { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-		protected override Widget RootWidget => throw new NotImplementedException();
+		protected override WpfElement RootElement => _textBox;
 
-		protected override Widget InputWidget => throw new NotImplementedException();
+		protected override WpfElement InputElement => _textBox;
+
 
 		public override (int start, int end) GetSelectionBounds() => throw new NotImplementedException();
 		public override bool IsCompatible(TextBox textBox) => throw new NotImplementedException();
 		public override IDisposable ObserveTextChanges(EventHandler onChanged)
 		{
-
-			_textChangedDisposable.Disposable = null;
-			CompositeDisposable disposable = new();
-			if (_currentTextBoxInputWidget is not null)
-			{
-				_currentTextBoxInputWidget.TextChanged += WpfTextViewTextChanged;
+			InputElement.TextChanged += WpfTextViewTextChanged;
 				disposable.Add(Disposable.Create(() => _currentTextBoxInputWidget.TextChanged -= WpfTextViewTextChanged));
 			}
 
