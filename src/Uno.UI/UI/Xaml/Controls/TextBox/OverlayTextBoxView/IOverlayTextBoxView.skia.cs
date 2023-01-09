@@ -2,9 +2,8 @@
 
 using System;
 using Windows.UI.Xaml.Controls;
-using WpfCanvas = System.Windows.Controls.Canvas;
 
-namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
+namespace Uno.UI.Xaml.Controls.Extensions;
 
 internal interface ITextBoxView
 {

@@ -4,9 +4,9 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
-internal interface ITextBoxViewExtension
+internal interface IOverlayTextBoxViewExtension
 {
-	bool IsNativeOverlayLayerInitialized { get; }
+	bool IsOverlayLayerInitialized { get; }
 
 	void StartEntry();
 
