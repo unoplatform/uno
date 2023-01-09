@@ -2,34 +2,33 @@
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 
-namespace Uno.UI.Xaml.Controls.Extensions
+namespace Uno.UI.Xaml.Controls.Extensions;
+
+internal interface ITextBoxViewExtension
 {
-	internal interface ITextBoxViewExtension
-	{
-		bool IsNativeOverlayLayerInitialized { get; }
+	bool IsNativeOverlayLayerInitialized { get; }
 
-		void StartEntry();
+	void StartEntry();
 
-		void EndEntry();
+	void EndEntry();
 
-		void UpdateNativeView();
+	void UpdateNativeView();
 
-		void InvalidateLayout();
+	void InvalidateLayout();
 
-		void UpdateSize();
+	void UpdateSize();
 
-		void UpdatePosition();
+	void UpdatePosition();
 
-		void SetText(string text);
+	void SetText(string text);
 
-		void SetIsPassword(bool isPassword);
+	void SetIsPassword(bool isPassword);
 
-		void Select(int start, int length);
+	void Select(int start, int length);
 
-		int GetSelectionStart();
+	int GetSelectionStart();
 
-		int GetSelectionLength();
+	int GetSelectionLength();
 
-		void UpdateProperties();
-	}
+	void UpdateProperties();
 }

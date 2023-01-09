@@ -2,359 +2,307 @@
 #nullable enable
 
 using System;
-using System.Windows;
-using Windows.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.WPF.Controls;
-using Uno.UI.Xaml.Controls.Extensions;
-using Point = Windows.Foundation.Point;
-using WpfCanvas = System.Windows.Controls.Canvas;
-using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Uno.Disposables;
+using Uno.UI.Extensions;
+using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
+using WpfCanvas = System.Windows.Controls.Canvas;
 
-namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
+namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
+
+internal class TextBoxViewExtension : ITextBoxViewExtension
 {
-	internal class TextBoxViewExtension : ITextBoxViewExtension
+	private readonly TextBoxView _owner;
+	private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
+
+	private ContentControl? _contentElement;
+	private ITextBoxView? _textBoxView;
+	private bool _processingTextChanged;
+	private Size _lastSize = new(-1, -1);
+	private Point _lastPosition = new(-1, -1);
+	
+	private int? _selectionStartCache;
+	private int? _selectionLengthCache;
+
+	private System.Windows.Controls.PasswordBox? _currentPasswordBoxInputWidget;
+
+	private bool _isPasswordRevealed;
+
+	public TextBoxViewExtension(TextBoxView owner)
 	{
-		private readonly TextBoxView _owner;
-		private ContentControl? _contentElement;
+		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
+	}
 
-		private WpfTextViewTextBox? _currentTextBoxInputWidget;
-		private System.Windows.Controls.PasswordBox? _currentPasswordBoxInputWidget;
+	public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
 
-		private SerialDisposable _textChangedDisposable = new SerialDisposable();
-
-		private readonly bool _isPasswordBox;
-		private bool _isPasswordRevealed;
-
-		public TextBoxViewExtension(TextBoxView owner)
+	public void StartEntry()
+	{
+		if (_owner.TextBox is not { } textBox ||
+			GetWindowTextInputLayer() is not { } textInputLayer)
 		{
-			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
-			_isPasswordBox = owner.TextBox is PasswordBox;
+			// The parent TextBox must exist as source of properties.
+			return;
 		}
 
-		private WpfCanvas? GetWindowTextInputLayer()
-		{
-			if (_owner?.TextBox?.XamlRoot is not { } xamlRoot)
-			{
-				return null;
-			}
+		_contentElement = textBox.ContentElement;
 
-			var host = XamlRootMap.GetHostForRoot(xamlRoot);
-			return host?.NativeOverlayLayer;
+		EnsureTextBoxView(textBox);
+		ObserveNativeTextChanges();
+		_textBoxView!.AddToTextInputLayer(textInputLayer);
+		_lastSize = new Size(-1, -1);
+		_lastPosition = new Point(-1, -1);
+		UpdateNativeView();
+		SetNativeText(textBox.Text);
+		InvalidateLayout();
+
+		_textBoxView!.SetFocus(true);
+
+		// Selection is now handled by native control
+		if (_selectionStartCache != null && _selectionLengthCache != null)
+		{
+			Select(_selectionStartCache.Value, _selectionLengthCache.Value);
+		}
+		else
+		{
+			// Select end of the text
+			var endIndex = textBox.Text.Length;
+			Select(endIndex, 0);
+		}
+		_selectionStartCache = null;
+		_selectionLengthCache = null;
+	}
+
+	public void EndEntry()
+	{
+		_textChangedDisposable.Disposable = null;
+		if (_textBoxView is null ||
+			GetWindowTextInputLayer() is not { } textInputLayer)
+		{
+			// No entry in progress
+			return;
 		}
 
-		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
-
-		public void StartEntry()
+		if (GetNativeText() is { } inputText)
 		{
-			var textInputLayer = GetWindowTextInputLayer();
-			var textBox = _owner.TextBox;
-			if (textBox == null || textInputLayer == null)
-			{
-				// The parent TextBox must exist as source of properties.
-				return;
-			}
-
-			_contentElement = textBox.ContentElement;
-
-			EnsureWidgetForAcceptsReturn();
-
-			if (textInputLayer.Children.Count == 0)
-			{
-				textInputLayer.Children.Add(_currentTextBoxInputWidget!);
-
-				if (_isPasswordBox)
-				{
-					textInputLayer.Children.Add(_currentPasswordBoxInputWidget!);
-					_currentPasswordBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Collapsed : Visibility.Visible;
-					_currentTextBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Visible : Visibility.Collapsed;
-				}
-			}
-
-			UpdateNativeView();
-			SetTextNative(textBox.Text);
-			ObserveInputChanges();
-			InvalidateLayout();
-
-			if (_isPasswordBox && !_isPasswordRevealed)
-			{
-				_currentPasswordBoxInputWidget!.Focus();
-			}
-			else
-			{
-				_currentTextBoxInputWidget!.Focus();
-			}
+			_owner.UpdateTextFromNative(inputText);
 		}
 
-		public void EndEntry()
+		_contentElement = null;
+
+		if (_textBoxView != null)
 		{
-			_textChangedDisposable.Disposable = null;
-			if (_currentTextBoxInputWidget is null)
-			{
-				// No entry is in progress.
-				return;
-			}
+			var bounds = GetNativeSelectionBounds();
+			(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
+			_textBoxView.RemoveFromTextInputLayer();
+		}
+	}
 
-			_owner.UpdateTextFromNative(_currentTextBoxInputWidget.Text);
+	public void SetText(string text) => SetNativeText(text);
 
-			_contentElement = null;
-
-			var textInputLayer = GetWindowTextInputLayer();
-			if (textInputLayer is null)
-			{
-				return;
-			}
-
-			textInputLayer.Children.Remove(_currentTextBoxInputWidget);
-
-			if (_currentPasswordBoxInputWidget is not null)
-			{
-				textInputLayer.Children.Remove(_currentPasswordBoxInputWidget);
-			}
+	public void UpdateNativeView()
+	{
+		if (_textBoxView is null || _owner.TextBox is not { } textBox)
+		{
+			// If the input widget does not exist, we don't need to update it.
+			// The parent TextBox must exist as source of properties.
+			return;
 		}
 
-		public void UpdateNativeView()
+		EnsureTextBoxView(textBox);
+	}
+
+	public void InvalidateLayout()
+	{
+		UpdateSize();
+		UpdatePosition();
+	}
+
+	public void UpdateProperties()
+	{
+		if (_owner?.TextBox is { } textBox)
 		{
-			if ((_isPasswordBox && _currentPasswordBoxInputWidget == null) || _currentTextBoxInputWidget == null)
-			{
-				// If the input widget does not exist, we don't need to update it.
-				return;
-			}
+			_textBoxView?.UpdateProperties(textBox);
+		}
+	}
 
-			var textBox = _owner.TextBox;
-			if (textBox == null)
-			{
-				// The parent TextBox must exist as source of properties.
-				return;
-			}
-
-			updateCommon(_currentTextBoxInputWidget);
-			updateCommon(_currentPasswordBoxInputWidget);
-			SetForeground(textBox.Foreground);
-			SetSelectionHighlightColor(textBox.SelectionHighlightColor);
-
-			if (_currentTextBoxInputWidget is not null)
-			{
-				_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
-				_currentTextBoxInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
-				_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
-				_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
-			}
-
-			if (_currentPasswordBoxInputWidget is not null)
-			{
-				_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
-			}
-
-			void updateCommon(System.Windows.Controls.Control? control)
-			{
-				if (control is null)
-				{
-					return;
-				}
-
-				control.FontSize = textBox.FontSize;
-				control.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
-			}
+	public void UpdateSize()
+	{
+		if (_contentElement is null ||
+			_textBoxView is null ||
+			!_textBoxView.IsDisplayed)
+		{
+			return;
 		}
 
-		public void InvalidateLayout()
+		var width = (int)(_contentElement.ActualWidth - _contentElement.Padding.Horizontal());
+		var height = (int)(_contentElement.ActualHeight - _contentElement.Padding.Vertical());
+
+		if (_lastSize.Width != width || _lastSize.Height != height)
 		{
-			UpdateSize();
-			UpdatePosition();
+			_lastSize = new Size(width, height);
+			_textBoxView.SetSize(_lastSize.Width, _lastSize.Height);
+		}
+	}
+
+	public void UpdatePosition()
+	{
+		if (_contentElement == null ||
+			_textBoxView == null ||
+			!_textBoxView.IsDisplayed)
+		{
+			return;
 		}
 
-		public void UpdateSize()
+		var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
+		var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
+		var pointX = (int)point.X;
+		var pointY = (int)point.Y;
+
+		if (_lastPosition.X != pointX || _lastPosition.Y != pointY)
 		{
-			var textInputLayer = GetWindowTextInputLayer();
-			if (_contentElement == null || textInputLayer == null)
-			{
-				return;
-			}
+			_lastPosition = new Point(pointX, pointY);
+			_textBoxView.SetPosition(pointX, pointY);
+		}		
+	}
 
-			updateSizeCore(_currentTextBoxInputWidget);
-			updateSizeCore(_currentPasswordBoxInputWidget);
+	public void SetIsPassword(bool isPassword)
+	{
+		//TODO:MZ:
+		//if (_textBoxView is Entry entry)
+		//{
+		//	entry.Visibility = !isPassword;
+		//}
+	}
 
-			void updateSizeCore(FrameworkElement? frameworkElement)
-			{
-				if (frameworkElement is not null && textInputLayer.Children.Contains(frameworkElement))
-				{
-					frameworkElement.Width = _contentElement.ActualWidth;
-					frameworkElement.Height = _contentElement.ActualHeight;
-				}
-			}
+	public void Select(int start, int length)
+	{
+		if (_owner.TextBox is not { } textBox)
+		{
+			return;
 		}
 
-		public void UpdatePosition()
+		EnsureTextBoxView(textBox);
+		if (textBox.FocusState == FocusState.Unfocused)
 		{
-			var textInputLayer = GetWindowTextInputLayer();
-			if (_contentElement == null || textInputLayer == null)
-			{
-				return;
-			}
-
-			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
-			var point = transformToRoot.TransformPoint(new Point(0, 0));
-
-			updatePositionCore(_currentTextBoxInputWidget);
-			updatePositionCore(_currentPasswordBoxInputWidget);
-
-			void updatePositionCore(FrameworkElement? frameworkElement)
-			{
-				if (frameworkElement is not null && textInputLayer.Children.Contains(frameworkElement))
-				{
-					WpfCanvas.SetLeft(frameworkElement, point.X);
-					WpfCanvas.SetTop(frameworkElement, point.Y);
-				}
-			}
+			// Native control can't handle selection until it is part of visual tree.
+			// Use managed selection until then.
+			_selectionStartCache = textBox.Text.Length >= start ? start : textBox.Text.Length;
+			_selectionLengthCache = textBox.Text.Length >= start + length ? length : textBox.Text.Length - start;
 		}
-
-		public void SetTextNative(string text)
+		else
 		{
-			if (_currentTextBoxInputWidget != null && _currentTextBoxInputWidget.Text != text)
-			{
-				_currentTextBoxInputWidget.Text = text;
-			}
-
-			if (_currentPasswordBoxInputWidget != null && _currentPasswordBoxInputWidget.Password != text)
-			{
-				_currentPasswordBoxInputWidget.Password = text;
-			}
+			SetNativeSelectionBounds(start, start + length);
 		}
+	}
 
-		private void EnsureWidgetForAcceptsReturn()
+	public int GetSelectionStart()
+	{
+		if (_owner.TextBox is not { } textBox)
 		{
-			_currentTextBoxInputWidget ??= CreateInputControl();
-			if (_isPasswordBox)
-			{
-				_currentPasswordBoxInputWidget ??= CreatePasswordControl();
-				_currentTextBoxInputWidget.Visibility = Visibility.Collapsed;
-			}
-		}
-
-		private WpfTextViewTextBox CreateInputControl()
-		{
-			var textView = new WpfTextViewTextBox();
-			return textView;
-		}
-
-		private System.Windows.Controls.PasswordBox CreatePasswordControl()
-		{
-			var passwordBox = new System.Windows.Controls.PasswordBox();
-			passwordBox.BorderBrush = System.Windows.Media.Brushes.Transparent;
-			passwordBox.Background = System.Windows.Media.Brushes.Transparent;
-			passwordBox.BorderThickness = new Thickness(0);
-			return passwordBox;
-		}
-
-		private void ObserveInputChanges()
-		{
-			_textChangedDisposable.Disposable = null;
-			CompositeDisposable disposable = new();
-			if (_currentTextBoxInputWidget is not null)
-			{
-				_currentTextBoxInputWidget.TextChanged += WpfTextViewTextChanged;
-				disposable.Add(Disposable.Create(() => _currentTextBoxInputWidget.TextChanged -= WpfTextViewTextChanged));
-			}
-
-			if (_currentPasswordBoxInputWidget is not null)
-			{
-				_currentPasswordBoxInputWidget.PasswordChanged += PasswordBoxViewPasswordChanged;
-				disposable.Add(Disposable.Create(() => _currentPasswordBoxInputWidget.PasswordChanged -= PasswordBoxViewPasswordChanged));
-			}
-			_textChangedDisposable.Disposable = disposable;
-		}
-
-		private void PasswordBoxViewPasswordChanged(object sender, System.Windows.RoutedEventArgs e)
-		{
-			_owner.UpdateTextFromNative(_currentPasswordBoxInputWidget!.Password);
-		}
-
-		private void WpfTextViewTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-		{
-			_owner.UpdateTextFromNative(_currentTextBoxInputWidget!.Text);
-		}
-
-		public void SetIsPassword(bool isPassword)
-		{
-			_isPasswordRevealed = !isPassword;
-			if (_owner.TextBox is { } textBox)
-			{
-				if (_currentTextBoxInputWidget is not null)
-				{
-					_currentTextBoxInputWidget.Visibility = isPassword ? Visibility.Collapsed : Visibility.Visible;
-					if (_currentPasswordBoxInputWidget is not null)
-					{
-						_currentPasswordBoxInputWidget.Visibility = isPassword ? Visibility.Visible : Visibility.Collapsed;
-					}
-
-				}
-			}
-		}
-
-		public void Select(int start, int length)
-		{
-			if (_isPasswordBox)
-			{
-				return;
-			}
-
-			if (_currentTextBoxInputWidget == null)
-			{
-				this.StartEntry();
-			}
-
-			_currentTextBoxInputWidget!.Select(start, length);
-		}
-
-		public int GetSelectionStart()
-		{
-			if (!_isPasswordBox)
-			{
-				return _currentTextBoxInputWidget?.SelectionStart ?? 0;
-			}
-
 			return 0;
 		}
 
-		public int GetSelectionLength()
-		{
-			if (!_isPasswordBox)
-			{
-				return _currentTextBoxInputWidget?.SelectionLength ?? 0;
-			}
+		return textBox.FocusState == FocusState.Unfocused ?
+			_selectionStartCache ?? 0 :
+			GetNativeSelectionBounds().start;
+	}
 
+	public int GetSelectionLength()
+	{
+		if (_owner.TextBox is not { } textBox)
+		{
 			return 0;
 		}
 
-		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		if (textBox.FocusState == FocusState.Unfocused)
 		{
-			var wpfBrush = brush.ToWpfBrush();
-			if (_currentTextBoxInputWidget != null)
-			{
-				_currentTextBoxInputWidget.Foreground = wpfBrush;
-				_currentTextBoxInputWidget.CaretBrush = wpfBrush;
-			}
+			return _selectionLengthCache ?? 0;
+		}
+		else
+		{
+			var bounds = GetNativeSelectionBounds();
+			return bounds.end - bounds.start;
+		}
+	}
+	
+	private void SetNativeSelectionBounds(int start, int end) => _textBoxView?.SetSelectionBounds(start, end);
 
-			if (_currentPasswordBoxInputWidget != null)
-			{
-				_currentPasswordBoxInputWidget.Foreground = wpfBrush;
-				_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
-			}
+	private (int start, int end) GetNativeSelectionBounds() => _textBoxView?.GetSelectionBounds() ?? (0, 0);
+
+	private void EnsureTextBoxView(TextBox textBox)
+	{
+		if (_textBoxView is null ||
+			!_textBoxView.IsCompatible(textBox))
+		{
+			var inputText = GetNativeText();
+			_textBoxView = WpfTextBoxView.Create(textBox);
+			SetNativeText(inputText ?? string.Empty);
 		}
 
-		public void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush)
-		{
-			var wpfBrush = brush.ToWpfBrush();
-			if (_currentTextBoxInputWidget != null)
-			{
-				_currentTextBoxInputWidget.SelectionBrush = wpfBrush;
-			}
+		_textBoxView.UpdateProperties(textBox);
+	}
 
-			if (_currentPasswordBoxInputWidget != null)
-			{
-				_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
-			}
+	private void ObserveNativeTextChanges()
+	{
+		_textChangedDisposable.Disposable = null;
+		if (_textBoxView is not null)
+		{
+			_textChangedDisposable.Disposable = _textBoxView.ObserveTextChanges(NativeTextChanged);
 		}
+	}
+
+	private void NativeTextChanged(object? sender, EventArgs e)
+	{
+		// Avoid stack overflow as updating text from
+		// shared code briefly sets empty string and causes
+		// infinite loop
+		if (_processingTextChanged)
+		{
+			return;
+		}
+
+		try
+		{
+			_processingTextChanged = true;
+			_owner.UpdateTextFromNative(GetNativeText() ?? string.Empty);
+
+		}
+		finally
+		{
+			_processingTextChanged = false;
+		}
+	}
+
+	private string? GetNativeText() => _textBoxView?.Text;
+
+	private void SetNativeText(string text)
+	{
+		if (_textBoxView is null)
+		{
+			return;
+		}
+
+		// Avoid setting same text (as it causes text change
+		// event on some platforms.
+		if (_textBoxView.Text != text)
+		{
+			_textBoxView.Text = text;
+		}
+	}
+
+	private WpfCanvas? GetWindowTextInputLayer()
+	{
+		if (_owner?.TextBox?.XamlRoot is not { } xamlRoot)
+		{
+			return null;
+		}
+
+		var host = XamlRootMap.GetHostForRoot(xamlRoot);
+		return host?.NativeOverlayLayer;
 	}
 }
