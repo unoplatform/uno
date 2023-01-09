@@ -16,7 +16,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Uno.UI.FluentTheme.v2</AssemblyName>
 		<RootNamespace>Uno.UI.FluentTheme.v2</RootNamespace>
 

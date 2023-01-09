@@ -14,15 +14,12 @@
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>
 
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>

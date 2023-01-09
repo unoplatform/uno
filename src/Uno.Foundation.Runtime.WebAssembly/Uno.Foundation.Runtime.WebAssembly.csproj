@@ -11,7 +11,6 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<DefineConstants>$(DefineConstants);IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT</DefineConstants>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
