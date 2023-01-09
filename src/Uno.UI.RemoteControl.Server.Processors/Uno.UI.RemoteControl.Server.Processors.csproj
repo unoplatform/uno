@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
