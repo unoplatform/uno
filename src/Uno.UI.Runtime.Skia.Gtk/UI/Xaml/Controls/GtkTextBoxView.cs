@@ -1,14 +1,18 @@
 ﻿#nullable enable
 
 using System;
-using GLib;
+using System.Linq;
 using Gtk;
 using Pango;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
+using GtkWindow = Gtk.Window;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
@@ -46,8 +50,9 @@ internal abstract class GtkTextBoxView : ITextBoxView
 			new SinglelineTextBoxView(textBox is PasswordBox) :
 			new MultilineTextBoxView();
 
-	public void AddToTextInputLayer(Fixed layer)
+	public void AddToTextInputLayer()
 	{
+		var layer = GetWindowTextInputLayer();
 		if (RootWidget.Parent != layer)
 		{
 			layer.Put(RootWidget, 0, 0);
@@ -77,6 +82,7 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		SetFont(textBox.FontWeight, textBox.FontSize);
 		SetForeground(textBox.Foreground);
 		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
+		//TODO:MZ: Support opacity
 	}
 
 	public void SetFocus(bool isFocused) => InputWidget.HasFocus = isFocused;
@@ -93,6 +99,19 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		{
 			layer.Move(RootWidget, (int)x, (int)y);
 		}
+	}
+
+	internal static Fixed GetWindowTextInputLayer(GtkWindow window)
+	{
+		if (_owner?.TextBox?.XamlRoot is not { } xamlRoot)
+		{
+			return null;
+		}
+
+		var host = XamlRootMap.GetHostForRoot(xamlRoot);
+		return host?.NativeOverlayLayer;
+		var overlay = (Overlay)((EventBox)window.Child).Child;
+		return overlay.Children.OfType<Fixed>().First();
 	}
 
 	private void SetFont(FontWeight fontWeight, double fontSize)
@@ -156,5 +175,4 @@ internal abstract class GtkTextBoxView : ITextBoxView
 			}
 		}
 	}
-
 }

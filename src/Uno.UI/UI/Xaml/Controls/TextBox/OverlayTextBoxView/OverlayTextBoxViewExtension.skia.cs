@@ -32,7 +32,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		_textBoxViewFactory = textBoxViewFactory ?? throw new ArgumentNullException(nameof(textBoxViewFactory));
 	}
 
-	public bool IsOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
+	public abstract bool IsOverlayLayerInitialized { get; }
 
 	public void StartEntry()
 	{
@@ -287,11 +287,5 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		{
 			_textBoxView.Text = text;
 		}
-	}
-
-	private Fixed GetWindowTextInputLayer()
-	{
-		var overlay = (Overlay)((EventBox)_window.Child).Child;
-		return overlay.Children.OfType<Fixed>().First();
 	}
 }
