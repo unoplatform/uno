@@ -23,7 +23,7 @@
 
 	<!-- this target has been introduced in VS15.5 -->
 	<_OverrideTargetFrameworksDependency Include="GetTargetFrameworks" />
-	
+
 	<!-- this target has been introduced in VS16.4 -->
 	<_OverrideTargetFrameworksDependency Include="CollectPackageReferences" />
 
@@ -39,7 +39,7 @@
     BeforeTargets="@(_OverrideTargetFrameworksDependency)">
 
     <PropertyGroup>
-      <TargetFrameworksOverride Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(TargetFrameworks)</TargetFrameworksOverride>
+      <TargetFrameworksOverride>$(TargetFrameworks)</TargetFrameworksOverride>
       <TargetFrameworksOverride Condition="'$(CI_Build)'!='' and '$(TargetFrameworksCI)'!='' and '$(UITestsEnabled)'=='' and '$(UnoDisableTargetFrameworksCIOverride)'==''">$(TargetFrameworksCI)</TargetFrameworksOverride>
 
 
