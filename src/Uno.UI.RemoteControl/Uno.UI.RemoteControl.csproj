@@ -8,8 +8,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -19,7 +17,6 @@
 		<Deterministic>true</Deterministic>
 
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>

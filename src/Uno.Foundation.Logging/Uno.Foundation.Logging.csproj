@@ -12,7 +12,6 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>

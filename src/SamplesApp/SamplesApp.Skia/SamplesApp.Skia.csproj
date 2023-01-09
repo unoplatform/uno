@@ -13,7 +13,6 @@
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

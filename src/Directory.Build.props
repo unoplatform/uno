@@ -230,7 +230,6 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
         <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <!-- Enable CodeStyle analyzers -->
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

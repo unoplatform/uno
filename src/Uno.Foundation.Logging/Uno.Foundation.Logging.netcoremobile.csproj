@@ -5,7 +5,6 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Uno.Foundation.Logging</AssemblyName>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>

@@ -25,7 +25,6 @@
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
