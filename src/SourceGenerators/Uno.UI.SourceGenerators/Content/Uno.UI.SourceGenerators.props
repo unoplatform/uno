@@ -69,7 +69,6 @@
 
   <ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
 		<CompilerVisibleProperty Include="XamlSourceGeneratorTracingFolder" />
-		<CompilerVisibleProperty Include="TargetPlatformIdentifier" />
 		<CompilerVisibleProperty Include="TargetFramework" />
 		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
 		<CompilerVisibleProperty Include="MSBuildProjectFullPath" />
@@ -186,7 +185,7 @@
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="macos" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_skia" />
 
-		<!-- 
+		<!--
 			Those namespaces are to be *included* from the code generation,
 			regardless of their presence in the Ignorable section of a Xaml file.
 			-->
@@ -363,9 +362,9 @@
 	</ItemGroup>
 
 	<Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator" DependsOnTargets="_FillSourceGeneratorItemGroups">
-		<!-- 
-		This group is created as part of a target to ensure the 
-		capture of target-defined Pages 
+		<!--
+		This group is created as part of a target to ensure the
+		capture of target-defined Pages
 		-->
 		<ItemGroup>
 			<SourceGeneratorInput Include="@(Page);@(ApplicationDefinition);@(UnoPage);@(UnoApplicationDefinition)" />
@@ -451,10 +450,9 @@
 			   Text="Uno.UI is using Uno.SourceGenerators" />
 	</Target>
 
-	<Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false' or '$(WindowsAppSDKWinUI)'=='true'">
-		<!---
-	If the users explicitly disables Roslyn source generation, remove the analyzer item which is automatically added by Nuget.
-	-->
+	<Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false' or '$(WindowsAppSDKWinUI)'=='true' or $(TargetFramework.StartsWith('uap10.0'))">
+		<!--- If the users explicitly disables Roslyn source generation, remove the analyzer item which is automatically added by NuGet. -->
+		<!-- Additionally, if this is a Windows build, remove the analyzer item for the generators. -->
 		<ItemGroup>
 			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
 			<Analyzer Remove="@(_AnalyzerToRemove)"/>
