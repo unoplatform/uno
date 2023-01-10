@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			_textBoxExtension?.SetTextNative(text);
+			_textBoxExtension?.SetText(text);
 		}
 
 		internal void Select(int start, int length)
@@ -77,14 +77,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnForegroundChanged(Brush brush)
 		{
-			DisplayBlock.Foreground = brush;
-			_textBoxExtension?.SetForeground(brush);
+			InnerText.Foreground = brush;
+			_textBoxExtension?.UpdateProperties();
 		}
 
 		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
-			DisplayBlock.SelectionHighlightColor = brush;
-			_textBoxExtension?.SetSelectionHighlightColor(brush);
+			InnerText.SelectionHighlightColor = brush;
+			_textBoxExtension?.UpdateProperties();
 		}
 
 		internal void OnFocusStateChanged(FocusState focusState)

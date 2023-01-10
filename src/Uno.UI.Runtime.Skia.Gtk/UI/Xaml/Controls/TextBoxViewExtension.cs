@@ -20,11 +20,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 {
 	internal class TextBoxViewExtension : ITextBoxViewExtension
 	{
-		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
 		private readonly GtkWindow _window;
-
-		private CssProvider? _foregroundCssProvider;
+		
 		private ContentControl? _contentElement;
 		private ITextBoxView? _textBoxView;
 		private bool _handlingTextChanged;
@@ -105,8 +103,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			{
 				var bounds = GetNativeSelectionBounds();
 				(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
-				_textBoxView.RemoveFromTextInputLayer();
-				RemoveForegroundCssProvider();
+				_textBoxView.RemoveFromTextInputLayer();				
 			}
 		}
 

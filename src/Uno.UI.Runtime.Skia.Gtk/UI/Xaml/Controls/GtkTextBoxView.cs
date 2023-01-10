@@ -15,8 +15,12 @@ namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 internal abstract class GtkTextBoxView : ITextBoxView
 {
 	private const string TextBoxViewCssClass = "textboxview";
-	
+
 	private static bool _warnedAboutSelectionColorChanges;
+
+	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
+	private CssProvider? _foregroundCssProvider;
+	private Windows.UI.Color? _lastForegroundColor;
 
 	public GtkTextBoxView()
 	{
@@ -50,10 +54,20 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		}
 	}
 
+	public void RemoveFromTextInputLayer()
+	{
+		if (RootWidget.Parent is Fixed layer)
+		{
+			layer.Remove(RootWidget);
+		}
+
+		RemoveForegroundCssProvider();
+	}
+
 	public abstract (int start, int end) GetSelectionBounds();
 
 	public abstract void SetSelectionBounds(int start, int end);
-	
+
 	public abstract bool IsCompatible(TextBox textBox);
 
 	public abstract IDisposable ObserveTextChanges(EventHandler onChanged);
@@ -64,19 +78,12 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		SetForeground(textBox.Foreground);
 		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 	}
-	
-	public void RemoveFromTextInputLayer()
-	{
-		if (RootWidget.Parent is Fixed layer)
-		{
-			layer.Remove(RootWidget);
-		}
-	}
-	
+
 	public void SetFocus(bool isFocused) => InputWidget.HasFocus = isFocused;
 
 	public void SetSize(double width, double height)
 	{
+		RootWidget.SetSizeRequest((int)width, (int)height);
 		InputWidget.SetSizeRequest((int)width, (int)height);
 	}
 
@@ -102,22 +109,30 @@ internal abstract class GtkTextBoxView : ITextBoxView
 
 	private void SetForeground(Brush brush)
 	{
-		if (_currentInputWidget is not null && brush is SolidColorBrush scb)
+		if (brush is not SolidColorBrush scb)
 		{
-			RemoveForegroundCssProvider();
-			_foregroundCssProvider = new CssProvider();
-			var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
-			var cssClassName = $"textbox_foreground_{_textBoxViewId}";
-			var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
-			_foregroundCssProvider.LoadFromData(data);
-			StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
-			if (!_currentInputWidget.StyleContext.HasClass(cssClassName))
-			{
-				_currentInputWidget.StyleContext.AddClass(cssClassName);
-			}
+			return;
+		}
+
+		if (_lastForegroundColor == scb.ColorWithOpacity &&
+			_foregroundCssProvider is not null)
+		{
+			return;
+		}
+
+		_lastForegroundColor = scb.ColorWithOpacity;
+		RemoveForegroundCssProvider();
+		_foregroundCssProvider = new CssProvider();
+		var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
+		var cssClassName = $"textbox_foreground_{_textBoxViewId}";
+		var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
+		_foregroundCssProvider.LoadFromData(data);
+		StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
+		if (!InputWidget.StyleContext.HasClass(cssClassName))
+		{
+			InputWidget.StyleContext.AddClass(cssClassName);
 		}
 	}
-
 
 	private void RemoveForegroundCssProvider()
 	{
