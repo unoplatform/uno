@@ -14,7 +14,11 @@ To use SVG, install the following packages into the iOS, macOS, Mac Catalyst, An
 -  `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using UWP-based app template)
 -  `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using UWP-based app template).
 
-> Note that if the `Uno.UI/WinUI.Svg` package is not installed, you will get a warning when an `.svg` image is loaded.
+> [!NOTE]
+> If the `Uno.[UI|WinUI].Svg` package is not installed, you will get a warning when an `.svg` image is loaded.
+
+> [!NOTE]
+> The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly.
 
 When installed, you can display any SVG image in `Image` by referencing it from the source property. For example:
 
