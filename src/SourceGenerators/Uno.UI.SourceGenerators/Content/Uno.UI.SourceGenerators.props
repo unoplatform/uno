@@ -123,13 +123,13 @@
 
 		</When>
 		<Otherwise>
-			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(WindowsAppSDKWinUI)'!='true'">
+			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(WindowsAppSDKWinUI)'!='true' and !$(TargetFramework.StartsWith('uap10.0'))">
 				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
 				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
 			</PropertyGroup>
-			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
+			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'  and !$(TargetFramework.StartsWith('uap10.0'))">
 				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
 			</ItemGroup>
 		</Otherwise>
