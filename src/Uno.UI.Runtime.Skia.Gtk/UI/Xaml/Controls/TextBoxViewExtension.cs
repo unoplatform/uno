@@ -9,6 +9,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
+using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -34,7 +35,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		private CssProvider? _foregroundCssProvider;
 		private ContentControl? _contentElement;
-		private Widget? _currentInputWidget;
+		private ITextBoxView? _currentInputWidget;
 		private bool _handlingTextChanged;
 		private GdkPoint _lastPosition = new GdkPoint(-1, -1);
 		private GdkSize _lastSize = new GdkSize(-1, -1);
@@ -74,10 +75,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			EnsureWidget(textBox);
 			ObserveTextChanges();
 			var textInputLayer = GetWindowTextInputLayer();
-			if (_currentInputWidget!.Parent != textInputLayer)
-			{
-				textInputLayer.Put(_currentInputWidget!, 0, 0);
-			}
+			_currentInputWidget!.AddToTextInputLayer(textInputLayer);
 			_lastSize = new GdkSize(-1, -1);
 			_lastPosition = new GdkPoint(-1, -1);
 			UpdateNativeView();
@@ -85,7 +83,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			InvalidateLayout();
 
 			textInputLayer.ShowAll();
-			_currentInputWidget!.HasFocus = true;
+			_currentInputWidget!.SetFocus(true);
 
 			// Selection is now handled by native control
 			if (_selectionStartCache != null && _selectionLengthCache != null)
@@ -116,8 +114,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			{
 				var bounds = GetNativeSelectionBounds();
 				(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
-				var textInputLayer = GetWindowTextInputLayer();
-				textInputLayer.Remove(_currentInputWidget);
+				_currentInputWidget.RemoveFromTextInputLayer();
 				RemoveForegroundCssProvider();
 			}
 		}
@@ -218,12 +215,18 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private void UpdateTextViewProperties(TextView textView, TextBox textBox)
 		{
 			textView.Editable = !textBox.IsReadOnly;
+			textView.WrapMode = textBox.TextWrapping switch
+			{
+				Windows.UI.Xaml.TextWrapping.Wrap => Gtk.WrapMode.WordChar,
+				Windows.UI.Xaml.TextWrapping.WrapWholeWords => Gtk.WrapMode.Word,
+				_ => Gtk.WrapMode.None,
+			};
 		}
 
 		private void UpdateEntryProperties(Entry entry, TextBox textBox)
 		{
 			entry.IsEditable = !textBox.IsReadOnly;
-			entry.MaxLength = textBox.MaxLength;
+			entry.MaxLength = textBox.MaxLength;			
 		}
 
 		private void EnsureWidget(TextBox textBox)
@@ -242,7 +245,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			var acceptsReturn = textBox.AcceptsReturn && !isPassword;
 
 			var isIncompatibleInputType =
-				(acceptsReturn && !(_currentInputWidget is TextView)) ||
+				(acceptsReturn && !(_currentInputWidget is MultilineTextBoxView)) ||
 				(!acceptsReturn && !(_currentInputWidget is Entry));
 			if (isIncompatibleInputType)
 			{
@@ -260,8 +263,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			Widget widget;
 			if (acceptsReturn)
 			{
-				var textView = new TextView();
-				widget = textView;
+				MultilineTextBoxView view = new MultilineTextBoxView();
+				widget = view.Widget;
 			}
 			else
 			{
@@ -280,7 +283,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		private void ObserveTextChanges()
 		{
-			if (_currentInputWidget is TextView textView)
+			if (_currentInputWidget is MultilineTextBoxView textView)
 			{
 				textView.Buffer.Changed += WidgetTextChanged;
 				_textChangedDisposable.Disposable = Disposable.Create(() =>
@@ -400,7 +403,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				entry.GetSelectionBounds(out var start, out var end);
 				return (start, end);
 			}
-			else if (_currentInputWidget is TextView textView)
+			else if (_currentInputWidget is MultilineTextBoxView textView)
 			{
 				textView.Buffer.GetSelectionBounds(out var start, out var end);
 				return (start.Offset, end.Offset); // TODO: Confirm this implementation is correct.
