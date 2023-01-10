@@ -895,16 +895,26 @@ namespace Uno.UI {
 		public setElementTransformNative(pParams: number): boolean {
 
 			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
 
-			const style = element.style;
-
-			const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
-			style.transform = matrix;
-
-			this.setAsArranged(element);
+			this.setElementTransformNativeFast(params.HtmlId, params.M11, params.M12, params.M21, params.M22, params.M31, params.M32);
 
 			return true;
+		}
+
+		public setElementTransformNativeFast(
+			htmlId: number,
+			m11: number,
+			m12: number,
+			m21: number,
+			m22: number,
+			m31: number,
+			m32: number) {
+
+			const element = this.getView(htmlId);
+
+			element.style.transform = `matrix(${m11},${m12},${m21},${m22},${m31},${m32})`;
+
+			this.setAsArranged(element);
 		}
 
 		private setPointerEvents(htmlId: number, enabled: boolean) {
