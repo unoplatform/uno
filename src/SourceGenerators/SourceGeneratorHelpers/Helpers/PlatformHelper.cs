@@ -21,14 +21,6 @@ namespace Uno.UI.SourceGenerators.Helpers
 
 			var isUAP = evaluatedValue?.Equals("UAP", StringComparison.OrdinalIgnoreCase) ?? false;
 
-			// Validate if we're running in a valid context, where CompileVisibleProperties for
-			// Uno's generators have been included. This may not be the case when building UAP targets
-			// for libraries, during the XamlPreCompile target.
-			var isInvalid =
-				string.IsNullOrEmpty(context.GetMSBuildPropertyValue("Configuration"))
-				&& string.IsNullOrEmpty(context.GetMSBuildPropertyValue("AssemblyName"))
-				&& string.IsNullOrEmpty(context.GetMSBuildPropertyValue("RootNamespace"));
-
 			// Those two checks are now required since VS 16.9 which enables source generators by default
 			// and the uno targets files are not present for uap targets.
 			var isWindowsRuntimeApplicationOutput = context.Compilation.Options.OutputKind == OutputKind.WindowsRuntimeApplication;
@@ -41,8 +33,7 @@ namespace Uno.UI.SourceGenerators.Helpers
 				&& !isWinAppSDK
 				&& !isNetCoreDesktop
 				&& !isWindowsRuntimeMetadataOutput
-				&& !isWindowsRuntimeApplicationOutput
-				&& !isInvalid;
+				&& !isWindowsRuntimeApplicationOutput;
 		}
 
 		public static bool IsAndroid(GeneratorExecutionContext context)
