@@ -231,6 +231,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetPointerEvents(htmlId, enabled);
+#else
 				var parms = new WindowManagerSetPointerEventsParams
 				{
 					HtmlId = htmlId,
@@ -238,6 +241,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
+#endif
 			}
 		}
 
@@ -1560,6 +1564,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
+			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);

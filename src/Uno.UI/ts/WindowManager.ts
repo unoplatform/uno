@@ -919,6 +919,10 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setPointerEventsNativeFast(htmlId: number, enabled: boolean) {
+			this.getView(htmlId).style.pointerEvents = enabled ? "auto" : "none";
+		}
+
 		/**
 			* Load the specified URL into a new tab or window
 			* @param url URL to load
