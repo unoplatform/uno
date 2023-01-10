@@ -83,7 +83,7 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		SetFont(textBox.FontWeight, textBox.FontSize);
 		SetForeground(textBox.Foreground);
 		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
-		//TODO:MZ: Support opacity
+		RootWidget.Opacity = textBox.Opacity;
 	}
 
 	public void SetFocus(bool isFocused) => InputWidget.HasFocus = isFocused;

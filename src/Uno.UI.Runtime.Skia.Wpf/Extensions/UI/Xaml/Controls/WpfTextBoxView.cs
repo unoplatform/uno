@@ -3,12 +3,13 @@
 using System;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Uno.UI.XamlHost.Skia.WPF.Hosting;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using WpfElement = System.Windows.UIElement;
+using WpfElement = System.Windows.FrameworkElement;
+using WpfControl = System.Windows.Controls.Control;
 using WpfCanvas = System.Windows.Controls.Canvas;
+using WpfFontWeight = System.Windows.FontWeight;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
@@ -27,7 +28,7 @@ internal abstract class WpfTextBoxView : ITextBoxView
 	/// <summary>
 	/// Represents the actual input widget.
 	/// </summary>
-	protected abstract WpfElement InputElement { get; }
+	protected abstract WpfControl[] InputControls { get; }
 
 	public abstract string Text { get; set; }
 
@@ -65,21 +66,7 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public virtual void UpdateProperties(TextBox textBox)
 	{
-		if ((_isPasswordBox && _currentPasswordBoxInputWidget == null) || _currentTextBoxInputWidget == null)
-		{
-			// If the input widget does not exist, we don't need to update it.
-			return;
-		}
-
-		var textBox = _owner.TextBox;
-		if (textBox == null)
-		{
-			// The parent TextBox must exist as source of properties.
-			return;
-		}
-
-		updateCommon(_currentTextBoxInputWidget);
-		updateCommon(_currentPasswordBoxInputWidget);
+		SetFont(textBox.FontWeight, textBox.FontSize);
 		SetForeground(textBox.Foreground);
 		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 
@@ -100,26 +87,10 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		{
 			_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
 		}
-
-		void updateCommon(System.Windows.Controls.Control? control)
-		{
-			if (control is null)
-			{
-				return;
-			}
-
-			control.FontSize = textBox.FontSize;
-			control.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
-		}
-
-
-		//SetFont(textBox.FontWeight, textBox.FontSize);
-		//SetForeground(textBox.Foreground);
-		//SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 	}
 
 	public void SetFocus(bool isFocused)
-	{
+	{	
 		if (_isPasswordBox && !_isPasswordRevealed)
 		{
 			_currentPasswordBoxInputWidget!.Focus();
@@ -132,29 +103,14 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public void SetSize(double width, double height)
 	{
-		updateSizeCore(_currentTextBoxInputWidget);
-		updateSizeCore(_currentPasswordBoxInputWidget);
-
-		void updateSizeCore(FrameworkElement? frameworkElement)
-		{
-			if (frameworkElement is not null && textInputLayer.Children.Contains(frameworkElement))
-			{
-				frameworkElement.Width = _contentElement.ActualWidth - _contentElement.Padding.Horizontal();
-				frameworkElement.Height = _contentElement.ActualHeight - _contentElement.Padding.Vertical();
-			}
-		}
+		RootElement.Width = RootElement.MaxWidth = width;
+		RootElement.Height = RootElement.MaxHeight = height;
 	}
 
 	public void SetPosition(double x, double y)
 	{
-		void updatePositionCore(FrameworkElement? frameworkElement)
-		{
-			if (frameworkElement is not null && textInputLayer.Children.Contains(frameworkElement))
-			{
-				WpfCanvas.SetLeft(frameworkElement, point.X);
-				WpfCanvas.SetTop(frameworkElement, point.Y);
-			}
-		}
+		WpfCanvas.SetLeft(RootElement, x);
+		WpfCanvas.SetTop(RootElement, y);
 	}
 
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
@@ -162,17 +118,12 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	private void SetFont(FontWeight fontWeight, double fontSize)
 	{
-		var fontDescription = new FontDescription
+		foreach (var control in InputControls)
 		{
-			Weight = fontWeight.ToPangoWeight(),
-			AbsoluteSize = fontSize * Pango.Scale.PangoScale,
-		};
-#pragma warning disable CS0612 // Type or member is obsolete
-		InputWidget.OverrideFont(fontDescription);
-#pragma warning restore CS0612 // Type or member is obsolete
+			control.FontSize = fontSize;
+			control.FontWeight = WpfFontWeight.FromOpenTypeWeight(fontWeight.Weight);
+		}
 	}
-
-
 
 	private void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 	{
@@ -203,9 +154,6 @@ internal abstract class WpfTextBoxView : ITextBoxView
 			_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
 		}
 	}
-
-
-
 
 	public void Select(int start, int length)
 	{
