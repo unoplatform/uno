@@ -1,17 +1,13 @@
 ﻿#nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Gtk;
-using Pango;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -19,23 +15,18 @@ using GdkPoint = Gdk.Point;
 using GdkSize = Gdk.Size;
 using GtkWindow = Gtk.Window;
 using Point = Windows.Foundation.Point;
-using Scale = Pango.Scale;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 {
 	internal class TextBoxViewExtension : ITextBoxViewExtension
 	{
-		private const string TextBoxViewCssClass = "textboxview";
-
-		private static bool _warnedAboutSelectionColorChanges;
-
 		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
 		private readonly GtkWindow _window;
 
 		private CssProvider? _foregroundCssProvider;
 		private ContentControl? _contentElement;
-		private ITextBoxView? _currentInputWidget;
+		private ITextBoxView? _textBoxView;
 		private bool _handlingTextChanged;
 		private GdkPoint _lastPosition = new GdkPoint(-1, -1);
 		private GdkSize _lastSize = new GdkSize(-1, -1);
@@ -72,18 +63,18 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = textBox.ContentElement;
-			EnsureWidget(textBox);
-			ObserveTextChanges();
+			EnsureTextBoxView(textBox);
+			ObserveNativeTextChanges();
 			var textInputLayer = GetWindowTextInputLayer();
-			_currentInputWidget!.AddToTextInputLayer(textInputLayer);
+			_textBoxView!.AddToTextInputLayer(textInputLayer);
 			_lastSize = new GdkSize(-1, -1);
 			_lastPosition = new GdkPoint(-1, -1);
 			UpdateNativeView();
-			SetWidgetText(textBox.Text);
+			SetNativeText(textBox.Text);
 			InvalidateLayout();
 
 			textInputLayer.ShowAll();
-			_currentInputWidget!.SetFocus(true);
+			_textBoxView!.SetFocus(true);
 
 			// Selection is now handled by native control
 			if (_selectionStartCache != null && _selectionLengthCache != null)
@@ -103,57 +94,34 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		public void EndEntry()
 		{
 			_textChangedDisposable.Disposable = null;
-			if (GetInputText() is { } inputText)
+			if (GetNativeText() is { } inputText)
 			{
 				_owner.UpdateTextFromNative(inputText);
 			}
 
 			_contentElement = null;
-
-			if (_currentInputWidget != null)
+			
+			if (_textBoxView != null)
 			{
 				var bounds = GetNativeSelectionBounds();
 				(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
-				_currentInputWidget.RemoveFromTextInputLayer();
+				_textBoxView.RemoveFromTextInputLayer();
 				RemoveForegroundCssProvider();
 			}
 		}
 
+		public void SetText(string text) => SetNativeText(text);
+
 		public void UpdateNativeView()
 		{
-			if (_currentInputWidget == null)
+			if (_textBoxView is null || _owner.TextBox is not { } textBox)
 			{
 				// If the input widget does not exist, we don't need to update it.
-				return;
-			}
-
-			var textBox = _owner.TextBox;
-			if (textBox == null)
-			{
 				// The parent TextBox must exist as source of properties.
 				return;
 			}
 
-			EnsureWidget(textBox);
-
-			var fontDescription = new FontDescription
-			{
-				Weight = textBox.FontWeight.ToPangoWeight(),
-				AbsoluteSize = textBox.FontSize * Scale.PangoScale,
-			};
-#pragma warning disable CS0612 // Type or member is obsolete
-			_currentInputWidget.OverrideFont(fontDescription);
-#pragma warning restore CS0612 // Type or member is obsolete
-
-			switch (_currentInputWidget)
-			{
-				case Entry entry:
-					UpdateEntryProperties(entry, textBox);
-					break;
-				case TextView textView:
-					UpdateTextViewProperties(textView, textBox);
-					break;
-			}
+			EnsureTextBoxView(textBox);
 		}
 
 		public void InvalidateLayout()
@@ -162,15 +130,19 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			UpdatePosition();
 		}
 
+		public void UpdateProperties()
+		{
+			if (_owner?.TextBox is { } textBox)
+			{
+				_textBoxView?.UpdateProperties(textBox);
+			}
+		}
+			
 		public void UpdateSize()
 		{
-			if (_contentElement == null || _currentInputWidget == null)
-			{
-				return;
-			}
-
-			var textInputLayer = GetWindowTextInputLayer();
-			if (!textInputLayer.Children.Contains(_currentInputWidget))
+			if (_contentElement is null ||
+				_textBoxView is null ||
+				!_textBoxView.IsDisplayed)
 			{
 				return;
 			}
@@ -181,180 +153,34 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			if (_lastSize.Width != width || _lastSize.Height != height)
 			{
 				_lastSize = new GdkSize(width, height);
-				_currentInputWidget?.SetSizeRequest(_lastSize.Width, _lastSize.Height);
+				_textBoxView.SetSize(_lastSize.Width, _lastSize.Height);
 			}
 		}
 
 		public void UpdatePosition()
 		{
-			if (_contentElement == null || _currentInputWidget == null)
+			if (_contentElement == null ||
+				_textBoxView == null ||
+				!_textBoxView.IsDisplayed)
 			{
 				return;
 			}
-
-			var textInputLayer = GetWindowTextInputLayer();
-			if (!textInputLayer.Children.Contains(_currentInputWidget))
-			{
-				return;
-			}
-
+			
 			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
 			var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
-			var pointX = point.X;
-			var pointY = point.Y;
+			var pointX = (int)point.X;
+			var pointY = (int)point.Y;
 
 			if (_lastPosition.X != pointX || _lastPosition.Y != pointY)
 			{
-				_lastPosition = new GdkPoint((int)pointX, (int)pointY);
-				textInputLayer.Move(_currentInputWidget, _lastPosition.X, _lastPosition.Y);
+				_lastPosition = new GdkPoint(pointX, pointY);
+				_textBoxView.SetPosition(pointX, pointY);
 			}
-		}
-
-		public void SetTextNative(string text) => SetWidgetText(text);
-
-		private void UpdateTextViewProperties(TextView textView, TextBox textBox)
-		{
-			textView.Editable = !textBox.IsReadOnly;
-			textView.WrapMode = textBox.TextWrapping switch
-			{
-				Windows.UI.Xaml.TextWrapping.Wrap => Gtk.WrapMode.WordChar,
-				Windows.UI.Xaml.TextWrapping.WrapWholeWords => Gtk.WrapMode.Word,
-				_ => Gtk.WrapMode.None,
-			};
-		}
-
-		private void UpdateEntryProperties(Entry entry, TextBox textBox)
-		{
-			entry.IsEditable = !textBox.IsReadOnly;
-			entry.MaxLength = textBox.MaxLength;			
-		}
-
-		private void EnsureWidget(TextBox textBox)
-		{
-			var isPassword = false;
-			var isPasswordVisible = true;
-			if (textBox is PasswordBox passwordBox)
-			{
-				isPassword = true;
-				isPasswordVisible = passwordBox.PasswordRevealMode == PasswordRevealMode.Visible;
-			}
-
-			// On UWP, A PasswordBox doesn't have AcceptsReturn property.
-			// The property exists on Uno because PasswordBox incorrectly inherits TextBox.
-			// If we have PasswordBox, ignore AcceptsReturnValue and always use Gtk.Entry
-			var acceptsReturn = textBox.AcceptsReturn && !isPassword;
-
-			var isIncompatibleInputType =
-				(acceptsReturn && !(_currentInputWidget is MultilineTextBoxView)) ||
-				(!acceptsReturn && !(_currentInputWidget is Entry));
-			if (isIncompatibleInputType)
-			{
-				var inputText = GetInputText();
-				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
-				SetWidgetText(inputText ?? string.Empty);
-			}
-			SetForeground(textBox.Foreground);
-			SetSelectionHighlightColor(textBox.SelectionHighlightColor);
-		}
-
-		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)
-		{
-			Debug.Assert(!acceptsReturn || !isPassword);
-			Widget widget;
-			if (acceptsReturn)
-			{
-				MultilineTextBoxView view = new MultilineTextBoxView();
-				widget = view.Widget;
-			}
-			else
-			{
-				var entry = new Entry();
-				if (isPassword)
-				{
-					entry.InputPurpose = InputPurpose.Password;
-					entry.Visibility = isPasswordVisible;
-				}
-
-				widget = entry;
-			}
-			widget.StyleContext.AddClass(TextBoxViewCssClass);
-			return widget;
-		}
-
-		private void ObserveTextChanges()
-		{
-			if (_currentInputWidget is MultilineTextBoxView textView)
-			{
-				textView.Buffer.Changed += WidgetTextChanged;
-				_textChangedDisposable.Disposable = Disposable.Create(() =>
-				{
-					textView.Buffer.Changed -= WidgetTextChanged;
-				});
-			}
-			else if (_currentInputWidget is Entry entry)
-			{
-				entry.Changed += WidgetTextChanged;
-				_textChangedDisposable.Disposable = Disposable.Create(() =>
-				{
-					entry.Changed -= WidgetTextChanged;
-				});
-			}
-		}
-
-		private void WidgetTextChanged(object? sender, EventArgs e)
-		{
-			// Avoid stack overflow as updating text from
-			// shared code briefly sets empty string and causes
-			// infinite loop
-			if (_handlingTextChanged)
-			{
-				return;
-			}
-
-			try
-			{
-				_handlingTextChanged = true;
-				_owner.UpdateTextFromNative(GetInputText() ?? string.Empty);
-
-			}
-			finally
-			{
-				_handlingTextChanged = false;
-			}
-		}
-
-		private string? GetInputText() =>
-			_currentInputWidget switch
-			{
-				Entry entry => entry.Text,
-				TextView textView => textView.Buffer.Text,
-				_ => null
-			};
-
-		private void SetWidgetText(string text)
-		{
-			switch (_currentInputWidget)
-			{
-				case Entry entry:
-					// Avoid setting same text (as it raises WidgetTextChanged on GTK).
-					if (entry.Text != text)
-					{
-						entry.Text = text;
-					}
-					break;
-				case TextView textView:
-					// Avoid setting same text (as it raises WidgetTextChanged on GTK).
-					if (textView.Buffer.Text != text)
-					{
-						textView.Buffer.Text = text;
-					}
-					break;
-			};
 		}
 
 		public void SetIsPassword(bool isPassword)
 		{
-			if (_currentInputWidget is Entry entry)
+			if (_textBoxView is Entry entry)
 			{
 				entry.Visibility = !isPassword;
 			}
@@ -368,7 +194,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			EnsureWidget(textBox);
+			EnsureTextBoxView(textBox);
 			if (textBox.FocusState == FocusState.Unfocused)
 			{
 				// Native control can't handle selection until it is part of visual tree.
@@ -381,37 +207,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				SetNativeSelectionBounds(start, start + length);
 			}
 		}
-
-		private void SetNativeSelectionBounds(int start, int end)
-		{
-			if (_currentInputWidget is Entry entry)
-			{
-				entry.SelectRegion(start_pos: start, end_pos: end);
-			}
-			else if (_currentInputWidget is TextView textView)
-			{
-				var startIterator = textView.Buffer.GetIterAtOffset(start);
-				var endIterator = textView.Buffer.GetIterAtOffset(end);
-				textView.Buffer.SelectRange(startIterator, endIterator);
-			}
-		}
-
-		private (int start, int end) GetNativeSelectionBounds()
-		{
-			if (_currentInputWidget is Entry entry)
-			{
-				entry.GetSelectionBounds(out var start, out var end);
-				return (start, end);
-			}
-			else if (_currentInputWidget is MultilineTextBoxView textView)
-			{
-				textView.Buffer.GetSelectionBounds(out var start, out var end);
-				return (start.Offset, end.Offset); // TODO: Confirm this implementation is correct.
-			}
-
-			return (0, 0);
-		}
-
+	
 		public int GetSelectionStart()
 		{
 			var textBox = _owner.TextBox;
@@ -420,14 +216,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return 0;
 			}
 
-			if (textBox.FocusState == FocusState.Unfocused)
-			{
-				return _selectionStartCache ?? 0;
-			}
-			else
-			{
-				return GetNativeSelectionBounds().start;
-			}
+			return textBox.FocusState == FocusState.Unfocused ?
+				_selectionStartCache ?? 0 :
+				GetNativeSelectionBounds().start;
 		}
 
 		public int GetSelectionLength()
@@ -448,45 +239,68 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return bounds.end - bounds.start;
 			}
 		}
+		
+		private void SetNativeSelectionBounds(int start, int end) => _textBoxView?.SetSelectionBounds(start, end);
 
-		public void SetForeground(Brush brush)
+		private (int start, int end) GetNativeSelectionBounds() => _textBoxView?.GetSelectionBounds() ?? (0, 0);
+		
+		private void EnsureTextBoxView(TextBox textBox)
 		{
-			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
+			if (_textBoxView is null ||
+				!_textBoxView.IsCompatible(textBox))
 			{
-				RemoveForegroundCssProvider();
-				_foregroundCssProvider = new CssProvider();
-				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
-				var cssClassName = $"textbox_foreground_{_textBoxViewId}";
-				var data = $".{cssClassName}, .{cssClassName} text {{ caret-color: {color}; color: {color}; }}";
-				_foregroundCssProvider.LoadFromData(data);
-				StyleContext.AddProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider, priority: uint.MaxValue);
-				if (!_currentInputWidget.StyleContext.HasClass(cssClassName))
-				{
-					_currentInputWidget.StyleContext.AddClass(cssClassName);
-				}
+				var inputText = GetNativeText();
+				_textBoxView = GtkTextBoxView.Create(textBox);
+				SetNativeText(inputText ?? string.Empty);
+			}
+
+			_textBoxView.UpdateProperties(textBox);
+		}
+
+		private void ObserveNativeTextChanges()
+		{
+			_textChangedDisposable.Disposable = null;
+			if (_textBoxView is not null)
+			{
+				_textChangedDisposable.Disposable = _textBoxView.ObserveTextChanges(NativeTextChanged);
 			}
 		}
 
-		private void RemoveForegroundCssProvider()
+		private void NativeTextChanged(object? sender, EventArgs e)
 		{
-			if (_foregroundCssProvider is not null)
+			// Avoid stack overflow as updating text from
+			// shared code briefly sets empty string and causes
+			// infinite loop
+			if (_handlingTextChanged)
 			{
-				StyleContext.RemoveProviderForScreen(Gdk.Screen.Default, _foregroundCssProvider);
-				_foregroundCssProvider.Dispose();
-				_foregroundCssProvider = null;
+				return;
+			}
+
+			try
+			{
+				_handlingTextChanged = true;
+				_owner.UpdateTextFromNative(GetNativeText() ?? string.Empty);
+
+			}
+			finally
+			{
+				_handlingTextChanged = false;
 			}
 		}
 
-		public void SetSelectionHighlightColor(Brush brush)
+		private string? GetNativeText() => _textBoxView?.Text;
+
+		private void SetNativeText(string text)
 		{
-			if (!_warnedAboutSelectionColorChanges)
+			if (_textBoxView is null)
 			{
-				_warnedAboutSelectionColorChanges = true;
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					// Selection highlight color change is not supported on GTK currently
-					this.Log().LogWarning("SelectionHighlightColor changes are currently not supported on GTK");
-				}
+				return;
+			}
+
+			// Avoid setting same text (as it raises WidgetTextChanged on GTK).
+			if (_textBoxView.Text != text)
+			{
+				_textBoxView.Text = text;
 			}
 		}
 	}

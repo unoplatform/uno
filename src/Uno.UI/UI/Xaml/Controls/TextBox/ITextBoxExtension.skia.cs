@@ -20,7 +20,7 @@ namespace Uno.UI.Xaml.Controls.Extensions
 
 		void UpdatePosition();
 
-		void SetTextNative(string text);
+		void SetText(string text);
 
 		void SetIsPassword(bool isPassword);
 
@@ -30,8 +30,6 @@ namespace Uno.UI.Xaml.Controls.Extensions
 
 		int GetSelectionLength();
 
-		void SetForeground(Windows.UI.Xaml.Media.Brush brush);
-
-		void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush);
+		void UpdateProperties();
 	}
 }
