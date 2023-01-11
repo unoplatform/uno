@@ -26,6 +26,16 @@
 			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
 		</PropertyGroup>
 	</Target>
+
+	<PropertyGroup>
+		<!--
+		Ensures that AssignLinkMetadata runs before AssignTargetPaths.
+		Otherwise, AssignTargetPath will generate a rooted path and will break embedded sources
+		LogicalName metadata's behavior.
+		-->
+		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
+	</PropertyGroup>
+
 	<!--
 	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
 
