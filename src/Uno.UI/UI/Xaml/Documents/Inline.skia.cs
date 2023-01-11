@@ -106,12 +106,11 @@ namespace Windows.UI.Xaml.Documents
 			{
 				skTypeFace = GetDefaultTypeFace();
 			}
-			else if (name.StartsWith(XamlFilePathHelper.AppXIdentifier, StringComparison.Ordinal))
+			else if (XamlFilePathHelper.TryGetMsAppxAssetPath(name, out var path))
 			{
-				var path = new Uri(name).PathAndQuery;
-
-				var filePath = global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path, path.TrimStart('/')
-					.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
+				var filePath = global::System.IO.Path.Combine(
+					Windows.Application­Model.Package.Current.Installed­Location.Path
+					, path.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
 
 				// SKTypeface.FromFile may return null if the file is not found (SkiaSharp is not yet nullable attributed)
 				skTypeFace = SKTypeface.FromFile(filePath);

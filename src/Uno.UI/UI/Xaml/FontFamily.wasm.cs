@@ -65,9 +65,9 @@ namespace Windows.UI.Xaml.Media
 					uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
 				}
 
-				if (uri.IsAbsoluteUri && uri.Scheme is "ms-appx")
+				if (Uno.UI.Xaml.XamlFilePathHelper.TryGetMsAppxAssetPath(uri, out var path))
 				{
-					var assetUri = AssetsPathBuilder.BuildAssetUri(uri.PathAndQuery.TrimStart('/'));
+					var assetUri = AssetsPathBuilder.BuildAssetUri(path);
 					uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
 				}
 

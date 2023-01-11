@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -22,7 +25,7 @@ namespace Windows.UI
 {
 	internal static class UIFontHelper
 	{
-		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, UIFont> _tryGetFont;
+		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, UIFont?> _tryGetFont;
 
 		private const int DefaultUIFontPreferredBodyFontSize = 17;
 		private static float? DefaultPreferredBodyFontSize = UIFont.PreferredBody.FontDescriptor.FontAttributes.Size;
@@ -33,7 +36,7 @@ namespace Windows.UI
 			_tryGetFont = _tryGetFont.AsMemoized();
 		}
 
-		internal static UIFont TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, float? preferredBodyFontSize = null)
+		internal static UIFont? TryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, float? preferredBodyFontSize = null)
 		{
 			return _tryGetFont(size, fontWeight, fontStyle, requestedFamily, preferredBodyFontSize ?? DefaultPreferredBodyFontSize);
 		}
@@ -72,24 +75,31 @@ namespace Windows.UI
 			return size * originalScale;
 		}
 
-		private static UIFont InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
+		private static UIFont? InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
 		{
-			UIFont font = null;
+			UIFont? font = null;
 
 			size = GetScaledFontSize(size, basePreferredSize);
 
-			if (requestedFamily?.Source != null)
+			if (requestedFamily?.Source is not null)
 			{
-				var fontFamilyName = FontFamilyHelper.RemoveUri(requestedFamily.Source);
+				if (XamlFilePathHelper.TryGetMsAppxAssetPath(requestedFamily.Source, out var path))
+				{
+					font = GetCustomFont(size, path, fontWeight, fontStyle);
+				}
+				else
+				{
+					var fontFamilyName = FontFamilyHelper.RemoveUri(requestedFamily.Source);
 
-				// If there's a ".", we assume there's an extension and that it's a font file path.
-				font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, fontWeight, fontStyle) : GetSystemFont(size, fontWeight, fontStyle, fontFamilyName);
+					// If there's a ".", we assume there's an extension and that it's a font file path.
+					font = fontFamilyName.Contains(".") ? GetCustomFont(size, fontFamilyName, fontWeight, fontStyle) : GetSystemFont(size, fontWeight, fontStyle, fontFamilyName);
+				}
 			}
 
 			return font ?? GetDefaultFont(size, fontWeight, fontStyle);
 		}
 
-		private static UIFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle)
+		private static UIFont? GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle)
 		{
 			if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 2))
 			{
@@ -100,9 +110,9 @@ namespace Windows.UI
 		}
 
 #region Load Custom Font
-		private static UIFont GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
+		private static UIFont? GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
 		{
-			UIFont font;
+			UIFont? font;
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
 			if (fontPath.Contains("#"))
 			{
@@ -122,7 +132,10 @@ namespace Windows.UI
 				font = GetDefaultFont(size, fontWeight, fontStyle);
 			}
 
-			font = ApplyWeightAndStyle(font, size, fontWeight, fontStyle);
+			if (font is not null)
+			{
+				font = ApplyWeightAndStyle(font, size, fontWeight, fontStyle);
+			}
 
 			return font;
 		}
@@ -197,50 +210,79 @@ namespace Windows.UI
 			return font;
 		}
 
-		private static UIFont GetFontFromFamilyName(nfloat size, string familyName)
+		private static UIFont? GetFontFromFamilyName(nfloat size, string familyName)
 		{
 			//If only one font exists for this family name, use it. Otherwise we will need to inspect the file for the right font name
 			var fontNames = UIFont.FontNamesForFamilyName(familyName);
 			return fontNames.Length == 1 ? UIFont.FromName(fontNames[0], size) : null;
 		}
 
-		private static UIFont GetFontFromFile(nfloat size, string file)
+		private static UIFont? GetFontFromFile(nfloat size, string file)
 		{
 			var fileName = Path.GetFileNameWithoutExtension(file);
-			var fileExtension = Path.GetExtension(file)?.Replace(".", "");
+			var fileExtension = Path.GetExtension(file)!.Substring(1);
 
-			var url = NSBundle
-				.MainBundle
-				.GetUrlForResource(
-					name: fileName,
-					fileExtension: fileExtension,
-					subdirectory: "Fonts"
-				);
+			var url = file.Contains("/")
 
-			if (url == null)
+				// Search the file using the appropriate subdirectory
+				? NSBundle
+					.MainBundle
+					.GetUrlForResource(
+						name: fileName,
+						fileExtension: fileExtension,
+						subdirectory: Path.GetDirectoryName(file))
+
+				// Legacy behavior when fonts were located in the fonts folder.
+				: NSBundle
+					.MainBundle
+					.GetUrlForResource(
+						name: fileName,
+						fileExtension: fileExtension,
+						subdirectory: "Fonts");
+
+			if (url is null)
 			{
+				if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(UIFontHelper).Log().Debug($"Unable to find font in bundle using {file}");
+				}
+
 				return null;
 			}
 
 			var fontData = NSData.FromUrl(url);
-			if (fontData == null)
+			if (fontData is null)
 			{
+				if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(UIFontHelper).Log().Debug($"Unable to load font in bundle using {url}");
+				}
+
 				return null;
 			}
 
 			//iOS loads UIFonts based on the PostScriptName of the font file
-			using (var fontProvider = new CGDataProvider(fontData))
+			using var fontProvider = new CGDataProvider(fontData);
+			var font = CGFont.CreateFromProvider(fontProvider);
+
+			if (font is not null && CoreText.CTFontManager.RegisterGraphicsFont(font, out var error))
 			{
-				using (var font = CGFont.CreateFromProvider(fontProvider))
+				return UIFont.FromName(font.PostScriptName, size);
+			}
+			else
+			{
+				if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Debug))
 				{
-					return font != null ? UIFont.FromName(font.PostScriptName, size) : null;
+					typeof(UIFontHelper).Log().Debug($"Unable to register font from {file}");
 				}
+
+				return null;
 			}
 		}
 #endregion
 
 #region Load System Font
-		private static UIFont GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
+		private static UIFont? GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
 		{
 			//based on Fonts available @ http://iosfonts.com/
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)

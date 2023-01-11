@@ -67,9 +67,11 @@ namespace Windows.UI.Xaml
 						typeof(FontHelper).Log().Debug($"Searching for font as asset [{source}]");
 					}
 
+					var encodedSource = AndroidResourceNameEncoder.EncodeFileSystemPath(source, prefix: "");
+
 					// We need to lookup assets manually, as assets are stored this way by android, but windows
 					// is case insensitive.
-					string actualAsset = AssetsHelper.FindAssetFile(source);
+					string actualAsset = AssetsHelper.FindAssetFile(encodedSource);
 					if (actualAsset != null)
 					{
 						typeface = Android.Graphics.Typeface.CreateFromAsset(Android.App.Application.Context.Assets, actualAsset);

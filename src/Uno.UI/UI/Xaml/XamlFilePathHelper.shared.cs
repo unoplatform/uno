@@ -1,4 +1,7 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using Uno.Extensions;
@@ -8,7 +11,8 @@ namespace Uno.UI.Xaml
 	internal static class XamlFilePathHelper
 	{
 		private const string WinUIThemeResourceURLFormatString = "Microsoft.UI.Xaml/Themes/themeresources_v{0}.xaml";
-		public const string AppXIdentifier = "ms-appx:///";
+		public const string AppXIdentifier = AppXScheme + ":///";
+		public const string AppXScheme = "ms-appx";
 		public const string MSResourceIdentifier = "ms-resource:///";
 		public static string LocalResourcePrefix => $"{MSResourceIdentifier}Files/";
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
@@ -50,9 +54,9 @@ namespace Uno.UI.Xaml
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{
 			var addedRootLength = 0;
-			if (Path.GetPathRoot(originDirectory).Length == 0)
+			if (Path.GetPathRoot(originDirectory) is { Length: 0 })
 			{
-				var localRoot = Path.GetPathRoot(Directory.GetCurrentDirectory());
+				var localRoot = Path.GetPathRoot(Directory.GetCurrentDirectory())!;
 				addedRootLength = localRoot.Length;
 				// Prepend a dummy root so that GetFullPath doesn't try to add the working directory. We remove it immediately afterward.
 				originDirectory = localRoot + originDirectory;
@@ -64,6 +68,44 @@ namespace Uno.UI.Xaml
 			absoluteTargetPath = absoluteTargetPath.Substring(addedRootLength);
 
 			return absoluteTargetPath;
+		}
+
+		internal static bool TryGetMsAppxAssetPath(string? uri, [NotNullWhen(true)] out string? path)
+		{
+			if(Uri.TryCreate(uri, UriKind.Absolute, out var newUri) && TryGetMsAppxAssetPath(newUri, out path))
+			{
+				return true;
+			}
+			else
+			{
+				path = null;
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Builds an internal asset path based on the assembly name and asset path
+		/// </summary>
+		/// <param name="uri">An ms-appx schemed uri</param>
+		/// <returns>The local asset path</returns>
+		internal static bool TryGetMsAppxAssetPath(Uri uri, [NotNullWhen(true)] out string? path)
+		{
+			if (uri.Scheme.Equals(XamlFilePathHelper.AppXScheme, StringComparison.OrdinalIgnoreCase))
+			{
+				path = uri.PathAndQuery.TrimStart('/');
+
+				if (uri.Host is { Length: > 0 } host)
+				{
+					path = host.ToLowerInvariant() + "/" + path;
+				}
+
+				return true;
+			}
+			else
+			{
+				path = null;
+				return false;
+			}
 		}
 	}
 }
