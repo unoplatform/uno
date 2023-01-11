@@ -21,7 +21,7 @@ namespace Windows.UI.Composition
 	{
 		private const double __millisecondsPerSecond = 1000d;
 
-		private static int _id = 0;
+		private static int _id;
 
 		private readonly CALayer _layer;
 		private readonly string _property;
@@ -52,7 +52,7 @@ namespace Windows.UI.Composition
 			/// <summary>
 			/// The animation stopped successfully
 			/// </summary>
-			Sucesss = 0,
+			Success = 0,
 
 			/// <summary>
 			/// The animation got stopped (e.g. the animated layer is not in the visual tree)
@@ -180,7 +180,7 @@ namespace Windows.UI.Composition
 			animation.FillMode = CAFillMode.Forwards;
 			// Let the 'OnAnimationStop' forcefully apply the final value before removing the animation.
 			// That's required for Storyboards that animating multiple properties of the same object at once.
-			animation.RemovedOnCompletion = false; 
+			animation.RemovedOnCompletion = false;
 			animation.AnimationStarted += OnAnimationStarted(animation);
 			animation.AnimationStopped += OnAnimationStopped(animation);
 
@@ -323,8 +323,7 @@ namespace Windows.UI.Composition
 					// We have to remove the animation only in case of 'StopReason.Completed',
 					// for other cases it's what we actually did to request the stop.
 					layer?.RemoveAnimation(_key);
-
-					_onCompleted(args.Finished ? CompletedInfo.Sucesss : CompletedInfo.Error);
+					_onCompleted(args.Finished ? CompletedInfo.Success : CompletedInfo.Error);
 				}
 			}
 		}
