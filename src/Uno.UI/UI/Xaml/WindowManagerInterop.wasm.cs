@@ -187,6 +187,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetElementTransform(htmlId, matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.M31, matrix.M32);
+#else
 				var parms = new WindowManagerSetElementTransformParams
 				{
 					HtmlId = htmlId,
@@ -199,6 +202,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
+#endif
 			}
 		}
 
@@ -231,6 +235,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetPointerEvents(htmlId, enabled);
+#else
 				var parms = new WindowManagerSetPointerEventsParams
 				{
 					HtmlId = htmlId,
@@ -238,6 +245,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
+#endif
 			}
 		}
 
@@ -1560,6 +1568,12 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
+			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
+			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
