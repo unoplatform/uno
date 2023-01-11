@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 	internal class GPUFloatValueAnimator : IValueAnimator
 	{
 		private static readonly string __notSupportedProperty = "This transform is not supported by GPU enabled animations.";
-		private static readonly List<ManagedWeakReference> _weakActiveInstanceCache = new();
+		private static readonly List<ManagedWeakReference> _weakActiveInstanceCache = new List<ManagedWeakReference>();
 		private static bool _subscribedToVisibilityChanged;
 
 		private float _to;
