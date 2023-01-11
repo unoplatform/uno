@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Uno.UI.DataBinding;
 #if __IOS__
 using UIKit;
