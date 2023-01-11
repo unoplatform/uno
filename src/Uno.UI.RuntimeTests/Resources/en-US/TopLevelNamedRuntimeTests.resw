@@ -117,13 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RuntimeTests_AdditionalResource" xml:space="preserve">
-    <value>RuntimeTest Additional Resource</value>
-  </data>
-  <data name="SomePrefix/When_xUid_With_Prefix.Text" xml:space="preserve">
-    <value>en-US Value for SomePrefix/When_xUid_With_Prefix</value>
-  </data>
-  <data name="When_xUid.Text" xml:space="preserve">
-    <value>en-US Value for When_xUid</value>
+  <data name="When_xUid_Explicit.Text" xml:space="preserve">
+    <value>en-US Value for When_xUid_Explicit in TopLevelNamedRuntimeTests</value>
   </data>
 </root>
