@@ -202,4 +202,16 @@
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
+  
+	<Target Name="_PrepareUnoResourcesGeneration" BeforeTargets="BeforeBuild" Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.Mac' and '$(_IsUnoUISolution)'=='true'">
+		
+		<PropertyGroup>
+			<!--
+			AssignTargetPathsDependsOn is reset forcibly by a targets file included after this current file.
+			This does not happen when running through a nuget package.
+			-->
+			<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
+		</PropertyGroup>
+		
+	</Target>
 </Project>
