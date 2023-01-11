@@ -1,23 +1,27 @@
 namespace Windows.ApplicationModel.Resources.Core;
 
-public  partial class ResourceManager 
+/// <summary>
+/// Provides access to application resource maps and more advanced resource functionality.
+/// </summary>
+public partial class ResourceManager 
 {
-	public  global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap> AllResourceMaps
+	private ResourceManager() { }
+
+	/// <summary>
+	/// Gets the ResourceManager for the currently running application.
+	/// </summary>
+	public static ResourceManager Current { get; } = new ResourceManager();
+	
+	public global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap> AllResourceMaps
 	{
 		get
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ResourceMap> ResourceManager.AllResourceMaps is not implemented in Uno.");
 		}
 	}
+
+	public ResourceContext DefaultContext { get; } = new ResourceContext();
 	
-	public  global::Windows.ApplicationModel.Resources.Core.ResourceContext DefaultContext
-	{
-		get
-		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceManager.DefaultContext is not implemented in Uno.");
-		}
-	}
-	#endif
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public  global::Windows.ApplicationModel.Resources.Core.ResourceMap MainResourceMap
@@ -27,17 +31,7 @@ public  partial class ResourceManager
 			throw new global::System.NotImplementedException("The member ResourceMap ResourceManager.MainResourceMap is not implemented in Uno.");
 		}
 	}
-	#endif
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public static global::Windows.ApplicationModel.Resources.Core.ResourceManager Current
-	{
-		get
-		{
-			throw new global::System.NotImplementedException("The member ResourceManager ResourceManager.Current is not implemented in Uno.");
-		}
-	}
-	#endif
+#endif
 	// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.MainResourceMap.get
 	// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.AllResourceMaps.get
 	// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.DefaultContext.get
