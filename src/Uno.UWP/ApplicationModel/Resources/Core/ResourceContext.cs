@@ -6,12 +6,9 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 		}
 
-		public static ResourceContext GetForCurrentView() => ResourceManager.Current.DefaultContext;
+		public static ResourceContext GetForCurrentView() => new ResourceContext();
 
-		public static ResourceContext GetForViewIndependentUse()
-		{
-			return ResourceManager.Current.DefaultContext; //TODO:MZ: Should be the same?
-		}
+		public static ResourceContext GetForViewIndependentUse() => new ResourceContext();
 
 		public global::System.Collections.Generic.IReadOnlyList<string> Languages
 		{
