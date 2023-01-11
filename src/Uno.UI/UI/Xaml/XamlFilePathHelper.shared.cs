@@ -90,7 +90,7 @@ namespace Uno.UI.Xaml
 		/// <returns>The local asset path</returns>
 		internal static bool TryGetMsAppxAssetPath(Uri uri, [NotNullWhen(true)] out string? path)
 		{
-			if (uri.Scheme.Equals(XamlFilePathHelper.AppXScheme, StringComparison.OrdinalIgnoreCase))
+			if (uri.IsAbsoluteUri && uri.Scheme.Equals(XamlFilePathHelper.AppXScheme, StringComparison.OrdinalIgnoreCase))
 			{
 				path = uri.PathAndQuery.TrimStart('/');
 
