@@ -203,7 +203,7 @@
 		</ItemGroup>
 	</Target>
   
-	<Target Name="_PrepareUnoResourcesGeneration" BeforeTargets="BeforeBuild" Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.Mac' and '$(_IsUnoUISolution)'=='true'">
+	<Target Name="_PrepareUnoResourcesGeneration" BeforeTargets="BeforeBuild">
 		
 		<PropertyGroup>
 			<!--
