@@ -1846,6 +1846,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						);
 					}
 				}
+				else if (HasCustomMarkupExtension(valueNode))
+				{
+					var propertyValue = GetCustomMarkupExtensionValue(valueNode);
+					if (isDependencyProperty)
+					{
+						TryAnnotateWithGeneratorSource(writer, suffix: "CustomMarkupExtensionValueDP");
+						writer.AppendLineInvariantIndented(
+							"new global::Windows.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
+							GetGlobalizedTypeName(fullTargetType),
+							property,
+							propertyType,
+							propertyValue
+						);
+					}
+					else
+					{
+						TryAnnotateWithGeneratorSource(writer, suffix: "CustomMarkupExtensionValuePOCO");
+						writer.AppendLineInvariantIndented(
+							"new global::Windows.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
+							GetGlobalizedTypeName(fullTargetType),
+							property,
+							propertyValue,
+							targetInstance
+						);
+					}
+				}
 				else if (isDependencyProperty && HasResourceMarkupExtension(valueNode))
 				{
 					TryAnnotateWithGeneratorSource(writer, suffix: "IsResourceMarkupValueDP");
