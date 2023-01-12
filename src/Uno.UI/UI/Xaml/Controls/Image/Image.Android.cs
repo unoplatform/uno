@@ -257,14 +257,6 @@ namespace Windows.UI.Xaml.Controls
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
 		}
 
-		private void Dispatch(Func<CancellationToken, Task> handler, CancellationToken ct)
-		{
-			Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
-				() => handler(ct)
-			).AsTask(ct);
-		}
-
 		private void Dispatch(Action<CancellationToken> handler, CancellationToken ct)
 		{
 			Dispatcher.RunAsync(
