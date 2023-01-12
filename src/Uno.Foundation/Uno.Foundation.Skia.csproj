@@ -18,6 +18,7 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<NoWarn>$(NoWarn);IDE0055</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

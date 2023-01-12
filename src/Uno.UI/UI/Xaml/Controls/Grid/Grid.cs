@@ -1353,8 +1353,8 @@ namespace Windows.UI.Xaml.Controls
 			LockDefinitions();
 #if !HAS_EXPENSIVE_TRYFINALLY
 			try
-			{
 #endif
+			{
 				var result = InnerArrangeOverride(finalSize);
 
 #if HAS_EXPENSIVE_TRYFINALLY
@@ -1363,9 +1363,8 @@ namespace Windows.UI.Xaml.Controls
 				UnlockDefinitions();
 #endif
 				return result;
-
-#if !HAS_EXPENSIVE_TRYFINALLY
 			}
+#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
 			{
 				m_ppTempDefinitions = null;

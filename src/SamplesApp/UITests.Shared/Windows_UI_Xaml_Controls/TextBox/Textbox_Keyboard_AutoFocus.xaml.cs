@@ -26,7 +26,7 @@ namespace GenericApp.Views.Content.UITests.TextBoxControl
 		{
 			var textbox = sender as TextBox;
 			textbox.BecomeFirstResponder();
-        }
+		}
 #else
 		private void RequestTextboxFocus(object sender, RoutedEventArgs e)
 		{
