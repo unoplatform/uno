@@ -139,6 +139,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly Dictionary<INamedTypeSymbol, int> _xamlAppliedTypes = new Dictionary<INamedTypeSymbol, int>();
 
+		private readonly INamedTypeSymbol _assemblyMetadataSymbol;
+
 		private readonly INamedTypeSymbol _elementStubSymbol;
 		private readonly INamedTypeSymbol _contentPresenterSymbol;
 		private readonly INamedTypeSymbol _stringSymbol;
@@ -273,6 +275,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_String);
 			_objectSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_Object);
+            _assemblyMetadataSymbol = (INamedTypeSymbol)_metadataHelper.FindTypeByFullName("System.Reflection.AssemblyMetadataAttribute");
 			_elementStubSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ElementStub);
 			_setterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Setter);
 			_contentPresenterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ContentPresenter);
@@ -735,80 +738,41 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
 
-			foreach (var reference in _metadataHelper.Compilation.ExternalReferences)
+			foreach (var reference in _metadataHelper.Compilation.References)
 			{
-				string? GetFilePath()
-				{
-					if (reference is PortableExecutableReference per && File.Exists(per.FilePath))
-					{
-						return per.FilePath;
-					}
-					else if (File.Exists(reference.Display))
-					{
-						return reference.Display;
-					}
-					else
-					{
-						return null;
-					}
-				}
-
-				var referenceFilePath = GetFilePath();
-
-				if (referenceFilePath != null)
-				{
-					BuildResourceLoaderFromFilePath(writer, referenceFilePath);
-				}
-				else if(reference is CompilationReference cr)
-				{
-					// Skip local references for non-compiled targets (it can
-					// happen when using C# hot reload)
-				}
-				else
-				{
-					throw new InvalidOperationException($"Unsupported resource type for {reference.Display} ({reference.GetType()})");
-				}
-			}
+                if(_metadataHelper.Compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
+                {
+					BuildResourceLoaderFromAssembly(writer, assembly);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unsupported resource type for {reference.Display} ({reference.GetType()})");
+                }
+            }
 		}
 
-		private void BuildResourceLoaderFromFilePath(IndentedStringBuilder writer, string? referenceFilePath)
-		{
-			using var stream = File.OpenRead(referenceFilePath);
+        private void BuildResourceLoaderFromAssembly(IndentedStringBuilder writer, IAssemblySymbol assembly)
+        {
+			var hasUnoHasLocalizationResources = assembly.GetAttributes().Any(a =>
+				SymbolEqualityComparer.Default.Equals(a.AttributeClass, _assemblyMetadataSymbol)
+				&& a.ConstructorArguments.Length == 2
+				&& a.ConstructorArguments[0].Value is "UnoHasLocalizationResources"
+				&& (a.ConstructorArguments[1].Value?.ToString().Equals("True", StringComparison.OrdinalIgnoreCase) ?? false));
 
-#if NETSTANDARD2_0
-			// Using is conditional to netstandard2 when running under netcore
-			// disposing the assembly crashes the mono runtime under macos.
-			using
+			// Legacy behavior relying on the fact that GlobalStaticResources is generated using the default namespace.
+			var hasGlobalStaticResources = assembly.GetTypeByMetadataName(assembly.Name + ".GlobalStaticResources") is not null;
+
+			if (hasUnoHasLocalizationResources || hasGlobalStaticResources)
+			{
+				writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{assembly.Name}\"));");
+			}
+			else
+			{
+#if DEBUG
+				writer.AppendLineIndented($"/* Assembly {assembly} does not contain UnoHasLocalizationResources */");
 #endif
-				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
-
-			if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri", StringComparison.Ordinal)))
-			{
-				if (asm.Name.Name == "Uno.UI")
-				{
-					// Avoid the use of assembly lookup as we already know the assembly
-					writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::Windows.UI.Xaml.FrameworkElement).Assembly);");
-				}
-				else
-				{
-					if (_isWasm)
-					{
-						var anchorType = asm.MainModule.Types.FirstOrDefault(t => t.Name == "GlobalStaticResources" && t.IsPublic)
-							?? asm.MainModule.Types.FirstOrDefault(t => t.IsPublic && t.CustomAttributes.None(c => c.AttributeType.Name == "Obsolete"));
-
-						if (anchorType != null)
-						{
-							// Use a public type to get the assembly to work around a WASM assembly loading issue
-							writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(typeof(global::{anchorType.FullName}).Assembly); /* {asm.FullName} */");
-						}
-					}
-					else
-					{
-						writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{asm.FullName}\"));");
-					}
-				}
 			}
-		}
+        }
 
 		/// <summary>
 		/// Processes a top-level control definition.
