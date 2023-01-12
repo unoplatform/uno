@@ -12,6 +12,9 @@
 		<x:String x:Key="ResourceString">From a Resource String</x:String>
 		<x:String x:Key="ResourceStringFull">From a Resource String FullName</x:String>
 		<ex:TestEntityObject x:Key="TestEntity" />
+		<Style TargetType="TextBlock" x:Key="MarkupExtensionStyle">
+			<Setter Property="Text" Value="{ex:StyleSetterExtension Wrapped=Test}" />
+		</Style>
 	</UserControl.Resources>
 
 	<StackPanel>
@@ -76,6 +79,9 @@
 				<TextBlock Text="This should compile and not be confused with TextBlockExtension" />
 			</Border.Child>
 		</Border>
+
+		<TextBlock x:Name="StyleSetterTextBlock1" x:FieldModifier="public" Style="{StaticResource MarkupExtensionStyle}" />
+		<TextBlock x:Name="StyleSetterTextBlock2" x:FieldModifier="public" Style="{StaticResource MarkupExtensionStyle}" />
 	</StackPanel>
 
 </UserControl>
