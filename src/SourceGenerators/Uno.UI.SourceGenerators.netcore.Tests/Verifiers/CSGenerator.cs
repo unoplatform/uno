@@ -11,13 +11,6 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 	{
 		public class Test : CSharpSourceGeneratorTest<TSourceGenerator, MSTestVerifier>
 		{
-			public Test()
-			{
-				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", """
-					is_global = true
-					build_property.Configuration = Release
-					"""));
-			}
 			public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
 
 			protected override CompilationOptions CreateCompilationOptions()
