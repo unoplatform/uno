@@ -509,11 +509,11 @@ namespace Windows.UI.Xaml.Controls
 			bool isColumnDefinition)
 		{
 			var spanStoreVector = spanStore;
-			// If an entry already exists with the same row/column index and span, 
+			// If an entry already exists with the same row/column index and span,
 			// then update the desired size stored in the entry.
 			//var it = std.find_if(
 			//		spanStoreVector.begin(),
-			//		spanStoreVector.end(), 
+			//		spanStoreVector.end(),
 			//	[isColumnDefinition, spanStart, spanCount](SpanStoreEntry & entry)
 			//{
 			//	return entry.m_isColumnDefinition == isColumnDefinition && entry.m_spanStart == spanStart && entry.m_spanCount == spanCount;
@@ -1040,8 +1040,8 @@ namespace Windows.UI.Xaml.Controls
 
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-			{
 #endif
+			{
 				var result = InnerMeasureOverride(availableSize);
 
 #if HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
@@ -1049,8 +1049,8 @@ namespace Windows.UI.Xaml.Controls
 #endif
 
 				return result;
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
 			{
 				UnlockDefinitions();

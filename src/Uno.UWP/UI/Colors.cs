@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.UI;
 
-// Do not remove or change for the WinUI conversion tool (space is required).
-using Color = global::Windows.UI.Color;
+using Color = global::Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
 
 namespace Windows.UI
 {
@@ -33,7 +32,7 @@ namespace Windows.UI
 		}
 
 		/// <summary>
-		/// Parses a string representing a color 
+		/// Parses a string representing a color
 		/// </summary>
 		/// <param name="colorCode"></param>
 		/// <returns></returns>
@@ -73,8 +72,8 @@ namespace Windows.UI
 		}
 
 		/// <summary>
-		/// Takes a color code as an ARGB, RGB, #ARGB, #RGB string and returns a color. 
-		/// 
+		/// Takes a color code as an ARGB, RGB, #ARGB, #RGB string and returns a color.
+		///
 		/// Remark: if single digits are used to define the color, they will
 		/// be duplicated (example: FFD8 will become FFFFDD88)
 		/// </summary>

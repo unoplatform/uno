@@ -2,8 +2,7 @@
 using System.ComponentModel;
 using Windows.UI;
 
-// Do not remove or change for the WinUI conversion tool (space is required).
-using Color = global::Windows.UI.Color;
+using Color = global::Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
 
 namespace Windows.UI
 {

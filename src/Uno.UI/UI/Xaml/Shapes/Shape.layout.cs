@@ -772,6 +772,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 #endif
+
 		#endregion
 	}
 }

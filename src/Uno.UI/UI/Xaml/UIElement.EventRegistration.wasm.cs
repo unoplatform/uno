@@ -297,8 +297,8 @@ namespace Windows.UI.Xaml
 		{
 #if DEBUG
 			try
-			{
 #endif
+			{
 				// Dispatch to right object, if we can find it
 				if (GetElementFromHandle(handle) is UIElement element)
 				{
@@ -310,8 +310,8 @@ namespace Windows.UI.Xaml
 				}
 
 				return (int)HtmlEventDispatchResult.NotDispatched;
-#if DEBUG
 			}
+#if DEBUG
 			catch (Exception error)
 			{
 				Console.Error.WriteLine("Failed to dispatch event: " + error);

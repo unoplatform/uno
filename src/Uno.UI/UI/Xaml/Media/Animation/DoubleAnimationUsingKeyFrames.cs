@@ -70,8 +70,8 @@ namespace Windows.UI.Xaml.Media.Animation
 #else
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 #endif
-				{
 #endif
+				{
 					if (KeyFrames.Count < 1)
 					{
 						return; // nothing to do
@@ -83,8 +83,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 					//Start the animation
 					Play();
+				}
 #if !NET461
-				});
+				);
 #endif
 			}
 		}
@@ -211,7 +212,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Initializes the animators and 
+		/// Initializes the animators and
 		/// </summary>
 		private void InitializeAnimators()
 		{
@@ -311,7 +312,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Replays the Animation if required, Sets the final state, Raises the Completed event. 
+		/// Replays the Animation if required, Sets the final state, Raises the Completed event.
 		/// </summary>
 		private void OnEnd()
 		{
