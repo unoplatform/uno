@@ -93,6 +93,26 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		}
 
 		[TestMethod]
+		public void When_Extension_In_VisualState_Setter()
+		{
+			var currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{				
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				var app = UnitTestsApp.App.EnsureApplication();
+
+				var control = new Test_MarkupExtension();
+				app.HostView.Children.Add(control);
+
+				Assert.AreEqual("**Test**", control.VisualStateTextBlock.Text);
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
+		}
+
+		[TestMethod]
 		public void When_Shortened_Name_Overlaps_Type()
 		{
 			var currentCulture = Thread.CurrentThread.CurrentCulture;
@@ -197,6 +217,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		protected override object ProvideValue()
 		{
 			Calls++;
+			return $"**{Wrapped}**";
+		}
+	}
+
+	public class VisualStateSetterExtension : MarkupExtension
+	{
+		public object Wrapped { get; set; }
+
+		protected override object ProvideValue()
+		{
 			return $"**{Wrapped}**";
 		}
 	}

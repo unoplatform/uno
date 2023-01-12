@@ -18,6 +18,18 @@
 	</UserControl.Resources>
 
 	<StackPanel>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup>
+				<VisualState>
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="0" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="VisualStateTextBlock.Text" Value="{ex:VisualStateSetterExtension Wrapped=Test}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
 		<TextBlock x:Name="Text1"
 				   Text="{ex:SimpleMarkupExt TextValue='Just a simple ...'}" />
 
@@ -82,6 +94,7 @@
 
 		<TextBlock x:Name="StyleSetterTextBlock1" x:FieldModifier="public" Style="{StaticResource MarkupExtensionStyle}" />
 		<TextBlock x:Name="StyleSetterTextBlock2" x:FieldModifier="public" Style="{StaticResource MarkupExtensionStyle}" />
+		<TextBlock x:Name="VisualStateTextBlock" x:FieldModifier="public" />
 	</StackPanel>
 
 </UserControl>
