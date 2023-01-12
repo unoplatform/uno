@@ -407,6 +407,11 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setVisibilityNativeFast(htmlId: number, visible: boolean) {
+
+			this.setVisibilityInternal(htmlId, visible);
+		}
+
 		private setVisibilityInternal(elementId: number, visible: boolean): void {
 			const element = this.getView(elementId);
 

@@ -870,6 +870,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetVisibility(htmlId, visible);
+#else
 				var parms = new WindowManagerSetVisibilityParams()
 				{
 					HtmlId = htmlId,
@@ -877,6 +880,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
+#endif
 			}
 		}
 
@@ -1594,6 +1598,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleNativeFast")]
 			internal static partial void SetStyles(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setVisibilityNativeFast")]
+			internal static partial void SetVisibility(IntPtr htmlId, bool visible);
 		}
 #endif
 	}
