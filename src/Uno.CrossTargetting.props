@@ -4,10 +4,6 @@
 
 	<PropertyGroup>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
-		<DefaultLanguage>en-US</DefaultLanguage>
-
-		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
-		<Version>255.255.255.255</Version>
 
 		<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

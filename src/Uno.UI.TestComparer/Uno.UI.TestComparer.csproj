@@ -18,7 +18,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageReference Include="NUnit" Version="3.13.3" />
-		<PackageReference Include="NUnit.Engine" Version="3.16.0" />
+		<PackageReference Include="NUnit.Engine" Version="3.16.1" />
 		<PackageReference Include="Refit" Version="6.3.2" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />

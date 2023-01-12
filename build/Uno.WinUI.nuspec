@@ -831,8 +831,8 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net7.0\skia" />
 
 	<!-- Analyzers -->
-	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers" />
-	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers" />
+	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers/dotnet/cs" />
+	<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers/dotnet/cs" />
 
 	<!-- Uno Source generators -->
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Uno.UI.SourceGenerators.dll" target="tools/uno-sourcegen" />
