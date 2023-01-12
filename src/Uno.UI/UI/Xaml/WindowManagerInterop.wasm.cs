@@ -81,6 +81,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.CreateContent(htmlId, htmlTag, uiElementRegistrationId, isFocusable, htmlTagIsSvg);
+#else
 				var parms = new WindowManagerCreateContentParams
 				{
 					HtmlId = htmlId,
@@ -92,6 +95,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
+#endif
 			}
 		}
 
@@ -1562,6 +1566,9 @@ namespace Uno.UI.Xaml
 				double clipLeft,
 				double clipBottom,
 				double clipRight);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.createContentNativeFast")]
+			internal static partial void CreateContent(IntPtr htmlId, string tagName, int uiElementRegistrationId, bool isFocusable, bool isSvg);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);

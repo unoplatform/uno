@@ -252,6 +252,23 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public createContentNativeFast(
+			htmlId: number,
+			tagName: string,
+			uiElementRegistrationId: number,
+			isFocusable: boolean,
+			isSvg: boolean) {
+
+			this.createContentInternal({
+				id: this.handleToString(htmlId),
+				handle: htmlId, /* handle is htmlId */
+				tagName: tagName,
+				uiElementRegistrationId: uiElementRegistrationId,
+				isFocusable: isFocusable,
+				isSvg: isSvg
+			});
+		}
+
 		private createContentInternal(contentDefinition: IContentDefinition): void {
 			// Create the HTML element
 			const element =
