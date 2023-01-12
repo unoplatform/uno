@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			(a, b) = (b, a);
 		}
 
+#if !NOT_IMPLEMENTED
 		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private static void SwapRB(ref byte[] buffer, int byteCount)
 		{
@@ -35,6 +36,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				Swap(ref buffer![i], ref buffer![i + 2]);
 			}
 		}
+#endif
+
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -144,6 +147,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+#if !NOT_IMPLEMENTED
 		private static void EnsureBuffer(ref byte[]? buffer, int length)
 		{
 			if (buffer is null)
@@ -156,6 +160,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				buffer = ArrayPool<byte>.Shared.Rent(length);
 			}
 		}
+#endif
+
 		void IDisposable.Dispose()
 		{
 			if (_buffer is { })

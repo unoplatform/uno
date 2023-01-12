@@ -461,6 +461,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if __IOS__ || __ANDROID__
 		/// <summary>
 		/// Apply 2-way binding to equivalent property on TimePickerFlyout
 		/// </summary>
@@ -469,6 +470,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
 		}
+#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
