@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		//private const float OutOfScopeDensityBarOpacity = 0.10f;
 		//private const float MaxDensityBarHeight = 5.0f;
 		private const float TodayBlackouTopacity = 0.40f;
-		private const float FocusBorderThickness = 2.0f;
+		//private const float FocusBorderThickness = 2.0f;
 		//private const float TodaySelectedInnerBorderThickness = 2.0f;
 
 		private interface IContentRenderer
@@ -1118,6 +1118,7 @@ namespace Windows.UI.Xaml.Controls
 			return pBrush;
 		}
 
+#if false
 		// Focus Alternative border brush is same as the item background.
 		private Brush GetItemFocusAltBorderBrush()
 		{
@@ -1130,6 +1131,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return pBrush;
 		}
+#endif
 
 		// for Selected+Today inner border.
 		private Brush GetItemInnerBorderBrush()

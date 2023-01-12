@@ -10,9 +10,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 #pragma warning disable CS0067 // The event is never used
 		public event DownloadProgressEventHandler DownloadProgress;
 		public event ExceptionRoutedEventHandler ImageFailed;
-#pragma warning restore CS0067 // The event is never used
-
 		public event RoutedEventHandler ImageOpened;
+#pragma warning restore CS0067 // The event is never used
 
 		#region UriSource DependencyProperty
 

@@ -29,6 +29,8 @@ using System.Reflection;
 using Windows.UI.Core;
 using Uno.Helpers;
 
+#pragma warning disable CS0649 // TODO: Fix.
+
 namespace Uno.UI.Controls
 {
 	[Windows.UI.Xaml.Data.Bindable]
@@ -81,8 +83,8 @@ namespace Uno.UI.Controls
 		private int _previousMeasuredHeight, _previousMeasuredWidth;
 		private float _saveScale = 1f;
 
-		private ScaleGestureDetector _scaleDetector;
-		private GestureDetector _doubleTapDetector;
+		//private ScaleGestureDetector _scaleDetector;
+		//private GestureDetector _doubleTapDetector;
 
 		private static int DeltaClick = 3;
 		private Bitmap _currentBitmap;
@@ -507,8 +509,8 @@ namespace Uno.UI.Controls
 		{
 			this.Parent.RequestDisallowInterceptTouchEvent(_saveScale != 1);
 
-			_scaleDetector.OnTouchEvent(e);
-			_doubleTapDetector.OnTouchEvent(e);
+			//_scaleDetector.OnTouchEvent(e);
+			//_doubleTapDetector.OnTouchEvent(e);
 
 			var currentPoint = new System.Drawing.PointF(e.GetX(), e.GetY());
 

@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
