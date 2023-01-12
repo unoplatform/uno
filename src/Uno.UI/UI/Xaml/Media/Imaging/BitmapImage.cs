@@ -7,11 +7,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-#pragma warning disable CS0067 // The event 'BitmapImage.DownloadProgress' is never used
+#pragma warning disable CS0067 // The event is never used
 		public event DownloadProgressEventHandler DownloadProgress;
-#pragma warning restore CS0067 // The event 'BitmapImage.DownloadProgress' is never used
-
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore CS0067 // The event is never used
 
 		public event RoutedEventHandler ImageOpened;
 
@@ -138,7 +137,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 				evt?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
 			}
 		}
-#endif
 
 		private void RaiseImageOpened()
 		{
@@ -147,5 +145,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 				evt?.Invoke(this, new RoutedEventArgs(this));
 			}
 		}
+#endif
 	}
 }

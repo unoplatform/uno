@@ -10,9 +10,9 @@ namespace Windows.UI.Xaml.Hosting;
 /// </summary>
 public partial class ElementCompositionPreview
 {
+#if __SKIA__
 	private const string ChildVisualName = "childVisual";
-
-#if !__SKIA__
+#else
 	static readonly Compositor _compositor = new Compositor();
 #endif
 

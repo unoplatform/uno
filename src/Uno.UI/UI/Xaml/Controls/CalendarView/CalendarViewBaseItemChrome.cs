@@ -464,7 +464,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | (uint)color.B;
 		}
-#endif
 
 		private void DrawDensityBar(
 			IContentRenderer pContentRenderer,
@@ -667,6 +666,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		private void SetOwner(CalendarView pOwner)
 		{
@@ -1248,7 +1248,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
-#endif
 
 		private bool ShouldDrawDottedLinesFocusVisual()
 		{
@@ -1273,6 +1272,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return shouldDrawDottedLines;
 		}
+#endif
 
 		//month year item
 		private protected virtual bool GetTextBlockFontProperties(

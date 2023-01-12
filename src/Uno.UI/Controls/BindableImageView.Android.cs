@@ -99,8 +99,8 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Internal use.
 		/// </summary>
-		/// <remarks>This constructor is *REQUIRED* for the Mono/Java 
-		/// binding layer to function properly, in case java objects need to call methods 
+		/// <remarks>This constructor is *REQUIRED* for the Mono/Java
+		/// binding layer to function properly, in case java objects need to call methods
 		/// on a collected .NET instance.
 		/// </remarks>
 		internal BindableImageView(System.IntPtr ptr, Android.Runtime.JniHandleOwnership ownership)
@@ -179,17 +179,17 @@ namespace Uno.UI.Controls
 			base.SetImageBitmap(bm);
 		}
 
-		public static Type Drawables 
-		{ 
-			get 
-			{ 
-				return _drawables; 
-			} 
-			set 
-			{ 
-				_drawables = value; 
-				Initialize(); 
-			} 
+		public static Type Drawables
+		{
+			get
+			{
+				return _drawables;
+			}
+			set
+			{
+				_drawables = value;
+				Initialize();
+			}
 		}
 
 		private static void Initialize()
@@ -231,13 +231,13 @@ namespace Uno.UI.Controls
 			{
 				return;
 			}
-			var newUri = new Uri(UriSource);            
+			var newUri = new Uri(UriSource);
 
 			if (newUri.Scheme == "resource"
                 || newUri.IsFile
                 || newUri.IsLocalResource())
 			{
-				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));			
+				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{
@@ -286,7 +286,7 @@ namespace Uno.UI.Controls
 			{
 				_download.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
 					.RunAsync(
-						Uno.UI.Dispatching.CoreDispatcherPriority.Normal, 
+						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 						async (ct) =>
 						{
 							var localUri = UriSource;
@@ -462,24 +462,6 @@ namespace Uno.UI.Controls
 		}
 
 #region Interaction methods
-
-		private void BuildImageInteractivity(Android.Content.Context context)
-		{
-			MinZoom = 1f;
-			MaxZoom = 3f;
-
-			_saveScale = 1f;
-
-			_scaleDetector = new ScaleGestureDetector(context, new ScaleListener(this));
-			_doubleTapDetector = new GestureDetector(context, new DoubleTapListener(this));
-
-			_matrix = new Matrix();
-			_m = new float[9];
-			ImageMatrix = _matrix;
-			SetScaleType(ImageView.ScaleType.Matrix);
-
-			SetOnTouchListener(this);
-		}
 
 		private void OnDrawableChanged()
 		{

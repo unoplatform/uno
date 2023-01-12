@@ -43,14 +43,14 @@ namespace Uno.UI.Controls
 
 		protected override void OnDraw(global::Android.Graphics.Canvas canvas)
 		{
-			base.OnDraw(canvas);			
+			base.OnDraw(canvas);
 			ScrollToItem();
 		}
 
 		public IEnumerable ItemsSource
 		{
 			get { return BindableAdapter.ItemsSource; }
-			set { 
+			set {
 				BindableAdapter.ItemsSource = value;
 			}
 		}
@@ -120,15 +120,10 @@ namespace Uno.UI.Controls
 			command.Execute(item);
 		}
 
-		private int GetItemWidth()
-		{
-			return GetChildAt(0).Width;
-		}
-
 		private void ScrollToItem()
 		{
-			if (_scrollToIndexChanged 
-				&& _scrollToIndex >= 0 
+			if (_scrollToIndexChanged
+				&& _scrollToIndex >= 0
 				&& _scrollToIndex < BindableAdapter.Count)
 			{
 				_scrollToIndexChanged = false;

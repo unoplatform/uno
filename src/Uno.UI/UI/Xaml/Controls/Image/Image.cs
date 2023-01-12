@@ -22,8 +22,8 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Image : FrameworkElement
 	{
 		/// <summary>
-		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree. 
-		/// This should generally be left false, but may be required in cases that the image is rapidly unloaded and reloaded, or that 
+		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree.
+		/// This should generally be left false, but may be required in cases that the image is rapidly unloaded and reloaded, or that
 		/// OnUnloaded/OnDetachedFromWindow is improperly called when the view isn't really being removed, and performance/stability is affected.
 		/// </summary>
 		public bool PreserveStateOnUnload { get; set; }
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 					bitmapSource.StreamLoaded += ForceReloadSource;
 					compositeDisposable.Add(() => bitmapSource.StreamLoaded -= ForceReloadSource);
 				}
-				
+
 				_sourceDisposable.Disposable = compositeDisposable;
 			}
 
@@ -190,25 +190,6 @@ namespace Windows.UI.Xaml.Controls
 		internal bool ShouldDowngradeLayoutRequest()
 		{
 			return CanDowngradeLayoutRequest && !double.IsNaN(Width) && !double.IsNaN(Height);
-		}
-
-		private void Dispatch(Func<CancellationToken, Task> handler, CancellationToken ct)
-		{
-			Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
-				() => handler(ct)
-			).AsTask(ct);
-		}
-
-		private void Dispatch(Action<CancellationToken> handler, CancellationToken ct)
-		{
-			Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
-				() =>
-				{
-					handler(ct);
-				}
-			).AsTask(ct);
 		}
 
 		private async void Execute(Func<CancellationToken, Task> handler)
@@ -341,7 +322,7 @@ namespace Windows.UI.Xaml.Controls
 			// Example: Horizontal=Stretch, Vertical=Top, Stretch=Uniform, SourceWidth=200, SourceHeight=100 (AspectRatio=2)
 			//			This Image is Inside a StackPanel (infinite height and width=300).
 			//			When being measured, the height can be calculated using the aspect ratio of the source image and the available width.
-			//			That means the Measure should return 
+			//			That means the Measure should return
 			//						height = (KnownWidth=300) / (AspectRatio=2) = 150
 			//			...and not	height = (SourceHeight=100) = 100
 			if (isWidthDefined)
