@@ -839,8 +839,6 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Uno.UI.SourceGenerators.pdb" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Uno.Xaml.dll" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Uno.Xaml.pdb" target="tools/uno-sourcegen" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Mono.Cecil*.dll" target="tools/uno-sourcegen" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Mono.Cecil*.pdb" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Microsoft.ApplicationInsights.dll" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\System.Diagnostics.DiagnosticSource.dll" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Microsoft.DotNet.PlatformAbstractions.dll" target="tools/uno-sourcegen" />
@@ -850,8 +848,6 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.pdb" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="analyzers/dotnet/cs" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Mono.Cecil*.dll" target="analyzers/dotnet/cs" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Mono.Cecil*.pdb" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Microsoft.ApplicationInsights.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\System.Diagnostics.DiagnosticSource.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Microsoft.DotNet.PlatformAbstractions.dll" target="analyzers/dotnet/cs" />
