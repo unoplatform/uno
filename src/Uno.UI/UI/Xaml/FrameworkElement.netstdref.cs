@@ -28,8 +28,6 @@ namespace Windows.UI.Xaml
 
 		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
 
 		private void EnterTree() => throw new NotSupportedException("Reference assembly");

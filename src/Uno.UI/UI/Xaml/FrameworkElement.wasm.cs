@@ -127,8 +127,6 @@ namespace Windows.UI.Xaml
 		internal void SetActualSize(Size size)
 			=> AssignedActualSize = size;
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{

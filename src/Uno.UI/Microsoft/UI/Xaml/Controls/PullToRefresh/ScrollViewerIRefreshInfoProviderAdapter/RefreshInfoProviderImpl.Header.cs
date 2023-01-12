@@ -25,7 +25,11 @@ internal partial class RefreshInfoProviderImpl
 	private bool m_peeking = false;
 
 	public event TypedEventHandler<IRefreshInfoProvider, object> IsInteractingForRefreshChanged;
+
+#pragma warning disable CS0067 // The event 'RefreshInfoProviderImpl.InteractionRatioChanged' is never used
 	public event TypedEventHandler<IRefreshInfoProvider, RefreshInteractionRatioChangedEventArgs> InteractionRatioChanged;
+#pragma warning restore CS0067 // The event 'RefreshInfoProviderImpl.InteractionRatioChanged' is never used
+
 	public event TypedEventHandler<IRefreshInfoProvider, object> RefreshStarted;
 	public event TypedEventHandler<IRefreshInfoProvider, object> RefreshCompleted;
 }

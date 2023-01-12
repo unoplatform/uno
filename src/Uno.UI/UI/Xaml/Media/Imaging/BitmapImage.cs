@@ -7,7 +7,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+#pragma warning disable CS0067 // The event 'BitmapImage.DownloadProgress' is never used
 		public event DownloadProgressEventHandler DownloadProgress;
+#pragma warning restore CS0067 // The event 'BitmapImage.DownloadProgress' is never used
 
 		public event ExceptionRoutedEventHandler ImageFailed;
 
@@ -129,14 +131,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public BitmapImage() { }
 
 #if __SKIA__ || __WASM__
-		private void RaiseImageFailed(ExceptionRoutedEventArgs args)
-		{
-			if (ImageFailed is { } evt)
-			{
-				evt?.Invoke(this, args);
-			}
-		}
-
 		private void RaiseImageFailed(Exception ex)
 		{
 			if (ImageFailed is { } evt)

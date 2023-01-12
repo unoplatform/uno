@@ -219,8 +219,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 #if DEBUG
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{

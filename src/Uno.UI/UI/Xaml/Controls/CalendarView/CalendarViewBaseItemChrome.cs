@@ -373,6 +373,7 @@ namespace Windows.UI.Xaml.Controls
 			return pTextBlock == m_pLabelTextBlock;
 		}
 
+#if false
 		private void RenderChrome(
 			IContentRenderer pContentRenderer,
 			CalendarViewBaseItemChromeLayerPosition layer
@@ -433,7 +434,6 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-#if false
 		private void RenderDensityBars(
 			IContentRenderer pContentRenderer
 		)

@@ -14,7 +14,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _uno_isDefferingOverState = false;
 		private bool _uno_isDefferingPressedState = false;
+
+#pragma warning disable CS0649 // Field 'NavigationViewItem._uno_pointerDeferring' is never assigned to, and will always have its default value null
 		private DispatcherQueueTimer _uno_pointerDeferring;
+#pragma warning restore CS0649 // Field 'NavigationViewItem._uno_pointerDeferring' is never assigned to, and will always have its default value null
 
 #if __ANDROID__
 		private void DeferUpdateVisualStateForPointer()
