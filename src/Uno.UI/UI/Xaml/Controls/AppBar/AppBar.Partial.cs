@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable CS0169
 		// Focus state to be applied on loaded.
 		FocusState m_onLoadFocusState;
-		UIElement? m_layoutTransitionElement;
+		//UIElement? m_layoutTransitionElement;
 		UIElement? m_overlayLayoutTransitionElement;
 		private bool _isNativeTemplate;
 		//UIElement m_parentElementForLTEs;
@@ -678,7 +678,7 @@ namespace Windows.UI.Xaml.Controls
 				openState = "Closed";
 				placement = string.Empty;
 			}
-			
+
 			ignored = GoToState(useTransitions, $"{displayMode}{openState}{placement}");
 		}
 
@@ -839,6 +839,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void OnIsOpenChangedForAutomation(DependencyPropertyChangedEventArgs args)
 		{
 			var isOpen = (bool)args.NewValue;
@@ -865,7 +866,7 @@ namespace Windows.UI.Xaml.Controls
 
 			}
 		}
-
+#endif
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			AutomationPeer? ppAutomationPeer = null;
@@ -1105,7 +1106,7 @@ namespace Windows.UI.Xaml.Controls
 				if (m_tpDisplayModesStateGroupRef?.TryGetTarget(out displayModesStateGroup) ?? false)
 				{
 					var currentState = displayModesStateGroup?.CurrentState;
-					
+
 					if (currentState is { })
 					{
 						var storyboard = currentState.Storyboard;
@@ -1239,7 +1240,7 @@ namespace Windows.UI.Xaml.Controls
 			RestoreSavedFocusImpl(savedFocusedElement, m_savedFocusState);
 
 			m_savedFocusedElementWeakRef = null;
-			
+
 			m_savedFocusState = FocusState.Unfocused;
 		}
 

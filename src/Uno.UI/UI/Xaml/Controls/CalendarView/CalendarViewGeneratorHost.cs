@@ -82,6 +82,7 @@ namespace Windows.UI.Xaml.Controls
 		protected abstract int GetLastUnitInThisScope();
 		protected abstract void OnScopeChanged();
 
+#if false
 		// IGeneratorHost
 
 		private IVector<DependencyObject> View
@@ -112,6 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			var pIsOwnContainer = false;
 			return pIsOwnContainer;
 		}
+#endif
 
 		internal virtual DependencyObject GetContainerForItem(
 			object pItem,
@@ -167,6 +169,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
+#if false
 		private bool IsHostForItemContainer(
 			DependencyObject pContainer)
 		{
@@ -211,6 +214,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotImplementedException();
 		}
+#endif
 
 		internal bool CanRecycleContainer(
 			DependencyObject pContainer)
@@ -219,13 +223,14 @@ namespace Windows.UI.Xaml.Controls
 			return pCanRecycleContainer;
 		}
 
+#if false
 		private DependencyObject SuggestContainerForContainerFromItemLookup()
 		{
 			// CalendarViewGeneratorHost has no clue
 			DependencyObject ppContainer = null;
 			return ppContainer;
 		}
-
+#endif
 
 		public CalendarViewGeneratorHost()
 		{
@@ -338,7 +343,7 @@ namespace Windows.UI.Xaml.Controls
 		// to get the distance of two days, here are the amortized O(1) method
 		//1. Estimate the offset of Date2 from Date1 by dividing their UTC difference by 24 hours
 		//2. Call Globalization API AddDays(Date1, offset) to get an estimated date, let’s say EstimatedDate, here offset comes from step1
-		//3. Compute the distance between EstimatedDate and Date2(keep adding 1 day on the smaller one, until we hit the another date), 
+		//3. Compute the distance between EstimatedDate and Date2(keep adding 1 day on the smaller one, until we hit the another date),
 		//   if this distance is still big, we can do step 1 and 2 one more time
 		//4. Return the sum of results from step1 and step3.
 

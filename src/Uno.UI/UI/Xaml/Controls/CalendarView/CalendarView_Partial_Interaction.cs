@@ -368,6 +368,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
+#if false
 		// UIElement override for getting next tab stop on path from focus candidate element to root.
 		private void ProcessCandidateTabStopOverride(
 			DependencyObject pFocusedElement,
@@ -449,6 +450,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 		}
-
+#endif
 	}
 }

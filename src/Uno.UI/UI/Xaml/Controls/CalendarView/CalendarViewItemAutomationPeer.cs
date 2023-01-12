@@ -46,6 +46,7 @@ namespace Windows.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
+#if false
 			private void InvokeImpl()
 			{
 				UIElement spOwner;
@@ -152,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 
 				return;
 			}
+#endif
 		}
 	}
 }

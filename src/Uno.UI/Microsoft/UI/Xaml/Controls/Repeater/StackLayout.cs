@@ -34,8 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		FlowLayoutAlgorithm GetFlowAlgorithm(VirtualizingLayoutContext context)
 			=> GetAsStackState(context.LayoutState).FlowAlgorithm;
 
+#if false
 		private bool DoesRealizationWindowOverlapExtent(Rect realizationWindow, Rect extent)
 			=> MajorEnd(realizationWindow) >= MajorStart(extent) && MajorStart(realizationWindow) <= MajorEnd(extent);
+#endif
 
 		#region IVirtualizingLayoutOverrides
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)
@@ -362,7 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var size = Math.Max(MajorSize(oldViewport), MajorSize(newViewport));
 			var minDelta = Math.Min(elementSize * 5, size);
-			
+
 			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > minDelta
 				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > minDelta;
 		}

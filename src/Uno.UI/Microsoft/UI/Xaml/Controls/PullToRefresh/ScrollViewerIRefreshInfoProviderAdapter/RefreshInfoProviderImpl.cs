@@ -133,6 +133,7 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 
 	public bool IsInteractingForRefresh => m_isInteractingForRefresh;
 
+#if false
 	/////////////////////////////////////////////////////
 	///////////       Private Helpers       /////////////
 	/////////////////////////////////////////////////////
@@ -160,7 +161,7 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 			m_interactionRatioChangedCount++;
 		}
 	}
-
+#endif
 	private bool AreClose(double interactionRatio, double target)
 	{
 		return Math.Abs(interactionRatio - target) < ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE;

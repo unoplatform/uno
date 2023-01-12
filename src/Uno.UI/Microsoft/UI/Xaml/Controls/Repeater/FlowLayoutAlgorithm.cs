@@ -309,12 +309,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void Generate(
 			GenerateDirection direction,
-			int anchorIndex, 
+			int anchorIndex,
 			Size availableSize,
 			double minItemSpacing,
 			double lineSpacing,
 			uint maxItemsPerLine,
-			bool disableVirtualization, 
+			bool disableVirtualization,
 			string layoutId)
 		{
 			if (anchorIndex != -1)
@@ -642,7 +642,7 @@ namespace Microsoft.UI.Xaml.Controls
 			float spaceAtLineEnd,
 			float lineSize,
 			FlowLayoutLineAlignment lineAlignment,
-			bool isWrapping, 
+			bool isWrapping,
 			Size finalSize,
 			string layoutId)
 		{
@@ -756,6 +756,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
+#if false
 		bool TryAddElement0(UIElement element)
 		{
 			if (m_elementManager.GetRealizedElementCount == 0)
@@ -766,6 +767,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return false;
 		}
+#endif
 
 		bool IsVirtualizingContext
 		{

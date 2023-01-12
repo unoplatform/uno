@@ -95,6 +95,41 @@ namespace Windows.UI.Xaml.Shapes
 			_previousLayoutState = null;
 		}
 
+		private static Point GetCorner(Rect rect, Corner corner)
+		{
+			return corner switch
+			{
+				Corner.TopLeft => new(rect.Left, rect.Top),
+				Corner.TopRight => new(rect.Right, rect.Top),
+				Corner.BottomRight => new(rect.Right, rect.Bottom),
+				Corner.BottomLeft => new(rect.Left, rect.Bottom),
+
+				_ => throw new ArgumentOutOfRangeException($"Invalid corner: {corner}"),
+			};
+		}
+
+		private static Point GetRelativePoint(Rect rect, int numpadDirection)
+		{
+			var x = numpadDirection switch
+			{
+				1 or 4 or 7 => rect.Left,
+				2 or 5 or 8 => rect.GetMidX(),
+				3 or 6 or 9 => rect.Right,
+
+				_ => throw new ArgumentOutOfRangeException(),
+			};
+			var y = numpadDirection switch
+			{
+				7 or 8 or 9 => rect.Top,
+				4 or 5 or 6 => rect.GetMidY(),
+				1 or 2 or 3 => rect.Bottom,
+
+				_ => throw new ArgumentOutOfRangeException(),
+			};
+
+			return new (x, y);
+		}
+
 		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state, out CGPath updatedBoundsPath)
 		{
 			updatedBoundsPath = null;
