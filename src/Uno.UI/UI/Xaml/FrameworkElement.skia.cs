@@ -222,7 +222,6 @@ namespace Windows.UI.Xaml
 #if DEBUG
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(args);
 		}
 #endif
 

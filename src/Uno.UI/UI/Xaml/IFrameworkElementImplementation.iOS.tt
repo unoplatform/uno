@@ -969,7 +969,6 @@ namespace <#= mixin.NamespaceName #>
 
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(args);
 			SetNeedsLayout();
 		}
 

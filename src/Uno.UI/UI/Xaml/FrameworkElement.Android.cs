@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml
 	public partial class FrameworkElement
 	{
 		private Size? _lastLayoutSize;
+		private bool _constraintsChanged;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -325,6 +326,11 @@ namespace Windows.UI.Xaml
 
 			_constraintsChanged = false;
 			return true;
+		}
+
+		private void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
+		{
+			_constraintsChanged = true;
 		}
 
 		/// <summary>

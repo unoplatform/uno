@@ -961,8 +961,6 @@ namespace <#= mixin.NamespaceName #>
 
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(args);
-
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
 			if(this is FrameworkElement fe)
 			{

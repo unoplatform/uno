@@ -96,7 +96,6 @@ namespace Windows.UI.Xaml
 
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(args);
 			this.InvalidateMeasure();
 		}
 	}

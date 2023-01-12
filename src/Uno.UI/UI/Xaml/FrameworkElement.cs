@@ -70,7 +70,6 @@ namespace Windows.UI.Xaml
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
-		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied;
@@ -698,11 +697,6 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnApplyTemplate()
 		{
-		}
-
-		private void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
-		{
-			_constraintsChanged = true;
 		}
 
 		#region IsEnabled DependencyProperty
