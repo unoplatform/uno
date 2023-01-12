@@ -101,6 +101,4 @@
 
 	</ItemGroup>
 
-	<Import Project="$(FluentMergeTargetsPath)" Condition="'$(FluentMergeTargetsPath)' != ''" />
-
 </Project>
