@@ -21,6 +21,7 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<FluentMergeTargetsPath>$(MSBuildThisFileDirectory)FluentMerge.targets</FluentMergeTargetsPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,8 +33,6 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
-
-	<Import Project="FluentMerge.targets" />
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
