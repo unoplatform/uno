@@ -6,6 +6,15 @@
 	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
   </PropertyGroup>
 
+  <ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
+	<Page Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
+	<None Remove="**/*.xaml" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XamlMergeOutputFile)'!=''">
+	  <XamlMergeInput Include="@(Page)" Exclude="@(_NonMergedXamlResources)" />
+  </ItemGroup>
+
 	<!--
 	Comment out this section if you need to update Resource.designer.cs files.
 	See DEVELOPMENT.md#Android for details.

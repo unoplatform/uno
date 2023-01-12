@@ -93,16 +93,4 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-
-	<ItemGroup>
-		<!-- remove files included by msbuild extras -->
-		<Page Remove="@(Page)" />
-		<Page Include="$(PlatformItemsBasePath)**/*.xaml" Exclude="$(PlatformItemsBasePath)bin/**/*.xaml;$(PlatformItemsBasePath)obj/**/*.xaml" />
-
-		<UpToDateCheckInput Include="$(PlatformItemsBasePath)**\*.xaml" Exclude="$(PlatformItemsBasePath)bin\**\*.xaml;$(PlatformItemsBasePath)obj\**\*.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="Assets\Fonts\uno-fluentui-assets-v2.ttf" />
-	</ItemGroup>
 </Project>

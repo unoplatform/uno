@@ -54,11 +54,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
-	</ItemGroup>
-
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

@@ -93,18 +93,9 @@
 		</Compile>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml" />
-
-		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-		<PageToRemove Remove="@(Page)" />
-		<Page Remove="@(PageToRemove)" />
-	</ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+	</PropertyGroup>
 
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />

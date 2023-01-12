@@ -52,11 +52,6 @@
 	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
 
 	<ItemGroup>
-		<Page Remove="@(Page)" />
-		<Page Include="Themes\**\*.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
