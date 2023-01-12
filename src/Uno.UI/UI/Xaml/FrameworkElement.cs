@@ -700,7 +700,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
+		private void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
 		{
 			_constraintsChanged = true;
 		}
