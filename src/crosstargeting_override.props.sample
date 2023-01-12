@@ -10,9 +10,6 @@
     -->
 
   <PropertyGroup>
-    <IsUnoUIProject>false</IsUnoUIProject>
-    <IsUnoUIProject Condition="'$(AssemblyName)'=='Uno' or '$(AssemblyName)'=='Uno.UI' or '$(AssemblyName)'=='Uno.Foundation'">true</IsUnoUIProject>
-
     <!--
         This property controls the platform built by Visual Studio.
 
