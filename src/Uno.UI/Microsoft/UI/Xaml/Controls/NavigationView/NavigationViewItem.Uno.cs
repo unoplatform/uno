@@ -46,6 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+#endif
 	}
 }
-#endif
