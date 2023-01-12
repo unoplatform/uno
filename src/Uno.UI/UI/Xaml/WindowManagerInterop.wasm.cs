@@ -1081,12 +1081,16 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.DestroyView(htmlId);
+#else
 				var parms = new WindowManagerDestroyViewParams
 				{
 					HtmlId = htmlId
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:destroyViewNative", parms);
+#endif
 			}
 		}
 
@@ -1569,6 +1573,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.createContentNativeFast")]
 			internal static partial void CreateContent(IntPtr htmlId, string tagName, int uiElementRegistrationId, bool isFocusable, bool isSvg);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
+			internal static partial void DestroyView(IntPtr htmlId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);

@@ -1306,6 +1306,11 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public destroyViewNativeFast(htmlId: number) {
+
+			this.destroyViewInternal(htmlId);
+		}
+
 		private destroyViewInternal(elementId: number): void {
 			const element = this.getView(elementId);
 
