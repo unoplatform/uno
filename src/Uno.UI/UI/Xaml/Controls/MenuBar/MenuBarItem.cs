@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetFlyoutDataContext()
 		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
 			m_flyout?.SetValue(
 				MenuFlyout.DataContextProperty,
 				this.DataContext,
@@ -293,10 +293,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		void AddPassThroughElement(DependencyObject element)
 		{
 			m_passThroughElement = element;
 		}
+#endif
 
 		public bool IsFlyoutOpen()
 		{

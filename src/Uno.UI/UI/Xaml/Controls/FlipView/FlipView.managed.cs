@@ -589,10 +589,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		void OnItemsHostAvailable()
 		{
 			InitializeScrollViewer();
 		}
+#endif
 
 		protected override void OnPointerWheelChanged(PointerRoutedEventArgs pArgs)
 		{
@@ -834,6 +836,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		// TODO: This should override a base class method!
 		void NotifyOfSourceChanged(IObservableVector<DependencyObject> pSender, IVectorChangedEventArgs e)
 		{
@@ -868,6 +871,7 @@ namespace Windows.UI.Xaml.Controls
 
 			m_skipAnimationOnce = false;
 		}
+#endif
 
 		// Sets vertical/horizontal offset corresponding to the selected item.
 		// If the panel inside is a virtualizing panel selected index is used since virtualizing panels use item based scrolling

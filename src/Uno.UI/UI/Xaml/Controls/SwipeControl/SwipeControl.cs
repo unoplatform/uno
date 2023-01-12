@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			DetachEventHandlers(); // Do not double subscribe
 			AttachEventHandlers(isUnoUnfinalizer: true);
 		}
-		
+
 		private void SwipeControl_Finalizer()
 		//~SwipeControl()
 		// [END] Uno workaround
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 		//override it is usually not the case that swipe control will fill the available space.  This is because list view item is a content control
 		//and those by convension only provide it's children space for at most their desired size. However list view item itself will take up a different
 		//ammount of space. In the past we solved this issue by requiring the list view item to have the HorizontalContentAlignment and VerticalContentAlignment
-		//set to stretch. This property changes the measure cycle to give as much space as possible to the list view items children.  Instead we can 
+		//set to stretch. This property changes the measure cycle to give as much space as possible to the list view items children.  Instead we can
 		//just do this ourselves in this measure override and prevent the confusing need for properties set on the parent of swipe control to use it at all.
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -859,6 +859,7 @@ namespace Windows.UI.Xaml.Controls
 			CloseIfNotRemainOpenExecuteItem();
 		}
 
+#if false
 		private void DismissSwipeOnCoreWindowKeyDown(CoreWindow sender, KeyEventArgs args)
 		{
 			CloseIfNotRemainOpenExecuteItem();
@@ -878,6 +879,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DismissSwipeOnAnExternalTap(args.CurrentPoint.RawPosition);
 		}
+#endif
 
 		private void DismissSwipeOnAnExternalTap(Point tapPoint)
 		{
@@ -1853,6 +1855,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private string GetAnimationTarget(UIElement child)
 		{
 			if (DownlevelHelper.SetIsTranslationEnabledExists() || SharedHelpers.IsTranslationFacadeAvailable(child))
@@ -1901,5 +1904,6 @@ namespace Windows.UI.Xaml.Controls
 					return "";
 			}
 		}
+#endif
 	}
 }

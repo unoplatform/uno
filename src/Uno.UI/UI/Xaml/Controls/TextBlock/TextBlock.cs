@@ -46,7 +46,6 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializePartial();
 		}
-#endif
 
 		/// <summary>
 		/// Calls On[Property]Changed for most DPs to ensure the values are correctly applied to the native control
@@ -64,6 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			OnTextAlignmentChanged();
 			OnTextChanged(string.Empty, Text);
 		}
+#endif
 
 		#region Inlines
 
@@ -677,11 +677,14 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool UseInlinesFastPath => _inlines == null;
 
+#if __ANDROID__ || __WASM__
 		/// <summary>
 		/// Returns if the TextBlock is constrained by a maximum number of lines.
 		/// </summary>
 		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
+#endif
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		/// <summary>
 		/// Gets the inlines which affect the typography of the TextBlock.
 		/// </summary>
@@ -706,7 +709,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
+#endif
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)

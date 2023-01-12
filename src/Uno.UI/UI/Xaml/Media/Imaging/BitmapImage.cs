@@ -128,15 +128,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public BitmapImage() { }
 
-		private void RaiseDownloadProgress(int progress = 0)
-		{
-			if (DownloadProgress is { } evt)
-			{
-				evt?.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
-
-			}
-		}
-
+#if __SKIA__ || __WASM__
 		private void RaiseImageFailed(ExceptionRoutedEventArgs args)
 		{
 			if (ImageFailed is { } evt)
@@ -152,6 +144,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				evt?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
 			}
 		}
+#endif
 
 		private void RaiseImageOpened()
 		{

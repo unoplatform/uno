@@ -163,6 +163,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void ResetAndPrepareContent()
 		{
 			// Uno TODO: understand when this is applicable (seemingly while dialog is open?)
@@ -172,6 +173,7 @@ namespace Windows.UI.Xaml.Controls
 			//	PrepareContent();
 			//}
 		}
+#endif
 
 		private void PrepareContent()
 		{

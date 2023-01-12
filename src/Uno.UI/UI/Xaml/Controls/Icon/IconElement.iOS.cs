@@ -8,14 +8,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement
     {
-		partial void UnregisterSubView()
-		{
-			if (Subviews.Length > 0)
-			{
-				Subviews[0].RemoveFromSuperview();
-			}
-		}
-
 		partial void RegisterSubView(UIView child)
 		{
 			if (Subviews.Length != 0)

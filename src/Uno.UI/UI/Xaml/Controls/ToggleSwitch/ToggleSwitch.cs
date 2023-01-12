@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnLoadedPartial();
 
+#if false
 		private bool IsNativeTemplate
 		{
 			get
@@ -51,6 +52,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			}
 		}
+#endif
 
 		#region Header (DP)
 

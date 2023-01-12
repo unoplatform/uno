@@ -335,12 +335,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Create MenuFlyoutPresenterAutomationPeer to represent the 
+		// Create MenuFlyoutPresenterAutomationPeer to represent the
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new MenuFlyoutPresenterAutomationPeer(this);
 		}
 
+#if false
 		void UpdateVisualStateForPlacement(FlyoutBase.MajorPlacementMode placement)
 		{
 			m_mostRecentPlacement = placement;
@@ -352,7 +353,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			VisualStateManager.GoToState(this, "None", false);
 		}
-
+#endif
 		private protected override void ChangeVisualState(
 		   // true to use transitions when updating the visual state, false
 		   // to snap directly to the new visual state.
@@ -417,6 +418,7 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
+#if false
 		void DetachEntranceAnimationCompletedHandlers()
 		{
 			// Marked as no longer used
@@ -459,8 +461,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Focus(FocusState.Programmatic);
 		}
-
-
+#endif
 		protected override void OnPointerExited(PointerRoutedEventArgs pArgs)
 		{
 			var handled = pArgs.Handled;
@@ -606,7 +607,7 @@ namespace Windows.UI.Xaml.Controls
 							{
 								// When the mouse enters a MenuFlyoutPresenter that is a sub menu
 								// we have to tell the parent presenter to cancel any plans it had
-								// to close this sub 
+								// to close this sub
 								presenter.CancelCloseMenuFlyoutSubItem();
 							}
 						}
@@ -705,6 +706,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		DependencyObject GetParentMenuFlyoutSubItem(DependencyObject nativeDO)
 		{
 			var spThis = nativeDO as MenuFlyoutPresenter;
@@ -722,6 +724,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 		}
+#endif
 
 		internal void UpdateTemplateSettings()
 		{
@@ -845,6 +848,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		int GetPositionInSetHelper(MenuFlyoutItemBase item)
 		{
 			var returnValue = -1;
@@ -943,7 +947,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return returnValue;
 		}
-
+#endif
 		ISubMenuOwner IMenuPresenter.Owner
 		{
 			get => m_wrOwner?.Target as ISubMenuOwner;

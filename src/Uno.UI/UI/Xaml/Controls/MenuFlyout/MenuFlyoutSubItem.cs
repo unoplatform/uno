@@ -89,6 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.Initialize(this);
 		}
 
+#if false
 		void DisconnectFrameworkPeerCore()
 		{
 			// Ensure the clean up the items whenever MenuFlyoutSubItem is disconnected
@@ -100,6 +101,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// (MenuFlyoutSubItemGenerated.DisconnectFrameworkPeerCore());
 		}
+#endif
 
 		protected override void OnApplyTemplate()
 		{
@@ -111,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// PointerEntered event handler that shows the MenuFlyoutSubItem
-		// whenever the pointer is over to the 
+		// whenever the pointer is over to the
 		// In case of touch, the MenuFlyoutSubItem will be shown by
 		// PointerReleased event.
 
@@ -130,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 		// PointerExited event handler that ensures the close MenuFlyoutSubItem
 		// whenever the pointer over is out of the current MenuFlyoutSubItem or
 		// out of the main presenter. If the exited point is on MenuFlyoutSubItem
-		// or sub presenter position, we want to keep the opened 
+		// or sub presenter position, we want to keep the opened
 
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
@@ -255,7 +257,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OnKeyUp(args);
 		}
 
-		// Ensure the creating the popup and menu presenter to show the 
+		// Ensure the creating the popup and menu presenter to show the
 		void EnsurePopupAndPresenter()
 		{
 #if MFSI_DEBUG
@@ -533,6 +535,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
+#if false
 		void Open()
 		{
 #if MFSI_DEBUG
@@ -551,6 +554,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.CloseSubMenu();
 
 		}
+#endif
 
 		private protected override void ChangeVisualState(bool bUseTransitions)
 		{
@@ -687,6 +691,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
+#if false
 		void ClearStateFlags()
 		{
 #if MFSI_DEBUG
@@ -715,6 +720,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OnVisibilityChanged();
 
 		}
+#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

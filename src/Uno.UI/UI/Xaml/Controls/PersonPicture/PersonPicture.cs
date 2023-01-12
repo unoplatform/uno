@@ -78,6 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 		}
 
+#if false
 		Task<BitmapImage> LoadImageAsync(IRandomAccessStreamReference thumbStreamReference)
 		{
 			m_profilePictureReadAsync = null;
@@ -140,6 +141,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//m_profilePictureReadAsync = operation;
 		}
+#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

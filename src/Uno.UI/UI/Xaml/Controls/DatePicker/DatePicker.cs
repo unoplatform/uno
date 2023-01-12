@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
-			   
+
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
 		const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
 		const int DATEPICKER_SENTINELTIME_HOUR = 12;
@@ -156,6 +156,7 @@ namespace Windows.UI.Xaml.Controls
 
 		bool m_isPropagatingDate;
 
+#if false
 		// The selection of the selectors in our template can be changed by two sources. First source is
 		// the end user changing a field to select the desired date. Second source is us updating
 		// the itemssources and selected indices. We only want to react to the first source as the
@@ -167,6 +168,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			m_reactionToSelectionChangeAllowed = true;
 		}
+#endif
 
 		void PreventReactionToSelectionChange()
 		{
@@ -254,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 		//	// UpdateVisualState();
 		//}
 
-		// Change to the correct visual state for the 
+		// Change to the correct visual state for the
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
 			if (!IsEnabled)
@@ -899,7 +901,7 @@ namespace Windows.UI.Xaml.Controls
 				selectedDate = getOperation.Result;
 
 				// A null IReference object is returned when the user cancels out of the
-				// 
+				//
 				if (selectedDate != null)
 				{
 					// We set SelectedDate instead of Date in order to ensure that the value
@@ -2055,7 +2057,7 @@ namespace Windows.UI.Xaml.Controls
 			// Also move the spacers to the correct column.
 			if (m_tpFirstPickerSpacing != null)
 			{
-				m_tpFirstPickerSpacing.Visibility = 
+				m_tpFirstPickerSpacing.Visibility =
 					firstHostPopulated && (secondHostPopulated || thirdHostPopulated) ?
 					Visibility.Visible : Visibility.Collapsed;
 
@@ -2067,7 +2069,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (m_tpSecondPickerSpacing != null)
 			{
-				m_tpSecondPickerSpacing.Visibility = 
+				m_tpSecondPickerSpacing.Visibility =
 					secondHostPopulated && thirdHostPopulated ?
 					Visibility.Visible : Visibility.Collapsed;
 
@@ -2168,7 +2170,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateOrderAndLayout();
 		}
 
-		// Create DatePickerAutomationPeer to represent the 
+		// Create DatePickerAutomationPeer to represent the
 		//override void OnCreateAutomationPeer(out xaml_automation_peers.IAutomationPeer** ppAutomationPeer)
 		//{
 		//	HRESULT hr = S_OK;
@@ -2193,6 +2195,7 @@ namespace Windows.UI.Xaml.Controls
 		//	RRETURN(hr);
 		//}
 
+#if false
 		void GetSelectedDateAsString(out string strPlainText)
 		{
 			DateTimeFormatter spFormatter;
@@ -2205,7 +2208,7 @@ namespace Windows.UI.Xaml.Controls
 			CreateNewFormatter("day month.full year", strCalendarIdentifier, out spFormatter);
 			strPlainText = spFormatter.Format(date.Value);
 		}
-
+#endif
 
 		void RefreshFlyoutButtonAutomationName()
 		{

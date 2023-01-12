@@ -209,6 +209,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
+#if false
 		// Logical Orientation override
 		private Orientation LogicalOrientation => Orientation;
 
@@ -233,6 +234,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return pValue;
 			}
 		}
+#endif
 
 		// Virtual helper method to the ItemsPerPage that can be overridden by derived classes.
 		//protected /* override */ void ItemsPerPageImpl(
@@ -264,6 +266,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		#endregion
 
+#if false
 		private void DesiredViewportSize(out Size pSize)
 		{
 			ILayoutStrategy spCalendarLayoutStrategy;
@@ -275,6 +278,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			spCalendarLayoutStrategy = LayoutStrategy;
 			pSize = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetDesiredViewportSize();
 		}
+#endif
 
 		private void SetItemMinimumSize(Size size)
 		{

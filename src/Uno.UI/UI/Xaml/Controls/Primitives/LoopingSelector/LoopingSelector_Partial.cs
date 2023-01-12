@@ -25,8 +25,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private const string c_scrollViewerTemplatePart = "ScrollViewer";
 		private const string c_upButtonTemplatePart = "UpButton";
 		private const string c_downButtonTemplatePart = "DownButton";
-		private const double c_targetScreenWidth = 400.0;
-
+		//private const double c_targetScreenWidth = 400.0;
 
 		internal LoopingSelector()
 		{

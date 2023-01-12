@@ -36,7 +36,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement : FrameworkElement
 	{
+#if false
 		partial void UnregisterSubView();
+#endif
+
 		partial void RegisterSubView(View child);
 
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)

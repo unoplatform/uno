@@ -244,11 +244,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
+#if false
 		private void AutomationToggleButtonOnToggle()
 		{
 			// OnToggle through UIAutomation
 			OnClick();
 		}
+#endif
 
 		/// <summary>
 		/// Create ToggleButtonAutomationPeer to represent the ToggleButton.
@@ -264,6 +266,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return null;
 		}
 
+#if false
 		private void SetSkipAutomationPeerCreation() => _skipCreateAutomationPeer = true;
+#endif
 	}
 }

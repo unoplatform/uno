@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetFlyoutItemsDataContext()
 		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
 			Items?.ForEach(item => item?.SetValue(
 				UIElement.DataContextProperty,
 				this.DataContext,
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			base.OnOpening();
-			
+
 			if (menuFlyoutPresenter is not null)
 			{
 				// Reset the presenter's ItemsSource.  Since Items is not an IObservableVector, we don't
@@ -209,6 +209,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		void PreparePopupTheme(
 			Popup pPopup,
 			MajorPlacementMode placementMode,
@@ -242,7 +243,6 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// (m_tpMenuPopupThemeTransition as MenuPopupThemeTransition).Direction = direction);
 		}
-
 
 		///*static*/
 		//Transition PreparePopupThemeTransitionsAndShadows(
@@ -328,6 +328,7 @@ namespace Windows.UI.Xaml.Controls
 				m_openingWindowedInProgress = false;
 			}
 		}
+#endif
 
 		void CacheInputDeviceTypeUsedToOpen(UIElement pTargetElement)
 		{
@@ -336,6 +337,7 @@ namespace Windows.UI.Xaml.Controls
 			//InputDeviceTypeUsedToOpen = contentRoot.GetInputManager().GetLastInputDeviceType();
 		}
 
+#if false
 		// Callback for ShowAt() from core layer
 		void ShowAtStatic(MenuFlyout pCoreMenuFlyout,
 			UIElement pCoreTarget,
@@ -361,6 +363,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#endif
 
 		IMenu IMenu.ParentMenu
 		{
@@ -388,6 +391,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide();
 		}
 
+#if false
 		bool IsWindowedPopup()
 		{
 			return false;
@@ -395,5 +399,6 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// return CPopup.DoesPlatformSupportWindowedPopup(DXamlCore.GetCurrent().GetHandle()) && (FlyoutBase.IsWindowedPopup() || m_openingWindowedInProgress);
 		}
+#endif
 	}
 }

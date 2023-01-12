@@ -19,15 +19,15 @@ namespace Windows.UI.Xaml.Controls
 		const bool PICKER_SHOULD_LOOP = true;
 
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
-		const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
+		//const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
 		const int DATEPICKER_SENTINELTIME_HOUR = 12;
 		const int DATEPICKER_SENTINELTIME_MINUTE = 0;
 		const int DATEPICKER_SENTINELTIME_SECOND = 0;
 		const int DATEPICKER_WRAP_AROUND_MONTHS_FIRST_INDEX = 1;
 
-		const string _dayLoopingSelectorAutomationId = "DayLoopingSelector";
-		const string _monthLoopingSelectorAutomationId = "MonthLoopingSelector";
-		const string _yearLoopingSelectorAutomationId = "YearLoopingSelector";
+		//const string _dayLoopingSelectorAutomationId = "DayLoopingSelector";
+		//const string _monthLoopingSelectorAutomationId = "MonthLoopingSelector";
+		//const string _yearLoopingSelectorAutomationId = "YearLoopingSelector";
 
 		const string _firstPickerHostName = "FirstPickerHost";
 		const string _secondPickerHostName = "SecondPickerHost";
@@ -685,11 +685,13 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
+#if false
 		void OnKeyDownImpl(KeyRoutedEventArgs pEventArgs)
 		{
 			DateTimePickerFlyoutHelper.OnKeyDownImpl(pEventArgs, _tpFirstPickerAsControl,
 				_tpSecondPickerAsControl, _tpThirdPickerAsControl, _tpContentPanel);
 		}
+#endif
 
 		//DependencyObject GetDefaultIsDefaultShadowEnabled()
 		//{
@@ -1289,7 +1291,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//spFormatterFactory.CreateDateTimeFormatter(strFormat, spFormatter);
 			spFormatter = new DateTimeFormatter(strFormat);
-			
+
 			//spFormatter.get_GeographicRegion(strGeographicRegion);
 			//spFormatter.get_Languages(spLanguages);
 			//spFormatter.get_Clock(strClock);

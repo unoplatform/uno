@@ -61,9 +61,18 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return true;
 			}
-			
+
 			asyncImage = default;
 			return false;
+		}
+
+		private void RaiseDownloadProgress(int progress = 0)
+		{
+			if (DownloadProgress is { } evt)
+			{
+				evt?.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
+
+			}
 		}
 
 		internal static class AssetResolver
@@ -129,7 +138,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					for (var i = KnownScales.Length - 1; i >= 0; i--)
 					{
 						var probeScale = KnownScales[i];
-					
+
 						if (resolutionScale >= probeScale)
 						{
 							var filePath = Path.Combine(directory, $"{filename}.scale-{probeScale}{extension}");

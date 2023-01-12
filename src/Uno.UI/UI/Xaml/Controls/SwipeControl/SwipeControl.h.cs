@@ -217,55 +217,55 @@ namespace Windows.UI.Xaml.Controls
 		//static string DirectionToInset(CreatedContent& createdContent);
 
 		private const string s_isNearOpenPropertyName = "isNearOpen";
-		private static string isNearOpenPropertyName() { return s_isNearOpenPropertyName; }
+		//private static string isNearOpenPropertyName() { return s_isNearOpenPropertyName; }
 
 		private const string s_isFarOpenPropertyName = "isFarOpen";
-		private static string isFarOpenPropertyName() { return s_isFarOpenPropertyName; }
+		//private static string isFarOpenPropertyName() { return s_isFarOpenPropertyName; }
 
 		private const string s_isNearContentPropertyName = "isNearContent";
-		private static string isNearContentPropertyName() { return s_isNearContentPropertyName; }
+		//private static string isNearContentPropertyName() { return s_isNearContentPropertyName; }
 
 		private const string s_blockNearContentPropertyName = "blockNearContent";
-		private static string blockNearContentPropertyName() { return s_blockNearContentPropertyName; }
+		//private static string blockNearContentPropertyName() { return s_blockNearContentPropertyName; }
 
 		private const string s_blockFarContentPropertyName = "blockFarContent";
-		private static string blockFarContentPropertyName() { return s_blockFarContentPropertyName; }
+		//private static string blockFarContentPropertyName() { return s_blockFarContentPropertyName; }
 
 		private const string s_hasLeftContentPropertyName = "hasLeftContent";
-		private static string hasLeftContentPropertyName() { return s_hasLeftContentPropertyName; }
+		//private static string hasLeftContentPropertyName() { return s_hasLeftContentPropertyName; }
 
 		private const string s_hasRightContentPropertyName = "hasRightContent";
-		private static string hasRightContentPropertyName() { return s_hasRightContentPropertyName; }
+		//private static string hasRightContentPropertyName() { return s_hasRightContentPropertyName; }
 
 		private const string s_hasTopContentPropertyName = "hasTopContent";
-		private static string hasTopContentPropertyName() { return s_hasTopContentPropertyName; }
+		//private static string hasTopContentPropertyName() { return s_hasTopContentPropertyName; }
 
 		private const string s_hasBottomContentPropertyName = "hasBottomContent";
-		private static string hasBottomContentPropertyName() { return s_hasBottomContentPropertyName; }
+		//private static string hasBottomContentPropertyName() { return s_hasBottomContentPropertyName; }
 
 		private const string s_isHorizontalPropertyName = "isHorizontal";
-		private static string isHorizontalPropertyName() { return s_isHorizontalPropertyName; }
+		//private static string isHorizontalPropertyName() { return s_isHorizontalPropertyName; }
 
 		private const string s_trackerPropertyName = "tracker";
-		private static string trackerPropertyName() { return s_trackerPropertyName; }
+		//private static string trackerPropertyName() { return s_trackerPropertyName; }
 
 		private const string s_foregroundVisualPropertyName = "foregroundVisual";
-		private static string foregroundVisualPropertyName() { return s_foregroundVisualPropertyName; }
+		//private static string foregroundVisualPropertyName() { return s_foregroundVisualPropertyName; }
 
 		private const string s_swipeContentVisualPropertyName = "swipeContentVisual";
-		private static string swipeContentVisualPropertyName() { return s_swipeContentVisualPropertyName; }
+		//private static string swipeContentVisualPropertyName() { return s_swipeContentVisualPropertyName; }
 
 		private const string s_swipeContentSizeParameterName = "swipeContentVisual";
-		private static string swipeContentSizeParameterName() { return s_swipeContentSizeParameterName; }
+		//private static string swipeContentSizeParameterName() { return s_swipeContentSizeParameterName; }
 
 		private const string s_swipeRootVisualPropertyName = "swipeRootVisual";
-		private static string swipeRootVisualPropertyName() { return s_swipeRootVisualPropertyName; }
+		//private static string swipeRootVisualPropertyName() { return s_swipeRootVisualPropertyName; }
 
 		private const string s_maxThresholdPropertyName = "maxThreshold";
-		private static string maxThresholdPropertyName() { return s_maxThresholdPropertyName; }
+		//private static string maxThresholdPropertyName() { return s_maxThresholdPropertyName; }
 
-		private const string s_minPositionPropertyName = "minPosition";
-		private const string s_maxPositionPropertyName = "maxPosition";
+		//private const string s_minPositionPropertyName = "minPosition";
+		//private const string s_maxPositionPropertyName = "maxPosition";
 
 		private const string s_leftInsetTargetName = "LeftInset";
 		private const string s_rightInsetTargetName = "RightInset";

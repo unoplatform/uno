@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool ShouldChangeDataSource(IEnumerable rawData)
 		{
-			return rawData != m_rawDataSource;    
+			return rawData != m_rawDataSource;
 		}
 
 		public void OnRawDataChanged(Action<NotifyCollectionChangedEventArgs> dataChangeCallback)
@@ -280,11 +280,13 @@ namespace Windows.UI.Xaml.Controls
 			m_overflowButtonCachedWidth = width;
 		}
 
+#if false
 		bool IsItemSelectableInPrimaryList(object  value)
 		{
 			int index = IndexOf(value);
 			return (index != -1);
 		}
+#endif
 
 		public int IndexOf(object  value, NavigationViewSplitVectorID vectorID)
 		{
@@ -415,6 +417,7 @@ namespace Windows.UI.Xaml.Controls
 			return isContainerNavigationViewItem;
 		}
 
+#if false
 		bool IsContainerNavigationViewHeader(int index)
 		{
 			bool isContainerNavigationViewHeader = false;
@@ -426,6 +429,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			return isContainerNavigationViewHeader;
 		}
-
+#endif
 	}
 }
