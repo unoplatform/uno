@@ -31,12 +31,6 @@ namespace Windows.UI.Xaml
 			{
 			}
 
-			private TouchReRouter(UIElement target)
-				: base(IntPtr.Zero, JniHandleOwnership.DoNotRegister)
-			{
-				_target = target;
-			}
-
 			/// <inheritdoc />
 			public bool OnTouch(View view, MotionEvent nativeEvent)
 				=> _target.OnNativeMotionEvent(nativeEvent, view, true);

@@ -329,11 +329,13 @@ namespace Windows.UI.Xaml.Controls
 			return Icon != null;
 		}
 
+#if !IS_UNO
 		bool ShouldEnableToolTip()
 		{
 			// We may enable Tooltip for IconOnly in the future, but not now
 			return IsOnLeftNav() && m_isClosedCompact;
 		}
+#endif
 
 		bool ShouldShowContent()
 		{

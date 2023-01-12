@@ -16,11 +16,11 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 	// There is not a lot of value in antly firing the interaction ratio changed event as the
 	// animations which are based off of it use the published composition property set which is
 	// updated regularly. Instead we fire the event every 5th change to reduce overhead.
-	private const int RAISE_INTERACTION_RATIO_CHANGED_FREQUENCY = 5;
+	//private const int RAISE_INTERACTION_RATIO_CHANGED_FREQUENCY = 5;
 
 	// When the user is close to a threshold point we want to make sure that we always raise
 	// InteractionRatioChanged events so that we don't miss something important.
-	private const double ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE = 0.05;
+	//private const double ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE = 0.05;
 
 	// This is our private implementation of the IRefreshInfoProvider interface. It is contructed by
 	// the ScrollViewerAdapter's Adapt method and returned as an instance of an IRefreshInfoProvider.
@@ -161,11 +161,12 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 			m_interactionRatioChangedCount++;
 		}
 	}
-#endif
+
 	private bool AreClose(double interactionRatio, double target)
 	{
 		return Math.Abs(interactionRatio - target) < ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE;
 	}
+#endif
 
 	private void RaiseIsInteractingForRefreshChanged()
 	{

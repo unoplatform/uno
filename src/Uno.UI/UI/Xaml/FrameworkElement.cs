@@ -275,7 +275,9 @@ namespace Windows.UI.Xaml
 			}
 
 			_layouter.Measure(availableSize);
+#if NET461
 			OnMeasurePartial(availableSize);
+#endif
 		}
 
 		/// <summary>

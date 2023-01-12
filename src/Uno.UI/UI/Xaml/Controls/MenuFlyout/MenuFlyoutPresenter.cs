@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int m_depth;
 
-		private FlyoutBase.MajorPlacementMode m_mostRecentPlacement;
+		//private FlyoutBase.MajorPlacementMode m_mostRecentPlacement;
 
 		private ScrollViewer m_tpScrollViewer;
 
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// m_animationInProgress = false;
 			m_isSubPresenter = false;
-			m_mostRecentPlacement = FlyoutBase.MajorPlacementMode.Bottom;
+			//m_mostRecentPlacement = FlyoutBase.MajorPlacementMode.Bottom;
 
 			DefaultStyleKey = typeof(MenuFlyoutPresenter);
 		}

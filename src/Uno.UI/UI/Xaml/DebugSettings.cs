@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml
 		[Uno.NotImplemented]
 		public bool IsTextPerformanceVisualizationEnabled { get; set; }
 
+#pragma warning disable CS0067 // The event 'DebugSettings.BindingFailed' is never used
 		public event BindingFailedEventHandler BindingFailed;
+#pragma warning restore CS0067 // The event 'DebugSettings.BindingFailed' is never used
 	}
 }

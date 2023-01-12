@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		private const string DrawableUriPrefix = "drawable://";
+		//private const string DrawableUriPrefix = "drawable://";
 
 		private const string ContactUriPrefix = "content://com.android.contacts/";
 
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Media
 					var emptyPadding = new Rect();
 					// Try to move position to beginning of the stream, if seekable.
 					Stream.Position = 0;
-					//Get the size of the image and validate 
+					//Get the size of the image and validate
 					await BitmapFactory.DecodeStreamAsync(Stream, emptyPadding, options);
 					Stream.Position = 0;
 					if (ValidateIfImageNeedsResize(options))
@@ -460,7 +460,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			// Overrides the CanConvertFrom method of TypeConverter.
 			// The ITypeDescriptorContext interface provides the context for the
-			// conversion. Typically, this interface is used at design time to 
+			// conversion. Typically, this interface is used at design time to
 			// provide information about the design-time container.
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 			{
