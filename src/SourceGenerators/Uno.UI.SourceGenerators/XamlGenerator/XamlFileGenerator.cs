@@ -5931,6 +5931,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											applyWriter.AppendLineIndented($";");
 										}
 									}
+									else if (HasCustomMarkupExtension(valueNode))
+									{
+										var propertyValue = GetCustomMarkupExtensionValue(valueNode);
+										writer.AppendLineIndented($"{propertyValue})");
+									}
 									else
 									{
 										BuildChild(writer, valueNode, valueNode.Objects.First(), outerClosure: null);
