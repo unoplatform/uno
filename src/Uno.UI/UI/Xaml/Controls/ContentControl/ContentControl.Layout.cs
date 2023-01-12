@@ -61,7 +61,9 @@ namespace Windows.UI.Xaml.Controls
 			if (child != null)
 			{
 				var padding = Padding;
-				var borderThickness = BorderThickness;
+				
+				// Page has border properties, but does not render them in the default template.
+				var borderThickness = this is not Page ? BorderThickness : default;
 
 				var finalRect = new Rect(
 					padding.Left + borderThickness.Left,

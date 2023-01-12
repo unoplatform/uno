@@ -348,12 +348,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.AreEqual("Item 1", si.Content);
-#if !NETFX_CORE // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
-			return;
-#endif
-
+#if NETFX_CORE // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
 			Assert.IsInstanceOfType(si.ContentTemplateRoot, typeof(TextBlock));
 			Assert.AreEqual("Item 1", (si.ContentTemplateRoot as TextBlock).Text);
+#endif
 		}
 
 		[TestMethod]

@@ -811,7 +811,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 			await helper.PrepareLoadedEvent();
@@ -875,7 +875,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 
@@ -943,7 +943,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			Grid rootPanel = null;
 
-			Windows.Globalization.Calendar calendar = null;
+			//Windows.Globalization.Calendar calendar = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
 
@@ -1578,7 +1578,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 			CalendarPanel calendarPanel = null;
 			ScrollViewer scrollViewer = null;
-			UIElement calendarItem = null;
+			//UIElement calendarItem = null;
 			var helper = new CalendarHelper.CalendarViewHelper();
 
 			CalendarView cv = await helper.GetCalendarView();
@@ -1673,7 +1673,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 			CalendarPanel calendarPanel = null;
 			ScrollViewer scrollViewer = null;
-			UIElement calendarItem = null;
+			//UIElement calendarItem = null;
 			var helper = new CalendarHelper.CalendarViewHelper();
 
 			CalendarView cv = await helper.GetCalendarView();
@@ -3009,7 +3009,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 			  cv.RequestedTheme = xaml.ElementTheme.Light;
 			});
-	
+
 			LOG_OUTPUT("Validate light theme");
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "light");
@@ -4476,7 +4476,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -4515,7 +4515,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			Grid rootPanel = null;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Button headerButton = null;
+			//Button headerButton = null;
 
 			CalendarView cv = await helper.GetCalendarView();
 
@@ -5066,7 +5066,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 
 			Grid rootPanel = null;
-			Button headerButton = null;
+			//Button headerButton = null;
 			int changeCount = 0;
 
 			var helper = new CalendarHelper.CalendarViewHelper();
@@ -5254,7 +5254,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			foreach (var dimension in dimensions)
 			{
-				CalendarPanel calendarPanel = null;
+				//CalendarPanel calendarPanel = null;
 				var helper = new CalendarHelper.CalendarViewHelper();
 
 				CalendarView cv = await helper.GetCalendarView();

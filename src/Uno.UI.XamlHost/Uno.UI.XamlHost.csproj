@@ -4,7 +4,6 @@
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;netstandard2.0;net461</TargetFrameworks>
 	<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
-	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	<Deterministic>true</Deterministic>
   </PropertyGroup>
 
@@ -45,7 +44,7 @@
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
-	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes
 				the System.Memory local reference if the package is transitively referenced.
@@ -58,7 +57,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsMacOS))">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />

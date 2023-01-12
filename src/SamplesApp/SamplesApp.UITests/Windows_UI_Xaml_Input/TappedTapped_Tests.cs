@@ -167,7 +167,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		{
 			Run(_xamlTestPage);
 
-			const string parentName = "Nested_Handling_Parent";
 			const string targetName = "Nested_Handling_Target";
 			const int tapX = 10, tapY = 10;
 

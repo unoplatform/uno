@@ -219,9 +219,13 @@ namespace Windows.UI.Xaml
 		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
+			// FrameworkElement.ArrangeElement shifts the origin by border thickness to adhere to HTML's behavior,
+			// for LayoutSlotWithMarginsAndAlignments we need to shift it back in the right place for consistency
+			// with other platforms.
 			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
-					? rect.DeflateBy(parent.GetBorderThickness())
+				VisualTreeHelper.GetParent(this) is FrameworkElement parent &&
+				parent.TryGetActualBorderThickness(out var borderThickness)
+					? new Rect(rect.X + borderThickness.Left, rect.Y + borderThickness.Top, rect.Width, rect.Height)
 					: rect;
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)

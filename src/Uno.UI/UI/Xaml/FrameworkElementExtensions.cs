@@ -324,29 +324,43 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// This method retrieves the actual border thickness of given FrameworkElement.
+		/// Note that for Control.BorderThickness is not actually applied unless
+		/// it is used somewhere within the ControlTemplate.
+		/// </summary>
+		/// <param name="frameworkElement">Framework element.</param>
+		/// <param name="borderThickness">Thickness.</param>
+		/// <returns>Whether the given element has an actual border.</returns>
+		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
+		{
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
+			{
+				borderThickness = p.BorderThicknessInternal;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			{
+				borderThickness = cp.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			{
+				borderThickness = b.BorderThickness;
+				return true;
+			}
+
+			borderThickness = default;
+			return false;
+		}
+
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Grid_Available && frameworkElement is Grid g)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
 			{
-				borderThickness = g.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_StackPanel_Available && frameworkElement is StackPanel sp)
-			{
-				borderThickness = sp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_RelativePanel_Available && frameworkElement is RelativePanel rp)
-			{
-				borderThickness = rp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel_Available && frameworkElement is Microsoft.UI.Xaml.Controls.LayoutPanel lp)
-			{
-				borderThickness = lp.BorderThickness;
+				borderThickness = p.BorderThicknessInternal;
 				return true;
 			}
 

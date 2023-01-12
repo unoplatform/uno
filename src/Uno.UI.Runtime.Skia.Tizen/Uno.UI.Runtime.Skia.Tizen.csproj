@@ -16,8 +16,6 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Tizen</PackageId>
 
 		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
-		
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,7 +29,7 @@
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
@@ -44,5 +42,5 @@
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
 	</ItemGroup>
-	
+
 </Project>

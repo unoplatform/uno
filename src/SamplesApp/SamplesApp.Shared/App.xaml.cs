@@ -489,6 +489,8 @@ namespace SamplesApp
 #if HAS_UNO
 			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			_log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(App));
+#else
+			_log = Uno.Extensions.LogExtensionPoint.Log(typeof(App));
 #endif
 		}
 

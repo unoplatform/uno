@@ -120,7 +120,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			// Verify that border is drawn with the same thickness with/without CornerRadius
 			const string white = "#FFFFFFFF";
-			const string red = "#FFFF0000";
 
 #if __MACOS__
 			Assert.Inconclusive(); // MACOS interpret colors differently
@@ -171,13 +170,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_CornerRadius_BorderThickness()
 		{
-			// White Background color underneath
-			const string white = "#FFFFFF";
-
-			//Colors with 50% Opacity
-			const string red50 = "#80FF0000";
-			const string blue50 = "#800000FF";
-
 			//Same colors but with the addition of a White background color underneath
 			const string lightPink = "#FF7F7F";
 			const string lightBlue = "#7F7FFF";
@@ -374,7 +366,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__ANDROID__
 			Assert.Inconclusive();
 #endif
-			const string firstRectBlueish = "#ff6262ff";
 			const string secondRectBlueish = "#ff9e9eff";
 
 			var SUT = new Border_AntiAlias();

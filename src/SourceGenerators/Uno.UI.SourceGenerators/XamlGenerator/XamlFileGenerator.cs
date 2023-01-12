@@ -394,6 +394,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, _analyzerSuppressions);
 
+			writer.AppendLineIndented("#pragma warning disable CS0114");
+			writer.AppendLineIndented("#pragma warning disable CS0108");
 			writer.AppendLineIndented("using System;");
 			writer.AppendLineIndented("using System.Collections.Generic;");
 			writer.AppendLineIndented("using System.Diagnostics;");
@@ -4902,7 +4904,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "Windows.UI.Xaml.Media.ImageSource":
 						// We have an implicit conversion from string to ImageSource.
-						// 
+						//
 						return $"\"{memberValue}\"";
 				}
 

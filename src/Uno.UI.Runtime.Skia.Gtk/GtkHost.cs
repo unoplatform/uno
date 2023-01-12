@@ -454,7 +454,7 @@ namespace Uno.UI.Runtime.Skia
 			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 			{
 				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path, basePath);
+				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
 
 				if (File.Exists(iconPath))
 				{

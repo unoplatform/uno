@@ -15,6 +15,7 @@
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ProvisioningType>manual</ProvisioningType>
+	<NoWarn>$(NoWarn);CS1701</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>

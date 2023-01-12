@@ -451,7 +451,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 					break;
 
 				default:
-					// Start with a clean slate				
+					// Start with a clean slate
 					// Hide the first parameter
 					parameter1.Header = "";
 					parameter1.IsEnabled = false;
@@ -643,7 +643,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <summary>
 		/// Helper function to populate a dropdown lists with options
 		/// </summary>
-		/// <param name="list">The parameter list to populate</param>
 		/// <param name="numberOfOptions">Number of options in the list</param>
 		/// <param name="listName">The header to display to the user</param>
 		private void PopulateParameterList(NumberBox numberBox, int numberOfOptions, string listName)

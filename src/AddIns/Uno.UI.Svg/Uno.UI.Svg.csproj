@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>xamarinmac20;MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworksCI>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
 

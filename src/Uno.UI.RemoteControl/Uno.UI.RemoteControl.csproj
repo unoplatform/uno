@@ -8,8 +8,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -19,7 +17,6 @@
 		<Deterministic>true</Deterministic>
 
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>
@@ -123,7 +120,7 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 	</Target>
 
-	<Target Name="VS16Mac_RemoveSystemBuffers" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+	<Target Name="VS16Mac_RemoveSystemBuffers" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<!--
 				VS4Mac seems to process System.Buffers differently, and removes
 				the System.Buffers local reference if the package is transitively referenced.
@@ -136,7 +133,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="VS16_RemoveSystemBuffers" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsAndroid) or $(IsIOS) or $(IsMacOS))">
+	<Target Name="VS16_RemoveSystemBuffers" BeforeTargets="FindReferenceAssembliesForReferences" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />

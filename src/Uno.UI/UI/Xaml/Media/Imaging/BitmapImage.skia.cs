@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 
 			var originalLocalPath =
-				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
+				Path.Combine(Windows.Application­Model.Package.Current.InstalledPath,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 				);
 

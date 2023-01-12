@@ -17,12 +17,12 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Input.Keyboard
 {
 	[SampleControlInfo("Keyboard", nameof(Keyboard_iOS_Theme),
-		description: Description,
+		description: SampleDescription,
 		ignoreInSnapshotTests: true,
 		isManualTest: true)]
 	public sealed partial class Keyboard_iOS_Theme : Page
 	{
-		private const string Description = "[iOS-only] Keyboard theme should be determined based on the following precedences: KeyboardAppearance > RequestedTheme > Device Theme.";
+		private const string SampleDescription = "[iOS-only] Keyboard theme should be determined based on the following precedences: KeyboardAppearance > RequestedTheme > Device Theme.";
 
 		public Keyboard_iOS_Theme()
 		{

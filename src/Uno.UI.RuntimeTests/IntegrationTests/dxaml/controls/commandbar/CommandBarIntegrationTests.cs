@@ -594,7 +594,7 @@ namespace Windows.UI.Tests.Enterprise
                 </CommandBar>
 			");
 
-				var page = WindowHelper.SetupSimulatedAppPage();
+				page = WindowHelper.SetupSimulatedAppPage();
 
 				//Uno TODO: Use Page.BottomAppBar instead of Page.Content
 				SetPageContent(cmdBar, page);
@@ -666,7 +666,7 @@ namespace Windows.UI.Tests.Enterprise
 				appBarButton = (AppBarButton)cmdBar.SecondaryCommands[0];
 				VERIFY_IS_NOT_NULL(appBarButton);
 
-				var page = WindowHelper.SetupSimulatedAppPage();
+				page = WindowHelper.SetupSimulatedAppPage();
 				VERIFY_IS_NOT_NULL(page);
 
 				//TODO: BottomAppBar not implemented
@@ -1047,7 +1047,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			var rightKeySequence = "#$d$_right#$u$_right";
 			var leftKeySequence = "#$d$_left#$u$_left";
-			var returnKeySequence = "#$d$_return#$u$_return";
+			//var returnKeySequence = "#$d$_return#$u$_return";
 
 			int primaryCount = 0;
 			int secondaryCount = 0;
@@ -2024,7 +2024,7 @@ namespace Windows.UI.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 			UIElement secondaryItemsPresenter = null;
-			Page rootPage = (Page)XamlReader.Load(@"<Page    
+			Page rootPage = (Page)XamlReader.Load(@"<Page
 				xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
 				xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
 
@@ -2158,7 +2158,7 @@ namespace Windows.UI.Tests.Enterprise
 			// so we just hard-code the values here.
 			double expectedMenuWidth_Touch = 0;
 			double expectedMenuWidth_NonTouch = 0;
-			double expectedMenuItemHeight_Touch = 40;
+			//double expectedMenuItemHeight_Touch = 40;
 #if __IOS__
 			double expectedMenuItemHeight_NonTouch = 31;
 #elif __SKIA__
@@ -2949,7 +2949,7 @@ namespace Windows.UI.Tests.Enterprise
 			int numButtonsToAddExtraToPrimary = 2;
 			int numButtonsToAddToSecondary = 3;
 
-			AppBarButton addedButton1 = null;
+			//AppBarButton addedButton1 = null;
 			(Page page, CommandBar cmdBar) = await SetupDynamicOverflowTest(numButtonsToAddExtraToPrimary, numButtonsToAddToSecondary);
 
 			await ValidateDynamicOverflowItemsChangingEventWorker(cmdBar, true);
@@ -3001,7 +3001,7 @@ namespace Windows.UI.Tests.Enterprise
 			int numButtonsToAddToSecondary = 3;
 
 			AppBarButton addedButton1 = null;
-			AppBarSeparator addedSeparator1 = null;
+			//AppBarSeparator addedSeparator1 = null;
 
 			(Page page, CommandBar cmdBar) = await SetupDynamicOverflowTest(numButtonsToAddExtraToPrimary, numButtonsToAddToSecondary, isSetOrder: true);
 			await ValidateDynamicOverflowWorker(cmdBar, isPrimaryCommandMovedToOverflow: true, numButtonsToAddExtraToPrimary, numButtonsToAddToSecondary, isSetOrder: true);
@@ -4626,7 +4626,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				root = (CommandBar)XamlReader.Load(@"
-					
+
                             <CommandBar xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
                                 <AppBarToggleButton x:Name=""button""/>
                             </CommandBar>

@@ -1025,7 +1025,7 @@ namespace Windows.UI.Xaml.Controls
 			//}
 		}
 
-		private Thickness GetItemBorderThickness()
+		internal Thickness GetItemBorderThickness()
 		{
 			var pOwner = GetOwner();
 			if (pOwner is { })

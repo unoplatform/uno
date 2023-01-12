@@ -14,8 +14,7 @@ namespace Windows.ApplicationModel
 		public string DisplayName =>
 			Application.Context.ApplicationInfo.LoadLabel(Application.Context.PackageManager);
 
-		private string GetInstalledLocation()
-			=> "assets://" + ContextHelper.Current.PackageCodePath;
+		private string GetInstalledPath() => "assets://" + ContextHelper.Current.PackageCodePath;
 
 		private bool GetInnerIsDevelopmentMode()
 		{
