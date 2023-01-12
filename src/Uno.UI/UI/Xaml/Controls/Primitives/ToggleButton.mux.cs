@@ -10,8 +10,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ToggleButton
 	{
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value false
 		private bool _skipCreateAutomationPeer;
-
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value false
 		private protected override void Initialize()
 		{
 			base.Initialize();

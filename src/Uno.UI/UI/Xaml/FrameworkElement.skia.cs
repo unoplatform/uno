@@ -42,10 +42,6 @@ namespace Windows.UI.Xaml
 
 		public double ActualHeight => GetActualHeight();
 
-		partial void OnMeasurePartial(Size slotSize)
-		{
-		}
-
 		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;

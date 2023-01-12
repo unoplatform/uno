@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
@@ -17,6 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _uno_isDefferingPressedState = false;
 		private DispatcherQueueTimer _uno_pointerDeferring;
 
+#if __ANDROID__
 		private void DeferUpdateVisualStateForPointer()
 		{
 			// Note: As we use only one timer for both pressed and over state, we stop this timer only if cancelled / capture lost

@@ -288,7 +288,9 @@ namespace Windows.UI.Xaml
 			_layouter.Arrange(finalRect);
 			_layouter.ArrangeChild(this, finalRect);
 		}
+#endif
 
+#if NET461
 		partial void OnMeasurePartial(Size slotSize);
 #endif
 

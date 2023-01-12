@@ -18,7 +18,7 @@ internal partial class RefreshInfoProviderImpl
 	private RefreshPullDirection m_refreshPullDirection = RefreshPullDirection.TopToBottom;
 	private Size m_refreshVisualizerSize = new Size(1.0f, 1.0f);
 	private bool m_isInteractingForRefresh = false;
-	private int m_interactionRatioChangedCount = 0;
+	//private int m_interactionRatioChangedCount = 0;
 	private CompositionPropertySet? m_compositionProperties = null;
 	private string m_interactionRatioCompositionProperty = "InteractionRatio";
 	private double m_executionRatio = DEFAULT_EXECUTION_RATIO;

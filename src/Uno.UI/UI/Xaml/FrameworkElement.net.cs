@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 				fe.EnterTree();
 			}
 		}
-		
+
 		public T RemoveChild<T>(T child) where T : View
 		{
 			_children.Remove(child);

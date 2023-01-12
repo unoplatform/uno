@@ -23,7 +23,11 @@ namespace Windows.UI.Xaml.Controls
 		private MenuBarItemFlyout m_flyout;
 		private Button m_button;
 		private bool m_isFlyoutOpen;
+
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 		private DependencyObject m_passThroughElement;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value null
+
 		private CompositeDisposable _activeDisposables;
 
 		public MenuBarItem()

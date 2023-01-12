@@ -39,9 +39,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private bool _disableRaiseSelectionChanged;
 		//private int m_lastFocusedIndex;
 
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
-		private bool m_inCollectionChange;
-#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+		//private bool m_inCollectionChange;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.

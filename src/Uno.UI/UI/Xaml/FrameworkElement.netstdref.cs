@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml
 
 		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
 
-		partial void OnMeasurePartial(Size slotSize) => throw new NotSupportedException("Reference assembly");
-
 		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
