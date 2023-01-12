@@ -11,7 +11,7 @@
 	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<NoWarn>$(NoWarn);NU1701;IDE0055</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
