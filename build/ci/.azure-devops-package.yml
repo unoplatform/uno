@@ -117,6 +117,7 @@ jobs:
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
+    name: Publish_NugetPackages
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -127,6 +128,7 @@ jobs:
       echo 'Data'
       echo '{"event_type": "api_validation", "client_payload": { "build_id": "$(BUILD_BUILDID)", "package_name_prefix": "Uno.$(XAML_FLAVOR_BUILD)", "gitversion_semVer": "$(GITVERSION_SemVer)", "ref": "$(BUILD_SOURCEVERSION)", "pr_id": "$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" }}'
     displayName: Debug
+    condition: succeeded('Publish_NugetPackages')
   
   - bash: |
       curl -X POST \
@@ -134,5 +136,8 @@ jobs:
       -H "Authorization: token $(GITHUB_PAT)" \ 
       --data '{"event_type": "api_validation", "client_payload": { "build_id": "$(BUILD_BUILDID)", "package_name_prefix": "Uno.$(XAML_FLAVOR_BUILD)", "gitversion_semVer": "$(GITVERSION_SemVer)", "ref": "$(BUILD_SOURCEVERSION)", "pr_id": "$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" }}' \
          https://api.github.com/repos/unoplatform/uno/dispatches
+    displayName: 'Trigger GitHub Actions'
+    condition: succeeded('Publish_NugetPackages')
+    env: 
       GITHUB_PAT: 'test'
 
