@@ -1,0 +1,39 @@
+name: Api Surface Validation
+
+on:
+  repository_dispatch:
+   type: [api_validation]
+env:
+  AZURE_BUILDID: ${{ github.event.client_payload.build_id }}
+  PACKAGE_NAME: ${{ format('{0}.{1}.nupgk', github.event.client_payload.package_name_prefix, github.event.client_payload.gitversion_semVer) }}
+  GITHUB_PR_ID: ${{ github.event.client_payload.pr_id }}
+  BASE_PACKAGE: ${{ github.event.client_payload.package_name_prefix }}
+
+jobs:
+  validate:
+    name: 'Validate Api Surface ${BASE_PACKAGE}'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.client_payload.ref }}
+
+      - name: Download NugetPackages Artifcat
+        run: wget 'https://dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_apis/build/builds/${AZURE_BUILDID}/artifacts?artifactName=NugetPackages&api-version=7.0&%24format=zip' -O NugetPackages.zip
+
+      - uses: montudor/action-zip@v1
+        name: Extract package
+        with:
+          args: unzip -bbpqq NugetPackages.zip 'NugetPackages/vslatest/${PACKAGE_NAME}' > './${PACKAGE_NAME}'
+      
+      - uses: workgroupengineering/Uno.PackageDiff@V1
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          repository: '${{ github.action_repository }}'
+          pr-id: '${GITHUB_PR_ID}'
+          base: '${BASE_PACKAGE}'
+          other: '${PACKAGE_NAME}'
+          diffignore: './build/PackageDiffIgnore.xml'
+
