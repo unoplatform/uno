@@ -128,7 +128,7 @@ jobs:
       echo 'Data'
       echo '{"event_type": "api_validation", "client_payload": { "build_id": "$(BUILD_BUILDID)", "package_name_prefix": "Uno.$(XAML_FLAVOR_BUILD)", "gitversion_semVer": "$(GITVERSION_SemVer)", "ref": "$(BUILD_SOURCEVERSION)", "pr_id": "$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" }}'
     displayName: Debug
-    condition: succeeded('Publish_NugetPackages')
+    condition: succeeded()
   
   - bash: |
       curl -X POST \
@@ -137,7 +137,7 @@ jobs:
       --data '{"event_type": "api_validation", "client_payload": { "build_id": "$(BUILD_BUILDID)", "package_name_prefix": "Uno.$(XAML_FLAVOR_BUILD)", "gitversion_semVer": "$(GITVERSION_SemVer)", "ref": "$(BUILD_SOURCEVERSION)", "pr_id": "$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" }}' \
          https://api.github.com/repos/unoplatform/uno/dispatches
     displayName: 'Trigger GitHub Actions'
-    condition: succeeded('Publish_NugetPackages')
+    condition: succeeded()
     env: 
       GITHUB_PAT: 'test'
 
