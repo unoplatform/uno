@@ -35,9 +35,9 @@ partial class SvgImageSource
 			if (Stream != null)
 			{
 				Stream.Position = 0;
-				using var data = NSData.FromStream(Stream);		
+				using var data = NSData.FromStream(Stream);
 				var bytes = data.ToArray();
-				return ImageData.FromBytes(bytes);				
+				return ImageData.FromBytes(bytes);
 			}
 
 			if (FilePath.HasValue())
@@ -157,7 +157,7 @@ partial class SvgImageSource
 		}
 
 		bool IsSuccessful(nint status) => status < 300;
-		
+
 		return ImageData.Empty;
 #else
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -177,18 +177,8 @@ partial class SvgImageSource
 			var bytes = data.ToArray();
 			return Task.FromResult(ImageData.FromBytes(bytes));
 		}
-		
+
 		return Task.FromResult(ImageData.Empty);
 #endif
-	}
-
-	private static string GetApplicationPath(string rawPath)
-	{
-		var originalLocalPath =
-			global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
-				 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
-			);
-
-		return originalLocalPath;
 	}
 }

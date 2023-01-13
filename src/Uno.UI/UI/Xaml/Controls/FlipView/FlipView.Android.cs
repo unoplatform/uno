@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayout();
 		}
 
-		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
+		private void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
 		{
 			if (PagedView == null || PagedView.CurrentItem == newValue)
 			{

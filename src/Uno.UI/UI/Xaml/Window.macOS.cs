@@ -154,14 +154,5 @@ namespace Windows.UI.Xaml
 				FullWindowMediaRoot.Child = element;
 			}
 		}
-
-		private void UpdateCoreBounds()
-		{
-			var applicationView = ApplicationView.GetForCurrentView();
-			if (applicationView != null)
-			{
-				applicationView.SetCoreBounds(_window, Bounds);
-			}
-		}
 	}
 }

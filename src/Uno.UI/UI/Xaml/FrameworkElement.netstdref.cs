@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml
 
 		internal T AddChild<T>(T child, int index) where T : View => throw new NotSupportedException("Reference assembly");
 
-		private void OnAddChild(View child) => throw new NotSupportedException("Reference assembly");
-
 		internal T RemoveChild<T>(T child) where T : View => throw new NotSupportedException("Reference assembly");
 
 		internal View FindFirstChild() => throw new NotSupportedException("Reference assembly");
@@ -29,8 +27,6 @@ namespace Windows.UI.Xaml
 		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
 
 		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
-
-		private void EnterTree() => throw new NotSupportedException("Reference assembly");
 
 		internal int InvalidateMeasureCallCount => throw new NotSupportedException("Reference assembly");
 

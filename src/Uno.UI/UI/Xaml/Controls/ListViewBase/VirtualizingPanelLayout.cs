@@ -16,6 +16,7 @@ namespace Windows.UI.Xaml.Controls
     [Windows.UI.Xaml.Data.Bindable]
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
+#if !__ANDROID__ && !__IOS__
 		/// <summary>
 		/// Determines if the owner Panel is inside a popup. Used to determine
 		/// if the computation of the breadth should be using the parent's stretch
@@ -23,6 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Related: https://github.com/unoplatform/uno/issues/135
 		/// </summary>
 		private bool IsInsidePopup { get; set; }
+#endif
 
 		protected enum RelativeHeaderPlacement { Inline, Adjacent }
 
@@ -246,7 +248,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Note that Item1 is used instead of Item to work around an issue
-		// in VS15.2 and its associated Roslyn issue: 
+		// in VS15.2 and its associated Roslyn issue:
 		// Uno\Uno.UI.Shared.Xamarin\UI\Xaml\Controls\ListViewBase\VirtualizingPanelLayout.cs(122,31): Error CS0570: 'EnumerableExtensions.MinBy<TSource, TComparable>(IEnumerable<TSource>, Func<TSource, TComparable>)' is not supported by the language
 		//
 		// This is an extract from Uno.Core d9bb6750a164f9d8a32ccf1c4527b02678595ab5 to change the method name.

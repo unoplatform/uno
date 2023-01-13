@@ -28,12 +28,6 @@ namespace Uno.UI
 			throw new NotImplementedException();
 		}
 
-		private static IEnumerable<FrameworkElement> GetDescendants(this FrameworkElement root)
-		{
-			throw new NotImplementedException();
-		}
-
-
 		/// <summary>
 		/// Displays the visual tree in the vicinity of <paramref name="element"/> for diagnostic purposes.
 		/// </summary>
@@ -46,7 +40,7 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Displays all the visual descendants of <paramref name="element"/> for diagnostic purposes. 
+		/// Displays all the visual descendants of <paramref name="element"/> for diagnostic purposes.
 		/// </summary>
 		internal static string ShowDescendants(this UIElement element, StringBuilder sb = null, string spacing = "", UIElement viewOfInterest = null)
 		{

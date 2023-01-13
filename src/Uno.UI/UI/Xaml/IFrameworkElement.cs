@@ -422,13 +422,6 @@ namespace Windows.UI.Xaml
 			return element;
 		}
 
-#if XAMARIN_IOS || __MACOS__
-		private static nfloat NumberOrDefault(this double number, nfloat defaultValue)
-		{
-			return NumberOrDefault((nfloat)number, defaultValue);
-		}
-#endif
-
 		private static nfloat NumberOrDefault(this nfloat number, nfloat defaultValue)
 		{
 			return nfloat.IsNaN(number)

@@ -147,6 +147,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
+#if !__MACOS__
 		/// <summary>
 		/// Replace the existing popup root (if any) with the provided one.
 		/// </summary>
@@ -158,6 +159,7 @@ namespace Uno.UI.Xaml.Core
 				Canvas.SetZIndex(PopupRoot, PopupZIndex);
 			}
 		}
+#endif
 
 		internal void SetPublicRootVisual(UIElement? publicRootVisual, ScrollViewer? rootScrollViewer, ContentPresenter? rootContentPresenter)
 		{

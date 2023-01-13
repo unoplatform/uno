@@ -28,10 +28,10 @@ namespace Windows.UI.Xaml.Controls
 		NSObject _didChangeStatusBarOrientationObserver;
 		NSObject _didChangeStatusBarFrameObserver;
 		bool _disposed;
-		
+
 		public WindowView()
 		{
-			
+
 		}
 
 		protected override void Dispose (bool disposing)
@@ -94,6 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		static nfloat StatusBarHeight {
 			get {
 				var orientation = UIApplication.SharedApplication.StatusBarOrientation;
@@ -103,9 +104,10 @@ namespace Windows.UI.Xaml.Controls
 				return UIApplication.SharedApplication.StatusBarFrame.Height;
 			}
 		}
+#endif
 
 		public CGRect WindowBounds {
-			get {    
+			get {
 				var orientation = UIApplication.SharedApplication.StatusBarOrientation;
 				const float statusBarHeight = 0f; // StatusBarHeight;
 
@@ -137,11 +139,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return angle;
-		}
-
-		static UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation (UIInterfaceOrientation orientation)
-		{
-			return (UIInterfaceOrientationMask)(1 << (int)orientation);
 		}
 	}
 }

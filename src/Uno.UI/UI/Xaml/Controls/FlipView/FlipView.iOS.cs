@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			_oldBounds = Bounds;
 		}
 
-		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
+		private void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
 		{
 			if (CollectionView == null
 				// Don't snap if we are unsetting SelectedIndex

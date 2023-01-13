@@ -21,12 +21,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 	public partial class RenderTargetBitmap: IDisposable
 	{
+#if !NOT_IMPLEMENTED
 		private static void Swap(ref byte a, ref byte b)
 		{
 			(a, b) = (b, a);
 		}
 
-#if !NOT_IMPLEMENTED
 		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private static void SwapRB(ref byte[] buffer, int byteCount)
 		{

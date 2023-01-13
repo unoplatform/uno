@@ -13,8 +13,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public Orientation Orientation { get; set; }
 
-		Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => null;
-
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item) { }
 
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item) => null;

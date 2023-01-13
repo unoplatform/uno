@@ -1546,7 +1546,7 @@ namespace Windows.UI.Xaml.Controls
 			m_skipAnimationOnce = false;
 
 			var smallChange = Math.Abs(oldSelectedIndex - newSelectedIndex) <= 1;
-			OnSelectedIndexChangedPartial(oldSelectedIndex, newSelectedIndex, smallChange && UseTouchAnimationsForAllNavigation);
+			//OnSelectedIndexChangedPartial(oldSelectedIndex, newSelectedIndex, smallChange && UseTouchAnimationsForAllNavigation);
 		}
 
 		// Called when the IsEnabled property changes.

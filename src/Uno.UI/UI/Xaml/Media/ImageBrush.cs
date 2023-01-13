@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Media
 
 #if __WASM__
 		[NotImplemented]
-#endif		
+#endif
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(ImageSourceProperty, value);
 		}
 
-		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue); 
+		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
 		#endregion
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Media
 		private Point GetArrangedImageLocation(Size finalSize, Size targetSize)
 		{
 			var location = new Point(
-				targetSize.Width - finalSize.Width, 
+				targetSize.Width - finalSize.Width,
 				targetSize.Height - finalSize.Height
 			);
 
@@ -146,6 +146,7 @@ namespace Windows.UI.Xaml.Media
 			return location;
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __NETSTD__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -165,5 +166,6 @@ namespace Windows.UI.Xaml.Media
 
 			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to open"));
 		}
+#endif
 	}
 }
