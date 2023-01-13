@@ -8,9 +8,9 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace $ext_safeprojectname$
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
+	/// <summary>
+	/// Provides application-specific behavior to supplement the default Application class.
+	/// </summary>
 	public sealed partial class App : Application
 	{
 		/// <summary>
