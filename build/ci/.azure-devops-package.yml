@@ -122,3 +122,11 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
       ArtifactType: Container
+  
+  - bash: |
+      curl -X POST \
+      -H "Accept: application/vnd.github.v3+json" \
+      -H "Authorization: token $(GITHUB_PAT)" \ 
+      --data '{"event_type": "api_validation", "client_payload": { "build_id": "$(BUILD_BUILDID)", "package_name_prefix": "Uno.$(XAML_FLAVOR_BUILD)", "gitversion_semVer": "$(GITVERSION_SemVer)", "ref": "$(BUILD_SOURCEVERSION)", "pr_id": "$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" }}' \
+         https://api.github.com/repos/unoplatform/uno/dispatches
+
