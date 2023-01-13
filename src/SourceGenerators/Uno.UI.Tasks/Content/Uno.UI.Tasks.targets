@@ -3,6 +3,9 @@
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">Uno.UI.Tasks</UnoUIMSBuildTasksPath>
 		<UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
+		
+		<_IsXamlTrimmingAvailable>true</_IsXamlTrimmingAvailable>
+		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -147,7 +150,7 @@
 	</Target>
 
 	<!--
-	  XAML ResouTrimming
+	  XAML Resources Trimming
 	  -->
 
 	<Target Name="_UnoLinkerHintsSubstitutionsMerge"
@@ -155,7 +158,8 @@
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''
 		and '$(SkipCompilerExecution)' == ''
-		and '$(UnoXamlResourcesTrimming)'=='true'"
+		and '$(UnoXamlResourcesTrimming)'=='true'
+		and $(_IsXamlTrimmingAvailable)"
 		AfterTargets="CoreCompile">
 
 		<ItemGroup>
@@ -184,7 +188,8 @@
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''
 		and '$(SkipCompilerExecution)' == ''
-		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')"
+		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')
+		and $(_IsXamlTrimmingAvailable)"
 		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
 
 		<ItemGroup>
@@ -202,7 +207,10 @@
 	</Target>
 
 	<Target Name="_UnoLinkerHintsPass1"
-		  Condition="'$(IsUnoHead)'=='true' and '$(UnoXamlResourcesTrimming)'=='true'"
+		  Condition="
+			'$(IsUnoHead)'=='true'
+			and '$(UnoXamlResourcesTrimming)'=='true'
+			and $(_IsXamlTrimmingAvailable)"
 		  BeforeTargets="BuildDist;PrepareForILLink">
 
 		<ItemGroup>
