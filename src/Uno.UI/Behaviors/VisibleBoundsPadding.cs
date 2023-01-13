@@ -41,7 +41,7 @@ namespace Uno.UI.Behaviors
 	/// <remarks>
 	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
 	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Toolkit) can use this behavior
-	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside 
+	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside
 	/// of the Uno.UI assembly, Uno.UI.Toolkit.VisibleBoundsPadding should be used by dependents.
 	/// </remarks>
 	internal static class InternalVisibleBoundsPadding
@@ -49,7 +49,7 @@ namespace Uno.UI.Behaviors
 namespace Uno.UI.Toolkit
 {
 	/// <summary>
-	/// A behavior which automatically adds padding to a control that ensures its content will always be inside 
+	/// A behavior which automatically adds padding to a control that ensures its content will always be inside
 	/// the <see cref="ApplicationView.VisibleBounds"/> of the application. Set PaddingMask to 'All' to enable this behavior,
 	/// or set PaddingMask to another value to enable it only on a particular side or sides.
 	/// </summary>
@@ -107,37 +107,13 @@ namespace Uno.UI.Toolkit
 			}
 		}
 
-		/// <summary>
-		/// VisibleBounds offset to the reference frame of the window Bounds.
-		/// </summary>
-		private static Rect OffsetVisibleBounds
-		{
-			get
-			{
-#if WINUI
-				return new();
-#else
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-
-				if (Window.Current is Window window)
-				{
-					var bounds = window.Bounds;
-					visibleBounds.X -= bounds.X;
-					visibleBounds.Y -= bounds.Y;
-				}
-
-				return visibleBounds;
-#endif
-			}
-		}
-
 		public static PaddingMask GetPaddingMask(DependencyObject obj)
 			=> (PaddingMask)obj.GetValue(PaddingMaskProperty);
 
 		/// <summary>
-		/// Set the <see cref="PaddingMask"/> to use on this property. A mask of <see cref="PaddingMask.All"/> will apply visible bounds 
-		/// padding on all sides, a mask of <see cref="PaddingMask.Bottom"/> will adjust only the bottom padding, etc. The different options 
-		/// can be combined as bit flags. 
+		/// Set the <see cref="PaddingMask"/> to use on this property. A mask of <see cref="PaddingMask.All"/> will apply visible bounds
+		/// padding on all sides, a mask of <see cref="PaddingMask.Bottom"/> will adjust only the bottom padding, etc. The different options
+		/// can be combined as bit flags.
 		/// </summary>
 		public static void SetPaddingMask(DependencyObject obj, PaddingMask value)
 			=> obj.SetValue(PaddingMaskProperty, value);
@@ -170,7 +146,27 @@ namespace Uno.UI.Toolkit
 
 #if !WINUI
 		/// <summary>
-		/// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which 
+		/// VisibleBounds offset to the reference frame of the window Bounds.
+		/// </summary>
+		private static Rect OffsetVisibleBounds
+		{
+			get
+			{
+				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+				if (Window.Current is Window window)
+				{
+					var bounds = window.Bounds;
+					visibleBounds.X -= bounds.X;
+					visibleBounds.Y -= bounds.Y;
+				}
+
+				return visibleBounds;
+			}
+		}
+
+		/// <summary>
+		/// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which
 		/// might arise transiently when the screen orientation changes.
 		/// </summary>
 		private static bool AreBoundsAspectRatiosConsistent
@@ -229,7 +225,7 @@ namespace Uno.UI.Toolkit
 				}
 
 				Thickness visibilityPadding;
-				
+
 				if (WindowPadding.Left != 0
 					|| WindowPadding.Right != 0
 					|| WindowPadding.Top != 0
@@ -292,7 +288,7 @@ namespace Uno.UI.Toolkit
 #if XAMARIN
 				if (scrollableRoot is ItemsPresenter)
 				{
-					// This implies we're probably inside a ListView, in which case the reasoning breaks down in Uno (because ItemsPresenter 
+					// This implies we're probably inside a ListView, in which case the reasoning breaks down in Uno (because ItemsPresenter
 					// is *outside* the scrollable region); we skip the adjustment and hope for the best.
 					scrollableRoot = null;
 				}
