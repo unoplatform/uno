@@ -15,8 +15,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
 	{
-		private const int MaxMeasureCache = 50;
-
 		private bool _fontStyleChanged;
 		private bool _fontWeightChanged;
 		private bool _textChanged;
@@ -149,8 +147,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return base.ArrangeOverride(arrangeSize);
 		}
-
-		private int GetCharacterIndexAtPoint(Point point) => throw new NotSupportedException();
 
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
 

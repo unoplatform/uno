@@ -15,8 +15,10 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush : Brush
 	{
+#pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore CS0067 // The event 'ImageBrush.ImageFailed' is never used
 
 		#region AlignmentX DP
 		public static DependencyProperty AlignmentXProperty { get ; } =

@@ -392,6 +392,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+#if DEBUG
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
@@ -399,6 +400,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMProperties();
 			}
 		}
+#endif
 
 		/// <summary>
 		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
