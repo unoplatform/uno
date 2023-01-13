@@ -252,6 +252,23 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public createContentNativeFast(
+			htmlId: number,
+			tagName: string,
+			uiElementRegistrationId: number,
+			isFocusable: boolean,
+			isSvg: boolean) {
+
+			this.createContentInternal({
+				id: this.handleToString(htmlId),
+				handle: htmlId, /* handle is htmlId */
+				tagName: tagName,
+				uiElementRegistrationId: uiElementRegistrationId,
+				isFocusable: isFocusable,
+				isSvg: isSvg
+			});
+		}
+
 		private createContentInternal(contentDefinition: IContentDefinition): void {
 			// Create the HTML element
 			const element =
@@ -388,6 +405,11 @@ namespace Uno.UI {
 			const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
 			this.setVisibilityInternal(params.HtmlId, params.Visible);
 			return true;
+		}
+
+		public setVisibilityNativeFast(htmlId: number, visible: boolean) {
+
+			this.setVisibilityInternal(htmlId, visible);
 		}
 
 		private setVisibilityInternal(elementId: number, visible: boolean): void {
@@ -1287,6 +1309,11 @@ namespace Uno.UI {
 			const params = WindowManagerDestroyViewParams.unmarshal(pParams);
 			this.destroyViewInternal(params.HtmlId);
 			return true;
+		}
+
+		public destroyViewNativeFast(htmlId: number) {
+
+			this.destroyViewInternal(htmlId);
 		}
 
 		private destroyViewInternal(elementId: number): void {
