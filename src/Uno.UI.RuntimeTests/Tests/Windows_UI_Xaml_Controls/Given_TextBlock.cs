@@ -126,7 +126,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx://Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-v2.ttf");
+			
+			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx://Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
 
 			int counter = 3;
 
