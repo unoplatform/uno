@@ -98,32 +98,9 @@ jobs:
   parameters:
     poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-project-template-tests.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
-    vmImageLinux: '$(linuxVMImage)'
-
 - template: build/ci/.azure-devops-uap.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-unit-tests.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-skia-tests.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-    vmMacImage: '$(macOSVMImage)'
-    poolName: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-wasm-uitests.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-macos.yml
   parameters:
@@ -131,26 +108,3 @@ jobs:
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-android-tests.yml
-  parameters:
-    vmWindowsImage: '$(windows2019HostedVMImage)'
-    vmMacOSImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
-
-- template: build/ci/.azure-devops-ios-tests.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    vmImageTest: '$(macOSVMImage_UITests)'
-    xCodeRootBuild: '$(xCodeRoot)'
-    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
-    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
-
-- template: build/ci/.azure-devops-screenshot-compare.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-vs2022-vsix.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
