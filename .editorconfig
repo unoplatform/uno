@@ -406,6 +406,9 @@ dotnet_diagnostic.IDE0055.severity = error
 # Enable once all violations are fixed.
 dotnet_diagnostic.IDE0051.severity = warning
 
+[{UnoAppAll,UnoAppWinUI}/**.cs]
+dotnet_diagnostic.IDE0055.severity = none
+
 [src/Uno.UI/**/*.cs]
 # IDE0051: Remove unused private member
 # Enable once all violations are fixed.
