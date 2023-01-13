@@ -4,11 +4,11 @@ using Uno.UI.Runtime.Skia;
 namespace $ext_safeprojectname$.Skia.Tizen
 {
 	public sealed class Program
-{
-	static void Main(string[] args)
 	{
-		var host = new TizenHost(() => new $ext_safeprojectname$.App());
-		host.Run();
+		static void Main(string[] args)
+		{
+			var host = new TizenHost(() => new $ext_safeprojectname$.App());
+			host.Run();
+		}
 	}
-}
 }

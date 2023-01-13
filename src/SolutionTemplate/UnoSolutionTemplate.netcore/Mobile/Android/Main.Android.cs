@@ -20,24 +20,24 @@ namespace $ext_safeprojectname$.Droid
 		HardwareAccelerated = true,
 		Theme = "@style/AppTheme"
 	)]
-public class Application : Windows.UI.Xaml.NativeApplication
-{
-	public Application(IntPtr javaReference, JniHandleOwnership transfer)
-		: base(() => new App(), javaReference, transfer)
+	public class Application : Windows.UI.Xaml.NativeApplication
 	{
-		ConfigureUniversalImageLoader();
+		public Application(IntPtr javaReference, JniHandleOwnership transfer)
+			: base(() => new App(), javaReference, transfer)
+		{
+			ConfigureUniversalImageLoader();
+		}
+
+		private static void ConfigureUniversalImageLoader()
+		{
+			// Create global configuration and initialize ImageLoader with this config
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration
+				.Builder(Context)
+				.Build();
+
+			ImageLoader.Instance.Init(config);
+
+			ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+		}
 	}
-
-	private static void ConfigureUniversalImageLoader()
-	{
-		// Create global configuration and initialize ImageLoader with this config
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration
-			.Builder(Context)
-			.Build();
-
-		ImageLoader.Instance.Init(config);
-
-		ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
-	}
-}
 }
