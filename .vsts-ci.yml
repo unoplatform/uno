@@ -102,9 +102,4 @@ jobs:
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
 
-- template: build/ci/.azure-devops-macos.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
 
