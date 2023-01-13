@@ -44,12 +44,12 @@
 			</group>
 			<group targetFramework="MonoAndroid13.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Com.Airbnb.Android.Lottie" version="4.1.0" />
+				<dependency id="Com.Airbnb.Android.Lottie" version="4.2.2" />
 				<dependency id="Newtonsoft.Json" version="9.0.1" />
 			</group>
 			<group targetFramework="MonoAndroid12.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Com.Airbnb.Android.Lottie" version="4.1.0" />
+				<dependency id="Com.Airbnb.Android.Lottie" version="4.2.2" />
 				<dependency id="Newtonsoft.Json" version="9.0.1" />
 			</group>
 
