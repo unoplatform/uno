@@ -60,12 +60,11 @@ namespace Windows.UI.Xaml.Controls
 			return 1;
 		}
 
-#if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void DraggingEnded(UIScrollView scrollView, bool willDecelerate)
 		{
 			try
 			{
-				// This is a workaround for an apparent iOS bug where Dragging will inaccurately return true in certain cases (seemingly 
+				// This is a workaround for an apparent iOS bug where Dragging will inaccurately return true in certain cases (seemingly
 				// after multiple gestures when Bounces = false).
 				(scrollView as PagedCollectionView).InDraggingEnded = true;
 
@@ -85,7 +84,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateCurrentPage(scrollView);
 		}
-#endif
 
 		private void UpdateCurrentPage(UIScrollView scrollView)
 		{
