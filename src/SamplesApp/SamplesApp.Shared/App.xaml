@@ -35,6 +35,9 @@
 
 			<FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols</FontFamily>
 
+			<SolidColorBrush x:Key="GlobalStaticResource_Test01"
+							 Color="Purple" />
+
 			<SolidColorBrush x:Key="GlobalStatEventRegistrationToken icResource_Test01"
 							 Color="Purple" />
 
