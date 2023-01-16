@@ -51,9 +51,9 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		_lastPosition = new Point(-1, -1);
 		UpdateNativeView();
 		SetNativeText(textBox.Text);
-		InvalidateLayout();
 
-		_textBoxView!.AddToTextInputLayer(xamlRoot);		
+		_textBoxView!.AddToTextInputLayer(xamlRoot);	
+		InvalidateLayout();
 		_textBoxView.SetFocus(true);
 
 		// Selection is now handled by native control
