@@ -271,13 +271,13 @@ namespace Windows.UI
 				var result = CoreText.CTFontManager.RegisterGraphicsFont(font, out var error);
 
 				// Remove the (int) conversion when removing xamarin and net6.0 support (net7+ has implicit support for enum conversion to nint).
-				if(result
+				if (result
 					|| error?.Code == (nint)(int)CTFontManagerError.DuplicatedName
 					|| error?.Code == (nint)(int)CTFontManagerError.AlreadyRegistered
 				)
 				{
 					// Use the font even if the registration failed if the error code
-					// reports the fonts has already been registered.
+					// reports the fonts have already been registered.
 
 					return UIFont.FromName(font.PostScriptName, size);
 				}

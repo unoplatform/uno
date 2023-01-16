@@ -244,9 +244,27 @@ namespace Windows.UI
 			using var fontProvider = new CGDataProvider(fontData);
 			var font = CGFont.CreateFromProvider(fontProvider);
 
-			if (font is not null && CoreText.CTFontManager.RegisterGraphicsFont(font, out var error))
+			if (font is not null)
 			{
-				return NSFont.FromFontName(font.PostScriptName, size);
+				var result = CoreText.CTFontManager.RegisterGraphicsFont(font, out var error);
+
+				// Remove the (int) conversion when removing xamarin and net6.0 support (net7+ has implicit support for enum conversion to nint).
+				if (result
+					|| error?.Code == (nint)(int)CoreText.CTFontManagerError.DuplicatedName
+					|| error?.Code == (nint)(int)CoreText.CTFontManagerError.AlreadyRegistered
+				)
+				{
+					// Use the font even if the registration failed if the error code
+					// reports the fonts have already been registered.
+					return NSFont.FromFontName(font.PostScriptName, size);
+				}
+				else
+				{
+					if (typeof(NSFontHelper).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(NSFontHelper).Log().Debug($"Unable to register font from {file} ({error})");
+					}
+				}
 			}
 			else
 			{
@@ -255,8 +273,9 @@ namespace Windows.UI
 					typeof(NSFontHelper).Log().Debug($"Unable to register font from {file}");
 				}
 
-				return null;
 			}
+
+			return null;
 		}
 		#endregion
 
