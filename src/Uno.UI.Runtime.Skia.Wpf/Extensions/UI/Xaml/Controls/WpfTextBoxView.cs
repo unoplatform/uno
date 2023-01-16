@@ -10,9 +10,8 @@ using WpfElement = System.Windows.FrameworkElement;
 using WpfControl = System.Windows.Controls.Control;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfFontWeight = System.Windows.FontWeight;
-using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
+namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 internal abstract class WpfTextBoxView : ITextBoxView
 {
@@ -70,35 +69,35 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		SetForeground(textBox.Foreground);
 		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 
-		if (_currentTextBoxInputWidget is not null)
-		{
-			_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
-			_currentTextBoxInputWidget.TextWrapping = textBox.TextWrapping switch
-			{
-				Windows.UI.Xaml.TextWrapping.Wrap => TextWrapping.WrapWithOverflow,
-				Windows.UI.Xaml.TextWrapping.WrapWholeWords => TextWrapping.Wrap,
-				_ => TextWrapping.NoWrap,
-			};
-			_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
-			_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
-		}
+		//if (_currentTextBoxInputWidget is not null)
+		//{
+		//	_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
+		//	_currentTextBoxInputWidget.TextWrapping = textBox.TextWrapping switch
+		//	{
+		//		Windows.UI.Xaml.TextWrapping.Wrap => TextWrapping.WrapWithOverflow,
+		//		Windows.UI.Xaml.TextWrapping.WrapWholeWords => TextWrapping.Wrap,
+		//		_ => TextWrapping.NoWrap,
+		//	};
+		//	_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
+		//	_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
+		//}
 
-		if (_currentPasswordBoxInputWidget is not null)
-		{
-			_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
-		}
+		//if (_currentPasswordBoxInputWidget is not null)
+		//{
+		//	_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
+		//}
 	}
 
 	public void SetFocus(bool isFocused)
 	{	
-		if (_isPasswordBox && !_isPasswordRevealed)
-		{
-			_currentPasswordBoxInputWidget!.Focus();
-		}
-		else
-		{
-			_currentTextBoxInputWidget!.Focus();
-		}
+		//if (_isPasswordBox && !_isPasswordRevealed)
+		//{
+		//	_currentPasswordBoxInputWidget!.Focus();
+		//}
+		//else
+		//{
+		//	_currentTextBoxInputWidget!.Focus();
+		//}
 	}
 
 	public void SetSize(double width, double height)
@@ -127,65 +126,66 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	private void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 	{
-		var wpfBrush = brush.ToWpfBrush();
-		if (_currentTextBoxInputWidget != null)
-		{
-			_currentTextBoxInputWidget.Foreground = wpfBrush;
-			_currentTextBoxInputWidget.CaretBrush = wpfBrush;
-		}
+		//var wpfBrush = brush.ToWpfBrush();
+		
+		//if (_currentTextBoxInputWidget != null)
+		//{
+		//	_currentTextBoxInputWidget.Foreground = wpfBrush;
+		//	_currentTextBoxInputWidget.CaretBrush = wpfBrush;
+		//}
 
-		if (_currentPasswordBoxInputWidget != null)
-		{
-			_currentPasswordBoxInputWidget.Foreground = wpfBrush;
-			_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
-		}
+		//if (_currentPasswordBoxInputWidget != null)
+		//{
+		//	_currentPasswordBoxInputWidget.Foreground = wpfBrush;
+		//	_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
+		//}
 	}
 
 	private void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush)
 	{
-		var wpfBrush = brush.ToWpfBrush();
-		if (_currentTextBoxInputWidget != null)
-		{
-			_currentTextBoxInputWidget.SelectionBrush = wpfBrush;
-		}
+		//var wpfBrush = brush.ToWpfBrush();
+		//if (_currentTextBoxInputWidget != null)
+		//{
+		//	_currentTextBoxInputWidget.SelectionBrush = wpfBrush;
+		//}
 
-		if (_currentPasswordBoxInputWidget != null)
-		{
-			_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
-		}
+		//if (_currentPasswordBoxInputWidget != null)
+		//{
+		//	_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
+		//}
 	}
 
 	public void Select(int start, int length)
 	{
-		if (_isPasswordBox)
-		{
-			return;
-		}
+		//if (_isPasswordBox)
+		//{
+		//	return;
+		//}
 
-		if (_currentTextBoxInputWidget == null)
-		{
-			this.StartEntry();
-		}
+		//if (_currentTextBoxInputWidget == null)
+		//{
+		//	this.StartEntry();
+		//}
 
-		_currentTextBoxInputWidget!.Select(start, length);
+		//_currentTextBoxInputWidget!.Select(start, length);
 	}
 
 	public int GetSelectionStart()
 	{
-		if (!_isPasswordBox)
-		{
-			return _currentTextBoxInputWidget?.SelectionStart ?? 0;
-		}
+		//if (!_isPasswordBox)
+		//{
+		//	return _currentTextBoxInputWidget?.SelectionStart ?? 0;
+		//}
 
 		return 0;
 	}
 
 	public int GetSelectionLength()
 	{
-		if (!_isPasswordBox)
-		{
-			return _currentTextBoxInputWidget?.SelectionLength ?? 0;
-		}
+		//if (!_isPasswordBox)
+		//{
+		//	return _currentTextBoxInputWidget?.SelectionLength ?? 0;
+		//}
 		return 0;
 	}
 }
