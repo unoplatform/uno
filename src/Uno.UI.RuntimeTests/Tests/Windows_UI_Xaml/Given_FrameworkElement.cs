@@ -210,6 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(2, count);
 		}
 
+#if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
@@ -248,7 +249,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							}),
 							Layout = new Microsoft.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
 						}
-						.GridRow(1)
+						.Apply(ir => Grid.SetRow(ir, 1))
 				}
 			};
 
@@ -259,6 +260,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			TestServices.WindowHelper.WindowContent = null;
 		}
+#endif
 
 		[TestMethod]
 		public Task MeasureWithNan() =>
