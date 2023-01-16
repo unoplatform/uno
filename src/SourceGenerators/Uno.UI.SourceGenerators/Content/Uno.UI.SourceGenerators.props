@@ -436,6 +436,7 @@
 			<AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
 			<AdditionalFiles Include="@(UnoPage)" SourceItemGroup="Page" />
 			<AdditionalFiles Include="@(UnoApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
+			<AdditionalFiles Include="@(ProjectReference)" SourceItemGroup="ProjectReference" />
 
 			<_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
 			<AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />

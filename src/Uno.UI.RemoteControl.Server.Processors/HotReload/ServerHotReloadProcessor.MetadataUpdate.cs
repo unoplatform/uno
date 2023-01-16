@@ -52,19 +52,35 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(
 			async () =>
 			{
-				var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None);
+				try
+				{
+					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None);
 
-				ObserveSolutionPaths(result.Item1);
+					ObserveSolutionPaths(result.Item1);
 
-				return result;
+					return result;
+				}
+				catch(Exception e)
+				{
+					Console.WriteLine($"Failed to initialize compilation workspace: {e}");
+					throw;
+				}
 			},
 			CancellationToken.None);
 
 		private void ObserveSolutionPaths(Solution solution)
 		{
-			_solutionWatchers = solution.Projects
-				.SelectMany(p => p.Documents.Select(d => Path.GetDirectoryName(d.FilePath)))
-				.Distinct()
+			var observedPaths =
+				solution.Projects
+					.SelectMany(p => p.Documents.Select(d => Path.GetDirectoryName(d.FilePath)))
+					.Distinct()
+					.ToArray();
+
+#if DEBUG
+			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
+#endif
+
+			_solutionWatchers = observedPaths
 				.Select(p => new FileSystemWatcher
 				{
 					Path = p!,
