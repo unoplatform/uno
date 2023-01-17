@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -27,7 +29,8 @@ namespace Windows.UI.Xaml.Controls
 
 			foreach(var item in _queue)
 			{
-				if (item.FontFamily.CssFontName == fontFamily.CssFontName)
+				if (item.FontFamily is not null
+					&& item.FontFamily.CssFontName == fontFamily.CssFontName)
 				{
 					keysToRemove.Add(item);
 				}

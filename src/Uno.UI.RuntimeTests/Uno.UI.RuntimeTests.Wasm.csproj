@@ -101,4 +101,8 @@
 
 		<UpToDateCheckInput Include="$(PlatformItemsBasePath)**\*.xaml" Exclude="$(PlatformItemsBasePath)bin\**\*.xaml;$(PlatformItemsBasePath)obj\**\*.xaml" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Assets\Fonts\uno-fluentui-assets-v2.ttf" />
+	</ItemGroup>
 </Project>

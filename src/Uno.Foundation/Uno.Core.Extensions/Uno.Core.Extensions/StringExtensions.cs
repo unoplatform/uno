@@ -21,6 +21,7 @@ using System.Linq;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -87,22 +88,23 @@ namespace Uno.Extensions
 			return new LineSplitEnumerator(instance);
 		}
 
-		public static bool IsNullOrEmpty(this string instance)
+		
+		public static bool IsNullOrEmpty([NotNullWhen(false)] this string instance)
 		{
 			return string.IsNullOrEmpty(instance);
 		}
-
-		public static bool IsNullOrWhiteSpace(this string instance)
+		
+		public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string instance)
 		{
 			return string.IsNullOrWhiteSpace(instance);
 		}
 
-		public static bool HasValue(this string instance)
+		public static bool HasValue([NotNullWhen(true)] this string instance)
 		{
 			return !string.IsNullOrWhiteSpace(instance);
 		}
 
-		public static bool HasValueTrimmed(this string instance)
+		public static bool HasValueTrimmed([NotNullWhen(true)] this string instance)
 		{
 			return !string.IsNullOrWhiteSpace(instance);
 		}
