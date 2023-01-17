@@ -65,6 +65,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uno-macos-artifacts
@@ -170,6 +171,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish macOS Screenshots
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results

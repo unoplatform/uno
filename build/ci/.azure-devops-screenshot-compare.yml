@@ -76,6 +76,7 @@ jobs:
       archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip'
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-compare-results
