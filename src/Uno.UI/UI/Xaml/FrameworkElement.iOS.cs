@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 
-			if (!_inLayoutSubviews)
+			if (FeatureConfiguration.FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews || !_inLayoutSubviews)
 			{
 				SetSuperviewNeedsLayout();
 			}
