@@ -32,15 +32,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string[] metadataUpdateCapabilities,
 			CancellationToken cancellationToken)
 		{
-			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath) ?? "", "obj", "hr") + Path.DirectorySeparatorChar;
-
-			Directory.CreateDirectory(intermediatePath);
-
 			var globalProperties = new Dictionary<string, string> {
-				// Override the output path so custom compilation lists do not override the
-				// main compilation caches, which can invalidate incremental compilation.
-				{ "IntermediateOutputPath", intermediatePath },
-
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
 			};
