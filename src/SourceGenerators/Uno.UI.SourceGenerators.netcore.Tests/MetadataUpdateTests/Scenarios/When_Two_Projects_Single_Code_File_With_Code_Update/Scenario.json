@@ -1,11 +1,24 @@
 {
+	"Projects": [
+		{
+			"Name": "p1",
+			"ProjectReferences": [
+				{
+					"Name": "p2"
+				}
+			]
+		},
+		{
+			"Name": "p2"
+		}
+	],
 	"Scenarios": [
 		{
 			"IsDebug": true,
 			"IsMono": false,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
+					"MetadataUpdates": 2,
 					"Diagnostics": []
 				}
 			]
@@ -15,7 +28,7 @@
 			"IsMono": true,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
+					"MetadataUpdates": 2,
 					"Diagnostics": []
 				}
 			]
