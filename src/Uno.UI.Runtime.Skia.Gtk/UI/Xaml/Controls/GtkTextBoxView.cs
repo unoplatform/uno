@@ -70,9 +70,7 @@ internal abstract class GtkTextBoxView : ITextBoxView
 		RemoveForegroundCssProvider();
 	}
 
-	public abstract (int start, int end) GetSelectionBounds();
-
-	public abstract void SetSelectionBounds(int start, int end);
+	public abstract (int start, int length) Selection { get; set; }
 
 	public abstract bool IsCompatible(TextBox textBox);
 

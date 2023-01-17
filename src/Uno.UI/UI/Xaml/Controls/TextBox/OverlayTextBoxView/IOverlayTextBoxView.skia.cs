@@ -22,9 +22,7 @@ internal interface ITextBoxView
 
 	void SetSize(double width, double height);
 
-	(int start, int end) GetSelectionBounds();
-
-	void SetSelectionBounds(int start, int end);
+	(int start, int length) Selection { get; set; }
 
 	void UpdateProperties(TextBox textBox);
 

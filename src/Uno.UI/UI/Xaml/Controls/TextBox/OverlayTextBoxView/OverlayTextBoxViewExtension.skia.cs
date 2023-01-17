@@ -88,10 +88,10 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 		_contentElement = null;
 
-		if (_textBoxView != null)
+		if (_textBoxView is not null)
 		{
-			var bounds = GetNativeSelectionBounds();
-			(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
+			var selection = _textBoxView.Selection;
+			(_selectionStartCache, _selectionLengthCache) = (selection.start, selection.length);
 			_textBoxView.RemoveFromTextInputLayer();
 		}
 	}
@@ -190,7 +190,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		}
 		else
 		{
-			SetNativeSelectionBounds(start, start + length);
+			_textBoxView!.Selection = (start, length);
 		}
 	}
 
@@ -203,7 +203,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 		return textBox.FocusState == FocusState.Unfocused ?
 			_selectionStartCache ?? 0 :
-			GetNativeSelectionBounds().start;
+			_textBoxView?.Selection.start ?? 0;
 	}
 
 	public int GetSelectionLength()
@@ -213,21 +213,10 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			return 0;
 		}
 
-		if (textBox.FocusState == FocusState.Unfocused)
-		{
-			return _selectionLengthCache ?? 0;
-		}
-		else
-		{
-			var bounds = GetNativeSelectionBounds();
-			return bounds.end - bounds.start;
-		}
+		return textBox.FocusState == FocusState.Unfocused ?
+			_selectionLengthCache ?? 0 :
+			_textBoxView?.Selection.length ?? 0;
 	}
-
-	private void SetNativeSelectionBounds(int start, int end) => _textBoxView?.SetSelectionBounds(start, end);
-
-	private (int start, int end) GetNativeSelectionBounds() => _textBoxView?.GetSelectionBounds() ?? (0, 0);
-
 	private void EnsureTextBoxView(TextBox textBox)
 	{
 		if (_textBoxView is null ||

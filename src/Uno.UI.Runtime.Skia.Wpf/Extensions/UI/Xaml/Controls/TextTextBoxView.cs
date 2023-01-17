@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
+using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Wpf.Controls;
 using Windows.UI.Xaml.Controls;
+using PasswordBox = Windows.UI.Xaml.Controls.PasswordBox;
 using WpfElement = System.Windows.UIElement;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
@@ -14,17 +17,29 @@ internal class TextTextBoxView : WpfTextBoxView
 	{
 	}
 
-	public override string Text { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+	public override string Text
+	{
+		get => _textBox.Text;
+		set => _textBox.Text = value;
+	}
 
-	protected override FrameworkElement RootElement => throw new NotImplementedException();
+	protected override FrameworkElement RootElement => _textBox;
 
-	protected override System.Windows.Controls.Control[] InputControls => throw new NotImplementedException();
+	public override (int start, int length) Selection
+	{
+		get => (_textBox.SelectionStart, _textBox.SelectionLength);
+		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
+	}
 
-	public override (int start, int end) GetSelectionBounds() => throw new NotImplementedException();
-	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => throw new NotImplementedException();
-	public override IDisposable ObserveTextChanges(EventHandler onChanged) => throw new NotImplementedException();
-	public override void SetSelectionBounds(int start, int end) => throw new NotImplementedException();
+	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is not PasswordBox;
 
+	public override IDisposable ObserveTextChanges(EventHandler onChanged)
+	{
+		void OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs args) => onChanged?.Invoke(sender, EventArgs.Empty);
+		_textBox.TextChanged += OnTextChanged;
+		return Disposable.Create(() => _textBox.TextChanged -= OnTextChanged);
+	}
+	
 	//	public override string Text { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 	//	protected override WpfElement RootElement => _textBox;

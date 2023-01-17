@@ -29,13 +29,20 @@ internal class MultilineTextBoxView : GtkTextBoxView
 
 	public override bool IsCompatible(TextBox textBox) => textBox.AcceptsReturn && textBox is not PasswordBox;
 
-	public override (int start, int end) GetSelectionBounds() => _textView.Buffer.GetSelectionBounds(out var start, out var end) ? (start.Offset, end.Offset) : (0, 0); // TODO: Confirm this implementation is correct.
 
-	public override void SetSelectionBounds(int start, int end)
+	public override (int start, int length) Selection
 	{
-		var startIterator = _textView.Buffer.GetIterAtOffset(start);
-		var endIterator = _textView.Buffer.GetIterAtOffset(end);
-		_textView.Buffer.SelectRange(startIterator, endIterator);
+		get
+		{
+			_textView.Buffer.GetSelectionBounds(out var start, out var end);
+			return (start.Offset, end.Offset - start.Offset);
+		}
+		set
+		{
+			var startIterator = _textView.Buffer.GetIterAtOffset(value.start);
+			var endIterator = _textView.Buffer.GetIterAtOffset(value.start + value.length);
+			_textView.Buffer.SelectRange(startIterator, endIterator);
+		}
 	}
 
 	public override void UpdateProperties(TextBox textBox)

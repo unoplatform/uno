@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Reflection.Metadata.Ecma335;
 using Gtk;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
@@ -30,13 +29,18 @@ internal class SinglelineTextBoxView : GtkTextBoxView
 
 	public override bool IsCompatible(TextBox textBox) => !textBox.AcceptsReturn || textBox is PasswordBox;
 
-	public override (int start, int end) GetSelectionBounds()
+	public override (int start, int length) Selection
 	{
-		_entry.GetSelectionBounds(out var start, out var end);
-		return (start, end);
+		get
+		{
+			_entry.GetSelectionBounds(out var start, out var end);
+			return (start, end - start);
+		}
+		set
+		{
+			_entry.SelectRegion(value.start, value.start + value.length);
+		}
 	}
-
-	public override void SetSelectionBounds(int start, int end) => _entry.SelectRegion(start_pos: start, end_pos: end);
 
 	public override void UpdateProperties(TextBox textBox)
 	{

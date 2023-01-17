@@ -24,14 +24,11 @@ internal abstract class WpfTextBoxView : ITextBoxView
 	/// </summary>
 	protected abstract WpfElement RootElement { get; }
 
-	/// <summary>
-	/// Represents the actual input widget.
-	/// </summary>
-	protected abstract WpfControl[] InputControls { get; }
-
 	public abstract string Text { get; set; }
 
 	public bool IsDisplayed => RootElement.GetParent() is not null;
+
+	public abstract (int start, int length) Selection { get; set; }
 
 	public static ITextBoxView Create(TextBox textBox) =>
 		textBox is not PasswordBox ?
@@ -54,10 +51,6 @@ internal abstract class WpfTextBoxView : ITextBoxView
 			layer.Children.Remove(RootElement);
 		}
 	}
-
-	public abstract (int start, int end) GetSelectionBounds();
-
-	public abstract void SetSelectionBounds(int start, int end);
 
 	public abstract bool IsCompatible(TextBox textBox);
 
@@ -117,11 +110,17 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	private void SetFont(FontWeight fontWeight, double fontSize)
 	{
-		foreach (var control in InputControls)
-		{
-			control.FontSize = fontSize;
-			control.FontWeight = WpfFontWeight.FromOpenTypeWeight(fontWeight.Weight);
-		}
+		//foreach (var control in InputControls)
+		//{
+		//	control.FontSize = fontSize;
+		//	control.FontWeight = WpfFontWeight.FromOpenTypeWeight(fontWeight.Weight);
+		//}
+	}
+
+	protected void SetFont(WpfControl wpfControl, Control source)
+	{
+		wpfControl.FontSize = source.FontSize;
+		wpfControl.FontWeight = WpfFontWeight.FromOpenTypeWeight(source.FontWeight.Weight);
 	}
 
 	private void SetForeground(Windows.UI.Xaml.Media.Brush brush)
@@ -153,39 +152,5 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		//{
 		//	_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
 		//}
-	}
-
-	public void Select(int start, int length)
-	{
-		//if (_isPasswordBox)
-		//{
-		//	return;
-		//}
-
-		//if (_currentTextBoxInputWidget == null)
-		//{
-		//	this.StartEntry();
-		//}
-
-		//_currentTextBoxInputWidget!.Select(start, length);
-	}
-
-	public int GetSelectionStart()
-	{
-		//if (!_isPasswordBox)
-		//{
-		//	return _currentTextBoxInputWidget?.SelectionStart ?? 0;
-		//}
-
-		return 0;
-	}
-
-	public int GetSelectionLength()
-	{
-		//if (!_isPasswordBox)
-		//{
-		//	return _currentTextBoxInputWidget?.SelectionLength ?? 0;
-		//}
-		return 0;
 	}
 }
