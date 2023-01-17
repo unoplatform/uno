@@ -382,10 +382,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryGenerateUnoResourcesKeyAttribute(ImmutableHashSet<string> resourceKeys)
 		{
-			if (!resourceKeys.IsEmpty)
-			{
-				_generatorContext.AddSource("LocalizationResources", "[assembly: global::System.Reflection.AssemblyMetadata(\"UnoHasLocalizationResources\", \"True\")]");
-			}
+			var hasResources = !resourceKeys.IsEmpty;
+			
+			_generatorContext.AddSource(
+				"LocalizationResources",
+				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
+				$"\"UnoHasLocalizationResources\", " +
+				$"\"{hasResources.ToString(CultureInfo.InvariantCulture)}\")]");
 		}
 
 #if !NETFRAMEWORK

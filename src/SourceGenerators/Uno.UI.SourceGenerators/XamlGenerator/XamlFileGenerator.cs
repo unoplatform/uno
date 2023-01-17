@@ -753,18 +753,62 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
         private void BuildResourceLoaderFromAssembly(IndentedStringBuilder writer, IAssemblySymbol assembly)
         {
-			var hasUnoHasLocalizationResources = assembly.GetAttributes().Any(a =>
+			var unoHasLocalizationResourcesAttribute = assembly.GetAttributes().FirstOrDefault(a =>
 				SymbolEqualityComparer.Default.Equals(a.AttributeClass, _assemblyMetadataSymbol)
 				&& a.ConstructorArguments.Length == 2
-				&& a.ConstructorArguments[0].Value is "UnoHasLocalizationResources"
-				&& (a.ConstructorArguments[1].Value?.ToString().Equals("True", StringComparison.OrdinalIgnoreCase) ?? false));
+				&& a.ConstructorArguments[0].Value is "UnoHasLocalizationResources");
+			var unoHasLocalizationResourcesAttributeDefined = unoHasLocalizationResourcesAttribute is not null;
 
+			var hasUnoHasLocalizationResourcesAttributeEnabled = unoHasLocalizationResourcesAttribute
+				?.ConstructorArguments[1]
+				.Value
+				?.ToString()
+				.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
+			
 			// Legacy behavior relying on the fact that GlobalStaticResources is generated using the default namespace.
-			var hasGlobalStaticResources = assembly.GetTypeByMetadataName(assembly.Name + ".GlobalStaticResources") is not null;
+			var globalStaticResourcesSymbol = assembly.GetTypeByMetadataName(assembly.Name + ".GlobalStaticResources");
 
-			if (hasUnoHasLocalizationResources || hasGlobalStaticResources)
+			if (
+				// The assembly contains resources to be used
+				hasUnoHasLocalizationResourcesAttributeEnabled
+
+				// The assembly does not have the UnoHasLocalizationResources attribute defined, but
+				// may still contain resources as it may have been built with a previous version of Uno.
+				|| (!unoHasLocalizationResourcesAttributeDefined && globalStaticResourcesSymbol is not null)
+			)
 			{
-				writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{assembly.Name}\"));");
+				if (_isWasm)
+				{
+					var anchorType = globalStaticResourcesSymbol
+						?? assembly
+							.Modules
+							.First()
+							.GlobalNamespace
+							.GetNamespaceTypes()
+							.FirstOrDefault(s => s.IsLocallyPublic(_metadataHelper.Compilation.Assembly.Modules.First()));
+
+					if (anchorType is INamedTypeSymbol namedSymbol)
+					{
+						// Use a public type to get the assembly to work around a WASM assembly loading issue
+						writer.AppendLineIndented(
+							$"global::Windows.ApplicationModel.Resources.ResourceLoader" +
+							$".AddLookupAssembly(typeof(global::{namedSymbol.GetFullMetadataName()}).Assembly);"
+#if DEBUG
+							+ $" /* {assembly.Name}, hasUnoHasLocalizationResourcesAttributeEnabled:{hasUnoHasLocalizationResourcesAttributeEnabled}, unoHasLocalizationResourcesAttributeDefined:{unoHasLocalizationResourcesAttributeDefined} */"
+#endif
+						);
+					}
+					else
+					{
+#if DEBUG
+						writer.AppendLineIndented($"/* No anchor type for reference {assembly.Name} */");
+#endif
+					}
+				}
+				else
+				{
+					writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{assembly.Name}\"));");
+				}
 			}
 			else
 			{
