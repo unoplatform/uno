@@ -26,12 +26,12 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public abstract string Text { get; set; }
 
-	public bool IsDisplayed => RootElement.GetParent() is not null;
+	public bool IsDisplayed => RootElement.Parent is not null;
 
 	public abstract (int start, int length) Selection { get; set; }
 
-	public static ITextBoxView Create(TextBox textBox) =>
-		textBox is not PasswordBox ?
+	public static ITextBoxView Create(Windows.UI.Xaml.Controls.TextBox textBox) =>
+		textBox is not Windows.UI.Xaml.Controls.PasswordBox ?
 			new TextTextBoxView() :
 			new PasswordTextBoxView();
 
@@ -52,15 +52,14 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		}
 	}
 
-	public abstract bool IsCompatible(TextBox textBox);
+	public abstract bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox);
 
 	public abstract IDisposable ObserveTextChanges(EventHandler onChanged);
 
-	public virtual void UpdateProperties(TextBox textBox)
-	{
-		SetFont(textBox.FontWeight, textBox.FontSize);
-		SetForeground(textBox.Foreground);
-		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
+	public abstract void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox);
+		//SetFont(textBox.FontWeight, textBox.FontSize);
+		//SetForeground(textBox.Foreground);
+		//SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 
 		//if (_currentTextBoxInputWidget is not null)
 		//{
@@ -79,19 +78,8 @@ internal abstract class WpfTextBoxView : ITextBoxView
 		//{
 		//	_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
 		//}
-	}
 
-	public void SetFocus(bool isFocused)
-	{	
-		//if (_isPasswordBox && !_isPasswordRevealed)
-		//{
-		//	_currentPasswordBoxInputWidget!.Focus();
-		//}
-		//else
-		//{
-		//	_currentTextBoxInputWidget!.Focus();
-		//}
-	}
+	public abstract void SetFocus(bool isFocused);
 
 	public void SetSize(double width, double height)
 	{
@@ -108,49 +96,27 @@ internal abstract class WpfTextBoxView : ITextBoxView
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
 		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
-	private void SetFont(FontWeight fontWeight, double fontSize)
-	{
-		//foreach (var control in InputControls)
-		//{
-		//	control.FontSize = fontSize;
-		//	control.FontWeight = WpfFontWeight.FromOpenTypeWeight(fontWeight.Weight);
-		//}
-	}
-
-	protected void SetFont(WpfControl wpfControl, Control source)
+	protected void SetFont(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfControl.FontSize = source.FontSize;
 		wpfControl.FontWeight = WpfFontWeight.FromOpenTypeWeight(source.FontWeight.Weight);
-	}
+		//TODO:MZ: Font, FontStretch, etc.
+	}	
 
-	private void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+	protected void SetForegroundAndHighlightColor(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{
-		//var wpfBrush = brush.ToWpfBrush();
-		
-		//if (_currentTextBoxInputWidget != null)
-		//{
-		//	_currentTextBoxInputWidget.Foreground = wpfBrush;
-		//	_currentTextBoxInputWidget.CaretBrush = wpfBrush;
-		//}
-
-		//if (_currentPasswordBoxInputWidget != null)
-		//{
-		//	_currentPasswordBoxInputWidget.Foreground = wpfBrush;
-		//	_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
-		//}
-	}
-
-	private void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush)
-	{
-		//var wpfBrush = brush.ToWpfBrush();
-		//if (_currentTextBoxInputWidget != null)
-		//{
-		//	_currentTextBoxInputWidget.SelectionBrush = wpfBrush;
-		//}
-
-		//if (_currentPasswordBoxInputWidget != null)
-		//{
-		//	_currentPasswordBoxInputWidget.SelectionBrush = wpfBrush;
-		//}
+		var foregroundBrush = source.Foreground.ToWpfBrush();
+		var selectionHighlightBrush = source.SelectionHighlightColor.ToWpfBrush();
+		wpfControl.Foreground = foregroundBrush;
+		if (wpfControl is System.Windows.Controls.TextBox textBox)
+		{
+			textBox.CaretBrush = foregroundBrush;
+			textBox.SelectionBrush = selectionHighlightBrush;
+		}
+		else if (wpfControl is System.Windows.Controls.PasswordBox passwordBox)
+		{
+			passwordBox.CaretBrush = foregroundBrush;
+			passwordBox.SelectionBrush = selectionHighlightBrush;
+		}
 	}
 }

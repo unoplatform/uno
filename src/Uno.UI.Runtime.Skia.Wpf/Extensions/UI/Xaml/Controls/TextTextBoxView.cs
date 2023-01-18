@@ -31,6 +31,8 @@ internal class TextTextBoxView : WpfTextBoxView
 		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
 	}
 
+	public override void SetFocus(bool isFocused) => _textBox.Focus();
+
 	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is not PasswordBox;
 
 	public override IDisposable ObserveTextChanges(EventHandler onChanged)
@@ -39,7 +41,12 @@ internal class TextTextBoxView : WpfTextBoxView
 		_textBox.TextChanged += OnTextChanged;
 		return Disposable.Create(() => _textBox.TextChanged -= OnTextChanged);
 	}
-	
+
+	public override void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox)
+	{
+		//TODO:MZ:
+	}
+
 	//	public override string Text { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 	//	protected override WpfElement RootElement => _textBox;

@@ -34,7 +34,18 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	//	return passwordBox;
 	//}
 
+	public override void SetFocus(bool isFocused)
+	{
 
+		//if (_isPasswordBox && !_isPasswordRevealed)
+		//{
+		//	_currentPasswordBoxInputWidget!.Focus();
+		//}
+		//else
+		//{
+		//	_currentTextBoxInputWidget!.Focus();
+		//}
+	}
 
 
 	//public void SetIsPassword(bool isPassword)
@@ -88,5 +99,10 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		//	disposable.Add(Disposable.Create(() => _currentPasswordBoxInputWidget.PasswordChanged -= PasswordBoxViewPasswordChanged));
 		//}
 		//_textChangedDisposable.Disposable = disposable;
+	}
+
+	public override void UpdateProperties(TextBox textBox)
+	{
+		//TODO:MZ:
 	}
 }
