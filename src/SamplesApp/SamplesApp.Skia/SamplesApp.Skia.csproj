@@ -19,6 +19,10 @@
 		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
 	
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
@@ -44,6 +48,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 
 
+		<PackageReference Include="uno.fonts.fluent" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
 		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
