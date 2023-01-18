@@ -15,6 +15,11 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
+		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
