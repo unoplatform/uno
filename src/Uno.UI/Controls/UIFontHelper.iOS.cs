@@ -110,7 +110,7 @@ namespace Windows.UI
 			return ApplyStyle(UIFont.SystemFontOfSize(size, fontWeight.ToUIFontWeight()), size, fontStyle);
 		}
 
-#region Load Custom Font
+		#region Load Custom Font
 		private static UIFont? GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
 		{
 			UIFont? font;
@@ -296,12 +296,12 @@ namespace Windows.UI
 					typeof(UIFontHelper).Log().Debug($"Unable to create font from {file}");
 				}
 			}
-			
+
 			return null;
 		}
 		#endregion
 
-    #region Load System Font
+		#region Load System Font
 		private static UIFont? GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
 		{
 			//based on Fonts available @ http://iosfonts.com/

@@ -806,10 +806,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			/*
 			<local:HeadedContent Header="With transform" Background="#008018">
-				<Border 
-					EffectiveViewportChanged="ShowEVP" 
-					Style="{StaticResource EVPContainer}" 
-					Width="100" 
+				<Border
+					EffectiveViewportChanged="ShowEVP"
+					Style="{StaticResource EVPContainer}"
+					Width="100"
 					Height="100"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Top">
@@ -859,10 +859,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			<local:HeadedContent Header="With transform in SV" Background="#0000F9">
 				<ScrollViewer>
 					<Grid Height="1024">
-						<Border 
-							EffectiveViewportChanged="ShowEVP" 
-							Style="{StaticResource EVPContainer}" 
-							Width="100" 
+						<Border
+							EffectiveViewportChanged="ShowEVP"
+							Style="{StaticResource EVPContainer}"
+							Width="100"
 							Height="100"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Top">
@@ -940,10 +940,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			<local:HeadedContent Header="Transform with scaling in SV" Background="#86007D">
 				<ScrollViewer>
 					<Grid Height="1024">
-						<Border 
-							EffectiveViewportChanged="ShowEVP" 
-							Style="{StaticResource EVPContainer}" 
-							Width="100" 
+						<Border
+							EffectiveViewportChanged="ShowEVP"
+							Style="{StaticResource EVPContainer}"
+							Width="100"
 							Height="100"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Top">
@@ -1016,7 +1016,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RequiresFullWindow]
 #if !__IOS__
 		[Ignore("This test native only element and is not supported on this platform")]
-		public void EVP_When_NativeOnlyElement_Then_PassThrough() {}
+		public void EVP_When_NativeOnlyElement_Then_PassThrough() { }
 #else
 		public async Task EVP_When_NativeOnlyElement_Then_PassThrough()
 		{

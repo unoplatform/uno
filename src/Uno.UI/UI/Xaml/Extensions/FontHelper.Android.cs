@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml
 						// The lookup used to be performed without the assets folder, even if its required to specify it
 						// with UWP. Keep this behavior for backward compatibility.
 						var legacySource = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
-						
+
 						if (!TryLoadFromPath(style, legacySource, out typeface))
 						{
 							throw new InvalidOperationException($"Unable to find [{fontFamily.Source}] from the application's assets.");

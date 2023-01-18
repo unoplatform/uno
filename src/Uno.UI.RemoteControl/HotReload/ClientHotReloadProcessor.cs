@@ -74,10 +74,10 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
 				}
-				
+
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					foreach(var path in _xamlPaths)
+					foreach (var path in _xamlPaths)
 					{
 						this.Log().Trace($"\t- {path}");
 					}
