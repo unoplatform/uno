@@ -15,7 +15,12 @@
 		Required for Catalyst nuget restore to revalidate
 		once transitive dependencies have been updated.
 		-->
-		<NoWarn>$(NoWarn);NU1703</NoWarn>
+		<NoWarn>$(NoWarn);NU1703;CS0105</NoWarn>
+		
+		<!--
+		Ignore duplicate namespace that may after the WinUI conversion
+		-->
+		<NoWarn Condition="'$(UNO_UWP_BUILD)'=='false'">$(NoWarn);CS0105</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
