@@ -142,8 +142,8 @@
 		</ProjectReference>
 	</ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
-  <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" Condition="Exists('..\UITests.Shared\UITests.Shared.projitems')" />
-  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 	<ItemGroup>
@@ -202,7 +202,7 @@
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
- 		
+
   <PropertyGroup>
 		<!--
 		AssignTargetPathsDependsOn is reset forcibly by a targets file included after this current file.
