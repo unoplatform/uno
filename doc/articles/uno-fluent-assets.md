@@ -29,8 +29,10 @@ In your Uno Platform projects:
 - For WebAssembly, remove the contents of `Font.css` related to `@font-face { font-family: "Symbols"; ...}`.
 
 ## Known issues
-On iOS and macOS the indeterminate state for a CheckBox is not the right color.
+
+On iOS and macOS, the indeterminate state for a CheckBox is not the right color.
 
 ## Related Issues
+
 - [3011](https://github.com/unoplatform/uno/issues/3011)
 - [967](https://github.com/unoplatform/uno/issues/967)

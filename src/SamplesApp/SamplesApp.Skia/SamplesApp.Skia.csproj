@@ -48,7 +48,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 
 
-		<PackageReference Include="uno.fonts.fluent" />
+		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
 		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />

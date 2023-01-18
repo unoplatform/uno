@@ -152,7 +152,7 @@
     <PackageReference Include="System.Reflection.Emit" Version="4.6.0">
       <ExcludeAssets>all</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="uno.fonts.fluent" />
+    <PackageReference Include="Uno.Fonts.Fluent" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">

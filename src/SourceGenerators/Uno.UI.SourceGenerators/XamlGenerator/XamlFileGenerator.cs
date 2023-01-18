@@ -668,7 +668,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var themes = new[] { "Default", "Light", "HighContrast" };
 
-			if(_generatorContext.GetMSBuildPropertyValue("UnoPlatformDefaultSymbolsFontFamily") is { Length: > 0 } fontOverride)
+			if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformDefaultSymbolsFontFamily") is { Length: > 0 } fontOverride)
 			{
 				writer.AppendLineInvariantIndented($"global::Uno.UI.FeatureConfiguration.Font.SymbolsFont = \"{fontOverride}\";");
 			}
