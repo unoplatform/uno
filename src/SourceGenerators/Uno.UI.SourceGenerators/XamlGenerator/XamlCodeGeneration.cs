@@ -383,7 +383,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void TryGenerateUnoResourcesKeyAttribute(ImmutableHashSet<string> resourceKeys)
 		{
 			var hasResources = !resourceKeys.IsEmpty;
-			
+
 			_generatorContext.AddSource(
 				"LocalizationResources",
 				$"[assembly: global::System.Reflection.AssemblyMetadata(" +

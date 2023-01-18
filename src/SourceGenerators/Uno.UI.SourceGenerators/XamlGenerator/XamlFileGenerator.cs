@@ -764,7 +764,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Value
 				?.ToString()
 				.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
-			
+
 			// Legacy behavior relying on the fact that GlobalStaticResources is generated using the default namespace.
 			var globalStaticResourcesSymbol = assembly.GetTypeByMetadataName(assembly.Name + ".GlobalStaticResources");
 
