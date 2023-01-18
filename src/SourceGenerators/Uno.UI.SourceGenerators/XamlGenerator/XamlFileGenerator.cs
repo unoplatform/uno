@@ -673,6 +673,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariantIndented($"global::Uno.UI.FeatureConfiguration.Font.SymbolsFont = \"{fontOverride}\";");
 			}
 
+			writer.AppendLineInvariantIndented("var __symbolsFontFamily = new global::Windows.UI.Xaml.Media.FontFamily(global::Uno.UI.FeatureConfiguration.Font.SymbolsFont);");
+
 			foreach (var theme in themes)
 			{
 				// SymbolThemeFontFamily
@@ -680,7 +682,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					$"if (Resources.ThemeDictionaries.TryGetValue(\"{theme}\", out var __{theme}Dictionary) " +
 					$"&& __{theme}Dictionary is global::Windows.UI.Xaml.ResourceDictionary __{theme}ThemeDictionary)");
 				
-				writer.AppendLineInvariantIndented($"__{theme}ThemeDictionary[\"SymbolThemeFontFamily\"] = global::Uno.UI.FeatureConfiguration.Font.SymbolsFont;");
+				writer.AppendLineInvariantIndented($"__{theme}ThemeDictionary[\"SymbolThemeFontFamily\"] = __symbolsFontFamily;");
 			}
 		}
 
