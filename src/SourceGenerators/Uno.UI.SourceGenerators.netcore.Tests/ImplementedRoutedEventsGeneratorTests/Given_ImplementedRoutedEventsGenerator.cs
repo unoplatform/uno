@@ -29,18 +29,6 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 			await test.RunAsync();
 		}
 
-		[TestInitialize]
-		public void Initialize()
-		{
-			ImplementedRoutedEventsGenerator.IsUnitTest = true;
-		}
-
-		[TestCleanup]
-		public void Cleanup()
-		{
-			ImplementedRoutedEventsGenerator.IsUnitTest = false;
-		}
-
 		[TestMethod]
 		public async Task Given_NonGeneric_Control_In_Global_Namespace()
 		{

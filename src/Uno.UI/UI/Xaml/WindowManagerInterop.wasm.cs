@@ -81,6 +81,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.CreateContent(htmlId, htmlTag, uiElementRegistrationId, isFocusable, htmlTagIsSvg);
+#else
 				var parms = new WindowManagerCreateContentParams
 				{
 					HtmlId = htmlId,
@@ -92,6 +95,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
+#endif
 			}
 		}
 
@@ -866,6 +870,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetVisibility(htmlId, visible);
+#else
 				var parms = new WindowManagerSetVisibilityParams()
 				{
 					HtmlId = htmlId,
@@ -873,6 +880,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
+#endif
 			}
 		}
 
@@ -1077,12 +1085,16 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.DestroyView(htmlId);
+#else
 				var parms = new WindowManagerDestroyViewParams
 				{
 					HtmlId = htmlId
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:destroyViewNative", parms);
+#endif
 			}
 		}
 
@@ -1563,6 +1575,12 @@ namespace Uno.UI.Xaml
 				double clipBottom,
 				double clipRight);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.createContentNativeFast")]
+			internal static partial void CreateContent(IntPtr htmlId, string tagName, int uiElementRegistrationId, bool isFocusable, bool isSvg);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
+			internal static partial void DestroyView(IntPtr htmlId);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
 
@@ -1580,6 +1598,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleNativeFast")]
 			internal static partial void SetStyles(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setVisibilityNativeFast")]
+			internal static partial void SetVisibility(IntPtr htmlId, bool visible);
 		}
 #endif
 	}

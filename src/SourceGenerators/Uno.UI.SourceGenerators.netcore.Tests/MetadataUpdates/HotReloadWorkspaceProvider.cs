@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
@@ -26,6 +27,7 @@ internal class HotReloadWorkspace
 	private readonly string _baseWorkFolder;
 	private readonly bool _isDebugCompilation;
 	private readonly bool _isMono;
+	private Dictionary<string, string[]> _projects = new();
 	private Dictionary<string, Dictionary<string, string>> _sourceFiles = new();
 	private Dictionary<string, Dictionary<string, string>> _additionalFiles = new();
 	private Solution? _currentSolution;
@@ -39,6 +41,22 @@ internal class HotReloadWorkspace
 		Directory.CreateDirectory(_baseWorkFolder);
 
 		Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", _baseWorkFolder);
+	}
+
+	internal void AddProject(string name, string[] references)
+	{
+		var exists = _projects.TryGetValue(name, out var existingReferences);
+		if (exists
+			&& existingReferences is not null
+			&& !references.SequenceEqual(existingReferences))
+		{
+			throw new InvalidOperationException($"Project {name} already exists with a different set of project references");
+		}
+
+		if (!exists)
+		{
+			_projects.Add(name, references);
+		}
 	}
 
 	public void SetSourceFile(string project, string fileName, string content)
@@ -129,7 +147,9 @@ internal class HotReloadWorkspace
 		var generatorReference = new MyGeneratorReference(
 			ImmutableArray.Create<ISourceGenerator>(new XamlGenerator.XamlCodeGenerator()));
 
-		foreach (var projectName in _additionalFiles.Keys.Concat(_sourceFiles.Keys).Distinct())
+		FillProjectsFromFiles();
+
+		foreach (var projectName in EnumerateProjects())
 		{
 			var projectInfo = ProjectInfo.Create(
 							ProjectId.CreateNewId(),
@@ -150,9 +170,20 @@ internal class HotReloadWorkspace
 
 			projectInfo = projectInfo
 				.WithCompilationOutputInfo(
-					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".exe")));
+					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".dll")));
 
-			var project = workspace.AddProject(projectInfo);
+			if(!_projects.TryGetValue(projectName, out var projectReferences))
+			{
+				throw new InvalidOperationException($"Project {projectName} is not defined in the project list.");
+			}
+
+			var project = workspace
+				.AddProject(projectInfo)
+				.AddProjectReferences(currentSolution
+					.Projects
+					.Where(p => projectReferences.Contains(p.Name))
+					.Select(p => new ProjectReference(p.Id)));
+
 			currentSolution = project.Solution;
 
 			if (_sourceFiles.TryGetValue(projectName, out var sourceFiles))
@@ -213,6 +244,8 @@ internal class HotReloadWorkspace
 					); ;
 				}
 			}
+
+			workspace.TryApplyChanges(currentSolution);
 		}
 
 
@@ -249,6 +282,61 @@ internal class HotReloadWorkspace
 
 		_currentSolution = currentSolution;
 		_hotReloadService = hotReloadService;
+	}
+
+	private IEnumerable<string> EnumerateProjects()
+	{
+		Stack<string> currentProjects = new();
+		HashSet<string> processed = new();
+
+		foreach(var project in InnerEnumerate(_projects.Keys))
+		{
+			yield return project;
+		}
+
+		IEnumerable<string> InnerEnumerate(IEnumerable<string> projects)
+		{
+			foreach(var project in projects)
+			{
+				if (currentProjects.Contains(project))
+				{
+					throw new InvalidOperationException($"Circular dependency detected: { string.Join(" -> ", currentProjects) } -> {project}");
+				}
+
+				currentProjects.Push(project);
+				
+				if (_projects.TryGetValue(project, out var children))
+				{
+					foreach(var child in InnerEnumerate(children))
+					{
+						yield return child;
+					}
+				}
+				
+				if (!processed.Contains(project))
+				{
+					yield return project;
+
+					processed.Add(project);
+				}
+
+				currentProjects.Pop();
+			}
+		}
+	}
+
+	private void FillProjectsFromFiles()
+	{
+		var projects = _additionalFiles
+			.Keys
+			.Concat(_sourceFiles.Keys)
+			.Distinct()
+			.Except(_projects.Keys);
+		
+		foreach (var project in projects)
+		{
+			AddProject(project, Array.Empty<string>());
+		}
 	}
 
 	public async Task<UpdateResult> Update()

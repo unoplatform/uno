@@ -194,41 +194,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
-					writer.AppendLineInvariantIndented(@"static global::System.Collections.Hashtable _bindableTypeCacheByFullName = new global::System.Collections.Hashtable({0});", q.Count());
-
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
-
-					writer.AppendLineIndented("private delegate global::Uno.UI.DataBinding.IBindableType TypeBuilderDelegate();");
-
-					using (writer.BlockInvariant("private static TypeBuilderDelegate CreateMemoized(TypeBuilderDelegate builder)"))
-					{
-						writer.AppendLineIndented(@"global::Uno.UI.DataBinding.IBindableType value = null;
-						return () => {
-							if (value == null)
-							{
-								value = builder();
-							}
-
-							return value;
-						};"
-						);
-					}
-
 					GenerateTypeTable(writer);
 
 					writer.AppendLineIndented(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
 					writer.AppendLineIndented(@"private global::System.Collections.Generic.List<global::System.Type> _knownMissingTypes = new global::System.Collections.Generic.List<global::System.Type>();");
 					writer.AppendLineIndented(@"#endif");
-
-					using (writer.BlockInvariant("public void ForceInitialize()"))
-					{
-						using (writer.BlockInvariant(@"foreach (TypeBuilderDelegate item in _bindableTypeCacheByFullName.Values)"))
-						{
-							writer.AppendLineIndented(@"item();");
-						}
-					}
 				}
 			}
 

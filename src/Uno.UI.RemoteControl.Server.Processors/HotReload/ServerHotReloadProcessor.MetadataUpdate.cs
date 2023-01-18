@@ -52,19 +52,40 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(
 			async () =>
 			{
-				var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None);
+				try
+				{
+					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None);
 
-				ObserveSolutionPaths(result.Item1);
+					ObserveSolutionPaths(result.Item1);
 
-				return result;
+					return result;
+				}
+				catch(Exception e)
+				{
+					Console.WriteLine($"Failed to initialize compilation workspace: {e}");
+					throw;
+				}
 			},
 			CancellationToken.None);
 
 		private void ObserveSolutionPaths(Solution solution)
 		{
-			_solutionWatchers = solution.Projects
-				.SelectMany(p => p.Documents.Select(d => Path.GetDirectoryName(d.FilePath)))
-				.Distinct()
+			var observedPaths =
+				solution.Projects
+					.SelectMany(p => p
+						.Documents
+						.Select(d => d.FilePath)
+						.Concat(p.AdditionalDocuments
+							.Select(d => d.FilePath)))
+					.Select(p => Path.GetDirectoryName(p))
+					.Distinct()
+					.ToArray();
+
+#if DEBUG
+			Console.WriteLine($"Observing paths {string.Join(", ", observedPaths)}");
+#endif
+
+			_solutionWatchers = observedPaths
 				.Select(p => new FileSystemWatcher
 				{
 					Path = p!,
@@ -154,6 +175,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var sourceText = await GetSourceTextAsync(file);
 				updatedSolution = _currentSolution.WithAdditionalDocumentText(additionalDocument.Id, sourceText, PreservationMode.PreserveValue);
 				updatedProjectId = additionalDocument.Project.Id;
+
+				// Generate an empty document to force the generators to run
+				// in a separate project of the same solution. This is not needed
+				// for the head project, but it's no causing issues either.
+				var docName = Guid.NewGuid().ToString();
+				updatedSolution = updatedSolution.AddAdditionalDocument(
+					DocumentId.CreateNewId(updatedProjectId),
+					docName,
+					SourceText.From("")
+				);
 			}
 			else
 			{
@@ -162,9 +193,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return false;
 			}
 
+
 			var (updates, hotReloadDiagnostics) = await _hotReloadService.EmitSolutionUpdateAsync(updatedSolution, cancellationToken);
 
-			Console.WriteLine($"Got results after {sw.Elapsed}");
+			_reporter.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
 			if (hotReloadDiagnostics.IsDefaultOrEmpty && updates.IsDefaultOrEmpty)
 			{
@@ -209,6 +241,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			async Task UpdateMetadata(string file, ImmutableArray<WatchHotReloadService.Update> updates)
 			{
+#if DEBUG
+				_reporter.Output($"Sending {updates.Length} metadata updates for {file}");
+#endif
+
 				for (int i = 0; i < updates.Length; i++)
 				{
 					var updateTypesWriterStream = new MemoryStream();
