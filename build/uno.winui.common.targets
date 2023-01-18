@@ -21,8 +21,9 @@
 
 	<Target Name="ValidateUnoUIAndUnoWinUIExclusion" BeforeTargets="BeforeBuild">
 		<Error Code="UNOB0001"
-		Text="Cannot build with both Uno.WinUI and Uno.UI nuget packages referenced."
-		Condition="'$(PkgUno_UI)'!='' and '$(PkgUno_WinUI)'!=''" />
+			   HelpLink="https://aka.platform.uno/UNOB0001"
+			   Text="Cannot build with both Uno.WinUI and Uno.UI nuget packages referenced. https://aka.platform.uno/UNOB0001"
+			   Condition="'$(PkgUno_UI)'!='' and '$(PkgUno_WinUI)'!=''" />
 	</Target>
 
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
