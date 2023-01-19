@@ -143,7 +143,7 @@ namespace Windows.Foundation.Metadata
 
 		internal static void TryRaiseNotImplemented(string type, string memberName)
 		{
-			var message = $"The member {memberName} is not implemented in Uno. For more information visit https://aka.platform.uno/notimplemented?m={Uri.EscapeDataString(type + "." + memberName)}";
+			var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m={Uri.EscapeDataString(type + "." + memberName)}";
 
 			if (IsFailWhenNotImplemented)
 			{
