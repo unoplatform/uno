@@ -19,10 +19,6 @@
 		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 	</PropertyGroup>
-
-	<PropertyGroup>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-	</PropertyGroup>
 	
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
