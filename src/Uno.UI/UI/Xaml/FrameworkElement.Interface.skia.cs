@@ -67,13 +67,6 @@ namespace Windows.UI.Xaml
 			set => throw new NotImplementedException();
 		}
 
-		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
-		public global::System.Uri BaseUri
-		{
-			get;
-			internal set;
-		} = DefaultBaseUri;
-
 		public void ApplyBindingPhase(int phase) => throw new NotImplementedException();
 
 		#region Background DependencyProperty

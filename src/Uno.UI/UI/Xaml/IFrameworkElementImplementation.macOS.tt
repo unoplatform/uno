@@ -978,9 +978,6 @@ namespace <#= mixin.NamespaceName #>
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
-		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
-		public Uri BaseUri { get; internal set; } = _defaultUri;
-
 
 		/// <summary>
 		/// Sets the specified dependency property value using the format "name|value"

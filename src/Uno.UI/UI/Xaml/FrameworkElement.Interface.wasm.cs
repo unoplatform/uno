@@ -66,9 +66,6 @@ namespace Windows.UI.Xaml
 		private new protected readonly Logger _log;
 		private new protected readonly Logger _logDebug;
 
-		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
-		public global::System.Uri BaseUri { get; internal set; } = DefaultBaseUri;
-
 		#region Transitions Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]

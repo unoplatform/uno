@@ -86,7 +86,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
                 Application.RegisterComponent(uri, fileContent);
 
-                foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.BaseUri?.OriginalString))
+                foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.DebugParseContext.LocalFileUri))
                 {
                     switch (instance)
                     {
@@ -209,7 +209,12 @@ namespace Uno.UI.RemoteControl.HotReload
             {
                 return;
             }
-            newView.BaseUri = oldView.BaseUri;
+			
+            newView.SetBaseUri(
+				oldView.BaseUri.OriginalString,
+				oldView.DebugParseContext?.LocalFileUri,
+				oldView.DebugParseContext?.LineNumber ?? -1,
+				oldView.DebugParseContext?.LinePosition ?? -1);
 
             if (oldView is Page oldPage && newView is Page newPage)
             {

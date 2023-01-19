@@ -827,9 +827,6 @@ namespace <#= mixin.NamespaceName #>
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom);
 #endif
 
-		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
-		public Uri BaseUri { get; internal set; } = _defaultUri;
-
 		#region AutomationPeer
 
 		private AutomationPeer _automationPeer;
