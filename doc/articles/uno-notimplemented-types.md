@@ -8,7 +8,7 @@ This WinUI and WinRT surface is very large. We covered a great portion of it sin
 
 Multiple directions are available:
 - Make sure that you are using the latest available stable packages for Uno Platform (Uno.WinUI or Uno.UI)
-- Find the API (Type, method or property) in the [Issues list](https://github.com/unoplatform/uno/issues) or [Pull Requests](https://github.com/unoplatform/uno/pulls) to upvote it, and if it's not already present, create one so the team knows you're trying to use it. Make sure to let us know your use case as it may drive priorities.
+- Find the API (Type, method or property) in the [Issues list](https://github.com/unoplatform/uno/issues) or [Pull Requests](https://github.com/unoplatform/uno/pulls) to vote on it with GitHub reactions, and if it's not already present, create one so the team knows you're trying to use it. Make sure to let us know your use case as it may drive priorities.
 - If you're up for it, you can contribute an implementation for this API
 
 The Uno Platform team [offers professional support](https://platform.uno/support/) to get issues sorted out faster.
