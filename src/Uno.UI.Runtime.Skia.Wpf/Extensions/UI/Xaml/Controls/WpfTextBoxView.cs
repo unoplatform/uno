@@ -45,7 +45,7 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public void RemoveFromTextInputLayer()
 	{
-		if (RootElement.GetParent() is WpfCanvas layer)
+		if (RootElement.Parent is WpfCanvas layer)
 		{
 			layer.Children.Remove(RootElement);
 		}

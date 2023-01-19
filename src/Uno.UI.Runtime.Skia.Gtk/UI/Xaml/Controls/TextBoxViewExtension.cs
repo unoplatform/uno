@@ -11,7 +11,7 @@ internal class TextBoxViewExtension : OverlayTextBoxViewExtension
 {
 	public TextBoxViewExtension(TextBoxView owner) :
 		base(owner, GtkTextBoxView.Create)
-	{
+	{		
 	}
 
 	public override bool IsOverlayLayerInitialized(XamlRoot xamlRoot) =>

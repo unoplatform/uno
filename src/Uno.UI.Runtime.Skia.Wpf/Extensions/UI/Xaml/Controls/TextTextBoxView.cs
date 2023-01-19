@@ -47,5 +47,22 @@ internal class TextTextBoxView : WpfTextBoxView
 		SetFont(_textBox, winUITextBox);
 		SetForegroundAndHighlightColor(_textBox, winUITextBox);
 		//TODO:MZ:
+
+		_textBox.AcceptsReturn = winUITextBox.AcceptsReturn;
+		_textBox.TextAlignment = winUITextBox.TextAlignment switch
+		{
+			Windows.UI.Xaml.TextAlignment.Center => System.Windows.TextAlignment.Center,
+			Windows.UI.Xaml.TextAlignment.Left => System.Windows.TextAlignment.Left,
+			Windows.UI.Xaml.TextAlignment.Right => System.Windows.TextAlignment.Right,
+			Windows.UI.Xaml.TextAlignment.Justify => System.Windows.TextAlignment.Justify,
+			_ => System.Windows.TextAlignment.Left
+		};
+		_textBox.TextWrapping = winUITextBox.TextWrapping switch
+		{
+			Windows.UI.Xaml.TextWrapping.NoWrap => System.Windows.TextWrapping.NoWrap,
+			Windows.UI.Xaml.TextWrapping.Wrap => System.Windows.TextWrapping.Wrap,
+			Windows.UI.Xaml.TextWrapping.WrapWholeWords => System.Windows.TextWrapping.WrapWithOverflow,
+			_ => System.Windows.TextWrapping.NoWrap
+		};
 	}
 }

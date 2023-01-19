@@ -9,13 +9,20 @@ namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
 internal class MultilineTextBoxView : GtkTextBoxView
 {
+	private const string MultilineHostCssClass = "textbox_multiline_host";
+
 	private readonly ScrolledWindow _scrolledWindow = new();
 	private readonly TextView _textView = new();
 
 	public MultilineTextBoxView()
 	{
 		_scrolledWindow.Add(_textView);
-		_scrolledWindow.
+		_scrolledWindow.TouchEvent += _scrolledWindow_TouchEvent;
+		_scrolledWindow.StyleContext.AddClass(MultilineHostCssClass);
+	}
+
+	private void _scrolledWindow_TouchEvent(object o, TouchEventArgs args)
+	{
 	}
 
 	protected override Widget RootWidget => _scrolledWindow;
