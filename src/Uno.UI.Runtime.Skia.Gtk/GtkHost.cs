@@ -148,11 +148,11 @@ namespace Uno.UI.Runtime.Skia
 				Gtk.Application.Init();
 				return true;
 			}
-			catch(System.TypeInitializationException e)
+			catch (TypeInitializationException e)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
+					this.Log().Error("Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
 				}
 				return false;
 			}
