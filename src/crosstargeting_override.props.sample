@@ -51,5 +51,12 @@
     The packages are located under this directory: "%USERPROFILE%\.nuget\packages".
     -->
     <!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->
+
+    <!--
+    Uncomment this line if you're iterating quickly in your builds. This 
+    will disable most of the analyzers, and you'll need to comment that property
+    before making your pull request.
+    -->
+    <!-- <UnoDisableNetAnalyzers>true</UnoDisableNetAnalyzers> -->
   </PropertyGroup>
 </Project>
