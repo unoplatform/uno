@@ -54,9 +54,9 @@
 
     <!--
     Uncomment this line if you're iterating quickly in your builds. This 
-    will disable most of the analyzers, and you'll need to comment that property
+    will disable most of the C# analyzers, and you'll need to comment that property
     before making your pull request.
     -->
-    <!-- <UnoDisableNetAnalyzers>true</UnoDisableNetAnalyzers> -->
+    <!-- <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild> -->
   </PropertyGroup>
 </Project>
