@@ -128,6 +128,7 @@
 							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
+							IosAppManifest="$(AppBundleManifest)"
 							Condition="'$(XamarinProjectType)'!=''">
 			<Output TaskParameter="Assets"
 							ItemName="Assets" />
