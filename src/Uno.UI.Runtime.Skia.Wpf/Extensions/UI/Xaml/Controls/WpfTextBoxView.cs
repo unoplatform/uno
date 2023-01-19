@@ -37,10 +37,9 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (GetOverlayLayer(xamlRoot) is { } layer && RootElement.GetParent() != layer)
+		if (GetOverlayLayer(xamlRoot) is { } layer && RootElement.Parent != layer)
 		{
 			layer.Children.Add(RootElement);
-
 		}
 	}
 
@@ -100,8 +99,10 @@ internal abstract class WpfTextBoxView : ITextBoxView
 	{
 		wpfControl.FontSize = source.FontSize;
 		wpfControl.FontWeight = WpfFontWeight.FromOpenTypeWeight(source.FontWeight.Weight);
-		//TODO:MZ: Font, FontStretch, etc.
-	}	
+		wpfControl.FontStretch = source.FontStretch.ToWpfFontStretch();
+		wpfControl.FontStyle = source.FontStyle.ToWpfFontStyle();
+		wpfControl.FontFamily = source.FontFamily.ToWpfFontFamily();
+	}
 
 	protected void SetForegroundAndHighlightColor(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{

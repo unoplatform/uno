@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
 
-namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
+namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 
-internal static class Extensions
+internal static class TypeConversionExtensions
 {
 	public static System.Windows.Media.Brush? ToWpfBrush(this Windows.UI.Xaml.Media.Brush brush)
 	{
@@ -62,30 +62,33 @@ internal static class Extensions
 		return null;
 	}
 
-	private static System.Windows.Media.AlignmentX ToWpfAlignmentX(this Windows.UI.Xaml.Media.AlignmentX alignment)
-	{
-		Debug.Assert((int)System.Windows.Media.AlignmentX.Left == (int)Windows.UI.Xaml.Media.AlignmentX.Left);
-		Debug.Assert((int)System.Windows.Media.AlignmentX.Right == (int)Windows.UI.Xaml.Media.AlignmentX.Right);
-		Debug.Assert((int)System.Windows.Media.AlignmentX.Center == (int)Windows.UI.Xaml.Media.AlignmentX.Center);
-		return (System.Windows.Media.AlignmentX)alignment;
-	}
+	private static System.Windows.Media.AlignmentX ToWpfAlignmentX(this Windows.UI.Xaml.Media.AlignmentX alignment) =>
+		alignment switch
+		{
+			Windows.UI.Xaml.Media.AlignmentX.Left => System.Windows.Media.AlignmentX.Left,
+			Windows.UI.Xaml.Media.AlignmentX.Center => System.Windows.Media.AlignmentX.Center,
+			Windows.UI.Xaml.Media.AlignmentX.Right => System.Windows.Media.AlignmentX.Right,
+			_ => throw new System.InvalidOperationException(),
+		};
 
-	private static System.Windows.Media.AlignmentY ToWpfAlignmentY(this Windows.UI.Xaml.Media.AlignmentY alignment)
-	{
-		Debug.Assert((int)System.Windows.Media.AlignmentY.Top == (int)Windows.UI.Xaml.Media.AlignmentY.Top);
-		Debug.Assert((int)System.Windows.Media.AlignmentY.Center == (int)Windows.UI.Xaml.Media.AlignmentY.Center);
-		Debug.Assert((int)System.Windows.Media.AlignmentY.Bottom == (int)Windows.UI.Xaml.Media.AlignmentY.Bottom);
-		return (System.Windows.Media.AlignmentY)alignment;
-	}
+	private static System.Windows.Media.AlignmentY ToWpfAlignmentY(this Windows.UI.Xaml.Media.AlignmentY alignment) =>
+		alignment switch
+		{
+			Windows.UI.Xaml.Media.AlignmentY.Top => System.Windows.Media.AlignmentY.Top,
+			Windows.UI.Xaml.Media.AlignmentY.Center => System.Windows.Media.AlignmentY.Center,
+			Windows.UI.Xaml.Media.AlignmentY.Bottom => System.Windows.Media.AlignmentY.Bottom,
+			_ => throw new System.InvalidOperationException(),
+		};
 
-	private static System.Windows.Media.Stretch ToWpfStretch(this Windows.UI.Xaml.Media.Stretch stretch)
-	{
-		Debug.Assert((int)System.Windows.Media.Stretch.None == (int)Windows.UI.Xaml.Media.Stretch.None);
-		Debug.Assert((int)System.Windows.Media.Stretch.Fill == (int)Windows.UI.Xaml.Media.Stretch.Fill);
-		Debug.Assert((int)System.Windows.Media.Stretch.Uniform == (int)Windows.UI.Xaml.Media.Stretch.Uniform);
-		Debug.Assert((int)System.Windows.Media.Stretch.UniformToFill == (int)Windows.UI.Xaml.Media.Stretch.UniformToFill);
-		return (System.Windows.Media.Stretch)stretch;
-	}
+	private static System.Windows.Media.Stretch ToWpfStretch(this Windows.UI.Xaml.Media.Stretch stretch) =>
+		stretch switch
+		{
+			Windows.UI.Xaml.Media.Stretch.None => System.Windows.Media.Stretch.None,
+			Windows.UI.Xaml.Media.Stretch.Fill => System.Windows.Media.Stretch.Fill,
+			Windows.UI.Xaml.Media.Stretch.Uniform => System.Windows.Media.Stretch.Uniform,
+			Windows.UI.Xaml.Media.Stretch.UniformToFill => System.Windows.Media.Stretch.UniformToFill,
+			_ => throw new System.InvalidOperationException(),
+		};
 
 	private static System.Windows.Media.Transform? ToWpfTransform(this Windows.UI.Xaml.Media.Transform transform)
 	{
@@ -137,11 +140,38 @@ internal static class Extensions
 		return null;
 	}
 
-	private static System.Windows.Media.BrushMappingMode ToWpfBrushMappingMode(this Windows.UI.Xaml.Media.BrushMappingMode mappingMode)
-	{
-		Debug.Assert((int)System.Windows.Media.BrushMappingMode.Absolute == (int)Windows.UI.Xaml.Media.BrushMappingMode.Absolute);
-		Debug.Assert((int)System.Windows.Media.BrushMappingMode.RelativeToBoundingBox == (int)Windows.UI.Xaml.Media.BrushMappingMode.RelativeToBoundingBox);
+	private static System.Windows.Media.BrushMappingMode ToWpfBrushMappingMode(this Windows.UI.Xaml.Media.BrushMappingMode mappingMode) =>
+		mappingMode switch
+		{
+			Windows.UI.Xaml.Media.BrushMappingMode.Absolute => System.Windows.Media.BrushMappingMode.Absolute,
+			Windows.UI.Xaml.Media.BrushMappingMode.RelativeToBoundingBox => System.Windows.Media.BrushMappingMode.RelativeToBoundingBox,
+			_ => throw new System.InvalidOperationException(),
+		};
 
-		return (System.Windows.Media.BrushMappingMode)mappingMode;
-	}
+	public static System.Windows.FontStretch ToWpfFontStretch(this Windows.UI.Text.FontStretch fontStretch) =>
+		fontStretch switch
+		{
+			Windows.UI.Text.FontStretch.Condensed => System.Windows.FontStretches.Condensed,
+			Windows.UI.Text.FontStretch.Expanded => System.Windows.FontStretches.Expanded,
+			Windows.UI.Text.FontStretch.ExtraCondensed => System.Windows.FontStretches.ExtraCondensed,
+			Windows.UI.Text.FontStretch.ExtraExpanded => System.Windows.FontStretches.ExtraExpanded,
+			Windows.UI.Text.FontStretch.Normal => System.Windows.FontStretches.Normal,
+			Windows.UI.Text.FontStretch.SemiCondensed => System.Windows.FontStretches.SemiCondensed,
+			Windows.UI.Text.FontStretch.SemiExpanded => System.Windows.FontStretches.SemiExpanded,
+			Windows.UI.Text.FontStretch.UltraCondensed => System.Windows.FontStretches.UltraCondensed,
+			Windows.UI.Text.FontStretch.UltraExpanded => System.Windows.FontStretches.UltraExpanded,
+			_ => System.Windows.FontStretches.Normal
+		};
+
+	public static System.Windows.FontStyle ToWpfFontStyle(this Windows.UI.Text.FontStyle fontStyle) =>
+		fontStyle switch
+		{
+			Windows.UI.Text.FontStyle.Normal => System.Windows.FontStyles.Normal,
+			Windows.UI.Text.FontStyle.Italic => System.Windows.FontStyles.Italic,
+			Windows.UI.Text.FontStyle.Oblique => System.Windows.FontStyles.Oblique,
+			_ => System.Windows.FontStyles.Normal
+		};
+
+	public static System.Windows.Media.FontFamily ToWpfFontFamily(this Windows.UI.Xaml.Media.FontFamily fontFamily) =>
+		new System.Windows.Media.FontFamily(fontFamily.Source);
 }

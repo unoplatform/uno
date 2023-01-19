@@ -42,38 +42,10 @@ internal class TextTextBoxView : WpfTextBoxView
 		return Disposable.Create(() => _textBox.TextChanged -= OnTextChanged);
 	}
 
-	public override void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox)
+	public override void UpdateProperties(Windows.UI.Xaml.Controls.TextBox winUITextBox)
 	{
+		SetFont(_textBox, winUITextBox);
+		SetForegroundAndHighlightColor(_textBox, winUITextBox);
 		//TODO:MZ:
 	}
-
-	//	public override string Text { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-	//	protected override WpfElement RootElement => _textBox;
-
-	//	protected override WpfElement InputElement => _textBox;
-
-
-	//	public override (int start, int end) GetSelectionBounds() => throw new NotImplementedException();
-	//	public override bool IsCompatible(TextBox textBox) => throw new NotImplementedException();
-	//	public override IDisposable ObserveTextChanges(EventHandler onChanged)
-	//	{
-	//		InputElement.TextChanged += WpfTextViewTextChanged;
-	//		disposable.Add(Disposable.Create(() => _currentTextBoxInputWidget.TextChanged -= WpfTextViewTextChanged));
-	//	}
-
-	//			if (_currentPasswordBoxInputWidget is not null)
-	//			{
-	//				_currentPasswordBoxInputWidget.PasswordChanged += PasswordBoxViewPasswordChanged;
-	//				disposable.Add(Disposable.Create(() => _currentPasswordBoxInputWidget.PasswordChanged -= PasswordBoxViewPasswordChanged));
-	//			}
-	//_textChangedDisposable.Disposable = disposable;
-	//		}
-	//		public override void SetSelectionBounds(int start, int end) => throw new NotImplementedException();
-
-	//private WpfTextViewTextBox CreateInputControl()
-	//{
-	//	var textView = new WpfTextViewTextBox();
-	//	return textView;
-	//}
 }

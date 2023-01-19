@@ -12,6 +12,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Runtime.Skia.GTK.Extensions;
 using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 
@@ -78,7 +79,7 @@ internal abstract class GtkTextBoxView : ITextBoxView
 
 	public virtual void UpdateProperties(TextBox textBox)
 	{
-		SetFont(textBox.FontWeight, textBox.FontSize);
+		SetFont(textBox);
 		SetForeground(textBox.Foreground);
 		SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 		RootWidget.Opacity = textBox.Opacity;
@@ -103,12 +104,14 @@ internal abstract class GtkTextBoxView : ITextBoxView
 	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
 		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
-	private void SetFont(FontWeight fontWeight, double fontSize)
+	private void SetFont(TextBox textBox)
 	{
 		var fontDescription = new FontDescription
 		{
-			Weight = fontWeight.ToPangoWeight(),
-			AbsoluteSize = fontSize * Pango.Scale.PangoScale,
+			Weight = textBox.FontWeight.ToPangoWeight(),
+			Style = textBox.FontStyle.ToGtkFontStyle(),
+			Stretch = textBox.FontStretch.ToGtkFontStretch(),
+			AbsoluteSize = textBox.FontSize * Pango.Scale.PangoScale,
 		};
 #pragma warning disable CS0612 // Type or member is obsolete
 		InputWidget.OverrideFont(fontDescription);
