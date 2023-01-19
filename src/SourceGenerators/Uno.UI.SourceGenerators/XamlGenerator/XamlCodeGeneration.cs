@@ -57,6 +57,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _xamlResourcesTrimming;
+		private readonly bool _isUnoHead;
 		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
@@ -176,6 +177,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_xamlResourcesTrimming = xamlResourcesTrimming;
 			}
 
+			if (bool.TryParse(context.GetMSBuildPropertyValue("IsUnoHead"), out var isUnoHead))
+			{
+				_isUnoHead = isUnoHead;
+			}
+
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
 			{
 				_isHotReloadEnabled = isHotReloadEnabled;
@@ -277,7 +283,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				TryGenerateUnoResourcesKeyAttribute(resourceKeys);
 
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
-					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
+					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
 				Parallel.ForEach(filesFull, file =>
@@ -336,6 +342,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,
+									isUnoHead: _isUnoHead,
 									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
