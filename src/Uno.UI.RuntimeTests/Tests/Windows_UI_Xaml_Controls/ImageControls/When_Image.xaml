@@ -49,7 +49,7 @@
 				Padding="2">
 			<Image  x:Name="absoluteLocal"
 					x:FieldModifier="public"
-					Source="ms-appx:///Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png" />
+					Source="ms-appx:///uno.ui.runtimetests/Assets/Transitive-ingredient01.png" />
 		</Border>
 	</StackPanel>
 
