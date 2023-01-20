@@ -96,6 +96,15 @@ Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issu
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
 
+### Cannot build with both Uno.WinUI and Uno.UI NuGet packages referenced
+
+This issue generally happens when referencing a Uno.UI (using UWP APIs) NuGet package in an application that uses Uno.WinUI (Using WinAppSDK APIs).
+
+For instance, if your application has `<PackageReference Include="Uno.WinUI"` in the `csproj` files, this means that you'll need to reference WinUI versions of NuGet packages.
+
+For instance:
+- `Uno.UI` -> `Uno.WinUI`
+
 #### Build error `Failed to generate AOT layout`
 
 When building for WebAssembly with AOT mode enabled, the following error may appear:
