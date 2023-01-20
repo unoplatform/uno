@@ -125,9 +125,13 @@ internal partial class PopupPanel : Panel
 		}
 		else if (Popup.CustomLayouter == null)
 		{
-			// TODO: For now, the layouting logic for DatePickerFlyout does not correctly work
+			// TODO: For now, the layouting logic for managed DatePickerFlyout does not correctly work
 			// against the placement target approach.
-			if (Popup.AssociatedFlyout is not DatePickerFlyout &&
+			var isFlyoutManagedDatePicker =
+				Popup.AssociatedFlyout is DatePickerFlyout &&
+				Popup.AssociatedFlyout is not NativeDatePickerFlyout;
+
+			if (!isFlyoutManagedDatePicker &&
 				Popup.PlacementTarget is not null
 #if __ANDROID__ || __IOS__
 				|| NativeAnchor is not null
