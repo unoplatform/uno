@@ -78,6 +78,12 @@ namespace Windows.UI
 
 		private static UIFont? InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
 		{
+			if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(UIFontHelper).Log().Trace(
+					$"Getting font (size:{size}, weight:{fontWeight}, style:{fontStyle}, family:{requestedFamily}, basePreferredSize:{basePreferredSize})");
+			}
+
 			UIFont? font = null;
 
 			size = GetScaledFontSize(size, basePreferredSize);
@@ -113,6 +119,12 @@ namespace Windows.UI
 #region Load Custom Font
 		private static UIFont? GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
 		{
+			if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(UIFontHelper).Log().Trace(
+					$"Searching custom font (size:{size}, weight:{fontPath}, style:{fontStyle}, fontWeight:{fontWeight})");
+			}
+
 			UIFont? font;
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
 			if (fontPath.Contains("#"))
@@ -323,8 +335,11 @@ namespace Windows.UI
 				{
 					return updatedFont;
 				}
-
-				font.Log().Warn("Failed to apply Font " + font);
+				
+				if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(UIFontHelper).Log().Warn("Failed to get system font based on " + font);
+				}
 
 				return UIFont.FromName(rootFontFamilyName, size);
 			}

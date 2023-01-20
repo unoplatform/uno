@@ -121,13 +121,20 @@
 		<!-- Assets -->
 		<PropertyGroup>
 			<UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
+			
+			<_UnoIosAppManifest>$(AppBundleManifest)</_UnoIosAppManifest>
+
+			<!-- Required for older Xamarin versions -->
+			<_UnoIosAppManifest Condition="'$(_UnoIosAppManifest)'==''">$(_AppManifest)</_UnoIosAppManifest>
 		</PropertyGroup>
+		
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
 							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
+							IosAppManifest="$(_UnoIosAppManifest)"
 							Condition="'$(XamarinProjectType)'!=''">
 			<Output TaskParameter="Assets"
 							ItemName="Assets" />
