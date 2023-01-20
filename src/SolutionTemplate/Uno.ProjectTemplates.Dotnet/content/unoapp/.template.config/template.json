@@ -203,8 +203,8 @@
 					"description": "Target net7.0"
 				}
 			],
-			"replaces": "net6.0",
-			"defaultValue": "net6.0"
+			"replaces": "net7.0",
+			"defaultValue": "net7.0"
 		},
 		"libarybasetargetframework": {
 			"type": "generated",
