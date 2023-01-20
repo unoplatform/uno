@@ -1,8 +1,10 @@
 # Welcome to Uno Platform!
 
-## Please read important installation information below.
+**Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!**
 
-Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!
+[!include[getting-help](use-uno-check-inline.md)]
+
+## Next steps
 
 * You can give the [Single Page app getting started guide](https://platform.uno/docs/articles/getting-started-tutorial-1.html) a try
 * Next you can try our [Bug Tracker sample walkthrough](https://platform.uno/docs/articles/getting-started-tutorial-2.html)
