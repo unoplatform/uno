@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -278,6 +279,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
+				var isInsideMainAssembly =
+					_isUnoHead
+
+					// Handle legacy Xamarin targets which do not define IsUnoHead.
+					|| PlatformHelper.IsXamariniOS(_generatorContext)
+					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
+					|| PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceKeys);
@@ -342,7 +350,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,
-									isUnoHead: _isUnoHead,
+									isInsideMainAssembly: isInsideMainAssembly,
 									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,

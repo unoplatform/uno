@@ -80,7 +80,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _defaultLanguage;
 		private readonly bool _isDebug;
 		private readonly bool _isHotReloadEnabled;
-		private readonly bool _isUnoHead;
+		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
 
@@ -239,7 +239,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isDebug,
 			bool isHotReloadEnabled,
 			bool isDesignTimeBuild,
-			bool isUnoHead,
+			bool isInsideMainAssembly,
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
@@ -264,7 +264,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
-			_isUnoHead = isUnoHead;
+			_isInsideMainAssembly = isInsideMainAssembly;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
@@ -514,7 +514,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private void BuildBaseUri(IIndentedStringBuilder writer)
 		{
-			var assembly = _isUnoHead ? "" : _generatorContext.Compilation.AssemblyName + "/";
+			var assembly = _isInsideMainAssembly ? "" : _generatorContext.Compilation.AssemblyName + "/";
 
 			// Note that the assembly name is lower-cased in order for file resolution on case-sensitive file systems to work.
 			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");

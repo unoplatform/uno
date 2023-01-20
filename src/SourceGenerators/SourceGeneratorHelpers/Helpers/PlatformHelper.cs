@@ -32,10 +32,10 @@ namespace Uno.UI.SourceGenerators.Helpers
 		public static bool IsAndroid(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
-		public static bool IsiOS(GeneratorExecutionContext context)
+		public static bool IsXamariniOS(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
-		public static bool IsMacOs(GeneratorExecutionContext context)
+		public static bool IsXamarinMacOs(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
 		public static bool IsExe(GeneratorExecutionContext context)
@@ -46,8 +46,8 @@ namespace Uno.UI.SourceGenerators.Helpers
 
 		public static bool IsApplication(GeneratorExecutionContext context)
 			=> IsAndroid(context)
-				|| (IsiOS(context) && IsExe(context))
-				|| (IsMacOs(context) && IsExe(context))
+				|| (IsXamariniOS(context) && IsExe(context))
+				|| (IsXamarinMacOs(context) && IsExe(context))
 				|| IsUnoHead(context);
 	}
 }
