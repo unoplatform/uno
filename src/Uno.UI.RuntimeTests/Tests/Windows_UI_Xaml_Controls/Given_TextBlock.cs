@@ -142,5 +142,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__ANDROID__
+		[Ignore("Androi-only test for AndroidAssets backward compatibility")]
+#endif
+		public async Task When_FontFamily_In_AndroidAsset()
+		{
+			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var size = new Size(1000, 1000);
+			SUT.Measure(size);
+
+			var originalSize = SUT.DesiredSize;
+
+			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+			
+			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
+
+			int counter = 3;
+
+			do
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				SUT.InvalidateMeasure();
+			}
+			while (SUT.DesiredSize == originalSize && counter-- > 0);
+
+			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+		}
 	}
 }
