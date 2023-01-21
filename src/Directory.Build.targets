@@ -67,7 +67,7 @@
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.24" />
-	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0-dev.19" />
+	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0-dev.20" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="Xamarin.UITest" Version="3.2.9" />
