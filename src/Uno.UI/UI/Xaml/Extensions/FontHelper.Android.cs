@@ -64,7 +64,8 @@ namespace Windows.UI.Xaml
 						// with UWP. Keep this behavior for backward compatibility.
 						var legacySource = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
 
-						if (!TryLoadFromPath(style, legacySource, out typeface))
+						// The path for AndroidAssets is not encoded, unlike assets processed by the RetargetAssets tool.
+						if (!TryLoadFromPath(style, legacySource, out typeface, encodePath: false))
 						{
 							throw new InvalidOperationException($"Unable to find [{fontFamily.Source}] from the application's assets.");
 						}
@@ -99,7 +100,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private static bool TryLoadFromPath(TypefaceStyle style, string source, out Typeface? typeface)
+		private static bool TryLoadFromPath(TypefaceStyle style, string source, out Typeface? typeface, bool encodePath = true)
 		{
 			source = FontFamilyHelper.RemoveHashFamilyName(source);
 
@@ -108,7 +109,9 @@ namespace Windows.UI.Xaml
 				typeof(FontHelper).Log().Debug($"Searching for font as asset [{source}]");
 			}
 
-			var encodedSource = AndroidResourceNameEncoder.EncodeFileSystemPath(source, prefix: "");
+			var encodedSource = encodePath
+				? AndroidResourceNameEncoder.EncodeFileSystemPath(source, prefix: "")
+				: source;
 
 			// We need to lookup assets manually, as assets are stored this way by android, but windows
 			// is case insensitive.
