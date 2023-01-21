@@ -131,7 +131,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-    <Page>
+    </Page>
     ```
 1. Now we'll add a few new controls that are defined in the Toolkit.UI package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
     ```xml

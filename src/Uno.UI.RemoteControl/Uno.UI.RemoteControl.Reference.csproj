@@ -32,10 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Include="buildTransitive\Uno.UI.RemoteControl.targets">
 	    <PackagePath>build</PackagePath>
 	    <Pack>true</Pack>

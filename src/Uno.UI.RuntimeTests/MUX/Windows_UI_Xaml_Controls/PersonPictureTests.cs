@@ -183,10 +183,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TextBlock initialsTextBlock = null;
 #if WINDOWS_UWP
 			string symbolsFontName = "Segoe MDL2 Assets";
-#elif __ANDROID__ || __SKIA__
-			string symbolsFontName = "ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #else
-			string symbolsFontName = "Symbols";
+			string symbolsFontName = "ms-appx://uno.fonts.fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 			await RunOnUIThread.ExecuteAsync(() =>
 			{

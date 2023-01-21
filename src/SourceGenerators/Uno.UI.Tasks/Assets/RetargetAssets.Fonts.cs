@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Uno.UI.Tasks.Helpers;
@@ -31,10 +32,15 @@ public partial class RetargetAssets_v0
 		</plist>
 		""";
 
-	private ITaskItem[] GenerateFontPartialManifest(List<string> fontAssets)
+	private ITaskItem[] GenerateFontPartialManifest(List<string> fontAssets, string iOSAppManifest)
 	{
 		if (TargetPlatform == "ios")
 		{
+			// For compatibility measures, get the fonts from the iOS app manifest
+			// and merge them with the generated ones, so existing apps don't lose
+			// explicitly specified ones.
+			var existingFonts = EnumerateFontsFromPList(IosAppManifest);
+
 			var outputManifestFile = Path.Combine(IntermediateOutputPath, "FontsPartialInfo.plist");
 
 			using var writer = File.CreateText(outputManifestFile);
@@ -46,7 +52,7 @@ public partial class RetargetAssets_v0
 				writer.WriteLine("  <key>UIAppFonts</key>");
 				writer.WriteLine("  <array>");
 
-				foreach (var font in fontAssets)
+				foreach (var font in fontAssets.Concat(existingFonts))
 				{
 					writer.WriteLine("    <string>" + font + "</string>");
 				}
@@ -62,5 +68,18 @@ public partial class RetargetAssets_v0
 		{
 			return Array.Empty<ITaskItem>();
 		}
+	}
+
+	private string[] EnumerateFontsFromPList(string iosAppManifest)
+	{
+		XmlDocument doc = new();
+		doc.Load(iosAppManifest);
+
+		// Get the list of registered fonts in the info.plist
+		return doc
+			.SelectNodes("//key[text()='UIAppFonts']/following-sibling::array[1]/string")
+			.OfType<XmlNode>()
+			.Select(n => n.InnerText)
+			.ToArray();
 	}
 }

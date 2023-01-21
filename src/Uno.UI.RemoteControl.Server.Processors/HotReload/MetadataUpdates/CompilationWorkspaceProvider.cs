@@ -32,15 +32,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string[] metadataUpdateCapabilities,
 			CancellationToken cancellationToken)
 		{
-			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath) ?? "", "obj", "hr") + Path.DirectorySeparatorChar;
-
-			Directory.CreateDirectory(intermediatePath);
-
 			var globalProperties = new Dictionary<string, string> {
-				// Override the output path so custom compilation lists do not override the
-				// main compilation caches, which can invalidate incremental compilation.
-				{ "IntermediateOutputPath", intermediatePath },
-
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
 			};
@@ -49,17 +41,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			workspace.WorkspaceFailed += (_sender, diag) =>
 			{
-				if (diag.Diagnostic.Kind == WorkspaceDiagnosticKind.Warning)
-				{
-					reporter.Verbose($"MSBuildWorkspace warning: {diag.Diagnostic}");
-				}
-				else
-				{
-					if (!diag.Diagnostic.ToString().StartsWith("[Failure] Found invalid data while decoding", StringComparison.Ordinal))
-					{
-						taskCompletionSource.TrySetException(new InvalidOperationException($"Failed to create MSBuildWorkspace: {diag.Diagnostic}"));
-					}
-				}
+				// In some cases, load failures may be incorrectly reported such as this one:
+				// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+				// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
 			};
 
 			await workspace.OpenProjectAsync(projectPath, cancellationToken: cancellationToken);

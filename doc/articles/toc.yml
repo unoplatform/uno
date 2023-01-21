@@ -126,6 +126,8 @@
               href: api-differences.md
             - name: Philosophy of Uno
               href: concepts/overview/philosophy-of-uno.md
+            - name: About NotImplemented members
+              href: uno-notimplemented-types.md
             - name: Uno and WinUI 3
               href: uwp-vs-winui3.md
             - name: .NET Version Support

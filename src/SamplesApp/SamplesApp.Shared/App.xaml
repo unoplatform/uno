@@ -36,6 +36,9 @@
 			<SolidColorBrush x:Key="GlobalStaticResource_Test01"
 							 Color="Purple" />
 
+			<SolidColorBrush x:Key="GlobalStatEventRegistrationToken icResource_Test01"
+							 Color="Purple" />
+
 			<!--  ReSharper disable once InconsistentNaming  -->
 			<SolidColorBrush x:Key="Pink_From_App_Xaml_Resources"
 							 Color="#FF54BA" />

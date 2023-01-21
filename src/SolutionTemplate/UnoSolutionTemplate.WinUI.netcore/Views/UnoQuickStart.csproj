@@ -6,6 +6,14 @@
 		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
 		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
 		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
+		
+		<DefaultLanguage>en</DefaultLanguage>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>

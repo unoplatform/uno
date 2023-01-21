@@ -274,6 +274,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
+				TryGenerateUnoResourcesKeyAttribute(resourceKeys);
+
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
 
@@ -376,6 +378,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_telemetry.Flush();
 				_telemetry.Dispose();
 			}
+		}
+
+		private void TryGenerateUnoResourcesKeyAttribute(ImmutableHashSet<string> resourceKeys)
+		{
+			var hasResources = !resourceKeys.IsEmpty;
+			
+			_generatorContext.AddSource(
+				"LocalizationResources",
+				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
+				$"\"UnoHasLocalizationResources\", " +
+				$"\"{hasResources.ToString(CultureInfo.InvariantCulture)}\")]");
 		}
 
 #if !NETFRAMEWORK

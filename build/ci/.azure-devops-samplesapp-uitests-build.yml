@@ -46,6 +46,7 @@ jobs:
       flattenFolders: false
       
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: samplesapp-uitest-binaries

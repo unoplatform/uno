@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
@@ -32,10 +32,6 @@
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
