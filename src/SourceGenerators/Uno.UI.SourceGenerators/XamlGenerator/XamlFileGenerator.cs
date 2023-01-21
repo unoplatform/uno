@@ -600,7 +600,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			GenerateResourceLoader(writer);
 			writer.AppendLine();
-			ApplyLiteralProperties(); //
+			ApplyLiteralProperties();
 			writer.AppendLine();
 
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
@@ -627,6 +627,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
+
+			ApplyFontsOverride(writer);
 
 			if (_isUiAutomationMappingEnabled)
 			{
@@ -655,6 +657,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				writer.AppendLineIndented(";");
+			}
+		}
+
+		/// <summary>
+		/// Override font properties at the end of the app.xaml ctor.
+		/// </summary>
+		/// <param name="writer"></param>
+		private void ApplyFontsOverride(IndentedStringBuilder writer)
+		{
+			var themes = new[] { "Default", "Light", "HighContrast" };
+
+			if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformDefaultSymbolsFontFamily") is { Length: > 0 } fontOverride)
+			{
+				writer.AppendLineInvariantIndented($"global::Uno.UI.FeatureConfiguration.Font.SymbolsFont = \"{fontOverride}\";");
+			}
+
+			writer.AppendLineInvariantIndented("var __symbolsFontFamily = new global::Windows.UI.Xaml.Media.FontFamily(global::Uno.UI.FeatureConfiguration.Font.SymbolsFont);");
+
+			foreach (var theme in themes)
+			{
+				// SymbolThemeFontFamily
+				using var _ = writer.BlockInvariant(
+					$"if (Resources.ThemeDictionaries.TryGetValue(\"{theme}\", out var __{theme}Dictionary) " +
+					$"&& __{theme}Dictionary is global::Windows.UI.Xaml.ResourceDictionary __{theme}ThemeDictionary)");
+				
+				writer.AppendLineInvariantIndented($"__{theme}ThemeDictionary[\"SymbolThemeFontFamily\"] = __symbolsFontFamily;");
 			}
 		}
 

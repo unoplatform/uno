@@ -24,6 +24,11 @@
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
+		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
+	</PropertyGroup>
+	
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Prefer32Bit>true</Prefer32Bit>
 	</PropertyGroup>

@@ -2723,13 +2723,20 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 
+#if __ANDROID__
+		[Ignore("Unstable on Android, the overflow button is not hidden because of a off-by-one pixel error. https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with no app bar buttons.")]
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithNoAppBarButtons()
 		{
 			await ValidateOverflowButtonHidesWhenAppropriate(addPrimary: false, addSecondary: false);
 		}
 
+
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("Unstable on Android, the overflow button is not hidden because of a off-by-one pixel error. https://github.com/unoplatform/uno/issues/9080")]
+#endif
 
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with primary app bar buttons.")]
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithPrimaryAppBarButtons()
@@ -3883,7 +3890,9 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-
+#if __ANDROID__
+		[Ignore("Unstable on Android, the overflow button is not hidden because of a off-by-one pixel error. https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		[Description("Validates that adding elements to the secondary collection or changing the value of ClosedDisplayMode changes the visibility of the more button.")]
 		public async Task ValidateMoreButtonCanShowWithoutSizeChanging()
 		{

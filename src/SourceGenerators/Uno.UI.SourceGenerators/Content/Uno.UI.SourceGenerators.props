@@ -100,6 +100,7 @@
 		<CompilerVisibleProperty Include="ShouldAnnotateGeneratedXaml" />
 		<CompilerVisibleProperty Include="DefaultLanguage" />
 		<CompilerVisibleProperty Include="UnoPlatformTelemetryOptOut" />
+		<CompilerVisibleProperty Include="UnoPlatformDefaultSymbolsFontFamily" />
 		<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
