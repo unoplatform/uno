@@ -335,7 +335,7 @@ namespace Windows.UI
 				{
 					return updatedFont;
 				}
-				
+
 				if (typeof(UIFontHelper).Log().IsEnabled(LogLevel.Warning))
 				{
 					typeof(UIFontHelper).Log().Warn("Failed to get system font based on " + font);
