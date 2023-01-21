@@ -146,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !__ANDROID__
-		[Ignore("Androi-only test for AndroidAssets backward compatibility")]
+		[Ignore("Android-only test for AndroidAssets backward compatibility")]
 #endif
 		public async Task When_FontFamily_In_AndroidAsset()
 		{
@@ -165,16 +165,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			
 			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
 
-			int counter = 3;
-
-			do
+			for (int i = 0; i < 3; i++)
 			{
 				await WindowHelper.WaitForIdle();
 				await Task.Delay(100);
-
 				SUT.InvalidateMeasure();
+
+				if (SUT.DesiredSize != originalSize) break;
 			}
-			while (SUT.DesiredSize == originalSize && counter-- > 0);
 
 			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
 		}
