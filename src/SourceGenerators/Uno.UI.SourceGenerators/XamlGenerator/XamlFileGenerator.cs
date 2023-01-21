@@ -681,7 +681,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using var _ = writer.BlockInvariant(
 					$"if (Resources.ThemeDictionaries.TryGetValue(\"{theme}\", out var __{theme}Dictionary) " +
 					$"&& __{theme}Dictionary is global::Windows.UI.Xaml.ResourceDictionary __{theme}ThemeDictionary)");
-				
+
 				writer.AppendLineInvariantIndented($"__{theme}ThemeDictionary[\"SymbolThemeFontFamily\"] = __symbolsFontFamily;");
 			}
 		}
