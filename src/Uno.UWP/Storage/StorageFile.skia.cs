@@ -19,7 +19,7 @@ namespace Windows.Storage
 
 			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
 
-			var resourcePathname = global::System.IO.Path.Combine(Package.Current.InstalledPath, uri.Host.ToLowerInvariant(), path);
+			var resourcePathname = global::System.IO.Path.Combine(Package.Current.InstalledPath, uri.Host, path);
 
 			if (resourcePathname != null)
 			{

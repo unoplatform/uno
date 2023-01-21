@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Transitive_Asset_Loaded()
 		{
-			string url = "ms-appx://Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
+			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
 			var img = new Image();
 			var SUT = new BitmapImage(new Uri(url));
 			img.Source = SUT;

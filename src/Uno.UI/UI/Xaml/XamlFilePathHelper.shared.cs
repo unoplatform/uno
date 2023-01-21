@@ -94,11 +94,6 @@ namespace Uno.UI.Xaml
 			{
 				path = uri.PathAndQuery.TrimStart('/');
 
-				if (uri.Host is { Length: > 0 } host)
-				{
-					path = host.ToLowerInvariant() + "/" + path;
-				}
-
 				return true;
 			}
 			else

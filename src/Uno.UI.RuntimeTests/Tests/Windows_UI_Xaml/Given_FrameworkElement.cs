@@ -629,7 +629,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ButtonUserControl();
 
 			Assert.AreEqual(
-				new Uri("ms-appx:///uno.ui.runtimetests/Tests/Windows_UI_Xaml/Controls/ButtonUserControl.xaml"),
+				new Uri("ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ButtonUserControl.xaml"),
 				sut.BaseUri);
 		}
 
