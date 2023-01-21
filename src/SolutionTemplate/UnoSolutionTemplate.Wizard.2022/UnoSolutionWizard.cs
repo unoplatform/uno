@@ -419,6 +419,12 @@ namespace UnoSolutionTemplate.Wizard
 			{
 				SetConfiurationDeployable(solutionBuild, "Debug", "Any CPU", ".Windows.csproj");
 				SetConfiurationDeployable(solutionBuild, "Release", "Any CPU", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Debug", "x86", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Release", "x86", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Debug", "x64", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Release", "x64", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Debug", "arm64", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Release", "arm64", ".Windows.csproj");
 
 				SetConfiurationDeployable(solutionBuild, "Debug", "Any CPU", ".Mobile.csproj");
 				SetConfiurationDeployable(solutionBuild, "Release", "Any CPU", ".Mobile.csproj");

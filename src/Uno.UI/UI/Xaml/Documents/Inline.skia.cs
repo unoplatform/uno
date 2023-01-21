@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Documents
 			else if (XamlFilePathHelper.TryGetMsAppxAssetPath(name, out var path))
 			{
 				var filePath = global::System.IO.Path.Combine(
-					Windows.Application­Model.Package.Current.Installed­Location.Path
+					Windows.ApplicationModel.Package.Current.InstalledLocation.Path
 					, path.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
 
 				// SKTypeface.FromFile may return null if the file is not found (SkiaSharp is not yet nullable attributed)

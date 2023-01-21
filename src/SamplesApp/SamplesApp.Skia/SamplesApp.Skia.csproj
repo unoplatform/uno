@@ -15,6 +15,11 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
+		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
@@ -39,6 +44,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 
 
+		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
 		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />

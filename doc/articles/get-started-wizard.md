@@ -1,8 +1,10 @@
 # Welcome to Uno Platform!
 
-## Please read important installation information below.
+**Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!**
 
-Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!
+[!include[getting-help](use-uno-check-inline.md)]
+
+## Next steps
 
 * You can give the [Single Page app getting started guide](https://platform.uno/docs/articles/getting-started-tutorial-1.html) a try
 * Next you can try our [Bug Tracker sample walkthrough](https://platform.uno/docs/articles/getting-started-tutorial-2.html)
@@ -95,6 +97,15 @@ In order to clear the **Error List** window, build the whole solution completely
 Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issues/1348#issuecomment-520300471) added using the XAML editor.
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
+
+### Cannot build with both Uno.WinUI and Uno.UI NuGet packages referenced
+
+This issue generally happens when referencing a Uno.UI (using UWP APIs) NuGet package in an application that uses Uno.WinUI (Using WinAppSDK APIs).
+
+For instance, if your application has `<PackageReference Include="Uno.WinUI"` in the `csproj` files, this means that you'll need to reference WinUI versions of NuGet packages.
+
+For instance:
+- `Uno.UI` -> `Uno.WinUI`
 
 #### Build error `Failed to generate AOT layout`
 

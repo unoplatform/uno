@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_FileExistsInPackage_Nested()
 		{
-			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.ExistsInPackage("Assets/Fonts/RoteFlora.ttf");
 
 			Assert.IsTrue(fileExists);
 		}
