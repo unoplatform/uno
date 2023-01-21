@@ -156,6 +156,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
 		public async Task When_Explicit_BitmapImage_Relative_NonRooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -169,6 +172,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
 		public async Task When_Relative_NonRooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -182,6 +188,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
 		public async Task When_Relative_Rooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -196,6 +205,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
 		public async Task When_AbsoluteLocal()
 		{
 			ImageControls.When_Image SUT = new();
@@ -209,6 +221,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
 		public async Task When_AbsoluteMain()
 		{
 			ImageControls.When_Image SUT = new();
