@@ -622,6 +622,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_BaseUri()
+		{
+			var sut = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ButtonUserControl();
+
+			Assert.AreEqual(
+				new Uri("ms-appx:///uno.ui.runtimetests/Tests/Windows_UI_Xaml/Controls/ButtonUserControl.xaml"),
+				sut.BaseUri);
+		}
+
 #if UNO_REFERENCE_API
 		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
 		// (cf. notes in the tests)

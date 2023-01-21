@@ -520,7 +520,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 			writer.AppendLineInvariantIndented($"private const string __baseUri_prefix_{_fileUniqueId} = \"ms-appx:///{assembly.ToLowerInvariant()}\";");
 			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-			writer.AppendLineInvariantIndented($"private const string __baseUri_{_fileUniqueId} = \"ms-appx:///{assembly.ToLowerInvariant()}{_fileDefinition.TargetFilePath}\";");
+			writer.AppendLineInvariantIndented($"private const string __baseUri_{_fileUniqueId} = \"ms-appx:///{assembly.ToLowerInvariant()}{_fileDefinition.TargetFilePath.TrimStart("/")}\";");
 		}
 
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)
