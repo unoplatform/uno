@@ -14,7 +14,7 @@
 		<PropertyGroup Condition="'$(UnoSkipLibraryLayout)' != 'true'">
 			<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_UnoIncludeLibraryAssets</TargetsForTfmSpecificContentInPackage>
 		
-			<UnoPriInitialPath>$(AssemblyName.ToLowerInvariant())</UnoPriInitialPath>
+			<UnoPriInitialPath>$(AssemblyName)</UnoPriInitialPath>
 			<ProjectUnoPriFileName Condition="'$(ProjectUnoPriFileName)' == '' and '$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath).uprimarker</ProjectUnoPriFileName>
 			<ProjectUnoPriFullPath Condition="'$(ProjectUnoPriFullPath)' == ''">$(TargetDir)$(ProjectUnoPriFileName)</ProjectUnoPriFullPath>
 		</PropertyGroup>

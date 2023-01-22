@@ -35,8 +35,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			try
 			{
-				if (UriSource != null)
+				if (UriSource is not null)
 				{
+					if (!UriSource.IsAbsoluteUri)
+					{
+						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
+					}
+
 					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
 						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{

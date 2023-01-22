@@ -25,11 +25,6 @@ namespace Windows.Storage
 
 			if (directoryName != null)
 			{
-				if (uri.Host is { Length: > 0 } host)
-				{
-					directoryName = host.ToLowerInvariant() + "/" + directoryName.TrimStart('/');
-				}
-
 				var resourcePathname = NSBundle.MainBundle.PathForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
 
 				if (resourcePathname != null)

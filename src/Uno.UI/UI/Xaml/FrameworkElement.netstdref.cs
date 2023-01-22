@@ -51,8 +51,6 @@ namespace Windows.UI.Xaml
 
 		internal Size UnclippedDesiredSize => throw new NotSupportedException("Reference assembly");
 
-		public global::System.Uri BaseUri { get; internal set; }
-
 #pragma warning disable 67
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		private event RoutedEventHandler _loaded;

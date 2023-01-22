@@ -31,11 +31,6 @@ namespace Windows.Storage
 
 			var originalPath = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
 
-			if (uri.Host is { Length: > 0 } host)
-			{
-				originalPath = host.ToLowerInvariant() + "/" + originalPath.TrimStart('/');
-			}
-
 			var path = AndroidResourceNameEncoder.EncodeResourcePath(originalPath);
 
 			// Read the contents of our asset
