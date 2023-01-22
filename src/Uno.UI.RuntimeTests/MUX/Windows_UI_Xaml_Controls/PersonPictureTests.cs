@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #if WINDOWS_UWP
 			string symbolsFontName = "Segoe MDL2 Assets";
 #else
-			string symbolsFontName = "ms-appx://uno.fonts.fluent/Fonts/uno-fluentui-assets.ttf";
+			string symbolsFontName = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 			await RunOnUIThread.ExecuteAsync(() =>
 			{

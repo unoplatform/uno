@@ -52,7 +52,7 @@
 					   Foreground="Black"
 					   FontSize="20" />
 		</Border>
-		<Image Source="Assets/ingredient1.png"
+		<Image Source="/Assets/ingredient1.png"
 			   Opacity="0.5"
 			   Width="75"
 			   Height="75"
@@ -103,7 +103,7 @@
 						   Foreground="Black"
 						   FontSize="20" />
 			</Border>
-			<Image Source="Assets/ingredient1.png"
+			<Image Source="/Assets/ingredient1.png"
 				   Width="75"
 				   Height="75"
 				   Opacity="0.5"

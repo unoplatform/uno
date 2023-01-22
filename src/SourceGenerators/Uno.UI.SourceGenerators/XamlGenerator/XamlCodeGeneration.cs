@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -57,6 +58,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _xamlResourcesTrimming;
+		private readonly bool _isUnoHead;
 		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
@@ -176,6 +178,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_xamlResourcesTrimming = xamlResourcesTrimming;
 			}
 
+			if (bool.TryParse(context.GetMSBuildPropertyValue("IsUnoHead"), out var isUnoHead))
+			{
+				_isUnoHead = isUnoHead;
+			}
+
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
 			{
 				_isHotReloadEnabled = isHotReloadEnabled;
@@ -272,12 +279,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
+				var isInsideMainAssembly =
+					_isUnoHead
+
+					// Handle legacy Xamarin targets which do not define IsUnoHead.
+					|| PlatformHelper.IsXamariniOS(_generatorContext)
+					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
+					|| PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceKeys);
 
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
-					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
+					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
 				Parallel.ForEach(filesFull, file =>
@@ -336,6 +350,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,
+									isInsideMainAssembly: isInsideMainAssembly,
 									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,

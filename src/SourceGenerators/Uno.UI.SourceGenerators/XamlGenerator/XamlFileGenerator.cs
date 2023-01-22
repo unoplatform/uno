@@ -79,6 +79,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
 		private readonly bool _isDebug;
+		private readonly bool _isHotReloadEnabled;
+		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
 
@@ -150,6 +152,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _dependencyObjectSymbol;
 		private readonly INamedTypeSymbol _markupExtensionSymbol;
 		private readonly INamedTypeSymbol _brushSymbol;
+		private readonly INamedTypeSymbol _imageSourceSymbol;
+		private readonly INamedTypeSymbol _imageSymbol;
 		private readonly INamedTypeSymbol _dependencyObjectParseSymbol;
 		private readonly INamedTypeSymbol? _androidContentContextSymbol; // Android.Content.Context
 		private readonly INamedTypeSymbol? _androidViewSymbol; // Android.Views.View
@@ -207,8 +211,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.UniqueID}";
 
-		private readonly bool _isHotReloadEnabled;
-
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
 
 		static XamlFileGenerator()
@@ -237,6 +239,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isDebug,
 			bool isHotReloadEnabled,
 			bool isDesignTimeBuild,
+			bool isInsideMainAssembly,
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
@@ -261,6 +264,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
+			_isInsideMainAssembly = isInsideMainAssembly;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
@@ -281,6 +285,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_contentPresenterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ContentPresenter);
 			_frameworkElementSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FrameworkElement);
 			_uiElementSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.UIElement);
+			_imageSourceSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ImageSource);
+			_imageSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Image);
 			_dependencyObjectSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.DependencyObject);
 			_markupExtensionSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.MarkupExtension);
 			_brushSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Brush);
@@ -463,6 +469,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.ToDisplayString()))
 					{
+						BuildBaseUri(writer);
+
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
 							var componentBuilder = new IndentedStringBuilder();
@@ -499,6 +507,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// var formattedCode = ReformatCode(writer.ToString());
 			return writer.ToString();
+		}
+
+		/// <summary>
+		/// Builds the BaseUri strings constants to be set to all FrameworkElement instances
+		/// </summary>
+		private void BuildBaseUri(IIndentedStringBuilder writer)
+		{
+			var assembly = _isInsideMainAssembly ? "" : _generatorContext.Compilation.AssemblyName + "/";
+
+			// Note that the assembly name is lower-cased in order for file resolution on case-sensitive file systems to work.
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			writer.AppendLineInvariantIndented($"private const string __baseUri_prefix_{_fileUniqueId} = \"ms-appx:///{assembly}\";");
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			writer.AppendLineInvariantIndented($"private const string __baseUri_{_fileUniqueId} = \"ms-appx:///{assembly}{_fileDefinition.TargetFilePath.TrimStart("/")}\";");
 		}
 
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)
@@ -989,6 +1011,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
 							{
+								BuildBaseUri(writer);
+
 								using (ResourceOwnerScope())
 								{
 									writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
@@ -1272,6 +1296,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
+						BuildBaseUri(writer);
 
 						IDisposable WrapSingleton()
 						{
@@ -1653,6 +1678,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
 					{
+						BuildBaseUri(writer);
+
 						using (Scope(className.Namespace, className.ClassName!))
 						{
 							using (writer.BlockInvariant("public void InitializeComponent()"))
@@ -3630,9 +3657,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineIndented($");");
 					}
 
-					if (_isDebug && IsFrameworkElement(objectDefinition.Type))
+					if (IsFrameworkElement(objectDefinition.Type))
 					{
-						writer.AppendLineIndented($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+						if (_isDebug)
+						{
+							writer.AppendLineIndented(
+								$"global::Uno.UI.FrameworkElementHelper.SetBaseUri(" +
+								$"{closureName}, " +
+								$"__baseUri_{_fileUniqueId}, " +
+								$"\"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\", " +
+								$"{objectDefinition.LineNumber}, " +
+								$"{objectDefinition.LinePosition}" +
+								$");");
+						}
+						else
+						{
+							writer.AppendLineIndented($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, __baseUri_{_fileUniqueId});");
+						}
 					}
 
 					if (_isUiAutomationMappingEnabled)
@@ -4893,15 +4934,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "System.Uri":
 						var uriValue = GetMemberValue();
-
-						if (uriValue.StartsWith("/", StringComparison.Ordinal))
-						{
-							return "new System.Uri(\"ms-appx://" + uriValue + "\")";
-						}
-						else
-						{
-							return "new System.Uri(\"" + uriValue + "\", global::System.UriKind.RelativeOrAbsolute)";
-						}
+						return $"new System.Uri({RewriteUri(uriValue)}, global::System.UriKind.RelativeOrAbsolute)";
 
 					case "System.Type":
 						return $"typeof({GetGlobalizedTypeName(GetType(GetMemberValue()).ToDisplayString())})";
@@ -4965,9 +4998,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
 
 					case "Windows.UI.Xaml.Media.ImageSource":
-						// We have an implicit conversion from string to ImageSource.
-						//
-						return $"\"{memberValue}\"";
+						return RewriteUri(memberValue);
 				}
 
 				var isEnum = propertyType.TypeKind == TypeKind.Enum;
@@ -5041,7 +5072,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				static string? SplitAndJoin(string? value)
 					=> value == null ? null : splitRegex.Replace(value, ", ");
+
+				string RewriteUri(string? rawValue)
+				{
+					if (rawValue is not null
+						&& Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
+						&& !parsedUri.IsAbsoluteUri)
+					{
+						var declaringType = FindFirstConcreteAncestorType(owner?.Owner);
+
+						if (
+							declaringType.Is(_imageSourceSymbol)
+							|| declaringType.Is(_imageSymbol)
+						)
+						{
+							var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
+								? "\"ms-appx:///\""
+								: $"__baseUri_prefix_{_fileUniqueId}";
+
+							return $"{uriBase} + \"{rawValue.TrimStart('/')}\"";
+						}
+						else
+						{
+							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
+						}
+					}
+					
+					return $"\"{rawValue}\"";
+				}
 			}
+		}
+
+		/// <summary>
+		/// Finds the first ancestor type that is resolving to a known type (excluding _unknownContent members)
+		/// </summary>
+		private INamedTypeSymbol? FindFirstConcreteAncestorType(XamlObjectDefinition? objectDefinition)
+		{
+			while (objectDefinition is not null)
+			{
+				if (FindType(objectDefinition.Type) is { } type)
+				{
+					return type;
+				}
+
+				objectDefinition = objectDefinition.Owner;
+			} 
+
+			return null;
 		}
 
 		private string? BuildLocalizedResourceValue(INamedTypeSymbol? owner, string memberName, string objectUid)
@@ -5159,7 +5236,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (propertyType != null)
 					{
-						var s = BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
+						var s = BuildLiteralValue(propertyType, memberValue, owner ?? member, member.Member.Name, objectUid);
 
 						s += $"/* {propertyType}/{originalType}, {memberValue}, {member?.Member?.DeclaringType?.Name}/{member?.Member?.Name} */";
 

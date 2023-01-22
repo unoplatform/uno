@@ -87,6 +87,7 @@
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
+		<CompilerVisibleProperty Include="IsUnoHead" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
@@ -111,6 +112,7 @@
 
 	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
 	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
 	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
 	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XamlRuntime" />
