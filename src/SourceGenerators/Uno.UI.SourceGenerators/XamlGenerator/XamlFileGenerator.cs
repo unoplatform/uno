@@ -5097,7 +5097,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
 						}
 					}
-					
+
 					return $"\"{rawValue}\"";
 				}
 			}
@@ -5116,7 +5116,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				objectDefinition = objectDefinition.Owner;
-			} 
+			}
 
 			return null;
 		}
