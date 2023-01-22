@@ -194,6 +194,8 @@ namespace Uno.UI.RemoteControl.HotReload
 				_log.LogDebug($"Processing last changed file [{lastUpdated}]");
 			}
 
+			var uri = new Uri("file:///" + lastUpdated.Replace('\\', '/'));
+
 			// Search for all types in the main window's tree that
 			// match the last modified uri.
 			ReplaceViewInstances(i => uri.OriginalString == i.BaseUri?.OriginalString);
