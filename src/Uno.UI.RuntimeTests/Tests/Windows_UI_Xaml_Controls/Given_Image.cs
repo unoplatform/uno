@@ -124,7 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
-		 
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void TargetNullValue_Is_Correctly_Applied()

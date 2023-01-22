@@ -105,7 +105,7 @@ namespace Uno.UI.RemoteControl.HotReload
 								SwapViews(content, newContent);
 							}
 							break;
-						}
+					}
 				}
 
 				if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
