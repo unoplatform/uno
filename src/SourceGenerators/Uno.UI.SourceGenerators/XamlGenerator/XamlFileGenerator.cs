@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -83,6 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
+		private readonly bool _useXamlReaderHotReload;
 
 		/// <summary>
 		/// x:Name cache for the lookups performed in the document.
@@ -238,6 +240,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isWasm,
 			bool isDebug,
 			bool isHotReloadEnabled,
+			bool useXamlReaderHotReload,
 			bool isDesignTimeBuild,
 			bool isInsideMainAssembly,
 			bool skipUserControlsInVisualTree,
@@ -265,6 +268,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
+			_useXamlReaderHotReload = useXamlReaderHotReload;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
@@ -446,15 +450,41 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				var componentBuilder = new IndentedStringBuilder();
-
-				using (componentBuilder.Indent(writer.CurrentLevel))
+				if (_generationRunFileInfo.RunInfo.Index == 0 || !_useXamlReaderHotReload)
 				{
-					BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
-					BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
-				}
+					// On the first run, or if XamlReader hot reload is disabled, generate the full code.
 
-				writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+					var componentBuilder = new IndentedStringBuilder();
+
+					using (componentBuilder.Indent(writer.CurrentLevel))
+					{
+						BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
+						BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
+
+						if (_useXamlReaderHotReload)
+						{
+							_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+							_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+						}
+					}
+
+					writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+				}
+				else
+				{
+					// if XamlReader hot reload is enabled, generate partial code
+					if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+					{
+						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
+
+						writer.AppendLineInvariantIndented("{0}", generationRunFileInfo.ComponentCode);
+
+						foreach (var type in generationRunFileInfo.AppliedTypes)
+						{
+							_xamlAppliedTypes.Add(type.Key, type.Value);
+						}
+					}
+				}
 			}
 			else
 			{
@@ -473,31 +503,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
-							var componentBuilder = new IndentedStringBuilder();
-
-							using (componentBuilder.Indent(writer.CurrentLevel))
+							if (_generationRunFileInfo.RunInfo.Index == 0 || !_useXamlReaderHotReload)
 							{
-								BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
-#if NETSTANDARD
-								if (IsApplication(topLevelControl.Type) && PlatformHelper.IsAndroid(_generatorContext))
+								var componentBuilder = new IndentedStringBuilder();
+
+								using (componentBuilder.Indent(writer.CurrentLevel))
 								{
-									BuildDrawableResourcesIdResolver(componentBuilder);
-								}
+									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
+#if NETSTANDARD
+									if (IsApplication(topLevelControl.Type) && PlatformHelper.IsAndroid(_generatorContext))
+									{
+										BuildDrawableResourcesIdResolver(componentBuilder);
+									}
 #endif
-								TryBuildElementStubHolders(componentBuilder);
+									TryBuildElementStubHolders(componentBuilder);
 
-								BuildPartials(componentBuilder, isStatic: false);
+									BuildPartials(componentBuilder, isStatic: false);
 
-								BuildBackingFields(componentBuilder);
+									BuildBackingFields(componentBuilder);
 
-								BuildChildSubclasses(componentBuilder);
+									BuildChildSubclasses(componentBuilder);
 
-								BuildComponentFields(componentBuilder);
+									BuildComponentFields(componentBuilder);
 
-								BuildCompiledBindings(componentBuilder);
+									BuildCompiledBindings(componentBuilder);
+									
+									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+								}
+
+								writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
 							}
+							else
+							{
+								if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+								{
+									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
-							writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+									writer.AppendLineInvariantIndented("{0}", generationRunFileInfo.ComponentCode);
+
+									foreach (var type in generationRunFileInfo.AppliedTypes)
+									{
+										_xamlAppliedTypes.Add(type.Key, type.Value);
+									}
+								}
+							}
 						}
 					}
 				}

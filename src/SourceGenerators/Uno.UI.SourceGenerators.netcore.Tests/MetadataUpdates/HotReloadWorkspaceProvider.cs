@@ -27,16 +27,20 @@ internal class HotReloadWorkspace
 	private readonly string _baseWorkFolder;
 	private readonly bool _isDebugCompilation;
 	private readonly bool _isMono;
+	private readonly bool _useXamlReaderReload;
+	
 	private Dictionary<string, string[]> _projects = new();
 	private Dictionary<string, Dictionary<string, string>> _sourceFiles = new();
 	private Dictionary<string, Dictionary<string, string>> _additionalFiles = new();
+	
 	private Solution? _currentSolution;
 	private WatchHotReloadService? _hotReloadService;
 
-	public HotReloadWorkspace(bool isDebugCompilation, bool isMono)
+	public HotReloadWorkspace(bool isDebugCompilation, bool isMono, bool useXamlReaderReload)
 	{
 		_isDebugCompilation = isDebugCompilation;
 		_isMono = isMono;
+		_useXamlReaderReload = useXamlReaderReload;
 		_baseWorkFolder = Path.Combine(Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!, "work");
 		Directory.CreateDirectory(_baseWorkFolder);
 
@@ -224,6 +228,7 @@ internal class HotReloadWorkspace
 						build_property.RootNamespace = {project.Name}
 						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
 						build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
+						build_property.UnoUseXamlReaderHotReload = {(_useXamlReaderReload ? "True" : "False")}
 						
 						"""); ;
 
