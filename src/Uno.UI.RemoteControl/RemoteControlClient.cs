@@ -154,7 +154,7 @@ namespace Uno.UI.RemoteControl
 							var cts = new CancellationTokenSource();
 							var task = Connect(s.endpoint, s.port, cts.Token);
 
-							return (task, cts);
+							return (task: task, cts: cts);
 						})
 						.ToArray();
 
@@ -189,6 +189,8 @@ namespace Uno.UI.RemoteControl
 							_ = connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
 						}
 					}
+
+					CleanupConnections(connections.Select(c => c.task));
 
 					if (completed == timeout)
 					{
@@ -234,6 +236,25 @@ namespace Uno.UI.RemoteControl
 			}
 		}
 
+		/// <summary>
+		/// Cleanup connections to avoid tasks raising UnobservedTaskException.
+		/// </summary>
+		private static void CleanupConnections(IEnumerable<Task> connections)
+			=> _ = Task.Run(async () =>
+			{
+				foreach (var connection in connections)
+				{
+					try
+					{
+						await connection;
+					}
+					catch
+					{
+						// Exceptions are not used here.
+					}
+				}
+			});
+		
 		private async Task ProcessMessages()
 		{
 			_ = InitializeServerProcessors();
