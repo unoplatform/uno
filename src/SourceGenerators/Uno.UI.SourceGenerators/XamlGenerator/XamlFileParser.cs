@@ -70,7 +70,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					: fileItem.GetMetadataValue("Link") is { Length: > 0 } link
 						? link
 						: fileItem.GetMetadataValue("Identity").Replace(projectDirectory, "");
-				
+
 				return ParseFile(fileItem.File, targetFilePath.Replace("\\", "/"), cancellationToken);
 			}
 		}
