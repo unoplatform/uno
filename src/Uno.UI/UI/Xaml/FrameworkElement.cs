@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml
 			public const int FrameworkElement_ArrangeStop = 4;
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
-		
+
 		internal record DebugParseContextDetails(string LocalFileUri, int LineNumber, int LinePosition);
 
 #if !UNO_REFERENCE_API
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(_baseUri is null)
+				if (_baseUri is null)
 				{
 					_baseUri = _baseUriFromParser is null ? DefaultBaseUri : new Uri(_baseUriFromParser);
 				}
@@ -198,7 +198,7 @@ namespace Windows.UI.Xaml
 				return _baseUri;
 			}
 		}
-		
+
 		internal DebugParseContextDetails DebugParseContext { get; private set; }
 
 		/// <summary>
