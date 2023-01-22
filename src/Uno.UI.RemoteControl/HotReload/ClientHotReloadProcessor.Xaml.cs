@@ -39,7 +39,8 @@ namespace Uno.UI.RemoteControl.HotReload
 
         private void ReloadFile(FileReload fileReload)
         {
-            if (string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase)
+				&& !_useXamlReaderHotReload)
             {
                 if (this.Log().IsEnabled(LogLevel.Debug))
                 {
