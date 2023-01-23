@@ -6,7 +6,7 @@ In a standard Xamarin project, you must duplicate, rename, and manually add your
 
 We still recommend using the above technique for platform-specific icons and splash screens in Uno.UI projects.
 
-For most other assets, Uno.UI uses processes assets once in your app's **Class Library Project** and automatically use them on all platforms. The rest of this document will cover those particular features.
+For most other assets, Uno.UI processes assets once in your app's **Class Library Project** and automatically use them on all platforms. The rest of this document will cover those particular features.
 
 ## Supported asset types
 
@@ -123,7 +123,7 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 ### Custom (platform)
 
-Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on UWP, provides the `custom` qualifier.
+Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on UWP, Uno Platform provides the `custom` qualifier.
 
 | Platform | Qualifier value |
 |----------|-----------------|
