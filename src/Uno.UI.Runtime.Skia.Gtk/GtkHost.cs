@@ -91,7 +91,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				return;
 			}
-			
+
 			SetupTheme();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
