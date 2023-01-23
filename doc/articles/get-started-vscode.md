@@ -10,7 +10,7 @@ See these sections for information about using Uno Platform with:
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
 * **.NET SDK**
-    * [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0) (**version 6.0 (SDK 6.0.100)** or later)
+    * [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0) (**version 7.0 (SDK 7.0.102)** or later)
     > Use `dotnet --version` from the terminal to get the version installed.
 * The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 * For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
@@ -98,24 +98,24 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 ## Using code snippets
 
 ### Adding a new Page
-1. In the MyApp.Shared folder, create a new file named `Page2.xaml`
+1. In the MyApp folder, create a new file named `Page2.xaml`
 2. Type `page` then press the `tab` key to add the page markup
 3. Adjust the name and namespaces as needed
-4. In the MyApp.Shared folder, create a new file named `Page2.xaml.cs`
-5. Type `page` then press the `tab` key to add the page code-behind C#
+4. In the MyApp folder, create a new file named `Page2.xaml.cs`
+5. Type `page` then press the `tab` key to add the page code behind C#
 6. Adjust the name and namespaces as needed
 
 ### Adding a new UserControl
-1. In the MyApp.Shared folder, create a new file named `UserControl1.xaml`
-2. Type `usercontrol` then press they `tab` key to add the page markup
+1. In the MyApp folder, create a new file named `UserControl1.xaml`
+2. Type `usercontrol` then press the `tab` key to add the page markup
 3. Adjust the name and namespaces as needed
-4. In the MyApp.Shared folder, create a new file named `UserControl1.xaml.cs`
-5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
+4. In the MyApp folder, create a new file named `UserControl1.xaml.cs`
+5. Type `usercontrol` then press the `tab` key to add the page code behind C#
 6. Adjust the name and namespaces as needed
 
 ### Adding a new ResourceDictionary
-1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
-2. Type `resourcedict` then press they `tab` key to add the page markup
+1. In the MyApp folder, create a new file named `ResourceDictionary1.xaml`
+2. Type `resourcedict` then press the `tab` key to add the page markup
 
 ### Other snippets
 * `rd` creates a new `RowDefinition`

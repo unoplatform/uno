@@ -12,9 +12,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 ## Create a Control Library
 
 1. In your solution, create a new **Uno Platform Library**, name it `XamlControlLibrary`
-1. In each of your platform projects, add a reference to your new library.
-   > [!NOTE]
-   > The shared project cannot contain project or packages references, see [Uno Platform App structure](../uno-app-solution-structure.md) for more details.
+1. In your app's existing Class Library project, add a reference to your new library.
 
 ## Create the Control
 1. Right-click on the project library, then **Add**, **New Item**
