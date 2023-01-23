@@ -96,7 +96,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 > - Check out the [Uno.Gallery web app](https://gallery.platform.uno/) (Click on the `<>` button to view xaml source)
 
 ### Section 3: Overriding Color Palette
-1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `[MyApp]` project
 1. Add a new Resource Dictionary `ColorPaletteOverride.xaml` under `Styles\Application\`
 1. Replace the content of that `ResourceDictionary` with the source from [here](https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Cupertino/Styles/Application/ColorPalette.xaml)
 1. Make a few changes to the colors:
@@ -140,7 +140,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 By default, Uno.Cupertino will attempt to apply a FontFamily with a name of `SF Pro` to its controls. This FontFamily resource is given the key `CupertinoFontFamily`. If there is no FontFamily with name `SF Pro` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<CupertinoFonts />` initialization within your `App.xaml`.
 
 1. Install your custom font following the steps [here](../features/custom-fonts.md)
-1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `[MyApp]` project
 1. Add a new Resource Dictionary `CupertinoFontsOverride.xaml` under `Styles\Application\`
 1. Add your custom font with the resource key `CupertinoFontFamily`:
     ```xml

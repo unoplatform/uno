@@ -41,17 +41,21 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
     ![](Assets/tutorial01/newproject4.PNG)
 
-1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
+1. After a few seconds, a banner may appear at the top of editor asking to reload projects. Click **Reload projects**.
+
+    ![](Assets/quick-start/vs2022-project-reload.PNG)
+
+1. Right click on `BugTracker` project and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
-    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.WinUI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
-    - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
+    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.WinUI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
+    - Click back on the **Browse** tab and install the following NuGet Packages to `BugTracker` project:
         - `Refractored.MvvmHelpers`
 
 1. Finally, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it. This is a workaround for a Visual studio issue regarding the XAML editor.
 
 ## Setting up our Model
 
-1. Add a Models folder in the Shared Project.
+1. Add a Models folder in the **BugTracker** Project.
 
     ![](Assets/tutorial01/create-models-folder.png)
 
@@ -147,33 +151,12 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 ## Setting up our Page
 
-1. To start let's create a simple converter that will format a value to a string. Create a Converters folder, then create a new class `StringFormatConverter`
-
-    ```cs
-    namespace BugTracker.Converters
-    {
-        public class StringFormatConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, string language)
-            {
-                return string.Format(parameter.ToString(), value);
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, string language)
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-    ```
-
-1. Next, we will add some base properties to bind to in our XAML. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
+1. First, we will add some base properties to bind to in our XAML. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
 
     ```cs
     public sealed partial class MainPage : Page
     {
-        public static readonly DependencyProperty IssueItemProperty =
-            DependencyProperty.Register(nameof(Item), typeof(IssueItem), typeof(MainPage), new PropertyMetadata(default(IssueItem)));
+        private IssueItem _item;
 
         public MainPage()
         {
@@ -182,8 +165,12 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
         public IssueItem Item
         {
-            get => (IssueItem)GetValue(IssueItemProperty);
-            set => SetValue(IssueItemProperty, value);
+            get => _item;
+            set
+            {
+                _item = value;
+                Bindings.Update();
+            }
         }
 
         public IssueStatus[] StatusList => new[]
@@ -244,20 +231,13 @@ The tutorial walks you through creating a cross platform application with Uno Pl
           xmlns:converters="using:BugTracker.Converters"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-          xmlns:ios="http://nventive.com/ios"
+          xmlns:ios="http://nventive.com/ios"        
+          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
           mc:Ignorable="d ios">
     ```
 
     > [!IMPORTANT]
     > We can bring in [Platform-Specific namespaces](platform-specific-xaml.md) like shown above to specifically set properties for a specific platform.
-
-1. Now we will add the `StringFormatConverter` we created earlier to our Page Resources as shown below:
-
-    ```xml
-    <Page.Resources>
-        <converters:StringFormatConverter x:Key="StringFormatConverter" />
-    </Page.Resources>
-    ```
 
 1. Now we will update the Grid so that we define 6 rows with a small spacing between the rows to add a little padding between the row elements.
 
@@ -383,13 +363,16 @@ The tutorial walks you through creating a cross platform application with Uno Pl
         }
         IssueTypeIndicator.Background = new SolidColorBrush(color);
     }
+    ```
 
+    You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the XAML when the project builds.
+
+1. Finally, let's add a method to do the `DateTimeOffset` conversion using `x:Bind` functions binding:
+    ```csharp
     // Provides the conversion for dates in the XAML through x:Bind
     public string FormatDate(string header, DateTimeOffset? dateTime) 
         => $"{header} {dateTime:MMM dd, yyyy hh:mm tt}";
     ```
-
-    You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the XAML when the project builds.
 
 1. Build and run the project on each platform. When launching the WASM head, use 'Start without debugging' (`Ctrl+F5`).
 
@@ -400,7 +383,6 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 You should see something similar to the screenshot below. You can [download the completed tutorial code here](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2).
 
 ![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
-
 
 In this tutorial, through creating a simple Bug Tracking app you have learned how to:
 

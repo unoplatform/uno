@@ -30,7 +30,7 @@ dotnet new unoapp -o MyApp
 ```
 
 > [!NOTE]
-> It is possible to create a .NET 7 template by using `-f net7.0` parameter.
+> It is possible to create a .NET 6 template by using `-f net6.0` parameter.
 
 More articles on WinUI 3:
 
@@ -70,8 +70,6 @@ More articles on WinUI 3:
 
 
 ## Uno Platform Blank Application (UWP, .NET 6)
-
-> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 13 and above is supported with [Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
 

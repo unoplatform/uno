@@ -98,9 +98,9 @@ In the next series of tasks, the Uno solution will be updated to implement the b
 
 1. Return to the Uno solution in **Visual Studio**.
 
-1. Locate the **Shared** project in the solution.
+1. Locate the **[MyApp]** project in the solution.
 
-1. Add a folder to the **Shared** project and name it **Views**.
+1. Add a folder to the **[MyApp]** project and name it **Views**.
 
 1. Right-click the **Views** folder and select **Add > New Item...**
 
@@ -119,10 +119,10 @@ In the next series of tasks, the Uno solution will be updated to implement the b
 
     ```xml
     <Page
-        x:Class="TimeEntryUno.Shared.Views.HomePage"
+        x:Class="TimeEntryUno.Views.HomePage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="using:TimeEntryUno.Shared.Views"
+        xmlns:local="using:TimeEntryUno.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"

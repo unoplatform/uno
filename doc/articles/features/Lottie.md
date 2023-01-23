@@ -72,7 +72,7 @@ Documentation: <https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.contr
 
 ## Lottie JSON file location
 
-On WASM, iOS and macOS, you can put the Lottie .json files directly in a folder of the shared project (for example "Lottie/myanimation.json") and set their Build action as Content.
+On WASM, iOS and macOS, you can put the Lottie .json files directly in a folder of the Class Library project or your app's head project (for example "Lottie/myanimation.json") and set their Build action as Content.
 
 On Android, Lottie .json files need to be added into the Assets folder. To match the same path as for the other platforms, the file could be stored at `Assets/Lottie/myanimation.json`. Set its Build action to AndroidAsset.
 

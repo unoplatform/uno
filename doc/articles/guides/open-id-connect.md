@@ -90,7 +90,7 @@ There's nothing special for WASM. The default _return Uri_ of the platform (`Web
 
 ## Step 3 - Prepare the UI
 
-Add the following lines in your application, in `[Project-name].Shared.MainPage.xaml`:
+Add the following lines in your application, in `[Project-name]/MainPage.xaml`:
 
 ``` xml
 
