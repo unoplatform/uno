@@ -87,7 +87,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
                 Application.RegisterComponent(uri, fileContent);
 
-				bool IsSameBaseUri(_View i)
+				bool IsSameBaseUri(FrameworkElement i)
 				{
 					return uri.OriginalString == i.DebugParseContext?.LocalFileUri
 
