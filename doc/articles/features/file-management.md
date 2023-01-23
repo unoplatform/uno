@@ -72,9 +72,9 @@ Given than in the project there's the following declaration:
 ### Support for Library provided assets
 Since Uno Platform 4.6, the `GetFileFromApplicationUriAsync` method supports reading assets provided by `ProjectReference` or `PackageReference` libraries, using the following syntax:
 
-Given a library or package named `MyLibray01`, the following can be used to read assets:
+Given a library or package named `MyLibrary01`, the following format can be used to read assets:
 ```csharp
-var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx://MyLibray01/MyPackageFile.xml"));
+var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyLibrary01/MyPackageFile.xml"));
 var content = await FileIO.ReadTextAsync(file);
 ```
 

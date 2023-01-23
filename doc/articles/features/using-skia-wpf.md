@@ -6,15 +6,15 @@ Uno Platform supports running applications using a WPF shell, using a Skia backe
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Anatomy of the Skia+WPF project
-When creating a Skia+WPF solution, you will get at least the project head, and a shared project.
+When creating a Skia+WPF solution, you will get the project head, and a Class Library project.
 
 ### The head project
 The project head contains the WPF assets, XAML and C# files for the WPF part of the app (the shell).
 
 The XAML files in this project are using the WPF syntax and APIs, and contain a `ContentControl` in which the WinUI/Uno content will be drawn.
 
-### The shared project
-The shared project contain the WinUI part of the app, and is shared with all the others platform heads. This is where most of your app code will be located.
+### The Class Library project
+The app's Class Library project contains the WinUI part of the app. This is where most of your app code will be located.
 
 ## Upgrading to a later version of SkiaSharp
 

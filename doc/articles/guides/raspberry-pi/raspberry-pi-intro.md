@@ -125,14 +125,14 @@ Then we have four directories;
 
 | Directory | Purpose |
 | :--- | :--- |
-| `unoapp1.Shared` | Contains the main XAML page  |
+| `unoapp1` | Contains the main XAML page  |
 | `unoapp1.Skia.Gtk` | Contains the Linux / Raspberry Pi Version |
 | `unoapp1.Skia.Linux.FrameBuffer` | Provides Access to a Window Manager and the Cursor  |
 | `unoapp1.UWP` | Contains the Windows UWP version |
 
 The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
-It actually includes the build outputs from the `unoapp1.Shared` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
+It actually includes the build outputs from the `unoapp1` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
 
 ## Give the SSH Session access to use the display
 

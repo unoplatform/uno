@@ -14,5 +14,5 @@
     ```
 1. Follow the instructions indicated by the tool
 
-> [!IMPORTANT]
-> Make sure to restart any Visual Studio instances after running Uno Check
+> [!NOTE]
+> When using a Visual Studio Preview version, you will need to run `uno-check --pre`.

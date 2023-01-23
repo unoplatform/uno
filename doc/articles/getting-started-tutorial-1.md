@@ -16,9 +16,7 @@ Also, you will learn how to run your applications on all platforms supported by 
 
 <div class="NOTE alert alert-info">
 <h5>Before you start the tutorial</h5>
-
-[If you haven't prepared your dev environment for Uno Platform app development yet, the Setting up the Environment page will guide you through installing all the prerequisites.](get-started.md)
-
+If you haven't prepared your dev environment for Uno Platform app development yet, [the Setting up the Environment page](get-started.md) will guide you through installing all the prerequisites.
 </div>
 
 ## Getting Started
@@ -37,7 +35,11 @@ Also, you will learn how to run your applications on all platforms supported by 
 
     ![](Assets/tutorial01/newproject4.PNG)
 
-1. In your `Shared` project, open up `MainPage.xaml`
+1. After a few seconds, a banner may appear at the top of editor asking to reload projects. Click **Reload projects**.
+
+    ![](Assets/quick-start/vs2022-project-reload.PNG)
+
+1. In your `MyApp` Class Library project, open up `MainPage.xaml`
 
 1. Add a `StackPanel` around your `TextBlock`
     ```xml
@@ -68,7 +70,7 @@ Also, you will learn how to run your applications on all platforms supported by 
     </Grid>
     ```
 
-1. Select `Windows` as the Startup Project, select the `x86` platform, then `Run`  
+1. Select `MyApp.Windows` as the Startup Project, select the `x86` platform, then `Run`  
    > [!NOTE] 
    > To change the startup project from the Solution Explorer, right-click the desired project and choose **Set as StartUp Project** from the context-sensitive menu that is displayed. You can also choose this menu item from the Project menu.
 
@@ -77,7 +79,7 @@ Also, you will learn how to run your applications on all platforms supported by 
     Result!  
     ![uwp-slider-demo](Assets/uwp-slider-demo.gif)
 
-1. Select `WASM` as the Startup Project and `Run`  
+1. Select `MyApp.Wasm` as the Startup Project and `Run`  
 
     ![build-wasm](Assets/build-wasm.JPG)
 
@@ -89,6 +91,6 @@ Congratulations, you’ve just built your first multi-platform application with 
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>
 
-[Got questions? Want to learn more? Looking for production-ready examples? Check out the next tutorial page. We will walk you through a `BugTracker` sample and build out a full Uno Platform app.](getting-started-tutorial-2.md)
+Got questions? Want to learn more? Looking for production-ready examples? [Check out the next tutorial page.](getting-started-tutorial-2.md) We will walk you through a `BugTracker` sample and build out a full Uno Platform app.
 
 </div>

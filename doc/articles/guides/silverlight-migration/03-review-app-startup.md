@@ -62,7 +62,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 1. Return to the **TimeEntryUno** solution.
 
-1. In the **Shared** project, open the **App.xaml.cs** file
+1. In the **[MyApp]** project, open the **App.xaml.cs** file
 
 1. Locate the **OnLaunched** method and replace it with the following code:
 
@@ -93,7 +93,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 ### Adding navigation to MainPage
 
-1. In the **Shared** project, open the **MainPage.xaml** file
+1. In the **[MyApp]** project, open the **MainPage.xaml** file
 
    The current XAML should look similar to:
 
@@ -182,7 +182,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 ### Adding a class to help with navigation synchronization
 
-1. To create location for all helpers, add a new folder, **Helpers**, to the **Shared** project.
+1. To create location for all helpers, add a new folder, **Helpers**, to the **[MyApp]** project.
 
 1. Add a new class, **NavigationSyncHelper**, to the **Helpers** folder.
 

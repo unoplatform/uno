@@ -4,13 +4,13 @@ How does Uno Platform make the same application code run on all platforms?
 
 #### On Windows
 
-On Windows (the Windows head project), an Uno Platform application isn't using Uno.UI at all. It's compiled just like a single-platform WinUI (or UWP) application, using Microsoft's own tooling.
+On Windows (the Windows head project), an Uno Platform application isn't using Uno.UI at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
 
-The rest of this article discusses how the Uno.UI tooling allows UWP/WinUI-compatible XAML and C# applications to run on non-Windows platforms.
+The rest of this article discusses how the Uno.UI tooling allows WinUI-compatible XAML and C# applications to run on non-Windows platforms.
 
 ## Uno.UI at runtime
 
-The [`Uno.UI` library](https://www.nuget.org/packages/Uno.UI/) completely reproduces the WinUI (or UWP) API surface: all namespaces (`Microsoft.UI.Xaml`, `Windows.Foundation`, `Windows.Storage`, etc), all classes, all class members. Insofar as possible, the same look and behavior as on Windows is replicated on all other platforms.
+The [`Uno.UI` library](https://www.nuget.org/packages/Uno.UI/) completely reproduces the WinUI API surface: all namespaces (`Microsoft.UI.Xaml`, `Windows.Foundation`, `Windows.Storage`, etc), all classes, all class members. Insofar as possible, the same look and behavior as on Windows is replicated on all other platforms.
 
 Note that, as the API surface is very large, some parts of it are included but not implemented. These features are marked with the `Uno.NotImplementedAttribute` attribute, and a code analyzer included with the Uno.UI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
 
@@ -34,15 +34,15 @@ On Android, all types that inherit from `Microsoft.UI.Xaml.FrameworkElement`, al
 
 When rendered at runtime, certain `FrameworkElement` types implicitly create inner views that inherit from higher-level native view types. For example, `Image` implicitly creates an inner `NativeImage` view, where `NativeImage` is an Uno-defined internal type that inherits directly from the native `Android.Widget.ImageView` type.
 
-#### macOS
+#### macOS AppKit
 
 On macOS, all types that inherit from `Windows.UI.Xaml.FrameworkElement`, also inherit from the native [`NSView` type](https://docs.microsoft.com/en-us/dotnet/api/appkit.nsview). That is to say, on macOS, all XAML visual elements are also native views.
 
 When rendered at runtime, certain `FrameworkElement` types implicitly create inner views that inherit from higher-level native view types. For example, `Image` implicitly creates an inner `NativeImage` view, where `NativeImage` is an Uno-defined internal type that inherits directly from the native `AppKit.NSImageView` type.
 
-#### Linux (Skia)
+#### Skia (Linux with X11/Wayland, Linux Framebuffer, macOS, Windows)
 
-On Linux, XAML visual elements are rendered directly to a [Skia](https://skia.org/) canvas. Unlike the other target platforms, there's no 'native view type' to speak of. The Skia canvas is hosted inside of a [Gtk](https://www.gtk.org/) shell, but it's just that, a shell - there aren't any Gtk widgets used. (The Gtk API is used by Uno to handle [pointer input](features/pointers-keyboard-and-other-user-inputs.md), however.)
+On Linux, XAML visual elements are rendered directly to a [Skia](https://skia.org/) canvas. Unlike the other target platforms, there's no 'native view type' to speak of. The Skia canvas is hosted inside of a [Gtk](https://www.gtk.org/) shell, but it's just that, a shell - there aren't any Gtk widgets used. (The Gtk and WPF APIs are used by Uno to handle [pointer input](features/pointers-keyboard-and-other-user-inputs.md), however.)
 
 ## Uno.UI at build time
 
