@@ -19,7 +19,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
     ![visual-studio-installer-dotnet-mobile](Assets/quick-start/vs-install-dotnet-mobile.png)
 
-1. **.NET desktop development** workload installed (for Gtk, Wpf and Linux Framebuffer development)
+1. **.NET desktop development** workload installed (for Gtk, Wpf, and Linux Framebuffer development)
 
     ![visual-studio-installer-dotnet](Assets/quick-start/vs-install-dotnet.png)    
 
@@ -58,7 +58,7 @@ To create an Uno Platform app:
     ![A banner indicating to reload projects](Assets/quick-start/vs2022-project-reload.png)
 
 1. To debug the **Windows** head:
-    - Right click on the `MyApp.Windows` project, select **Set as startup project**
+    - Right-click on the `MyApp.Windows` project, select **Set as startup project**
     - Select the `Debug|x86` configuration
     - Press the `MyApp.Windows` button to deploy the app
     - If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
@@ -70,7 +70,7 @@ To create an Uno Platform app:
     - Press the `MyApp.Server` button to deploy the app
 1. To debug for **iOS**:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
-    - In the "Debug toolbar" drop down, select framework `net7.0-ios`:
+    - In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
 
       ![visual-studio-installer-web](Assets/quick-start/net7-ios-debug.png)
       

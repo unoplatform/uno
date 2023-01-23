@@ -140,7 +140,7 @@ For Uno 3.0 and above, XAML prefixes behave differently in class libraries than 
 
 The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction. 
 
-In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the platform specific project or a Class Library project.
+In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the platform-specific project or a Class Library project.
 
 | Prefix          | Namespace                                                   | Put in `mc:Ignorable`? |
 |-----------------|-------------------------------------------------------------|------------------------|

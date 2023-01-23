@@ -19,7 +19,7 @@ In order to use a custom font in your application:
 
 ## Fonts preloading on WebAssembly
 
-On Wasm platform, fonts files are loaded by the browser and can take some time to load, resulting in a performance degradation and potential flickering when the font is actually available for rendering. In order to prevent this, it is possible to instruct the browser to preload the font before the rendering:
+On Wasm platform, fonts files are loaded by the browser and can take some time to load, resulting in performance degradation and potential flickering when the font is actually available for rendering. In order to prevent this, it is possible to instruct the browser to preload the font before the rendering:
 
 ``` csharp
 // Preloading of font families on Wasm. Add this before the Application.Start() in the Program.cs
@@ -27,7 +27,7 @@ On Wasm platform, fonts files are loaded by the browser and can take some time t
 public static void main(string[] orgs)
 {
     // Add this in your application to preload a font.
-    // You can add more than one, but preload too many fonts could hurt user experience.
+    // You can add more than one, but preloading too many fonts could hurt the user experience.
     // IMPORTANT: The string parameter should be exactly the same string (including casing)
     //            used as FontFamily in the application.
     Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("ms-appx:///[MyApp]/Assets/Fonts/yourfont01.ttf#ApplicationFont01");
@@ -51,7 +51,7 @@ Uno Platform for WebAssembly also supports remote fonts directly from the XAML, 
 
 ## Custom Fonts Notes
 
-Please note that some custom fonts need the `FontFamily` and `FontWeight` properties to be set at the same time in order to work properly on `TextBlock`, `Runs` and for styles Setters.
+Please note that some custom fonts need the `FontFamily` and `FontWeight` properties to be set at the same time in order to work properly on `TextBlock`, `Runs`, and for styles Setters.
 If that's your case, here are some examples of code:
 
 ```xml
@@ -90,7 +90,7 @@ If that's your case, here are some examples of code:
 </TextBlock>
 ```
 
-## Custom fonts in Uno Platform in Uno Platfor 4.6 or below
+## Custom fonts in Uno Platform in Uno Platform 4.6 or below
 
 Uno Platform 4.7 introduces a unified way to include fonts in applications, but if you are still using a previous version of Uno Platform, you can use these directions.
 
@@ -110,7 +110,7 @@ The format is the same as Windows:
 
 ### Custom Fonts on iOS
 
-Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as
+Fonts must be placed in the `Resources/Fonts` folder of the head project, and be marked as
 `BundleResource` for the build type.
 
 Each custom font **must** then be specified in the `info.plist` file as follows:
@@ -164,14 +164,14 @@ The format is the same as Windows, as follows:
 
 ### Custom fonts on WebAssembly
 
-There is 3 ways to use fonts on WebAssembly platform:
+There are 3 ways to use fonts on the WebAssembly platform:
 
 1. Referencing a **font defined in CSS**: Use a font defined using a `@font-face` CSS clause.
 
    > [!NOTE]
    > This was the only available way to define and use a custom font before Uno.UI v4.4. This is useful if the application is using externally referenced CSS as those commonly available on a CDN.
 
-2. Referencing a **font file in application assets**: Use a font file (any web comptatible file format, such as `.ttf`, `.woff`, etc...). This can also be used to reference a font hosted elsewhere using http address.
+2. Referencing a **font file in application assets**: Use a font file (any web-compatible file format, such as `.ttf`, `.woff`, etc...). This can also be used to reference a font hosted elsewhere using an HTTP address.
 
 #### Adding a custom font defined in CSS
 
@@ -207,4 +207,4 @@ Second, you can use it in XAML in this way:
 ```
 
 > [!NOTE]
-> This approach is nice and pretty flexible, but not friendly for multi-targeting. Until Uno.UI v4.4, it was the only way to defined custom fonts on this platform.
+> This approach is nice and pretty flexible, but not friendly for multi-targeting. Until Uno.UI v4.4, this was the only way to define custom fonts on this platform.

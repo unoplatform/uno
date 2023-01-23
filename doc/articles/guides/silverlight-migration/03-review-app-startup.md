@@ -182,7 +182,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 ### Adding a class to help with navigation synchronization
 
-1. To create location for all helpers, add a new folder, **Helpers**, to the **[MyApp]** project.
+1. To create a location for all helpers, add a new folder, **Helpers**, to the **[MyApp]** project.
 
 1. Add a new class, **NavigationSyncHelper**, to the **Helpers** folder.
 

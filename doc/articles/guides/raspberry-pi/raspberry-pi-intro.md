@@ -132,7 +132,7 @@ Then we have four directories;
 
 The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
-It actually includes the build outputs from the `unoapp1` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
+It actually includes the build outputs from the `unoapp1` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive into those in a bit more detail.
 
 ## Give the SSH Session access to use the display
 

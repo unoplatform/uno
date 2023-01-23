@@ -6,7 +6,7 @@ In a standard Xamarin project, you must duplicate, rename, and manually add your
 
 We still recommend using the above technique for platform-specific icons and splash screens in Uno.UI projects.
 
-For most other assets, Uno.UI processes assets once in your app's **Class Library Project** and automatically use them on all platforms. The rest of this document will cover those particular features.
+For most other assets, Uno.UI processes assets once in your app's **Class Library Project** and automatically uses them on all platforms. The rest of this document will cover those particular features.
 
 ## Supported asset types
 

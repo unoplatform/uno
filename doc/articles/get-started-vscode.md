@@ -102,20 +102,20 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 2. Type `page` then press the `tab` key to add the page markup
 3. Adjust the name and namespaces as needed
 4. In the MyApp folder, create a new file named `Page2.xaml.cs`
-5. Type `page` then press the `tab` key to add the page code-behind C#
+5. Type `page` then press the `tab` key to add the page code behind C#
 6. Adjust the name and namespaces as needed
 
 ### Adding a new UserControl
 1. In the MyApp folder, create a new file named `UserControl1.xaml`
-2. Type `usercontrol` then press they `tab` key to add the page markup
+2. Type `usercontrol` then press the `tab` key to add the page markup
 3. Adjust the name and namespaces as needed
 4. In the MyApp folder, create a new file named `UserControl1.xaml.cs`
-5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
+5. Type `usercontrol` then press the `tab` key to add the page code behind C#
 6. Adjust the name and namespaces as needed
 
 ### Adding a new ResourceDictionary
 1. In the MyApp folder, create a new file named `ResourceDictionary1.xaml`
-2. Type `resourcedict` then press they `tab` key to add the page markup
+2. Type `resourcedict` then press the `tab` key to add the page markup
 
 ### Other snippets
 * `rd` creates a new `RowDefinition`
