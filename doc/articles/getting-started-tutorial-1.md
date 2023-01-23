@@ -35,7 +35,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
 
     ![](Assets/tutorial01/newproject4.PNG)
 
-1. After a few seconds, a banner may appear at the top of editor asking to reload projects. Click **Reload projects**.
+1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 
     ![](Assets/quick-start/vs2022-project-reload.PNG)
 

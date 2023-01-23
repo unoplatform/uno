@@ -10,7 +10,7 @@ The rest of this article discusses how the Uno.UI tooling allows WinUI-compatibl
 
 ## Uno.UI at runtime
 
-The [`Uno.UI` library](https://www.nuget.org/packages/Uno.UI/) completely reproduces the WinUI API surface: all namespaces (`Microsoft.UI.Xaml`, `Windows.Foundation`, `Windows.Storage`, etc), all classes, all class members. Insofar as possible, the same look and behavior as on Windows is replicated on all other platforms.
+The [`Uno.UI` library](https://www.nuget.org/packages/Uno.UI/) completely reproduces the WinUI API surface: all namespaces (`Microsoft.UI.Xaml`, `Windows.Foundation`, `Windows.Storage`, etc), all classes, all class members. Insofar as possible, the same look and behavior as on Windows are replicated on all other platforms.
 
 Note that, as the API surface is very large, some parts of it are included but not implemented. These features are marked with the `Uno.NotImplementedAttribute` attribute, and a code analyzer included with the Uno.UI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
 
