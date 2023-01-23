@@ -87,9 +87,18 @@ namespace Uno.UI.RemoteControl.HotReload
 
                 Application.RegisterComponent(uri, fileContent);
 
-                foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.DebugParseContext?.LocalFileUri))
-                {
-                    switch (instance)
+				bool IsSameBaseUri(_View i)
+				{
+					return uri.OriginalString == i.DebugParseContext?.LocalFileUri
+
+						// Compatibility with older versions of Uno, where BaseUri is set to the
+						// local file path instead of the component Uri.
+						|| uri.OriginalString == i.BaseUri?.OriginalString;
+				}
+
+				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri))
+				{
+					switch (instance)
                     {
 #if __IOS__
                         case UserControl userControl:
@@ -185,8 +194,13 @@ namespace Uno.UI.RemoteControl.HotReload
         }
 
         private static void SwapViews(_View oldView, _View newView)
-        {
-            var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
+		{
+			if (_log.IsEnabled(LogLevel.Trace))
+			{
+				_log.Trace($"Swapping view {newView.GetType()}");
+			}
+
+			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
             parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
 
             if (parentAsContentControl?.Content == oldView)
