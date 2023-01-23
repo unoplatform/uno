@@ -172,7 +172,7 @@ internal class HotReloadWorkspace
 				.WithCompilationOutputInfo(
 					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".dll")));
 
-			if(!_projects.TryGetValue(projectName, out var projectReferences))
+			if (!_projects.TryGetValue(projectName, out var projectReferences))
 			{
 				throw new InvalidOperationException($"Project {projectName} is not defined in the project list.");
 			}
@@ -289,30 +289,30 @@ internal class HotReloadWorkspace
 		Stack<string> currentProjects = new();
 		HashSet<string> processed = new();
 
-		foreach(var project in InnerEnumerate(_projects.Keys))
+		foreach (var project in InnerEnumerate(_projects.Keys))
 		{
 			yield return project;
 		}
 
 		IEnumerable<string> InnerEnumerate(IEnumerable<string> projects)
 		{
-			foreach(var project in projects)
+			foreach (var project in projects)
 			{
 				if (currentProjects.Contains(project))
 				{
-					throw new InvalidOperationException($"Circular dependency detected: { string.Join(" -> ", currentProjects) } -> {project}");
+					throw new InvalidOperationException($"Circular dependency detected: {string.Join(" -> ", currentProjects)} -> {project}");
 				}
 
 				currentProjects.Push(project);
-				
+
 				if (_projects.TryGetValue(project, out var children))
 				{
-					foreach(var child in InnerEnumerate(children))
+					foreach (var child in InnerEnumerate(children))
 					{
 						yield return child;
 					}
 				}
-				
+
 				if (!processed.Contains(project))
 				{
 					yield return project;
@@ -332,7 +332,7 @@ internal class HotReloadWorkspace
 			.Concat(_sourceFiles.Keys)
 			.Distinct()
 			.Except(_projects.Keys);
-		
+
 		foreach (var project in projects)
 		{
 			AddProject(project, Array.Empty<string>());
