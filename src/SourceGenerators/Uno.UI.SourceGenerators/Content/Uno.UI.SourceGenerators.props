@@ -90,6 +90,7 @@
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
+		<CompilerVisibleProperty Include="UnoUseXamlReaderHotReload" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
@@ -389,6 +390,7 @@
 		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
 		<UnoSourceGeneratorAdditionalProperty Include="UnoForceHotReloadCodeGen" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoUseXamlReaderHotReload" />
 	</ItemGroup>
 
 	<Target Name="_FillSourceGeneratorItemGroups">
