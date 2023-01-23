@@ -41,14 +41,14 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
     ![](Assets/tutorial01/newproject4.PNG)
 
-1. After a few seconds, a banner may appear at the top of editor asking to reload projects. Click **Reload projects**.
+1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 
     ![](Assets/quick-start/vs2022-project-reload.PNG)
 
-1. Right click on `BugTracker` project and select `Manage NuGet Packages for Solution` from the context menu.
+1. Right-click on `BugTracker` project and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
-    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.WinUI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
-    - Click back on the **Browse** tab and install the following NuGet Packages to `BugTracker` project:
+    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.WinUI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap`, and `Uno.Wasm.Bootstrap.DevServer`.
+    - Click back on the **Browse** tab and install the following NuGet Packages to the `BugTracker` project:
         - `Refractored.MvvmHelpers`
 
 1. Finally, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it. This is a workaround for a Visual studio issue regarding the XAML editor.

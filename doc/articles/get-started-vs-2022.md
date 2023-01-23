@@ -78,7 +78,7 @@ To create an Uno Platform app:
 1. To debug the **Android** platform:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the **Debug toolbar** drop down, select framework `net7.0-android`
-    - Select an active device in "Device" sub-menu
+    - Select an active device in the "Device" sub-menu
 
 You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
