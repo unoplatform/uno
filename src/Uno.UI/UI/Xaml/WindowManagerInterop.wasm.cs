@@ -915,7 +915,10 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = properties[i].value;
 				}
 
-				var parms = new WindowManagerSetAttributesParams()
+#if NET7_0_OR_GREATER
+				NativeMethods.SetProperties(htmlId, pairs);
+#else
+				var parms = new WindowManagerSetPropertyParams()
 				{
 					HtmlId = htmlId,
 					Pairs_Length = pairs.Length,
@@ -923,7 +926,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setPropertyNative", parms);
-
+#endif
 			}
 		}
 
@@ -1592,6 +1595,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
 			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
+			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
