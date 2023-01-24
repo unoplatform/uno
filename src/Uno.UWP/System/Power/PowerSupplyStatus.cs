@@ -9,5 +9,5 @@ namespace Windows.System.Power
 		NotPresent,
 		Inadequate,
 		Adequate
-	} 
+	}
 }

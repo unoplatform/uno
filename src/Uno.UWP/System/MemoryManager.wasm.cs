@@ -17,7 +17,7 @@ namespace Windows.System
 		{
 			get
 			{
-				if(ulong.TryParse(WebAssemblyRuntime.InvokeJS(
+				if (ulong.TryParse(WebAssemblyRuntime.InvokeJS(
 					$"{JsType}.getAppMemoryUsage()"),
 					NumberStyles.Any,
 					CultureInfo.InvariantCulture, out var value))

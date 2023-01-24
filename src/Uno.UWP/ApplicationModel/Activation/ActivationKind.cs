@@ -186,6 +186,6 @@ namespace Windows.ApplicationModel.Activation
 		//
 		// Summary:
 		//     The app was activated as a barcode scanner provider.
-		BarcodeScannerProvider = 1022	
+		BarcodeScannerProvider = 1022
 	}
 }

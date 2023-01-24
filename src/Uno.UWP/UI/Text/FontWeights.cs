@@ -10,7 +10,7 @@ namespace Windows.UI.Text
 #endif
 {
 #if HAS_UNO_WINUI && !IS_UNO_UI_PROJECT
-    internal
+	internal
 #else
 	public
 #endif

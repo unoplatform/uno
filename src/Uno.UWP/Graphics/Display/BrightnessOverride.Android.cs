@@ -48,7 +48,7 @@ namespace Windows.Graphics.Display
 		public void StopOverride()
 		{
 			if (GetForCurrentView().IsOverrideActive)
-			{ 
+			{
 				LayoutParameters.ScreenBrightness = (float)_defaultBrightnessLevel;
 
 				Window.Attributes = LayoutParameters;

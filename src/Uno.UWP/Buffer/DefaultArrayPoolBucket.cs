@@ -86,7 +86,7 @@ namespace Uno.Buffers
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
-                finally
+				finally
 #endif
 				{
 					if (lockTaken) _lock.Exit(false);
@@ -164,7 +164,7 @@ namespace Uno.Buffers
 				// which have them.
 				bool lockTaken = false;
 #if !HAS_EXPENSIVE_TRYFINALLY
-                try
+				try
 #endif
 				{
 					_lock.Enter(ref lockTaken);
@@ -182,7 +182,7 @@ namespace Uno.Buffers
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
-                finally
+				finally
 #endif
 				{
 					if (lockTaken) _lock.Exit(false);

@@ -78,7 +78,7 @@ namespace Windows.Devices.Sensors
 
 			public StepCounterListener(Pedometer pedometer) => _pedometer = pedometer;
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy)
+			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
 
@@ -96,7 +96,7 @@ namespace Windows.Devices.Sensors
 						lastStepTimestamp);
 
 					_lastReading = DateTimeOffset.UtcNow;
-					_pedometer.OnReadingChanged(pedometerReading);					
+					_pedometer.OnReadingChanged(pedometerReading);
 				}
 			}
 		}

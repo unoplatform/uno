@@ -3,7 +3,7 @@ using System;
 
 namespace Windows.Media.Playback
 {
-	public  partial class MediaPlayerFailedEventArgs 
+	public partial class MediaPlayerFailedEventArgs
 	{
 		public MediaPlayerError Error { get; internal set; }
 

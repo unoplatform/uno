@@ -5,7 +5,7 @@ using System;
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class Clipboard
-    {
+	{
 		private static object _syncLock = new object();
 		private static EventHandler<object> _contentChanged;
 

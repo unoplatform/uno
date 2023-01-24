@@ -27,7 +27,7 @@ namespace Windows.Devices.Geolocation
 		}
 
 		public AltitudeReferenceSystem AltitudeReferenceSystem { get; }
-		
+
 		public uint SpatialReferenceId { get; }
 #endif
 	}

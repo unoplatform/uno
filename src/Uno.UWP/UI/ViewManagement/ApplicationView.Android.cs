@@ -109,7 +109,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 
-		private Activity GetCurrentActivity([CallerMemberName]string propertyName = null)
+		private Activity GetCurrentActivity([CallerMemberName] string propertyName = null)
 		{
 			if (!(ContextHelper.Current is Activity activity))
 			{

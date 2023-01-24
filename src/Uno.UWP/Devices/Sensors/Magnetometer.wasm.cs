@@ -8,7 +8,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer
 	{
-		private const string JsType = "Windows.Devices.Sensors.Magnetometer";		
+		private const string JsType = "Windows.Devices.Sensors.Magnetometer";
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
@@ -30,11 +30,11 @@ namespace Windows.Devices.Sensors
 		}
 
 		private void StartReading()
-		{			
+		{
 			var command = $"{JsType}.startReading()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
-		
+
 		private void StopReading()
 		{
 			var command = $"{JsType}.stopReading()";
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sensors
 						z,
 						MagnetometerAccuracy.Unknown,
 						now));
-			}			
+			}
 			return 0;
 		}
 	}

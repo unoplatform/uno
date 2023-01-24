@@ -4,7 +4,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public enum HoldingState 
+	public enum HoldingState
 	{
 		Started,
 		Completed,

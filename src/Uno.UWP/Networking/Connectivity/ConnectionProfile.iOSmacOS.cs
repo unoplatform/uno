@@ -18,7 +18,7 @@ namespace Windows.Networking.Connectivity
 			var statuses = Reachability.GetActiveConnectionType();
 			foreach (var status in statuses)
 			{
-				if( status == NetworkStatus.ReachableViaCarrierDataNetwork)
+				if (status == NetworkStatus.ReachableViaCarrierDataNetwork)
 				{
 					IsWwanConnectionProfile = true;
 				}

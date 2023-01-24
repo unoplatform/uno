@@ -4,7 +4,7 @@ namespace Microsoft.UI.Dispatching
 namespace Windows.System
 #endif
 {
-	public enum DispatcherQueuePriority 
+	public enum DispatcherQueuePriority
 	{
 		Low = -10,
 		Normal = 0,

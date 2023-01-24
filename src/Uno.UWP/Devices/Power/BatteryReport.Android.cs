@@ -1,4 +1,4 @@
-﻿#nullable enable 
+﻿#nullable enable
 
 using AndroidBatteryStatus = Android.OS.BatteryStatus;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
@@ -22,7 +22,7 @@ namespace Windows.Devices.Power
 			// using info from https://developer.android.com/training/monitoring-device-state/battery-monitoring
 			var ifilter = new Android.Content.IntentFilter(Android.Content.Intent.ActionBatteryChanged);
 			var batteryStatus = Android.App.Application.Context.RegisterReceiver(null, ifilter);
-			if(batteryStatus is null)
+			if (batteryStatus is null)
 			{
 				Status = UwpBatteryStatus.NotPresent;
 				return;
@@ -65,14 +65,14 @@ namespace Windows.Devices.Power
 			}
 			int currentMicroAmps = batteryManager.GetIntProperty((int)Android.OS.BatteryProperty.CurrentNow);   // Instantaneous battery current in microamperes, as an integer.
 			int chargeCounterMicroAmpHr = batteryManager.GetIntProperty((int)Android.OS.BatteryProperty.ChargeCounter); // Battery capacity in microampere-hours, as an integer.
-			// long energyCounterNanoWattHr = batteryManager.GetLongProperty((int)Android.OS.BatteryProperty.EnergyCounter); // Battery remaining energy in nanowatt-hours, as a long integer.
+																														// long energyCounterNanoWattHr = batteryManager.GetLongProperty((int)Android.OS.BatteryProperty.EnergyCounter); // Battery remaining energy in nanowatt-hours, as a long integer.
 			int energyCounterNanoWattHr = batteryManager.GetIntProperty((int)Android.OS.BatteryProperty.EnergyCounter); // But in reality, seems like it is int not long (doc has error here)
 
 			// Android: Instantaneous battery current in microamperes, as an integer.
 			// UWP: mW
 			// both: > 0 charging, < 0 discharging
 			// conversion: milli = 1000 micro; and watt = volt * amper
-			ChargeRateInMilliwatts = (int) (voltage * currentMicroAmps / 1000);
+			ChargeRateInMilliwatts = (int)(voltage * currentMicroAmps / 1000);
 
 			// Android: Battery remaining energy in nanowatt-hours, as a long integer.
 			// UWP: mWh
@@ -82,7 +82,7 @@ namespace Windows.Devices.Power
 			// Android: Battery capacity in microampere-hours, as an integer.
 			// UWP: mWh
 			// conversion: milli = 1000 micro; and watt = volt * amper
-			FullChargeCapacityInMilliwattHours = (int) (voltage * chargeCounterMicroAmpHr / 1000);
+			FullChargeCapacityInMilliwattHours = (int)(voltage * chargeCounterMicroAmpHr / 1000);
 
 			// UWP doc says: Some battery controllers might return the same value as FullChargeCapacityInMilliwattHours or return no value at all.
 			DesignCapacityInMilliwattHours = FullChargeCapacityInMilliwattHours;

@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				return;
 			}
 
-			if (TargetRequested is {} handler)
+			if (TargetRequested is { } handler)
 			{
 				var args = new CoreDropOperationTargetRequestedEventArgs();
 				handler(this, args);

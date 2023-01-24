@@ -204,7 +204,7 @@ namespace Windows.Devices.Geolocation
 					return GeolocationAccessStatus.Denied;
 			}
 		}
-		
+
 #if __IOS__
 		private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
 		{

@@ -8,8 +8,8 @@ using Uno;
 
 namespace Windows.Networking.Connectivity
 {
-    public partial class NetworkInformation
-    {
+	public partial class NetworkInformation
+	{
 		private const string JsType = "Windows.Networking.Connectivity.NetworkInformation";
 
 		private static void StartNetworkStatusChanged()
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 			var command = $"{JsType}.stopStatusChanged()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
-		
+
 		public static int DispatchStatusChanged()
 		{
 			OnNetworkStatusChanged();

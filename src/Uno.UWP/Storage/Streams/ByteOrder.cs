@@ -1,6 +1,6 @@
 namespace Windows.Storage.Streams
 {
-	public enum ByteOrder 
+	public enum ByteOrder
 	{
 		LittleEndian,
 		BigEndian,

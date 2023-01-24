@@ -31,7 +31,7 @@ public partial class SystemNavigationManagerPreview
 	{
 		HasConfirmedClose = false;
 		var eventArgs = new SystemNavigationCloseRequestedPreviewEventArgs(OnCloseRequestedDeferralComplete);
-		CloseRequested?.Invoke(null, eventArgs);		
+		CloseRequested?.Invoke(null, eventArgs);
 		var completedSynchronously = eventArgs.DeferralManager.EventRaiseCompleted();
 		return completedSynchronously ? !eventArgs.Handled : false;
 	}

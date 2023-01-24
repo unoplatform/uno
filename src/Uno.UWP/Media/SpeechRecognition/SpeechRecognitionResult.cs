@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Windows.Media.SpeechRecognition
 {
-	public  partial class SpeechRecognitionResult
+	public partial class SpeechRecognitionResult
 	{
 		public double RawConfidence { get; set; }
 

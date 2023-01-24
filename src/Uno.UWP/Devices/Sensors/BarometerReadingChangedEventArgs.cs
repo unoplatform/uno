@@ -1,6 +1,6 @@
 namespace Windows.Devices.Sensors
 {
-	public partial class BarometerReadingChangedEventArgs 
+	public partial class BarometerReadingChangedEventArgs
 	{
 		internal BarometerReadingChangedEventArgs(BarometerReading reading) =>
 			Reading = reading;

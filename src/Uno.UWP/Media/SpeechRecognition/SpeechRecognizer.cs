@@ -25,7 +25,7 @@ namespace Windows.Media.SpeechRecognition
 			: this(new Language(CultureInfo.CurrentCulture.Name))
 		{
 		}
-		
+
 		public SpeechRecognizer(Language language)
 		{
 			CurrentLanguage = language;

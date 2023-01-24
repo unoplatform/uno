@@ -63,7 +63,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Converts an angle in degree into radians
 		/// </summary>
-		public static double ToRadians(double angleDegree) 
+		public static double ToRadians(double angleDegree)
 			=> angleDegree * Math.PI / 180.0;
 
 		/// <summary>

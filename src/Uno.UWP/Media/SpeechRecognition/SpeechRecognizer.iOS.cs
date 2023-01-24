@@ -101,9 +101,9 @@ namespace Windows.Media.SpeechRecognition
 					err = audioSession.SetCategory(AVAudioSessionCategory.Playback);
 					audioSession.SetMode(AVAudioSession.ModeDefault, out err);
 					err = audioSession.SetActive(false, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
-					
+
 					_recognitionTask = null;
-					
+
 					OnStateChanged(SpeechRecognizerState.Idle);
 
 					if (bestMatch != null)
@@ -118,7 +118,8 @@ namespace Windows.Media.SpeechRecognition
 			});
 
 			var recordingFormat = new AVAudioFormat(sampleRate: 44100, channels: 1);
-			inputNode.InstallTapOnBus(0, 1024, recordingFormat, (buffer, when) => {
+			inputNode.InstallTapOnBus(0, 1024, recordingFormat, (buffer, when) =>
+			{
 				_recognitionRequest?.Append(buffer);
 			});
 

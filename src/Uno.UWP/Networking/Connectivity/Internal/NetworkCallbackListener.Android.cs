@@ -8,7 +8,7 @@ namespace Windows.Networking.Connectivity.Internal
 	internal class NetworkCallbackListener : AndroidConnectivityManager.NetworkCallback
 	{
 		public NetworkCallbackListener()
-		{			
+		{
 		}
 
 		public override void OnAvailable(Network network)

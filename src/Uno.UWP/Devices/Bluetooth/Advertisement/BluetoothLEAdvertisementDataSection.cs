@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 namespace Windows.Devices.Bluetooth.Advertisement
-{ 
+{
 	public partial class BluetoothLEAdvertisementDataSection
 	{
 		public byte DataType { get; set; }

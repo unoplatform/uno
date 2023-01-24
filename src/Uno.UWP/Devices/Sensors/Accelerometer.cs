@@ -42,19 +42,19 @@ namespace Windows.Devices.Sensors
 		}
 
 		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> ReadingChanged
-		{			
+		{
 			add
 			{
 				lock (_syncLock)
 				{
 					bool isFirstSubscriber = _readingChanged == null;
 					_readingChanged += value;
-					if ( isFirstSubscriber)
+					if (isFirstSubscriber)
 					{
 						StartReadingChanged();
 					}
 				}
-			}			
+			}
 			remove
 			{
 				lock (_syncLock)

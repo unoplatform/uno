@@ -51,8 +51,8 @@ public partial class MessageDialog
 
 		using (ct.Register(() =>
 			{
-					// If the cancellation token itself gets cancelled, we cancel as well.
-					result.TrySetCanceled();
+				// If the cancellation token itself gets cancelled, we cancel as well.
+				result.TrySetCanceled();
 				UIApplication.SharedApplication.KeyWindow?.RootViewController?.DismissViewController(false, () => { });
 			}, useSynchronizationContext: true))
 		{
