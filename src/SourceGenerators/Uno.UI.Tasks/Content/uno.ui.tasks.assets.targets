@@ -113,12 +113,19 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<_UnoFindPackageAssetMarkersDependsOn Condition="'$(ProjectTypeGuids)'!=''">
+			$(_UnoFindPackageAssetMarkersDependsOn);
+			ResolveNuGetPackageAssets
+		</_UnoFindPackageAssetMarkersDependsOn>
+	</PropertyGroup>
+
 	<!--
 	Determines the marker location for project references
 	-->
-	<Target Name="_UnoFindPackageAssetMarkers" 
+	<Target Name="_UnoFindPackageAssetMarkers"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
-			DependsOnTargets="ResolveNuGetPackageAssets"
+			DependsOnTargets="$(_UnoFindPackageAssetMarkersDependsOn)"
 			AfterTargets="ResolveAssemblyReferences">
 
 		<ItemGroup Condition="'$(ProjectTypeGuids)'!=''">
