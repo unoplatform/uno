@@ -163,15 +163,25 @@ namespace Uno.UI
 
 		public static class Font
 		{
-			/// <summary>
-			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
-			/// </summary>
-			public static string SymbolsFont { get; set; } =
+			private static string _symbolsFont = 
 #if __WASM__ || __MACOS__ || __IOS__
 				"Symbols";
 #else
 				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #endif
+
+			/// <summary>
+			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon. Must be invoked after App.InitializeComponent() to have an effect.
+			/// </summary>
+			public static string SymbolsFont
+			{
+				get => _symbolsFont;
+				set
+				{
+					_symbolsFont = value;
+					ResourceResolver.SetSymbolsFontFamily();
+				}
+			}
 
 			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
