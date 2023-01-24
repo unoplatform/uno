@@ -18,7 +18,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private string? _projectPath;
 		private string[]? _xamlPaths;
-
+		private bool _useXamlReaderHotReload;
 		private readonly IRemoteControlClient _rcClient;
 
 		public ClientHotReloadProcessor(IRemoteControlClient rcClient)
@@ -63,7 +63,9 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private async Task ConfigureServer()
 		{
-			if (_rcClient.AppType.Assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
+			var assembly = _rcClient.AppType.Assembly;
+			
+			if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
 			{
 				var config = configs.First();
 
@@ -90,6 +92,20 @@ namespace Uno.UI.RemoteControl.HotReload
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
 					this.Log().LogError("Unable to find ProjectConfigurationAttribute");
+				}
+			}
+
+			if (assembly.GetCustomAttributes(typeof(AssemblyMetadataAttribute), false) is AssemblyMetadataAttribute[] asmMetadataAttributes)
+			{
+				if (asmMetadataAttributes.FirstOrDefault(a => a.Key.Equals("UnoUseXamlReaderHotReload", StringComparison.OrdinalIgnoreCase)) is { } keyAttribute
+					&& bool.TryParse(keyAttribute.Value, out var useXamlReaderHotReload))
+				{
+					_useXamlReaderHotReload = useXamlReaderHotReload;
+				}
+				
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"UseXamlReaderHotReload={_useXamlReaderHotReload}");
 				}
 			}
 		}

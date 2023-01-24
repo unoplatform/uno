@@ -25,7 +25,7 @@ public class Given_HotReloadService
 	{
 		if (scenario != null)
 		{
-			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, name);
+			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, scenario.UseXamlReaderReload, name);
 
 			for (int i = 0; i < scenario.PassResults.Length; i++)
 			{
@@ -46,10 +46,10 @@ public class Given_HotReloadService
 
 	public record Project(string Name, ProjectReference[]? ProjectReferences);
 	public record ProjectReference(string Name);
-	public record Scenario(bool IsDebug, bool IsMono, params PassResult[] PassResults)
+	public record Scenario(bool IsDebug, bool IsMono, bool UseXamlReaderReload, params PassResult[] PassResults)
 	{
 		public override string ToString()
-			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")}";
+			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")},XR:{UseXamlReaderReload}";
 	}
 
 	public record PassResult(int MetadataUpdates, params DiagnosticsResult[] Diagnostics);
@@ -121,6 +121,7 @@ public class Given_HotReloadService
 		Project[]? projects
 		, bool isDebugCompilation
 		, bool isMono
+		, bool useXamlReaderReload
 		, [CallerMemberName] string? name = null)
 	{
 		if (name is null)
@@ -130,7 +131,7 @@ public class Given_HotReloadService
 
 		var scenarioFolder = Path.Combine(ScenariosFolder, name);
 
-		HotReloadWorkspace SUT = new(isDebugCompilation, isMono);
+		HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
 		List<HotReloadWorkspace.UpdateResult> results = new();
 
 		if (projects is not null)

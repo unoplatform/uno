@@ -8,13 +8,13 @@ The Uno platform makes use of the Microsoft logging NuGet packages to provide co
 
 ### Configuring logging
 
-The standard Uno template configures logging in the **Shared** project **App.xaml.cs** file.
+The standard Uno template configures logging in the **App.xaml.cs** file.
 
 1. Add the [`Uno.UI.Adapter.Microsoft.Extensions.Logging`](https://www.nuget.org/packages/Uno.UI.Adapter.Microsoft.Extensions.Logging/) NuGet package to your platform projects.
 1. In the iOS project, add the [`Uno.Extensions.Logging.OSLog`](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog/) NuGet package to your platform projects.
 1. In the WebAssembly project, add the [`Uno.Extensions.Logging.WebAssembly.Console`](https://www.nuget.org/packages/Uno.Extensions.Logging.WebAssembly.Console/) NuGet package to your platform projects.
 
-1. In the **Shared** project and open the **App.xaml.cs** file.
+1. Open the **App.xaml.cs** file.
 
 1. Locate the **App** constructor and note that logging is configured first:
 

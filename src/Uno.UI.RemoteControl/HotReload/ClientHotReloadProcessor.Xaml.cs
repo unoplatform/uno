@@ -37,16 +37,17 @@ namespace Uno.UI.RemoteControl.HotReload
 		private static Logger _log = typeof(ClientHotReloadProcessor).Log();
 		private string? _lastUpdatedFilePath;
 
-		private void ReloadFile(FileReload fileReload)
-		{
-			if (string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase))
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($".NET Hot Reload is enabled, skipping XAML Reader reload");
-				}
-				return;
-			}
+        private void ReloadFile(FileReload fileReload)
+        {
+            if (string.Equals(Environment.GetEnvironmentVariable("DOTNET_MODIFIABLE_ASSEMBLIES"), "debug", StringComparison.OrdinalIgnoreCase)
+				&& !_useXamlReaderHotReload)
+            {
+                if (this.Log().IsEnabled(LogLevel.Debug))
+                {
+                    this.Log().LogDebug($".NET Hot Reload is enabled, skipping XAML Reader reload");
+                }
+                return;
+            }
 
 			if (!fileReload.IsValid())
 			{
@@ -86,10 +87,19 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				Application.RegisterComponent(uri, fileContent);
 
-				foreach (var instance in EnumerateInstances(Window.Current.Content, i => uri.OriginalString == i.DebugParseContext.LocalFileUri))
+				bool IsSameBaseUri(FrameworkElement i)
+				{
+					return uri.OriginalString == i.DebugParseContext?.LocalFileUri
+
+						// Compatibility with older versions of Uno, where BaseUri is set to the
+						// local file path instead of the component Uri.
+						|| uri.OriginalString == i.BaseUri?.OriginalString;
+				}
+
+				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri))
 				{
 					switch (instance)
-					{
+                    {
 #if __IOS__
 						case UserControl userControl:
 							if (XamlReader.LoadUsingXClass(fileContent) is UIKit.UIView newInstance)
@@ -167,11 +177,15 @@ namespace Uno.UI.RemoteControl.HotReload
 							yield return EnumerateInstances(control.TemplatedRoot, predicate);
 							break;
 
-						case ContentPresenter presenter:
-							yield return EnumerateInstances(presenter.Content, predicate);
-							break;
-					}
-				}
+        private static void SwapViews(_View oldView, _View newView)
+		{
+			if (_log.IsEnabled(LogLevel.Trace))
+			{
+				_log.Trace($"Swapping view {newView.GetType()}");
+			}
+
+			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
+            parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
 
 				foreach (var inner in Dig())
 				{
@@ -212,7 +226,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			newView.SetBaseUri(
 				oldView.BaseUri.OriginalString,
-				oldView.DebugParseContext?.LocalFileUri,
+				oldView.DebugParseContext?.LocalFileUri ?? "",
 				oldView.DebugParseContext?.LineNumber ?? -1,
 				oldView.DebugParseContext?.LinePosition ?? -1);
 

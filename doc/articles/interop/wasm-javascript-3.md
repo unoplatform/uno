@@ -57,7 +57,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 🎯 This section is creating a control used in the XAML. It will activate `Flatpickr` on the control's `<input>` element.
 
-1. Create a `FlatpickrView.cs` class in the `.Shared` project like this:
+1. Create a `FlatpickrView.cs` class in the `[MyApp]` project like this:
 
    ``` csharp
    using System;
@@ -129,7 +129,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    ```
 
 
-2. Change the `MainPage.xaml` in the `.Shared` project like this:
+2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
    ``` xml
    <Page

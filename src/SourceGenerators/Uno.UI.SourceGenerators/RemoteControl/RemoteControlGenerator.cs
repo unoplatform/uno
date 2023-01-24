@@ -50,9 +50,18 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				BuildEndPointAttribute(context, sb);
 				BuildSearchPaths(context, sb);
 				BuildServerProcessorsPaths(context, sb);
+				BuildXamlReaderHotReloadConfiguration(context, sb);
 
 				context.AddSource("RemoteControl", sb.ToString());
 			}
+		}
+
+		private void BuildXamlReaderHotReloadConfiguration(GeneratorExecutionContext context, IndentedStringBuilder sb)
+		{
+			sb.AppendLineIndented(
+				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
+				$"\"UnoUseXamlReaderHotReload\", " +
+				$"\"{context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload")}\")]");
 		}
 
 		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)

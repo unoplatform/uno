@@ -22,7 +22,7 @@ Testing and debugging your application is easier and more rapid on some platform
 
 It's likely that some part of your application's code, be it C# code or XAML markup, will be specific to only one platform - perhaps because you want to access platform-specific APIs, implement a feature using native third-party libraries, or simply customize the experience to be more idiomatic to that particular platform.
 
-You can read more on the mechanics of platform-specific code [here for C#](platform-specific-csharp.md) and [here for XAML](platform-specific-xaml.md). You should also make sure you understand [how shared projects work](uno-app-solution-structure.md).
+You can read more on the mechanics of platform-specific code [here for C#](platform-specific-csharp.md) and [here for XAML](platform-specific-xaml.md). You should also make sure you understand [an Uno Platform App solution structure](uno-app-solution-structure.md).
 
 The main goals where platform-specific code is concerned are to:
  * **Maximize maintainability by keeping as much code shared as possible.**

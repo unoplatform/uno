@@ -44,6 +44,9 @@
 									)
 								  )">false</UnoForceHotReloadCodeGen>
 
+		<!-- Use Application.LoadComponent for HotReload scenarios -->
+		<UnoUseXamlReaderHotReload>true</UnoUseXamlReaderHotReload>
+
 		<XamarinProjectType Condition="
 							'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'
 							or $(TargetFramework.ToLower().StartsWith('xamarinios'))
@@ -87,6 +90,7 @@
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
+		<CompilerVisibleProperty Include="UnoUseXamlReaderHotReload" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
@@ -386,6 +390,7 @@
 		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
 		<UnoSourceGeneratorAdditionalProperty Include="UnoForceHotReloadCodeGen" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoUseXamlReaderHotReload" />
 	</ItemGroup>
 
 	<Target Name="_FillSourceGeneratorItemGroups">
