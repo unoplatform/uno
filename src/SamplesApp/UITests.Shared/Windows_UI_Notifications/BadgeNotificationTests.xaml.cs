@@ -20,11 +20,11 @@ namespace UITests.Windows_UI_Notifications
 {
 	[SampleControlInfo("Windows.UI.Notifications")]
 	public sealed partial class BadgeNotificationTests : Page
-    {
-        public BadgeNotificationTests()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public BadgeNotificationTests()
+		{
+			this.InitializeComponent();
+		}
 
 		private void SetBadge_Click(object sender, RoutedEventArgs e)
 		{

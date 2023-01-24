@@ -20,10 +20,10 @@ namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
 	[Sample("Brushes")]
 	public sealed partial class ImageBrush_Stretch : Page
-    {
-        public ImageBrush_Stretch()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ImageBrush_Stretch()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

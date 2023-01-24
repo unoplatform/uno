@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 		{
 			this.InitializeComponent();
 
-			SUT.ItemsSource = new []
+			SUT.ItemsSource = new[]
 			{
 				"#FFFF0018",
 				"#FFFFA52C",

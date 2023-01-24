@@ -31,13 +31,13 @@ namespace UITests.Shared.Windows_Devices
 		description: "Demonstrates the Windows.Devices.Sensors.Pedometer",
 		viewModelType: typeof(PedometerTestsViewModel),
 		ignoreInSnapshotTests: true)]
-    public sealed partial class PedometerTests : UserControl
-    {
-        public PedometerTests()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class PedometerTests : UserControl
+	{
+		public PedometerTests()
+		{
+			this.InitializeComponent();
+		}
+	}
 
 	internal class PedometerTestsViewModel : ViewModelBase
 	{
@@ -115,7 +115,7 @@ namespace UITests.Shared.Windows_Devices
 		{
 			get => _cumulativeSteps;
 			set
-			{				
+			{
 				_cumulativeSteps = value;
 				RaisePropertyChanged();
 			}

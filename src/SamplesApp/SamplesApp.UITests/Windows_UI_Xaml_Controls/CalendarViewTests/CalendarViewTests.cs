@@ -43,7 +43,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CalendarViewTests
 					return false;
 				}
 
-				throw new InvalidOperationException("Expected Source property to contain either UnoGalleryLogo_Light or UnoGalleryLogo_Dark. Found " +  sourceProperty);
+				throw new InvalidOperationException("Expected Source property to contain either UnoGalleryLogo_Light or UnoGalleryLogo_Dark. Found " + sourceProperty);
 			}
 		}
 	}

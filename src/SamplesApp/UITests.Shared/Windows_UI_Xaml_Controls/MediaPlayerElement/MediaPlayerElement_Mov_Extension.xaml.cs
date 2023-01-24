@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Using .mov", description: "Test .mov video")]
 	public sealed partial class MediaPlayerElement_Mov_Extension : UserControl
-    {
-        public MediaPlayerElement_Mov_Extension()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_Mov_Extension()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

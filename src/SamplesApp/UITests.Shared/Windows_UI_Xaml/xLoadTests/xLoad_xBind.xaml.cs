@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml.xLoadTests
 {
 	[Sample("x:Load", Name = "xLoad_xBind")]
 	public sealed partial class xLoad_xBind : UserControl
-    {
+	{
 		public bool IsLoad
 		{
 			get { return (bool)GetValue(IsLoadProperty); }
@@ -32,8 +32,8 @@ namespace UITests.Windows_UI_Xaml.xLoadTests
 			DependencyProperty.Register("IsLoad", typeof(bool), typeof(xLoad_xBind), new PropertyMetadata(false));
 
 		public xLoad_xBind()
-        {
-            this.InitializeComponent();
-        }
-    }
+		{
+			this.InitializeComponent();
+		}
+	}
 }

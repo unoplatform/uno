@@ -28,13 +28,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 			_app.TapCoordinates(
 				(float)(containerRect.Left + containerRect.Width * 0.9),
 				(float)(containerRect.Top + containerRect.Height / 2));
-			
+
 			// Imperfect horizontal drag with vertical offset
 			_app.DragCoordinates(
 				(float)(containerRect.Left + containerRect.Width * 0.9),
 				(float)(containerRect.Top + containerRect.Height / 2),
 				(float)(containerRect.Left + containerRect.Width * 0.2),
-				(float)(containerRect.Top + containerRect.Height * 0.8));			
+				(float)(containerRect.Top + containerRect.Height * 0.8));
 
 			using var afterScreenshot = TakeScreenshot("After horizontal scroll", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.DoesNotHaveColorAt(afterScreenshot, containerCenter.X, containerCenter.Y, Color.Red);

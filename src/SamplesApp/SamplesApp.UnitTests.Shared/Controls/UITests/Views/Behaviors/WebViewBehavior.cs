@@ -12,7 +12,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// <summary>
 		/// Register attached source string
 		/// </summary>
-		public static DependencyProperty SourceStringProperty { get ; } =
+		public static DependencyProperty SourceStringProperty { get; } =
 			DependencyProperty.RegisterAttached("SourceString", typeof(string), typeof(WebViewBehavior), new PropertyMetadata(string.Empty, OnSourceStringChanged));
 
 		/// <summary>

@@ -7,11 +7,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.BitmapIconTests
 {
 	[Sample("Icons")]
 	public sealed partial class BitmapIcon_Generic : UserControl
-    {
-        public BitmapIcon_Generic()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public BitmapIcon_Generic()
+		{
+			this.InitializeComponent();
+		}
 
 		private void OnClick(object sender, object args)
 		{

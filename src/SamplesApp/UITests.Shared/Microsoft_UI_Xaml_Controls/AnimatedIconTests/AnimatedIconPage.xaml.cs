@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Microsoft_UI_Xaml_Controls.AnimatedIconTests
 {
 	[Sample("Icons")]
-    public sealed partial class AnimatedIconPage : Page
-    {
-        public AnimatedIconPage()
-        {
+	public sealed partial class AnimatedIconPage : Page
+	{
+		public AnimatedIconPage()
+		{
 			InitializeComponent();
-        }
-    }
+		}
+	}
 }

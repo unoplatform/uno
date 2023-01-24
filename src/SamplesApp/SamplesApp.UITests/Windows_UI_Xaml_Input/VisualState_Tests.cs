@@ -172,7 +172,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var actualStates = _app
 				.Marked("VisualStatesLog")
 				.GetDependencyPropertyValue<string>("Text")
-				.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+				.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
 				.Where(line => line.StartsWith(targetName))
 				.Select(line => line.Trim().Substring(targetName.Length + 1))
 				.ToArray();

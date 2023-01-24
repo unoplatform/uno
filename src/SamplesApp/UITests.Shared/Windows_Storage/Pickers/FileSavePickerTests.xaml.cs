@@ -210,7 +210,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 				var fileOpenPicker = new FileOpenPicker()
 				{
 					SuggestedStartLocation = PickerLocationId.ComputerFolder,
-					FileTypeFilter = {"*"}
+					FileTypeFilter = { "*" }
 				};
 				SuggestedSaveFile = await fileOpenPicker.PickSingleFileAsync();
 			}

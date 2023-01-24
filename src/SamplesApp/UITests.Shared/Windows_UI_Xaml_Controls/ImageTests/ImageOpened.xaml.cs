@@ -19,18 +19,18 @@ namespace Uno.UI.Samples.UITests.Image
 {
 	[SampleControlInfo("Image", "ImageOpened")]
 	public sealed partial class ImageOpened : UserControl
-    {
-        public ImageOpened()
-        {
-            this.InitializeComponent();
+	{
+		public ImageOpened()
+		{
+			this.InitializeComponent();
 
 			MyImage.ImageOpened += (s, e) => Show("MyImage.ImageOpened");
 			MyImage.ImageFailed += (s, e) => Show("MyImage.ImageFailed");
 			MyImageBrush.ImageOpened += (s, e) => Show("MyImageBrush.ImageOpened");
 			MyImageBrush.ImageFailed += (s, e) => Show("MyImageBrush.ImageFailed");
-        }
+		}
 
-		private void UpdateSource (object sender, RoutedEventArgs e)
+		private void UpdateSource(object sender, RoutedEventArgs e)
 		{
 			var button = sender as Button;
 			var content = button.Content;
@@ -53,5 +53,5 @@ namespace Uno.UI.Samples.UITests.Image
 		{
 			var unused = new Windows.UI.Popups.MessageDialog(text).ShowAsync();
 		}
-    }
+	}
 }

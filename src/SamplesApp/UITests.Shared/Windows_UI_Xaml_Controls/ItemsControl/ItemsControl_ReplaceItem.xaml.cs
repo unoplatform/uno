@@ -21,12 +21,12 @@ namespace UITests.Windows_UI_Xaml_Controls.ItemsControl
 {
 	[Sample("ItemsControl")]
 	public sealed partial class ItemsControl_ReplaceItem : UserControl
-    {
+	{
 		private ObservableCollection<string> _collection;
 
 		public ItemsControl_ReplaceItem()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 
 			_collection = new ObservableCollection<string>();
 

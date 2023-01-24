@@ -6,11 +6,11 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Windows_UI_Xaml_Media.GradientBrushTests
 {
 	[Sample("Brushes")]
-    public sealed partial class LinearGradientBrush_Opacity : Page
-    {
-        public LinearGradientBrush_Opacity()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class LinearGradientBrush_Opacity : Page
+	{
+		public LinearGradientBrush_Opacity()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

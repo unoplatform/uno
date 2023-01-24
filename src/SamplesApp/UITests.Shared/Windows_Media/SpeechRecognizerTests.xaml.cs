@@ -69,7 +69,7 @@ namespace UITests.Windows_Media
 
 		private async void Recognize()
 		{
-			await _speechRecognizer.CompileConstraintsAsync();			
+			await _speechRecognizer.CompileConstraintsAsync();
 			var result = await _speechRecognizer.RecognizeAsync();
 			LastResult = result.Text;
 		}

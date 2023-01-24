@@ -18,16 +18,16 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
 	[Sample("NavigationView", "MUX")]
-    public sealed partial class NavigationViewInfoBadgeTestPage : MUXControlsTestApp.TestPage
+	public sealed partial class NavigationViewInfoBadgeTestPage : MUXControlsTestApp.TestPage
 	{
-        public NavigationViewInfoBadgeTestPage()
-        {
-            this.InitializeComponent();
-        }
+		public NavigationViewInfoBadgeTestPage()
+		{
+			this.InitializeComponent();
+		}
 
 		private void FlipOrientationButton_Clicked(object sender, RoutedEventArgs e)
 		{

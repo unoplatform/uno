@@ -23,10 +23,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 	/// </summary>
 	[SampleControlInfo("TextBox", ignoreInSnapshotTests: true /*Keyboard is midway through appearing*/)]
 	public sealed partial class TextBox_RoundedCorners : Page
-    {
-        public TextBox_RoundedCorners()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public TextBox_RoundedCorners()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

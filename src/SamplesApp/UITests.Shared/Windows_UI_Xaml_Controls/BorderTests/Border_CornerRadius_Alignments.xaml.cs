@@ -17,12 +17,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-    [SampleControlInfo("Border", "Border_CornerRadius_Alignments")]
-    public sealed partial class Border_CornerRadius_Alignments : Page
-    {
-        public Border_CornerRadius_Alignments()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[SampleControlInfo("Border", "Border_CornerRadius_Alignments")]
+	public sealed partial class Border_CornerRadius_Alignments : Page
+	{
+		public Border_CornerRadius_Alignments()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

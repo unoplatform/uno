@@ -15,10 +15,10 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 	/// </summary>
 	[SampleControlInfo("TextBox", "WASM Multiline TextBox")]
 	public sealed partial class WASM_Multiline : Page
-    {
-        public WASM_Multiline()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public WASM_Multiline()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

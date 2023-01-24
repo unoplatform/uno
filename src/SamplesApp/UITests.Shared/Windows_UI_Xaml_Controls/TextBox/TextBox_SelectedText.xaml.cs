@@ -17,12 +17,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-    public sealed partial class TextBox_SelectedText : UserControl
-    {
-        public TextBox_SelectedText()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class TextBox_SelectedText : UserControl
+	{
+		public TextBox_SelectedText()
+		{
+			this.InitializeComponent();
+		}
 
 		private void btnSelection_Click(object sender, RoutedEventArgs e)
 		{

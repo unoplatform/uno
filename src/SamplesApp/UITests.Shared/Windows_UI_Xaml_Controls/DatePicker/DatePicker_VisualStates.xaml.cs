@@ -19,13 +19,13 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 {
 	[Sample("Pickers")]
-    public sealed partial class DatePicker_VisualStates : Page
-    {
-        public DatePicker_VisualStates()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class DatePicker_VisualStates : Page
+	{
+		public DatePicker_VisualStates()
+		{
+			this.InitializeComponent();
+		}
+	}
 
 	public class StringFormatConverter : IValueConverter
 	{

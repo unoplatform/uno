@@ -21,12 +21,12 @@ using _Button = Windows.UI.Xaml.Controls.Button;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[SampleControlInfo("Dialogs", "ContentDialog_Async", description: "Tests for ContentDialog async mechanism")]
-    public sealed partial class ContentDialog_Async : UserControl
-    {
+	public sealed partial class ContentDialog_Async : UserControl
+	{
 		private ContentDialog dialog;
-        public ContentDialog_Async()
-        {
-            this.InitializeComponent();
+		public ContentDialog_Async()
+		{
+			this.InitializeComponent();
 		}
 
 		private async void Button_Click(object sender, RoutedEventArgs args)

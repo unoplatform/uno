@@ -33,7 +33,7 @@ namespace SamplesApp.UITests.Runtime
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
 
-			IAppQuery AllQuery(IAppQuery query) 
+			IAppQuery AllQuery(IAppQuery query)
 				// .All() is not yet supported for wasm.
 				=> AppInitializer.GetLocalPlatform() == Platform.Browser ? query : query.All();
 
@@ -67,7 +67,7 @@ namespace SamplesApp.UITests.Runtime
 			var lastChange = DateTimeOffset.Now;
 			var lastValue = "";
 
-			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
+			while (DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
 				var newValue = await GetWithRetry("GetRunTestCount", () => unitTestsControl.GetDependencyPropertyValue("RunTestCountForUITest")?.ToString());
 
@@ -103,7 +103,7 @@ namespace SamplesApp.UITests.Runtime
 				Assert.Fail($"{tests.Length} unit test(s) failed (count={count}).\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
 			}
 
-			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
+			TakeScreenshot("Runtime Tests Results", ignoreInSnapshotCompare: true);
 		}
 
 		async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 120)

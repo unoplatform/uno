@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			var controlRect = _app.GetPhysicalRect("FrontControl");
 
-			_app.TapCoordinates(controlRect.X+50, controlRect.Y+50); // Tap hit-test-opaque border
+			_app.TapCoordinates(controlRect.X + 50, controlRect.Y + 50); // Tap hit-test-opaque border
 
 			_app.WaitForText("ResultTextBlock", "Front control pressed");
 

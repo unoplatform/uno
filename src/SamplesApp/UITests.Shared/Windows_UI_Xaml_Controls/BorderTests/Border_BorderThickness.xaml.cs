@@ -18,10 +18,10 @@ namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
 	[Sample("Border")]
 	public sealed partial class Border_BorderThickness : Page
-    {
-        public Border_BorderThickness()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public Border_BorderThickness()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

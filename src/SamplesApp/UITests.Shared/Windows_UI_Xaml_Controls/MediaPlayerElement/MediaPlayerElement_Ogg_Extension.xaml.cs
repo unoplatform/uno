@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Using .ogg", description: "Test .ogg video")]
 	public sealed partial class MediaPlayerElement_Ogg_Extension : UserControl
-    {
-        public MediaPlayerElement_Ogg_Extension()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_Ogg_Extension()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

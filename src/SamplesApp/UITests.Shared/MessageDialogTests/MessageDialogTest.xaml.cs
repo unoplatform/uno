@@ -14,13 +14,13 @@ namespace UITests.Shared.MessageDialogTests
 	/// </summary>
 	[Sample("Dialogs")]
 	public sealed partial class MessageDialogTest : Page
-    {
+	{
 		private IAsyncOperation<IUICommand> _asyncOperation;
 
 		public MessageDialogTest()
-        {
-            this.InitializeComponent();
-        }
+		{
+			this.InitializeComponent();
+		}
 
 		private async void OnClick(object sender, RoutedEventArgs e)
 		{

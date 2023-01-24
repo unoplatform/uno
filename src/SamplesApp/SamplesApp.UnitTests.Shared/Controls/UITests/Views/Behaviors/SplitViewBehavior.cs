@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Behaviors
 	/// </summary>
 	public class SplitViewBehavior
 	{
-#region OpenOnClick
+		#region OpenOnClick
 
 		public static bool GetOpenOnClick(DependencyObject obj)
 		{
@@ -39,7 +39,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// - It must be a child of the SplitView.
 		/// - It must derive from ButtonBase or be an item of a ListViewBase.
 		/// </summary>
-		public static DependencyProperty OpenOnClickProperty { get ; } =
+		public static DependencyProperty OpenOnClickProperty { get; } =
 			DependencyProperty.RegisterAttached("OpenOnClick", typeof(bool), typeof(SplitViewBehavior), new PropertyMetadata(default(bool), OnOpenOnClickChanged));
 
 		private static void OnOpenOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -47,9 +47,9 @@ namespace Uno.UI.Samples.Behaviors
 			RegisterToClick(dependencyObject);
 		}
 
-#endregion
+		#endregion
 
-#region CloseOnClick
+		#region CloseOnClick
 
 		public static bool GetCloseOnClick(DependencyObject obj)
 		{
@@ -67,7 +67,7 @@ namespace Uno.UI.Samples.Behaviors
 		/// - It must be a child of the SplitView.
 		/// - It must derive from ButtonBase or be an item of a ListViewBase.
 		/// </summary>
-		public static DependencyProperty CloseOnClickProperty { get ; } =
+		public static DependencyProperty CloseOnClickProperty { get; } =
 			DependencyProperty.RegisterAttached("CloseOnClick", typeof(bool), typeof(SplitViewBehavior), new PropertyMetadata(default(bool), OnCloseOnClickChanged));
 
 		private static void OnCloseOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -75,51 +75,55 @@ namespace Uno.UI.Samples.Behaviors
 			RegisterToClick(dependencyObject);
 		}
 
-#endregion
+		#endregion
 
 		private static void RegisterToClick(DependencyObject dependencyObject)
 		{
-#region ButtonBase registration
+			#region ButtonBase registration
 			var button = dependencyObject as ButtonBase;
 			if (button != null)
 			{
 				void handleClick(object s, object e) => OnClicked(button);
 
-				button.Loaded += (s, e) => {
+				button.Loaded += (s, e) =>
+				{
 					button.Click += handleClick;
 				};
 
-				button.Unloaded += (s, e) => {
+				button.Unloaded += (s, e) =>
+				{
 					button.Click -= handleClick;
 				};
-				
+
 				return;
 			}
-#endregion
+			#endregion
 
-#region ListViewBase registration
+			#region ListViewBase registration
 			var listBase = dependencyObject as ListViewBase;
 
 			if (listBase != null)
 			{
 				void handleClick(object s, object e) => OnClicked(listBase);
 
-				listBase.Loaded += (s, e) => {
+				listBase.Loaded += (s, e) =>
+				{
 					listBase.ItemClick += handleClick;
 				};
 
-				listBase.Unloaded += (s, e) => {
+				listBase.Unloaded += (s, e) =>
+				{
 					listBase.ItemClick -= handleClick;
 				};
 
 				return;
 			}
-#endregion
+			#endregion
 		}
 
 		private static void OnClicked(FrameworkElement element)
 		{
-#region SplitView
+			#region SplitView
 			var splitView = element.FindFirstParent<SplitView>();
 			if (splitView != null)
 			{
@@ -134,9 +138,9 @@ namespace Uno.UI.Samples.Behaviors
 
 				return;
 			}
-#endregion
+			#endregion
 
-#region BindableDrawerLayout
+			#region BindableDrawerLayout
 #if __ANDROID__
 			//This handles if projects still use BindableDrawerLayout for android.
 			var bindableDrawer = element.FindFirstParent<BindableDrawerLayout>();
@@ -155,7 +159,7 @@ namespace Uno.UI.Samples.Behaviors
 				return;
 			}
 #endif
-#endregion
+			#endregion
 		}
 	}
 }

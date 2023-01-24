@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(ViewModelBase), Description = "GridView with FirstVisibleIndex and LastVisibleIndex shown")]
+	[Sample("GridView", ViewModelType = typeof(ViewModelBase), Description = "GridView with FirstVisibleIndex and LastVisibleIndex shown")]
 	public sealed partial class GridViewFirstVisibleIndex : UserControl
 	{
 		public GridViewFirstVisibleIndex()
