@@ -130,7 +130,7 @@ namespace Uno.UI
 
 				var themes = new[] { "Default", "Light", "HighContrast" };
 
-				foreach(var theme in themes)
+				foreach (var theme in themes)
 				{
 					if (genericDictionary.ThemeDictionaries.TryGetValue(theme, out var dictionary) && dictionary is ResourceDictionary themeDictionary)
 					{
@@ -155,7 +155,7 @@ namespace Uno.UI
 			{
 				var merged = MasterDictionary.MergedDictionaries[mergedIndex];
 
-				foreach(var theme in merged.ThemeDictionaries)
+				foreach (var theme in merged.ThemeDictionaries)
 				{
 					if (theme.Value is ResourceDictionary themeDictionary && themeDictionary.ContainsKey("SymbolThemeFontFamily"))
 					{
