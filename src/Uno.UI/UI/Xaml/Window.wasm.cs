@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml
 				}
 
 				// Load the root element in DOM
-				
+
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
 					UIElement.LoadingRootElement(_rootVisual);
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 				{
 					UIElement.RootElementLoaded(_rootVisual);
 				}
-				
+
 				UpdateRootAttributes();
 			}
 

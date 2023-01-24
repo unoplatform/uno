@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 				: drawArea;
 
 			var fullCornerRadius = cornerRadius.GetRadii(drawArea.Size, borderThickness);
-			
+
 			if (!fullCornerRadius.IsEmpty)
 			{
 				if ((view as UIElement)?.FrameRoundingAdjustment is { } fra)

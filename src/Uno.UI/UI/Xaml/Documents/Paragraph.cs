@@ -2,7 +2,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Documents
 {
-	[ContentProperty(Name="Inlines")]
+	[ContentProperty(Name = "Inlines")]
 	public partial class Paragraph : Block
 	{
 		public double TextIndent

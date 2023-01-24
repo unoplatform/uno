@@ -2,9 +2,9 @@
 
 namespace Uno.UI.Contracts
 {
-    public interface IPresentable
-    {
- 
-    }
+	public interface IPresentable
+	{
+
+	}
 }
 

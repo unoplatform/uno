@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 				currentSuperview?.InsertSubview(newContent, currentPosition);
 				return newContent;
 #elif __MACOS__
-				if (currentSuperview is {})
+				if (currentSuperview is { })
 				{
 					if (currentSuperview.Subviews.Length > 0)
 					{

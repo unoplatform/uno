@@ -9,8 +9,8 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public static class ImageSourceHelper
-    {
+	public static class ImageSourceHelper
+	{
 #if NETFX_CORE
 		public static ImageSource Create(string source)
 		{
@@ -22,5 +22,5 @@ namespace Windows.UI.Xaml.Controls
 			return source;
 		}
 #endif
-    }
+	}
 }

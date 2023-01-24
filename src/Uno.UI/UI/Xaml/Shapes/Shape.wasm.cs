@@ -38,8 +38,8 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			// Initialize
 			OnFillUpdatedPartial(); // Required to properly update the HitTest
-			// Don't OnStrokeUpdatedPartial(); => Stroke is still at its default value in the ctor, and it will always results to ResetStyle("stroke")
-			// Don't OnStrokeThicknessUpdatedPartial(); => The default value is set in Uno.UI.css
+									// Don't OnStrokeUpdatedPartial(); => Stroke is still at its default value in the ctor, and it will always results to ResetStyle("stroke")
+									// Don't OnStrokeThicknessUpdatedPartial(); => The default value is set in Uno.UI.css
 		}
 
 		protected abstract SvgElement GetMainSvgElement();

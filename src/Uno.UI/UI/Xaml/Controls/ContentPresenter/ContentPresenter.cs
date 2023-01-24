@@ -1046,7 +1046,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var horizontalAlignment = HorizontalContentAlignment;
 			var verticalAlignment = VerticalContentAlignment;
-			
+
 			if (horizontalAlignment == HorizontalAlignment.Stretch &&
 				contentSize.Width > availableSize.Width)
 			{

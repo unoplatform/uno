@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class MenuBarItemFlyout : MenuFlyout
+	public partial class MenuBarItemFlyout : MenuFlyout
 	{
 		internal Control m_presenter;
 

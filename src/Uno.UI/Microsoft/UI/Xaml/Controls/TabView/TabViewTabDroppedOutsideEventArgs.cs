@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides data for the TabDroppedOutside event.
 	/// </summary>
 	public sealed partial class TabViewTabDroppedOutsideEventArgs
-    {
+	{
 		internal TabViewTabDroppedOutsideEventArgs(object item, TabViewItem tab)
 		{
 			Item = item;

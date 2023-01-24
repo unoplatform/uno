@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Media
 						);
 
 						// Clear any previous image, if any
-						foreach(var previousChild in pattern.GetChildren())
+						foreach (var previousChild in pattern.GetChildren())
 						{
 							pattern.RemoveChild(previousChild);
 						}

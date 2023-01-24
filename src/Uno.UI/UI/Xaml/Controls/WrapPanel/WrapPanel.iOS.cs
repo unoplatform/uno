@@ -24,5 +24,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			LayoutIfNeeded();
 		}
-    }
+	}
 }

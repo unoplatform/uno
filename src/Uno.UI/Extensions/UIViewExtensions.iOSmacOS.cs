@@ -138,7 +138,7 @@ namespace AppKit
 				{
 					var t = v as T;
 					return t != null && selector(t);
-				}; 
+				};
 			}
 
 			if (includeCurrent
@@ -508,7 +508,7 @@ namespace AppKit
 			this _View thisView
 			, CGPoint point
 #if __IOS__
-			, _Event uievent
+				, _Event uievent
 #endif
 		)
 		{
@@ -636,7 +636,7 @@ namespace AppKit
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
 						.Append($" ds:{desiredSize}")
 #if __IOS__
-						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
+							.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
@@ -691,7 +691,7 @@ namespace AppKit
 		static readonly NativeHandle selSubviewsHandle = Selector.GetHandle("subviews");
 #endif
 
-		[DllImport("/usr/lib/libobjc.dylib", EntryPoint="objc_msgSendSuper")]
+		[DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSendSuper")]
 		private extern static NativeHandle NativeHandle_objc_msgSendSuper(NativeHandle receiver, IntPtr selector);
 
 		private static NativeHandle GetSubviewsHandle(this _View view)

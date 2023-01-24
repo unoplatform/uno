@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new IndexOutOfRangeException();
 			}
 
-			return m_items[(int) index];
+			return m_items[(int)index];
 		}
 
 		public uint Size => (uint)m_items.Count;
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void RemoveAtEnd()
 		{
-			m_items.RemoveAt(m_items.Count -1);
+			m_items.RemoveAt(m_items.Count - 1);
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 

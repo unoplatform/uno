@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 				return true;
 			}
 
-			return obj.GetType() == GetType() && Equals((DatePickerFlyoutItem) obj);
+			return obj.GetType() == GetType() && Equals((DatePickerFlyoutItem)obj);
 		}
 
 		public override int GetHashCode()

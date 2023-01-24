@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 				availableSize.Width = Width;
 				availableSize.Height = Width / _currentRatio;
 			}
-			
+
 			base.MeasureOverride(availableSize);
 
 			return availableSize;

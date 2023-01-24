@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			var views = _owner.ChildrenShadow.ToList();
 			views.ForEach(v => v.RemoveFromSuperview());
 
-			return views; 
+			return views;
 		}
 
 		private bool ContainsCore(UIElement item)

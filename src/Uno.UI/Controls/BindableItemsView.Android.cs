@@ -50,7 +50,7 @@ namespace Uno.UI.Controls
 			base.OnLayout(changed, l, t, r, b);
 
 			if (_scrollIndexChanged)
-			{ 
+			{
 				this.ScrollToItem(_scrollToIndex);
 				_scrollIndexChanged = false;
 			}
@@ -68,7 +68,7 @@ namespace Uno.UI.Controls
 					UpdateSource(value);
 				}
 			}
-		} 
+		}
 
 		public int ItemsTemplateId { get; set; }
 		public ICommand ItemClickCommand { get; set; }
@@ -130,11 +130,11 @@ namespace Uno.UI.Controls
 
 		private void UpdateSource(IEnumerable itemsSource)
 		{
-				CreateChildren(itemsSource);
+			CreateChildren(itemsSource);
 
-				if (_itemsSourceChanged != null)
-				{
-					_itemsSourceChanged(this, new ItemsSourceChangedEventArgs(_itemsSource));
+			if (_itemsSourceChanged != null)
+			{
+				_itemsSourceChanged(this, new ItemsSourceChangedEventArgs(_itemsSource));
 			}
 		}
 
@@ -177,10 +177,10 @@ namespace Uno.UI.Controls
 			}
 
 			return view;
-		} 
+		}
 
 		#region DoExecuteCommand		
-		
+
 		private void DoClickAction(object sender, EventArgs obj)
 		{
 			var view = sender as View;
@@ -221,7 +221,7 @@ namespace Uno.UI.Controls
 			}
 
 			command.Execute(dataProvider.DataContext ?? default(object));
-		} 
+		}
 
 	}
 	#endregion

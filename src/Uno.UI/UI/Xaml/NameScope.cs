@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 
 				var newParent = parent.GetParent() as DependencyObject;
 
-				if(newParent is null && !(parent is UIElement))
+				if (newParent is null && !(parent is UIElement))
 				{
 					// This case is about handling ElementName Bindings on non-UIElement
 					// dependency objects (e.g. XAML Behaviors triggers). Those objects
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml
 					// (DataTemplate inside a DataTemplate) we need to find a known ancestor
 					// through the NameScope owner.
 
-					if(scope?.Owner is DependencyObject owner)
+					if (scope?.Owner is DependencyObject owner)
 					{
 						return FindInNamescopes(owner, name);
 					}

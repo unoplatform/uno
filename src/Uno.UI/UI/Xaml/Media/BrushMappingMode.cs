@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Media
 {
-	public enum BrushMappingMode 
+	public enum BrushMappingMode
 	{
 		Absolute,
 

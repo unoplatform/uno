@@ -18,8 +18,8 @@ using _View = Windows.UI.Xaml.UIElement;
 
 namespace Uno.UI.Extensions
 {
-    public static class EnumerableExtensions
-    {
+	public static class EnumerableExtensions
+	{
 		/// <summary>
 		/// Projects the specified collection to an array.
 		/// </summary>

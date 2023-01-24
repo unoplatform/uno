@@ -60,7 +60,7 @@ namespace Uno.UI.Controls
 		{
 			// We remove subscriptions to the previous pair of element and native 
 			_subscriptions.Dispose();
-			
+
 			if (_native != null)
 			{
 				_subscriptions = new CompositeDisposable(Initialize());
@@ -109,10 +109,10 @@ namespace Uno.UI.Controls
 		{
 			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
 		}
-        public static TRenderer ResetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
-            where TElement : DependencyObject
-        {
-            return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
-        }
+		public static TRenderer ResetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
+			where TElement : DependencyObject
+		{
+			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
+		}
 	}
 }

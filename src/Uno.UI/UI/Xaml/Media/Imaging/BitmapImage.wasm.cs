@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			if (AbsoluteUri is {} uri)
+			if (AbsoluteUri is { } uri)
 			{
 				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return true;
 			}
 
-			if (_stream is {} stream)
+			if (_stream is { } stream)
 			{
 				void OnProgress(ulong position, ulong? length)
 				{
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return true;
 			}
-			
+
 			asyncImage = default;
 			return false;
 		}
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					for (var i = KnownScales.Length - 1; i >= 0; i--)
 					{
 						var probeScale = KnownScales[i];
-					
+
 						if (resolutionScale >= probeScale)
 						{
 							var filePath = Path.Combine(directory, $"{filename}.scale-{probeScale}{extension}");

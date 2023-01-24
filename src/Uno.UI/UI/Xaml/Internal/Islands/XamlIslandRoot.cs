@@ -24,7 +24,7 @@ internal partial class XamlIslandRoot : Panel
 	internal void SetPublicRootVisual(UIElement uiElement)
 	{
 		// TODO: Adjust according to WinUI
-		var rootBorder = new Border();		
+		var rootBorder = new Border();
 		_contentRoot.VisualTree.SetPublicRootVisual(rootBorder, null, null);
 		rootBorder.Child = uiElement;
 	}

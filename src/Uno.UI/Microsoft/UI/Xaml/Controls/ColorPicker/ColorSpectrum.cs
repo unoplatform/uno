@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_inputTarget = GetTemplateChild<FrameworkElement>("InputTarget");
 			m_selectionEllipsePanel = GetTemplateChild<Panel>("SelectionEllipsePanel");
 			m_colorNameToolTip = GetTemplateChild<ToolTip>("ColorNameToolTip");
-			
+
 			// Uno Doc: Extracted event registrations into a separate method, so they can be re-registered on reloading.
 			var registrations = SubscribeToEvents();
 
@@ -1168,89 +1168,89 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//		return;
 			//	}
 
-				strongThis.m_createImageBitmapAction = null;
+			strongThis.m_createImageBitmapAction = null;
 
-				// Uno Doc: Assumed normal priority is acceptable
-				_ = strongThis.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			// Uno Doc: Assumed normal priority is acceptable
+			_ = strongThis.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				int pixelWidth = (int)Math.Round(minDimension);
+				int pixelHeight = (int)Math.Round(minDimension);
+
+				// Uno Doc: In C# (unlike C++) the existing 'components' var is captured by the lambda so it must be renamed here
+				ColorSpectrumComponents components2 = strongThis.Components;
+
+				// UNO TODO
+				//if (SharedHelpers.IsRS2OrHigher)
+				//{
+				//	LoadedImageSurface minSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMinPixelData);
+				//	LoadedImageSurface maxSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMaxPixelData);
+
+				//	switch (components2)
+				//	{
+				//		case ColorSpectrumComponents.HueValue:
+				//		case ColorSpectrumComponents.ValueHue:
+				//			strongThis.m_saturationMinimumSurface = minSurface;
+				//			strongThis.m_saturationMaximumSurface = maxSurface;
+				//			break;
+				//		case ColorSpectrumComponents.HueSaturation:
+				//		case ColorSpectrumComponents.SaturationHue:
+				//			strongThis.m_valueSurface = maxSurface;
+				//			break;
+				//		case ColorSpectrumComponents.ValueSaturation:
+				//		case ColorSpectrumComponents.SaturationValue:
+				//			strongThis.m_hueRedSurface = minSurface;
+				//			strongThis.m_hueYellowSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle1PixelData);
+				//			strongThis.m_hueGreenSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle2PixelData);
+				//			strongThis.m_hueCyanSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle3PixelData);
+				//			strongThis.m_hueBlueSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle4PixelData);
+				//			strongThis.m_huePurpleSurface = maxSurface;
+				//			break;
+				//	}
+				//}
+				//else
 				{
-					int pixelWidth = (int)Math.Round(minDimension);
-					int pixelHeight = (int)Math.Round(minDimension);
+					WriteableBitmap minBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMinPixelData);
+					WriteableBitmap maxBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMaxPixelData);
 
-					// Uno Doc: In C# (unlike C++) the existing 'components' var is captured by the lambda so it must be renamed here
-					ColorSpectrumComponents components2 = strongThis.Components;
-
-					// UNO TODO
-					//if (SharedHelpers.IsRS2OrHigher)
-					//{
-					//	LoadedImageSurface minSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMinPixelData);
-					//	LoadedImageSurface maxSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMaxPixelData);
-
-					//	switch (components2)
-					//	{
-					//		case ColorSpectrumComponents.HueValue:
-					//		case ColorSpectrumComponents.ValueHue:
-					//			strongThis.m_saturationMinimumSurface = minSurface;
-					//			strongThis.m_saturationMaximumSurface = maxSurface;
-					//			break;
-					//		case ColorSpectrumComponents.HueSaturation:
-					//		case ColorSpectrumComponents.SaturationHue:
-					//			strongThis.m_valueSurface = maxSurface;
-					//			break;
-					//		case ColorSpectrumComponents.ValueSaturation:
-					//		case ColorSpectrumComponents.SaturationValue:
-					//			strongThis.m_hueRedSurface = minSurface;
-					//			strongThis.m_hueYellowSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle1PixelData);
-					//			strongThis.m_hueGreenSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle2PixelData);
-					//			strongThis.m_hueCyanSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle3PixelData);
-					//			strongThis.m_hueBlueSurface = CreateSurfaceFromPixelData(pixelWidth, pixelHeight, bgraMiddle4PixelData);
-					//			strongThis.m_huePurpleSurface = maxSurface;
-					//			break;
-					//	}
-					//}
-					//else
+					switch (components2)
 					{
-						WriteableBitmap minBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMinPixelData);
-						WriteableBitmap maxBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMaxPixelData);
-
-						switch (components2)
-						{
-							case ColorSpectrumComponents.HueValue:
-							case ColorSpectrumComponents.ValueHue:
-								strongThis.m_saturationMinimumBitmap = minBitmap;
-								strongThis.m_saturationMaximumBitmap = maxBitmap;
-								break;
-							case ColorSpectrumComponents.HueSaturation:
-							case ColorSpectrumComponents.SaturationHue:
-								strongThis.m_valueBitmap = maxBitmap;
-								break;
-							case ColorSpectrumComponents.ValueSaturation:
-							case ColorSpectrumComponents.SaturationValue:
-								strongThis.m_hueRedBitmap = minBitmap;
-								strongThis.m_hueYellowBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle1PixelData);
-								strongThis.m_hueGreenBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle2PixelData);
-								strongThis.m_hueCyanBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle3PixelData);
-								strongThis.m_hueBlueBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle4PixelData);
-								strongThis.m_huePurpleBitmap = maxBitmap;
-								break;
-						}
+						case ColorSpectrumComponents.HueValue:
+						case ColorSpectrumComponents.ValueHue:
+							strongThis.m_saturationMinimumBitmap = minBitmap;
+							strongThis.m_saturationMaximumBitmap = maxBitmap;
+							break;
+						case ColorSpectrumComponents.HueSaturation:
+						case ColorSpectrumComponents.SaturationHue:
+							strongThis.m_valueBitmap = maxBitmap;
+							break;
+						case ColorSpectrumComponents.ValueSaturation:
+						case ColorSpectrumComponents.SaturationValue:
+							strongThis.m_hueRedBitmap = minBitmap;
+							strongThis.m_hueYellowBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle1PixelData);
+							strongThis.m_hueGreenBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle2PixelData);
+							strongThis.m_hueCyanBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle3PixelData);
+							strongThis.m_hueBlueBitmap = ColorHelpers.CreateBitmapFromPixelData(pixelWidth, pixelHeight, bgraMiddle4PixelData);
+							strongThis.m_huePurpleBitmap = maxBitmap;
+							break;
 					}
+				}
 
-					strongThis.m_shapeFromLastBitmapCreation = strongThis.Shape;
-					strongThis.m_componentsFromLastBitmapCreation = strongThis.Components;
-					strongThis.m_imageWidthFromLastBitmapCreation = minDimension;
-					strongThis.m_imageHeightFromLastBitmapCreation = minDimension;
-					strongThis.m_minHueFromLastBitmapCreation = strongThis.MinHue;
-					strongThis.m_maxHueFromLastBitmapCreation = strongThis.MaxHue;
-					strongThis.m_minSaturationFromLastBitmapCreation = strongThis.MinSaturation;
-					strongThis.m_maxSaturationFromLastBitmapCreation = strongThis.MaxSaturation;
-					strongThis.m_minValueFromLastBitmapCreation = strongThis.MinValue;
-					strongThis.m_maxValueFromLastBitmapCreation = strongThis.MaxValue;
+				strongThis.m_shapeFromLastBitmapCreation = strongThis.Shape;
+				strongThis.m_componentsFromLastBitmapCreation = strongThis.Components;
+				strongThis.m_imageWidthFromLastBitmapCreation = minDimension;
+				strongThis.m_imageHeightFromLastBitmapCreation = minDimension;
+				strongThis.m_minHueFromLastBitmapCreation = strongThis.MinHue;
+				strongThis.m_maxHueFromLastBitmapCreation = strongThis.MaxHue;
+				strongThis.m_minSaturationFromLastBitmapCreation = strongThis.MinSaturation;
+				strongThis.m_maxSaturationFromLastBitmapCreation = strongThis.MaxSaturation;
+				strongThis.m_minValueFromLastBitmapCreation = strongThis.MinValue;
+				strongThis.m_maxValueFromLastBitmapCreation = strongThis.MaxValue;
 
-					strongThis.m_hsvValues = newHsvValues;
+				strongThis.m_hsvValues = newHsvValues;
 
-					strongThis.UpdateBitmapSources();
-					strongThis.UpdateEllipse();
-				});
+				strongThis.UpdateBitmapSources();
+				strongThis.UpdateEllipse();
+			});
 			//});
 		}
 

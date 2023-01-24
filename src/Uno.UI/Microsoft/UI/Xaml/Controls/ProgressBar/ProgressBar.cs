@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string s_DeterminateStateName = "Determinate";
 		private const string s_UpdatingStateName = "Updating";
 
-		public static DependencyProperty IsIndeterminateProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
 			nameof(IsIndeterminate), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnIsIndeterminateChanged));
 
 		public bool IsIndeterminate
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsIndeterminateProperty, value);
 		}
 
-		public static DependencyProperty ShowErrorProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShowErrorProperty { get; } = DependencyProperty.Register(
 			nameof(ShowError), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowErrorChanged));
 
 		public bool ShowError
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowErrorProperty, value);
 		}
 
-		public static DependencyProperty ShowPausedProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShowPausedProperty { get; } = DependencyProperty.Register(
 			nameof(ShowPaused), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowPausedChanged));
 
 		public bool ShowPaused
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ShowPausedProperty, value);
 		}
 
-		public static DependencyProperty TemplateSettingsProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty TemplateSettingsProperty { get; } = DependencyProperty.Register(
 			nameof(TemplateSettings), typeof(ProgressBarTemplateSettings), typeof(ProgressBar), new FrameworkPropertyMetadata(default(ProgressBarTemplateSettings)));
 
 		public ProgressBarTemplateSettings TemplateSettings

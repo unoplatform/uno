@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
-	internal interface IUIElement 
+	internal interface IUIElement
 	{
 		/// <summary>
 		/// The 'availableSize' provided for the last Measure

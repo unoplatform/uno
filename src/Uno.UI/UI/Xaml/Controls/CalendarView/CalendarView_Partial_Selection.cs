@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 			CalendarViewDayItem ppItem = null;
 
 			var pMonthpanel = m_tpMonthViewItemHost.Panel;
-			if (pMonthpanel is {})
+			if (pMonthpanel is { })
 			{
 				int index = -1;
 				DependencyObject spChildAsI;
@@ -30,11 +30,11 @@ namespace Windows.UI.Xaml.Controls
 				if (index >= 0)
 				{
 					spChildAsI = pMonthpanel.ContainerFromIndex(index);
-					if (spChildAsI is {})
+					if (spChildAsI is { })
 					{
 						CalendarViewDayItem spContainer;
 
-						spContainer = (CalendarViewDayItem) spChildAsI;
+						spContainer = (CalendarViewDayItem)spChildAsI;
 						ppItem = spContainer;
 					}
 				}
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 						m_isSelectedDatesChangingInternally = true;
 
 						global::System.Diagnostics.Debug.Assert(size <= 1 ||
-						                                        selectionMode == CalendarViewSelectionMode.Multiple);
+																selectionMode == CalendarViewSelectionMode.Multiple);
 
 						date = pItem.Date;
 
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			m_focusStateAfterDisplayModeChanged = focusState;
 
-			if (displayMode == CalendarViewDisplayMode.Year && m_tpMonthViewItemHost.Panel is {})
+			if (displayMode == CalendarViewDisplayMode.Year && m_tpMonthViewItemHost.Panel is { })
 			{
 				// when we switch back to MonthView, we try to keep the same day and use the selected month and year (and era)
 				CopyDate(
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 					CalendarViewDayItem spChild;
 
 					spChild = GetContainerByDate(date);
-					if (spChild is {})
+					if (spChild is { })
 					{
 #if DEBUG
 						bool isBlackout = false;
@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 					CalendarViewDayItem spChild;
 
 					spChild = GetContainerByDate(it);
-					if (spChild is {})
+					if (spChild is { })
 					{
 						spChild.SetIsSelected(false);
 					}
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					AutomationPeer spAutomationPeer;
 					spAutomationPeer = GetAutomationPeer();
-					if (spAutomationPeer is {})
+					if (spAutomationPeer is { })
 					{
 						(spAutomationPeer as CalendarViewAutomationPeer).RaiseSelectionEvents(spEventArgs);
 					}
@@ -412,25 +412,25 @@ namespace Windows.UI.Xaml.Controls
 			switch (action)
 			{
 				case DirectUI.TrackableDateCollection.CollectionChanging.ItemInserting:
-				{
-					// when inserting an item, we should verify the new adding date is not blackout.
-					// also we need to verify this adding operation doesn't break the limition of Selection mode.
-					ValidateSelectingDateIsNotBlackout(addingDate);
-
-					uint size = 0;
-					CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
-
-					selectionMode = SelectionMode;
-					size = (uint)m_tpSelectedDates.Count;
-
-					// if we already have 1 item selected in Single mode, or the selection mode is None, we can't select any more dates.
-					if ((selectionMode == CalendarViewSelectionMode.Single && size > 0)
-						|| (selectionMode == CalendarViewSelectionMode.None))
 					{
-						//ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES);
-						throw new InvalidOperationException("ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES");
+						// when inserting an item, we should verify the new adding date is not blackout.
+						// also we need to verify this adding operation doesn't break the limition of Selection mode.
+						ValidateSelectingDateIsNotBlackout(addingDate);
+
+						uint size = 0;
+						CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
+
+						selectionMode = SelectionMode;
+						size = (uint)m_tpSelectedDates.Count;
+
+						// if we already have 1 item selected in Single mode, or the selection mode is None, we can't select any more dates.
+						if ((selectionMode == CalendarViewSelectionMode.Single && size > 0)
+							|| (selectionMode == CalendarViewSelectionMode.None))
+						{
+							//ErrorHelper.OriginateErrorUsingResourceID(E_FAIL, ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES);
+							throw new InvalidOperationException("ERROR_CALENDAR_CANNOT_SELECT_MORE_DATES");
+						}
 					}
-				}
 					break;
 				case DirectUI.TrackableDateCollection.CollectionChanging.ItemChanging:
 					// when item is changing, we don't change the total number of selected dates, so we
@@ -450,7 +450,7 @@ namespace Windows.UI.Xaml.Controls
 			CalendarViewDayItem spChild;
 
 			spChild = GetContainerByDate(date);
-			if (spChild is {})
+			if (spChild is { })
 			{
 				bool isBlackout = false;
 

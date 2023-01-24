@@ -9,6 +9,6 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
-        }
+		}
 	}
 }

@@ -6,8 +6,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class IconElement
-    {
+	public partial class IconElement
+	{
 		partial void UnregisterSubView()
 		{
 			RemoveViewAt(0);

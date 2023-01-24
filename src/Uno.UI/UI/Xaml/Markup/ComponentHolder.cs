@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Markup
 	public class ComponentHolder
 	{
 		private ManagedWeakReference? _instanceRef;
-		private object? _instance; 
+		private object? _instance;
 
 		/// <summary>
 		/// Creates an instance of ComponentHolder

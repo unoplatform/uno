@@ -5,7 +5,7 @@ using Android.Views;
 
 namespace Windows.UI.Xaml.Media
 {
-	public  partial class CompositionTarget 
+	public partial class CompositionTarget
 	{
 		private static List<EventHandler<object>> _handlers = new List<EventHandler<object>>();
 		private static FrameCallback _callback;
@@ -15,8 +15,8 @@ namespace Windows.UI.Xaml.Media
 			add
 			{
 				_handlers.Add(value);
-				
-				if(_callback == null)
+
+				if (_callback == null)
 				{
 					_callback = new FrameCallback();
 					Choreographer.Instance.PostFrameCallback(_callback);
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				_handlers.Remove(value);
 
-				if(_handlers.Count == 0)
+				if (_handlers.Count == 0)
 				{
 					Choreographer.Instance.RemoveFrameCallback(_callback);
 					_callback = null;
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			// If _callback is null it means that all handlers has been removed, no need to requeue callback
-			if (_callback is {})
+			if (_callback is { })
 			{
 				Choreographer.Instance.PostFrameCallback(_callback);
 			}

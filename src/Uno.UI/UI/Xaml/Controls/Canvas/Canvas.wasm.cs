@@ -4,7 +4,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		static partial void OnZIndexChangedPartial(UIElement element, double? zindex)
 		{
-			if (zindex is {} d)
+			if (zindex is { } d)
 			{
 				element.SetStyle("z-index", d);
 			}

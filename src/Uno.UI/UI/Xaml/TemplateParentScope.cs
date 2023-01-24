@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml
 {
-    class TemplateParentScope
-    {
-    }
+	class TemplateParentScope
+	{
+	}
 }

@@ -79,8 +79,8 @@ namespace Uno.UI.Extensions
 					break;
 
 				case BringIntoViewMode.CenterOfViewPort:
-					x = boundsOfViewInScrollViewCoordinatesSystem.Left - (viewPort.Width/2) + (boundsOfViewInScrollViewCoordinatesSystem.Width/2);
-					y = boundsOfViewInScrollViewCoordinatesSystem.Top - (viewPort.Height/2) + (boundsOfViewInScrollViewCoordinatesSystem.Height/2);
+					x = boundsOfViewInScrollViewCoordinatesSystem.Left - (viewPort.Width / 2) + (boundsOfViewInScrollViewCoordinatesSystem.Width / 2);
+					y = boundsOfViewInScrollViewCoordinatesSystem.Top - (viewPort.Height / 2) + (boundsOfViewInScrollViewCoordinatesSystem.Height / 2);
 					break;
 
 				case BringIntoViewMode.BottomRightOfViewPort:

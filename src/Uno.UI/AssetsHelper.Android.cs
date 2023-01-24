@@ -114,7 +114,7 @@ namespace Uno.UI
 					}
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				if (typeof(AssetsHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{

@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Input
 			=> (Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
-			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
+			=> new List<PointerPoint>(1) { GetCurrentPoint(relativeTo) };
 
 		internal uint FrameId { get; }
 

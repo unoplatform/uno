@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Occurs when animation ends.
 		/// </summary>
 		event EventHandler AnimationEnd;
-		
+
 		/// <summary>
 		/// Occurs when the animation is paused.
 		/// </summary>

@@ -121,14 +121,14 @@ namespace Windows.UI.Xaml
 					return DarkBlue;
 				case "DarkCyan":
 					return DarkCyan;
-                case "DarkGoldenrod":
+				case "DarkGoldenrod":
 				case "DarkGoldenRod":
 					return DarkGoldenrod;
-                case "DarkGray":
+				case "DarkGray":
 					return DarkGray;
-                case "DarkGreen":
+				case "DarkGreen":
 					return DarkGreen;
-                case "DarkKhaki":
+				case "DarkKhaki":
 					return DarkKhaki;
 				case "DarkMagenta":
 					return DarkMagenta;
@@ -226,11 +226,11 @@ namespace Windows.UI.Xaml
 					return LightSkyBlue;
 				case "LightSlateGray":
 					return LightSlateGray;
-                case "LightSteelBlue":
+				case "LightSteelBlue":
 					return LightSteelBlue;
-                case "LightYellow":
+				case "LightYellow":
 					return LightYellow;
-                case "Lime":
+				case "Lime":
 					return Lime;
 				case "LimeGreen":
 					return LimeGreen;

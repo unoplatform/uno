@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarView spParentCalendarView = GetParentCalendarView();
 
-				if (spParentCalendarView is {})
+				if (spParentCalendarView is { })
 				{
 					spParentCalendarView.OnSelectMonthYearItem(this, FocusState.Pointer);
 					pArgs.Handled = true;
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarView spParentCalendarView = GetParentCalendarView();
 
-				if (spParentCalendarView is {})
+				if (spParentCalendarView is { })
 				{
 					VirtualKey key = VirtualKey.None;
 					key = pArgs.Key;

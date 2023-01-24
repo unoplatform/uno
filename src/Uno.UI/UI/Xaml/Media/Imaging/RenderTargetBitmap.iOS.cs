@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			if (size.IsEmpty)
 			{
-				return (0,0,0);
+				return (0, 0, 0);
 			}
 			UIImage img;
 			try
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				EnsureBuffer(ref buffer, byteCount);
 				global::System.Array.Copy(bitmapData, buffer!, bufferLength);
 				SwapRB(ref buffer!, byteCount);
-				return (byteCount,(int)width,(int)height);
+				return (byteCount, (int)width, (int)height);
 			}
 		}
 	}

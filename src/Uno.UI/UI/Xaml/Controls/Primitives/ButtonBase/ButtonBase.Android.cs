@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		partial void OnUnloadedPartial()
-		{			
+		{
 			_isEnabledSubscription.Disposable = null;
 		}
 

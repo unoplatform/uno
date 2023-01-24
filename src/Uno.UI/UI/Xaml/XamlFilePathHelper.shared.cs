@@ -72,7 +72,7 @@ namespace Uno.UI.Xaml
 
 		internal static bool TryGetMsAppxAssetPath(string? uri, [NotNullWhen(true)] out string? path)
 		{
-			if(Uri.TryCreate(uri, UriKind.Absolute, out var newUri) && TryGetMsAppxAssetPath(newUri, out path))
+			if (Uri.TryCreate(uri, UriKind.Absolute, out var newUri) && TryGetMsAppxAssetPath(newUri, out path))
 			{
 				return true;
 			}

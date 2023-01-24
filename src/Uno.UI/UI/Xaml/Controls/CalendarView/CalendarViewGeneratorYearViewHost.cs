@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spContainer = (CalendarViewItem)(pContainer);
 
-			date = (DateTime) pItem;
+			date = (DateTime)pItem;
 			GetCalendar().SetDateTime(date);
 			spContainer.DateBase = date;
 
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			//This code enables the focus visuals on the CalendarViewItems in the Year Pane in the correct position.
 			{
 				Thickness focusMargin = new Thickness(
-					- 2.0, -2.0, -2.0, -2.0
+					-2.0, -2.0, -2.0, -2.0
 				);
 				spContainer.FocusVisualMargin = focusMargin;
 

@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides event data for the TreeView.Expanding event.
 	/// </summary>
 	public partial class TreeViewExpandingEventArgs
-    {
+	{
 		internal TreeViewExpandingEventArgs(TreeViewNode node)
 		{
 			Node = node;

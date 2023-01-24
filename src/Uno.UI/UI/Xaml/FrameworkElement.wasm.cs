@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
+		public static DependencyProperty MarginProperty { get; } = CreateMarginProperty();
 
 		public virtual Thickness Margin
 		{
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
+		public static DependencyProperty HorizontalAlignmentProperty { get; } = CreateHorizontalAlignmentProperty();
 
 		public HorizontalAlignment HorizontalAlignment
 		{
@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
+		public static DependencyProperty VerticalAlignmentProperty { get; } = CreateVerticalAlignmentProperty();
 
 		public VerticalAlignment VerticalAlignment
 		{
@@ -298,7 +298,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty WidthProperty { get ; } = CreateWidthProperty();
+		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
 
 		public double Width
 		{
@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty HeightProperty { get ; } = CreateHeightProperty();
+		public static DependencyProperty HeightProperty { get; } = CreateHeightProperty();
 
 		public double Height
 		{
@@ -332,7 +332,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MinWidthProperty { get ; } = CreateMinWidthProperty();
+		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
 
 		public double MinWidth
 		{
@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MinHeightProperty { get ; } = CreateMinHeightProperty();
+		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
 
 		public double MinHeight
 		{
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MaxWidthProperty { get ; } = CreateMaxWidthProperty();
+		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
 
 		public double MaxWidth
 		{
@@ -385,7 +385,7 @@ namespace Windows.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MaxHeightProperty { get ; } = CreateMaxHeightProperty();
+		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
 
 		public double MaxHeight
 		{

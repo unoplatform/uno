@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 						treeViewItem.SetItemsSource(targetNode, itemsSource);
 					}
 				}
-				treeViewItem.UpdateIndentation(targetNode.Depth);				
+				treeViewItem.UpdateIndentation(targetNode.Depth);
 				treeViewItem.UpdateSelectionVisual(targetNode.SelectionState);
 			}
 		}

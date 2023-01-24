@@ -8,8 +8,8 @@ using Uno.Extensions;
 
 namespace Uno.UI.Controls
 {
-    public class RootViewController : NSViewController
-    {
+	public class RootViewController : NSViewController
+	{
 		public RootViewController()
 		{
 		}

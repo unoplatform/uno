@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnApplyTemplate()
 		{
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnApplyTemplate.", this));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnApplyTemplate.", this));
 #endif // CMH_DEBUG
 
 			UpdateOwnerVisualState();
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 			handled = args.Handled;
 
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - handled=%d.", this, handled));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - handled=%d.", this, handled));
 #endif // CMH_DEBUG
 
 			if (!handled)
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 				var owner = m_wpOwner?.Target as ISubMenuOwner;
 
 #if CMH_DEBUG
-        (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - owner=0x%p.", this, owner));
+				(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - owner=0x%p.", this, owner));
 #endif // CMH_DEBUG
 
 				if (owner != null)
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 					parentOwner = owner.ParentOwner;
 
 #if CMH_DEBUG
-            (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - parentOwner=0x%p.", this, parentOwner));
+					(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - parentOwner=0x%p.", this, parentOwner));
 #endif // CMH_DEBUG
 
 					if (parentOwner != null)
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 					EnsureDelayOpenMenuTimer();
 
 #if CMH_DEBUG
-            (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - Starting m_delayOpenMenuTimer.", this));
+					(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerEntered - Starting m_delayOpenMenuTimer.", this));
 #endif // CMH_DEBUG
 
 					m_delayOpenMenuTimer.Start();
@@ -243,13 +243,13 @@ namespace Windows.UI.Xaml.Controls
 			handled = args.Handled;
 
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerExited - handled=%d, parentIsSubMenu=%d.", this, handled, parentIsSubMenu));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerExited - handled=%d, parentIsSubMenu=%d.", this, handled, parentIsSubMenu));
 #endif // CMH_DEBUG
 
 			if (m_delayOpenMenuTimer != null)
 			{
 #if CMH_DEBUG
-        (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerExited - Stopping m_delayOpenMenuTimer.", this));
+				(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerExited - Stopping m_delayOpenMenuTimer.", this));
 #endif // CMH_DEBUG
 
 				m_delayOpenMenuTimer.Stop();
@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerPressed.", this));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerPressed.", this));
 #endif // CMH_DEBUG
 
 			m_isPressed = true;
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Controls
 			pointerDeviceType = pointer.PointerDeviceType;
 
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerReleased - pointerDeviceType=%d.", this, pointerDeviceType));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnPointerReleased - pointerDeviceType=%d.", this, pointerDeviceType));
 #endif // CMH_DEBUG
 
 			// Show the sub menu in the case of touch input.
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnGotFocus(RoutedEventArgs args)
 		{
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnGotFocus.", this));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnGotFocus.", this));
 #endif // CMH_DEBUG
 
 			UpdateOwnerVisualState();
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnLostFocus(RoutedEventArgs args)
 		{
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnLostFocus.", this));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnLostFocus.", this));
 #endif // CMH_DEBUG
 
 			m_isPressed = false;
@@ -384,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 			handled = args.Handled;
 
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnKeyDown - handled=%d.", this, handled));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnKeyDown - handled=%d.", this, handled));
 #endif // CMH_DEBUG
 
 			if (!handled)
@@ -405,7 +405,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnKeyUp(KeyRoutedEventArgs args)
 		{
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnKeyUp.", this));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OnKeyUp.", this));
 #endif // CMH_DEBUG
 
 			UpdateOwnerVisualState();
@@ -512,7 +512,7 @@ namespace Windows.UI.Xaml.Controls
 				IMenuPresenter menuPresenter = subMenuPresenter as IMenuPresenter;
 
 #if CMH_DEBUG
-        (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: SetSubMenuPresenter - menuPresenter=0x%p.", this, menuPresenter));
+				(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: SetSubMenuPresenter - menuPresenter=0x%p.", this, menuPresenter));
 #endif // CMH_DEBUG
 
 				if (menuPresenter != null)
@@ -529,7 +529,7 @@ namespace Windows.UI.Xaml.Controls
 			ISubMenuOwner ownerAsSubMenuOwner = m_wpOwner?.Target as ISubMenuOwner;
 
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OpenSubMenu - ownerAsSubMenuOwner=0x%p.", this, ownerAsSubMenuOwner));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: OpenSubMenu - ownerAsSubMenuOwner=0x%p.", this, ownerAsSubMenuOwner));
 #endif // CMH_DEBUG
 
 			if (ownerAsSubMenuOwner != null)
@@ -592,7 +592,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void CloseSubMenu()
 		{
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: CloseSubMenu.", this));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: CloseSubMenu.", this));
 #endif // CMH_DEBUG
 
 			CloseChildSubMenus();
@@ -957,7 +957,7 @@ namespace Windows.UI.Xaml.Controls
 			Control ownerAsControl = m_wpOwner?.Target as Control;
 
 #if CMH_DEBUG
-    (DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: UpdateOwnerVisualState - ownerAsControl=0x%p.", this, ownerAsControl));
+			(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "CMH[0x%p]: UpdateOwnerVisualState - ownerAsControl=0x%p.", this, ownerAsControl));
 #endif // CMH_DEBUG
 
 			if (ownerAsControl != null)

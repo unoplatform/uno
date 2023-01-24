@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml
 
 		internal bool TryGetValue(Type ownerType, out PropertyMetadata? metadata)
 		{
-			if(_table.TryGetValue(ownerType, out var value))
+			if (_table.TryGetValue(ownerType, out var value))
 			{
 				metadata = (PropertyMetadata)value!;
 

@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!focusSet)
 			{
-				ButtonBase button = DefaultButton switch				
+				ButtonBase button = DefaultButton switch
 				{
 					ContentDialogButton.Primary => m_tpPrimaryButtonPart,
 					ContentDialogButton.Secondary => m_tpSecondaryButtonPart,

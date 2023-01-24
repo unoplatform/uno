@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 	{
 		public string GroupName;
 		public string Name;
-		
+
 		public TemplateVisualStateAttribute()
 		{
 		}

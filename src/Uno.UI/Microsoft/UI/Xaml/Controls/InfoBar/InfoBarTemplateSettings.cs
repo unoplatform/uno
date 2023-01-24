@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// sources when defining templates for an InfoBar.
 	/// </summary>
 	public partial class InfoBarTemplateSettings : DependencyObject
-    {
+	{
 		/// <summary>
 		/// Initializes a new instance of the InfoBarTemplateSettings class.
 		/// </summary>

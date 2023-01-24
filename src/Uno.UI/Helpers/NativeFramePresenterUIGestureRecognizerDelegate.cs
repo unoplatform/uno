@@ -1,13 +1,13 @@
 ﻿#if __IOS__
-using System; 
-using System.Linq; 
+using System;
+using System.Linq;
 using UIKit;
 
 namespace Uno.UI.Helpers
 {
 	internal class NativeFramePresenterUIGestureRecognizerDelegate : UIGestureRecognizerDelegate
 	{
-		private Func<UINavigationController> _navigationController; 
+		private Func<UINavigationController> _navigationController;
 		public NativeFramePresenterUIGestureRecognizerDelegate(Func<UINavigationController> navigationController)
 		{
 			_navigationController = navigationController;

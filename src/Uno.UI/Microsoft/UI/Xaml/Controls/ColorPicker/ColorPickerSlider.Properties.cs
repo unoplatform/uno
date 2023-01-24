@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(ColorChannelProperty, value);
 		}
 
-		public static DependencyProperty ColorChannelProperty { get ; } =
+		public static DependencyProperty ColorChannelProperty { get; } =
 			DependencyProperty.Register(
 				nameof(ColorChannel),
 				typeof(ColorPickerHsvChannel),

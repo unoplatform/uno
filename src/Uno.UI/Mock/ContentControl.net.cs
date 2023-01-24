@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class ContentControl
+	public partial class ContentControl
 	{
 		private bool HasParent() => true;
 

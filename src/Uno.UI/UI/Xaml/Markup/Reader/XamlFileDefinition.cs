@@ -10,7 +10,7 @@ using Uno.Xaml;
 
 namespace Windows.UI.Xaml.Markup.Reader
 {
-    internal class XamlFileDefinition
+	internal class XamlFileDefinition
 	{
 		public XamlFileDefinition()
 		{

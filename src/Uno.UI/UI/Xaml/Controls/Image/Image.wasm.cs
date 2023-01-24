@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 			_htmlImage = new HtmlImage();
 
 			_htmlImage.SetStyle("visibility", "hidden");
-			
+
 			ImageOpened += OnImageOpened;
 			ImageFailed += OnImageFailed;
 
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ExceptionRoutedEventArgs ImageFailedConverter(object sender, string e)
 			=> new ExceptionRoutedEventArgs(sender, e);
-		
+
 		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
 			UpdateHitTest();

@@ -35,7 +35,7 @@ namespace Uno.UI.Xaml
 
 		public static void UpdateResourceBindings(this DependencyObject instance)
 		{
-			if(instance is IDependencyObjectStoreProvider provider)
+			if (instance is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ApplyElementNameBindings();
 				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);

@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		public override IEnumerable<UIElement> GetChildren() 
+		public override IEnumerable<UIElement> GetChildren()
 			=> Child is FrameworkElement fe ? new[] { fe } : Array.Empty<FrameworkElement>();
 
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
