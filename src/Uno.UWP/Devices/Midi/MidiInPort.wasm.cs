@@ -55,7 +55,7 @@ namespace Windows.Devices.Midi
 			if (!_instanceSubscriptions.TryGetValue(managedId, out var port))
 			{
 				throw new InvalidOperationException("This instance is not listening to MIDI input.");
-			}            
+			}
 
 			var managedTimestamp = TimeSpan.FromMilliseconds(timestamp);
 

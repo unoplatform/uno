@@ -8,7 +8,7 @@ namespace Windows.Devices.Sensors
 	public partial class Pedometer
 	{
 		private readonly static object _syncLock = new object();
-		
+
 		private static bool _initializationAttempted;
 		private static Task<Pedometer> _instanceTask;
 
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sensors
 				{
 					_instanceTask = Task.Run(() => TryCreateInstance());
 					_initializationAttempted = true;
-				}				
+				}
 			}
 			return await _instanceTask;
 		}

@@ -6,7 +6,7 @@ using System;
 
 namespace Windows.Storage
 {
-	public sealed partial class ApplicationData 
+	public sealed partial class ApplicationData
 	{
 		public static ApplicationData Current { get; } = new ApplicationData();
 
@@ -37,7 +37,7 @@ namespace Windows.Storage
 
 		[Uno.NotImplemented]
 		public ulong RoamingStorageQuota => 0;
-		
+
 
 		[Uno.NotImplemented]
 		public uint Version => 0;
@@ -49,19 +49,19 @@ namespace Windows.Storage
 		}
 
 		[Uno.NotImplemented]
-		public  StorageFolder GetPublisherCacheFolder( string folderName)
+		public StorageFolder GetPublisherCacheFolder(string folderName)
 		{
 			throw new NotImplementedException("The member StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName) is not implemented in Uno.");
 		}
 
 		[Uno.NotImplemented]
-		public Foundation.IAsyncAction ClearPublisherCacheFolderAsync( string folderName)
+		public Foundation.IAsyncAction ClearPublisherCacheFolderAsync(string folderName)
 		{
 			throw new NotImplementedException("The member IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName) is not implemented in Uno.");
 		}
 
 		[Uno.NotImplemented]
-		public static Foundation.IAsyncOperation<ApplicationData> GetForUserAsync( System.User user)
+		public static Foundation.IAsyncOperation<ApplicationData> GetForUserAsync(System.User user)
 		{
 			throw new NotImplementedException("The member IAsyncOperation<ApplicationData> ApplicationData.GetForUserAsync(User user) is not implemented in Uno.");
 		}

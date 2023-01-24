@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		}
 
 		public IAsyncOperation<bool> TrySetLockScreenImageAsync(StorageFile imageFile) =>
-			TrySetImageAsync(imageFile, WallpaperManagerFlags.Lock).AsAsyncOperation();		
+			TrySetImageAsync(imageFile, WallpaperManagerFlags.Lock).AsAsyncOperation();
 
 		public IAsyncOperation<bool> TrySetWallpaperImageAsync(StorageFile imageFile) =>
 			TrySetImageAsync(imageFile, WallpaperManagerFlags.System).AsAsyncOperation();

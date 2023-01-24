@@ -16,7 +16,7 @@ namespace Windows.Devices.Midi
 		/// </summary>
 		/// <param name="channel">The channel from 0-15 that this message applies to.</param>
 		/// <param name="program">The program to change from 0-127.</param>
-		public MidiProgramChangeMessage(byte channel, byte program)			
+		public MidiProgramChangeMessage(byte channel, byte program)
 		{
 			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
 			MidiMessageValidators.VerifyRange(program, MidiMessageParameter.Program);

@@ -73,38 +73,39 @@ namespace Windows.Devices.Sensors
 			// Thread pool is used to avoid startup
 			// cost of threads creation.
 			ThreadPool.QueueUserWorkItem(
-				_ => {
-				if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
+				_ =>
 				{
-					_sensorManager = sensorManager;
-
-					var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
-
-					// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
-					// Therefore, only use it in Oreo+ 
-					var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
-
-					// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
-					if (gravitySensor != null && useGravitySensor)
+					if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
 					{
-						_sensorManager.RegisterListener(this, _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
-					}
-					else
-					{
-						_orientationListener = new SimpleOrientationEventListener(orientation => OnOrientationChanged(orientation));
-						_contentObserver = new SettingsContentObserver(new Handler(mainLooper!), () => OnIsAccelerometerRotationEnabledChanged(IsAccelerometerRotationEnabled));
+						_sensorManager = sensorManager;
 
-						if (Settings.System.GetUriFor(Settings.System.AccelerometerRotation) is { } accelerometerRotationUri)
+						var gravitySensor = _sensorManager.GetDefaultSensor(_gravitySensorType);
+
+						// Gravity sensor support seems to have been added in Nougat (Android 7), but not entirely functional.
+						// Therefore, only use it in Oreo+ 
+						var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
+
+						// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+						if (gravitySensor != null && useGravitySensor)
 						{
-							context.ContentResolver!.RegisterContentObserver(accelerometerRotationUri, true, _contentObserver);
-							if (_orientationListener.CanDetectOrientation() && IsAccelerometerRotationEnabled)
+							_sensorManager.RegisterListener(this, _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
+						}
+						else
+						{
+							_orientationListener = new SimpleOrientationEventListener(orientation => OnOrientationChanged(orientation));
+							_contentObserver = new SettingsContentObserver(new Handler(mainLooper!), () => OnIsAccelerometerRotationEnabledChanged(IsAccelerometerRotationEnabled));
+
+							if (Settings.System.GetUriFor(Settings.System.AccelerometerRotation) is { } accelerometerRotationUri)
 							{
-								_orientationListener.Enable();
+								context.ContentResolver!.RegisterContentObserver(accelerometerRotationUri, true, _contentObserver);
+								if (_orientationListener.CanDetectOrientation() && IsAccelerometerRotationEnabled)
+								{
+									_orientationListener.Enable();
+								}
 							}
 						}
 					}
-				}
-			}, null);
+				}, null);
 		}
 
 		#region GraviySensorType Methods

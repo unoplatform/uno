@@ -118,14 +118,14 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					.Where(x => !IPAddress.IsLoopback(x.Address));
-					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
+				//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
 				foreach (var addressInfo in addresses)
 				{
 					var address = addressInfo.Address;
 
 					string addressStr;
-					if(address.AddressFamily == AddressFamily.InterNetworkV6)
+					if (address.AddressFamily == AddressFamily.InterNetworkV6)
 					{
 						address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
 						addressStr = $"[{address}]";

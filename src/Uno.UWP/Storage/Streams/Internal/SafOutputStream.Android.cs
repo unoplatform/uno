@@ -133,7 +133,7 @@ namespace Uno.Storage.Streams.Internal
 		public override void SetLength(long value)
 		{
 			_cacheStream.SetLength(value);
-			_pendingChanges = true;			 
+			_pendingChanges = true;
 		}
 
 		public override int Read(byte[] buffer, int offset, int count)
@@ -166,14 +166,14 @@ namespace Uno.Storage.Streams.Internal
 			if (_pendingChanges)
 			{
 				CopyToTarget();
-			}			
+			}
 			_cacheStream.Dispose();
 			System.IO.File.Delete(_cacheFile.Path);
 		}
 
 		public override async ValueTask DisposeAsync()
 		{
-			if(_pendingChanges)
+			if (_pendingChanges)
 			{
 				await CopyToTargetAsync();
 			}

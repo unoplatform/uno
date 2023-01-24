@@ -9,7 +9,7 @@ namespace $ext_safeprojectname$
 		{
 			NSApplication.Init();
 			NSApplication.SharedApplication.Delegate = new App();
-			NSApplication.Main(args);  
+			NSApplication.Main(args);
 		}
 	}
 }

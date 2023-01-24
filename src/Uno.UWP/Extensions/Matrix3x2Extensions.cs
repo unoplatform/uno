@@ -43,7 +43,7 @@ namespace Uno.Extensions
 		/// <param name="matrix">The matrix to use to transform the <paramref name="rect"/></param>
 		/// <returns>A new rectangle</returns>
 		public static Rect Transform(this Matrix3x2 matrix, Rect rect)
-		{ 
+		{
 			var leftTop = matrix.Transform(rect.Left, rect.Top);
 			var leftBottom = matrix.Transform(rect.Left, rect.Bottom);
 			var rightTop = matrix.Transform(rect.Right, rect.Top);

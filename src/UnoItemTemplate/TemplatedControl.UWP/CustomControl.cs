@@ -18,7 +18,7 @@ namespace $rootnamespace$
     {
         public $safeitemname$()
         {
-            this.DefaultStyleKey = typeof($safeitemname$);
-        }
-    }
+			this.DefaultStyleKey = typeof($safeitemname$);
+		}
+	}
 }

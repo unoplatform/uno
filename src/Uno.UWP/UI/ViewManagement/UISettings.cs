@@ -7,7 +7,7 @@ using Uno.Helpers.Theming;
 using Windows.Foundation;
 using Windows.UI.Core;
 #if __MACOS__
-using AppKit; 
+using AppKit;
 #endif
 
 namespace Windows.UI.ViewManagement

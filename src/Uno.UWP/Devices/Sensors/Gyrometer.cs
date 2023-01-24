@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
 {
-	public  partial class Gyrometer 
+	public partial class Gyrometer
 	{
 		private readonly static object _syncLock = new object();
 

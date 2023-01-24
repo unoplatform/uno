@@ -18,7 +18,7 @@ using System.Security;
 [assembly: SecurityRules(SecurityRuleSet.Level1)]
 #endif
 
-#if DEBUG	
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]

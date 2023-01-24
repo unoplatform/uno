@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Windows.Storage
 {
-	partial class ApplicationData 
+	partial class ApplicationData
 	{
 		private static string GetLocalCacheFolder()
 		{
@@ -23,7 +23,7 @@ namespace Windows.Storage
 			}
 		}
 
-		private static string GetTemporaryFolder() 
+		private static string GetTemporaryFolder()
 			=> Path.GetTempPath();
 
 		private static string GetLocalFolder()

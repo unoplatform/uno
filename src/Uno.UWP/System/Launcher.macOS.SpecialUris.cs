@@ -97,7 +97,7 @@ namespace Windows.System
 			}
 			NSWorkspace.SharedWorkspace.OpenUrl(url);
 			return true;
-		}	
+		}
 	}
 }
 #endif

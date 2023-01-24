@@ -1,6 +1,6 @@
 namespace Windows.ApplicationModel.Chat
 {
-	public   enum ChatMessageOperatorKind 
+	public enum ChatMessageOperatorKind
 	{
 		Unspecified,
 		Sms,

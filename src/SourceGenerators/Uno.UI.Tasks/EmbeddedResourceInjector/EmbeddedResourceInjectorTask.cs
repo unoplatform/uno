@@ -90,7 +90,7 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 
 				return true;
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				// Require because the task is running out of process
 				// and can't marshal non-CLR known exceptions.

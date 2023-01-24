@@ -1,6 +1,6 @@
 namespace Windows.Devices.Sensors
 {
-	public  partial class MagnetometerReadingChangedEventArgs 
+	public partial class MagnetometerReadingChangedEventArgs
 	{
 		internal MagnetometerReadingChangedEventArgs(MagnetometerReading reading) =>
 			Reading = reading;

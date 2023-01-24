@@ -24,12 +24,12 @@ namespace Windows.System.Power
 		{
 			_device = UIDevice.CurrentDevice;
 			_isSimulator = _device.Model?
-				               .Contains(
-					               DeviceModelSimulator,
-					               StringComparison.InvariantCultureIgnoreCase) == true;
+							   .Contains(
+								   DeviceModelSimulator,
+								   StringComparison.InvariantCultureIgnoreCase) == true;
 			_device.BatteryMonitoringEnabled = !_isSimulator;
 		}
-			   
+
 		private static void StartEnergySaverStatusMonitoring()
 		{
 			if (_isSimulator) return;

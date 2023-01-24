@@ -6,7 +6,7 @@ using Uno.Foundation.Interop;
 
 namespace Windows.Storage
 {
-	partial class ApplicationData 
+	partial class ApplicationData
 	{
 		internal static void Init()
 		{

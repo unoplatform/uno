@@ -9,7 +9,7 @@
 	{
 		internal InMemoryBuffer(int capacity)
 			: base((uint)capacity)
-		{			
+		{
 		}
 
 		internal InMemoryBuffer(byte[] data)

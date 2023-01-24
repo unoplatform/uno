@@ -32,10 +32,10 @@ namespace Windows.ApplicationModel.Chat
 
 			messageController.Body = message.Body;
 			messageController.Recipients = message?.Recipients?.ToArray() ?? Array.Empty<string>();
-			
+
 			messageController.Finished += (sender, e) =>
 			{
-				messageController.DismissViewController(true, null);				
+				messageController.DismissViewController(true, null);
 			};
 
 			controller.PresentViewController(messageController, true, null);

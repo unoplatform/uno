@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-    internal static class XamlConstants
+	internal static class XamlConstants
 	{
 		public const string XamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
 		public const string PresentationXamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";

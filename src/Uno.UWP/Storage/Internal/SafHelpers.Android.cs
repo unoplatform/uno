@@ -13,7 +13,7 @@ namespace Uno.Storage.Internal
 	/// Access Framework-based StorageFiles and StorageFolders.
 	/// </summary>
 	internal static class SafHelpers
-    {
+	{
 		/// <summary>
 		/// Retrieves basic properties for a given SAF Uri.
 		/// </summary>
@@ -63,5 +63,5 @@ namespace Uno.Storage.Internal
 				return new BasicProperties(0, DateTimeOffset.MinValue);
 			}, token);
 		}
-    }
+	}
 }

@@ -6,11 +6,11 @@ using Windows.UI.Xaml.Controls;
 
 namespace XamlGenerationTests.Shared
 {
-    public sealed partial class CustomUserControl : UserControl
-    {
-        public CustomUserControl()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class CustomUserControl : UserControl
+	{
+		public CustomUserControl()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

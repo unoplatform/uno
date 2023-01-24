@@ -84,7 +84,7 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardRightGui => VirtualKey.RightWindows, // Command
 				UIKeyboardHidUsage.KeyboardLeftShift => VirtualKey.Shift, // Left Shift
 				UIKeyboardHidUsage.KeyboardCapsLock => VirtualKey.CapitalLock,
-				UIKeyboardHidUsage.KeyboardLeftAlt =>  VirtualKey.LeftMenu,
+				UIKeyboardHidUsage.KeyboardLeftAlt => VirtualKey.LeftMenu,
 				UIKeyboardHidUsage.KeyboardLeftControl => VirtualKey.Control, // Left control
 				UIKeyboardHidUsage.KeyboardRightShift => VirtualKey.RightShift,
 				UIKeyboardHidUsage.KeyboardRightAlt => VirtualKey.RightMenu, // Right option, a.k.a. Right Alt

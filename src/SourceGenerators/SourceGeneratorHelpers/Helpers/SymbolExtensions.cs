@@ -496,7 +496,7 @@ namespace Microsoft.CodeAnalysis
 			if (namedType?.TypeArguments.Any() ?? false)
 			{
 				var genericArgs = namedType.TypeArguments.Select(GetFullMetadataName).JoinBy(",");
-				sb.Append($"[{ genericArgs }]");
+				sb.Append($"[{genericArgs}]");
 			}
 
 			return sb.ToString();

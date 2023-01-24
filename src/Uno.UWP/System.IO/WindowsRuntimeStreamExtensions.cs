@@ -17,7 +17,7 @@ namespace System.IO
 			}
 
 			if (stream is IInputStreamWrapper wrapper
-				&& wrapper.FindStream() is {} raw)
+				&& wrapper.FindStream() is { } raw)
 			{
 				return raw;
 			}

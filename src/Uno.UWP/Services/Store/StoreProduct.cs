@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Windows.Services.Store
 {
 	public sealed class StoreProduct
-    {
+	{
 		internal StoreProduct() { }
 
 		/// <summary>

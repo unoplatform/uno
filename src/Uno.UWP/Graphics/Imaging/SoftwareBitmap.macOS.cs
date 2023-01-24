@@ -32,7 +32,7 @@ namespace Windows.Graphics.Imaging
 				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
 			var copy = Copy(image.CGImage);
-			bitmap.Image = new NSImage(copy,new CGSize(copy.Width,copy.Height));
+			bitmap.Image = new NSImage(copy, new CGSize(copy.Width, copy.Height));
 		}
 
 		public static SoftwareBitmap Copy(global::Windows.Graphics.Imaging.SoftwareBitmap source)
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Imaging
 
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
-			return CreateCopyFromBuffer(source,format,width,height, global::Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
+			return CreateCopyFromBuffer(source, format, width, height, global::Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
 		}
 
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)

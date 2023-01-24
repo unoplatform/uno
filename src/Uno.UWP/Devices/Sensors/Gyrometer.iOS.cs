@@ -43,11 +43,11 @@ namespace Windows.Devices.Sensors
 			{
 				return;
 			}
-			
+
 			var gyrometerReading = new GyrometerReading(
 				(float)data.RotationRate.x * SensorConstants.RadToDeg,
 				(float)data.RotationRate.y * SensorConstants.RadToDeg,
-				(float)data.RotationRate.z * SensorConstants.RadToDeg,	
+				(float)data.RotationRate.z * SensorConstants.RadToDeg,
 				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
 
 			OnReadingChanged(gyrometerReading);

@@ -8,7 +8,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public partial class ManipulationInertiaStartingEventArgs 
+	public partial class ManipulationInertiaStartingEventArgs
 	{
 		internal ManipulationInertiaStartingEventArgs(
 			PointerIdentifier[] pointers,
