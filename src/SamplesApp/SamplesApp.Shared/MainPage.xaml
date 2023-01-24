@@ -7,5 +7,12 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
-	<controls:SampleChooserControl x:Name="sampleControl" />
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+		  Margin="0,32,0,0">
+		<ScrollViewer>
+			<StackPanel>
+				<ComboBox x:Name="ComboBoxTest" />
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
 </Page>

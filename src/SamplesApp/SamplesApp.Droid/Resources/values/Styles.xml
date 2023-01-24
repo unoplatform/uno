@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
 	<style name="AppTheme" parent="Theme.AppCompat.Light">
-
+		<!-- This makes the status bar translucent and allows content to be drawn behind -->
+		<item name="android:windowTranslucentStatus">true</item>
 		<!-- This removes the ActionBar -->
 		<item name="windowActionBar">false</item>
 		<item name="android:windowActionBar">false</item>

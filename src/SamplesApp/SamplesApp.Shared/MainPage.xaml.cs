@@ -2,6 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using System.Linq;
 
 namespace SamplesApp
 {
@@ -11,7 +12,7 @@ namespace SamplesApp
 		{
 			this.InitializeComponent();
 
-			sampleControl.DataContext = new SampleChooserViewModel();
+            ComboBoxTest.ItemsSource = global::System.Linq.Enumerable.Range(1, 3).Select(x => $"Item 1.{x}");
 		}
 	}
 }
