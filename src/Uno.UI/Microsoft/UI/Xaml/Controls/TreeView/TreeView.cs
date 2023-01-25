@@ -376,7 +376,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		protected override void OnApplyTemplate()
-		{			
+		{
 			m_listControl = GetTemplateChild(c_listControlName) as TreeViewList;
 			var listControl = m_listControl;
 			if (listControl != null)

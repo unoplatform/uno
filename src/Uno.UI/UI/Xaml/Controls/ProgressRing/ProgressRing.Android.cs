@@ -20,7 +20,7 @@ public partial class ProgressRing
 		{
 #if __ANDROID_28__
 #pragma warning disable 618 // SetColorFilter is deprecated
-				_native.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+			_native.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
 #pragma warning restore 618 // SetColorFilter is deprecated
 #else
 			_native.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));

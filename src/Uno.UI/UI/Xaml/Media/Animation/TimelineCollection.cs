@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				if(_targetedProperties == null)
+				if (_targetedProperties == null)
 				{
 					_targetedProperties = Items
 						.Select(i => i.GetTimelineTargetFullName())

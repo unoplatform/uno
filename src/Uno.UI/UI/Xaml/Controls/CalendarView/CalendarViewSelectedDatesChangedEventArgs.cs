@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class CalendarViewSelectedDatesChangedEventArgs 
+	public partial class CalendarViewSelectedDatesChangedEventArgs
 	{
 		internal CalendarViewSelectedDatesChangedEventArgs()
 		{

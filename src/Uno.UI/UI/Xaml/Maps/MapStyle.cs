@@ -1,7 +1,7 @@
 
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	public   enum MapStyle 
+	public enum MapStyle
 	{
 		None,
 		Road,

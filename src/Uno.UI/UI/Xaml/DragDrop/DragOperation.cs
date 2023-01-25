@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml
 
 		internal DataPackageOperation Moved(IDragEventSource src)
 		{
-			if (_state >= State.Completing || src.FrameId <= _lastFrameId) 
+			if (_state >= State.Completing || src.FrameId <= _lastFrameId)
 			{
 				return _acceptedOperation;
 			}

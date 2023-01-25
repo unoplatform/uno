@@ -18,13 +18,13 @@ using GenericColor = System.Drawing.Color;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public static class PanelExtensions
-    {
+	public static class PanelExtensions
+	{
 		public static FrameworkElement Background(this FrameworkElement panel, GenericColor color)
 		{
 			panel.Background = new SolidColorBrush(color);
 			return panel;
 		}
-    }
+	}
 }
 #endif

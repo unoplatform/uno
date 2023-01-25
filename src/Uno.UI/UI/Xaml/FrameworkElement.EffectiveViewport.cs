@@ -299,7 +299,8 @@ namespace Windows.UI.Xaml
 			bool isInitial = false,
 			bool isInternal = false
 #if TRACE_EFFECTIVE_VIEWPORT
-			, [CallerMemberName] string? caller = null) {
+			, [CallerMemberName] string? caller = null)
+		{
 #else
 			)
 		{

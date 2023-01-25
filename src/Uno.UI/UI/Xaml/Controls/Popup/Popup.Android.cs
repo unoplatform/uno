@@ -90,7 +90,7 @@ public partial class Popup
 		}
 		else
 		{
-			if(_popupWindow.IsShowing)
+			if (_popupWindow.IsShowing)
 			{
 				_popupWindow.Dismiss();
 			}

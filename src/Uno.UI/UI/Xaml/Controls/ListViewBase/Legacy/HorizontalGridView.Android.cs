@@ -13,7 +13,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls.Legacy
 {
-    public partial class HorizontalGridView : Uno.UI.Controls.HorizontalGridView, IListView, DependencyObject
+	public partial class HorizontalGridView : Uno.UI.Controls.HorizontalGridView, IListView, DependencyObject
 	{
 		public HorizontalGridView()
 		{

@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			var property = args.Property;
 
-			if(property == DataProperty)
+			if (property == DataProperty)
 			{
 				_root.ClearChildren();
 

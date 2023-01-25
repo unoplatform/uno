@@ -51,7 +51,7 @@ namespace Uno.UI.Controls
 			get => base.Frame;
 			set
 			{
-				if(value != Frame)
+				if (value != Frame)
 				{
 					base.Frame = value;
 					SizeChanged?.Invoke();
@@ -64,7 +64,7 @@ namespace Uno.UI.Controls
 			get => base.Bounds;
 			set
 			{
-				if(value != Bounds)
+				if (value != Bounds)
 				{
 					base.Bounds = value;
 					SizeChanged?.Invoke();

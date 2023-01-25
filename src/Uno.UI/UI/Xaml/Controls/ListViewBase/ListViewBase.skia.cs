@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//private void Refresh()
 		//{
-			
+
 		//}
 
 		//private void AddItems(int firstItem, int count, int section)

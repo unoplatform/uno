@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class ImageAutomationPeer : FrameworkElementAutomationPeer
+	public partial class ImageAutomationPeer : FrameworkElementAutomationPeer
 	{
 		public ImageAutomationPeer(Controls.Image owner) : base(owner)
 		{

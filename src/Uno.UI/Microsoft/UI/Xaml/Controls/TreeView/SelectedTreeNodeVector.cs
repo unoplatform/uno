@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public override void RemoveAt(int index)
-		{			
+		{
 			var oldNode = base[index];
 			// UpdateNodeSelection will call RemoveAtCore
 			UpdateSelection(oldNode, TreeNodeSelectionState.UnSelected);

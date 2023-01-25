@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Media
 	[ContentProperty(Name = nameof(GradientStops))]
 	public sealed partial class RadialGradientBrush : GradientBrush
 	{
-		public static DependencyProperty CenterProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty CenterProperty { get; } = DependencyProperty.Register(
 			nameof(Center), typeof(Point), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(new Point(0.5d, 0.5d)));
 
 		public Point Center
@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(CenterProperty, value);
 		}
 
-		public static DependencyProperty RadiusXProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty RadiusXProperty { get; } = DependencyProperty.Register(
 			nameof(RadiusX), typeof(double), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(0.5d));
 
 		public double RadiusX
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(RadiusXProperty, value);
 		}
 
-		public static DependencyProperty RadiusYProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty RadiusYProperty { get; } = DependencyProperty.Register(
 			nameof(RadiusY), typeof(double), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(0.5d));
 
 		public double RadiusY
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(RadiusYProperty, value);
 		}
 
-		public static DependencyProperty GradientOriginProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty GradientOriginProperty { get; } = DependencyProperty.Register(
 			nameof(GradientOrigin), typeof(Point), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(new Point(0.5d, 0.5d)));
 
 		[NotImplemented]
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Media
 			set => SetValue(GradientOriginProperty, value);
 		}
 
-		public static DependencyProperty InterpolationSpaceProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty InterpolationSpaceProperty { get; } = DependencyProperty.Register(
 			nameof(InterpolationSpace), typeof(CompositionColorSpace), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(default(CompositionColorSpace)));
 
 		[NotImplemented]

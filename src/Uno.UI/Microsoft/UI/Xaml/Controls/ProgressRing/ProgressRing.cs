@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SetLottieForegroundColor()
 		{
 			if (_player?.Source is IThemableAnimatedVisualSource source
-			    && Brush.TryGetColorWithOpacity(Foreground, out var foreground))
+				&& Brush.TryGetColorWithOpacity(Foreground, out var foreground))
 			{
 				source.SetColorThemeProperty("Foreground", foreground);
 			}
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SetLottieBackgroundColor()
 		{
 			if (_player?.Source is IThemableAnimatedVisualSource source
-			    && Brush.TryGetColorWithOpacity(Background, out var background))
+				&& Brush.TryGetColorWithOpacity(Background, out var background))
 			{
 				source.SetColorThemeProperty("Background", background);
 			}

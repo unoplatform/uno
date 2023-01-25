@@ -37,6 +37,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			// The default easing function is linear
 			return null;
-        }
+		}
 	}
 }

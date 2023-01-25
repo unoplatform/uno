@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
-			
+
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			if (!_startInvoked)

@@ -66,10 +66,10 @@ namespace Windows.UI.Xaml.Controls
 			//wrl::ComPtr<wsy::IDispatcherQueueStatics> spDispatcherQueueStatics;
 
 			//IFCEXPECT(!m_isInitialized);
-			if(m_isInitialized)
+			if (m_isInitialized)
 			{
 				throw new InvalidOperationException("Already initialized");
-			}	
+			}
 
 			m_pAssociatedFlyoutNoRef = pAssociatedFlyout;
 			m_cancellationValueCallback = cancellationValueCallback;
@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Controls
 				m_flyoutState = FlyoutState.Closing;
 			}
 
-			
+
 			//if (m_spCurrentOperation)
 			//{
 			if (m_spCurrentOperation != null)
@@ -188,14 +188,14 @@ namespace Windows.UI.Xaml.Controls
 				var asyncStatus = m_spCurrentOperation.Status;
 				if (!m_isShowAtForCurrentOperationDeferred || asyncStatus == AsyncStatus.Canceled)
 				{
-						AssertCompleteOperationPreconditions();
+					AssertCompleteOperationPreconditions();
 
-				//		// nulls out m_spCurrentOperation. This is important in the case of rentrancy;
-				//		// the consumer's CompleteOperation handler may trigger another call to Start,
-				//		// in which case we want Start to be able to return a deferred operation
-				//		// rather than failing.
-				//		wrl::ComPtr<xaml_controls::IPickerFlyoutAsyncOperation<TResult>> spCurrentOperation;
-				//		spCurrentOperation.Swap(m_spCurrentOperation);
+					//		// nulls out m_spCurrentOperation. This is important in the case of rentrancy;
+					//		// the consumer's CompleteOperation handler may trigger another call to Start,
+					//		// in which case we want Start to be able to return a deferred operation
+					//		// rather than failing.
+					//		wrl::ComPtr<xaml_controls::IPickerFlyoutAsyncOperation<TResult>> spCurrentOperation;
+					//		spCurrentOperation.Swap(m_spCurrentOperation);
 					m_isShowAtForCurrentOperationDeferred = false;
 					m_tpTargetForDeferredShowAt = null;
 					m_spCurrentOperation.CompleteOperation(result);

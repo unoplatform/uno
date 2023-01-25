@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			ppReturnValue = null;
 
 			if (patternInterface == PatternInterface.Invoke
-			    || patternInterface == PatternInterface.Value)
+				|| patternInterface == PatternInterface.Value)
 			{
 				//ppReturnValue = ctl.as_iinspectable(this);
 				ppReturnValue = this;

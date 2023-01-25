@@ -19,7 +19,7 @@ internal partial class BreadcrumbIterator : IEnumerator<object?>
 	internal BreadcrumbIterator(object? itemsSource)
 	{
 #if !HAS_UNO
-		m_currentIndex = 0;			
+		m_currentIndex = 0;
 #else // Uno specific: IEnumerator starts on "-1" index as MoveNext is called first!
 		m_currentIndex = -1;
 #endif

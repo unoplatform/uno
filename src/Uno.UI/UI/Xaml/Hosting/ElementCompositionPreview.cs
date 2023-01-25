@@ -38,9 +38,9 @@ public partial class ElementCompositionPreview
 	public static void SetElementChildVisual(UIElement element, Visual visual)
 	{
 #if __IOS__
-            element.Layer.AddSublayer(visual.NativeLayer);
-            visual.NativeOwner = element;
-            element.ClipsToBounds = false;
+		element.Layer.AddSublayer(visual.NativeLayer);
+		visual.NativeOwner = element;
+		element.ClipsToBounds = false;
 
 		if (element is FrameworkElement fe)
 		{

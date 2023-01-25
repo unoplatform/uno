@@ -129,7 +129,7 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
 #if __ANDROID__ || __IOS__ || __MACOS__
-				// opt-in for iOS/Android/macOS
+			// opt-in for iOS/Android/macOS
 #else
 				= true;
 #endif
@@ -188,7 +188,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __IOS__ 
+#if __ANDROID__ || __IOS__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>

@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection
+	partial class DependencyPropertyDetailsCollection
 	{
 		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
 		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void SetSourceValue(DependencyProperty property, object value)
 		{
-			if(GetPropertyDetails(property) is DependencyPropertyDetails details)
+			if (GetPropertyDetails(property) is DependencyPropertyDetails details)
 			{
 				SetSourceValue(details, value);
 			}

@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly TaskCompletionSource<TResult> _tcs;
 		private readonly IAsyncOperation<TResult> _asyncOperation;
-		
+
 		//private readonly FlyoutBase _pAssociatedFlyout;
 		private FlyoutBase m_spPendingFlyout;
 

@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Shapes
 			set => this.SetValue(DataProperty, value);
 		}
 
-		public static DependencyProperty DataProperty { get ; } =
+		public static DependencyProperty DataProperty { get; } =
 			DependencyProperty.Register(
 				"Data",
-				typeof(Geometry), 
+				typeof(Geometry),
 				typeof(Path),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,

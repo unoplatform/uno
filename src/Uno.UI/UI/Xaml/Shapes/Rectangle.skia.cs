@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			var offset = new Vector2((float)(finalRect.Left), (float)(finalRect.Top));
 			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
-			
+
 			SkiaGeometrySource2D geometry;
 			if (radiusX == 0 || radiusY == 0)
 			{

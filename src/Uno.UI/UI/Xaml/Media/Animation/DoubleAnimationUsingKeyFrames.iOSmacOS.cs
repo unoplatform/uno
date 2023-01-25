@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public partial class DoubleAnimationUsingKeyFrames
-    {
+	public partial class DoubleAnimationUsingKeyFrames
+	{
 		// TODO: Don't return true
 		private bool ReportEachFrame() => true;
 

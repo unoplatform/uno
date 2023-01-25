@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private class Metadata : IJSObjectMetadata
 		{
-			public static Metadata Instance {get;} = new Metadata();
+			public static Metadata Instance { get; } = new Metadata();
 
 			private Metadata() { }
 

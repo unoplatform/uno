@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 			internal set { SetValue(ActualImageBrushProperty, value); }
 		}
 
-		public static DependencyProperty ActualImageBrushProperty { get ; } =
+		public static DependencyProperty ActualImageBrushProperty { get; } =
 			DependencyProperty.Register(nameof(ActualImageBrush), typeof(ImageBrush), typeof(PersonPictureTemplateSettings), new FrameworkPropertyMetadata(null));
 
 		public string ActualInitials
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 			internal set { SetValue(ActualInitialsProperty, value); }
 		}
 
-		public static DependencyProperty ActualInitialsProperty { get ; } =
+		public static DependencyProperty ActualInitialsProperty { get; } =
 			DependencyProperty.Register(nameof(ActualInitials), typeof(string), typeof(PersonPictureTemplateSettings), new FrameworkPropertyMetadata(""));
 	}
 }

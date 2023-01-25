@@ -17,9 +17,9 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty PointsProperty { get; } =
 			DependencyProperty.Register(
-				nameof(Points), 
-				typeof(PointCollection), 
-				typeof(PolyBezierSegment), 
+				nameof(Points),
+				typeof(PointCollection),
+				typeof(PolyBezierSegment),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: OnPointsChanged,

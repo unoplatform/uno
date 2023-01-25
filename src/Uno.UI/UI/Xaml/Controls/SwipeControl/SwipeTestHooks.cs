@@ -18,12 +18,12 @@ namespace Windows.UI.Xaml.Controls
 			return s_testHooks ?? new SwipeTestHooks();
 		}
 
-		public  SwipeControl GetLastInteractedWithSwipeControl()
+		public SwipeControl GetLastInteractedWithSwipeControl()
 		{
 			return SwipeControl.GetLastInteractedWithSwipeControl();
 		}
 
-		public  bool GetIsOpen(SwipeControl swipeControl)
+		public bool GetIsOpen(SwipeControl swipeControl)
 		{
 			if (swipeControl is { })
 			{
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				var lastInteractedWithSwipeControl = SwipeControl.GetLastInteractedWithSwipeControl();
-				if (lastInteractedWithSwipeControl is {})
+				if (lastInteractedWithSwipeControl is { })
 				{
 					return ((SwipeControl)lastInteractedWithSwipeControl).GetIsOpen();
 				}
@@ -40,9 +40,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public  bool GetIsIdle(SwipeControl swipeControl)
+		public bool GetIsIdle(SwipeControl swipeControl)
 		{
-			if (swipeControl is {})
+			if (swipeControl is { })
 			{
 				return ((SwipeControl)swipeControl).GetIsIdle();
 			}
@@ -57,10 +57,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public  void NotifyLastInteractedWithSwipeControlChanged()
+		public void NotifyLastInteractedWithSwipeControlChanged()
 		{
 			var hooks = EnsureGlobalTestHooks();
-			if (hooks.m_lastInteractedWithSwipeControlChangedEventSource is {})
+			if (hooks.m_lastInteractedWithSwipeControlChangedEventSource is { })
 			{
 				hooks.m_lastInteractedWithSwipeControlChangedEventSource(null, null);
 			}
@@ -80,10 +80,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public  void NotifyOpenedStatusChanged(SwipeControl sender)
+		public void NotifyOpenedStatusChanged(SwipeControl sender)
 		{
 			var hooks = EnsureGlobalTestHooks();
-			if (hooks.m_openedStatusChangedEventSource is {})
+			if (hooks.m_openedStatusChangedEventSource is { })
 			{
 				hooks.m_openedStatusChangedEventSource(sender, null);
 			}
@@ -99,14 +99,14 @@ namespace Windows.UI.Xaml.Controls
 			remove
 			{
 				var hooks = EnsureGlobalTestHooks();
-				hooks.m_openedStatusChangedEventSource-= value;
+				hooks.m_openedStatusChangedEventSource -= value;
 			}
 		}
 
 		public void NotifyIdleStatusChanged(SwipeControl sender)
 		{
 			var hooks = EnsureGlobalTestHooks();
-			if (hooks.m_idleStatusChangedEventSource is {})
+			if (hooks.m_idleStatusChangedEventSource is { })
 			{
 				hooks.m_idleStatusChangedEventSource(sender, null);
 			}

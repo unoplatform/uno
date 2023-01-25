@@ -293,7 +293,7 @@ public partial class RefreshContainer : ContentControl
 					IRefreshInfoProvider result = SearchTreeForIRefreshInfoProviderRecursiveHelper(m_root, depth);
 					if (result != null)
 					{
-						return result;						
+						return result;
 					}
 					depth++;
 				}

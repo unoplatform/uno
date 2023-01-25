@@ -39,9 +39,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				if (textBox.OnKey(replacementString.FirstOrDefault()))
-                {
-                    return false;
-                }
+				{
+					return false;
+				}
 
 				if (textBox.MaxLength > 0)
 				{
@@ -72,10 +72,10 @@ namespace Windows.UI.Xaml.Controls
 			var textBox = textField as SinglelineTextBoxView;
 			if (textBox != null)
 			{
-                if (_textBox.GetTarget()?.OnKey('\n') ?? false)
-                {
-                    return false;
-                }
+				if (_textBox.GetTarget()?.OnKey('\n') ?? false)
+				{
+					return false;
+				}
 			}
 
 			return true;

@@ -23,33 +23,33 @@ namespace Uno.UI.Views.Controls
 {
 	public partial class BindableUICollectionView : UICollectionView, DependencyObject
 	{
-		public BindableUICollectionView (RectangleF frame, UICollectionViewLayout layout)
-			: base (frame, layout)
+		public BindableUICollectionView(RectangleF frame, UICollectionViewLayout layout)
+			: base(frame, layout)
 		{
-            Initialize();
+			Initialize();
 		}
 
-		public BindableUICollectionView (NSCoder coder)
-			 : base (coder)
-        {
-            Initialize();
+		public BindableUICollectionView(NSCoder coder)
+			 : base(coder)
+		{
+			Initialize();
 		}
 
-		public BindableUICollectionView (NSObjectFlag t)
-			 : base (t)
-        {
-            Initialize();
+		public BindableUICollectionView(NSObjectFlag t)
+			 : base(t)
+		{
+			Initialize();
 		}
 
-		public BindableUICollectionView (NativeHandle handle)
-			 : base (handle)
-        {
-            Initialize();
+		public BindableUICollectionView(NativeHandle handle)
+			 : base(handle)
+		{
+			Initialize();
 		}
 
-        void Initialize()
-        {
-            DelaysContentTouches = true;
+		void Initialize()
+		{
+			DelaysContentTouches = true;
 		}
 	}
 }

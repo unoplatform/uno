@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			if(!IsContentPresenterBypassEnabled)
+			if (!IsContentPresenterBypassEnabled)
 			{
 				return base.MeasureOverride(availableSize);
 			}
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 			if (child != null)
 			{
 				var padding = Padding;
-				
+
 				// Page has border properties, but does not render them in the default template.
 				var borderThickness = this is not Page ? BorderThickness : default;
 

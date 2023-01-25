@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Media
 			SetImage(imageData.NativeImage);
 		}
 
-		private void SetImage(_Image image,  bool failIfNull = true)
+		private void SetImage(_Image image, bool failIfNull = true)
 		{
 			ImageChanged?.Invoke(image);
 

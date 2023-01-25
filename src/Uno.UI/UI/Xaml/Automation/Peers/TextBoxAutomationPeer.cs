@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer
+	public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer
 	{
 		public TextBoxAutomationPeer(TextBox owner) : base(owner)
 		{

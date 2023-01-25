@@ -4,7 +4,7 @@
 	/// Specifies the direction that focus moves from element to element within the app UI.
 	/// </summary>
 	public enum FocusNavigationDirection
-    {
+	{
 		/// <summary>
 		/// The next element in the tab order.
 		/// </summary>

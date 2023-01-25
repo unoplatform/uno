@@ -71,7 +71,7 @@ public partial class Popup
 		if (PopupPanel == null)
 		{
 			PopupPanel = new PopupPanel(this);
-		}			
+		}
 
 		if (PopupPanel.Superview == null)
 		{
@@ -114,7 +114,7 @@ public partial class Popup
 		EnsureForward();
 	}
 
-	partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled) 
+	partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 	{
 		RegisterPopupPanel();
 
@@ -135,7 +135,7 @@ public partial class Popup
 					// If the Bounds are different, the screen has probably been rotated.
 					// We always want the light dismiss layer to have the same bounds (and frame) as the window.
 					PopupPanel.Frame = MainWindowContent.Frame;
-					PopupPanel.Bounds = MainWindowContent.Bounds;						
+					PopupPanel.Bounds = MainWindowContent.Bounds;
 				}
 
 				PopupPanel.Visibility = Visibility.Visible;
@@ -161,8 +161,8 @@ public partial class Popup
 			PopupPanel.Layer.RemoveFromSuperLayer();
 			superlayer.AddSublayer(PopupPanel.Layer);
 		}
-		else if(PopupPanel.Superview != null)
-		{				
+		else if (PopupPanel.Superview != null)
+		{
 			var superview = PopupPanel.Superview;
 			PopupPanel.RemoveFromSuperview();
 			superview.AddSubview(PopupPanel);

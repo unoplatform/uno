@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// Gets the 'WeekDayNames' part of the container template and find weekindex position as elment
 				spWeekDayNames = pParent.GetTemplateChild("WeekDayNames") as Grid;
-				if (spWeekDayNames is {})
+				if (spWeekDayNames is { })
 				{
 					IList<UIElement> spChildren;
 					spChildren = (spWeekDayNames as Grid).Children;
@@ -103,10 +103,10 @@ namespace Windows.UI.Xaml.Controls
 					IRawElementProviderSimple spProvider;
 					UIElement spChild;
 					spChild = spChildren.ElementAtOrDefault(weekindex);
-					if (spChild is {})
+					if (spChild is { })
 					{
 						spItemPeerAsAP = (spChild as FrameworkElement).GetAutomationPeer();
-						if (spItemPeerAsAP is {})
+						if (spItemPeerAsAP is { })
 						{
 							//uint allocSize = sizeof(IRawElementProviderSimple);
 							//ppReturnValue = (IRawElementProviderSimple)(CoTaskMemAlloc(allocSize));
@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Controls
 					pParent.GetActiveGeneratorHost(out spHost);
 
 					CalendarPanel pCalendarPanel = spHost.Panel;
-					if (pCalendarPanel is {})
+					if (pCalendarPanel is { })
 					{
 						int itemIndex = 0;
 
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 					pParent.GetActiveGeneratorHost(out spHost);
 
 					CalendarPanel pCalendarPanel = spHost.Panel;
-					if (pCalendarPanel is {})
+					if (pCalendarPanel is { })
 					{
 						int itemIndex = 0;
 						itemIndex = spHost.CalculateOffsetFromMinDate(date);

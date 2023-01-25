@@ -55,6 +55,6 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="target">The owning instance.</param>
 		/// <param name="value">The value to set.</param>
 		/// <param name="index">The index location to set to.</param>
-		void SetIndexedValue( object target,  object value,  object index);
+		void SetIndexedValue(object target, object value, object index);
 	}
 }

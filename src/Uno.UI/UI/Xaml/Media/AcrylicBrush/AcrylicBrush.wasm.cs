@@ -13,10 +13,10 @@ namespace Windows.UI.Xaml.Media
 		private static bool? _isBackdropFilterSupported;
 
 		/// <summary>
-        /// Subscribes to AcrylicBrush for a given UI element and applies it.
-        /// </summary>
-        /// <param name="uiElement">UI element.</param>
-        /// <returns>Disposable.</returns>
+		/// Subscribes to AcrylicBrush for a given UI element and applies it.
+		/// </summary>
+		/// <param name="uiElement">UI element.</param>
+		/// <returns>Disposable.</returns>
 		internal IDisposable Subscribe(UIElement uiElement)
 		{
 			var compositeDisposable = new CompositeDisposable(6);

@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStart,
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStop,
-					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				)
 				: null;
 
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStop,
-					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				)
 				: null;
 

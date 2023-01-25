@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml.Media
 #if __ANDROID__
 			view.RemoveView(child);
 #elif __IOS__ || __MACOS__
-			if(child.Superview == view)
+			if (child.Superview == view)
 			{
 				child.RemoveFromSuperview();
 			}

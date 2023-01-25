@@ -9,8 +9,8 @@ using System.Linq;
 
 namespace Windows.UI.Xaml.Controls
 {
-    internal static class InputScopeHelper
-    {
+	internal static class InputScopeHelper
+	{
 		public static UITextAutocapitalizationType ConvertInputScopeToCapitalization(InputScope value)
 		{
 			switch (value.GetFirstInputScopeNameValue())
@@ -92,5 +92,5 @@ namespace Windows.UI.Xaml.Controls
 					return InputScopeNameValue.Search;
 			}
 		}
-    }
+	}
 }

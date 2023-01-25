@@ -9,16 +9,16 @@ namespace Windows.UI.Xaml.Media.Animation
 	/// </summary>
 	public partial class DoubleKeyFrameCollection : DependencyObjectCollection<DoubleKeyFrame>, IList<DoubleKeyFrame>, IEnumerable<DoubleKeyFrame>
 	{
-		public DoubleKeyFrameCollection() 
+		public DoubleKeyFrameCollection()
 			: base(null, false)
 		{
 
 		}
-		
-		internal DoubleKeyFrameCollection(DependencyObject owner, bool isAutoPropertyInheritanceEnabled) 
+
+		internal DoubleKeyFrameCollection(DependencyObject owner, bool isAutoPropertyInheritanceEnabled)
 			: base(owner, isAutoPropertyInheritanceEnabled: isAutoPropertyInheritanceEnabled)
 		{
 
 		}
-    }
+	}
 }

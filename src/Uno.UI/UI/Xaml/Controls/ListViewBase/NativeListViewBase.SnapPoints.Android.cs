@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			public override int[] CalculateDistanceToFinalSnap(LayoutManager layoutManager, View targetView)
 			{
 				var layout = layoutManager as VirtualizingPanelLayout;
-				
+
 				var snapTo = layout.GetSnapTo(_velocitySign, layout.ContentOffset);
 
 				if (!snapTo.HasValue)

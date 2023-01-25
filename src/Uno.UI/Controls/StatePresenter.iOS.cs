@@ -58,7 +58,7 @@ namespace Uno.UI.Controls
 
 			_loadActions.Add(actions);
 
-			if(Window != null)
+			if (Window != null)
 			{
 				loaded();
 			}
@@ -131,7 +131,7 @@ namespace Uno.UI.Controls
 			{
 				foreach (var subview in Subviews)
 				{
-                    subview.RemoveFromSuperview();
+					subview.RemoveFromSuperview();
 				}
 				value.Frame = Frame;
 				value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;

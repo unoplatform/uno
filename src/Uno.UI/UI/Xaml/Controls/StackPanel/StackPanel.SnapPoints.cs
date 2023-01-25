@@ -27,22 +27,22 @@ namespace Windows.UI.Xaml.Controls
 					case SnapPointsAlignment.Far:
 						return _snapPoints;
 					case SnapPointsAlignment.Center:
-					{
-						float previous = 0;
-						var result = new List<float>(_snapPoints.Select(sp => (previous + sp) / 2));
-
-						return result;
-					}
-					case SnapPointsAlignment.Near:
-					{
-						var result = new List<float>(_snapPoints.Count);
-						result.Add(0f);
-						for (var i = 1; i < _snapPoints.Count; i++)
 						{
-							result.Add(_snapPoints[i-1]);
+							float previous = 0;
+							var result = new List<float>(_snapPoints.Select(sp => (previous + sp) / 2));
+
+							return result;
 						}
-						return result;
-					}
+					case SnapPointsAlignment.Near:
+						{
+							var result = new List<float>(_snapPoints.Count);
+							result.Add(0f);
+							for (var i = 1; i < _snapPoints.Count; i++)
+							{
+								result.Add(_snapPoints[i - 1]);
+							}
+							return result;
+						}
 				}
 			}
 			return Array.Empty<float>();

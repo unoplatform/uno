@@ -4,7 +4,7 @@
 	{
 		public Span() : this("span")
 		{
-				
+
 		}
 
 		public Span(string htmlTag) : base(htmlTag)

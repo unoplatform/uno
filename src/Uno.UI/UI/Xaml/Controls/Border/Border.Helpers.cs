@@ -51,9 +51,9 @@ namespace Windows.UI.Xaml.Controls
 		internal static bool HasNonZeroCornerRadius(CornerRadius cornerRadius)
 		{
 			return (cornerRadius.TopLeft > 0.0f) ||
-			       (cornerRadius.TopRight > 0.0f) ||
-			       (cornerRadius.BottomRight > 0.0f) ||
-			       (cornerRadius.BottomLeft > 0.0f);
+				   (cornerRadius.TopRight > 0.0f) ||
+				   (cornerRadius.BottomRight > 0.0f) ||
+				   (cornerRadius.BottomLeft > 0.0f);
 		}
 
 		internal static Thickness GetLayoutRoundedThickness(FrameworkElement element)

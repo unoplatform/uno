@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_itemTemplateWrapper != null)
 			{
 				if (m_itemTemplateWrapper is ItemTemplateWrapper itemTemplateWrapper)
-		      {
+				{
 					// Recycle newContent
 					var tempArgs = new ElementFactoryRecycleArgs();
 					tempArgs.Element = newContent as UIElement;

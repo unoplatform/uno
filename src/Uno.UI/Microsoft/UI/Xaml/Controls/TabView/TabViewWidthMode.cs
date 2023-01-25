@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Defines constants that specify the width of the tabs.
 	/// </summary>
 	public enum TabViewWidthMode
-    {
+	{
 		/// <summary>
 		/// Each tab has the same width.
 		/// </summary>

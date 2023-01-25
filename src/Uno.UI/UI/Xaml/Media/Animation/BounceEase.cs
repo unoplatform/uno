@@ -68,5 +68,5 @@ namespace Windows.UI.Xaml.Media.Animation
 				? (1 - BounceEaseOut(1 - 2 * progress)) / 2
 				: (1 + BounceEaseOut(2 * progress - 1)) / 2;
 		}
-}
+	}
 }

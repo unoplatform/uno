@@ -24,7 +24,7 @@ partial class PopupPanel
 	/// A native view to use as the anchor, in the case that the managed <see cref="AnchorControl"/> is a proxy that's not actually
 	/// included in the visual tree.
 	/// </summary>
-	protected virtual View? NativeAnchor => null;	
+	protected virtual View? NativeAnchor => null;
 }
 
 #endif

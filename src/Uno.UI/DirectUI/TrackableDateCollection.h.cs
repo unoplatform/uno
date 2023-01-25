@@ -53,7 +53,7 @@ namespace DirectUI
 
 		//	private void RemoveAll( DateTime value,  unsigned pFromHint = null);
 
-		public delegate void CollectionChangingCallback(CollectionChanging action,  DateTime addingDate);
+		public delegate void CollectionChangingCallback(CollectionChanging action, DateTime addingDate);
 
 		public void SetCollectionChangingCallback(CollectionChangingCallback callback)
 		{

@@ -6,17 +6,17 @@
 		/// Initializes a new instance of the PropertyPath class based on a path string.
 		/// </summary>
 		/// <param name="path">Path.</param>
-		public PropertyPath (string path)
+		public PropertyPath(string path)
 		{
-			_path = CleanupPath (path);
+			_path = CleanupPath(path);
 		}
 
-		public static implicit operator PropertyPath (string path)
+		public static implicit operator PropertyPath(string path)
 		{
-			return new PropertyPath (path);
+			return new PropertyPath(path);
 		}
 
-		public static implicit operator string (PropertyPath path)
+		public static implicit operator string(PropertyPath path)
 		{
 			if (path != null)
 			{
@@ -30,15 +30,16 @@
 			}
 		}
 
-		static string CleanupPath (string path)
+		static string CleanupPath(string path)
 		{
-			if (string.IsNullOrEmpty (path)) {
+			if (string.IsNullOrEmpty(path))
+			{
 				return "";
 			}
 
 			path = path
-				.Replace ("[", ".[")
-				.Replace ("..", ".");
+				.Replace("[", ".[")
+				.Replace("..", ".");
 
 			return path;
 		}
@@ -49,8 +50,10 @@
 		/// Gets the path value held by this PropertyPath.
 		/// </summary>
 		/// <value>The path.</value>
-		public string Path {
-			get {
+		public string Path
+		{
+			get
+			{
 				return _path;
 			}
 		}

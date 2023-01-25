@@ -2,7 +2,7 @@ using System;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class ContentDialogButtonClickEventArgs 
+	public partial class ContentDialogButtonClickEventArgs
 	{
 		private readonly Action<ContentDialogButtonClickEventArgs> _deferralAction;
 

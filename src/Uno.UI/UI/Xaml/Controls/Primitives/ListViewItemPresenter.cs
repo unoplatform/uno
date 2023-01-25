@@ -6,8 +6,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-    public partial class ListViewItemPresenter : ContentPresenter
-    {
+	public partial class ListViewItemPresenter : ContentPresenter
+	{
 		public ListViewItemPresenter()
 		{
 

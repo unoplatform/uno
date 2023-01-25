@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			_layout = (UICollectionViewFlowLayout)this.CollectionViewLayout;
 
 			RegisterClassForCell(typeof(Uno.UI.Controls.Legacy.ListViewBaseSource.InternalContainer), FlipView.FlipViewItemReuseIdentifier);
-			
+
 			if (ScrollViewer.UseContentInsetAdjustmentBehavior)
 			{
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;

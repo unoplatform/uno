@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if(_baseUri is null)
+				if (_baseUri is null)
 				{
 					_baseUri = _baseUriFromParser is null ? DefaultBaseUri : new Uri(_baseUriFromParser);
 				}
@@ -654,7 +654,7 @@ namespace Windows.UI.Xaml
 		internal
 #if __ANDROID__
 			new
-#endif 
+#endif
 			bool HasFocus()
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
@@ -972,7 +972,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		/// <summary>
-		/// Update ThemeResource references. 
+		/// Update ThemeResource references.
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{

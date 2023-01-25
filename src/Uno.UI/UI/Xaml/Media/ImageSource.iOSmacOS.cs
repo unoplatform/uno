@@ -56,7 +56,7 @@ public partial class ImageSource
 
 		_imageData = ImageData.Empty;
 	}
-	
+
 	/// <summary>
 	/// Similar to Dispose, but the ImageSource can still be used in the future.
 	/// </summary>

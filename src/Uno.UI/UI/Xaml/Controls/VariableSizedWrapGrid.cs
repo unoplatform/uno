@@ -5,7 +5,7 @@ using System;
 namespace Windows.UI.Xaml.Controls
 {
 	[global::Uno.NotImplemented]
-	public  partial class VariableSizedWrapGrid : global::Windows.UI.Xaml.Controls.Panel
+	public partial class VariableSizedWrapGrid : global::Windows.UI.Xaml.Controls.Panel
 	{
 		[Uno.NotImplemented]
 		public VariableSizedWrapGrid()

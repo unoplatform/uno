@@ -92,7 +92,7 @@ internal partial class BorderLayerRenderer
 			_ => throw new ArgumentOutOfRangeException(),
 		};
 
-		return new (x, y);
+		return new(x, y);
 	}
 
 	/// <summary>

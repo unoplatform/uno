@@ -33,7 +33,7 @@ namespace Uno.UI.Helpers
 		/// Sets the specified dependency property value using the format "name|value"
 		/// </summary>
 		/// <param name="dependencyPropertyNameAndValue">The name and value of the property</param>
-        /// <param name="handle">The GCHandle of the UIElement to use</param>
+		/// <param name="handle">The GCHandle of the UIElement to use</param>
 		/// <returns>The currenty set value at the Local precedence</returns>
 		[Preserve]
 		public static string SetDependencyPropertyValue(int handle, string dependencyPropertyNameAndValue)
@@ -43,8 +43,8 @@ namespace Uno.UI.Helpers
 			{
 				return UIElement.SetDependencyPropertyValueInternal(element, dependencyPropertyNameAndValue);
 			}
-            else
-            {
+			else
+			{
 				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
 				return "";
 			}

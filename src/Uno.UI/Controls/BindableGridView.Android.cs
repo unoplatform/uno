@@ -29,7 +29,7 @@ namespace Uno.UI.Controls
 		{
 			var adapter = new BindableListAdapter(context);
 			adapter.CustomViewTypeCount = _customViewTypeCount;
-            Adapter = adapter;
+			Adapter = adapter;
 
 			SetupItemClickListeners();
 
@@ -79,20 +79,20 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ItemsSourceProperty, value); }
 		}
 
-		public static DependencyProperty ItemsSourceProperty { get ; } =
-			DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(BindableGridView), new FrameworkPropertyMetadata(null, (s,e) => ((BindableGridView)s)?.InternalOnItemsSourceChanged(e)));
+		public static DependencyProperty ItemsSourceProperty { get; } =
+			DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(BindableGridView), new FrameworkPropertyMetadata(null, (s, e) => ((BindableGridView)s)?.InternalOnItemsSourceChanged(e)));
 
 		private void InternalOnItemsSourceChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if(BindableAdapter != null)
-			{ 
+			if (BindableAdapter != null)
+			{
 				var newItemsSource = args.NewValue as IEnumerable;
 				OnItemsSourceChanging(newItemsSource);
 				BindableAdapter.ItemsSource = newItemsSource;
 				OnItemsSourceChanged();
 			}
 		}
-		
+
 		public DataTemplate ItemTemplate
 		{
 			get { return (DataTemplate)this.GetValue(ItemTemplateProperty); }
@@ -158,7 +158,7 @@ namespace Uno.UI.Controls
 
 		protected virtual void OnItemsSourceChanged()
 		{
-            this.RequestLayout();
+			this.RequestLayout();
 		}
 
 		private int TryGetItemViewTypeFromItem(int position)

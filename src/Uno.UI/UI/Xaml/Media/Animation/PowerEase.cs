@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set { this.SetValue(PowerProperty, value); }
 		}
 
-		public static DependencyProperty PowerProperty { get ; } =
+		public static DependencyProperty PowerProperty { get; } =
 			DependencyProperty.Register("Power", typeof(int), typeof(PowerEase), new FrameworkPropertyMetadata(2));
 
 		public override double Ease(double currentTime, double startValue, double finalValue, double duration)
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					for (int i = 0; i < Power; i++)
 					{
 						timePower *= currentTime;
-                    }
+					}
 					return changeInValue * timePower + startValue;
 
 				case EasingMode.EaseOut:
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					for (int i = 0; i < Power; i++)
 					{
 						timePower *= currentTime;
-                    }
+					}
 
 					if (Power % 2 == 0)
 					{
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					for (int i = 0; i <= Power; i++)
 					{
 						timePower *= currentTime;
-                    }
+					}
 
 					if (currentTime < 1)
 					{

@@ -73,9 +73,9 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (ElementAnimator)GetValue(AnimatorProperty);
 			set => SetValue(AnimatorProperty, value);
 		}
-#endregion
+		#endregion
 
-#region HorizontalCacheLength (DP - With default callback)
+		#region HorizontalCacheLength (DP - With default callback)
 		public static DependencyProperty HorizontalCacheLengthProperty { get; } = DependencyProperty.Register(
 			"HorizontalCacheLength", typeof(double), typeof(ItemsRepeater), new FrameworkPropertyMetadata(2.0, OnPropertyChanged));
 
@@ -84,9 +84,9 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(HorizontalCacheLengthProperty);
 			set => SetValue(HorizontalCacheLengthProperty, value);
 		}
-#endregion
+		#endregion
 
-#region VerticalCacheLength (DP - With default callback)
+		#region VerticalCacheLength (DP - With default callback)
 		public static DependencyProperty VerticalCacheLengthProperty { get; } = DependencyProperty.Register(
 			"VerticalCacheLength", typeof(double), typeof(ItemsRepeater), new FrameworkPropertyMetadata(2.0, OnPropertyChanged));
 
@@ -95,11 +95,11 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (double)GetValue(VerticalCacheLengthProperty);
 			set => SetValue(VerticalCacheLengthProperty, value);
 		}
-#endregion
+		#endregion
 
-#region VirtualizationInfo (DP - private attached)
+		#region VirtualizationInfo (DP - private attached)
 		private static readonly DependencyProperty VirtualizationInfoProperty = DependencyProperty.RegisterAttached(
-			"VirtualizationInfo", typeof(VirtualizationInfo), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(VirtualizationInfo))); 
-#endregion
+			"VirtualizationInfo", typeof(VirtualizationInfo), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(VirtualizationInfo)));
+		#endregion
 	}
 }

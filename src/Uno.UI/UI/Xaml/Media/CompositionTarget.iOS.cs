@@ -6,7 +6,7 @@ using Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
-	public  partial class CompositionTarget 
+	public partial class CompositionTarget
 	{
 		private static List<EventHandler<object>> _handlers = new List<EventHandler<object>>();
 		private static CADisplayLink _displayLink;
@@ -16,8 +16,8 @@ namespace Windows.UI.Xaml.Media
 			add
 			{
 				_handlers.Add(value);
-				
-				if(_displayLink == null)
+
+				if (_displayLink == null)
 				{
 					_displayLink = CADisplayLink.Create(OnFrame);
 					// Default == normal UI updates
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				_handlers.Remove(value);
 
-				if(_handlers.Count == 0)
+				if (_handlers.Count == 0)
 				{
 #if NET6_0_OR_GREATER
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);

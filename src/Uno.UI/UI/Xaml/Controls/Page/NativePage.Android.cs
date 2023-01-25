@@ -8,7 +8,7 @@ using Uno.UI;
 namespace Windows.UI.Xaml.Controls
 {
 	public abstract class NativePage : BaseActivity
-    {
+	{
 		public NativePage(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
 		}
@@ -46,7 +46,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public View Content
 		{
-			get {
+			get
+			{
 				return ContentView;
 			}
 			set
@@ -54,5 +55,5 @@ namespace Windows.UI.Xaml.Controls
 				SetContentView(value, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent));
 			}
 		}
-    }
+	}
 }

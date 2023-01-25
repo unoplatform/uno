@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 namespace Windows.UI.Xaml.Documents
 {
 	internal static partial class InlineExtensions
-	{		
+	{
 		/// <summary>
 		/// Gets the combined text of all the leaf Inlines given a root Inline
 		/// </summary>
