@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 			NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
 #endif
 		}
-		
+
 		internal void OnComplete(Uri uri, bool isSuccessful, WebErrorStatus status)
 		{
 			var args = new WebViewNavigationCompletedEventArgs()

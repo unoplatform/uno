@@ -11,7 +11,7 @@ using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollViewer 
+	public partial class ScrollViewer
 	{
 		public Color BackgroundColor
 		{

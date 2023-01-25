@@ -673,10 +673,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//spValue.As(spReferenceInt);
 				spReferenceInt = spValue;
 				oldIdx = spReferenceInt; //.Value;
-				// NOTE: This call only will be applied when the
-				// scrollviewer is not being manipulated. Once a
-				// manipulation has begun the user's eventual
-				// selection takes dominance.
+										 // NOTE: This call only will be applied when the
+										 // scrollviewer is not being manipulated. Once a
+										 // manipulation has begun the user's eventual
+										 // selection takes dominance.
 				SetSelectedIndex(oldIdx, newIdx);
 				Balance(false /* isOnSnapPoint */);
 			}
@@ -688,13 +688,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			result = false;
 
-			if(ItemHeight == 0)
+			if (ItemHeight == 0)
 			{
 				return; // not ready yet...
 			}
 
 			if (_tpScrollViewer is { } &&
-			    _tpPanel is { })
+				_tpPanel is { })
 			{
 				spItems = Items;
 				if (spItems is { })
@@ -1073,7 +1073,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// This will be in the middle of the currently selected item.
 			midpoint = (_unpaddedExtentTop + _unpaddedExtentBottom) / 2 - _realizedTop;
 			newIdx = (uint)_realizedTopIdx +
-			         (uint)midpoint / (uint)_scaledItemHeight;
+					 (uint)midpoint / (uint)_scaledItemHeight;
 
 			spItemsCollection = Items;
 			itemCount = (uint)spItemsCollection.Count;
@@ -1115,7 +1115,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// NOTE: Only called when the ScrollViewer is done Running (e.g. no scrolling is happening).
 		void UpdateVisualSelectedItem(uint oldIdx, uint newIdx)
 		{
-			if(oldIdx == newIdx)
+			if (oldIdx == newIdx)
 			{
 				return;
 			}
@@ -1287,7 +1287,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			lsi.SetVisualIndex((int)itemIdxToRealize);
 
 			if (_itemState == ItemState.Expanded || _itemState == ItemState.ManipulationInProgress ||
-			    _itemState == ItemState.LostFocus)
+				_itemState == ItemState.LostFocus)
 			{
 				lsi.SetState(LoopingSelectorItem.State.Expanded, false);
 			}
@@ -1705,7 +1705,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		void ShiftChildren(double delta)
 		{
-			if(delta == 0)
+			if (delta == 0)
 			{
 				return;
 			}
@@ -2025,7 +2025,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//iter = _realizedItemsForAP.find(moddeItemdIdx);
 			//var iter = _realizedItemsForAP[(int)moddeItemdIdx];
 			//if (iter != _realizedItemsForAP.Last().Value)
-			if(_realizedItemsForAP.TryGetValue((int)moddeItemdIdx, out var iter))
+			if (_realizedItemsForAP.TryGetValue((int)moddeItemdIdx, out var iter))
 			{
 				//ppItem = iter; //.Detach();
 				ppItem = iter;

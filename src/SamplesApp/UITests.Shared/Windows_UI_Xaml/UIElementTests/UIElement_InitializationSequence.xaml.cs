@@ -27,7 +27,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 				Content = inner,
 				Style = Resources["testControlStyle"] as Style
 			};
-			testZone.Child =outer;
+			testZone.Child = outer;
 
 			reference.Text = @"
 inner.ctor

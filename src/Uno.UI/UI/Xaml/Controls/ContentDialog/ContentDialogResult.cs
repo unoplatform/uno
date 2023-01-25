@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	public   enum ContentDialogResult 
+	public enum ContentDialogResult
 	{
 		None,
 		Primary,

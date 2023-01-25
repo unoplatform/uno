@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			"SelectedItem", typeof(object),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
-				defaultValue:default(object),
+				defaultValue: default(object),
 				propertyChangedCallback: (s, e) => (s as Pivot)?.OnSelectedItemPropertyChanged(e.OldValue, e.NewValue)
 				)
 			);

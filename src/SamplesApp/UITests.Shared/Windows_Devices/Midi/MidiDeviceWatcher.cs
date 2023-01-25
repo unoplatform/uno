@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private readonly string _midiSelector = string.Empty;
 		private readonly CoreDispatcher _coreDispatcher = null;
 
-		private DeviceInformationCollection _deviceInformationCollection = null;		
+		private DeviceInformationCollection _deviceInformationCollection = null;
 		private bool _enumerationCompleted = false;
 
 		/// <summary>

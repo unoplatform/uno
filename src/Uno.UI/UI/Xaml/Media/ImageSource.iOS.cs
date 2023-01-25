@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media
 			Stream.Position = 0;
 			using var data = NSData.FromStream(Stream);
 			var nativeImage = UIImage.LoadFromData(data);
-			
+
 			if (nativeImage is not null)
 			{
 				return _imageData = ImageData.FromNative(nativeImage);

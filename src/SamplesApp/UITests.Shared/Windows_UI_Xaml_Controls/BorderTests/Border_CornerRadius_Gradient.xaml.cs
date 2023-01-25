@@ -20,10 +20,10 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 {
 	[Sample("Border", Name = "Border_CornerRadius_Gradient")]
 	public sealed partial class Border_CornerRadius_Gradient : UserControl
-    {
-        public Border_CornerRadius_Gradient()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public Border_CornerRadius_Gradient()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

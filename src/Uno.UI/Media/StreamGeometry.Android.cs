@@ -1,4 +1,4 @@
-﻿#if  XAMARIN_ANDROID
+﻿#if XAMARIN_ANDROID
 using System;
 using System.ComponentModel;
 using System.Drawing;

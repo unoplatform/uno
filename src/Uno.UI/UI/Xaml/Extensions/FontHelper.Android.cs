@@ -18,15 +18,15 @@ using Uno.Foundation.Logging;
 namespace Windows.UI.Xaml
 {
 	internal partial class FontHelper
-	{ 
+	{
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
 		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
-		{  
+		{
 			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, style);
-			 
-			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry , out var typeFace))
+
+			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry, out var typeFace))
 			{
 				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style);
 				_fontFamilyToTypeFaceDictionary.Add(entry, typeFace);
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml
 						// The lookup used to be performed without the assets folder, even if its required to specify it
 						// with UWP. Keep this behavior for backward compatibility.
 						var legacySource = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
-						
+
 						// The path for AndroidAssets is not encoded, unlike assets processed by the RetargetAssets tool.
 						if (!TryLoadFromPath(style, legacySource, out typeface, encodePath: false))
 						{
@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		public static double GetFontRatio()
 		{
-			return ViewHelper.FontScale / ViewHelper.Scale;	
+			return ViewHelper.FontScale / ViewHelper.Scale;
 		}
 	}
 }

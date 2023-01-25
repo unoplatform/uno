@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum PanelScrollingDirection 
+	public enum PanelScrollingDirection
 	{
 		None,
 		Forward,

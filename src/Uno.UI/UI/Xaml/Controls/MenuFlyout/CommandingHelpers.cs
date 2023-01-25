@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 				if (target is IDependencyObjectStoreProvider dosp)
 				{
 					IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
-					dosp.Store.SetBinding(iconProperty, new Binding {Path = "IconSource", Source = uiCommand, Converter = converter});
+					dosp.Store.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
 				}
 			}
 		}
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (target is IDependencyObjectStoreProvider dosp)
 				{
-					dosp.Store.SetBinding(iconSourceProperty, new Binding {Path = "IconSource", Source = uiCommand});
+					dosp.Store.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
 				}
 			}
 		}

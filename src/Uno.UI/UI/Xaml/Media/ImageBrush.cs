@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media
 		public event ExceptionRoutedEventHandler ImageFailed;
 
 		#region AlignmentX DP
-		public static DependencyProperty AlignmentXProperty { get ; } =
+		public static DependencyProperty AlignmentXProperty { get; } =
 			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentX.Center));
 
 #if __WASM__
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region AlignmentY DP
-		public static DependencyProperty AlignmentYProperty { get ; } =
+		public static DependencyProperty AlignmentYProperty { get; } =
 			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentY.Center));
 
 #if __WASM__
@@ -47,12 +47,12 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 		#region Stretch DP
-		public static DependencyProperty StretchProperty { get ; } =
+		public static DependencyProperty StretchProperty { get; } =
 		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
 #if __WASM__
 		[NotImplemented]
-#endif		
+#endif
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(ImageSourceProperty, value);
 		}
 
-		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue); 
+		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
 		#endregion
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Media
 		private Point GetArrangedImageLocation(Size finalSize, Size targetSize)
 		{
 			var location = new Point(
-				targetSize.Width - finalSize.Width, 
+				targetSize.Width - finalSize.Width,
 				targetSize.Height - finalSize.Height
 			);
 

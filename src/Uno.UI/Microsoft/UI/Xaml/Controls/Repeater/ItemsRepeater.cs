@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly SerialDisposable _layoutSubscriptionsRevoker = new SerialDisposable();
 		private readonly SerialDisposable _dataSourceSubscriptionsRevoker = new SerialDisposable();
-		
+
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
 
 		internal object LayoutState

@@ -8,5 +8,5 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		// Keep empty
 		// To replicate Windows.UI.Xaml structure
-    }
+	}
 }

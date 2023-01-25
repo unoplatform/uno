@@ -60,7 +60,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(OrientationProperty, value); }
 		}
 
-		public static DependencyProperty OrientationProperty { get ; } =
+		public static DependencyProperty OrientationProperty { get; } =
 			DependencyProperty.Register(
 				"Orientation",
 				typeof(Orientation),
@@ -91,7 +91,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(CacheLengthProperty, value); }
 		}
 
-		public static DependencyProperty CacheLengthProperty { get ; } =
+		public static DependencyProperty CacheLengthProperty { get; } =
 			DependencyProperty.Register(
 				"CacheLength",
 				typeof(double),
@@ -140,6 +140,6 @@ namespace Uno.UI.Controls
 #endif
 	}
 #else
-		public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
+	public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
 #endif
 }

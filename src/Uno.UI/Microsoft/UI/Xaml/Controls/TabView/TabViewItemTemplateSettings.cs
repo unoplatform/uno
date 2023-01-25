@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// markup extension sources when defining templates for a TabViewItem control.
 	/// </summary>
 	public partial class TabViewItemTemplateSettings : DependencyObject
-    {
+	{
 		/// <summary>
 		/// Gets an object that provides calculated values that can be referenced as {TemplateBinding}
 		/// markup extension sources when defining templates for a TabViewItem control.

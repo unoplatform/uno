@@ -23,7 +23,7 @@ namespace Uno.UI
 	[Activity(
 
 		// This is required for OnConfigurationChanges to be raised.
-		ConfigurationChanges=
+		ConfigurationChanges =
 			  Android.Content.PM.ConfigChanges.Orientation
 			| Android.Content.PM.ConfigChanges.ScreenSize
 	)]
@@ -69,7 +69,7 @@ namespace Uno.UI
 		/// Gets a list of all activities which are currently alive.
 		/// </summary>
 		public static IImmutableDictionary<int, BaseActivity> Instances
-			=> ImmutableDictionary<int, BaseActivity>.Empty.AddRange(_instances) ;
+			=> ImmutableDictionary<int, BaseActivity>.Empty.AddRange(_instances);
 
 		/// <summary>
 		/// Gets the currently running activity, if any.
@@ -201,10 +201,10 @@ namespace Uno.UI
 		}
 
 		partial void InnerRestart() => SetAsCurrent();
-		
+
 		partial void InnerResume()
 		{
-			SetAsCurrent();			
+			SetAsCurrent();
 
 			Windows.UI.Xaml.Application.Current?.RaiseResuming();
 			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
@@ -222,7 +222,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);			
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
@@ -346,7 +346,7 @@ namespace Uno.UI
 			return base.DispatchTouchEvent(ev);
 		}
 
-		public virtual IEnumerable<IDataContextProvider> GetChildrenProviders() => 
+		public virtual IEnumerable<IDataContextProvider> GetChildrenProviders() =>
 			new[] { ContentView as IDataContextProvider }
 			.Trim();
 

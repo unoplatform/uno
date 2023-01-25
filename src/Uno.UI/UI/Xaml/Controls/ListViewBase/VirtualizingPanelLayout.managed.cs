@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 			if (isLargeScroll)
 			{
 				// In this case, a majority of the materialized items are
-                // removed, let's clear everything and materialize from the
+				// removed, let's clear everything and materialize from the
 				// new position.
 
 				if (this.Log().IsEnabled(LogLevel.Debug))

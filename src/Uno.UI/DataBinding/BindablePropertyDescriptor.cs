@@ -9,8 +9,8 @@ namespace Uno.UI.DataBinding
 	/// <summary>
 	/// Defines a bindable property with its owner type
 	/// </summary>
-    internal class BindablePropertyDescriptor
-    {
+	internal class BindablePropertyDescriptor
+	{
 		private BindablePropertyDescriptor(IBindableType ownerType, IBindableProperty property)
 		{
 			OwnerType = ownerType;

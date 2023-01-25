@@ -7,6 +7,6 @@ namespace Uno.UI.Helpers
 {
 	public static partial class Automation
 	{
-		
+
 	}
 }

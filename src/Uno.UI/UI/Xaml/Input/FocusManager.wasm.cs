@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Input
 				// us to recognize, that the page was focused by tabbing from the address bar
 				// and focusing the first focusable element on the page instead.
 				if (focused is RootVisual rootVisual)
-				{					
+				{
 					var firstFocusable = FocusManager.FindFirstFocusableElement(rootVisual);
 					if (firstFocusable is FrameworkElement frameworkElement)
 					{

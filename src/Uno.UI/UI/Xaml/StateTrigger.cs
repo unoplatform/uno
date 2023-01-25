@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 
 		private void OnIsActiveChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if(e.NewValue is bool b)
+			if (e.NewValue is bool b)
 			{
 				SetActive(b);
 			}

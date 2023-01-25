@@ -293,10 +293,12 @@ namespace SampleControl.Presentation
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
-						try {
+						try
+						{
 							await RecordAllTestsInner(folderName, ct, doneAction);
 						}
-						finally {
+						finally
+						{
 							_isRecordAllTests = false;
 						}
 					});
@@ -860,12 +862,12 @@ description: {sample.Description}";
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
 			FrameworkElement container = null;
-			
+
 			var frameRequested =
 				newContent.UsesFrame &&
 				typeof(Page).IsAssignableFrom(newContent.ControlType);
 			if (frameRequested)
-			{				
+			{
 				var frame = new Frame();
 				frame.Navigate(newContent.ControlType);
 				container = frame;

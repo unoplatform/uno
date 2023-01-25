@@ -20,11 +20,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.CommandBar
 {
 	[SampleControlInfo("CommandBar", nameof(CommandBar_Xaml_Automated))]
 	public sealed partial class CommandBar_Xaml_Automated : UserControl
-    {
-        public CommandBar_Xaml_Automated()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public CommandBar_Xaml_Automated()
+		{
+			this.InitializeComponent();
+		}
 
 		public void Button_Click(object sender, object args)
 		{

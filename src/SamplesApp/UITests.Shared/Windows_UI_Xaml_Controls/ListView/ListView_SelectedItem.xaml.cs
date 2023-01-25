@@ -9,7 +9,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 	{
 		public ListView_SelectedItem()
 		{
-			this.InitializeComponent();   
+			this.InitializeComponent();
 		}
 	}
 }

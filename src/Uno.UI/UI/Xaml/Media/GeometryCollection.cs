@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Media
 {
-	public  partial class GeometryCollection : DependencyObjectCollection<Geometry>
+	public partial class GeometryCollection : DependencyObjectCollection<Geometry>
 	{
 		private protected override void OnCollectionChanged()
 		{

@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.ImageBrushTestControl
 {
-    [Sample("Brushes")]
-    public sealed partial class ImageBrush_UniformToFill : UserControl
-    {
-        public ImageBrush_UniformToFill()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[Sample("Brushes")]
+	public sealed partial class ImageBrush_UniformToFill : UserControl
+	{
+		public ImageBrush_UniformToFill()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

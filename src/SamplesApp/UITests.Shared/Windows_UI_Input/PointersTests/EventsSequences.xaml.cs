@@ -523,7 +523,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			public bool Click([CallerLineNumber] int line = -1)
 				=> One($"at line {line}", ClickEvent);
 
-				/// <summary>
+			/// <summary>
 			/// [1..1]
 			/// </summary>
 			private bool One(string debug, params object[] expected)
@@ -579,7 +579,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			/// </summary>
 			public bool MaybeOne(RoutedEvent evt)
 			{
-				if (_index < _args.Count &&  _args[_index].evt == evt)
+				if (_index < _args.Count && _args[_index].evt == evt)
 				{
 					++_index;
 				}
@@ -605,10 +605,10 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					_error.AppendLine($"Expected to have reach the end of events at line {line} but {_args.Count - _index} are remaining. ");
 					return false;
 				}
-				
+
 				return true;
 			}
 		}
-#endregion
+		#endregion
 	}
 }

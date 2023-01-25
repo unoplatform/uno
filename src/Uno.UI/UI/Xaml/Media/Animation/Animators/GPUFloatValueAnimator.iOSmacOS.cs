@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private bool _isPausedInBackground; // flag the animation to be resumed once foregrounded
 		private bool _coreStoppedNotFinished; // the animation came to an abrupt end; used by OnCoreWindowVisibilityChanged to confirm paused by backgrounding
 
-#region PropertyNameConstants
+		#region PropertyNameConstants
 		private const string TranslateTransformX = "TranslateTransform.X";
 		private const string TranslateTransformXWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.X";
 		private const string TranslateTransformY = "TranslateTransform.Y";
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void TrackCurrentInstance()
 		{
-			lock(_weakActiveInstanceCache)
+			lock (_weakActiveInstanceCache)
 			{
 				_weakActiveInstanceCache.Add(WeakReferencePool.RentWeakReference(this, this));
 			}
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void UntrackCurrentInstance()
 		{
-			lock(_weakActiveInstanceCache)
+			lock (_weakActiveInstanceCache)
 			{
 				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
 				{
@@ -284,7 +284,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_valueAnimator.SetEasingFunction(easingFunction);
 		}
 
-#region coreAnimationInitializers
+		#region coreAnimationInitializers
 		private UnoCoreAnimation InitializeOpacityCoreAnimation(_View view)
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
@@ -412,7 +412,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					throw new NotSupportedException(__notSupportedProperty);
 			}
 		}
-#endregion
+		#endregion
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			Transform transform,
@@ -459,7 +459,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private static void OnCoreWindowVisibilityChanged(CoreWindow sender, VisibilityChangedEventArgs args)
 		{
-			lock(_weakActiveInstanceCache)
+			lock (_weakActiveInstanceCache)
 			{
 				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
 				{
@@ -519,7 +519,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_valueAnimator.Cancel();
 			}
 
-			switch(completedInfo)
+			switch (completedInfo)
 			{
 				case UnoCoreAnimation.CompletedInfo.Success:
 					AnimationEnd?.Invoke(this, EventArgs.Empty);

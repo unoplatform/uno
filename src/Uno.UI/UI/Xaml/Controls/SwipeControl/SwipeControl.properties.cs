@@ -78,35 +78,35 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		private static void OnBottomItemsPropertyChanged(
-		    DependencyObject sender,
-		    DependencyPropertyChangedEventArgs args)
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
 		{
-		    var owner = (SwipeControl)sender;
-		    owner.OnPropertyChanged(args);
+			var owner = (SwipeControl)sender;
+			owner.OnPropertyChanged(args);
 		}
 
 		private static void OnLeftItemsPropertyChanged(
-		    DependencyObject sender,
-		    DependencyPropertyChangedEventArgs args)
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
 		{
-		    var owner = (SwipeControl)sender;
-		    owner.OnPropertyChanged(args);
+			var owner = (SwipeControl)sender;
+			owner.OnPropertyChanged(args);
 		}
 
 		private static void OnRightItemsPropertyChanged(
-		    DependencyObject sender,
-		    DependencyPropertyChangedEventArgs args)
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
 		{
-		    var owner = (SwipeControl)sender;
-		    owner.OnPropertyChanged(args);
+			var owner = (SwipeControl)sender;
+			owner.OnPropertyChanged(args);
 		}
 
 		private static void OnTopItemsPropertyChanged(
-		    DependencyObject sender,
-		    DependencyPropertyChangedEventArgs args)
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
 		{
-		    var owner = (SwipeControl)sender;
-		    owner.OnPropertyChanged(args);
+			var owner = (SwipeControl)sender;
+			owner.OnPropertyChanged(args);
 		}
 
 
@@ -197,4 +197,5 @@ namespace Windows.UI.Xaml.Controls
 		//{
 		//    return ValueHelper<SwipeItems>.CastOrUnbox((SwipeControl)(this).GetValue(s_TopItemsProperty));
 		//}
-}}
+	}
+}

@@ -18,15 +18,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Input.PointersTests
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
 	[Sample("Pointers")]
 	public sealed partial class HitTest_Control : Page
-    {
-        public HitTest_Control()
-        {
-            this.InitializeComponent();
+	{
+		public HitTest_Control()
+		{
+			this.InitializeComponent();
 		}
 
 		void ResetResult(object sender, object args)

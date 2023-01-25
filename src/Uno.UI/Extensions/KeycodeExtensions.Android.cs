@@ -300,7 +300,7 @@ namespace Uno.UI.Extensions
 				//    return VirtualKey.GoHome;
 				default:
 					{
-						if(keycode.Log().IsEnabled(LogLevel.Warning))
+						if (keycode.Log().IsEnabled(LogLevel.Warning))
 						{
 							keycode.Log().Warn($"Key pressed but not mapped : " + keycode);
 						}

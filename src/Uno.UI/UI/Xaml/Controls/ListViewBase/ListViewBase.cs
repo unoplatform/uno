@@ -683,7 +683,7 @@ namespace Windows.UI.Xaml.Controls
 		private void CleanUpContainers(int startingIndex, int length)
 		{
 			if (ShouldItemsControlManageChildren) return;
-			
+
 			foreach (var container in MaterializedContainers)
 			{
 				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);

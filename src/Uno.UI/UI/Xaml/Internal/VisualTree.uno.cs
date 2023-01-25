@@ -28,5 +28,5 @@ internal partial class VisualTree : IWeakReferenceProvider
 	}
 
 	ManagedWeakReference IWeakReferenceProvider.WeakReference =>
-		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);		
+		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 }

@@ -7,8 +7,8 @@ using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
-    internal static class InputScopeHelper
-    {
+	internal static class InputScopeHelper
+	{
 		internal static InputTypes ConvertToCapitalization(InputTypes types, InputScope value)
 		{
 			switch (value.GetFirstInputScopeNameValue())

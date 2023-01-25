@@ -24,7 +24,7 @@ namespace Uno.UI.Services
 				.Select(b => GetLocalizedStringOrDefault(id, b))
 				.FirstOrDefault() ?? "";
 		}
-		
+
 		private string GetLocalizedStringOrDefault(string id, NSBundle bundle)
 		{
 			// From Apple doc : 

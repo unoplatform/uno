@@ -14,7 +14,7 @@ public enum PopupPlacementMode
 	/// Preferred location is above the target element.
 	/// </summary>
 	Top = 1,
-	
+
 	/// <summary>
 	/// Preferred location is below the target element.
 	/// </summary>
@@ -64,7 +64,7 @@ public enum PopupPlacementMode
 	/// Preferred location is to the right of the target element, with the top edge of popup aligned with top edge of the target element.
 	/// </summary>
 	RightEdgeAlignedTop = 11,
-	
+
 	/// <summary>
 	/// Preferred location is to the right of the target element, with the bottom edge of popup aligned with bottom edge of the target element.
 	/// </summary>

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 
 		private bool GetIsTypeNullable(Type type)
 		{
-			if(!_isTypeNullableDictionary.TryGetValue(type, out var isNullable))
+			if (!_isTypeNullableDictionary.TryGetValue(type, out var isNullable))
 			{
 				_isTypeNullableDictionary.Add(type, isNullable = type.IsNullable());
 			}

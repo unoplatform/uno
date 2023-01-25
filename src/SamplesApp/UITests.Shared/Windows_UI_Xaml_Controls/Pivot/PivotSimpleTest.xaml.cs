@@ -10,10 +10,10 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.PivotTests
 {
 	[SampleControlInfo("Pivot", "Basics Pivot Test")]
 	public sealed partial class Basics : UserControl
-    {
-        public Basics()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public Basics()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

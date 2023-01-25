@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 			base.SendAccessibilityEvent(eventType);
 
-			switch(eventType)
+			switch (eventType)
 			{
 				case EventTypes.ViewClicked:
 					InvokeAutomationPeer();

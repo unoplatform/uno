@@ -13,9 +13,9 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 	[SampleControlInfo("ListView", nameof(ListView_Resizing), typeof(ListViewViewModel), description: "ListView with adding and removing items afer initialization", ignoreInSnapshotTests: true)]
 	public sealed partial class ListView_Resizing : UserControl
 	{
-        public ListView_Resizing()
-        {
-            this.InitializeComponent();
-        }
-    }
+		public ListView_Resizing()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

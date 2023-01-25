@@ -673,12 +673,13 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				openState = "Open";
-			} else
+			}
+			else
 			{
 				openState = "Closed";
 				placement = string.Empty;
 			}
-			
+
 			ignored = GoToState(useTransitions, $"{displayMode}{openState}{placement}");
 		}
 
@@ -847,7 +848,8 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				AutomationPeer.RaiseEventIfListener(this, AutomationEvents.MenuOpened);
-			} else
+			}
+			else
 			{
 				AutomationPeer.RaiseEventIfListener(this, AutomationEvents.MenuClosed);
 			}
@@ -1105,7 +1107,7 @@ namespace Windows.UI.Xaml.Controls
 				if (m_tpDisplayModesStateGroupRef?.TryGetTarget(out displayModesStateGroup) ?? false)
 				{
 					var currentState = displayModesStateGroup?.CurrentState;
-					
+
 					if (currentState is { })
 					{
 						var storyboard = currentState.Storyboard;
@@ -1137,7 +1139,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 				// Subtract layout bounds to avoid using the System Tray area to open the AppBar.
-				var offsetFromRootOpenedUp= transform.TransformPoint(new Point(0, -offsetNeededToOpenUp));
+				var offsetFromRootOpenedUp = transform.TransformPoint(new Point(0, -offsetNeededToOpenUp));
 
 				var layoutBounds = new Rect();
 
@@ -1239,7 +1241,7 @@ namespace Windows.UI.Xaml.Controls
 			RestoreSavedFocusImpl(savedFocusedElement, m_savedFocusState);
 
 			m_savedFocusedElementWeakRef = null;
-			
+
 			m_savedFocusState = FocusState.Unfocused;
 		}
 

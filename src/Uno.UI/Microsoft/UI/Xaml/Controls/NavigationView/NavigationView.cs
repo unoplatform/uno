@@ -1181,7 +1181,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					parent = GetParentNavigationViewItemForContainer(parent);
 				}
-				
+
 				AnimateSelectionChanged(indicatorTarget);
 
 				CloseFlyoutIfRequired(nvi);
@@ -1746,7 +1746,7 @@ namespace Microsoft.UI.Xaml.Controls
 											menuItemsTopBottomMargin = menuItemsMargin.Top + menuItemsMargin.Bottom;
 										}
 #if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-										return menuItems.DesiredSize.Height+ menuItemsTopBottomMargin;
+										return menuItems.DesiredSize.Height + menuItemsTopBottomMargin;
 #else
 										return menuItems.ActualHeight + menuItemsTopBottomMargin;
 #endif

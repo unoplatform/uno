@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 			set { this.SetValue(ImageProperty, value); }
 		}
 
-		public static DependencyProperty ImageProperty { get ; } =
+		public static DependencyProperty ImageProperty { get; } =
 			DependencyProperty.Register("Image", typeof(UIImage), typeof(PivotItem), new FrameworkPropertyMetadata(default(UIImage)));
 	}
 }

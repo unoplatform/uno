@@ -10,7 +10,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 	internal class ChatBoxViewModel : ViewModelBase
 	{
 		public ChatBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
-		{			
+		{
 			_clickCount = 0;
 		}
 
@@ -18,7 +18,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 
 		private int _clickCount;
 
-		public int ClickCount {
+		public int ClickCount
+		{
 			get => _clickCount;
 			set
 			{
@@ -29,7 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteToggleHeader()
 		{
-			ClickCount ++;
+			ClickCount++;
 		}
 	}
 }

@@ -21,11 +21,11 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 #else
 	[SampleControlInfo("CommandBar", "Flyouts")]
 #endif
-    public sealed partial class CommandBar_Flyout : UserControl
-    {
-        public CommandBar_Flyout()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class CommandBar_Flyout : UserControl
+	{
+		public CommandBar_Flyout()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -21,7 +21,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			var canExecuteCheckBox = new QueryEx(q => q.All().Marked("CanExecuteCheckBox"));
 			var executeCountTextBlock = new QueryEx(q => q.All().Marked("ExecuteCountTextBlock"));
 
-			Console.WriteLine("Assert that the control starts out enabled");			
+			Console.WriteLine("Assert that the control starts out enabled");
 			Assert.IsTrue("true".Equals(canExecuteCheckBox.GetDependencyPropertyValue("IsChecked").ToString(), StringComparison.InvariantCultureIgnoreCase));
 			Assert.IsTrue("true".Equals(splitButton.GetDependencyPropertyValue("IsEnabled").ToString(), StringComparison.InvariantCultureIgnoreCase));
 			Assert.AreEqual("0", executeCountTextBlock.GetText());
@@ -46,6 +46,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 
 			splitButton.Descendant().Marked("PrimaryButton").FastTap();
 			//Wait.ForIdle();
-		}	
+		}
 	}
 }

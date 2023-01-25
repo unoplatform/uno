@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml.Controls
 			//m_tpSelectedDates.VectorChanged -= m_epSelectedDatesChangedHandler;
 			//DetachScrollViewerKeyDownEvents();
 
-			if (m_tpSelectedDates is {} selectedDates)
+			if (m_tpSelectedDates is { } selectedDates)
 			{
 				((TrackableDateCollection)selectedDates).SetCollectionChangingCallback(null);
 			}
@@ -369,7 +369,7 @@ namespace Windows.UI.Xaml.Controls
 				ForeachHost((CalendarViewGeneratorHost pHost) =>
 				{
 					var pPanel = pHost.Panel;
-					if (pPanel is {})
+					if (pPanel is { })
 					{
 						pPanel.InvalidateMeasure();
 					}
@@ -408,33 +408,33 @@ namespace Windows.UI.Xaml.Controls
 					// fall through
 					goto fall_through_1;
 				case DependencyProperty CalendarView_CalendarIdentifierProperty when CalendarView_CalendarIdentifierProperty == CalendarView.CalendarIdentifierProperty:
-					fall_through_1:
+				fall_through_1:
 					m_calendarChanged = true;
 					m_dateSourceChanged = true; //calendarid changed, even if the mindate or maxdate is not changed we still need to regenerate all calendar items.
 					InvalidateMeasure();
 					break;
 				case DependencyProperty CalendarView_NumberOfWeeksInViewProperty when CalendarView_NumberOfWeeksInViewProperty == CalendarView.NumberOfWeeksInViewProperty:
-				{
-					int rows = 0;
-					rows = (int)args.NewValue;
-
-					if (rows < s_minNumberOfWeeks || rows > s_maxNumberOfWeeks)
 					{
-						throw new ArgumentOutOfRangeException("ERROR_CALENDAR_NUMBER_OF_WEEKS_OUTOFRANGE");
-					}
+						int rows = 0;
+						rows = (int)args.NewValue;
 
-					if (m_tpMonthViewItemHost.Panel is {})
-					{
-						m_tpMonthViewItemHost.Panel.SetSuggestedDimension(s_numberOfDaysInWeek, rows);
+						if (rows < s_minNumberOfWeeks || rows > s_maxNumberOfWeeks)
+						{
+							throw new ArgumentOutOfRangeException("ERROR_CALENDAR_NUMBER_OF_WEEKS_OUTOFRANGE");
+						}
+
+						if (m_tpMonthViewItemHost.Panel is { })
+						{
+							m_tpMonthViewItemHost.Panel.SetSuggestedDimension(s_numberOfDaysInWeek, rows);
+						}
 					}
-				}
 					break;
 				case DependencyProperty CalendarView_DayOfWeekFormatProperty when CalendarView_DayOfWeekFormatProperty == CalendarView.DayOfWeekFormatProperty:
 					FormatWeekDayNames();
 					// fall through
 					goto fall_through_2;
 				case DependencyProperty CalendarView_FirstDayOfWeekProperty when CalendarView_FirstDayOfWeekProperty == CalendarView.FirstDayOfWeekProperty:
-					fall_through_2:
+				fall_through_2:
 					UpdateWeekDayNames();
 					break;
 				case DependencyProperty CalendarView_SelectionModeProperty when CalendarView_SelectionModeProperty == CalendarView.SelectionModeProperty:
@@ -444,18 +444,18 @@ namespace Windows.UI.Xaml.Controls
 					OnIsOutOfScopePropertyChanged();
 					break;
 				case DependencyProperty CalendarView_DisplayModeProperty when CalendarView_DisplayModeProperty == CalendarView.DisplayModeProperty:
-				{
-					CalendarViewDisplayMode oldDisplayMode = 0;
-					CalendarViewDisplayMode newDisplayMode = 0;
+					{
+						CalendarViewDisplayMode oldDisplayMode = 0;
+						CalendarViewDisplayMode newDisplayMode = 0;
 
-					oldDisplayMode = (CalendarViewDisplayMode)args.OldValue;
-					newDisplayMode = (CalendarViewDisplayMode)args.NewValue;
+						oldDisplayMode = (CalendarViewDisplayMode)args.OldValue;
+						newDisplayMode = (CalendarViewDisplayMode)args.NewValue;
 
-					OnDisplayModeChanged(
-						(CalendarViewDisplayMode)(oldDisplayMode),
-						(CalendarViewDisplayMode)(newDisplayMode)
-					);
-				}
+						OnDisplayModeChanged(
+							(CalendarViewDisplayMode)(oldDisplayMode),
+							(CalendarViewDisplayMode)(newDisplayMode)
+						);
+					}
 					break;
 				case DependencyProperty CalendarView_IsTodayHighlightedProperty when CalendarView_IsTodayHighlightedProperty == CalendarView.IsTodayHighlightedProperty:
 					OnIsTodayHighlightedPropertyChanged();
@@ -482,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 				case DependencyProperty CalendarView_CalendarItemBorderBrushProperty when CalendarView_CalendarItemBorderBrushProperty == CalendarView.CalendarItemBorderBrushProperty:
 				case DependencyProperty CalendarView_OutOfScopeBackgroundProperty when CalendarView_OutOfScopeBackgroundProperty == CalendarView.OutOfScopeBackgroundProperty:
 				case DependencyProperty CalendarView_CalendarItemBackgroundProperty when CalendarView_CalendarItemBackgroundProperty == CalendarView.CalendarItemBackgroundProperty:
-					ForeachHost(pHost => 
+					ForeachHost(pHost =>
 					{
 						ForeachChildInPanel(
 							pHost.Panel,
@@ -512,55 +512,55 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				case DependencyProperty CalendarView_TodayFontWeightProperty when CalendarView_TodayFontWeightProperty == CalendarView.TodayFontWeightProperty:
-				{
-					ForeachHost(pHost =>
 					{
-						var pPanel = pHost.Panel;
-
-						if (pPanel is {})
+						ForeachHost(pHost =>
 						{
-							int indexOfToday = -1;
+							var pPanel = pHost.Panel;
 
-							indexOfToday = pHost.CalculateOffsetFromMinDate(m_today);
-
-							if (indexOfToday != -1)
+							if (pPanel is { })
 							{
-								DependencyObject spChildAsIDO;
-								CalendarViewBaseItem spChildAsI;
+								int indexOfToday = -1;
 
-								spChildAsIDO = pPanel.ContainerFromIndex(indexOfToday);
-								spChildAsI = spChildAsIDO as CalendarViewBaseItem;
-								// today item is realized already, we need to update the state here.
-								// if today item is not realized yet, we'll update the state when today item is being prepared.
-								if (spChildAsI is {})
+								indexOfToday = pHost.CalculateOffsetFromMinDate(m_today);
+
+								if (indexOfToday != -1)
 								{
-									CalendarViewBaseItem spChild;
+									DependencyObject spChildAsIDO;
+									CalendarViewBaseItem spChildAsI;
 
-									spChild = (CalendarViewBaseItem)spChildAsI;
-									spChild.UpdateTextBlockFontProperties();
+									spChildAsIDO = pPanel.ContainerFromIndex(indexOfToday);
+									spChildAsI = spChildAsIDO as CalendarViewBaseItem;
+									// today item is realized already, we need to update the state here.
+									// if today item is not realized yet, we'll update the state when today item is being prepared.
+									if (spChildAsI is { })
+									{
+										CalendarViewBaseItem spChild;
+
+										spChild = (CalendarViewBaseItem)spChildAsI;
+										spChild.UpdateTextBlockFontProperties();
+									}
 								}
 							}
-						}
-					});
+						});
 
-					break;
-				}
+						break;
+					}
 
 				// Font properties for DayItem (affect measure and arrange)
 				case DependencyProperty CalendarView_DayItemFontFamilyProperty when CalendarView_DayItemFontFamilyProperty == CalendarView.DayItemFontFamilyProperty:
 				case DependencyProperty CalendarView_DayItemFontSizeProperty when CalendarView_DayItemFontSizeProperty == CalendarView.DayItemFontSizeProperty:
 				case DependencyProperty CalendarView_DayItemFontStyleProperty when CalendarView_DayItemFontStyleProperty == CalendarView.DayItemFontStyleProperty:
 				case DependencyProperty CalendarView_DayItemFontWeightProperty when CalendarView_DayItemFontWeightProperty == CalendarView.DayItemFontWeightProperty:
-				{
-					// if these DayItem properties changed, we need to re-determine the
-					// biggest dayitem in monthPanel, which will invalidate monthpanel's measure
-					var pMonthPanel = m_tpMonthViewItemHost.Panel;
-					if (pMonthPanel is {})
 					{
-						pMonthPanel.SetNeedsToDetermineBiggestItemSize();
-					}
+						// if these DayItem properties changed, we need to re-determine the
+						// biggest dayitem in monthPanel, which will invalidate monthpanel's measure
+						var pMonthPanel = m_tpMonthViewItemHost.Panel;
+						if (pMonthPanel is { })
+						{
+							pMonthPanel.SetNeedsToDetermineBiggestItemSize();
+						}
 
-				}
+					}
 					goto fall_through_3;
 
 				// Font properties for MonthLabel (they won't affect measure or arrange)
@@ -568,7 +568,7 @@ namespace Windows.UI.Xaml.Controls
 				case DependencyProperty CalendarView_FirstOfMonthLabelFontSizeProperty when CalendarView_FirstOfMonthLabelFontSizeProperty == CalendarView.FirstOfMonthLabelFontSizeProperty:
 				case DependencyProperty CalendarView_FirstOfMonthLabelFontStyleProperty when CalendarView_FirstOfMonthLabelFontStyleProperty == CalendarView.FirstOfMonthLabelFontStyleProperty:
 				case DependencyProperty CalendarView_FirstOfMonthLabelFontWeightProperty when CalendarView_FirstOfMonthLabelFontWeightProperty == CalendarView.FirstOfMonthLabelFontWeightProperty:
-					fall_through_3:
+				fall_through_3:
 					ForeachChildInPanel(
 						m_tpMonthViewItemHost.Panel,
 						pItem =>
@@ -582,49 +582,49 @@ namespace Windows.UI.Xaml.Controls
 				case DependencyProperty CalendarView_MonthYearItemFontSizeProperty when CalendarView_MonthYearItemFontSizeProperty == CalendarView.MonthYearItemFontSizeProperty:
 				case DependencyProperty CalendarView_MonthYearItemFontStyleProperty when CalendarView_MonthYearItemFontStyleProperty == CalendarView.MonthYearItemFontStyleProperty:
 				case DependencyProperty CalendarView_MonthYearItemFontWeightProperty when CalendarView_MonthYearItemFontWeightProperty == CalendarView.MonthYearItemFontWeightProperty:
-				{
+					{
 						// these properties will affect MonthItem and YearItem's size, so we should
 						// tell their panels to re-determine the biggest item size.
-						CalendarPanel[] pPanels = new []{
+						CalendarPanel[] pPanels = new[]{
 							m_tpYearViewItemHost.Panel, m_tpDecadeViewItemHost.Panel
 						};
-					;
+						;
 
-					for (var i = 0; i < pPanels.Length; ++i)
-					{
-						if (pPanels[i] is {})
+						for (var i = 0; i < pPanels.Length; ++i)
 						{
-							pPanels[i].SetNeedsToDetermineBiggestItemSize();
+							if (pPanels[i] is { })
+							{
+								pPanels[i].SetNeedsToDetermineBiggestItemSize();
+							}
 						}
 					}
-				}
-				// fall through
-				goto fall_through_4;
+					// fall through
+					goto fall_through_4;
 
 				case DependencyProperty CalendarView_FirstOfYearDecadeLabelFontFamilyProperty when CalendarView_FirstOfYearDecadeLabelFontFamilyProperty == CalendarView.FirstOfYearDecadeLabelFontFamilyProperty:
 				case DependencyProperty CalendarView_FirstOfYearDecadeLabelFontSizeProperty when CalendarView_FirstOfYearDecadeLabelFontSizeProperty == CalendarView.FirstOfYearDecadeLabelFontSizeProperty:
 				case DependencyProperty CalendarView_FirstOfYearDecadeLabelFontStyleProperty when CalendarView_FirstOfYearDecadeLabelFontStyleProperty == CalendarView.FirstOfYearDecadeLabelFontStyleProperty:
 				case DependencyProperty CalendarView_FirstOfYearDecadeLabelFontWeightProperty when CalendarView_FirstOfYearDecadeLabelFontWeightProperty == CalendarView.FirstOfYearDecadeLabelFontWeightProperty:
-					fall_through_4:
-				{
-					CalendarPanel[] pPanels = new []
-						{
+				fall_through_4:
+					{
+						CalendarPanel[] pPanels = new[]
+							{
 							m_tpYearViewItemHost.Panel, m_tpDecadeViewItemHost.Panel
 						}
-					;
+						;
 
-					for (var i = 0; i < pPanels.Length; ++i)
-					{
-						ForeachChildInPanel(pPanels[i], 
-							(CalendarViewBaseItem pItem) =>
+						for (var i = 0; i < pPanels.Length; ++i)
 						{
-							pItem.UpdateTextBlockFontProperties();
-						});
+							ForeachChildInPanel(pPanels[i],
+								(CalendarViewBaseItem pItem) =>
+							{
+								pItem.UpdateTextBlockFontProperties();
+							});
 
+						}
+
+						break;
 					}
-
-					break;
-				}
 				// Alignments affect DayItem only
 				case DependencyProperty CalendarView_HorizontalDayItemAlignmentProperty when CalendarView_HorizontalDayItemAlignmentProperty == CalendarView.HorizontalDayItemAlignmentProperty:
 				case DependencyProperty CalendarView_VerticalDayItemAlignmentProperty when CalendarView_VerticalDayItemAlignmentProperty == CalendarView.VerticalDayItemAlignmentProperty:
@@ -632,7 +632,7 @@ namespace Windows.UI.Xaml.Controls
 				case DependencyProperty CalendarView_VerticalFirstOfMonthLabelAlignmentProperty when CalendarView_VerticalFirstOfMonthLabelAlignmentProperty == CalendarView.VerticalFirstOfMonthLabelAlignmentProperty:
 
 					ForeachChildInPanel(
-						m_tpMonthViewItemHost.Panel, 
+						m_tpMonthViewItemHost.Panel,
 						pItem =>
 						{
 							pItem.UpdateTextBlockAlignments();
@@ -645,7 +645,7 @@ namespace Windows.UI.Xaml.Controls
 					ForeachHost(pHost =>
 						{
 							ForeachChildInPanel(
-								pHost.Panel, 
+								pHost.Panel,
 								pItem =>
 								{
 									pItem.InvalidateMeasure();
@@ -655,30 +655,30 @@ namespace Windows.UI.Xaml.Controls
 
 				// Dayitem style changed, update style for all existing day items.
 				case DependencyProperty CalendarView_CalendarViewDayItemStyleProperty when CalendarView_CalendarViewDayItemStyleProperty == CalendarView.CalendarViewDayItemStyleProperty:
-				{
-					Style spStyle;
-
-					spStyle = args.NewValue as Style;
-					var pMonthPanel = m_tpMonthViewItemHost.Panel;
-
-					ForeachChildInPanel(
-						pMonthPanel, 
-						pItem =>
-						{
-							SetDayItemStyle(pItem, spStyle);
-						});
-
-					// Some properties could affect dayitem size (e.g. Dayitem font properties, dayitem size),
-					// when anyone of them is changed, we need to re-determine the biggest day item.
-					// This is not a frequent scenario so we can simply set below flag and invalidate measure.
-
-					if (pMonthPanel is {})
 					{
-						pMonthPanel.SetNeedsToDetermineBiggestItemSize();
-					}
+						Style spStyle;
 
-					break;
-				}
+						spStyle = args.NewValue as Style;
+						var pMonthPanel = m_tpMonthViewItemHost.Panel;
+
+						ForeachChildInPanel(
+							pMonthPanel,
+							pItem =>
+							{
+								SetDayItemStyle(pItem, spStyle);
+							});
+
+						// Some properties could affect dayitem size (e.g. Dayitem font properties, dayitem size),
+						// when anyone of them is changed, we need to re-determine the biggest day item.
+						// This is not a frequent scenario so we can simply set below flag and invalidate measure.
+
+						if (pMonthPanel is { })
+						{
+							pMonthPanel.SetNeedsToDetermineBiggestItemSize();
+						}
+
+						break;
+					}
 			}
 		}
 
@@ -710,7 +710,7 @@ namespace Windows.UI.Xaml.Controls
 				ForeachHost(pHost =>
 				{
 					var pScrollViewer = pHost.ScrollViewer;
-					if (pScrollViewer is {})
+					if (pScrollViewer is { })
 					{
 						pScrollViewer.SetDirectManipulationStateChangeHandler(null);
 					}
@@ -730,7 +730,7 @@ namespace Windows.UI.Xaml.Controls
 			m_tpViewsGrid = null;
 
 			base.OnApplyTemplate();
-			
+
 			spMonthViewPanel = this.GetTemplateChild<CalendarPanel>("MonthViewPanel");
 			spYearViewPanel = this.GetTemplateChild<CalendarPanel>("YearViewPanel");
 			spDecadeViewPanel = this.GetTemplateChild<CalendarPanel>("DecadeViewPanel");
@@ -739,7 +739,7 @@ namespace Windows.UI.Xaml.Controls
 			m_tpYearViewItemHost.Panel = spYearViewPanel;
 			m_tpDecadeViewItemHost.Panel = spDecadeViewPanel;
 
-			if (spMonthViewPanel is {})
+			if (spMonthViewPanel is { })
 			{
 				CalendarPanel pPanel = (CalendarPanel)spMonthViewPanel;
 				int numberOfWeeksInView = 0;
@@ -752,7 +752,7 @@ namespace Windows.UI.Xaml.Controls
 				pPanel.Orientation = Orientation.Horizontal;
 			}
 
-			if (spYearViewPanel is {})
+			if (spYearViewPanel is { })
 			{
 				CalendarPanel pPanel = (CalendarPanel)spYearViewPanel;
 
@@ -766,7 +766,7 @@ namespace Windows.UI.Xaml.Controls
 				pPanel.Orientation = Orientation.Horizontal;
 			}
 
-			if (spDecadeViewPanel is {})
+			if (spDecadeViewPanel is { })
 			{
 				CalendarPanel pPanel = (CalendarPanel)spDecadeViewPanel;
 
@@ -784,7 +784,7 @@ namespace Windows.UI.Xaml.Controls
 			spPreviousButton = this.GetTemplateChild<Button>("PreviousButton");
 			spNextButton = this.GetTemplateChild<Button>("NextButton");
 
-			if (spPreviousButton is {})
+			if (spPreviousButton is { })
 			{
 				strAutomationName = AutomationProperties.GetName((Button)spPreviousButton);
 				if (strAutomationName == null)
@@ -822,7 +822,7 @@ namespace Windows.UI.Xaml.Controls
 			m_tpDecadeViewItemHost.ScrollViewer = spDecadeViewScrollViewer;
 
 			// Setting custom CalendarScrollViewerAutomationPeer for these scrollviewers to be the default one.
-			if (spMonthViewScrollViewer is {})
+			if (spMonthViewScrollViewer is { })
 			{
 				((ScrollViewer)spMonthViewScrollViewer).AutomationPeerFactoryIndex = () => new CalendarScrollViewerAutomationPeer(spMonthViewScrollViewer);
 
@@ -848,14 +848,14 @@ namespace Windows.UI.Xaml.Controls
 			ForeachHost(pHost =>
 			{
 				var pScrollViewer = pHost.ScrollViewer;
-				if (pScrollViewer is {})
+				if (pScrollViewer is { })
 				{
 					pScrollViewer.TemplatedParentHandlesScrolling = true;
 					pScrollViewer.SetDirectManipulationStateChangeHandler(pHost);
 					pScrollViewer.m_templatedParentHandlesMouseButton = true;
 				}
 
-				});
+			});
 
 			m_areDirectManipulationStateChangeHandlersHooked = true;
 
@@ -874,7 +874,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateFlowDirectionForView();
 
-			}
+		}
 
 		// Change to the correct visual state for the control.
 		private protected override void ChangeVisualState(
@@ -923,7 +923,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var pMonthViewPanel = pHost.Panel;
 
-			global::System.Diagnostics.Debug.Assert(pMonthViewPanel is {});
+			global::System.Diagnostics.Debug.Assert(pMonthViewPanel is { });
 
 			Size desiredViewportSize = default;
 			desiredViewportSize = pMonthViewPanel.GetDesiredViewportSize();
@@ -969,7 +969,7 @@ namespace Windows.UI.Xaml.Controls
 			Size returnValue = default;
 			returnValue = base.ArrangeOverride(finalSize);
 
-			if (m_tpViewsGrid is {})
+			if (m_tpViewsGrid is { })
 			{
 				// When switching views, the up-scaled view needs to be clipped by the original size.
 				double viewsHeight = 0.0;
@@ -1095,7 +1095,7 @@ namespace Windows.UI.Xaml.Controls
 			ForeachHost(pHost =>
 			{
 				var pPanel = pHost.Panel;
-				if (pPanel is {})
+				if (pPanel is { })
 				{
 					pPanel.SetNeedsToDetermineBiggestItemSize();
 				}
@@ -1129,7 +1129,7 @@ namespace Windows.UI.Xaml.Controls
 				ForeachHost((CalendarViewGeneratorHost pHost) =>
 				{
 					var pPanel = pHost.Panel;
-					if (pPanel is {})
+					if (pPanel is { })
 					{
 						pPanel.DisconnectItemsHost();
 					}
@@ -1150,7 +1150,7 @@ namespace Windows.UI.Xaml.Controls
 			ForeachHost((CalendarViewGeneratorHost pHost) =>
 			{
 				var pPanel = pHost.Panel;
-				if (pPanel is {})
+				if (pPanel is { })
 				{
 					pPanel.RegisterItemsHost(pHost);
 				}
@@ -1243,7 +1243,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DetachButtonClickedEvents(); // Uno
 
-			if (m_tpHeaderButton is {})
+			if (m_tpHeaderButton is { })
 			{
 				m_epHeaderButtonClickHandler ??= new RoutedEventHandler((object pSender, RoutedEventArgs pArgs) =>
 				{
@@ -1276,17 +1276,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DetachButtonClickedEvents()
 		{
-			if (m_epHeaderButtonClickHandler is { } && m_tpHeaderButton is {})
+			if (m_epHeaderButtonClickHandler is { } && m_tpHeaderButton is { })
 			{
 				m_tpHeaderButton.Click -= m_epHeaderButtonClickHandler;
 				m_epHeaderButtonClickHandler = null;
 			}
-			if (m_epPreviousButtonClickHandler is {} && m_tpPreviousButton is {})
+			if (m_epPreviousButtonClickHandler is { } && m_tpPreviousButton is { })
 			{
 				m_tpPreviousButton.Click -= m_epPreviousButtonClickHandler;
 				m_epPreviousButtonClickHandler = null;
 			}
-			if (m_epNextButtonClickHandler is {} && m_tpNextButton is {})
+			if (m_epNextButtonClickHandler is { } && m_tpNextButton is { })
 			{
 				m_tpNextButton.Click -= m_epNextButtonClickHandler;
 				m_epNextButtonClickHandler = null;
@@ -1304,7 +1304,7 @@ namespace Windows.UI.Xaml.Controls
 			//if it isn't it will bubble up the event.
 			if (m_tpMonthViewScrollViewer is { })
 			{
-				m_epMonthViewScrollViewerKeyDownEventHandler ??= new KeyEventHandler( 
+				m_epMonthViewScrollViewerKeyDownEventHandler ??= new KeyEventHandler(
 					(object pSender, KeyRoutedEventArgs pArgs) =>
 				{
 					bool isEngaged = false;
@@ -1321,7 +1321,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (m_tpYearViewScrollViewer is { })
 			{
-				m_epYearViewScrollViewerKeyDownEventHandler ??= new KeyEventHandler( 
+				m_epYearViewScrollViewerKeyDownEventHandler ??= new KeyEventHandler(
 					(object pSender, KeyRoutedEventArgs pArgs) =>
 				{
 					bool isEngaged = false;
@@ -1358,19 +1358,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DetachScrollViewerKeyDownEvents()
 		{
-			if (m_epMonthViewScrollViewerKeyDownEventHandler is {} && m_tpMonthViewScrollViewer is {})
+			if (m_epMonthViewScrollViewerKeyDownEventHandler is { } && m_tpMonthViewScrollViewer is { })
 			{
 				m_tpMonthViewScrollViewer.KeyDown -= m_epMonthViewScrollViewerKeyDownEventHandler;
 				m_epMonthViewScrollViewerKeyDownEventHandler = null;
 			}
 
-			if (m_epYearViewScrollViewerKeyDownEventHandler is {} && m_tpYearViewScrollViewer is {})
+			if (m_epYearViewScrollViewerKeyDownEventHandler is { } && m_tpYearViewScrollViewer is { })
 			{
 				m_tpYearViewScrollViewer.KeyDown -= m_epYearViewScrollViewerKeyDownEventHandler;
 				m_epYearViewScrollViewerKeyDownEventHandler = null;
 			}
 
-			if (m_epDecadeViewScrollViewerKeyDownEventHandler is {} && m_tpDecadeViewScrollViewer is {})
+			if (m_epDecadeViewScrollViewerKeyDownEventHandler is { } && m_tpDecadeViewScrollViewer is { })
 			{
 				m_tpDecadeViewScrollViewer.KeyDown -= m_epDecadeViewScrollViewerKeyDownEventHandler;
 				m_epDecadeViewScrollViewerKeyDownEventHandler = null;
@@ -1379,7 +1379,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private void UpdateHeaderText( bool withAnimation)
+		private void UpdateHeaderText(bool withAnimation)
 		{
 			CalendarViewGeneratorHost spHost;
 
@@ -1416,7 +1416,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var pCalendarPanel = spHost.Panel;
 
-			if (pCalendarPanel is {})
+			if (pCalendarPanel is { })
 			{
 				int firstVisibleIndex = 0;
 				int lastVisibleIndex = 0;
@@ -1459,11 +1459,11 @@ namespace Windows.UI.Xaml.Controls
 				global::System.Diagnostics.Debug.Assert(false, "header button should be disabled already in decade view mode.");
 			}
 
-			}
+		}
 
 		private void RaiseAutomationNotificationAfterNavigationButtonClicked()
 		{
-			if (m_tpHeaderButton is {})
+			if (m_tpHeaderButton is { })
 			{
 				string automationName;
 				automationName = AutomationProperties.GetName(((Button)m_tpHeaderButton));
@@ -1473,12 +1473,12 @@ namespace Windows.UI.Xaml.Controls
 					automationName = m_tpHeaderButton.Content?.ToString();
 				}
 
-				if (automationName is {})
+				if (automationName is { })
 				{
 					AutomationPeer calendarViewAutomationPeer;
 
 					calendarViewAutomationPeer = GetAutomationPeer();
-					if (calendarViewAutomationPeer is {})
+					if (calendarViewAutomationPeer is { })
 					{
 						// Two possible solution: RaisePropertyChangedEvent or RaiseNotificationEvent. If Raise PropertyChangedEvent each time when head is changing,
 						// it would be overkilling since header is already included in other automation event. More information about RaiseNotificationEvent, please
@@ -1495,7 +1495,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private void OnNavigationButtonClicked( bool forward)
+		private void OnNavigationButtonClicked(bool forward)
 		{
 			CalendarViewGeneratorHost spHost;
 
@@ -1503,7 +1503,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var pCalendarPanel = spHost.Panel;
 
-			if (pCalendarPanel is {})
+			if (pCalendarPanel is { })
 			{
 				bool canPanelShowFullScope = false;
 
@@ -1521,7 +1521,7 @@ namespace Windows.UI.Xaml.Controls
 				spChildAsIDO = pCalendarPanel.ContainerFromIndex(firstVisibleIndex);
 
 				spChildAsI = spChildAsIDO as CalendarViewBaseItem;
-				if (spChildAsI is {})
+				if (spChildAsI is { })
 				{
 					try
 					{
@@ -1545,13 +1545,13 @@ namespace Windows.UI.Xaml.Controls
 							targetDate = dateOfFirstVisibleItem;
 							spHost.AddUnits(targetDate, distance);
 #if DEBUG && false
-						if (SUCCEEDED(hr))
-						{
-							// targetDate should be still in valid range.
-							var temp = targetDate;
-							CoerceDate(temp);
-							global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
-						}
+							if (SUCCEEDED(hr))
+							{
+								// targetDate should be still in valid range.
+								var temp = targetDate;
+								CoerceDate(temp);
+								global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
+							}
 
 #endif
 						}
@@ -1589,7 +1589,7 @@ namespace Windows.UI.Xaml.Controls
 			m_rowsInYearDecadeView = rows;
 
 			var pYearPanel = m_tpYearViewItemHost.Panel;
-			if (pYearPanel is {})
+			if (pYearPanel is { })
 			{
 				// Panel type is no longer Secondary_SelfAdaptive
 				pYearPanel.PanelType = CalendarPanelType.Secondary;
@@ -1649,14 +1649,14 @@ namespace Windows.UI.Xaml.Controls
 
 			index = pHost.CalculateOffsetFromMinDate(date);
 			global::System.Diagnostics.Debug.Assert(index >= 0);
-			global::System.Diagnostics.Debug.Assert(pHost.Panel is {});
+			global::System.Diagnostics.Debug.Assert(pHost.Panel is { });
 			pHost.Panel.ScrollItemIntoView(
 				index,
 				ScrollIntoViewAlignment.Leading,
 				0.0 /* offset */,
 				true /* forceSynchronous */);
 
-			}
+		}
 
 		// Bring a item into view with animation.
 		// This function will scroll to the target item with DManip animation so
@@ -1668,7 +1668,7 @@ namespace Windows.UI.Xaml.Controls
 			DateTime date)
 		{
 			var pScrollViewer = pHost.ScrollViewer;
-			if (pScrollViewer is {})
+			if (pScrollViewer is { })
 			{
 				int index = 0;
 				int firstVisibleIndex = 0;
@@ -1704,7 +1704,7 @@ namespace Windows.UI.Xaml.Controls
 					spFirstVisibleItemAsI = pCalendarPanel.ContainerFromIndex(firstVisibleIndex);
 					spFirstVisibleItem = (CalendarViewBaseItem)spFirstVisibleItemAsI;
 
-					global::System.Diagnostics.Debug.Assert(spFirstVisibleItem.GetVirtualizationInformation() is {});
+					global::System.Diagnostics.Debug.Assert(spFirstVisibleItem.GetVirtualizationInformation() is { });
 
 					// 3. based on the first visible item's bounds, compute the target item's offset
 					var bounds = spFirstVisibleItem.GetVirtualizationInformation().Bounds;
@@ -1768,7 +1768,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private void SetDisplayDateInternal( DateTime date)
+		private void SetDisplayDateInternal(DateTime date)
 		{
 			CalendarViewGeneratorHost spHost;
 
@@ -1776,7 +1776,7 @@ namespace Windows.UI.Xaml.Controls
 
 			m_lastDisplayedDate = date;
 
-			if (spHost.Panel is {})
+			if (spHost.Panel is { })
 			{
 				// note if panel is not loaded yet (i.e. we call SetDisplayDate before Panel is loaded,
 				// below call will fail silently. This is not a problem because
@@ -1785,7 +1785,7 @@ namespace Windows.UI.Xaml.Controls
 				BringDisplayDateintoView(spHost);
 			}
 
-			}
+		}
 
 		internal void CoerceDate(ref DateTime date)
 		{
@@ -1820,7 +1820,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var pCalendarPanel = pHost.Panel;
 
-			global::System.Diagnostics.Debug.Assert(pCalendarPanel is {});
+			global::System.Diagnostics.Debug.Assert(pCalendarPanel is { });
 
 			// We explicitly call UpdateLayout in OnDisplayModeChanged, this will ocassionaly make CalendarPanelType invalid,
 			// which causes CalendarPanel to skip the row&col calculations.
@@ -1871,7 +1871,7 @@ namespace Windows.UI.Xaml.Controls
 					true /*ignoreInDirectManipulation*/);
 			}
 
-			}
+		}
 
 		// to achieve best visual effect we define that items are in OutOfScope state only when:
 		// 1. IsOutOfScopeEnabled is true, and
@@ -1907,7 +1907,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			bool isInDirectManipulation = pHost.ScrollViewer is {} && pHost.ScrollViewer.IsInDirectManipulation;
+			bool isInDirectManipulation = pHost.ScrollViewer is { } && pHost.ScrollViewer.IsInDirectManipulation;
 			if (ignoreInDirectManipulation && isInDirectManipulation)
 			{
 				return;
@@ -1934,7 +1934,7 @@ namespace Windows.UI.Xaml.Controls
 				for (int index = firstIndex; index <= lastIndex; ++index)
 				{
 					spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
-					spChildAsI = (CalendarViewBaseItem) spChildAsIDO;
+					spChildAsI = (CalendarViewBaseItem)spChildAsIDO;
 
 					spChild = ((CalendarViewBaseItem)spChildAsI);
 					date = spChild.DateBase;
@@ -1958,7 +1958,7 @@ namespace Windows.UI.Xaml.Controls
 						spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
 						spChildAsI = spChildAsIDO as CalendarViewBaseItem;
 
-						if (spChildAsI is {})
+						if (spChildAsI is { })
 						{
 							// this item is not in visible window but was marked as OutOfScope before, set it to "InScope" now.
 							((CalendarViewBaseItem)spChildAsI).SetIsOutOfScope(false);
@@ -1973,7 +1973,7 @@ namespace Windows.UI.Xaml.Controls
 						spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
 						spChildAsI = spChildAsIDO as CalendarViewBaseItem;
 
-						if (spChildAsI is {})
+						if (spChildAsI is { })
 						{
 							// this item is not in visible window but was marked as OutOfScope before, set it to "InScope" now.
 							((CalendarViewBaseItem)spChildAsI).SetIsOutOfScope(false);
@@ -2009,7 +2009,7 @@ namespace Windows.UI.Xaml.Controls
 						spChildAsI = spChildAsIDO as CalendarViewBaseItem;
 						// today item is realized already, we need to update the state here.
 						// if today item is not realized yet, we'll update the state when today item is being prepared.
-						if (spChildAsI is {})
+						if (spChildAsI is { })
 						{
 							bool isTodayHighlighted = false;
 
@@ -2038,7 +2038,7 @@ namespace Windows.UI.Xaml.Controls
 				ForeachHost((CalendarViewGeneratorHost pHost) =>
 				{
 					var pScrollViewer = pHost.ScrollViewer;
-					if (pScrollViewer is {})
+					if (pScrollViewer is { })
 					{
 						pScrollViewer.SetDirectManipulationStateChangeHandler(
 							isOutOfScopeEnabled ? pHost : null
@@ -2065,7 +2065,7 @@ namespace Windows.UI.Xaml.Controls
 
 			GetActiveGeneratorHost(out spHost);
 
-			if (spHost is {})
+			if (spHost is { })
 			{
 				bool focused = false;
 				m_focusItemAfterDisplayModeChanged = false;
@@ -2256,9 +2256,9 @@ namespace Windows.UI.Xaml.Controls
 				var pHost = hosts[i];
 				var pPanel = pHost.Panel;
 
-				if (pPanel is {})
+				if (pPanel is { })
 				{
-					ForeachChildInPanel(pPanel, 
+					ForeachChildInPanel(pPanel,
 						(CalendarViewBaseItem pItem) =>
 					{
 						pHost.UpdateLabel(pItem, isLabelVisible);
@@ -2331,7 +2331,7 @@ namespace Windows.UI.Xaml.Controls
 				for (int i = 0; i < s_numberOfDaysInWeek; ++i)
 				{
 					string str;
-					if (spFormatter is {}) // there is a valid datetimeformatter specified by user, use it
+					if (spFormatter is { }) // there is a valid datetimeformatter specified by user, use it
 					{
 						DateTime date;
 						date = m_tpCalendar.GetDateTime();
@@ -2367,7 +2367,7 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateWeekDayNames()
 		{
 			var pMonthPanel = m_tpMonthViewItemHost.Panel;
-			if (pMonthPanel is {})
+			if (pMonthPanel is { })
 			{
 				DayOfWeek firstDayOfWeek = DayOfWeek.Sunday;
 				int index = 0;
@@ -2451,14 +2451,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal string FormatYearName( DateTime date)
+		internal string FormatYearName(DateTime date)
 		{
 			var pName = m_tpYearFormatter.Format(date);
 
 			return pName;
 		}
 
-		internal string FormatMonthYearName( DateTime date)
+		internal string FormatMonthYearName(DateTime date)
 		{
 			var pName = m_tpMonthYearFormatter.Format(date);
 
@@ -2573,7 +2573,7 @@ namespace Windows.UI.Xaml.Controls
 			int col = 0;
 			pCanPanelShowFullScope = false;
 
-			global::System.Diagnostics.Debug.Assert(pCalendarPanel is {});
+			global::System.Diagnostics.Debug.Assert(pCalendarPanel is { });
 
 			row = pCalendarPanel.Rows;
 			col = pCalendarPanel.Cols;
@@ -2681,7 +2681,7 @@ namespace Windows.UI.Xaml.Controls
 				year = m_tpCalendar.Year;
 
 				bool useCurrentHeaderPeer =
-					m_currentHeaderPeer is {} &&
+					m_currentHeaderPeer is { } &&
 					(m_currentHeaderPeer.GetMonth() == month || mode == CalendarViewDisplayMode.Year) &&
 					m_currentHeaderPeer.GetYear() == year &&
 					m_currentHeaderPeer.GetMode() == mode;
@@ -2725,7 +2725,7 @@ namespace Windows.UI.Xaml.Controls
 				IRawElementProviderSimple provider;
 				provider = peerToUse.ProviderFromPeer(peerToUse);
 
-				ppReturnValue = new [] {provider};
+				ppReturnValue = new[] { provider };
 				pReturnValueCount = 1;
 			}
 
@@ -2734,7 +2734,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateFlowDirectionForView()
 		{
-			if (m_tpViewsGrid is {} && m_tpMonthYearFormatter is {})
+			if (m_tpViewsGrid is { } && m_tpMonthYearFormatter is { })
 			{
 				bool isRTL = false;
 				{
@@ -2743,7 +2743,7 @@ namespace Windows.UI.Xaml.Controls
 
 					string strFormatPattern;
 					strFormatPattern = spPatterns[0];
-					if (strFormatPattern is {})
+					if (strFormatPattern is { })
 					{
 						//uint length = 0;
 						var buffer = strFormatPattern;

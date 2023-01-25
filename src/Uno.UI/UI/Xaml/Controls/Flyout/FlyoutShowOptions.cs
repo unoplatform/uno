@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FlyoutPlacementMode Placement { get; set; } = FlyoutPlacementMode.Auto;
 
-		public FlyoutShowOptions() 
+		public FlyoutShowOptions()
 		{
 		}
 	}

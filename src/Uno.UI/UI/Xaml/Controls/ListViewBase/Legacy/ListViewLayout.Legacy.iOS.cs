@@ -63,7 +63,7 @@ namespace Uno.UI.Controls.Legacy
 			LineSpacing = 0f;
 		}
 
-        protected override CGSize PrepareLayoutInternal(bool createLayoutInfo = false, CGSize? availableSize = null)
+		protected override CGSize PrepareLayoutInternal(bool createLayoutInfo = false, CGSize? availableSize = null)
 		{
 			ListViewBaseSource source;
 			Source.TryGetTarget(out source);
@@ -75,10 +75,10 @@ namespace Uno.UI.Controls.Legacy
 
 			var newLayoutInfo = createLayoutInfo ? new Dictionary<string, LayoutInfo>(StringComparer.Ordinal) : null;
 
-            var availableWidth = availableSize.SelectOrDefault(size => size.Value.Width, CollectionView.Bounds.Width);
-            var availableHeight = availableSize.SelectOrDefault(size => size.Value.Height, CollectionView.Bounds.Height);
+			var availableWidth = availableSize.SelectOrDefault(size => size.Value.Width, CollectionView.Bounds.Width);
+			var availableHeight = availableSize.SelectOrDefault(size => size.Value.Height, CollectionView.Bounds.Height);
 
-            var frame = (ScrollDirection == ListViewBaseScrollDirection.Vertical)
+			var frame = (ScrollDirection == ListViewBaseScrollDirection.Vertical)
 				? new CGRect(Margin.Left, Margin.Top, availableWidth - (Margin.Left + Margin.Right), 0)
 				: new CGRect(Margin.Left, Margin.Top, 0, availableHeight - (Margin.Top + Margin.Bottom));
 

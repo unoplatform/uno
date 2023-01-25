@@ -78,7 +78,7 @@ namespace UITests.Windows_UI_Core
 				CoreApplication.Suspending -= CoreApplicationResuming;
 				CoreApplication.Resuming -= CoreApplicationResuming;
 			});
-		}		
+		}
 
 		public ObservableCollection<string> History { get; } = new ObservableCollection<string>();
 

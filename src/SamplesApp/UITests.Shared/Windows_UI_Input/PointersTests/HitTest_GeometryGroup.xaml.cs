@@ -41,7 +41,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 		private GeometryGroup GenerateHollowCircle(Size size)
 		{
 			var center = new Point(size.Width / 2, size.Height / 2);
-			var radius = Math.Min(size.Width,  size.Height) / 2;
+			var radius = Math.Min(size.Width, size.Height) / 2;
 			var radius2 = radius * (1.0 / 2.0);
 
 			return new GeometryGroup().Apply(x => x.Children.AddRange(new EllipseGeometry[]

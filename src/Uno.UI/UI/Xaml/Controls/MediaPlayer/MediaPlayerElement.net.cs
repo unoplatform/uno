@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class MediaPlayerElement
-    {
+	public partial class MediaPlayerElement
+	{
 		public MediaPlayerElement()
 		{
 			DefaultStyleKey = typeof(MediaPlayerElement);
 		}
-    }
+	}
 }
 #endif

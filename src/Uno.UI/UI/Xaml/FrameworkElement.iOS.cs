@@ -36,7 +36,10 @@ namespace Windows.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 
-			SetSuperviewNeedsLayout();
+			if (FeatureConfiguration.FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews || !_inLayoutSubviews)
+			{
+				SetSuperviewNeedsLayout();
+			}
 		}
 
 		public override void LayoutSubviews()
@@ -63,9 +66,9 @@ namespace Windows.UI.Xaml
 						Rect finalRect;
 						var parent = Superview;
 						if (parent is UIElement
-						    || parent is ISetLayoutSlots
-						    // In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
-						    || parent?.Superview is ISetLayoutSlots
+							|| parent is ISetLayoutSlots
+							// In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
+							|| parent?.Superview is ISetLayoutSlots
 						   )
 						{
 							finalRect = LayoutSlotWithMarginsAndAlignments;

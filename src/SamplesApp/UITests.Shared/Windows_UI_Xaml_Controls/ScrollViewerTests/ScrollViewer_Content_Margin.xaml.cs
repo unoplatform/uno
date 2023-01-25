@@ -18,11 +18,11 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
 	[Sample("Scrolling")]
 	public sealed partial class ScrollViewer_Content_Margin : UserControl
-    {
-        public ScrollViewer_Content_Margin()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public ScrollViewer_Content_Margin()
+		{
+			this.InitializeComponent();
+		}
 
 		private void ScrollToRightBottomButton_Click(object sender, object args)
 		{

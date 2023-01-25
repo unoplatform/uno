@@ -353,7 +353,7 @@ namespace Windows.UI.Xaml
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
 			Suspending?.Invoke(this, suspendingEventArgs);
-			CoreApplication.RaiseSuspending(suspendingEventArgs);			
+			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
 #if !__IOS__ && !__ANDROID__

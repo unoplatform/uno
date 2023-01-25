@@ -49,6 +49,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 			_app.WaitForElement(_app.Marked("selectedItemTitle"));
 			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 1");
 			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 1 Content");
-		}		
+		}
 	}
 }

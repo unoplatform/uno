@@ -33,11 +33,11 @@ using Android.Graphics;
 namespace Uno.UI.Xaml.Media
 {
 	internal interface IBlurImpl
-    {
-        bool Prepare(Context context, Bitmap buffer, float radius);
+	{
+		bool Prepare(Context context, Bitmap buffer, float radius);
 
-        void Release();
+		void Release();
 
-        void Blur(Bitmap input, Bitmap output);
-    }
+		void Blur(Bitmap input, Bitmap output);
+	}
 }

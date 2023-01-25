@@ -17,12 +17,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-    public sealed partial class XamlEvent_Leak_UserControl : UserControl
-    {
-        public XamlEvent_Leak_UserControl()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class XamlEvent_Leak_UserControl : UserControl
+	{
+		public XamlEvent_Leak_UserControl()
+		{
+			this.InitializeComponent();
+		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{

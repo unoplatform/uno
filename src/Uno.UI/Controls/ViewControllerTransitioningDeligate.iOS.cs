@@ -15,27 +15,27 @@ namespace Uno.UI.Controls
 {
 	public class ViewControllerTransitioningDeligate : UIViewControllerTransitioningDelegate
 	{
-        readonly IUIViewControllerAnimatedTransitioning _showTransition;
+		readonly IUIViewControllerAnimatedTransitioning _showTransition;
 
-        readonly IUIViewControllerAnimatedTransitioning _hideTransition;
+		readonly IUIViewControllerAnimatedTransitioning _hideTransition;
 
-        public ViewControllerTransitioningDeligate(IUIViewControllerAnimatedTransitioning show,IUIViewControllerAnimatedTransitioning hide)
-        {
-            this._showTransition = show;
-            _hideTransition = hide;
-        }
+		public ViewControllerTransitioningDeligate(IUIViewControllerAnimatedTransitioning show, IUIViewControllerAnimatedTransitioning hide)
+		{
+			this._showTransition = show;
+			_hideTransition = hide;
+		}
 #if XAMARIN_IOS_UNIFIED
 		public override IUIViewControllerAnimatedTransitioning GetAnimationControllerForPresentedController(UIViewController presented, UIViewController presenting, UIViewController source)
 #else
 		public override IUIViewControllerAnimatedTransitioning PresentingController(UIViewController presented, UIViewController presenting, UIViewController source)
 #endif
-	   {
-            return _showTransition;
-        }
-        public override IUIViewControllerAnimatedTransitioning GetAnimationControllerForDismissedController(UIViewController dismissed)
-        {
-            return _hideTransition;
-        }
+		{
+			return _showTransition;
+		}
+		public override IUIViewControllerAnimatedTransitioning GetAnimationControllerForDismissedController(UIViewController dismissed)
+		{
+			return _hideTransition;
+		}
 	}
 }
 

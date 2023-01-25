@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml
 {
-    public partial class VisualStateChangedEventArgs
-    {
+	public partial class VisualStateChangedEventArgs
+	{
 		public Control Control { get; set; }
 
 		public VisualState NewState { get; set; }

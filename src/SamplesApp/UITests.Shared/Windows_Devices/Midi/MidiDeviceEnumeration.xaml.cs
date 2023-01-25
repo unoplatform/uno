@@ -343,6 +343,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void NotifyUser(string message)
 		{
 			statusBlock.Text = message;
-		}		
+		}
 	}
 }

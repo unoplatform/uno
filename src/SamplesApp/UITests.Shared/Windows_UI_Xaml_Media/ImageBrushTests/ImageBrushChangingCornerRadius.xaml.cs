@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 		{
 			this.InitializeComponent();
 		}
-		
+
 		int n = 0;
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{

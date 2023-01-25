@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(TransformProperty, value);
 		}
 
-		public static DependencyProperty TransformProperty { get ; } =
+		public static DependencyProperty TransformProperty { get; } =
 			DependencyProperty.Register(
 				"Transform",
 				typeof(Transform),
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Media
 		#endregion
 
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
-		public static implicit operator UIImage (Geometry g)
+		public static implicit operator UIImage(Geometry g)
 		{
 			return g.ToNativeImage();
 		}

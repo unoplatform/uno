@@ -179,17 +179,17 @@ namespace Uno.UI.Controls
 			base.SetImageBitmap(bm);
 		}
 
-		public static Type Drawables 
-		{ 
-			get 
-			{ 
-				return _drawables; 
-			} 
-			set 
-			{ 
-				_drawables = value; 
-				Initialize(); 
-			} 
+		public static Type Drawables
+		{
+			get
+			{
+				return _drawables;
+			}
+			set
+			{
+				_drawables = value;
+				Initialize();
+			}
 		}
 
 		private static void Initialize()
@@ -219,7 +219,7 @@ namespace Uno.UI.Controls
 
 		private void OnUriSourceChanged()
 		{
-			if(Parent == null)
+			if (Parent == null)
 			{
 				// If the parent is not present we can wait for OnAttachedToWindow to call again.
 				return;
@@ -231,13 +231,13 @@ namespace Uno.UI.Controls
 			{
 				return;
 			}
-			var newUri = new Uri(UriSource);            
+			var newUri = new Uri(UriSource);
 
 			if (newUri.Scheme == "resource"
-                || newUri.IsFile
-                || newUri.IsLocalResource())
+				|| newUri.IsFile
+				|| newUri.IsLocalResource())
 			{
-				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));			
+				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{
@@ -286,7 +286,7 @@ namespace Uno.UI.Controls
 			{
 				_download.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
 					.RunAsync(
-						Uno.UI.Dispatching.CoreDispatcherPriority.Normal, 
+						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 						async (ct) =>
 						{
 							var localUri = UriSource;
@@ -409,13 +409,13 @@ namespace Uno.UI.Controls
 
 			if (height > reqHeight || width > reqWidth)
 			{
-				int halfHeight = height/2;
-				int halfWidth = width/2;
+				int halfHeight = height / 2;
+				int halfWidth = width / 2;
 
 				// Calculate the largest inSampleSize value that is a power of 2 and keeps both
 				// height and width larger than the requested height and width.
-				while ((halfHeight/inSampleSize) > reqHeight
-				       && (halfWidth/inSampleSize) > reqWidth)
+				while ((halfHeight / inSampleSize) > reqHeight
+					   && (halfWidth / inSampleSize) > reqWidth)
 				{
 					inSampleSize *= 2;
 				}
@@ -440,9 +440,9 @@ namespace Uno.UI.Controls
 				// Rescales image on rotation
 				//
 				if (_previousMeasuredWidth == _viewWidth
-				    && _previousMeasuredHeight == _viewHeight
-				    || _viewWidth == 0
-				    || _viewHeight == 0)
+					&& _previousMeasuredHeight == _viewHeight
+					|| _viewWidth == 0
+					|| _viewHeight == 0)
 				{
 					return;
 				}
@@ -461,7 +461,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-#region Interaction methods
+		#region Interaction methods
 
 		private void BuildImageInteractivity(Android.Content.Context context)
 		{
@@ -487,8 +487,8 @@ namespace Uno.UI.Controls
 			{
 				var drawable = Drawable;
 				if (drawable == null
-				    || drawable.IntrinsicWidth == 0
-				    || drawable.IntrinsicHeight == 0)
+					|| drawable.IntrinsicWidth == 0
+					|| drawable.IntrinsicHeight == 0)
 				{
 					return;
 				}
@@ -497,24 +497,24 @@ namespace Uno.UI.Controls
 				var bitmapWidth = drawable.IntrinsicWidth;
 				var bitmapHeight = drawable.IntrinsicHeight;
 
-				var scaleX = (float) Width/(float) bitmapWidth;
-				var scaleY = (float) Height/(float) bitmapHeight;
+				var scaleX = (float)Width / (float)bitmapWidth;
+				var scaleY = (float)Height / (float)bitmapHeight;
 
 				var scale = scaleX == 0 ? scaleY : (scaleY == 0 ? scaleX : Math.Min(scaleX, scaleY));
 
 				_matrix.SetScale(scale, scale);
 
 				// Center the image
-				var redundantXSpace = (float) Width - (scale*(float) bitmapWidth);
-				var redundantYSpace = (float) Height - (scale*(float) bitmapHeight);
+				var redundantXSpace = (float)Width - (scale * (float)bitmapWidth);
+				var redundantYSpace = (float)Height - (scale * (float)bitmapHeight);
 
-				redundantXSpace /= (float) 2;
-				redundantYSpace /= (float) 2;
+				redundantXSpace /= (float)2;
+				redundantYSpace /= (float)2;
 
 				_matrix.PostTranslate(redundantXSpace, redundantYSpace);
 
-				_originalWidth = Width - 2*redundantXSpace;
-				_originalHeight = Height - 2*redundantYSpace;
+				_originalWidth = Width - 2 * redundantXSpace;
+				_originalHeight = Height - 2 * redundantYSpace;
 
 				ImageMatrix = _matrix;
 			}
@@ -544,8 +544,8 @@ namespace Uno.UI.Controls
 						var deltaX = currentPoint.X - _previousPoint.X;
 						var deltaY = currentPoint.Y - _previousPoint.Y;
 
-						var fixTransX = GetFixDragTrans(deltaX, _viewWidth, _originalWidth*_saveScale);
-						var fixTransY = GetFixDragTrans(deltaY, _viewHeight, _originalHeight*_saveScale);
+						var fixTransX = GetFixDragTrans(deltaX, _viewWidth, _originalWidth * _saveScale);
+						var fixTransY = GetFixDragTrans(deltaY, _viewHeight, _originalHeight * _saveScale);
 
 						_matrix.PostTranslate(fixTransX, fixTransY);
 						FixTrans();
@@ -558,8 +558,8 @@ namespace Uno.UI.Controls
 				case MotionEventActions.Up:
 					_manipulationMode = ManipulationMode.None;
 
-					var diffX = (int) Math.Abs(currentPoint.X - _manipulationStart.X);
-					var diffY = (int) Math.Abs(currentPoint.Y - _manipulationStart.Y);
+					var diffX = (int)Math.Abs(currentPoint.X - _manipulationStart.X);
+					var diffY = (int)Math.Abs(currentPoint.Y - _manipulationStart.Y);
 
 					if (diffX < BindableImageView.DeltaClick && diffY < BindableImageView.DeltaClick)
 					{
@@ -604,18 +604,18 @@ namespace Uno.UI.Controls
 			if (_saveScale > MaxZoom)
 			{
 				_saveScale = MaxZoom;
-				scaleFactor = MaxZoom/originalScale;
+				scaleFactor = MaxZoom / originalScale;
 			}
 			else if (_saveScale < MinZoom)
 			{
 				_saveScale = MinZoom;
-				scaleFactor = MinZoom/originalScale;
+				scaleFactor = MinZoom / originalScale;
 			}
 
-			if (_originalWidth*_saveScale <= _viewWidth || _originalHeight*_saveScale <= _viewHeight)
+			if (_originalWidth * _saveScale <= _viewWidth || _originalHeight * _saveScale <= _viewHeight)
 			{
-				focusX = _viewWidth/2;
-				focusY = _viewHeight/2;
+				focusX = _viewWidth / 2;
+				focusY = _viewHeight / 2;
 			}
 
 			if (animate)
@@ -654,21 +654,21 @@ namespace Uno.UI.Controls
 
 		private void FixTrans()
 		{
-            if (_matrix != null)
-            {
-                _matrix.GetValues(_m);
+			if (_matrix != null)
+			{
+				_matrix.GetValues(_m);
 
-                float transX = _m[Matrix.MtransX];
-                float transY = _m[Matrix.MtransY];
+				float transX = _m[Matrix.MtransX];
+				float transY = _m[Matrix.MtransY];
 
-                float fixTransX = GetFixTrans(transX, _viewWidth, _originalWidth * _saveScale);
-                float fixTransY = GetFixTrans(transY, _viewHeight, _originalHeight * _saveScale);
+				float fixTransX = GetFixTrans(transX, _viewWidth, _originalWidth * _saveScale);
+				float fixTransY = GetFixTrans(transY, _viewHeight, _originalHeight * _saveScale);
 
-                if (fixTransX != 0 || fixTransY != 0)
-                {
-                    _matrix.PostTranslate(fixTransX, fixTransY);
-                }
-            }
+				if (fixTransX != 0 || fixTransY != 0)
+				{
+					_matrix.PostTranslate(fixTransX, fixTransY);
+				}
+			}
 		}
 
 		private enum ManipulationMode

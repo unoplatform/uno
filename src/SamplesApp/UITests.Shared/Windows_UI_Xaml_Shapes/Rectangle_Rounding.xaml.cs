@@ -23,10 +23,10 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	/// </summary>
 	[Sample("Shapes")]
 	public sealed partial class Rectangle_Rounding : Page
-    {
-        public Rectangle_Rounding()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public Rectangle_Rounding()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

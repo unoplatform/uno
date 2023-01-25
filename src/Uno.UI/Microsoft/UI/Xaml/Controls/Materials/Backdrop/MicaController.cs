@@ -6,8 +6,8 @@ using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-    internal class MicaController
-    {
+	internal class MicaController
+	{
 		internal static readonly Color DarkThemeColor = Color.FromArgb(255, 32, 32, 32);
 		internal const float DarkThemeTintOpacity = 0.8f;
 
@@ -19,5 +19,5 @@ namespace Microsoft.UI.Xaml.Controls
 			// Uno specific: Actual Mica is not yet supported on any target.
 			return false;
 		}
-    }
+	}
 }

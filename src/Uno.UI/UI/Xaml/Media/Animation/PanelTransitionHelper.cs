@@ -140,11 +140,11 @@ namespace Windows.UI.Xaml.Media.Animation
 
 					transition.AttachToStoryboardAnimation(_onLoadedStoryboard, child, beginTime);
 
-					
+
 				}
 
 				beginTime = beginTime.Add(TimeSpan.FromMilliseconds(100));//increment beginTime
-				
+
 			}
 
 			_elements.Clear();
@@ -225,13 +225,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				repositionTransition.AttachToStoryboardAnimation(_onUpdatedStoryboard, (IFrameworkElement)child.Element, beginTime, child.OffsetX, child.OffsetY);
 
 				beginTime = beginTime.Add(TimeSpan.FromMilliseconds(40));//increment beginTime for staggering
-		
+
 			}
 
 			_modifiedChildWithOffset.Clear();
-            _previouslyAddedElements.Clear();
+			_previouslyAddedElements.Clear();
 			_onUpdatedStoryboard.Begin();
-        }
+		}
 
 		private class ChildWithOffset
 		{

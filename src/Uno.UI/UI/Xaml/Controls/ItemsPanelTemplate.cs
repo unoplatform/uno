@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		public ItemsPanelTemplate() : this(null) { }
 
 		public ItemsPanelTemplate(Func<View?>? factory)
-			: base (factory)
+			: base(factory)
 		{
 		}
 

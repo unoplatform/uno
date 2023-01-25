@@ -301,7 +301,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
-						.Split(new[]{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
+						.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 						.Where(line => !line.StartsWith("#", StringComparison.Ordinal))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),

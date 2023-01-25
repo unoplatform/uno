@@ -9,10 +9,10 @@ using Windows.UI.Xaml.Media;
 namespace UITests.Shared.Windows_UI_Xaml.VisualStateTests
 {
 	[Sample("Visual states")]
-    public sealed partial class VisualState_Forever_Events : Page
-    {
-        public VisualState_Forever_Events()
-        {
+	public sealed partial class VisualState_Forever_Events : Page
+	{
+		public VisualState_Forever_Events()
+		{
 			this.InitializeComponent();
 			Loaded += (_, __) =>
 			{

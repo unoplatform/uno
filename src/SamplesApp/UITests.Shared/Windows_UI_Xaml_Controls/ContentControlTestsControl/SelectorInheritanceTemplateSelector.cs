@@ -7,8 +7,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-    public class SelectorInheritanceTemplateSelector : DataTemplateSelector
-    {
+	public class SelectorInheritanceTemplateSelector : DataTemplateSelector
+	{
 		public DataTemplate TrueTemplate { get; set; }
 
 		public DataTemplate FalseTemplate { get; set; }
@@ -24,7 +24,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 		{
 			var value = item?.ToString();
 
-			if(value != null)
+			if (value != null)
 			{
 				return bool.Parse(value) ? TrueTemplate : FalseTemplate;
 			}

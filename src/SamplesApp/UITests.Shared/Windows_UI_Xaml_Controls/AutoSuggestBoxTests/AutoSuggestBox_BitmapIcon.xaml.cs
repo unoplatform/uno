@@ -18,16 +18,16 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
 	[Sample("AutoSuggestBox")]
-    public sealed partial class AutoSuggestBox_BitmapIcon : Page
-    {
-        public AutoSuggestBox_BitmapIcon()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class AutoSuggestBox_BitmapIcon : Page
+	{
+		public AutoSuggestBox_BitmapIcon()
+		{
+			this.InitializeComponent();
+		}
 
 		Random r = new Random();
 

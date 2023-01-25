@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!(view is FrameworkElement) && view is IFrameworkElement ife)
 			{
-				if(!(view is Image)) // Except for Image
+				if (!(view is Image)) // Except for Image
 				{
 					// If the child is not a FrameworkElement, part of the "Measure"
 					// phase must be done by the parent element's layouter.

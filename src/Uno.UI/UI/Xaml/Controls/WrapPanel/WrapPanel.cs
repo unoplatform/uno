@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class WrapPanel : Panel
-    {
+	public partial class WrapPanel : Panel
+	{
 		private Orientation _orientation = Orientation.Horizontal;
 
-		public virtual Orientation Orientation 
-		{ 
+		public virtual Orientation Orientation
+		{
 			get
 			{
 				return _orientation;
@@ -74,5 +74,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			OnItemHeightChangedPartial();
 		}
-    }
+	}
 }

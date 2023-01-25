@@ -14,7 +14,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests
 
 		private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
 		{
-			if(Control1.Flyout is Windows.UI.Xaml.Controls.Flyout f)
+			if (Control1.Flyout is Windows.UI.Xaml.Controls.Flyout f)
 			{
 				f.Hide();
 			}

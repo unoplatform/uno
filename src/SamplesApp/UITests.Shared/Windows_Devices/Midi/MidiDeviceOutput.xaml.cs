@@ -794,6 +794,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 			await Task.Delay(duration);
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOffMessage(0, noteNumber, velocity));
 		}
-#endregion
+		#endregion
 	}
 }

@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides event data for the TreeView.DragItemsStarting event.
 	/// </summary>
 	public partial class TreeViewDragItemsStartingEventArgs
-    {
+	{
 		private readonly DragItemsStartingEventArgs _dragItemsStartingEventArgs;
 
 		public TreeViewDragItemsStartingEventArgs(DragItemsStartingEventArgs args)
@@ -35,5 +35,5 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Gets the loosely typed collection of objects that are selected for the item drag action.
 		/// </summary>
 		public IList<object> Items => _dragItemsStartingEventArgs.Items;
-    }
+	}
 }

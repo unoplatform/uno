@@ -33,7 +33,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 	private Android.Views.View _content;
 	private ViewGroup _descendantScrollable;
 	private bool _baseOnInterceptTouchResult;
-	
+
 	public NativeRefreshControl() : base(ContextHelper.Current)
 	{
 		_layouter = new NativeRefreshControlLayouter(this);
@@ -159,7 +159,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 	}
 
 	private readonly List<View> _emptyList = new();
-	
+
 	List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content as View } : _emptyList;
 
 	private ILayouter _layouter;
@@ -193,7 +193,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 
 		_layouter.Arrange(newSize);
 	}
-	
+
 	private class NativeRefreshControlLayouter : Layouter
 	{
 		public NativeRefreshControlLayouter(NativeRefreshControl view) : base(view)
@@ -266,7 +266,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 					// Get the IncludeInSwipeRefresh attached property on the FrameworkElement
 					// (False specifies that the element will not be discovered as a descendant scroller)
 					var element = (child as FrameworkElement);
-					
+
 					if (v is ScrollView || v is AbsListView || v is RecyclerView || v is UnoScrollViewer)
 					{
 						yield return v;

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(GridView_Vertical_MaxItemWidthViewModel))]
+	[Sample("GridView", ViewModelType = typeof(GridView_Vertical_MaxItemWidthViewModel))]
 	public sealed partial class GridView_Vertical_MaxItemWidth : UserControl
 	{
 		public GridView_Vertical_MaxItemWidth()

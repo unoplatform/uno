@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(AppBar),
 				typeof(Page),
 				new FrameworkPropertyMetadata(
-					default(AppBar), 
+					default(AppBar),
 					FrameworkPropertyMetadataOptions.ValueInheritsDataContext
 				)
 			);
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-#endregion
+		#endregion
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
 

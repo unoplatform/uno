@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 				var currentAvailableHeight = availableSize.Height;
 
 				// Exact match
-				if(_sizes.TryGetValue(CachedTuple.Create(currentAvailableWidth, currentAvailableHeight), out var sizeEntry))
+				if (_sizes.TryGetValue(CachedTuple.Create(currentAvailableWidth, currentAvailableHeight), out var sizeEntry))
 				{
 					return sizeEntry.MeasuredSize;
 				}

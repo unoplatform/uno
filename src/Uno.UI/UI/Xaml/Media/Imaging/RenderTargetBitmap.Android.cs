@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				bitmap.CopyPixelsToBuffer(byteArray);
 				if (byteArray is null)
 				{
-					return (0,0,0);
+					return (0, 0, 0);
 				}
 
 				EnsureBuffer(ref buffer, byteCount);
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				bitmap?.Dispose();
 				SetSoftwareRendering(element, false);
 			}
-			
+
 
 		}
 	}

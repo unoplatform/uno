@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void OnRecycled(UnoViewHolder unoViewHolder, Action action)
 		{
-			if(!_onRecycled.TryGetValue(unoViewHolder, out var actions))
+			if (!_onRecycled.TryGetValue(unoViewHolder, out var actions))
 			{
 				_onRecycled[unoViewHolder] = actions = new List<Action>();
 			}

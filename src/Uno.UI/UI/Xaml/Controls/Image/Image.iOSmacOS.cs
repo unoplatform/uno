@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SetSvgSource(SvgImageSource svgImageSource, byte[] byteArray)
-		{			
+		{
 			_childViewDisposable.Disposable = null;
 
 			_svgCanvas = svgImageSource.GetCanvas();

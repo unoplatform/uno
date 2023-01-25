@@ -142,12 +142,15 @@ namespace Uno.UI
 			var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 			double x1, y1, x2, y2;
 			double epsilon = RectangleRoundingEpsilon;
-			if (scale == 1.0d) {
+			if (scale == 1.0d)
+			{
 				x1 = FloorWithEpsilon(size.X, epsilon);
 				y1 = FloorWithEpsilon(size.Y, epsilon);
 				x2 = CeilingWithEpsilon(size.X + size.Width, epsilon);
 				y2 = CeilingWithEpsilon(size.Y + size.Height, epsilon);
-			} else {
+			}
+			else
+			{
 				var scaledEpsilon = epsilon * scale;
 				x1 = FloorWithEpsilon(size.X * scale, scaledEpsilon) / scale;
 				y1 = FloorWithEpsilon(size.Y * scale, scaledEpsilon) / scale;
@@ -249,7 +252,7 @@ namespace Uno.UI
 		{
 			return GetScreenSizeInternal(window: Windows.UI.Xaml.Window.Current);
 		}
-		
+
 		internal static CGSize GetScreenSizeInternal(Windows.UI.Xaml.Window window)
 		{
 #if __IOS__

@@ -9,9 +9,9 @@ namespace Windows.UI.Xaml.Data
 			InitializeBinder();
 		}
 
-		public static implicit operator BindingBase (string path)
+		public static implicit operator BindingBase(string path)
 		{
-			return new Binding (path);
+			return new Binding(path);
 		}
 	}
 }

@@ -113,7 +113,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 
 		private void OnFlyoutContentPressed(object sender, object args)
 		{
-				ResultTextBlock.Text = "Flyout content pressed";
+			ResultTextBlock.Text = "Flyout content pressed";
 		}
 	}
 }

@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml
 				}
 
 				// If we remove an explicit capture, we update the _localExplicitCaptures of the target element
-				if (kinds.HasFlag(PointerCaptureKind.Explicit) 
+				if (kinds.HasFlag(PointerCaptureKind.Explicit)
 					&& target.Kind.HasFlag(PointerCaptureKind.Explicit))
 				{
 					target.Element._localExplicitCaptures.Remove(Pointer);

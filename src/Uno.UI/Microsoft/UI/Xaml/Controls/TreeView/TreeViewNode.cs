@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					return parentNode;
 				}
-				return null;				
+				return null;
 			}
 
 			internal set

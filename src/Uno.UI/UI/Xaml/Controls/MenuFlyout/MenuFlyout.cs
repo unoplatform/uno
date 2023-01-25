@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => this.SetValue(ItemsProperty, value);
 		}
 
-		public static DependencyProperty ItemsProperty { get ; } =
+		public static DependencyProperty ItemsProperty { get; } =
 			DependencyProperty.Register(
 				"Items",
 				typeof(IList<MenuFlyoutItemBase>),
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			base.OnOpening();
-			
+
 			if (menuFlyoutPresenter is not null)
 			{
 				// Reset the presenter's ItemsSource.  Since Items is not an IObservableVector, we don't

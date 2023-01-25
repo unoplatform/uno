@@ -37,6 +37,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				// Finally check for templated ContentControl root
 				?? TemplatedRoot;
-		}		
+		}
 	}
 }

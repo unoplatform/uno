@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get { return (Orientation)GetValue(OrientationProperty); }
 			set { SetValue(OrientationProperty, value); }
-		} 
+		}
 		#endregion
 	}
 }

@@ -248,10 +248,11 @@ namespace SamplesApp
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
 						{
 							ThreadPool.QueueUserWorkItem(
-								_ => {
-								Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
-								throw new Exception($"Watchdog failed");
-							});
+								_ =>
+								{
+									Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
+									throw new Exception($"Watchdog failed");
+								});
 						}
 
 						await Task.Delay(TimeSpan.FromSeconds(5));

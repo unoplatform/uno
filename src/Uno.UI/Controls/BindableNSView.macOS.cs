@@ -48,7 +48,7 @@ namespace Uno.UI.Controls
 
 			var position = _shadowChildren.IndexOf(NSView, ReferenceEqualityComparer<NSView>.Default);
 
-			if(position != -1)
+			if (position != -1)
 			{
 				_shadowChildren.RemoveAt(position);
 			}

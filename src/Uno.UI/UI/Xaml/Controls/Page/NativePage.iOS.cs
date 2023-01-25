@@ -12,14 +12,14 @@ using MonoTouch.UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public abstract class NativePage : UIViewController
+	public abstract class NativePage : UIViewController
 	{
-		public NativePage ()
+		public NativePage()
 		{
-			Initialize (); 
+			Initialize();
 		}
 
-		void Initialize ()
+		void Initialize()
 		{
 			AutomaticallyAdjustsScrollViewInsets = false;
 			InitializeComponent();

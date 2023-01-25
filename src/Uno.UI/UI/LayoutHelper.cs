@@ -359,7 +359,7 @@ namespace Uno.UI
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Rect? IntersectWith(this Rect rect1, Rect rect2)
 		{
-			if(rect1.Equals(rect2))
+			if (rect1.Equals(rect2))
 			{
 				return rect1;
 			}

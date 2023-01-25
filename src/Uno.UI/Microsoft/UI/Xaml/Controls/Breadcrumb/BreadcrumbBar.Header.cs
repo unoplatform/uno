@@ -34,7 +34,7 @@ public partial class BreadcrumbBar : Control
 
 	private BreadcrumbElementFactory? m_itemsRepeaterElementFactory = null;
 
-	private BreadcrumbLayout? m_itemsRepeaterLayout =null;
+	private BreadcrumbLayout? m_itemsRepeaterLayout = null;
 
 	// Pointers to first and last items to update visual states
 	private BreadcrumbBarItem? m_ellipsisBreadcrumbBarItem = null;

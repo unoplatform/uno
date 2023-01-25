@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml
 						"between Uno Platform targets and Windows App SDK).");
 				}
 			}
-			
+
 			InitPlatform();
 
 			InitializeCommon();

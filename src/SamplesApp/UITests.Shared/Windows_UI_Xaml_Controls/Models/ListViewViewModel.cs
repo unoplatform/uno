@@ -125,7 +125,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteOnUpdateWithNewInput()
 		{
-			SampleItemsGenerated = NewInput.Split(new char[] {','}).ToList();
+			SampleItemsGenerated = NewInput.Split(new char[] { ',' }).ToList();
 		}
 
 		private void ExecuteDoSomething()
@@ -176,7 +176,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		{
 			var newWidth = (new Random()).NextDouble() * 100d + 300d;
 			_log.Warn($"Changing {nameof(VariableWidth)} to {newWidth}");
-			VariableWidth =  newWidth;
+			VariableWidth = newWidth;
 		}
 
 		private static IEnumerable<IGrouping<string, string>> GetGroupsWithVariableLengthKeys()

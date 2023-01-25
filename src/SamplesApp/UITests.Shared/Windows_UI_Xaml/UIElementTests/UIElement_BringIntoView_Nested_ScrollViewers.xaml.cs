@@ -16,13 +16,13 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {
-    [Sample("UIElement")]
-    public sealed partial class UIElement_BringIntoView_Nested_ScrollViewers : Page
-    {
-        public UIElement_BringIntoView_Nested_ScrollViewers()
-        {
-            this.InitializeComponent();
-        }
+	[Sample("UIElement")]
+	public sealed partial class UIElement_BringIntoView_Nested_ScrollViewers : Page
+	{
+		public UIElement_BringIntoView_Nested_ScrollViewers()
+		{
+			this.InitializeComponent();
+		}
 
 		private void BringItemIntoView_Click(object sender, RoutedEventArgs e)
 		{

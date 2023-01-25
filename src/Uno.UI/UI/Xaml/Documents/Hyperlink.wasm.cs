@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Documents
 		public Hyperlink() : base("a")
 		{
 			UpdateNavigationProperties(null, _defaultNavigationTarget);
-			
+
 			PointerPressed += TextBlock.OnPointerPressed;
 			PointerReleased += TextBlock.OnPointerReleased;
 			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(NavigationTargetProperty, value);
 		}
 
-		public static DependencyProperty NavigationTargetProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty NavigationTargetProperty { get; } = DependencyProperty.Register(
 			"NavigationTarget",
 			typeof(NavigationTarget),
 			typeof(Hyperlink),

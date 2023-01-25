@@ -129,7 +129,7 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
 #if __ANDROID__ || __IOS__ || __MACOS__
-				// opt-in for iOS/Android/macOS
+			// opt-in for iOS/Android/macOS
 #else
 				= true;
 #endif
@@ -163,10 +163,7 @@ namespace Uno.UI
 
 		public static class Font
 		{
-			/// <summary>
-			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon.
-			/// </summary>
-			public static string SymbolsFont { get; set; } =
+			private static string _symbolsFont = 
 #if __WASM__ || __MACOS__ || __IOS__
 				"Symbols";
 #else
@@ -174,11 +171,24 @@ namespace Uno.UI
 #endif
 
 			/// <summary>
+			/// Defines the default font to be used when displaying symbols, such as in SymbolIcon. Must be invoked after App.InitializeComponent() to have an effect.
+			/// </summary>
+			public static string SymbolsFont
+			{
+				get => _symbolsFont;
+				set
+				{
+					_symbolsFont = value;
+					ResourceResolver.SetSymbolsFontFamily();
+				}
+			}
+
+			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __IOS__ 
+#if __ANDROID__ || __IOS__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
@@ -232,6 +242,15 @@ namespace Uno.UI
 			/// will not, which is how WinUI behaves. Set to true if you have code written for earlier versions of Uno that relies upon the old behavior.
 			/// </summary>
 			public static bool UseLegacyHitTest { get; set; }
+
+#if __IOS__
+			/// <summary>
+			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
+			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
+			/// Default value is false, setting it to true will restore the behavior of uno v4.7 and earlier.
+			/// </summary>
+			public static bool IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews { get; set; }
+#endif
 		}
 
 		public static class FrameworkTemplate
