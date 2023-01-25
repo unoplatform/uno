@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace UITests.Lottie
 {
-	[Sample("Lottie", Name="Lottie Progress")]
+	[Sample("Lottie", Name = "Lottie Progress")]
 	public sealed partial class LottieProgressPage : Page
 	{
 		private const double ClickedSegmentFromProgress = 0.69;

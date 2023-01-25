@@ -45,8 +45,8 @@ namespace SamplesApp.Samples.RoutedEvents
 				//evt.Handled = false;
 			}
 
-			grid.AddHandler(TappedEvent, (TappedEventHandler) TapHandler, false);
-			grid.AddHandler(TappedEvent, (TappedEventHandler) TapHandler2, true);
+			grid.AddHandler(TappedEvent, (TappedEventHandler)TapHandler, false);
+			grid.AddHandler(TappedEvent, (TappedEventHandler)TapHandler2, true);
 
 			string GetPosition(TappedRoutedEventArgs evt)
 			{
@@ -61,7 +61,7 @@ namespace SamplesApp.Samples.RoutedEvents
 				textBlock.Text += $".e({GetPosition(evt)})";
 			}
 
-			grid.AddHandler(DoubleTappedEvent, (DoubleTappedEventHandler) DoubleTappedHandler, true);
+			grid.AddHandler(DoubleTappedEvent, (DoubleTappedEventHandler)DoubleTappedHandler, true);
 
 			void DoubleTappedHandler(object sender, DoubleTappedRoutedEventArgs e)
 			{

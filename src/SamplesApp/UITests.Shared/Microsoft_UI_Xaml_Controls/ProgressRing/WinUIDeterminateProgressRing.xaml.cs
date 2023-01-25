@@ -13,10 +13,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
 	/// </summary>
 	[Sample("Progress", "MUX")]
 	public sealed partial class WinUIDeterminateProgressRing : Page
-    {
-        public WinUIDeterminateProgressRing()
-        {
-            this.InitializeComponent();
+	{
+		public WinUIDeterminateProgressRing()
+		{
+			this.InitializeComponent();
 		}
 
 		private void ProgressValue_SelectionChanged(object sender, SelectionChangedEventArgs e)

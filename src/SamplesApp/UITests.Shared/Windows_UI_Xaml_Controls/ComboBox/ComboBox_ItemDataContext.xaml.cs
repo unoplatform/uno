@@ -11,7 +11,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 		{
 			this.InitializeComponent();
 
-			DataContext= new ControlDataContext();
+			DataContext = new ControlDataContext();
 		}
 
 		public class ControlDataContext

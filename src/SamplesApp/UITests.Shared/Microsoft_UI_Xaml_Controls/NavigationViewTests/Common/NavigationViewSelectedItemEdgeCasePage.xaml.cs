@@ -31,51 +31,51 @@ using Uno.UI.Samples.Controls;
 namespace MUXControlsTestApp
 {
 	[Sample("NavigationView", "MUX")]
-    public sealed partial class NavigationViewSelectedItemEdgeCasePage : TestPage
+	public sealed partial class NavigationViewSelectedItemEdgeCasePage : TestPage
 	{
-        public NavigationViewSelectedItemEdgeCasePage()
-        {
-            this.InitializeComponent();
+		public NavigationViewSelectedItemEdgeCasePage()
+		{
+			this.InitializeComponent();
 
-            NavView.SelectedItem = NavView.MenuItems[1];
-        }
+			NavView.SelectedItem = NavView.MenuItems[1];
+		}
 
-        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
-        {
+		private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+		{
 
-        }
+		}
 
-        private void Button_click(object sender, RoutedEventArgs e)
-        {
-            var menuItem = new NavigationViewItem();
-            menuItem.Content = "New Menu Item Ay";
-            menuItem.Icon = new SymbolIcon(Symbol.AllApps);
-            NavView.MenuItems.Add(menuItem);
-        }
-        private void Movies_Click(object sender, RoutedEventArgs e)
-        {
-            NavView.SelectedItem = MoviesItem;
-        }
+		private void Button_click(object sender, RoutedEventArgs e)
+		{
+			var menuItem = new NavigationViewItem();
+			menuItem.Content = "New Menu Item Ay";
+			menuItem.Icon = new SymbolIcon(Symbol.AllApps);
+			NavView.MenuItems.Add(menuItem);
+		}
+		private void Movies_Click(object sender, RoutedEventArgs e)
+		{
+			NavView.SelectedItem = MoviesItem;
+		}
 
-        private void Movies_Click2(object sender, RoutedEventArgs e)
-        {
-            MoviesItem.IsSelected = true;
-        }
+		private void Movies_Click2(object sender, RoutedEventArgs e)
+		{
+			MoviesItem.IsSelected = true;
+		}
 
-        private void TV_Click(object sender, RoutedEventArgs e)
-        {
-            NavView.SelectedItem = TVItem;
-        }
+		private void TV_Click(object sender, RoutedEventArgs e)
+		{
+			NavView.SelectedItem = TVItem;
+		}
 
-        private void TV_Click2(object sender, RoutedEventArgs e)
-        {
-            TVItem.IsSelected = true;
-        }
+		private void TV_Click2(object sender, RoutedEventArgs e)
+		{
+			TVItem.IsSelected = true;
+		}
 
-        private void CopyIsSelected_Click(object sender, RoutedEventArgs e)
-        {
-            StatusTextBlock.Text = MoviesItem.IsSelected + " " + TVItem.IsSelected;
-        }
+		private void CopyIsSelected_Click(object sender, RoutedEventArgs e)
+		{
+			StatusTextBlock.Text = MoviesItem.IsSelected + " " + TVItem.IsSelected;
+		}
 
-    }
+	}
 }

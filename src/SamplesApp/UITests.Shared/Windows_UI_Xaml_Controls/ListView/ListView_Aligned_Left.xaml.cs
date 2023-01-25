@@ -20,11 +20,11 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
 	[SampleControlInfo("ListView", "ListView_Aligned_Left", typeof(ListViewViewModel), description: "ListView with HorizontalAlignment=Left")]
-    public sealed partial class ListView_Aligned_Left : UserControl
-    {
-        public ListView_Aligned_Left()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class ListView_Aligned_Left : UserControl
+	{
+		public ListView_Aligned_Left()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

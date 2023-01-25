@@ -20,7 +20,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 		private const string white = "#FFFFFF";
 
 		private const int SingleStretchTestTimeout = 3 * 60 * 1000;
-		
+
 		private readonly ExpectedColor[] _expectedColors = GetExpectedColors();
 
 		[Test]

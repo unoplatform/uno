@@ -15,25 +15,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 	[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
 	public partial class ComboxBox_DropDownPlacement : SampleControlUITestBase
 	{
-		[Test] [AutoRetry] public void NoSelectionPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void NoSelectionPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void NoSelectionPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void NoSelectionPreferAuto() => TestCentered();
+		[Test][AutoRetry] public void NoSelectionPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void NoSelectionPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void NoSelectionPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void NoSelectionPreferAuto() => TestCentered();
 
-		[Test] [AutoRetry] public void FirstSelectedPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void FirstSelectedPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void FirstSelectedPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void FirstSelectedPreferAuto() => TestBelow();
+		[Test][AutoRetry] public void FirstSelectedPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void FirstSelectedPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void FirstSelectedPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void FirstSelectedPreferAuto() => TestBelow();
 
-		[Test] [AutoRetry] public void MiddleSelectedPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void MiddleSelectedPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void MiddleSelectedPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void MiddleSelectedPreferAuto() => TestCentered();
+		[Test][AutoRetry] public void MiddleSelectedPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void MiddleSelectedPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void MiddleSelectedPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void MiddleSelectedPreferAuto() => TestCentered();
 
-		[Test] [AutoRetry] public void LastSelectedPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void LastSelectedPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void LastSelectedPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void LastSelectedPreferAuto() => TestAbove();
+		[Test][AutoRetry] public void LastSelectedPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void LastSelectedPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void LastSelectedPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void LastSelectedPreferAuto() => TestAbove();
 
 		private void TestAbove([CallerMemberName] string test = null) => Test(test: test, aboveEquals: false, belowEquals: true);
 		private void TestCentered([CallerMemberName] string test = null) => Test(test: test, aboveEquals: false, belowEquals: false);

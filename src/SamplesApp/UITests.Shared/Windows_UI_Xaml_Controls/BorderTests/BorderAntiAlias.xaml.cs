@@ -20,10 +20,10 @@ namespace UITests.Windows_UI_Xaml_Controls.BorderTests
 {
 	[Sample("Border", Name = "Border_AntiAlias")]
 	public sealed partial class BorderAntiAlias : Page
-    {
-        public BorderAntiAlias()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public BorderAntiAlias()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

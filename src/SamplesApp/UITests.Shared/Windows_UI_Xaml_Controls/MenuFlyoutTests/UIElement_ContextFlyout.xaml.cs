@@ -12,16 +12,16 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-		  
+
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
 	[Uno.UI.Samples.Controls.SampleControlInfo("Flyouts")]
-    public sealed partial class UIElement_ContextFlyout : UserControl
-    {
-        public UIElement_ContextFlyout()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class UIElement_ContextFlyout : UserControl
+	{
+		public UIElement_ContextFlyout()
+		{
+			this.InitializeComponent();
+		}
 
 		public void OnMenuItemClick(object sender, object args)
 		{

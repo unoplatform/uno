@@ -39,12 +39,12 @@ namespace Uno.UI.Samples.Behaviors
 
 		private static readonly ConditionalWeakTable<ListViewBase, ItemClickEventHandler> _registeredItemClickEventHandler = new ConditionalWeakTable<ListViewBase, ItemClickEventHandler>();
 
-#region Attached Properties
+		#region Attached Properties
 
-		public static DependencyProperty CommandProperty { get ; } =
+		public static DependencyProperty CommandProperty { get; } =
 			DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(ListViewBaseCommand), new PropertyMetadataHelper(new PropertyChangedCallback(OnCommandChanged)));
 
-		public static DependencyProperty CommandParameterProperty { get ; } =
+		public static DependencyProperty CommandParameterProperty { get; } =
 			DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(ListViewBaseCommand), new PropertyMetadata(null));
 
 		public static ICommand GetCommand(ListViewBase obj)
@@ -67,7 +67,7 @@ namespace Uno.UI.Samples.Behaviors
 			obj.SetValue(CommandParameterProperty, value);
 		}
 
-#endregion
+		#endregion
 
 		private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{

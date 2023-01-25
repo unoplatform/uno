@@ -46,7 +46,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	{
 		private bool _isVisible;
 
-		public ItemViewModel(string item, CoreDispatcher dispatcher) : base (dispatcher)
+		public ItemViewModel(string item, CoreDispatcher dispatcher) : base(dispatcher)
 		{
 		}
 

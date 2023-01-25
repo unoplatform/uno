@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
 	[Sample("NumberBox", "MUX")]
-    public sealed partial class NumberBox_Description : Page
-    {
-        public NumberBox_Description()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class NumberBox_Description : Page
+	{
+		public NumberBox_Description()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

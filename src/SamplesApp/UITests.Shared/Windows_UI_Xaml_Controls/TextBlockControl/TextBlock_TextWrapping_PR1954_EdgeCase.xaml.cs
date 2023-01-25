@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 			if (TryCalculateTextLinePhysicalHeight() is int physicalHeight && physicalHeight > 0)
 			{
 				// set container height to a value, plenty for 1 line, but not enough for 2 lines
-				this.SampleContainer.Height =  ViewHelper.PhysicalToLogicalPixels(physicalHeight) * 1.85;
+				this.SampleContainer.Height = ViewHelper.PhysicalToLogicalPixels(physicalHeight) * 1.85;
 			}
 #endif
 		}

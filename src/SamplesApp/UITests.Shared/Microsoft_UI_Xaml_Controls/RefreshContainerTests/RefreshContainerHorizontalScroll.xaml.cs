@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 namespace UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 {
 	[Sample("PullToRefresh")]
-    public sealed partial class RefreshContainerHorizontalScroll : Page
-    {
+	public sealed partial class RefreshContainerHorizontalScroll : Page
+	{
 		private readonly Random _randomizer = new Random();
-		
-        public RefreshContainerHorizontalScroll()
-        {
-            this.InitializeComponent();
+
+		public RefreshContainerHorizontalScroll()
+		{
+			this.InitializeComponent();
 			this.RefreshContainer.RefreshRequested += RefreshContainer_RefreshRequested;
 		}
 

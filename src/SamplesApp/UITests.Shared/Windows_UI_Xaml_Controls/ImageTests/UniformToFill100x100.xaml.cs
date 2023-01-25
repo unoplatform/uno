@@ -19,9 +19,9 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 	[SampleControlInfo("Image", "UniformToFill100x100")]
 	public sealed partial class UniformToFill100x100 : UserControl
 	{
-        public UniformToFill100x100()
-        {
-            this.InitializeComponent();
-        }
-    }
+		public UniformToFill100x100()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

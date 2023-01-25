@@ -19,11 +19,11 @@ using Windows.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
 	[SampleControlInfo("CommandBar", "Padding")]
-    public sealed partial class CommandBar_Padding : UserControl
-    {
-        public CommandBar_Padding()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class CommandBar_Padding : UserControl
+	{
+		public CommandBar_Padding()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

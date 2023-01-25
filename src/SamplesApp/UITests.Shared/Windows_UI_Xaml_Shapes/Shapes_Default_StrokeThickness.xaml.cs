@@ -20,12 +20,12 @@ namespace UITests.Windows_UI_Xaml_Shapes
 {
 	[Sample("Shapes")]
 	public sealed partial class Shapes_Default_StrokeThickness : UserControl
-    {
+	{
 		public double MyStrokeThickness { get; set; } = 0d;
 
 		public Shapes_Default_StrokeThickness()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 			StrokeThicknessButton.Click += StrokeThicknessButton_Click;
 		}
 

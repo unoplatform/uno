@@ -19,12 +19,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel), IgnoreInSnapshotTests = true)]
-    public sealed partial class GridViewUngrouped_Normal : UserControl
-    {
-        public GridViewUngrouped_Normal()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel), IgnoreInSnapshotTests = true)]
+	public sealed partial class GridViewUngrouped_Normal : UserControl
+	{
+		public GridViewUngrouped_Normal()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

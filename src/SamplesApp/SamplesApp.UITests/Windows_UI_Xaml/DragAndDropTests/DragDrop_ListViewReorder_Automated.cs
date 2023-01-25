@@ -250,10 +250,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var dstX = relativeX.HasValue
 				? (relativeX.Value >= 0 ? sutBounds.X + relativeX.Value : sutBounds.Right + relativeX.Value)
 				: srcX;
-			var dstY  = relativeY.HasValue
+			var dstY = relativeY.HasValue
 				? (relativeY.Value >= 0 ? sutBounds.Y + relativeY.Value : sutBounds.Bottom + relativeY.Value)
 				: sutBounds.Y + 50 + itemSize * (expectedTo + 1) + 25;
-			
+
 			_app.DragCoordinates(srcX, srcY, dstX, dstY);
 
 			var expectedOrder = GetExpected();

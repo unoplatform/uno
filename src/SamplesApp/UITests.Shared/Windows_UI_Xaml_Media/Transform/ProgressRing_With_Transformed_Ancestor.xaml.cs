@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 {
 	[SampleControlInfo("Transform", "ProgressRing_With_Transformed_Ancestor", ignoreInSnapshotTests: true)]
 	public sealed partial class ProgressRing_With_Transformed_Ancestor : UserControl
-    {
-        public ProgressRing_With_Transformed_Ancestor()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ProgressRing_With_Transformed_Ancestor()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -37,7 +37,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 		private GridViewItemViewModel[] GetSampleItems(CoreDispatcher coreDispatcher)
 		{
 			var names = new[] { "Steve", "John", "Bob" };
-			return names.Select(name =>  new GridViewItemViewModel(coreDispatcher,name)).ToArray();
+			return names.Select(name => new GridViewItemViewModel(coreDispatcher, name)).ToArray();
 
 		}
 	}

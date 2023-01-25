@@ -12,10 +12,10 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
 	[Sample("Scrolling")]
 	public sealed partial class ScrollViewer_Margin_Centered : Page
-    {
-        public ScrollViewer_Margin_Centered()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ScrollViewer_Margin_Centered()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

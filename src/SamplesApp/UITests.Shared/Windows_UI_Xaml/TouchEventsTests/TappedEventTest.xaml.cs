@@ -24,6 +24,6 @@ namespace Uno.UI.Samples.Samples.Shared.Content.UITests
 		{
 			this.InitializeComponent();
 
-        }
-    }
+		}
+	}
 }

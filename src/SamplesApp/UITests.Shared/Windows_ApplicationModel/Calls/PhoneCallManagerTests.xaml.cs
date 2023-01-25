@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			catch (Exception ex)
 			{
 				ErrorMessage.Text = ex.ToString();
-			}		
+			}
 		}
 
 		private void PhoneCallManager_CallStateChanged(object sender, object e) => UpdateCallState();

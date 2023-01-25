@@ -17,10 +17,10 @@ namespace Uno.UI.Samples.UITests.Image
 {
 	[Controls.SampleControlInfo("Image", "Image_Stretch_Full_Taller")]
 	public sealed partial class Image_Stretch_Full_Taller : UserControl
-    {
-        public Image_Stretch_Full_Taller()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public Image_Stretch_Full_Taller()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

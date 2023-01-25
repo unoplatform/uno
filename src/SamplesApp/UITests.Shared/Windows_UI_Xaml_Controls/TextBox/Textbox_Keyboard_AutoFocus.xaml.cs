@@ -6,10 +6,10 @@ namespace GenericApp.Views.Content.UITests.TextBoxControl
 {
 	[SampleControlInfo("TextBox", "Textbox_Keyboard_AutoFocused", ignoreInSnapshotTests: true /*Cursor blinks in TextBox*/)]
 	public sealed partial class Textbox_Keyboard_AutoFocus : UserControl
-    {
-        public Textbox_Keyboard_AutoFocus()
-        {
-            this.InitializeComponent();
+	{
+		public Textbox_Keyboard_AutoFocus()
+		{
+			this.InitializeComponent();
 
 			var textbox = FindName("FocusedTextbox") as TextBox;
 			textbox.Loaded += RequestTextboxFocus;
@@ -26,7 +26,7 @@ namespace GenericApp.Views.Content.UITests.TextBoxControl
 		{
 			var textbox = sender as TextBox;
 			textbox.BecomeFirstResponder();
-        }
+		}
 #else
 		private void RequestTextboxFocus(object sender, RoutedEventArgs e)
 		{

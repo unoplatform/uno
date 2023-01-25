@@ -9,15 +9,15 @@ namespace MUXControlsTestApp
 	[Sample("NavigationView", "MUX")]
 	public sealed partial class NavigationViewMinimalPage : TestPage
 	{
-        public NavigationViewMinimalPage()
-        {
-            this.InitializeComponent();
-        }
+		public NavigationViewMinimalPage()
+		{
+			this.InitializeComponent();
+		}
 
-        private void GetNavViewActiveVisualStates_Click(object sender, RoutedEventArgs e)
-        {
-            var visualstates = Utilities.VisualStateHelper.GetCurrentVisualStateName(NavView);
-            NavViewActiveVisualStatesResult.Text = string.Join(",", visualstates);
-        }
-    }
+		private void GetNavViewActiveVisualStates_Click(object sender, RoutedEventArgs e)
+		{
+			var visualstates = Utilities.VisualStateHelper.GetCurrentVisualStateName(NavView);
+			NavViewActiveVisualStatesResult.Text = string.Join(",", visualstates);
+		}
+	}
 }

@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-    [SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelWebUri")]
-    public sealed partial class UniformAlignmentCenterInDoubleStackPanelWebUri : UserControl
-    {
-        public UniformAlignmentCenterInDoubleStackPanelWebUri()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[SampleControlInfo("Image", "UniformAlignmentCenterInDoubleStackPanelWebUri")]
+	public sealed partial class UniformAlignmentCenterInDoubleStackPanelWebUri : UserControl
+	{
+		public UniformAlignmentCenterInDoubleStackPanelWebUri()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

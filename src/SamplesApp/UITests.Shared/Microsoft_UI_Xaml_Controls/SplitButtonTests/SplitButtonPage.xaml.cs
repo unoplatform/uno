@@ -27,9 +27,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("MUX","Buttons")]
+	[Sample("MUX", "Buttons")]
 	public sealed partial class SplitButtonPage : Page
-    {
+	{
 		private int _clickCount = 0;
 		private int _flyoutOpenedCount = 0;
 		private int _flyoutClosedCount = 0;

@@ -34,7 +34,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			ImageAssert.AreEqual(before, after);
 		}
-		
+
 		[Test]
 		[AutoRetry]
 		//For other platform the test have been moved to runtime
@@ -46,11 +46,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			// Verify that border is drawn with CornerRadius
 			Run("Uno.UI.Samples.UITests.BorderTestsControl.Border_CornerRadius", skipInitialScreenshot: true);
-			
+
 			using var result = TakeScreenshot("sample");
 			var sample = _app.GetPhysicalRect("Sample1");
 			var eighth = sample.Width / 8;
-			
+
 
 			ImageAssert.HasPixels(
 				result,
@@ -229,7 +229,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 		[AutoRetry]
 		//For other platform the test have been moved to runtime
 		//It will be moves to when an equivalent of TakesScreenshot exist for that target
-		[ActivePlatforms(Platform.Browser)] 
+		[ActivePlatforms(Platform.Browser)]
 		public void Border_LinearGradient()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_LinearGradientBrush");
@@ -273,7 +273,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			var firstBorderRect = _app.GetPhysicalRect("firstBorder");
 			var secondBorderRect = _app.GetPhysicalRect("secondBorder");
-			
+
 			using var screenshot = TakeScreenshot(nameof(Border_AntiAlias));
 
 			ImageAssert.HasColorInRectangle(

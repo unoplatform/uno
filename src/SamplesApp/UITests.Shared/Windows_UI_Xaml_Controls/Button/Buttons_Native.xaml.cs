@@ -23,19 +23,19 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-    [SampleControlInfo("Buttons", "Buttons_Native")]
+	[SampleControlInfo("Buttons", "Buttons_Native")]
 
-    public sealed partial class Buttons_Native : UserControl
-    {
+	public sealed partial class Buttons_Native : UserControl
+	{
 		int clickActionsCounter = 0;
 		int commandActionsCounter = 0;
 		int tappedActionsCounter = 0;
 		int toggleActionsCounter = 0;
 
 		public Buttons_Native()
-        {
-            this.InitializeComponent();
-        }
+		{
+			this.InitializeComponent();
+		}
 
 		public ICommand ClickCommand => new DelegateCommand<object>(o => resultCommand.Text = $"Command {o} ({++commandActionsCounter})");
 

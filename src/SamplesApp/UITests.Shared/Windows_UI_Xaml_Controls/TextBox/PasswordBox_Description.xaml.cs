@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
-    [Sample("TextBox")]
-    public sealed partial class PasswordBox_Description : Page
-    {
-        public PasswordBox_Description()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[Sample("TextBox")]
+	public sealed partial class PasswordBox_Description : Page
+	{
+		public PasswordBox_Description()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

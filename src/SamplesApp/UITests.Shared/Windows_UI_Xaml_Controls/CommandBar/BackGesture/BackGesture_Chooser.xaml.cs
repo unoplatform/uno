@@ -17,14 +17,14 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar.BackGesture
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class BackGesture_Chooser : Page
-    {
-        public BackGesture_Chooser()
-        {
-            this.InitializeComponent();
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class BackGesture_Chooser : Page
+	{
+		public BackGesture_Chooser()
+		{
+			this.InitializeComponent();
 		}
 
 		private void Back_Click(object sender, RoutedEventArgs e)

@@ -26,7 +26,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker
 
 			_ = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() => {
+				() =>
+				{
 					root.Children.Remove(TestTimePicker);
 
 					_ = Dispatcher.RunAsync(

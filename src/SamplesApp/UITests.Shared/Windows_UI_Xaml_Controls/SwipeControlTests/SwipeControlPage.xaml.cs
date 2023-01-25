@@ -31,23 +31,23 @@ using Uno.UI.Samples.Controls;
 namespace MUXControlsTestApp
 {
 	[Sample("SwipeControl")]
-    public sealed partial class SwipeControlPage : Page //: TestPage
-    {
-        //object asyncEventReportingLock = new object();
-        //List<string> lstAsyncEventMessage = new List<string>();
-        //List<string> fullLogs = new List<string>();
-        //FrameworkElement lastInteractedWithSwipeControlContentContainer;
-        //FrameworkElement lastInteractedWithSwipeControlContentRoot;
-        //SwipeItem pastSender;
-        //UIElement animatedSwipe;
-        //DispatcherTimer _dt;
-        public SwipeControlPage()
-        {
-            // create command, and bind it to this object before initializing the components
-            var command = new TestCommand(this);
-            Resources.Add("command", command);
+	public sealed partial class SwipeControlPage : Page //: TestPage
+	{
+		//object asyncEventReportingLock = new object();
+		//List<string> lstAsyncEventMessage = new List<string>();
+		//List<string> fullLogs = new List<string>();
+		//FrameworkElement lastInteractedWithSwipeControlContentContainer;
+		//FrameworkElement lastInteractedWithSwipeControlContentRoot;
+		//SwipeItem pastSender;
+		//UIElement animatedSwipe;
+		//DispatcherTimer _dt;
+		public SwipeControlPage()
+		{
+			// create command, and bind it to this object before initializing the components
+			var command = new TestCommand(this);
+			Resources.Add("command", command);
 
-            this.InitializeComponent();
+			this.InitializeComponent();
 		}
 
 		private void SwipeItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args)

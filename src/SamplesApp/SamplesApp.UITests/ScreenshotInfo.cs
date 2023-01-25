@@ -31,7 +31,7 @@ namespace SamplesApp.UITests
 		}
 
 		public int Width => GetBitmap().Width;
-		
+
 		public int Height => GetBitmap().Height;
 
 		public void Dispose()

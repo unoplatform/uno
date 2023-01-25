@@ -22,7 +22,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 
 		private void ListItemPointerEntered(object sender, PointerRoutedEventArgs e)
 		{
-			
+
 		}
 	}
 
