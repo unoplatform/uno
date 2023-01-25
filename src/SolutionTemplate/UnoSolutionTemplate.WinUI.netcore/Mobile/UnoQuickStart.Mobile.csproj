@@ -55,7 +55,7 @@
 		<When Condition="'$(TargetFramework)'=='$basetargetframework$-android'">
 			<PropertyGroup Condition="'$(Configuration)'=='Release'">
 				<!-- Workaround for .NET Android issue https://github.com/xamarin/xamarin-android/issues/7736 -->
-				<RuntimeIdentifier>android-arm64</SupportedOSPlatformVersion>
+				<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
 			</PropertyGroup>
 
 			<ItemGroup>
