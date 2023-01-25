@@ -22,7 +22,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<!-- XAML Resource trimming https://aka.platform.uno/xaml-trimming -->
-		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<!--<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>-->
 
 		<!-- Improve performance with AOT builds https://aka.platform.uno/wasm-aot -->
 		<!-- <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode> -->
