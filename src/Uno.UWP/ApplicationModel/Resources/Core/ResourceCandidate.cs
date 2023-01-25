@@ -26,7 +26,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			return Qualifiers.FirstOrDefault(qualifier => qualifier.QualifierName == qualifierName)?.QualifierValue;
 		}
-		
+
 		internal static ResourceCandidate Parse(string fullPath, string relativePath)
 		{
 			var logicalPath = GetLogicalPath(relativePath);
