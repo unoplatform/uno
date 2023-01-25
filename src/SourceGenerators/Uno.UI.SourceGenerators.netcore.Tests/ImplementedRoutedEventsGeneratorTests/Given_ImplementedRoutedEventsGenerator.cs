@@ -79,7 +79,7 @@ partial class MyAwesomeControl<T>
 			await TestGeneratorAsync(
 				inputSource,
 				new GeneratedFile(
-					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl-1[MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs",
+					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl-1_ImplementedRoutedEvents.g.cs",
 					expectedCode));
 		}
 
@@ -112,7 +112,7 @@ namespace MyControls.Test
 			await TestGeneratorAsync(
 				inputSource,
 				new GeneratedFile(
-					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyControls.Test.MyAwesomeControl-1[MyControls.Test.MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs",
+					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyControls.Test.MyAwesomeControl-1_ImplementedRoutedEvents.g.cs",
 					expectedCode));
 		}
 	}

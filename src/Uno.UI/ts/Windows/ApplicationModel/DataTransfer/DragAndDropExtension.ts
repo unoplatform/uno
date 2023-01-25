@@ -160,20 +160,23 @@
 			});
 		}
 
-		public static async retrieveFiles(itemIds: number|number[]): Promise<string> {
+		public static async retrieveFiles(...itemIds: number[]): Promise<string> {
 
 			const data = DragDropExtension._current?._pendingDropData;
 			if (data == null) {
 				throw new Error("No pending drag and drop data.");
 			}
 
-			const fileHandles: Array<FileSystemHandle|File> = [];
-			if (Array.isArray(itemIds)) {
-				for (const id of itemIds) {
-					fileHandles.push(await DragDropExtension.getAsFile(data.items[id]));
-				}
-			} else {
-				fileHandles.push(await DragDropExtension.getAsFile(data.items[itemIds]));
+			// Make sure to get **ALL** items content **before** going async
+			// (data.items and each instance of item will be cleared)
+			const asyncFileHandles: Array<Promise<FileSystemHandle | File>> = [];
+			for (const id of itemIds) {
+				asyncFileHandles.push(DragDropExtension.getAsFile(data.items[id]));
+			}
+
+			const fileHandles: Array<FileSystemHandle | File> = [];
+			for (const asyncFile of asyncFileHandles) {
+				fileHandles.push(await asyncFile);
 			}
 
 			const infos = Uno.Storage.NativeStorageItem.getInfos(...fileHandles);

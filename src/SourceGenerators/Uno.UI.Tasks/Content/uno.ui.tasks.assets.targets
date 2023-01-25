@@ -113,15 +113,32 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<_UnoFindPackageAssetMarkersDependsOn Condition="'$(ProjectTypeGuids)'!=''">
+			$(_UnoFindPackageAssetMarkersDependsOn);
+			ResolveNuGetPackageAssets
+		</_UnoFindPackageAssetMarkersDependsOn>
+	</PropertyGroup>
+
 	<!--
 	Determines the marker location for project references
 	-->
-	<Target Name="_UnoFindPackageAssetMarkers" 
+	<Target Name="_UnoFindPackageAssetMarkers"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
-			AfterTargets="ResolveAssemblyReferences">
-		<ItemGroup>
+			DependsOnTargets="$(_UnoFindPackageAssetMarkersDependsOn)">
+
+		<ItemGroup Condition="'$(ProjectTypeGuids)'!=''">
+			<!-- Xamarin-based targets which don't set RuntimeCopyLocalItems must use  -->
+			<_UnoPriFiles Include="@(Reference->'%(RootDir)%(Directory)%(Filename).uprimarker')"
+						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(ProjectTypeGuids)'==''">
 			<_UnoPriFiles Include="@(RuntimeCopyLocalItems->'%(RootDir)%(Directory)%(Filename).uprimarker')"
 						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+		</ItemGroup>
+
+		<ItemGroup>
 			<ReferenceCopyLocalPaths Include="@(_UnoPriFiles)"/>
 		</ItemGroup>
 	</Target>

@@ -12,6 +12,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Resources;
 
 namespace Uno.UI
@@ -111,6 +112,60 @@ namespace Uno.UI
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static bool ResolveResourceStatic(object key, out object value, object context = null)
 			=> TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out value);
+
+		/// <summary>
+		/// Sets the default symbols font, assuming that the GlobalStaticResources have been initialized.
+		/// </summary>
+		/// <remarks>
+		/// This method is needed to search for the resource dictionary containing the appropriate resources
+		/// as the Application.Resources dictionary may change in structure based on how many resource dictionaries
+		/// are included.
+		/// </remarks>
+		internal static void SetSymbolsFontFamily()
+		{
+			// We assume here that we only have one dictionary with theme resources for performance reasons
+			if (FindSymbolFontFamilyDictionary() is { } genericDictionary)
+			{
+				var symbolsFontFamily = new FontFamily(global::Uno.UI.FeatureConfiguration.Font.SymbolsFont);
+
+				var themes = new[] { "Default", "Light", "HighContrast" };
+
+				foreach (var theme in themes)
+				{
+					if (genericDictionary.ThemeDictionaries.TryGetValue(theme, out var dictionary) && dictionary is ResourceDictionary themeDictionary)
+					{
+						themeDictionary["SymbolThemeFontFamily"] = symbolsFontFamily;
+					}
+					else
+					{
+						Debug.Fail($"Unable to find the {theme} theme dictionary to override font asset");
+					}
+				}
+			}
+			else
+			{
+				Debug.Fail("Unable to find theme dictionary to override font asset");
+			}
+		}
+
+		private static ResourceDictionary FindSymbolFontFamilyDictionary()
+		{
+			// For loop to reduce allocations
+			for (var mergedIndex = 0; mergedIndex < MasterDictionary.MergedDictionaries.Count; mergedIndex++)
+			{
+				var merged = MasterDictionary.MergedDictionaries[mergedIndex];
+
+				foreach (var theme in merged.ThemeDictionaries)
+				{
+					if (theme.Value is ResourceDictionary themeDictionary && themeDictionary.ContainsKey("SymbolThemeFontFamily"))
+					{
+						return merged;
+					}
+				}
+			}
+
+			return null;
+		}
 
 #if false
 		// disabled because of https://github.com/mono/mono/issues/20195

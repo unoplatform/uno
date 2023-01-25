@@ -90,7 +90,7 @@
     </PackageReference>
     <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat.AppCompatResources">
-      <Version>1.3.1.3</Version>
+      <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
   </ItemGroup>
@@ -217,7 +217,7 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\sound.mp3" />
   </ItemGroup>
-  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -127,6 +128,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
 			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
+
+			int counter = 3;
+
+			do
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				SUT.InvalidateMeasure();
+			}
+			while (SUT.DesiredSize == originalSize && counter-- > 0);
+
+			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FontFamily_Default()
+		{
+			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var size = new Size(1000, 1000);
+			SUT.Measure(size);
+
+			var originalSize = SUT.DesiredSize;
+
+			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+			
+			SUT.FontFamily = Application.Current.Resources["SymbolThemeFontFamily"] as FontFamily;
 
 			int counter = 3;
 
