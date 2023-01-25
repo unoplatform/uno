@@ -81,7 +81,7 @@
     <PackageReference Include="Prism.DryIoc.Uno" Version="8.1.97" />
     <!--#endif -->
   </ItemGroup>
-  <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" Condition="Exists('..\BlankApp.Shared\BlankApp.Shared.projitems')" />
+  <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" />
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />

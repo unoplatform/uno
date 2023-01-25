@@ -142,7 +142,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
-  <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" Condition="Exists('..\BlankApp.Shared\BlankApp.Shared.projitems')" />
+  <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
