@@ -242,6 +242,15 @@ namespace Uno.UI
 			/// will not, which is how WinUI behaves. Set to true if you have code written for earlier versions of Uno that relies upon the old behavior.
 			/// </summary>
 			public static bool UseLegacyHitTest { get; set; }
+
+#if __IOS__
+			/// <summary>
+			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
+			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
+			/// Default value is false, setting it to true will restore the behavior of uno v4.7 and earlier.
+			/// </summary>
+			public static bool IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews { get; set; }
+#endif
 		}
 
 		public static class FrameworkTemplate
