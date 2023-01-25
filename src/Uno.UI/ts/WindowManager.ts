@@ -536,22 +536,32 @@ namespace Uno.UI {
 		public setPropertyNative(pParams: number): boolean {
 
 			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
 
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				const setVal = params.Pairs[i + 1];
-				if (setVal === "true") {
-					(element as any)[params.Pairs[i]] = true;
-				}
-				else if (setVal === "false") {
-					(element as any)[params.Pairs[i]] = false;
-				}
-				else {
-					(element as any)[params.Pairs[i]] = setVal;
-				}
-			}
+			this.setPropertyNativeFast(params.HtmlId, params.Pairs);
 
 			return true;
+		}
+
+		public setPropertyNativeFast(htmlId: number, pairs: string[]) {
+
+			const element = this.getView(htmlId);
+
+			const length = pairs.length;
+
+			for (let i = 0; i < length; i += 2) {
+
+				const setVal = pairs[i + 1];
+
+				if (setVal === "true") {
+					(element as any)[pairs[i]] = true;
+				}
+				else if (setVal === "false") {
+					(element as any)[pairs[i]] = false;
+				}
+				else {
+					(element as any)[pairs[i]] = setVal;
+				}
+			}
 		}
 
 		/**
