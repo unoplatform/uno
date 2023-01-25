@@ -41,4 +41,14 @@
 	<Import Project="..\..\..\build\*.Skia.Gtk.props" />
 	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
 
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
+		<ItemGroup>
+			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf"/>
+			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf"/>
+		</ItemGroup>
+
+		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')"
+			   Text="Failed to find published filed: %(_validationPath.Identity)" />
+	</Target>
+
 </Project>
