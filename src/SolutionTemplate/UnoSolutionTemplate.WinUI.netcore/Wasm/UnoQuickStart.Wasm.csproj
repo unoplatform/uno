@@ -15,9 +15,20 @@
 
 		<!--
 		IL Linking is disabled in Debug configuration.
-		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-WebAssembly.html
+		When building in Release, see https://aka.platform.uno/wasm-il-linker
 		-->
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<!-- XAML Resource trimming https://aka.platform.uno/xaml-trimming -->
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
+		<!-- Improve performance with AOT builds https://aka.platform.uno/wasm-aot -->
+		<!-- <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode> -->
+
+		<!-- Temporarily uncomment to generate an AOT profile https://aka.platform.uno/wasm-aot-profile -->
+		<!-- <WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile> -->
 	</PropertyGroup>
 
 	<ItemGroup>
