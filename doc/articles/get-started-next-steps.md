@@ -6,6 +6,7 @@ Some additional resources:
 - [Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
 - [WinUI 3 documentation](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)
 - [Further curated links](winui-doc-links-development.md)
+- [Performance tips and tricks](Uno-UI-Performance.md)
 
 ## Uno Extensions
 
