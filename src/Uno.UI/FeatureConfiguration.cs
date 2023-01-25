@@ -236,9 +236,9 @@ namespace Uno.UI
 
 #if __IOS__
 			/// <summary>
-			/// When true, propagate the NeedsLayout on superview even if element is in its LayoutSubViews() (i.e. Arrange()).
-			/// This is known to cause layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
-			/// Default value is false, set it to true will restore behavior of uno v4.7 and earlier.
+			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
+			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
+			/// Default value is false, setting it to true will restore the behavior of uno v4.7 and earlier.
 			/// </summary>
 			public static bool IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews { get; set; }
 #endif
