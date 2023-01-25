@@ -98,7 +98,7 @@
 	-->
 	<Target Name="_UnoAddLibraryAssets"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
-			DependsOnTargets="_UnoFindPackageAssetMarkers;ResolveAssemblyReferences"
+			DependsOnTargets="_UnoFindPackageAssetMarkers"
 			BeforeTargets="GetCopyToOutputDirectoryItems">
 
 		<ExpandPackageAssets_v0 MarkerFiles="@(_UnoPriFiles)">
@@ -125,12 +125,11 @@
 	-->
 	<Target Name="_UnoFindPackageAssetMarkers"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
-			DependsOnTargets="$(_UnoFindPackageAssetMarkersDependsOn)"
-			AfterTargets="ResolveAssemblyReferences">
+			DependsOnTargets="$(_UnoFindPackageAssetMarkersDependsOn)">
 
 		<ItemGroup Condition="'$(ProjectTypeGuids)'!=''">
 			<!-- Xamarin-based targets which don't set RuntimeCopyLocalItems must use  -->
-			<_UnoPriFiles Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).uprimarker')"
+			<_UnoPriFiles Include="@(Reference->'%(RootDir)%(Directory)%(Filename).uprimarker')"
 						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
 		</ItemGroup>
 
