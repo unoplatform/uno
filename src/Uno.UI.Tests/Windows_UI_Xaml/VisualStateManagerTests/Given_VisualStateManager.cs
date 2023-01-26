@@ -18,7 +18,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 		[TestMethod]
 		public void When_UsingStateTrigger()
 		{
-			var control = new Control {Name = "control"};
+			var control = new Control { Name = "control" };
 			var dispatcher = control.Dispatcher;
 
 			var trigger1 = new CustomStateTrigger(true);
@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			group.States.Add(state1);
 			group.States.Add(state2);
 
-			VisualStateManager.SetVisualStateGroups(control, new List<VisualStateGroup> {group});
+			VisualStateManager.SetVisualStateGroups(control, new List<VisualStateGroup> { group });
 
 			trigger1.Set();
 			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
@@ -207,7 +207,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			VisualStateManager.GoToState(control, "state1", true);
 			VisualStateManager.GoToState(control, "state2", true);
 
-			Assert.IsTrue(new [] { "initial", "state1", "transition_from_state1_to_state2_frame_0", "state2" }.SequenceEqual(tags));
+			Assert.IsTrue(new[] { "initial", "state1", "transition_from_state1_to_state2_frame_0", "state2" }.SequenceEqual(tags));
 		}
 
 		[TestMethod]
@@ -264,7 +264,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			=> new()
 			{
 				Name = "state" + id,
-				Setters = {new Setter(new TargetPropertyPath("control", "Tag"), "state" + id)}
+				Setters = { new Setter(new TargetPropertyPath("control", "Tag"), "state" + id) }
 			};
 
 		private static VisualTransition Transition(Control control, int? @from = null, int? to = null, params int[] frames)

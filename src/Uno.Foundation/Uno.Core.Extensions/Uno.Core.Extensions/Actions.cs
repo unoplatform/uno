@@ -22,60 +22,60 @@ using _Task = System.Threading.Tasks.Task;
 
 namespace Uno
 {
-    internal static class Actions
-    {
-        /// <summary>
-        /// An action which does nothing.
-        /// </summary>
-        public static readonly Action Null = () => { };
+	internal static class Actions
+	{
+		/// <summary>
+		/// An action which does nothing.
+		/// </summary>
+		public static readonly Action Null = () => { };
 
-        /// <summary>
-        /// An ActionAsync which does nothing.
-        /// </summary>
-        public static readonly ActionAsync NullAsync = _ => NullTask;
-        internal static readonly Task NullTask = _Task.FromResult(true);
+		/// <summary>
+		/// An ActionAsync which does nothing.
+		/// </summary>
+		public static readonly ActionAsync NullAsync = _ => NullTask;
+		internal static readonly Task NullTask = _Task.FromResult(true);
 
-        public static Action Create(Action action)
-        {
-            return action;
-        }
+		public static Action Create(Action action)
+		{
+			return action;
+		}
 
-        public static ActionAsync CreateAsync(ActionAsync action)
-        {
-            return action;
-        }
+		public static ActionAsync CreateAsync(ActionAsync action)
+		{
+			return action;
+		}
 
-        public static Action<T> Create<T>(Action<T> action)
-        {
-            return action;
-        }
+		public static Action<T> Create<T>(Action<T> action)
+		{
+			return action;
+		}
 
-        public static ActionAsync<T> CreateAsync<T>(ActionAsync<T> action)
-        {
-            return action;
-        }
+		public static ActionAsync<T> CreateAsync<T>(ActionAsync<T> action)
+		{
+			return action;
+		}
 
-        /// <summary>
-        /// Creates an action that will only execute once the provided action, even if called multiple times. This is Thread Safe.
-        /// </summary>
-        /// <param name="action">The action to be executed once</param>
-        /// <returns>An action.</returns>
-        public static Action CreateOnce(Action action)
-        {
-            var once = 0;
+		/// <summary>
+		/// Creates an action that will only execute once the provided action, even if called multiple times. This is Thread Safe.
+		/// </summary>
+		/// <param name="action">The action to be executed once</param>
+		/// <returns>An action.</returns>
+		public static Action CreateOnce(Action action)
+		{
+			var once = 0;
 
-            return () =>
-            {
-                if (Interlocked.Exchange(ref once, 1) == 0)
-                {
-                    action();
-                }
-            };
-        }
+			return () =>
+			{
+				if (Interlocked.Exchange(ref once, 1) == 0)
+				{
+					action();
+				}
+			};
+		}
 
-        public static IDisposable ToDisposable(Action action)
-        {
-            return action.ToDisposable();
-        }
-    }
+		public static IDisposable ToDisposable(Action action)
+		{
+			return action.ToDisposable();
+		}
+	}
 }

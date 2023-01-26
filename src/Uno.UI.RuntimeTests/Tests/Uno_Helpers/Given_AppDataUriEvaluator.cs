@@ -108,7 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 
 		[TestMethod]
 		public void When_Uri_Starts_With_Invalid_Folder()
-		{			
+		{
 			var uri = new Uri($"ms-appdata:///space/file.png");
 
 			Assert.ThrowsException<ArgumentOutOfRangeException>(

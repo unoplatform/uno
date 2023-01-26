@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.Windows_Data_Xml.DomTests
 			var childNodes = document.FirstChild.ChildNodes;
 			foreach (var childNode in childNodes)
 			{
-				Assert.IsInstanceOfType(childNode, typeof(XmlElement));				
+				Assert.IsInstanceOfType(childNode, typeof(XmlElement));
 			}
 			Assert.AreEqual("title", childNodes[0].NodeName);
 			Assert.AreEqual("para", childNodes[(int)childNodes.Length - 1].NodeName);

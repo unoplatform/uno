@@ -37,7 +37,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return CanvasBorderRed3;
 		}
 
-		public Border Get_CanvasBorderGreen1() {
+		public Border Get_CanvasBorderGreen1()
+		{
 			return CanvasBorderGreen1;
 		}
 		public Border Get_CanvasBorderGreen2()

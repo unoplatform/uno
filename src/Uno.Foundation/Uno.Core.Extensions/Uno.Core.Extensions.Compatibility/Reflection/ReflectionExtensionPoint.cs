@@ -19,16 +19,16 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    internal class ReflectionExtensionPoint<T> : ExtensionPoint<T>, IReflectionExtensionPoint, IReflectionExtensionPoint<T>
-    {
-        public ReflectionExtensionPoint(Type type)
-            : base(type)
-        {
-        }
+	internal class ReflectionExtensionPoint<T> : ExtensionPoint<T>, IReflectionExtensionPoint, IReflectionExtensionPoint<T>
+	{
+		public ReflectionExtensionPoint(Type type)
+			: base(type)
+		{
+		}
 
-        public ReflectionExtensionPoint(T value)
-            : base(value)
-        {
-        }
-    }
+		public ReflectionExtensionPoint(T value)
+			: base(value)
+		{
+		}
+	}
 }

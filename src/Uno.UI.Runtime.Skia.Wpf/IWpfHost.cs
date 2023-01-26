@@ -16,12 +16,12 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		XamlRoot? XamlRoot { get; }
 
-		WpfCanvas? NativeOverlayLayer { get;}
+		WpfCanvas? NativeOverlayLayer { get; }
 
 		public bool IgnorePixelScaling { get; }
 
 		void ReleasePointerCapture();
-		
+
 		void SetPointerCapture();
 
 		void InvalidateRender();

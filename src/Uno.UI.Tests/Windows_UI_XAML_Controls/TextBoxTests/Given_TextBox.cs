@@ -39,7 +39,7 @@ namespace Uno.UI.Tests.TextBoxTests
 			textBox.Text = "Rhubarb";
 			Assert.AreEqual("Rhubarb", textBox.Text);
 			Assert.AreEqual(1, callbackCount);
-			
+
 			Assert.ThrowsException<ArgumentNullException>(() => textBox.Text = null);
 
 			Assert.AreEqual("Rhubarb", textBox.Text);
@@ -206,7 +206,7 @@ namespace Uno.UI.Tests.TextBoxTests
 					if (_sourceText != value)
 					{
 						_sourceText = value;
-						OnPropertyChanged(); 
+						OnPropertyChanged();
 					}
 				}
 			}

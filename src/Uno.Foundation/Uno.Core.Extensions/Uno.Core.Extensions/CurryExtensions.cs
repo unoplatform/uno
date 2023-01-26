@@ -23,19 +23,19 @@ namespace Uno.Extensions
 	{
 		#region Func currying extenions
 
-		public static Func<TResult> 
+		public static Func<TResult>
 			Curry<T, TResult>(this Func<T, TResult> func, T value)
 		{
 			return () => func(value);
 		}
 
-		public static Func<T2, TResult> 
+		public static Func<T2, TResult>
 			CurryFirst<T1, T2, TResult>(this Func<T1, T2, TResult> func, T1 first)
 		{
 			return (T2 last) => func(first, last);
 		}
 
-		public static Func<T1, TResult> 
+		public static Func<T1, TResult>
 			CurryLast<T1, T2, TResult>(this Func<T1, T2, TResult> func, T2 last)
 		{
 			return (T1 first) => func(first, last);
@@ -47,7 +47,7 @@ namespace Uno.Extensions
 			return (T2 second, T3 last) => func(first, second, last);
 		}
 
-		public static Func<T1, T2, TResult> 
+		public static Func<T1, T2, TResult>
 			CurryLast<T1, T2, T3, TResult>(this Func<T1, T2, T3, TResult> func, T3 last)
 		{
 			return (T1 first, T2 second) => func(first, second, last);
@@ -59,7 +59,7 @@ namespace Uno.Extensions
 			return (T2 second, T3 third, T4 last) => func(first, second, third, last);
 		}
 
-		public static Func<T1, T2, T3, TResult> 
+		public static Func<T1, T2, T3, TResult>
 			CurryLast<T1, T2, T3, T4, TResult>(this Func<T1, T2, T3, T4, TResult> func, T4 last)
 		{
 			return (T1 first, T2 second, T3 third) => func(first, second, third, last);

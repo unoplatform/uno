@@ -362,7 +362,7 @@
 //                TestSetupHelper.GoBack();
 //            }
 //        }
-        
+
 //        [TestMethod]
 //        public void CanSwipeAndTapSecondRevealedItemVertical()
 //        {
@@ -644,7 +644,7 @@
 //                TestSetupHelper.GoBack();
 //            }
 //        }
-        
+
 //        [TestMethod]
 //        public void ValidateItemsLessThanThresholdDontRevertHorizontal() // add a vertical equivalent
 //        {
@@ -788,7 +788,7 @@
 //                // same note as before, it might not open, and we still pass the test.
 //                PerformSwipe(swipeControl8, Direction.East);
 //                PerformSwipe(swipeControl9, Direction.West);
-                
+
 //                Log.Comment("Returning to the main Swipe test page");
 //                TestSetupHelper.GoBack();
 //            }
@@ -872,7 +872,7 @@
 //                Button navigateToSimpleContentsButton = new Button(navigateToSimpleContentsUIObject);
 //                navigateToSimpleContentsButton.Invoke();
 //                Wait.ForIdle();
-                
+
 //                Log.Comment("Find the SwipeControl4");
 //                var SwipeControl4 = FindElement.ByName("SwipeControl4");
 //                Verify.IsNotNull(SwipeControl4);
@@ -1074,7 +1074,7 @@
 //                Button navigateToSimpleContentsButton = new Button(navigateToSimpleContentsUIObject);
 //                navigateToSimpleContentsButton.Invoke();
 //                Wait.ForIdle();
-                
+
 //                Log.Comment("Find the SwipeControl2");
 //                var SwipeControl2 = FindElement.ByName("SwipeControl2");
 //                Verify.IsNotNull(SwipeControl2);
@@ -1407,7 +1407,7 @@
 //                TestSetupHelper.GoBack();
 //            }
 //        }
-        
+
 //        [TestMethod]
 //        public void SwipeItemsAreNullifiedWhenTheAnimationIsDone()
 //        {
@@ -1496,7 +1496,7 @@
 //                    Log.Warning("Test is disabled on RS1 and phone.");
 //                    return;
 //                }
-                
+
 //                Log.Comment("Navigating to List Items with simple swipe items");
 //                UIObject navigateToSimpleContentsUIObject = FindElement.ByName("navigateToSimpleContents");
 //                Verify.IsNotNull(navigateToSimpleContentsUIObject, "Verifying that navigateToSimpleContents Button was found");
@@ -1605,7 +1605,7 @@
 //                    Log.Warning("Test is disabled because UICommand doesn't exist as a type on this build.");
 //                    return;
 //                }
-                
+
 //                Log.Comment("Navigating to List Items with simple swipe items");
 //                UIObject navigateToSimpleContentsUIObject = FindElement.ByName("navigateToSimpleContents");
 //                Verify.IsNotNull(navigateToSimpleContentsUIObject, "Verifying that navigateToSimpleContents Button was found");
@@ -1780,7 +1780,7 @@
 //                Verify.AreEqual(ToggleState.On, SwipeItem3OpenCheckBox.ToggleState);
 //                Verify.AreEqual(ToggleState.On, SwipeItem3IdleCheckBox.ToggleState);
 //                Verify.AreEqual("sc11.Close()", textblock.DocumentText);
-                
+
 //                Log.Comment("Returning to the main Swipe test page");
 //                TestSetupHelper.GoBack();
 //            }
@@ -1819,7 +1819,7 @@
 
 //                Log.Comment("Getting the Swipe3BackgroundColorTextBlock");
 //                var textblock = new TextBlock(FindElement.ByName("Swipe3BackgroundColorTextBlock"));
-                
+
 //                PerformSwipe(SwipeControl3, Direction.East);
 //                WaitForChecked(SwipeItem3OpenCheckBox);
 //                WaitForChecked(SwipeItem3IdleCheckBox);
@@ -1870,7 +1870,7 @@
 //            Verify.AreEqual(ToggleState.On, SwipeItem4OpenCheckBox.ToggleState);
 //            Verify.AreEqual(ToggleState.On, SwipeItem4IdleCheckBox.ToggleState);
 //            Verify.AreEqual("RevealItem1", textblock.DocumentText);
-            
+
 //            var swipePage = FindElement.ByName("SwipePage");
 
 //            if (withOutsideTap)

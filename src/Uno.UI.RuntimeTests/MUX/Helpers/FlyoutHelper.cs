@@ -37,7 +37,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		}
 
 		internal static void OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
-			where T: FlyoutBase
+			where T : FlyoutBase
 		{
 #if WINDOWS_UWP
 			flyoutControl.ShowAt(target);

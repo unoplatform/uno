@@ -295,7 +295,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 		public static readonly DependencyProperty MyListProperty =
 			DependencyProperty.Register(
 				name: "MyList",
-				propertyType: typeof(IList<MyObject>), 
+				propertyType: typeof(IList<MyObject>),
 				ownerType: typeof(MyBasicListType),
 				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: null,

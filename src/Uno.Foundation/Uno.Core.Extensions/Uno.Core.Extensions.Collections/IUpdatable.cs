@@ -29,8 +29,8 @@ namespace Uno
 	/// <remarks> This is useful for items bound to the view. When a newer instance with its Equals
 	/// returning true for the old item comes in play, the old item is kept, but updated from that
 	/// new instance.</remarks>
-    internal interface IUpdatable<T>
-    {
+	internal interface IUpdatable<T>
+	{
 		Task UpdateAsync(CancellationToken ct, T newerInstance);
-    }
+	}
 }

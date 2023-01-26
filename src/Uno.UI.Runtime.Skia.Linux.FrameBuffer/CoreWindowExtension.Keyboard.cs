@@ -31,11 +31,11 @@ namespace Uno.UI.Runtime.Skia
 				var key = libinput_event_keyboard_get_key(rawKeyboardEvent);
 				var state = libinput_event_keyboard_get_key_state(rawKeyboardEvent);
 
-				if(state == libinput_key_state.Pressed)
+				if (state == libinput_key_state.Pressed)
 				{
 					OnKeyPressEvent(key);
 				}
-				else if(state == libinput_key_state.Released)
+				else if (state == libinput_key_state.Released)
 				{
 					OnKeyReleaseEvent(key);
 				}

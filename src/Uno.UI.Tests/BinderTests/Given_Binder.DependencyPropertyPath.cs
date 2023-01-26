@@ -60,17 +60,18 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 
 			// The property needs to be set at least once (so that it is actually attached)
 			Attachable.SetMyValue(attachedSource, 21);
-		
+
 			var target = new Control1();
-		 
+
 			target.SetBinding(
 				Control1.OtherControlProperty,
-				new Binding($"{nameof(source.OtherControl)}.({ typeof(Attachable).Namespace }:{ nameof(Attachable) }.MyValue)") {
+				new Binding($"{nameof(source.OtherControl)}.({typeof(Attachable).Namespace}:{nameof(Attachable)}.MyValue)")
+				{
 					Mode = BindingMode.TwoWay,
 					Source = source
 				}
 			);
-			 
+
 			Assert.AreEqual(null, target.OtherControl);
 
 			source.OtherControl = attachedSource;

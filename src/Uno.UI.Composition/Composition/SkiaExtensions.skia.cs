@@ -16,7 +16,7 @@ namespace Windows.UI.Composition
 			=> new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom);
 
 		public static Rect ToRect(this SKRect rect)
-			=> new Rect(x: (float)rect.Left, y: (float)rect.Top, width:(float)rect.Width, height: (float)rect.Height);
+			=> new Rect(x: (float)rect.Left, y: (float)rect.Top, width: (float)rect.Width, height: (float)rect.Height);
 
 		public static Size ToSize(this SKSize size)
 			=> new Size(size.Width, size.Height);

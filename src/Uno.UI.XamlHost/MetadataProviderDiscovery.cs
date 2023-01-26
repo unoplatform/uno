@@ -54,9 +54,9 @@ internal static class MetadataProviderDiscovery
 		// Get all assemblies loaded in app domain and placed side-by-side from all DLL and EXE
 		var loadedAssemblies = GetAssemblies();
 #if NET462
-            var uniqueAssemblies = new HashSet<Assembly>(loadedAssemblies, EqualityComparerFactory<Assembly>.CreateComparer(
-                a => a.GetName().FullName.GetHashCode(),
-                (a, b) => a.GetName().FullName.Equals(b.GetName().FullName, StringComparison.OrdinalIgnoreCase)));
+		var uniqueAssemblies = new HashSet<Assembly>(loadedAssemblies, EqualityComparerFactory<Assembly>.CreateComparer(
+			a => a.GetName().FullName.GetHashCode(),
+			(a, b) => a.GetName().FullName.Equals(b.GetName().FullName, StringComparison.OrdinalIgnoreCase)));
 #else
 		var uniqueAssemblies = new HashSet<Assembly>(loadedAssemblies, EqualityComparerFactory<Assembly>.CreateComparer(
 			a => a.GetName().FullName.GetHashCode(),

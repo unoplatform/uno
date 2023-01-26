@@ -40,7 +40,7 @@ namespace Windows.UI.Composition
 
 		public void Dispose()
 		{
-			
+
 		}
 
 		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation) { }

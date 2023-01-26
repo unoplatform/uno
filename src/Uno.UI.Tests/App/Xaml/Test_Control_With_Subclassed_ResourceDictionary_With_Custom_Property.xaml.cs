@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Uno.UI.Tests.App.Xaml
-{ 
+{
 	public sealed partial class Test_Control_With_Subclassed_ResourceDictionary_With_Custom_Property : UserControl
 	{
 		public Test_Control_With_Subclassed_ResourceDictionary_With_Custom_Property()

@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		public void When_LocalizedResource()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
-			var languages = new[] {"fr-CA", "fr", "en-US", "en", "sr"};
+			var languages = new[] { "fr-CA", "fr", "en-US", "en", "sr" };
 
 			foreach (var language in languages)
 			{

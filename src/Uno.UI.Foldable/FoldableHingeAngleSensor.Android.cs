@@ -28,18 +28,20 @@ namespace Uno.UI.Foldable
 	/// _hingeSensor = sensors.FirstOrDefault(s => s.StringType.Equals(HINGE_SENSOR_TYPE, StringComparison.OrdinalIgnoreCase)); // TYPE - Surface Duo specific
 	/// </remarks>
 	public class FoldableHingeAngleSensor : INativeHingeAngleSensor
-    {
+	{
 		const string HINGE_SENSOR_NAME = "hinge"; // works on multiple OEM devices
 
 		private static SensorManager _sensorManager;
-	
+
 		Sensor _hingeSensor;
 		HingeSensorEventListener _sensorListener;
 
 		private EventHandler<NativeHingeAngleReading> _readingChanged;
 
-		public bool DeviceHasHinge { 
-			get {
+		public bool DeviceHasHinge
+		{
+			get
+			{
 				return _hingeSensor != null;
 			}
 		}
@@ -64,7 +66,7 @@ namespace Uno.UI.Foldable
 			{
 				return null;
 			}
-			
+
 			var sensors = _sensorManager.GetSensorList(Android.Hardware.SensorType.All);
 
 			return sensors.FirstOrDefault(s => s.Name.Contains(HINGE_SENSOR_NAME, StringComparison.OrdinalIgnoreCase)); // NAME - generic foldable device/s
@@ -118,19 +120,19 @@ namespace Uno.UI.Foldable
 				_sensorManager.UnregisterListener(_sensorListener, _hingeSensor);
 		}
 
-        class HingeSensorEventListener : Java.Lang.Object, ISensorEventListener
-        {
-            public Action<SensorEvent> SensorChangedHandler { get; set; }
-            public Action<Sensor, SensorStatus> AccuracyChangedHandler { get; set; }
+		class HingeSensorEventListener : Java.Lang.Object, ISensorEventListener
+		{
+			public Action<SensorEvent> SensorChangedHandler { get; set; }
+			public Action<Sensor, SensorStatus> AccuracyChangedHandler { get; set; }
 
-            public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
-                => AccuracyChangedHandler?.Invoke(sensor, accuracy);
+			public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
+				=> AccuracyChangedHandler?.Invoke(sensor, accuracy);
 
-            public void OnSensorChanged(SensorEvent e)
-                => SensorChangedHandler?.Invoke(e);
-        }
+			public void OnSensorChanged(SensorEvent e)
+				=> SensorChangedHandler?.Invoke(e);
+		}
 
-        static DateTimeOffset TimestampToDateTimeOffset(long timestamp)
+		static DateTimeOffset TimestampToDateTimeOffset(long timestamp)
 		{
 			return DateTimeOffset.Now
 				.AddMilliseconds(-SystemClock.ElapsedRealtime())

@@ -6,8 +6,8 @@ using Uno.Extensions;
 
 namespace Uno.Client
 {
-    public static class ICommandExtensions
-    {
+	public static class ICommandExtensions
+	{
 		/// <summary>
 		/// Executes the command if CanExecute returns true.
 		/// </summary>
@@ -18,11 +18,11 @@ namespace Uno.Client
 			try
 			{
 				if (command != null && command.CanExecute(parameter))
-				{					
+				{
 					command.Execute(parameter);
 				}
 			}
 			catch (ObjectDisposedException) { } // Not possible when the object is disposed!
 		}
-    }
+	}
 }

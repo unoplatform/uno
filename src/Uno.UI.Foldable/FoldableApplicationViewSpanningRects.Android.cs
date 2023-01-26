@@ -13,17 +13,17 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Foldable
 {
-    /// <summary>
-    /// Provides two Rect that represent the two screen dimensions when
-    /// an Android application is spanned across a hinge or fold (eg. Surface Duo)
-    /// </summary>
-    /// <remarks>
-    /// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
-    /// and exposing the properties needed to make UI change when required.
-    /// FUTURE: implement an event for layout changes, so we can respond to folding state changes in app code too
-    /// </remarks>
+	/// <summary>
+	/// Provides two Rect that represent the two screen dimensions when
+	/// an Android application is spanned across a hinge or fold (eg. Surface Duo)
+	/// </summary>
+	/// <remarks>
+	/// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
+	/// and exposing the properties needed to make UI change when required.
+	/// FUTURE: implement an event for layout changes, so we can respond to folding state changes in app code too
+	/// </remarks>
 	[Preserve]
-    public partial class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider
+	public partial class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;
 
@@ -64,68 +64,68 @@ namespace Uno.UI.Foldable
 			this.Log().Info($"DualMode: FoldableApplicationViewSpanningRects.GetSpanningRects HasFoldFeature={HasFoldFeature}");
 			if (HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 			{
-                _previousMode.result = null;
+				_previousMode.result = null;
 
-                var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
-                var wuOrientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
+				var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
+				var wuOrientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
 				this.Log().Info($"DualMode:                  FoldBounds={FoldBounds}");
 				// TODO: bring the list of all folding features here, for future compatibility
 				List<Rect> occludedRects = new List<Rect>
-                    {   // Hinge/fold bounds
+					{   // Hinge/fold bounds
 						new Rect(FoldBounds.Left,
-                        FoldBounds.Top,
-                        FoldBounds.Width(),
-                        FoldBounds.Height())
-                    };
+						FoldBounds.Top,
+						FoldBounds.Width(),
+						FoldBounds.Height())
+					};
 
 				if (occludedRects.Count > 0)
-                {
+				{
 					if (occludedRects.Count > 1 && this.Log().IsEnabled(LogLevel.Warning))
 					{
-					    this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
+						this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
 					}
 
 					var bounds = wuxWindowBounds;
-                    var occludedRect = occludedRects[0];
-                    var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
+					var occludedRect = occludedRects[0];
+					var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
 
 					this.Log().Info($"DualMode: Intersect calculation: window " + bounds + " with occluded " + occludedRect);
 
 					if (IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
-                    {
-                        // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
-                        // wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
-                        if ((int)bounds.X == 0 && (int)bounds.Y == 0)
-                        {
-                            var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
-                            occludedRect.Y -= statusBarRect.Height;
-                        }
-                    }
+					{
+						// Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
+						// wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
+						if ((int)bounds.X == 0 && (int)bounds.Y == 0)
+						{
+							var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
+							occludedRect.Y -= statusBarRect.Height;
+						}
+					}
 
-                    if (intersecting) // Occluded region overlaps the app
-                    {
-                        if ((int)occludedRect.X == (int)bounds.X)
-                        {
-                            // Vertical stacking
-                            // +---------+
-                            // |         |
-                            // |         |
-                            // +---------+
-                            // +---------+
-                            // |         |
-                            // |         |
-                            // +---------+
+					if (intersecting) // Occluded region overlaps the app
+					{
+						if ((int)occludedRect.X == (int)bounds.X)
+						{
+							// Vertical stacking
+							// +---------+
+							// |         |
+							// |         |
+							// +---------+
+							// +---------+
+							// |         |
+							// |         |
+							// +---------+
 
-                            var spanningRects = new List<Rect> {
+							var spanningRects = new List<Rect> {
 											// top region
 											new Rect(bounds.X, bounds.Y, bounds.Width, occludedRect.Top),
 											// bottom region
 											new Rect(bounds.X,
-                                                occludedRect.Bottom,
-                                                bounds.Width,
-                                                bounds.Height - occludedRect.Bottom),
-                                        };
+												occludedRect.Bottom,
+												bounds.Width,
+												bounds.Height - occludedRect.Bottom),
+										};
 
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
@@ -133,27 +133,27 @@ namespace Uno.UI.Foldable
 							}
 
 							_previousMode.result = spanningRects;
-                        }
-                        else if ((int)occludedRect.Y == (int)bounds.Y)
-                        {
-                            // Horizontal side-by-side
-                            // +-----+ +-----+
-                            // |     | |     |
-                            // |     | |     |
-                            // |     | |     |
-                            // |     | |     |
-                            // |     | |     |
-                            // +-----+ +-----+
+						}
+						else if ((int)occludedRect.Y == (int)bounds.Y)
+						{
+							// Horizontal side-by-side
+							// +-----+ +-----+
+							// |     | |     |
+							// |     | |     |
+							// |     | |     |
+							// |     | |     |
+							// |     | |     |
+							// +-----+ +-----+
 
-                            var spanningRects = new List<Rect> {
+							var spanningRects = new List<Rect> {
 											// left region
 											new Rect(bounds.X, bounds.Y, occludedRect.X, bounds.Height),
 											// right region
 											new Rect(occludedRect.Right,
-                                                bounds.Y,
-                                                bounds.Width - occludedRect.Right,
-                                                bounds.Height),
-                                        };
+												bounds.Y,
+												bounds.Width - occludedRect.Right,
+												bounds.Height),
+										};
 
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
@@ -161,9 +161,9 @@ namespace Uno.UI.Foldable
 							}
 
 							_previousMode.result = spanningRects;
-                        }
-                        else
-                        {
+						}
+						else
+						{
 							if (this.Log().IsEnabled(LogLevel.Warning))
 							{
 								this.Log().Warn($"DualMode: Unknown screen layout");
@@ -179,15 +179,15 @@ namespace Uno.UI.Foldable
 						}
 					}
 					else
-                    {
+					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
 							this.Log().Debug($"DualMode: Without intersection, single screen");
 						}
 					}
-                }
-                else
-                {
+				}
+				else
+				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						this.Log().Debug($"DualMode: Without occlusion");
@@ -196,7 +196,7 @@ namespace Uno.UI.Foldable
 			}
 			else
 			{
-	             _previousMode = EmptyMode;
+				_previousMode = EmptyMode;
 			}
 			return _previousMode.result ?? _emptyList;
 		}
@@ -226,9 +226,10 @@ namespace Uno.UI.Foldable
 
 		public bool SupportsSpanning => HasFoldFeature || FoldableHingeAngleSensor.HasHinge;
 
-        public Rect Bounds
-        {
-			get {
+		public Rect Bounds
+		{
+			get
+			{
 				if (!FoldBounds.IsEmpty)
 				{
 					return new Rect(FoldBounds.Left,
@@ -237,8 +238,8 @@ namespace Uno.UI.Foldable
 						FoldBounds.Height());
 				}
 
-				return new Rect(0,0,0,0);
+				return new Rect(0, 0, 0, 0);
 			}
 		}
-    }
+	}
 }

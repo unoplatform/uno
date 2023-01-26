@@ -88,12 +88,11 @@ namespace Uno.Extensions
 			return new LineSplitEnumerator(instance);
 		}
 
-		
 		public static bool IsNullOrEmpty([NotNullWhen(false)] this string instance)
 		{
 			return string.IsNullOrEmpty(instance);
 		}
-		
+
 		public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string instance)
 		{
 			return string.IsNullOrWhiteSpace(instance);

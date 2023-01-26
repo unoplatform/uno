@@ -42,7 +42,7 @@ namespace Uno.UI.Runtime.Skia
 				{
 					typeof(GLValidationSurface).Log().Debug($"GL Context realization failed");
 				}
-				
+
 				_result.TrySetResult(RenderSurfaceType.Software);
 			}
 		}

@@ -41,7 +41,7 @@ namespace Uno
 		/// A Null action, that performs nothing.
 		/// </summary>
 		public static readonly Action<T1, T2> Null = (_1, _2) => { };
-		
+
 		/// <summary>
 		/// A Null action, that performs nothing.
 		/// </summary>

@@ -21,14 +21,14 @@ using Uno.Reflection;
 
 namespace Uno.Extensions
 {
-    //TODO Use Extensions Pattern or move to ReflectionExtensions. Or maybe MemberInfoExtensions directly.
-    internal static class MemberDescriptorExtensions
-    {
-        public static T FindAttribute<T>(this IMemberDescriptor descriptor)
-            where T : Attribute
-        {
-            var attributes = descriptor.MemberInfo.GetCustomAttributes(typeof (T), true);
-            return attributes.FirstOrDefault() as T;
-        }
-    }
+	//TODO Use Extensions Pattern or move to ReflectionExtensions. Or maybe MemberInfoExtensions directly.
+	internal static class MemberDescriptorExtensions
+	{
+		public static T FindAttribute<T>(this IMemberDescriptor descriptor)
+			where T : Attribute
+		{
+			var attributes = descriptor.MemberInfo.GetCustomAttributes(typeof(T), true);
+			return attributes.FirstOrDefault() as T;
+		}
+	}
 }

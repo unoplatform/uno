@@ -232,7 +232,7 @@ namespace Uno.UI.Runtime.Skia
 				KeyCode.Num_Lock => VirtualKey.NumberKeyLock,
 				KeyCode.ScrollLock => VirtualKey.Scroll,
 				KeyCode.ShiftL => VirtualKey.LeftShift,
-				KeyCode.ShiftR	 => VirtualKey.RightShift,
+				KeyCode.ShiftR => VirtualKey.RightShift,
 				KeyCode.ControlL => VirtualKey.LeftControl,
 				KeyCode.ControlR => VirtualKey.RightControl,
 				KeyCode.AltL => VirtualKey.LeftMenu,

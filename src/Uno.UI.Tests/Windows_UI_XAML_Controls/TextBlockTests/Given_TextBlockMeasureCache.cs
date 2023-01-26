@@ -259,7 +259,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 		public void When_SameSize(double availableWidth1, double measuredWidth1, double findWidth1, double availableWidth2, double measuredWidth2, double measuredWidth3)
 		{
 			var SUT = new TextBlockMeasureCache();
-			var tb = new TextBlock { Text = "42"};
+			var tb = new TextBlock { Text = "42" };
 
 			Assert.AreEqual(TextWrapping.NoWrap, tb.TextWrapping);
 

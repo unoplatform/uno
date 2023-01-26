@@ -31,9 +31,9 @@ namespace Uno.Extensions
 		/// Note: Considerer using memoization if called often.
 		/// </remarks>
 		public static string[] GetNames<T>()
-        {
+		{
 #if WINDOWS_UWP || HAS_CRIPPLEDREFLECTION
-            return Enum.GetNames(typeof (T));
+			return Enum.GetNames(typeof(T));
 #else
 			var flds = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -59,7 +59,7 @@ namespace Uno.Extensions
 		public static T[] GetValues<T>()
 		{
 #if WINDOWS_UWP || HAS_CRIPPLEDREFLECTION
-			return Enum.GetValues(typeof (T)).Cast<T>().ToArray();
+			return Enum.GetValues(typeof(T)).Cast<T>().ToArray();
 #else
 			var flds = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 

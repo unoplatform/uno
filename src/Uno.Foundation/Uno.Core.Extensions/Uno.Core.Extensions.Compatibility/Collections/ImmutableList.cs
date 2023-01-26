@@ -332,7 +332,7 @@ namespace Uno.Collections
 		[Pure]
 		public ImmutableList<T> RemoveAt(int index)
 		{
-			if(_data.Length == 0)
+			if (_data.Length == 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}

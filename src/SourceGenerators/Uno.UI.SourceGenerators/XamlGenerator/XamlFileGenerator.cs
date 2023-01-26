@@ -527,7 +527,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
-									
+
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
 								}

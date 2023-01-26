@@ -28,11 +28,11 @@ internal class HotReloadWorkspace
 	private readonly bool _isDebugCompilation;
 	private readonly bool _isMono;
 	private readonly bool _useXamlReaderReload;
-	
+
 	private Dictionary<string, string[]> _projects = new();
 	private Dictionary<string, Dictionary<string, string>> _sourceFiles = new();
 	private Dictionary<string, Dictionary<string, string>> _additionalFiles = new();
-	
+
 	private Solution? _currentSolution;
 	private WatchHotReloadService? _hotReloadService;
 

@@ -44,7 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Foundation
 				  return new Promise((ok, err)=> err(""error""));
 				})();";
 
-			Func<Task> Do = ()=> WebAssemblyRuntime.InvokeAsync(js);
+			Func<Task> Do = () => WebAssemblyRuntime.InvokeAsync(js);
 
 			await Do.Should().ThrowAsync<Exception>().WithMessage("error");
 		}

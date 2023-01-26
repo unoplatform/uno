@@ -25,8 +25,8 @@ namespace Uno.Extensions
 	/// <summary>
 	/// Extensions of <see cref="ActionAsync"/>
 	/// </summary>
-    internal static class ActionAsyncExtensions
-    {
+	internal static class ActionAsyncExtensions
+	{
 		/// <summary>
 		/// Invoke the <paramref name="action"/> if not null.
 		/// </summary>

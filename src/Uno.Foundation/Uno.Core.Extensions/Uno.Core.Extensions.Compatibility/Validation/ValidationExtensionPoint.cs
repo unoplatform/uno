@@ -18,11 +18,11 @@ using Uno.Extensions;
 
 namespace Uno.Validation
 {
-    internal class ValidationExtensionPoint<T> : ExtensionPoint<T>
-    {
-        public ValidationExtensionPoint(T value)
-            : base(value)
-        {
-        }
-    }
+	internal class ValidationExtensionPoint<T> : ExtensionPoint<T>
+	{
+		public ValidationExtensionPoint(T value)
+			: base(value)
+		{
+		}
+	}
 }

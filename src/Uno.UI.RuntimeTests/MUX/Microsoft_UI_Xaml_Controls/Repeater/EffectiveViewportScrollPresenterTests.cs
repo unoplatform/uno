@@ -398,7 +398,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Log.Comment("ScrollPresenter.EffectiveViewportChanged: VerticalOffset=" + scrollPresenter.VerticalOffset);
 				};
 
-				root.Loaded += delegate {
+				root.Loaded += delegate
+				{
 					rootLoadedEvent.Set();
 				};
 
@@ -411,7 +412,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				waitingForIndex = 101;
 				indexRealized.Reset();
-				repeater.GetOrCreateElement(100).StartBringIntoView(new BringIntoViewOptions {
+				repeater.GetOrCreateElement(100).StartBringIntoView(new BringIntoViewOptions
+				{
 					VerticalAlignmentRatio = 0.0
 				});
 				repeater.UpdateLayout();

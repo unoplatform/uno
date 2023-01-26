@@ -160,7 +160,8 @@ namespace MUXControlsTestApp.Utilities
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
 						await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-							async () => {
+							async () =>
+							{
 								try
 								{
 									await task();

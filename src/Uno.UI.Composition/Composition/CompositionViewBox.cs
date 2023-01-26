@@ -12,7 +12,7 @@ namespace Windows.UI.Composition
 		private Vector2 _offset;
 		private float _horizontalAlignmentRatio;
 
-		internal CompositionViewBox(Compositor compositor) : base (compositor)
+		internal CompositionViewBox(Compositor compositor) : base(compositor)
 		{
 
 		}
