@@ -52,7 +52,7 @@ jobs:
       ArtifactName: skia-wpf-samples-app
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Linux.FrameBuffer/SamplesApp.Skia.Linux.FrameBuffer.csproj -c Release /bl:$(build.artifactstagingdirectory)\build-framebuffer.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Linux.FrameBuffer/SamplesApp.Skia.Linux.FrameBuffer.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-framebuffer.binlog
     displayName: Build Framebuffer Head
 
   - task: PublishBuildArtifacts@1
