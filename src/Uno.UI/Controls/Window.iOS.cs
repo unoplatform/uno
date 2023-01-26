@@ -366,6 +366,12 @@ namespace Uno.UI.Controls
 
 			var keyboardTop = (nfloat)_inputPane.OccludedRect.Top;
 
+			//if Keyboard.Top is not greater than zero, then this means there is not visible keyboard on the screen
+			if (keyboardTop <= 0)
+			{
+				return;
+			}
+
 			var keyboardOverlap = scrollViewRectInWindow.Bottom - keyboardTop;
 			if (keyboardOverlap > 0)
 			{
@@ -393,7 +399,7 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
-				if (!(view is TextBox))
+				if (view is not TextBox)
 				{
 					//We want to scroll to the textbox and not the inner textview.
 					view = view.FindFirstParent<TextBox>() ?? view;
