@@ -366,7 +366,8 @@ namespace Uno.UI.Controls
 
 			var keyboardTop = (nfloat)_inputPane.OccludedRect.Top;
 
-			//if Keyboard.Top is not greater than zero, then this means there is not visible keyboard on the screen
+			// if Keyboard.Top is not greater than zero, then this means there is not visible keyboard on the screen]
+			// Doing so will avoid the scrollviewer to animate on platforms allowing hardware keyboard input (Simulator, iPad, Catalyst).
 			if (keyboardTop <= 0)
 			{
 				return;
