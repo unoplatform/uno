@@ -18,10 +18,10 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
 	[SampleControlInfo("Image", "StretchNoneBoundingBoxInDoubleStackPanel")]
 	public sealed partial class StretchNoneBoundingBoxInDoubleStackPanel : UserControl
-    {
-        public StretchNoneBoundingBoxInDoubleStackPanel()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public StretchNoneBoundingBoxInDoubleStackPanel()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -16,10 +16,10 @@ namespace UITests.Uno_Web.Http
 	[Sample("Uno.Web", ViewModelType = typeof(CookieManagerTestsViewModel))]
 #endif
 	public sealed partial class CookieManagerTests : Page
-    {
-        public CookieManagerTests()
-        {
-            this.InitializeComponent();
+	{
+		public CookieManagerTests()
+		{
+			this.InitializeComponent();
 			this.DataContextChanged += CookieManagerTests_DataContextChanged;
 		}
 

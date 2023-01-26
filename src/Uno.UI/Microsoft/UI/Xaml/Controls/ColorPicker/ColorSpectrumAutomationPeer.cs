@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public string Value
 		{
-			get 
+			get
 			{
 				ColorSpectrum colorSpectrumOwner = _owner;
 				Color color = colorSpectrumOwner.Color;

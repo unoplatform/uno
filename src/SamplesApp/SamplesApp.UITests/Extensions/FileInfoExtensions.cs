@@ -11,7 +11,7 @@ namespace SamplesApp.UITests
 
 		// https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfullpathnamea
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-		private static extern uint GetFullPathName(string lpFileName, uint nBufferLength,  StringBuilder lpBuffer, IntPtr lpFilePart);
+		private static extern uint GetFullPathName(string lpFileName, uint nBufferLength, StringBuilder lpBuffer, IntPtr lpFilePart);
 
 
 		private static bool CheckIfNeedToNormalizeLongPaths()

@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			int? targetHeight,
 			out Task<ImageData> asyncImage)
 		{
-			if (AbsoluteUri is {} uri)
+			if (AbsoluteUri is { } uri)
 			{
 				var hasFileScheme = uri.IsAbsoluteUri && uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return true;
 			}
 
-			if (_stream is {} stream)
+			if (_stream is { } stream)
 			{
 				void OnProgress(ulong position, ulong? length)
 				{

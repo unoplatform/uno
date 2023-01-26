@@ -9,20 +9,20 @@ using Windows.UI.Xaml.Controls.Primitives;
 #if __ANDROID__
 using View = Android.Views.ViewGroup;
 #elif __IOS__
-using View  = UIKit.UIView;
+using View = UIKit.UIView;
 using UIKit;
 #elif __MACOS__
 using View = AppKit.NSView;
 using AppKit;
 #else
-using View  = Windows.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{
-		public UIElement Owner { get; } 
+		public UIElement Owner { get; }
 
 		public FrameworkElementAutomationPeer() { }
 
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		public static global::Windows.UI.Xaml.Automation.Peers.AutomationPeer FromElement(global::Windows.UI.Xaml.UIElement element)
 		{
-			if(element is IFrameworkElement fe)
+			if (element is IFrameworkElement fe)
 			{
 				return FromIFrameworkElement(fe);
 			}
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			&& Owner is View view
 			&& AutomationProperties.GetAccessibilityView(Owner) != AccessibilityView.Raw)
 			{
-				/// We get our name by aggregating the name of all our children. 
+				/// We get our name by aggregating the name of all our children.
 				/// See <see cref="FeatureConfiguration.AutomationPeer.UseSimpleAccessibility" /> for details.
 				return string.Join(", ", view
 					.EnumerateAllChildren()

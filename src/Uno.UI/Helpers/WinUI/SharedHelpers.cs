@@ -264,7 +264,8 @@ namespace Uno.UI.Helpers.WinUI
 		static bool? s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable;
 		public static bool IsBringIntoViewOptionsVerticalAlignmentRatioAvailable()
 		{
-			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null) {
+			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null)
+			{
 				s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable =
 					IsRS4OrHigher() ||
 					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.BringIntoViewOptions", "VerticalAlignmentRatio");

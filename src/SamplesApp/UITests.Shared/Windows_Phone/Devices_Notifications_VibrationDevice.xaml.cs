@@ -41,7 +41,7 @@ namespace UITests.Shared.Windows_Phone
 				catch (Exception ex)
 				{
 					ErrorMessage.Text = ex.Message;
-				}				
+				}
 			}
 			else
 			{

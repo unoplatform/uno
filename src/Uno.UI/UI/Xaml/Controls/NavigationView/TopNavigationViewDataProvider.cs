@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			m_dataChangeCallback = dataChangeCallback;
 		}
 
-		public override int IndexOf(object  value)
+		public override int IndexOf(object value)
 		{
 			var dataSource = m_dataSource;
 			if (dataSource != null)
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void MoveItemsToList(List<int> indexes, NavigationViewSplitVectorID vectorID)
 		{
-			foreach(var index in indexes)
+			foreach (var index in indexes)
 			{
 				MoveItemToVector(index, vectorID);
 			};
@@ -258,7 +258,7 @@ namespace Windows.UI.Xaml.Controls
 		public double CalculateWidthForItems(List<int> items)
 		{
 			double width = 0.0;
-			foreach(var index in items)
+			foreach (var index in items)
 			{
 				width += GetWidthForItem(index);
 			}
@@ -281,19 +281,19 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if false
-		bool IsItemSelectableInPrimaryList(object  value)
+		bool IsItemSelectableInPrimaryList(object value)
 		{
 			int index = IndexOf(value);
 			return (index != -1);
 		}
 #endif
 
-		public int IndexOf(object  value, NavigationViewSplitVectorID vectorID)
+		public int IndexOf(object value, NavigationViewSplitVectorID vectorID)
 		{
 			return IndexOfImpl(value, vectorID);
 		}
 
-		void OnDataSourceChanged(object  sender, NotifyCollectionChangedEventArgs args)
+		void OnDataSourceChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
 			switch (args.Action)
 			{

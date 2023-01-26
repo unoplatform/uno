@@ -25,7 +25,7 @@ namespace UnoIslands.Skia.Wpf
 		public string Note { get; set; }
 
 		public string EmailUrl => "mailto:" + Email;
-		
+
 		public string ImageUrl => $"https://www.gravatar.com/avatar/{Name.GetHashCode()}?s=128&d=identicon&r=PG";
 	}
 }

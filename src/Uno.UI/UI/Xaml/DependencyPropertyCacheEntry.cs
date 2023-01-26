@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml
 		{
 			bool IEqualityComparer.Equals(object? x, object? y)
 			{
-				if(x is PropertyCacheEntry left && y is PropertyCacheEntry right)
+				if (x is PropertyCacheEntry left && y is PropertyCacheEntry right)
 				{
 					// This method assumes that there will never be null parameters, and that the Type and Name fields 
 					// are never null.

@@ -9,12 +9,12 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides event data for the TreeView.Collapsed event.
 	/// </summary>
 	public partial class TreeViewCollapsedEventArgs
-    {
+	{
 		internal TreeViewCollapsedEventArgs(TreeViewNode node)
 		{
 			Node = node;
 		}
-		
+
 		/// <summary>
 		/// Gets the TreeView node that is collapsed.
 		/// </summary>

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -50,6 +51,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
+		private readonly bool _useXamlReaderHotReload;
 		/// <summary>
 		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
 		/// </summary>
@@ -57,6 +59,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _xamlResourcesTrimming;
+		private readonly bool _isUnoHead;
 		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
@@ -88,10 +91,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
-
-#pragma warning disable 649 // Unused member
-		private readonly bool _forceGeneration;
-#pragma warning restore 649 // Unused member
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -178,6 +177,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out var xamlResourcesTrimming))
 			{
 				_xamlResourcesTrimming = xamlResourcesTrimming;
+			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("IsUnoHead"), out var isUnoHead))
+			{
+				_isUnoHead = isUnoHead;
+			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload))
+			{
+				_useXamlReaderHotReload = useXamlReaderHotReload;
 			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
@@ -275,11 +284,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
 #endif
 
-				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
+				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
+				var isInsideMainAssembly =
+					_isUnoHead
+
+					// Handle legacy Xamarin targets which do not define IsUnoHead.
+					|| PlatformHelper.IsXamariniOS(_generatorContext)
+					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
+					|| PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
+				TryGenerateUnoResourcesKeyAttribute(resourceKeys);
+
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
-					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
+					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
 				Parallel.ForEach(filesFull, file =>
@@ -338,6 +356,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,
+									isInsideMainAssembly: isInsideMainAssembly,
+									useXamlReaderHotReload: _useXamlReaderHotReload,
 									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
@@ -380,6 +400,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_telemetry.Flush();
 				_telemetry.Dispose();
 			}
+		}
+
+		private void TryGenerateUnoResourcesKeyAttribute(ImmutableHashSet<string> resourceKeys)
+		{
+			var hasResources = !resourceKeys.IsEmpty;
+			
+			_generatorContext.AddSource(
+				"LocalizationResources",
+				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
+				$"\"UnoHasLocalizationResources\", " +
+				$"\"{hasResources.ToString(CultureInfo.InvariantCulture)}\")]");
 		}
 
 #if !NETFRAMEWORK

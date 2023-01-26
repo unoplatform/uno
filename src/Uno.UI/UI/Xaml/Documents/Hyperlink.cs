@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-#endregion
+		#endregion
 #endif
 
 		public
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Documents
 		}
 #endif
 
-#region NavigateUri
+		#region NavigateUri
 
 		public Uri NavigateUri
 		{
@@ -137,9 +137,9 @@ namespace Windows.UI.Xaml.Documents
 			);
 		partial void OnNavigateUriChangedPartial(Uri newNavigateUri);
 
-#endregion
+		#endregion
 
-#region UnderlineStyle
+		#region UnderlineStyle
 
 		public UnderlineStyle UnderlineStyle
 		{
@@ -166,9 +166,9 @@ namespace Windows.UI.Xaml.Documents
 				: Windows.UI.Text.TextDecorations.None;
 		}
 
-#endregion
+		#endregion
 
-#region Click
+		#region Click
 		private Pointer _pressedPointer;
 		internal void SetPointerPressed(Pointer pointer)
 		{
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Documents
 			return null;
 #endif
 		}
-#endregion
+		#endregion
 
 #if !__WASM__
 		public FocusState FocusState

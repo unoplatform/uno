@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SetBorder(BorderThickness, BorderBrush);
 		}
-			
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

@@ -1220,7 +1220,7 @@
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_Keyboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>    
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_Reason.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8673,7 +8673,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Nillambari-K7y1W.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Renaiss-Italic.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\RoteFlora.ttf" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\uno-fluentui-assets.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\animated.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.bmp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.gif" />

@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			using (var data = _bitmap.PixelBuffer.AsStream())
 			{
 				// Half of the image in green, alpha 100% (bgra buffer)
-				var pixel = new byte[] {0, 255, 0, 255};
+				var pixel = new byte[] { 0, 255, 0, 255 };
 				for (var i = 1; i < data.Length / 2; i += 4)
 				{
 					data.Write(pixel, 0, 4);

@@ -21,8 +21,8 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
 	[Sample("TabView", "MUX")]
-    public sealed partial class TabViewItemsSourceTests : Page
-    {
+	public sealed partial class TabViewItemsSourceTests : Page
+	{
 		public TabViewItemsSourceTests()
 		{
 			DemoViewModel defaultViewModel = new DemoViewModel();
@@ -47,7 +47,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			nameof(DefaultViewModel),
 			typeof(DemoViewModel),
 			typeof(TabViewItemsSourceTests),
-			new PropertyMetadata(null));		
+			new PropertyMetadata(null));
 
 		private void OnAddTabViewItemButtonClick(object sender, RoutedEventArgs e)
 		{

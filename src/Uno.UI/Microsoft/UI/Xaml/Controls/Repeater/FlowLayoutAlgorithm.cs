@@ -11,7 +11,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI
 	public
 #else
 	internal
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		IFlowLayoutAlgorithmDelegates m_algorithmCallbacks;
 		Rect m_lastExtent;
 		int m_firstRealizedDataIndexInsideRealizationWindow = -1;
-		int m_lastRealizedDataIndexInsideRealizationWindow  = -1;
+		int m_lastRealizedDataIndexInsideRealizationWindow = -1;
 
 
 		// If the scroll orientation is the same as the follow orientation
@@ -475,8 +475,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// If first element is realized and is not at the very beginning we need to reflow.
 				return
 					m_elementManager.GetRealizedElementCount > 0 &&
-				                       m_elementManager.GetDataIndexFromRealizedRangeIndex(0) == 0 &&
-				                       (ScrollOrientation == ScrollOrientation.Vertical ? m_elementManager.GetLayoutBoundsForRealizedIndex(0).X != 0 : m_elementManager.GetLayoutBoundsForRealizedIndex(0).Y != 0);
+									   m_elementManager.GetDataIndexFromRealizedRangeIndex(0) == 0 &&
+									   (ScrollOrientation == ScrollOrientation.Vertical ? m_elementManager.GetLayoutBoundsForRealizedIndex(0).X != 0 : m_elementManager.GetLayoutBoundsForRealizedIndex(0).Y != 0);
 			}
 		}
 
@@ -660,47 +660,47 @@ namespace Microsoft.UI.Xaml.Controls
 						switch (lineAlignment)
 						{
 							case FlowLayoutLineAlignment.Start:
-							{
-								AddMinorStart(ref bounds, -spaceAtLineStart);
-								break;
-							}
+								{
+									AddMinorStart(ref bounds, -spaceAtLineStart);
+									break;
+								}
 
 							case FlowLayoutLineAlignment.End:
-							{
-								AddMinorStart(ref bounds, +spaceAtLineEnd);
-								break;
-							}
+								{
+									AddMinorStart(ref bounds, +spaceAtLineEnd);
+									break;
+								}
 
 							case FlowLayoutLineAlignment.Center:
-							{
-								AddMinorStart(ref bounds, -spaceAtLineStart);
-								AddMinorStart(ref bounds, +totalSpace / 2);
-								break;
-							}
+								{
+									AddMinorStart(ref bounds, -spaceAtLineStart);
+									AddMinorStart(ref bounds, +totalSpace / 2);
+									break;
+								}
 
 							case FlowLayoutLineAlignment.SpaceAround:
-							{
-								float interItemSpace = countInLine >= 1 ? totalSpace / (countInLine * 2) : 0;
-								AddMinorStart(ref bounds, -spaceAtLineStart);
-								AddMinorStart(ref bounds, +interItemSpace * ((rangeIndex - lineStartIndex + 1) * 2 - 1));
-								break;
-							}
+								{
+									float interItemSpace = countInLine >= 1 ? totalSpace / (countInLine * 2) : 0;
+									AddMinorStart(ref bounds, -spaceAtLineStart);
+									AddMinorStart(ref bounds, +interItemSpace * ((rangeIndex - lineStartIndex + 1) * 2 - 1));
+									break;
+								}
 
 							case FlowLayoutLineAlignment.SpaceBetween:
-							{
-								float interItemSpace = countInLine > 1 ? totalSpace / (countInLine - 1) : 0;
-								AddMinorStart(ref bounds, -spaceAtLineStart);
-								AddMinorStart(ref bounds, +interItemSpace * (rangeIndex - lineStartIndex));
-								break;
-							}
+								{
+									float interItemSpace = countInLine > 1 ? totalSpace / (countInLine - 1) : 0;
+									AddMinorStart(ref bounds, -spaceAtLineStart);
+									AddMinorStart(ref bounds, +interItemSpace * (rangeIndex - lineStartIndex));
+									break;
+								}
 
 							case FlowLayoutLineAlignment.SpaceEvenly:
-							{
-								float interItemSpace = countInLine >= 1 ? totalSpace / (countInLine + 1) : 0;
-								AddMinorStart(ref bounds, -spaceAtLineStart);
-								AddMinorStart(ref bounds, +interItemSpace * (rangeIndex - lineStartIndex + 1));
-								break;
-							}
+								{
+									float interItemSpace = countInLine >= 1 ? totalSpace / (countInLine + 1) : 0;
+									AddMinorStart(ref bounds, -spaceAtLineStart);
+									AddMinorStart(ref bounds, +interItemSpace * (rangeIndex - lineStartIndex + 1));
+									break;
+								}
 						}
 					}
 				}

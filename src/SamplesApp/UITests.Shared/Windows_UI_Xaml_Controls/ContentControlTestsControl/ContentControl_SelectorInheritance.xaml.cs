@@ -19,10 +19,10 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
 	[SampleControlInfo("ContentControl", "ContentControl_SelectorInheritance")]
 	public sealed partial class ContentControl_SelectorInheritance : UserControl
-    {
-        public ContentControl_SelectorInheritance()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ContentControl_SelectorInheritance()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

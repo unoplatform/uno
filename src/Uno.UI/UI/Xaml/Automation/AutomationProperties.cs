@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Automation
 		#endregion
 
 		#region LabeledBy
-		
+
 		public static UIElement GetLabeledBy(DependencyObject element)
 		{
 			return (UIElement)element.GetValue(LabeledByProperty);
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Automation
 		#endregion
 
 		#region LocalizedControlType
-		
+
 		public static string GetLocalizedControlType(DependencyObject element)
 		{
 			return (string)element.GetValue(LocalizedControlTypeProperty);
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Automation
 		#endregion
 
 		#region DescribedBy
-		
+
 		public static IList<DependencyObject> GetDescribedBy(DependencyObject element)
 		{
 			return (IList<DependencyObject>)element.GetValue(DescribedByProperty);
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Automation
 				view.AccessibilityIdentifier = (string)args.NewValue;
 			}
 #elif __ANDROID__
-			if(FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is Android.Views.View view)
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is Android.Views.View view)
 			{
 				view.ContentDescription = (string)args.NewValue;
 			}

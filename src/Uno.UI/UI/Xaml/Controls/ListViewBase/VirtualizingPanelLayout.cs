@@ -13,7 +13,7 @@ using Uno;
 
 namespace Windows.UI.Xaml.Controls
 {
-    [Windows.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
 #if !__ANDROID__ && !__IOS__
@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// We consider the pending reorder item as non materializable and we ignore it while filling the layout.
 			// It's then the responsibility of the layout to render it at the appropriate slot
-			if (index is {} && GetAndUpdateReorderingIndex() is {} reorderIndex && index == reorderIndex)
+			if (index is { } && GetAndUpdateReorderingIndex() is { } reorderIndex && index == reorderIndex)
 			{
 				index = XamlParent?.GetNextItemIndex(index, direction);
 			}

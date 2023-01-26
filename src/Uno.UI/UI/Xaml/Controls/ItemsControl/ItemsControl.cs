@@ -1003,7 +1003,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var children = ItemsPanelRoot.Children;
 				var count = children.Count;
-				for (var i = startingIndex; i<count; i++)
+				for (var i = startingIndex; i < count; i++)
 				{
 					var container = children[i];
 					container.SetValue(IndexForItemContainerProperty, i);
@@ -1041,7 +1041,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var index = args.NewStartingIndex;
 					ItemsPanelRoot.Children.Insert(index, (UIElement)LocalCreateContainer(index));
-					ReassignIndexes(index+1);
+					ReassignIndexes(index + 1);
 					RequestLayoutPartial();
 					return;
 				}

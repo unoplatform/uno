@@ -8,6 +8,7 @@ using System.Xml;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Email.DataProvider;
 using Windows.Storage;
 
@@ -25,16 +26,18 @@ namespace Windows.ApplicationModel
 
 		private DateTimeOffset GetInstallDate() => DateTimeOffset.Now;
 
-		private string GetInstalledLocation()
+		private string GetInstalledPath()
 		{
-			if (!string.IsNullOrEmpty(AppContext.BaseDirectory))
+			if (_entryAssembly?.Location is { Length: > 0 } location)
 			{
-				return global::System.IO.Path.GetDirectoryName(AppContext.BaseDirectory) ?? "";
+				return global::System.IO.Path.GetDirectoryName(location) ?? "";
 			}
-			else
+			else if (AppContext.BaseDirectory is { Length: > 0 } baseDirectory)
 			{
-				return Environment.CurrentDirectory;
+				return global::System.IO.Path.GetDirectoryName(baseDirectory) ?? "";
 			}
+
+			return Environment.CurrentDirectory;
 		}
 
 		public string DisplayName
@@ -62,7 +65,7 @@ namespace Windows.ApplicationModel
 
 		private void TryParsePackageManifest()
 		{
-			if(_entryAssembly != null && !_manifestParsed)
+			if (_entryAssembly != null && !_manifestParsed)
 			{
 				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
 

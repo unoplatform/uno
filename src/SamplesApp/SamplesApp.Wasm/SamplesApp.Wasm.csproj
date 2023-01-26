@@ -16,7 +16,6 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -79,6 +78,7 @@
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0-rc.1.22426.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+		<PackageReference Include="Uno.Fonts.Fluent" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -112,7 +112,7 @@
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />

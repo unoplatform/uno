@@ -225,8 +225,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var measureSizeMinor = Minor(measureSize);
 			return MinorMajorSize(
-				(float) (measureSizeMinor.IsFinite() ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
-				(float) Major(desiredSize));
+				(float)(measureSizeMinor.IsFinite() ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
+				(float)Major(desiredSize));
 		}
 
 		bool IFlowLayoutAlgorithmDelegates.Algorithm_ShouldBreakLine(int index, double remainingSpace)

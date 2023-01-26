@@ -83,7 +83,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 		{
 			querys += 1;
 			query.Text = "QuerySubmitted: " + querys + " " + args.QueryText + " " + nameof(args.ChosenSuggestion) + ">>" + args?.ChosenSuggestion ?? "NULL";
-			
+
 		}
 	}
 }

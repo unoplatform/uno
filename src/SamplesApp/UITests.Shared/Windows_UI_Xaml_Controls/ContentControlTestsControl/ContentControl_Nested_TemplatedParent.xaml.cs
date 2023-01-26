@@ -41,7 +41,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 
 			while (!ct.IsCancellationRequested)
 			{
-				if(rootGrid.Children.Any())
+				if (rootGrid.Children.Any())
 				{
 					content = rootGrid.Children.First() as UIElement;
 					rootGrid.Children.Remove(content);
@@ -54,7 +54,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 				await Task.Delay(1000);
 			}
 
-			if(rootGrid.Children.Count == 0 && content != null)
+			if (rootGrid.Children.Count == 0 && content != null)
 			{
 				rootGrid.Children.Add(content);
 			}
@@ -67,7 +67,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for MyContent.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MyContentProperty { get ; } =
+		public static DependencyProperty MyContentProperty { get; } =
 			DependencyProperty.Register("MyContent", typeof(MyNestedContent), typeof(ContentControl_Nested_TemplatedParent), new PropertyMetadata(null));
 	}
 
@@ -80,7 +80,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty MyPropertyProperty { get ; } =
+		public static DependencyProperty MyPropertyProperty { get; } =
 			DependencyProperty.Register("MyProperty", typeof(int), typeof(MyNestedContent), new PropertyMetadata(0));
 	}
 }

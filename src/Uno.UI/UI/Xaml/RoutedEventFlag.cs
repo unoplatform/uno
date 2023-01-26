@@ -57,7 +57,7 @@ namespace Uno.UI.Xaml
 		Tapped = 1UL << 48,
 		DoubleTapped = 1UL << 49,
 		RightTapped = 1UL << 50,
-		Holding = 1UL << 51, 
+		Holding = 1UL << 51,
 
 		// Context menu
 		// ContextRequested = 1UL << 61, => Reserved for future usage 
@@ -110,8 +110,8 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.Holding;
 
 		private const RoutedEventFlag _isContextMenu = (RoutedEventFlag)0b0011_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0000_0000;
-			//   RoutedEventFlag.ContextRequested
-			// | RoutedEventFlag.ContextCanceled;
+		//   RoutedEventFlag.ContextRequested
+		// | RoutedEventFlag.ContextCanceled;
 
 		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

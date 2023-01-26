@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => this.SetValue(KeyTimeProperty, value);
 		}
 
-		public static DependencyProperty KeyTimeProperty { get ; } =
+		public static DependencyProperty KeyTimeProperty { get; } =
 			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(ObjectKeyFrame), new FrameworkPropertyMetadata(null));
 		#endregion
 
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => this.SetValue(ValueProperty, value);
 		}
 
-		public static DependencyProperty ValueProperty { get ; } =
+		public static DependencyProperty ValueProperty { get; } =
 			DependencyProperty.Register("Value", typeof(object), typeof(ObjectKeyFrame), new FrameworkPropertyMetadata(null));
 		#endregion
 	}

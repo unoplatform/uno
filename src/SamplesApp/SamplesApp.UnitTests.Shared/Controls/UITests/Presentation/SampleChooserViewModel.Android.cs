@@ -31,7 +31,7 @@ namespace SampleControl.Presentation
 			{
 				var v = vg.GetChildAt(i);
 				var vElement = v as IFrameworkElement;
-				var desc = string.Concat(Enumerable.Repeat("    |", level)) + $" [{i+1}/{vg.ChildCount}] {v.Class.SimpleName}";
+				var desc = string.Concat(Enumerable.Repeat("    |", level)) + $" [{i + 1}/{vg.ChildCount}] {v.Class.SimpleName}";
 				if (vElement != null)
 				{
 					desc += $" -- ActualHeight:{vElement.ActualHeight}, ActualWidth:{vElement.ActualWidth}, Height:{vElement.Height}, Width:{vElement.Width}, DataContext:{vElement.DataContext?.GetType().FullName}";

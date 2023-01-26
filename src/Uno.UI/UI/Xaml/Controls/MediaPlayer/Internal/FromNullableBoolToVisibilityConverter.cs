@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls.MediaPlayer.Internal
 {
-    internal class FromNullableBoolToVisibilityConverter : ConverterBase
+	internal class FromNullableBoolToVisibilityConverter : ConverterBase
 	{
 		public FromNullableBoolToVisibilityConverter()
 		{

@@ -20,11 +20,6 @@ namespace Windows.UI.Xaml.Media
 		{
 			var path = uri.PathAndQuery.TrimStart("/");
 
-			if (uri.Host is { Length: > 0 } host)
-			{
-				path = host.ToLowerInvariant() + "/" + path;
-			}
-
 			AbsoluteUri = new Uri(path, UriKind.Relative);
 		}
 

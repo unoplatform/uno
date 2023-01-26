@@ -345,7 +345,7 @@ namespace Uno.UI.RuntimeTests.Tests
 #endif
 		public async Task When_Project_Transitive_Asset()
 		{
-			var uri = new Uri($"ms-appx://Uno.UI.RuntimeTests/Assets/TransientAsset01.txt");
+			var uri = new Uri($"ms-appx:///Uno.UI.RuntimeTests/Assets/TransientAsset01.txt");
 
 			try
 			{

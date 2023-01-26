@@ -27,12 +27,12 @@ namespace Windows.UI.Xaml.Controls
 			_content = this.GetTemplateChild("PART_Content") as Panel;
 			_tabBar = this.FindFirstChild<UITabBar>();
 
-			if(_content == null)
+			if (_content == null)
 			{
 				throw new InvalidOperationException($"PART_Content is missing");
 			}
 
-			if(_tabBar == null)
+			if (_tabBar == null)
 			{
 				throw new InvalidOperationException("Unable to find a UITabBar in the control template");
 			}

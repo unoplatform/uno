@@ -37,7 +37,7 @@ public enum FlyoutPlacementMode
 	/// Preferred location is above the target element, with the right edge of flyout aligned with right edge of the target element.
 	/// </summary>
 	TopEdgeAlignedRight,
-	
+
 	/// <summary>
 	/// Preferred location is below the target element, with the left edge of flyout aligned with left edge of the target element.
 	/// </summary>
@@ -47,7 +47,7 @@ public enum FlyoutPlacementMode
 	/// Preferred location is below the target element, with the right edge of flyout aligned with right edge of the target element.
 	/// </summary>
 	BottomEdgeAlignedRight,
-	
+
 	/// <summary>
 	/// Preferred location is to the left of the target element, with the top edge of flyout aligned with top edge of the target element.
 	/// </summary>

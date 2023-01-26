@@ -17,13 +17,13 @@ using Windows.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
 	[SampleControlInfo("CommandBar", "Extensions")]
-    public sealed partial class CommandBar_Extensions : UserControl
-    {
-        public CommandBar_Extensions()
-        {
-            this.InitializeComponent();
+	public sealed partial class CommandBar_Extensions : UserControl
+	{
+		public CommandBar_Extensions()
+		{
+			this.InitializeComponent();
 
 			this.DataContext = new CommandBarCommandViewModel();
-        }
-    }
+		}
+	}
 }

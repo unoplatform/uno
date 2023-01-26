@@ -6,15 +6,15 @@ namespace UITests.Windows_UI_Xaml_Controls.SplitView
 {
 	[SampleControlInfo("SplitView")]
 	public sealed partial class SplitViewClip : Page
-    {
-        public SplitViewClip()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public SplitViewClip()
+		{
+			this.InitializeComponent();
+		}
 
 		public void Button_Click(object sender, RoutedEventArgs args)
 		{
 			Split.IsPaneOpen = !Split.IsPaneOpen;
 		}
-    }
+	}
 }

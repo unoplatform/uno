@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Using .mkv", description: "Test .mkv video")]
 	public sealed partial class MediaPlayerElement_Mkv_Extension : UserControl
-    {
-        public MediaPlayerElement_Mkv_Extension()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_Mkv_Extension()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

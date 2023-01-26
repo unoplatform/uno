@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml
 		public static void SetXamlInfo(DependencyObject obj, XamlInfo owner)
 			=> obj.SetValue(XamlInfoProperty, owner);
 
-		public static DependencyProperty XamlInfoProperty { get ; } =
+		public static DependencyProperty XamlInfoProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				name: nameof(XamlInfo),
 				propertyType: typeof(XamlInfo),

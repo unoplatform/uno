@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
-					foreach(var value in typeTable!.Values)
+					foreach (var value in typeTable!.Values)
 					{
 						properties.Add((DependencyProperty)value);
 					}

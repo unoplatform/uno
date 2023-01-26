@@ -179,7 +179,7 @@ namespace Uno.UI.Controls
 					SetBindingValue(value);
 				}
 			}
-		} 
+		}
 		#endregion
 
 		private void UpdateTextChangedSubscription()

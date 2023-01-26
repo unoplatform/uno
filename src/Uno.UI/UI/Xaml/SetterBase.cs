@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		internal abstract void ApplyTo (DependencyObject o);
+		internal abstract void ApplyTo(DependencyObject o);
 
 		/// <summary>
 		/// This method is present for binary backward compatibility with <see cref="Setter{T}"/>.

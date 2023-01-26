@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			{
 				view.AccessibilityLabel = GetName();
 				view.AccessibilityTraits = GetAccessibilityTraits();
-				
+
 				// TODO
 				//view.AccessibilityHint
 				//view.AccessibilityValue

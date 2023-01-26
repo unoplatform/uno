@@ -11,10 +11,10 @@ namespace Uno.UI.Samples.Content.UITests.FocusTests
 {
 	[SampleControlInfo("Focus", "FocusManagerTest")]
 	public sealed partial class FocusManagerTest : UserControl
-    {
+	{
 		public FocusManagerTest()
-        {
-            this.InitializeComponent();
-        }
+		{
+			this.InitializeComponent();
+		}
 	}
 }

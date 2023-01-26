@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.CheckBoxTests
 {
-    [Sample("CheckBox")]
-    public sealed partial class CheckBox_States : Page
-    {
-        public CheckBox_States()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[Sample("CheckBox")]
+	public sealed partial class CheckBox_States : Page
+	{
+		public CheckBox_States()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

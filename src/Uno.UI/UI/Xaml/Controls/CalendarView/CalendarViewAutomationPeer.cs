@@ -212,7 +212,7 @@ namespace Windows.UI.Xaml.Controls
 					CalendarViewGeneratorHost spHost;
 					(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
 					CalendarPanel pCalendarPanel = spHost.Panel;
-					if (pCalendarPanel is {})
+					if (pCalendarPanel is { })
 					{
 						pValue = pCalendarPanel.Cols;
 					}
@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 					CalendarViewGeneratorHost spHost;
 					(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
 					CalendarPanel pCalendarPanel = spHost.Panel;
-					if (pCalendarPanel is {})
+					if (pCalendarPanel is { })
 					{
 						pValue = pCalendarPanel.Rows;
 					}
@@ -268,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 						spAPChildren = new TrackerCollection<AutomationPeer>();
 
 						var pPanel = spHost.Panel;
-						if (pPanel is {})
+						if (pPanel is { })
 						{
 							for (uint i = 0; i < count; i++)
 							{
@@ -282,9 +282,9 @@ namespace Windows.UI.Xaml.Controls
 								itemIndex = spHost.CalculateOffsetFromMinDate(date);
 
 								spItemAsI = pPanel.ContainerFromIndex(itemIndex);
-								if (spItemAsI is {})
+								if (spItemAsI is { })
 								{
-									spItem = (CalendarViewBaseItem) spItemAsI;
+									spItem = (CalendarViewBaseItem)spItemAsI;
 									spItemPeerAsAP = spItem.GetAutomationPeer();
 									spAPChildren.Add(spItemPeerAsAP);
 								}
@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 					uint nCount = 0;
 					Grid spWeekDayNames;
 					spWeekDayNames = (spOwner as CalendarView).GetTemplateChild<Grid>("WeekDayNames");
-					if (spWeekDayNames is {})
+					if (spWeekDayNames is { })
 					{
 						IList<UIElement> spChildren;
 						spChildren = (spWeekDayNames as Grid).Children;
@@ -391,7 +391,7 @@ namespace Windows.UI.Xaml.Controls
 
 				int firstVisibleIndex = 0;
 				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
 
@@ -408,9 +408,9 @@ namespace Windows.UI.Xaml.Controls
 					{
 						spItemAsI = pCalendarPanel.ContainerFromIndex(itemIndex);
 						// This can be a virtualized item or item does not exist, check for null
-						if (spItemAsI is {})
+						if (spItemAsI is { })
 						{
-							spItem = (CalendarViewBaseItem) spItemAsI;
+							spItem = (CalendarViewBaseItem)spItemAsI;
 
 							spItemPeerAsAP = spItem.GetAutomationPeer();
 							spProvider = ProviderFromPeer(spItemPeerAsAP);
@@ -438,7 +438,7 @@ namespace Windows.UI.Xaml.Controls
 					(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
 
 					var pPanel = spHost.Panel;
-					if (pPanel is {})
+					if (pPanel is { })
 					{
 						DateTime date;
 						DependencyObject spItemAsI;
@@ -467,11 +467,11 @@ namespace Windows.UI.Xaml.Controls
 							date = spAddedDates[0];
 							itemIndex = spHost.CalculateOffsetFromMinDate(date);
 							spItemAsI = pPanel.ContainerFromIndex(itemIndex);
-							if (spItemAsI is {})
+							if (spItemAsI is { })
 							{
-								spItem = (CalendarViewBaseItem) spItemAsI;
+								spItem = (CalendarViewBaseItem)spItemAsI;
 								spItemPeerAsAP = spItem.GetAutomationPeer();
-								if (spItemPeerAsAP is {})
+								if (spItemPeerAsAP is { })
 								{
 									spItemPeerAsAP.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementSelected);
 								}
@@ -482,11 +482,11 @@ namespace Windows.UI.Xaml.Controls
 								date = spRemovedDates[0];
 								itemIndex = spHost.CalculateOffsetFromMinDate(date);
 								spItemAsI = pPanel.ContainerFromIndex(itemIndex);
-								if (spItemAsI is {})
+								if (spItemAsI is { })
 								{
-									spItem = (CalendarViewBaseItem) spItemAsI;
+									spItem = (CalendarViewBaseItem)spItemAsI;
 									spItemPeerAsAP = spItem.GetAutomationPeer();
-									if (spItemPeerAsAP is {})
+									if (spItemPeerAsAP is { })
 									{
 										spItemPeerAsAP.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
 									}
@@ -507,11 +507,11 @@ namespace Windows.UI.Xaml.Controls
 									date = spAddedDates[(int)i];
 									itemIndex = spHost.CalculateOffsetFromMinDate(date);
 									spItemAsI = pPanel.ContainerFromIndex(itemIndex);
-									if (spItemAsI is {})
+									if (spItemAsI is { })
 									{
-										spItem = (CalendarViewBaseItem) spItemAsI;
+										spItem = (CalendarViewBaseItem)spItemAsI;
 										spItemPeerAsAP = spItem.GetAutomationPeer();
-										if (spItemPeerAsAP is {})
+										if (spItemPeerAsAP is { })
 										{
 											spItemPeerAsAP.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementAddedToSelection);
 										}
@@ -523,11 +523,11 @@ namespace Windows.UI.Xaml.Controls
 									date = spRemovedDates[(int)i];
 									itemIndex = spHost.CalculateOffsetFromMinDate(date);
 									spItemAsI = pPanel.ContainerFromIndex(itemIndex);
-									if (spItemAsI is {})
+									if (spItemAsI is { })
 									{
-										spItem = (CalendarViewBaseItem) spItemAsI;
+										spItem = (CalendarViewBaseItem)spItemAsI;
 										spItemPeerAsAP = spItem.GetAutomationPeer();
-										if (spItemPeerAsAP is {})
+										if (spItemPeerAsAP is { })
 										{
 											spItemPeerAsAP.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
 										}

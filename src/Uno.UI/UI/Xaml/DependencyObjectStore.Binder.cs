@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml
 						/// can be significantly slower than other methods as a result on WebAssembly.
 						/// See https://github.com/dotnet/runtime/issues/56309
 						/// </remarks>
-						void ApplyWithTrace (object? actualDataContext, IDisposable trace)
+						void ApplyWithTrace(object? actualDataContext, IDisposable trace)
 						{
 							using (trace)
 							{

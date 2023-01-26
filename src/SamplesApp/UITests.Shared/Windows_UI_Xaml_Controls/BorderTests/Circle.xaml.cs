@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-    [SampleControlInfo("Border", "Circle")]
-    public sealed partial class Circle : Page
-    {
-        public Circle()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[SampleControlInfo("Border", "Circle")]
+	public sealed partial class Circle : Page
+	{
+		public Circle()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

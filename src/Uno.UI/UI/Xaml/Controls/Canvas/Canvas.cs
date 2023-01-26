@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty LeftProperty { get ; } = CreateLeftProperty();
+		public static DependencyProperty LeftProperty { get; } = CreateLeftProperty();
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			=> SetTopValue(obj, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty TopProperty { get ; } = CreateTopProperty();
+		public static DependencyProperty TopProperty { get; } = CreateTopProperty();
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			=> SetZIndexValue(obj, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
-		public static DependencyProperty ZIndexProperty { get ; } = CreateZIndexProperty();
+		public static DependencyProperty ZIndexProperty { get; } = CreateZIndexProperty();
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static partial void OnZIndexChangedPartial(UIElement element, double? zindex);
 
-#endregion
+		#endregion
 
 		public Canvas()
 		{

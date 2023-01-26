@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 
 		void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
 		{
-			var stateName = showIcon ? (showContent ? "IconOnLeft": "IconOnly") : "ContentOnly";
+			var stateName = showIcon ? (showContent ? "IconOnLeft" : "IconOnly") : "ContentOnly";
 			VisualStateManager.GoToState(this, stateName, false /*useTransitions*/);
 		}
 

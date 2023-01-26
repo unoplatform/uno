@@ -19,6 +19,9 @@
     <PackageCertificateKeyFile>SamplesApp.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>C9BABD35FEC08A61255449941CE49343F09EA763</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+
+	<!-- https://github.com/microsoft/microsoft-ui-xaml/issues/4187 -->
+	<NoWarn>$(NoWarn);CS8305</NoWarn> <!-- '{0}' is for evaluation purposes only and is subject to change or removal in future updates. -->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -144,7 +147,7 @@
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
-  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />

@@ -43,7 +43,7 @@ namespace Uno.UI.Helpers.WinUI
 				catch (Exception)
 				{
 					// CoreApplicationView might throw in XamlPresenter scenarios or in LogonUI.exe.
-				}            
+				}
 			}
 		}
 

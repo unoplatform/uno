@@ -9,7 +9,6 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
 		<RootNamespace>Windows.Foundation</RootNamespace>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -37,6 +36,10 @@
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTests
 {
-    [SampleControlInfo(category: "Image", controlName: nameof(ImageSourceUrlMsAppxScheme))]
-    public sealed partial class ImageSourceUrlMsAppxScheme : Page
-    {
-        public ImageSourceUrlMsAppxScheme()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[SampleControlInfo(category: "Image", controlName: nameof(ImageSourceUrlMsAppxScheme))]
+	public sealed partial class ImageSourceUrlMsAppxScheme : Page
+	{
+		public ImageSourceUrlMsAppxScheme()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

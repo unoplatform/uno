@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
 			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
-			if(FeatureConfiguration.Popup.EnableLightDismissByDefault)
+			if (FeatureConfiguration.Popup.EnableLightDismissByDefault)
 			{
 				_popup.IsLightDismissEnabled = false;
 			}
@@ -331,10 +331,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SubmitSearch(object item)
-	    {
+		{
 			var finalResult = item ?? GetObjectText(Text);
 
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));
 
 			IsSuggestionListOpen = false;
 		}

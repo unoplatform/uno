@@ -30,7 +30,7 @@ public partial class PipsPager
 	private ObservableCollection<int> m_pipsPagerItems;
 
 	/* Additional variables class variables*/
-	private Size m_defaultPipSize = new Size(0.0,0.0);
+	private Size m_defaultPipSize = new Size(0.0, 0.0);
 	private Size m_selectedPipSize = new Size(0.0, 0.0);
 	private int m_lastSelectedPageIndex = -1;
 	private bool m_isPointerOver = false;

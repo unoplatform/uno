@@ -113,7 +113,7 @@ public partial class Viewbox // Viewbox.cpp
 		m_pContainerVisual.RenderTransform = m_pScaleTransform;
 		AddChildNative(m_pContainerVisual);
 
-	//Cleanup:
+		//Cleanup:
 		//RRETURN(hr);
 	}
 
@@ -149,7 +149,7 @@ public partial class Viewbox // Viewbox.cpp
 
 		//IFC(CFrameworkElement::AddChild(pChild));
 
-	//Cleanup:
+		//Cleanup:
 		//RRETURN(hr);
 	}
 #endif
@@ -238,89 +238,89 @@ public partial class Viewbox // Viewbox.cpp
 	_Check_return_
 	HRESULT
 	CViewbox::Child(
-		_In_ CDependencyObject *pObject,
+		_In_ CDependencyObject * pObject,
 		_In_ XUINT32 cArgs,
-		_Inout_updates_(cArgs) CValue *ppArgs,
+		_Inout_updates_(cArgs) CValue* ppArgs,
 		_In_opt_ IInspectable* pValueOuter,
-		_Out_ CValue *pResult)
+		_Out_ CValue* pResult)
 	{
 		HRESULT hr = S_OK;
-		CViewbox* pViewbox = NULL;
+	CViewbox* pViewbox = NULL;
 
-		IFC(DoPointerCast(pViewbox, pObject));
+	IFC(DoPointerCast(pViewbox, pObject));
 
 		if (cArgs == 0)
 		{
 			// Getting the child
 			CUIElement* pChild = NULL;
-			hr = pViewbox->GetChild(&pChild);
+	hr = pViewbox->GetChild(&pChild);
 			if (SUCCEEDED(hr))
 			{
 				pResult->SetObjectNoRef(pChild);
-			}
+}
 			else
 			{
 				pResult->SetNull();
-				IFC(hr);
+IFC(hr);
 			}
 		}
 		else if (cArgs == 1 && ppArgs->GetType() == valueObject)
-		{
-			// Setting the child
-			CUIElement* pChild;
-			IFC(DoPointerCast(pChild, ppArgs->AsObject()));
-			IFC(pViewbox->SetChild(pChild));
-		}
-		else if (cArgs == 1 && ppArgs->GetType() == valueNull)
-		{
-			IFC(pViewbox->SetChild(NULL));
-		}
-		else
-		{
-			IFC(E_INVALIDARG);
-		}
-	Cleanup:
-		RRETURN(hr);
+{
+	// Setting the child
+	CUIElement* pChild;
+	IFC(DoPointerCast(pChild, ppArgs->AsObject()));
+	IFC(pViewbox->SetChild(pChild));
+}
+else if (cArgs == 1 && ppArgs->GetType() == valueNull)
+{
+	IFC(pViewbox->SetChild(NULL));
+}
+else
+{
+	IFC(E_INVALIDARG);
+}
+Cleanup:
+RRETURN(hr);
 	}
 
 	/// <summary>
 	/// Remove any existing child and set the new child tree.
 	/// </summary>
 	void SetChild(UIElement pChild)
-	{
-		//HRESULT hr = S_OK;
-		//CUIElement* pExistingLogicalChild = NULL;
+{
+	//HRESULT hr = S_OK;
+	//CUIElement* pExistingLogicalChild = NULL;
 
-		//var pExistingLogicalChild = GetChild();
-		//if (null != pExistingLogicalChild)
-		//{
-		//	RemoveLogicalChild(pExistingLogicalChild);
-		//}
+	//var pExistingLogicalChild = GetChild();
+	//if (null != pExistingLogicalChild)
+	//{
+	//	RemoveLogicalChild(pExistingLogicalChild);
+	//}
 
-		m_pContainerVisual.Child = pChild;
-		//if (NULL != pChild)
-		//{
-		//	IFC(AddLogicalChild(pChild));
-		//}
-
-	//Cleanup:
-		//ReleaseInterface(pExistingLogicalChild);
-		//RRETURN(hr);
-	}
-
-	/// <summary>
-	/// This will return the first (and only) child, or NULL if the there is no Child yet.
-	/// </summary>
-	UIElement GetChild()
-	{
-		//HRESULT hr = S_OK;
-
-		//IFCPTR(ppChild);
-		return m_pContainerVisual.Child;
+	m_pContainerVisual.Child = pChild;
+	//if (NULL != pChild)
+	//{
+	//	IFC(AddLogicalChild(pChild));
+	//}
 
 	//Cleanup:
-		//	RRETURN(hr);
-	}
+	//ReleaseInterface(pExistingLogicalChild);
+	//RRETURN(hr);
+}
+
+/// <summary>
+/// This will return the first (and only) child, or NULL if the there is no Child yet.
+/// </summary>
+UIElement GetChild()
+{
+	//HRESULT hr = S_OK;
+
+	//IFCPTR(ppChild);
+	return m_pContainerVisual.Child;
+
+	//Cleanup:
+	//	RRETURN(hr);
+}
 #endif
 
 	/// <summary>

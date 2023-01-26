@@ -192,7 +192,7 @@ namespace DirectUI
 
 		private void RaiseCollectionChanging(CollectionChanging action, DateTime addingDate)
 		{
-			if (m_collectionChanging is {})
+			if (m_collectionChanging is { })
 			{
 				m_collectionChanging(action, addingDate);
 			}

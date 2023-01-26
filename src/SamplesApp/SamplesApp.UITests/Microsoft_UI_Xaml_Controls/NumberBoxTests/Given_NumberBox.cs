@@ -174,7 +174,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			_app.Marked("RunButton").FastTap();
 
-			_app.WaitFor(()=> _app.Marked("Status").GetText() is string s && (s.Equals("Success") || s.StartsWith("Failure")));
+			_app.WaitFor(() => _app.Marked("Status").GetText() is string s && (s.Equals("Success") || s.StartsWith("Failure")));
 
 			_app.Marked("Status").GetText().Should().Be("Success");
 		}

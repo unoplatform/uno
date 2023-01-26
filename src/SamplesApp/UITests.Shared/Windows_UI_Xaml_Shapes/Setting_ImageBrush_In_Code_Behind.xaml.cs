@@ -10,12 +10,12 @@ using Windows.UI.Xaml.Media.Imaging;
 namespace UITests.Windows_UI_Xaml_Shapes
 {
 	[Sample("Shapes")]
-    public sealed partial class Setting_ImageBrush_In_Code_Behind : Page
-    {
-        public Setting_ImageBrush_In_Code_Behind()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class Setting_ImageBrush_In_Code_Behind : Page
+	{
+		public Setting_ImageBrush_In_Code_Behind()
+		{
+			this.InitializeComponent();
+		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{

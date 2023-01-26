@@ -25,7 +25,8 @@ namespace UITests.Windows_UI_Xaml.XamlRoot
 		{
 			this.InitializeComponent();
 
-			Loaded += (s, e) => {
+			Loaded += (s, e) =>
+			{
 				rasterizationScale.Text = XamlRoot.RasterizationScale.ToString();
 			};
 		}

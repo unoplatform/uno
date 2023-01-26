@@ -44,7 +44,7 @@ namespace UnoSolutionTemplate.Wizard.Forms
 
 			BaseTargetFramework.Items.Add(new TargetFrameworkOption { BaseValue = "net6.0", DisplayValue = ".NET 6.0" });
 			BaseTargetFramework.Items.Add(new TargetFrameworkOption { BaseValue = "net7.0", DisplayValue = ".NET 7.0" });
-			BaseTargetFramework.SelectedIndex = 0;
+			BaseTargetFramework.SelectedIndex = 1;
 		}
 
 		private void UnoOptions_Load(object sender, EventArgs e)

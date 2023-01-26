@@ -7,8 +7,8 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI
 {
-    internal static class TypefaceStyleHelper
-    {
+	internal static class TypefaceStyleHelper
+	{
 		internal static TypefaceStyle GetTypefaceStyle(FontStyle fontStyle, FontWeight fontWeight)
 		{
 			var style = TypefaceStyle.Normal;

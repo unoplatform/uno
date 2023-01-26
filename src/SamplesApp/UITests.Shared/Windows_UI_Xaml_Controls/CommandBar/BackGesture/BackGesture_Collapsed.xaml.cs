@@ -17,15 +17,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar.BackGesture
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class BackGesture_Collapsed : Page
-    {
-        public BackGesture_Collapsed()
-        {
-            this.InitializeComponent();
-        }
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class BackGesture_Collapsed : Page
+	{
+		public BackGesture_Collapsed()
+		{
+			this.InitializeComponent();
+		}
 
 		private void GoBack_Click(object sender, RoutedEventArgs e)
 		{

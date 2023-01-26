@@ -7,7 +7,7 @@ using UIKit;
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement
-    {
+	{
 		partial void RegisterSubView(UIView child)
 		{
 			if (Subviews.Length != 0)

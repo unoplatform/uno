@@ -10,7 +10,7 @@ using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public  partial class RightTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
+	public partial class RightTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
 		private readonly UIElement _originalSource;
 		private readonly Point _position;

@@ -19,11 +19,11 @@ using Windows.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
 	[SampleControlInfo("CommandBar", "Uppercase_Resource")]
-    public sealed partial class CommandBar_Uppercase_Resource : UserControl
-    {
-        public CommandBar_Uppercase_Resource()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class CommandBar_Uppercase_Resource : UserControl
+	{
+		public CommandBar_Uppercase_Resource()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

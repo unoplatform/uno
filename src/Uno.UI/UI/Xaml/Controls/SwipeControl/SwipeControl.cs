@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					s_lastInteractedWithSwipeControl.SetTarget(null);
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
-					if (globalTestHooks is {})
+					if (globalTestHooks is { })
 					{
 						globalTestHooks.NotifyLastInteractedWithSwipeControlChanged();
 					}
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 				Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 		}
-#endregion
+		#endregion
 
 		#region FrameworkElementOverrides
 		protected override void OnApplyTemplate()
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IInteractionTrackerOwner
 		// Uno workaround: Interaction tracker is not supported yet, use Manipulation events instead
-		#if false
+#if false
 
 		void CustomAnimationStateEntered(
 			InteractionTracker sender,
@@ -455,7 +455,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateThresholdReached(value);
 		}
-		#endif
+#endif
 		#endregion
 
 		#region TestHookHelpers
@@ -489,7 +489,7 @@ namespace Windows.UI.Xaml.Controls
 				observableVector.VectorChanged -= OnLeftItemsChanged;
 			}
 
-			if (args.NewValue is {})
+			if (args.NewValue is { })
 			{
 				ThrowIfHasVerticalAndHorizontalContent();
 				var observableVector = args.NewValue as IObservableVector<SwipeItem>;
@@ -513,13 +513,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (args.OldValue is {})
+			if (args.OldValue is { })
 			{
 				var observableVector = args.OldValue as IObservableVector<SwipeItem>;
 				observableVector.VectorChanged -= OnRightItemsChanged;
 			}
 
-			if (args.NewValue is {})
+			if (args.NewValue is { })
 			{
 				ThrowIfHasVerticalAndHorizontalContent();
 				var observableVector = args.NewValue as IObservableVector<SwipeItem>;
@@ -543,13 +543,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (args.OldValue is {})
+			if (args.OldValue is { })
 			{
 				var observableVector = args.OldValue as IObservableVector<SwipeItem>;
 				observableVector.VectorChanged -= OnTopItemsChanged;
 			}
 
-			if (args.NewValue is {})
+			if (args.NewValue is { })
 			{
 				ThrowIfHasVerticalAndHorizontalContent();
 				var observableVector = args.NewValue as IObservableVector<SwipeItem>;
@@ -573,13 +573,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (args.OldValue is {})
+			if (args.OldValue is { })
 			{
 				var observableVector = args.OldValue as IObservableVector<SwipeItem>;
 				observableVector.VectorChanged -= OnBottomItemsChanged;
 			}
 
-			if (args.NewValue is {})
+			if (args.NewValue is { })
 			{
 				ThrowIfHasVerticalAndHorizontalContent();
 				var observableVector = args.NewValue as IObservableVector<SwipeItem>;
@@ -664,13 +664,13 @@ namespace Windows.UI.Xaml.Controls
 				m_swipeContentStackPanel.SizeChanged -= OnSwipeContentStackPanelSizeChanged;
 			}
 
-			if (m_onPointerPressedEventHandler is {})
+			if (m_onPointerPressedEventHandler is { })
 			{
 				RemoveHandler(UIElement.PointerPressedEvent, m_onPointerPressedEventHandler);
 				m_onPointerPressedEventHandler = null;
 			}
 
-			if (m_inputEater is {})
+			if (m_inputEater is { })
 			{
 				m_inputEater.Tapped -= InputEaterGridTapped;
 			}
@@ -687,12 +687,12 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var uiElement in m_swipeContentStackPanel.GetChildren())
 			{
 				AppBarButton appBarButton = uiElement as AppBarButton;
-				if (appBarButton is {})
+				if (appBarButton is { })
 				{
 					if (m_isHorizontal)
 					{
 						appBarButton.Height = ActualHeight;
-						if (m_currentItems is {} && m_currentItems.Mode == SwipeMode.Execute)
+						if (m_currentItems is { } && m_currentItems.Mode == SwipeMode.Execute)
 						{
 							appBarButton.Width = ActualWidth;
 						}
@@ -700,7 +700,7 @@ namespace Windows.UI.Xaml.Controls
 					else
 					{
 						appBarButton.Width = ActualWidth;
-						if (m_currentItems is {} && m_currentItems.Mode == SwipeMode.Execute)
+						if (m_currentItems is { } && m_currentItems.Mode == SwipeMode.Execute)
 						{
 							appBarButton.Height = ActualHeight;
 						}
@@ -731,7 +731,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch /*&& m_visualInteractionSource is {}*/)
 			{
-				if (m_currentItems is {} &&
+				if (m_currentItems is { } &&
 					m_currentItems.Mode == SwipeMode.Execute &&
 					m_currentItems.Size > 0 &&
 					m_currentItems.GetAt(0).BehaviorOnInvoked == SwipeBehaviorOnInvoked.RemainOpen &&
@@ -779,9 +779,9 @@ namespace Windows.UI.Xaml.Controls
 			//if (UIElement10 uiElement10 = this)
 			//{
 			var xamlRoot = this.XamlRoot;
-			if (xamlRoot is {})
+			if (xamlRoot is { })
 			{
-				if (xamlRoot.Content is {} xamlRootContent)
+				if (xamlRoot.Content is { } xamlRootContent)
 				{
 					var handler = new PointerEventHandler((_, args) =>
 					{
@@ -799,7 +799,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				xamlRoot.Changed += CurrentXamlRootChanged;
-				m_xamlRootChangedRevoker = Disposable.Create(() =>  xamlRoot.Changed -= CurrentXamlRootChanged);
+				m_xamlRootChangedRevoker = Disposable.Create(() => xamlRoot.Changed -= CurrentXamlRootChanged);
 			}
 			//}
 			//else
@@ -824,9 +824,9 @@ namespace Windows.UI.Xaml.Controls
 			//	}
 			//}
 
-			if (CoreWindow.GetForCurrentThread() is {} coreWindow)
+			if (CoreWindow.GetForCurrentThread() is { } coreWindow)
 			{
-				if (coreWindow.Dispatcher is {} dispatcher)
+				if (coreWindow.Dispatcher is { } dispatcher)
 				{
 					dispatcher.AcceleratorKeyActivated += DismissSwipeOnAcceleratorKeyActivator;
 					m_acceleratorKeyActivatedRevoker = Disposable.Create(() => dispatcher.AcceleratorKeyActivated -= DismissSwipeOnAcceleratorKeyActivator);
@@ -929,14 +929,14 @@ namespace Windows.UI.Xaml.Controls
 			m_swipeContentStackPanel.Orientation(m_isHorizontal ? Orientation.Horizontal : Orientation.Vertical);
 
 			var lookedUpStyle = SharedHelpers.FindInApplicationResources(s_swipeItemStyleName, null);
-			if (lookedUpStyle is {})
+			if (lookedUpStyle is { })
 			{
 				m_swipeItemStyle = lookedUpStyle as UI.Xaml.Style;
 			}
 		}
 
 		//* Uno workaround: Animation are not yet supported by composition API, we are using XAML animation instead.
-		#if false
+#if false
 		void InitializeInteractionTracker()
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
@@ -989,7 +989,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// A more readable version of the expression:
 
-			/m_swipeAnimation.set(m_compositor.CreateExpressionAnimation("isHorizontal ?"
+			/ m_swipeAnimation.set(m_compositor.CreateExpressionAnimation("isHorizontal ?"
 			"Vector3(tracker.isFarOpen || tracker.blockNearContent ? Clamp(-tracker.Position.X, -this.Target.Size.X, 0) :"
 			"tracker.isNearOpen  || tracker.blockFarContent ? Clamp(-tracker.Position.X,  0, this.Target.Size.X) :"
 			"Clamp(-tracker.Position.X, (tracker.hasRightContent ? -10000 : 0), (tracker.hasLeftContent ? 10000 : 0)), 0, 0) :"
@@ -1015,7 +1015,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//A more readable version of the expression:
 
-			/m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(foregroundVisual." + GetAnimationTarget() + " * 0.5) + (isHorizontal ?"
+			/ m_executeExpressionAnimation.set(m_compositor.CreateExpressionAnimation("(foregroundVisual." + GetAnimationTarget() + " * 0.5) + (isHorizontal ?"
 			"Vector3((isNearContent ? -0.5, 0.5) * this.Target.Size.X, 0, 0) : "
 			"Vector3(0, (isNearContent ? -0.5, 0.5) * this.Target.Size.Y, 0))"));
 			*/
@@ -1032,7 +1032,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//A more readable version of the expression:
 
-			/m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(L"isHorizontal ?
+			/ m_clipExpressionAnimation.set(m_compositor.CreateExpressionAnimation(L"isHorizontal ?
 			Max(swipeRootVisual.Size.X + (isNearContent ? tracker.Position.X : -tracker.Position.X), 0) :
 			Max(swipeRootVisual.Size.Y + (isNearContent ? tracker.Position.Y : -tracker.Position.Y), 0)"));*/
 
@@ -1147,7 +1147,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return visualInteractionSource;
 		}
-		#endif
+#endif
 
 		private void EnsureClip()
 		{
@@ -1183,7 +1183,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			if (m_currentItems is {} &&
+			if (m_currentItems is { } &&
 				m_currentItems.Mode == SwipeMode.Execute &&
 				m_currentItems.Size > 0 &&
 				m_currentItems.GetAt(0).BehaviorOnInvoked == SwipeBehaviorOnInvoked.RemainOpen &&
@@ -1199,7 +1199,7 @@ namespace Windows.UI.Xaml.Controls
 		private void CreateLeftContent()
 		{
 			var items = LeftItems;
-			if (items is {})
+			if (items is { })
 			{
 				m_createdContent = CreatedContent.Left;
 				CreateContent(items);
@@ -1209,7 +1209,7 @@ namespace Windows.UI.Xaml.Controls
 		private void CreateRightContent()
 		{
 			var items = RightItems;
-			if (items is {})
+			if (items is { })
 			{
 				m_createdContent = CreatedContent.Right;
 				CreateContent(items);
@@ -1238,13 +1238,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void CreateContent(SwipeItems items)
 		{
-			if (m_swipeContentStackPanel is {} && m_swipeContentStackPanel.Children is {})
+			if (m_swipeContentStackPanel is { } && m_swipeContentStackPanel.Children is { })
 			{
 				m_swipeContentStackPanel.Children.Clear();
 			}
 
 			m_currentItems = items;
-			if (m_currentItems is {})
+			if (m_currentItems is { })
 			{
 				AlignStackPanel();
 				PopulateContentItems();
@@ -1263,43 +1263,43 @@ namespace Windows.UI.Xaml.Controls
 				switch (m_currentItems.Mode)
 				{
 					case SwipeMode.Execute:
-					{
-						if (m_isHorizontal)
 						{
-							m_swipeContentStackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-							m_swipeContentStackPanel.VerticalAlignment = VerticalAlignment.Center;
-						}
-						else
-						{
-							m_swipeContentStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
-							m_swipeContentStackPanel.VerticalAlignment = VerticalAlignment.Stretch;
-						}
+							if (m_isHorizontal)
+							{
+								m_swipeContentStackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+								m_swipeContentStackPanel.VerticalAlignment = VerticalAlignment.Center;
+							}
+							else
+							{
+								m_swipeContentStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+								m_swipeContentStackPanel.VerticalAlignment = VerticalAlignment.Stretch;
+							}
 
-						break;
-					}
+							break;
+						}
 					case SwipeMode.Reveal:
-					{
-						if (m_isHorizontal)
 						{
-							var swipeContentStackPanelHorizontalAlignment = m_createdContent == CreatedContent.Left ? HorizontalAlignment.Left :
-								m_createdContent == CreatedContent.Right ? HorizontalAlignment.Right :
-								HorizontalAlignment.Stretch;
+							if (m_isHorizontal)
+							{
+								var swipeContentStackPanelHorizontalAlignment = m_createdContent == CreatedContent.Left ? HorizontalAlignment.Left :
+									m_createdContent == CreatedContent.Right ? HorizontalAlignment.Right :
+									HorizontalAlignment.Stretch;
 
-							m_swipeContentStackPanel.HorizontalAlignment = swipeContentStackPanelHorizontalAlignment;
-							m_swipeContentStackPanel.VerticalAlignment = VerticalAlignment.Center;
+								m_swipeContentStackPanel.HorizontalAlignment = swipeContentStackPanelHorizontalAlignment;
+								m_swipeContentStackPanel.VerticalAlignment = VerticalAlignment.Center;
+							}
+							else
+							{
+								var swipeContentStackPanelVerticalAlignment = m_createdContent == CreatedContent.Top ? VerticalAlignment.Top :
+									m_createdContent == CreatedContent.Bottom ? VerticalAlignment.Bottom :
+									VerticalAlignment.Stretch;
+
+								m_swipeContentStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+								m_swipeContentStackPanel.VerticalAlignment = swipeContentStackPanelVerticalAlignment;
+							}
+
+							break;
 						}
-						else
-						{
-							var swipeContentStackPanelVerticalAlignment = m_createdContent == CreatedContent.Top ? VerticalAlignment.Top :
-								m_createdContent == CreatedContent.Bottom ? VerticalAlignment.Bottom :
-								VerticalAlignment.Stretch;
-
-							m_swipeContentStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
-							m_swipeContentStackPanel.VerticalAlignment = swipeContentStackPanelVerticalAlignment;
-						}
-
-						break;
-					}
 					default:
 						global::System.Diagnostics.Debug.Assert(false);
 						break;
@@ -1408,7 +1408,7 @@ namespace Windows.UI.Xaml.Controls
 			if (swipeItem.Background is null)
 			{
 				var lookedUpBrush = SharedHelpers.FindInApplicationResources(m_currentItems.Mode == SwipeMode.Reveal ? s_swipeItemBackgroundResourceName : m_thresholdReached ? s_executeSwipeItemPostThresholdBackgroundResourceName : s_executeSwipeItemPreThresholdBackgroundResourceName);
-				if (lookedUpBrush is {})
+				if (lookedUpBrush is { })
 				{
 					itemAsButton.Background = lookedUpBrush as Brush;
 				}
@@ -1417,7 +1417,7 @@ namespace Windows.UI.Xaml.Controls
 			if (swipeItem.Foreground is null)
 			{
 				var lookedUpBrush = SharedHelpers.FindInApplicationResources(m_currentItems.Mode == SwipeMode.Reveal ? s_swipeItemForegroundResourceName : m_thresholdReached ? s_executeSwipeItemPostThresholdForegroundResourceName : s_executeSwipeItemPreThresholdForegroundResourceName);
-				if (lookedUpBrush is {})
+				if (lookedUpBrush is { })
 				{
 					itemAsButton.Foreground = lookedUpBrush as Brush;
 				}
@@ -1471,7 +1471,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!m_thresholdReached)
 			{
 				var lookedUpBackgroundBrush = SharedHelpers.FindInApplicationResources(s_executeSwipeItemPreThresholdBackgroundResourceName);
-				if (lookedUpBackgroundBrush is {})
+				if (lookedUpBackgroundBrush is { })
 				{
 					background = lookedUpBackgroundBrush as Brush;
 				}
@@ -1485,7 +1485,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (swipeItem is {} && swipeItem.Background is {})
+			if (swipeItem is { } && swipeItem.Background is { })
 			{
 				background = swipeItem.Background;
 			}
@@ -1507,7 +1507,7 @@ namespace Windows.UI.Xaml.Controls
 					if (!m_thresholdReached)
 					{
 						var lookedUpForegroundBrush = SharedHelpers.FindInApplicationResources(s_executeSwipeItemPreThresholdForegroundResourceName);
-						if (lookedUpForegroundBrush is {})
+						if (lookedUpForegroundBrush is { })
 						{
 							foreground = lookedUpForegroundBrush as Brush;
 						}
@@ -1521,7 +1521,7 @@ namespace Windows.UI.Xaml.Controls
 						}
 					}
 
-					if (swipeItem is {} && swipeItem.Foreground is {})
+					if (swipeItem is { } && swipeItem.Foreground is { })
 					{
 						foreground = swipeItem.Foreground;
 					}
@@ -1544,7 +1544,7 @@ namespace Windows.UI.Xaml.Controls
 			Brush rootGridBackground = null;
 
 			var lookedUpBrush = SharedHelpers.FindInApplicationResources(s_swipeItemBackgroundResourceName);
-			if (lookedUpBrush is {})
+			if (lookedUpBrush is { })
 			{
 				rootGridBackground = lookedUpBrush as Brush;
 			}
@@ -1554,30 +1554,30 @@ namespace Windows.UI.Xaml.Controls
 				{
 					case CreatedContent.Left:
 					case CreatedContent.Top:
-					{
-						var itemBackground = m_currentItems.GetAt((uint)m_swipeContentStackPanel.Children.Count - 1).Background;
-						if (itemBackground != null)
 						{
-							rootGridBackground = itemBackground;
-						}
+							var itemBackground = m_currentItems.GetAt((uint)m_swipeContentStackPanel.Children.Count - 1).Background;
+							if (itemBackground != null)
+							{
+								rootGridBackground = itemBackground;
+							}
 
-						break;
-					}
+							break;
+						}
 					case CreatedContent.Right:
 					case CreatedContent.Bottom:
-					{
-						var itemBackground = m_currentItems.GetAt(0).Background;
-						if (itemBackground != null)
 						{
-							rootGridBackground = itemBackground;
-						}
+							var itemBackground = m_currentItems.GetAt(0).Background;
+							if (itemBackground != null)
+							{
+								rootGridBackground = itemBackground;
+							}
 
-						break;
-					}
+							break;
+						}
 					case CreatedContent.None:
-					{
-						break;
-					}
+						{
+							break;
+						}
 					default:
 						global::System.Diagnostics.Debug.Assert(false);
 						break;
@@ -1772,7 +1772,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					var globalTestHooks = SwipeTestHooks.GetGlobalTestHooks();
-					if (globalTestHooks is {})
+					if (globalTestHooks is { })
 					{
 						globalTestHooks.NotifyOpenedStatusChanged(this);
 					}
@@ -1825,7 +1825,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ThrowIfHasVerticalAndHorizontalContent(bool setIsHorizontal = false)
 		{
-			bool hasLeftContent = LeftItems is {} && LeftItems.Size > 0;
+			bool hasLeftContent = LeftItems is { } && LeftItems.Size > 0;
 			bool hasRightContent = RightItems is { } && RightItems.Size > 0;
 			bool hasTopContent = TopItems is { } && TopItems.Size > 0;
 			bool hasBottomContent = BottomItems is { } && BottomItems.Size > 0;
@@ -1834,7 +1834,7 @@ namespace Windows.UI.Xaml.Controls
 				m_isHorizontal = hasLeftContent || hasRightContent || !(hasTopContent || hasBottomContent);
 			}
 
-			if (this.Template is {})
+			if (this.Template is { })
 			{
 				if (m_isHorizontal && (hasTopContent || hasBottomContent))
 				{

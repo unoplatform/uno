@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides data for a tab close event.
 	/// </summary>
 	public sealed partial class TabViewTabCloseRequestedEventArgs
-    {
+	{
 		internal TabViewTabCloseRequestedEventArgs(object item, TabViewItem tab)
 		{
 			Item = item;
@@ -24,5 +24,5 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Gets the tab in which a close is being requested.
 		/// </summary>
 		public TabViewItem Tab { get; }
-    }
+	}
 }

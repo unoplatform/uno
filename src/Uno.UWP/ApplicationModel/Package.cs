@@ -6,6 +6,8 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
+		private StorageFolder _installedLocation;
+
 		internal Package()
 		{
 		}
@@ -23,8 +25,21 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public IReadOnlyList<Package> Dependencies => new List<Package>();
 
-		public StorageFolder InstalledLocation
-			=> new StorageFolder(GetInstalledLocation());
+		/// <summary>
+		/// Gets the current package's location in the original install folder for the current package.
+		/// </summary>
+#if __WASM__
+		[Uno.NotImplemented("__WASM__")]
+#endif
+		public StorageFolder InstalledLocation => _installedLocation ??= new StorageFolder(GetInstalledPath());
+
+		/// <summary>
+		/// Gets the current package's path in the original install folder for the current package.
+		/// </summary>
+#if __WASM__
+		[Uno.NotImplemented("__WASM__")]
+#endif
+		public string InstalledPath => GetInstalledPath();
 
 		[Uno.NotImplemented]
 		public bool IsFramework => false;

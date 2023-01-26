@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 
 			void RemoveViewAt(ViewGroup parent, int index)
 			{
-				if(parent is Panel panel)
+				if (parent is Panel panel)
 				{
 					panel.Children.RemoveAt(currentPosition.Value);
 				}

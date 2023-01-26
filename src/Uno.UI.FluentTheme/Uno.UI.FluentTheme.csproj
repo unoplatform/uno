@@ -8,7 +8,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AssemblyName>Uno.UI.FluentTheme</AssemblyName>
 		<RootNamespace>Uno.UI.FluentTheme</RootNamespace>
 

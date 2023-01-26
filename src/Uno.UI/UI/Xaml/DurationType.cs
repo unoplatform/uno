@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Windows.UI.Xaml
 {
-    public enum DurationType
-    {
+	public enum DurationType
+	{
 		Automatic = 0,
 		TimeSpan = 1,
 		Forever = 2
-    }
+	}
 }

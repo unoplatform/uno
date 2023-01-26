@@ -513,7 +513,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Retrieves a reference to a child template object given its name
-		private T GetTemplateChildHelper<T>(string childName) where T:class
+		private T GetTemplateChildHelper<T>(string childName) where T : class
 			=> GetTemplateChild(childName) as T;
 
 		// IsEnabled property changed handler.
@@ -1022,7 +1022,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (m_tpElementHorizontalTemplate != null)
 			{
-				m_tpElementHorizontalTemplate .Visibility =
+				m_tpElementHorizontalTemplate.Visibility =
 					orientation == Orientation.Horizontal ?
 						Visibility.Visible :
 						Visibility.Collapsed;

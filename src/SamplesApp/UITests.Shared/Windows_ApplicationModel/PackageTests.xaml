@@ -16,6 +16,8 @@
 	<StackPanel Margin="12" Spacing="4">
 		<TextBlock Text="Display Name" Style="{StaticResource LabelStyle}" />
 		<TextBlock Text="{x:Bind DisplayName}" />
+		<TextBlock Text="Installed Path" Style="{StaticResource LabelStyle}" />
+		<TextBlock Text="{x:Bind InstalledPath}" />
 		<TextBlock Text="Architecture" Style="{StaticResource LabelStyle}" />
 		<TextBlock Text="{x:Bind Architecture}" />
 		<TextBlock Text="FamilyName" Style="{StaticResource LabelStyle}" />

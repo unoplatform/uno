@@ -395,14 +395,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var panel = _app.Marked("ComparePanel");
 			var button = _app.Marked("HideButton");
 			var physicalRect = _app.GetPhysicalRect(panel);
-			
+
 			// Copy of the rect, as the panel will be hidden, so the the X & Y coords would become negative
 			var originalRect = new AppRect(physicalRect.X, physicalRect.Y, physicalRect.Width, physicalRect.Height);
 
 			using var beforeHide = TakeScreenshot("image_invalid_before_hide");
 
 			button.FastTap();
-			
+
 			using var afterHide = TakeScreenshot("image_invalid_after_hide");
 
 			ImageAssert.AreEqual(afterHide, beforeHide, originalRect, tolerance: PixelTolerance.Exclusive(1));
@@ -430,7 +430,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreNotEqual(beforeLoad, afterLoad, physicalRect);
 
 			clearButton.FastTap();
-			
+
 			using var afterClear = TakeScreenshot("image_source_nullify_cleared");
 
 			ImageAssert.AreEqual(beforeLoad, afterClear, physicalRect, tolerance: PixelTolerance.Exclusive(1));
@@ -445,7 +445,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			bool Predicate()
 			{
 				return isLoaded.GetDependencyPropertyValue<bool>("IsChecked")
-				       || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
+					   || imgIsLoaded.GetDependencyPropertyValue<bool>("IsChecked");
 			}
 
 			_app.WaitFor(Predicate, timeout: loadTimeout);

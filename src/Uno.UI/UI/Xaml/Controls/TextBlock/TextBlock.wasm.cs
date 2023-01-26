@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
 			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
 
-			if(_textTrimmingChanged || _textWrappingChanged)
+			if (_textTrimmingChanged || _textWrappingChanged)
 			{
 				_textTrimmingChanged = _textWrappingChanged = false;
 				this.SetTextWrappingAndTrimming(textTrimming: TextTrimming, textWrapping: TextWrapping);

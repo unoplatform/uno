@@ -448,12 +448,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			//	asyncActionToAssign = null;
 
-				// Uno Doc: Assumed normal priority is acceptable
-				await dispatcherHelper.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
-					completedFunction?.Invoke(checkeredBackgroundBitmap);
-				});
+			// Uno Doc: Assumed normal priority is acceptable
+			await dispatcherHelper.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
+				completedFunction?.Invoke(checkeredBackgroundBitmap);
+			});
 			//});
 		}
 

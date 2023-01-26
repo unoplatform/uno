@@ -21,7 +21,7 @@ namespace Uno.UI.Xaml.Markup
 
 		object IXamlServiceProvider.GetService(Type type) => SupportedInterfaces.Contains(type) ? this : null;
 
-		object IRootObjectProvider.RootObject  => throw new NotImplementedException();
+		object IRootObjectProvider.RootObject => throw new NotImplementedException();
 
 		public object TargetObject { get; set; }
 

@@ -38,11 +38,11 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			SetChangeablePropertyToNull = new DelegateCommand(() => ChangeableProperty = null);
 		}
 
-        public TestDataItem SampleData { get; set; } = new TestDataItem()
-        {
-            UpperString = "This string goes above - databound",
-            LowerString = "This string goes below - databound"
-        };
+		public TestDataItem SampleData { get; set; } = new TestDataItem()
+		{
+			UpperString = "This string goes above - databound",
+			LowerString = "This string goes below - databound"
+		};
 
 		private string _changeableProperty;
 
@@ -52,7 +52,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			set { _changeableProperty = value; RaisePropertyChanged(); }
 		}
 
-		public ICommand SetChangeablePropertyToNull { get; } 
+		public ICommand SetChangeablePropertyToNull { get; }
 
 
 		public class TestDataItem

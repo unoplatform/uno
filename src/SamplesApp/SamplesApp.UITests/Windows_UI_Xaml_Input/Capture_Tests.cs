@@ -71,7 +71,7 @@ public partial class Capture_Tests : SampleControlUITestBase
 		act(target);
 
 #if !__SKIA__
-			TakeScreenshot("Result");
+		TakeScreenshot("Result");
 #endif
 
 		result.GetDependencyPropertyValue<string>("Text").Should().Be("SUCCESS");

@@ -24,10 +24,10 @@ namespace UITests.Shared.Windows_UI_Xaml.xBindTests
 	/// </summary>
 	[SampleControlInfo("x:Bind")]
 	public sealed partial class xBind_Functions : Page
-    {
-        public xBind_Functions()
-        {
-            this.InitializeComponent();
+	{
+		public xBind_Functions()
+		{
+			this.InitializeComponent();
 
 			root.Content = new MyDataTemplateClass();
 		}

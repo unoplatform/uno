@@ -20,10 +20,10 @@ using XamlWindow = Windows.UI.Xaml.Window;
 
 namespace UITests.Windows_UI_Xaml.ThemeResources
 {
-	[SampleControlInfo("XAML", nameof(ReloadedControlTheme), Description = Description, IsManualTest = true, IgnoreInSnapshotTests = true)]
+	[SampleControlInfo("XAML", nameof(ReloadedControlTheme), Description = SampleDescription, IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class ReloadedControlTheme : UserControl
 	{
-		private const string Description =
+		private const string SampleDescription =
 			"[ManualTest]: Use 'Un/Load Control' to load the control and then unload it." +
 			"While the control is unloaded, change the theme with 'Dark Mode', and then reload the control." +
 			"The theme changes while the control is unloaded should still be effective.";

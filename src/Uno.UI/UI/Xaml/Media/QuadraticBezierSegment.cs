@@ -18,11 +18,11 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty Point1Property { get; } =
 			DependencyProperty.Register(
-				"Point1", 
+				"Point1",
 				typeof(Point),
 				typeof(QuadraticBezierSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: new Point(), 
+					defaultValue: new Point(),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty Point2Property { get; } =
 			DependencyProperty.Register(
-				"Point2", 
+				"Point2",
 				typeof(Point),
 				typeof(QuadraticBezierSegment),
 				new FrameworkPropertyMetadata(

@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_realizedElementLayoutBounds.Add(default);
 		}
 
-		void Insert(int realizedIndex, int dataIndex,  UIElement element)
+		void Insert(int realizedIndex, int dataIndex, UIElement element)
 		{
 			MUX_ASSERT(IsVirtualizingContext);
 
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 				: m_context.GetOrCreateElementAt(dataIndex, ElementRealizationOptions.ForceCreate | ElementRealizationOptions.SuppressAutoRecycle);
 		}
 
-		public void EnsureElementRealized(bool forward, int dataIndex,  string layoutId)
+		public void EnsureElementRealized(bool forward, int dataIndex, string layoutId)
 		{
 			if (IsDataIndexRealized(dataIndex) == false)
 			{
@@ -314,44 +314,44 @@ namespace Microsoft.UI.Xaml.Controls
 						break;
 
 					case NotifyCollectionChangedAction.Replace:
-					{
-						int oldSize = args.OldItems.Count;
-						int newSize = args.NewItems.Count;
-						int oldStartIndex = args.OldStartingIndex;
-						int newStartIndex = args.NewStartingIndex;
-
-						if (oldSize == newSize &&
-							oldStartIndex == newStartIndex &&
-							IsDataIndexRealized(oldStartIndex) &&
-							IsDataIndexRealized(oldStartIndex + oldSize - 1))
 						{
-							// Straight up replace of n items within the realization window.
-							// Removing and adding might causes us to lose the anchor causing us
-							// to throw away all containers and start from scratch.
-							// Instead, we can just clear those items and set the element to
-							// null (sentinel) and let the next measure get new containers for them.
-							var startRealizedIndex = GetRealizedRangeIndexFromDataIndex(oldStartIndex);
-							for (int realizedIndex = startRealizedIndex; realizedIndex < startRealizedIndex + oldSize; realizedIndex++)
+							int oldSize = args.OldItems.Count;
+							int newSize = args.NewItems.Count;
+							int oldStartIndex = args.OldStartingIndex;
+							int newStartIndex = args.NewStartingIndex;
+
+							if (oldSize == newSize &&
+								oldStartIndex == newStartIndex &&
+								IsDataIndexRealized(oldStartIndex) &&
+								IsDataIndexRealized(oldStartIndex + oldSize - 1))
 							{
-								if (m_realizedElements.TryGetElementAt(realizedIndex, out var elementRef))
+								// Straight up replace of n items within the realization window.
+								// Removing and adding might causes us to lose the anchor causing us
+								// to throw away all containers and start from scratch.
+								// Instead, we can just clear those items and set the element to
+								// null (sentinel) and let the next measure get new containers for them.
+								var startRealizedIndex = GetRealizedRangeIndexFromDataIndex(oldStartIndex);
+								for (int realizedIndex = startRealizedIndex; realizedIndex < startRealizedIndex + oldSize; realizedIndex++)
 								{
-									m_context.RecycleElement(elementRef);
-									m_realizedElements[realizedIndex] = null; // TODO UNO .... weird!!!
+									if (m_realizedElements.TryGetElementAt(realizedIndex, out var elementRef))
+									{
+										m_context.RecycleElement(elementRef);
+										m_realizedElements[realizedIndex] = null; // TODO UNO .... weird!!!
+									}
 								}
 							}
+							else
+							{
+								OnItemsRemoved(oldStartIndex, oldSize);
+								OnItemsAdded(newStartIndex, newSize);
+							}
 						}
-						else
-						{
-							OnItemsRemoved(oldStartIndex, oldSize);
-							OnItemsAdded(newStartIndex, newSize);
-						}
-					}
 						break;
 
 					case NotifyCollectionChangedAction.Remove:
-					{
-						OnItemsRemoved(args.OldStartingIndex, args.OldItems.Count);
-					}
+						{
+							OnItemsRemoved(args.OldStartingIndex, args.OldItems.Count);
+						}
 						break;
 
 					case NotifyCollectionChangedAction.Reset:

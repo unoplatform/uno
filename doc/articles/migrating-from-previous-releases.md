@@ -2,6 +2,20 @@
 
 This article details the migration steps required to migrate from one version to the next.
 
+### Uno Platform 4.7
+
+### Symbol Fonts
+
+Uno Platform 4.7 now brings the Uno Fluent Symbols font implicitly. You can remove:
+- The `uno-fluentui-assets.ttf` file from all your project heads,
+- Any reference to `uno-fluentui-assets.ttf` in the `UIAppFonts` sections of the iOS `Info.plist`
+
+### ms-appx:/// resolution
+
+Uno Platform 4.7 brings a behavior breaking change where the library Assets feature introduced in Uno Platform 4.6 required assembly names to be lower cased.
+
+If you had an asset in a nuget package or project named "MyProject", you previously had to write `ms-appx:///myproject/MyAsset.txt`. With 4.7, you'll need to write `ms-appx:///MyProject/MyAsset.txt`.
+
 ### Uno Platform 4.5
 
 #### ElevatedView

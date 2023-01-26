@@ -20,12 +20,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
 	[Sample("Buttons", "MUX")]
 	public sealed partial class RadioButtonsInitialLoadSelected : Page
-    {
-        public RadioButtonsInitialLoadSelected()
-        {
-            this.InitializeComponent();
+	{
+		public RadioButtonsInitialLoadSelected()
+		{
+			this.InitializeComponent();
 
 			ThemeRadioButtons.SelectedIndex = 0;
 		}
-    }
+	}
 }

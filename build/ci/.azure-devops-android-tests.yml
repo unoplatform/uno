@@ -57,6 +57,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-android-netcoremobile-build
@@ -104,6 +105,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-android-build
@@ -280,6 +282,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -287,6 +290,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: uitests-failure-results

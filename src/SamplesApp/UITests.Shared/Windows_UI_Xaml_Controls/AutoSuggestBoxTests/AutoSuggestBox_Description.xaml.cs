@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 {
 	[Sample("AutoSuggestBox")]
-    public sealed partial class AutoSuggestBox_Description : Page
-    {
-        public AutoSuggestBox_Description()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class AutoSuggestBox_Description : Page
+	{
+		public AutoSuggestBox_Description()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

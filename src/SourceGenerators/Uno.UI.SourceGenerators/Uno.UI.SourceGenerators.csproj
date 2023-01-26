@@ -4,7 +4,6 @@
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- This target must always be built, regardless of the CI override -->
@@ -14,7 +13,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
-		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
@@ -28,8 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.8.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					background = todaySelectedBackground;
 				}
-				else if(FindSelectedBackgroundBrush() is { } selectedBackground
+				else if (FindSelectedBackgroundBrush() is { } selectedBackground
 					&& !IsClear(selectedBackground))
 				{
 					background = selectedBackground;

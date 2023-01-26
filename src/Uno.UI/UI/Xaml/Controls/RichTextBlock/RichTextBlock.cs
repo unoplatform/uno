@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Blocks))]
 	[global::Uno.NotImplemented]
-	public  partial class RichTextBlock : global::Windows.UI.Xaml.FrameworkElement
+	public partial class RichTextBlock : global::Windows.UI.Xaml.FrameworkElement
 	{
 		[global::Uno.NotImplemented]
 		public RichTextBlock() : base()

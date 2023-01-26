@@ -79,7 +79,7 @@ namespace SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.Flue
 			{
 				contentFrame.Navigate(typeof(SettingsPage));
 			}
-			else if(args.InvokedItemContainer is NavigationViewItem item)
+			else if (args.InvokedItemContainer is NavigationViewItem item)
 			{
 				switch (item.Tag)
 				{

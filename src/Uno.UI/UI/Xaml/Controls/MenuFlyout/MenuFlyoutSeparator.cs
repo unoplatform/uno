@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class MenuFlyoutSeparator : MenuFlyoutItemBase
+	public partial class MenuFlyoutSeparator : MenuFlyoutItemBase
 	{
-		public MenuFlyoutSeparator() 
+		public MenuFlyoutSeparator()
 		{
 		}
 	}

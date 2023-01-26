@@ -24,5 +24,5 @@ namespace Windows.UI.Xaml.Controls
 	}
 	//
 	// FIXME Merge with ListView and remove the ListViewTypeSelector in favor of using a generic "ListViewItem" and ItemTemplate for its content
-	
+
 }

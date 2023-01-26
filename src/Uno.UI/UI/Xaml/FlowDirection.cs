@@ -2,7 +2,7 @@ using System;
 
 namespace Windows.UI.Xaml
 {
-	public enum FlowDirection 
+	public enum FlowDirection
 	{
 		LeftToRight,
 

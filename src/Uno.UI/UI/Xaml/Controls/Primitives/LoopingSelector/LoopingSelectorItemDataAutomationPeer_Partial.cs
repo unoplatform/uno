@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			//_wrParent.As(spParent);
 			//spParent = _wrParent;
 			//if (spParent is {})
-			if(_wrParent?.TryGetTarget(out spParent) ?? false)
+			if (_wrParent?.TryGetTarget(out spParent) ?? false)
 			{
 				LoopingSelectorItemAutomationPeer spLSIAP;
 				spParent.GetContainerAutomationPeerForItem(_tpItem, out spLSIAP);

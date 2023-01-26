@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Return true if successfully scrolled to asked offsets
 			return (horizontalOffset == null || physicalHorizontalOffset == adjustedPhysicalHorizontalOffset) &&
-			       (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
+				   (verticalOffset == null || physicalVerticalOffset == adjustedPhysicalVerticalOffset);
 		}
 
 		internal void TryApplyPendingScrollTo()
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 				_presenter.ZoomScale = zoomFactor;
 			}
 		}
-		
+
 		private void UpdateZoomedContentAlignment()
 		{
 			if (ZoomFactor != 1 && Content is IFrameworkElement fe && Content is View view)

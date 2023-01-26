@@ -4,7 +4,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 
 ## Prerequisites
 * [**Visual Studio for Mac 2022 Preview**](https://visualstudio.microsoft.com/vs/mac/preview/)
-* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 13.3 or higher
+* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 14.1 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
@@ -50,7 +50,7 @@ Building for WebAssembly takes a few more steps:
 
 1. Set `MyProject.Wasm` to startup project
 1. Build the project
-1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net6.0 > dist`
+1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net7.0 > dist`
 1. Install `dotnet serve`:
     ```
     dotnet tool install -g dotnet-serve

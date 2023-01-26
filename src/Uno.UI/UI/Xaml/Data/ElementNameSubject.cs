@@ -40,11 +40,12 @@ namespace Windows.UI.Xaml.Data
 		{
 			// element stubs are not returned, are only materialized
 			// as part of FindName or Visibility binding
-			get => _elementInstanceRef?.Target switch {
-						ElementStub _ => null,
-						object o => o,
-						null => null,
-					};
+			get => _elementInstanceRef?.Target switch
+			{
+				ElementStub _ => null,
+				object o => o,
+				null => null,
+			};
 			set
 			{
 				_elementInstanceRef = WeakReferencePool.RentWeakReference(this, value);

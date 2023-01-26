@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		// kicking in.
 		DispatcherTimer? m_tpStartEdgeScrollTimer;
 
-		
+
 
 		// Gets the value of m_isHolding
 		internal bool GetIsHolding()

@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 			}
 #endif
-			}
+		}
 #endif
 
 		#region Stroke Dependency Property

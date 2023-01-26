@@ -6,11 +6,14 @@ namespace Uno.UI.Views.Controls
 	{
 		Style _style;
 
-		public Style Style {
-			get {
+		public Style Style
+		{
+			get
+			{
 				return _style;
 			}
-			set {
+			set
+			{
 				_style = value;
 			}
 		}

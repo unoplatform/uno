@@ -41,7 +41,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 			Storyboard.SetTarget(blueAnimation, TheBlueSquareTransform);
 			Storyboard.SetTargetProperty(blueAnimation, nameof(TheBlueSquareTransform.X));
 
-			new Storyboard {Children = {redAnimation, blueAnimation}}.Begin();
+			new Storyboard { Children = { redAnimation, blueAnimation } }.Begin();
 		}
 	}
 }

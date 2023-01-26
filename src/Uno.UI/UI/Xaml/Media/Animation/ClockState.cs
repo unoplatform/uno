@@ -9,5 +9,5 @@ namespace Windows.UI.Xaml.Media.Animation
 		Active = 0,
 		Filling = 1,
 		Stopped = 2
-    }
+	}
 }

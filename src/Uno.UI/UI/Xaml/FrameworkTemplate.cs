@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner);
-	
+
 	public partial class FrameworkTemplate : DependencyObject
 	{
 		internal readonly FrameworkTemplateBuilder? _viewFactory;

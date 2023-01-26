@@ -23,9 +23,9 @@ namespace Uno.UI.Samples.Content.UITests.XBind
 	/// </summary>
 	[SampleControlInfo("x:Bind", "PhaseBinding_StartOne")]
 	public sealed partial class PhaseBinding_StartOne : Page
-    {
-        public PhaseBinding_StartOne()
-        {
+	{
+		public PhaseBinding_StartOne()
+		{
 			this.InitializeComponent();
 
 			MyItems = Enumerable.Range(0, 1000).Select(c => new MyItem { Value01 = c, Value02 = (c * 2).ToString() }).ToArray();

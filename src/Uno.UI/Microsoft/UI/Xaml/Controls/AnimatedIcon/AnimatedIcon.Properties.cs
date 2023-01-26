@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIcon), new FrameworkPropertyMetadata(null, OnSourcePropertyChanged));
-				
+
 		public static string GetState(DependencyObject obj)
 		{
 			return (string)obj.GetValue(StateProperty);

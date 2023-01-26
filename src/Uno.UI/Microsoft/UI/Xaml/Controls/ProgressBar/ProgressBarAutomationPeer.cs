@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (patternInterface == PatternInterface.RangeValue)
 			{
-				if(_owner.IsIndeterminate)
+				if (_owner.IsIndeterminate)
 				{
 					return null;
 				}

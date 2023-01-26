@@ -60,7 +60,7 @@ namespace Uno.UI.Controls
 
 			_subscriptions.Dispose();
 			_commandCanExecute.Disposable = null;
-        }
+		}
 
 		private void SetClickListeners()
 		{

@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 {
 	[Sample("PullToRefresh")]
-    public sealed partial class RefreshContainerNavigation : Page
-    {
-        public RefreshContainerNavigation()
-        {
-            this.InitializeComponent();
+	public sealed partial class RefreshContainerNavigation : Page
+	{
+		public RefreshContainerNavigation()
+		{
+			this.InitializeComponent();
 
 			PageFrame.Navigate(typeof(RefreshContainerNavigationFirstPage));
 		}

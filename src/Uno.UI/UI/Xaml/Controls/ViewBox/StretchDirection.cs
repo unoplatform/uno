@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum StretchDirection 
+	public enum StretchDirection
 	{
 		UpOnly = 0,
 		DownOnly = 1,

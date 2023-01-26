@@ -18,15 +18,15 @@ using Uno.Foundation.Logging;
 namespace Windows.UI.Xaml
 {
 	internal partial class FontHelper
-	{ 
+	{
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
 		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
-		{  
+		{
 			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, style);
-			 
-			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry , out var typeFace))
+
+			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry, out var typeFace))
 			{
 				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style);
 				_fontFamilyToTypeFaceDictionary.Add(entry, typeFace);
@@ -56,32 +56,19 @@ namespace Windows.UI.Xaml
 				{
 					var source = fontFamily.Source;
 
-					// The lookup is always performed in the assets folder, even if its required to specify it
-					// with UWP.
 					source = source.TrimStart("ms-appx://", StringComparison.OrdinalIgnoreCase);
-					source = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
-					source = FontFamilyHelper.RemoveHashFamilyName(source);
 
-					if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					if (!TryLoadFromPath(style, source, out typeface))
 					{
-						typeof(FontHelper).Log().Debug($"Searching for font as asset [{source}]");
-					}
+						// The lookup used to be performed without the assets folder, even if its required to specify it
+						// with UWP. Keep this behavior for backward compatibility.
+						var legacySource = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
 
-					// We need to lookup assets manually, as assets are stored this way by android, but windows
-					// is case insensitive.
-					string actualAsset = AssetsHelper.FindAssetFile(source);
-					if (actualAsset != null)
-					{
-						typeface = Android.Graphics.Typeface.CreateFromAsset(Android.App.Application.Context.Assets, actualAsset);
-
-						if (style != typeface?.Style)
+						// The path for AndroidAssets is not encoded, unlike assets processed by the RetargetAssets tool.
+						if (!TryLoadFromPath(style, legacySource, out typeface, encodePath: false))
 						{
-							typeface = Typeface.Create(typeface, style);
+							throw new InvalidOperationException($"Unable to find [{fontFamily.Source}] from the application's assets.");
 						}
-					}
-					else
-					{
-						throw new InvalidOperationException($"Unable to find [{fontFamily.Source}] from the application's assets.");
 					}
 				}
 				else
@@ -111,6 +98,55 @@ namespace Windows.UI.Xaml
 
 				return null;
 			}
+		}
+
+		private static bool TryLoadFromPath(TypefaceStyle style, string source, out Typeface? typeface, bool encodePath = true)
+		{
+			source = FontFamilyHelper.RemoveHashFamilyName(source);
+
+			if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(FontHelper).Log().Debug($"Searching for font as asset [{source}]");
+			}
+
+			var encodedSource = encodePath
+				? AndroidResourceNameEncoder.EncodeFileSystemPath(source, prefix: "")
+				: source;
+
+			// We need to lookup assets manually, as assets are stored this way by android, but windows
+			// is case insensitive.
+			string actualAsset = AssetsHelper.FindAssetFile(encodedSource);
+			if (actualAsset != null)
+			{
+				typeface = Android.Graphics.Typeface.CreateFromAsset(Android.App.Application.Context.Assets, actualAsset);
+
+				if (typeface is not null)
+				{
+					if (style != typeface.Style)
+					{
+						typeface = Typeface.Create(typeface, style);
+					}
+
+					return true;
+				}
+				else
+				{
+					if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						typeof(FontHelper).Log().Debug($"Font [{source}] could not be created from asset [{actualAsset}]");
+					}
+				}
+			}
+			else
+			{
+				if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					typeof(FontHelper).Log().Debug($"Font [{source}] could not be found in app assets using [{encodedSource}]");
+				}
+			}
+
+			typeface = null;
+			return false;
 		}
 
 		private static FontFamily GetDefaultFontFamily(FontWeight fontWeight)
@@ -151,7 +187,7 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		public static double GetFontRatio()
 		{
-			return ViewHelper.FontScale / ViewHelper.Scale;	
+			return ViewHelper.FontScale / ViewHelper.Scale;
 		}
 	}
 }

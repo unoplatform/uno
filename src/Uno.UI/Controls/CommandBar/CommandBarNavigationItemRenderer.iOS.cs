@@ -107,7 +107,7 @@ namespace Uno.UI.Controls
 				navigationCommand.SetParent(element); // This ensures that Behaviors expecting this button to be in the logical tree work.
 				native.LeftBarButtonItem = navigationCommand.GetRenderer(() => new AppBarButtonRenderer(navigationCommand)).Native;
 
-				 // offset to align the icon with the default back button position
+				// offset to align the icon with the default back button position
 				native.LeftBarButtonItem.ImageInsets = new UIEdgeInsets(0, -8, 0, 0);
 			}
 			else
@@ -237,7 +237,7 @@ namespace Uno.UI.Controls
 						&& !_childSize.Height.IsNaN()
 						&& _childSize.Height != 0
 						&& _childSize.Width != 0
-						&& ( (Frame.Width != _childSize.Width && _childSize.Width < Frame.Width)
+						&& ((Frame.Width != _childSize.Width && _childSize.Width < Frame.Width)
 						|| (Frame.Height != _childSize.Height && _childSize.Height < Frame.Height)))
 					{
 						// Set the frame size to the child size so that the OS centers properly.

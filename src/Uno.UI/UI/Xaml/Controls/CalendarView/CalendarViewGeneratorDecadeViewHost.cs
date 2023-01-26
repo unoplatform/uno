@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 			//This code enables the focus visuals on the CalendarViewItems in the Decade Pane in the correct position.
 			{
 				Thickness focusMargin = new Thickness(
-					- 2.0, -2.0, -2.0, -2.0
+					-2.0, -2.0, -2.0, -2.0
 				);
 				spContainer.FocusVisualMargin = focusMargin;
 

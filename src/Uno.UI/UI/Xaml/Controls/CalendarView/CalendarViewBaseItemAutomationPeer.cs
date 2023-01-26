@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 				parent.GetActiveGeneratorHost(out host);
 
 				var calendarPanel = host.Panel;
-				if (calendarPanel is {})
+				if (calendarPanel is { })
 				{
 					DateTime date = default;
 					date = (owner as CalendarViewBaseItem).DateBase;

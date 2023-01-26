@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Uno.Extensions
@@ -113,14 +114,9 @@ namespace Uno.Extensions
 		/// <remarks>The stream will be disposed when calling this method.</remarks>
 		public static string ReadToEnd(this Stream stream)
 		{
-			string value;
-			using (var reader = new StreamReader(stream))
-			{
-				value = reader.ReadToEnd();
-			}
-			return value;
+			using var reader = new StreamReader(stream);
+			return reader.ReadToEnd();
 		}
-
 
 		/// <summary>
 		/// Reads the text container into the specified stream.
@@ -130,12 +126,32 @@ namespace Uno.Extensions
 		/// <remarks>The stream will be disposed when calling this method.</remarks>
 		public static string ReadToEnd(this Stream stream, Encoding encoding)
 		{
-			string value;
-			using (var reader = new StreamReader(stream, encoding))
-			{
-				value = reader.ReadToEnd();
-			}
-			return value;
+			using var reader = new StreamReader(stream, encoding);
+			return reader.ReadToEnd();
+		}
+
+		/// <summary>
+		/// Reads the text container into the specified stream.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns>The string using the default encoding.</returns>
+		/// <remarks>The stream will be disposed when calling this method.</remarks>
+		public static async Task<string> ReadToEndAsync(this Stream stream, CancellationToken ct)
+		{
+			using var reader = new StreamReader(stream);
+			return await reader.ReadToEndAsync();
+		}
+
+		/// <summary>
+		/// Reads the text container into the specified stream.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns>The string using the default encoding.</returns>
+		/// <remarks>The stream will be disposed when calling this method.</remarks>
+		public static async Task<string> ReadToEndAsync(this Stream stream, Encoding encoding, CancellationToken ct)
+		{
+			using var reader = new StreamReader(stream, encoding);
+			return await reader.ReadToEndAsync();
 		}
 
 		/// <summary>

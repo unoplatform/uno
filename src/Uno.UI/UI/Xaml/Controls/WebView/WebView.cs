@@ -78,8 +78,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		#region DocumentTitle
 #if __ANDROID__ || __IOS__ || __MACOS__
+		#region DocumentTitle
 		public string DocumentTitle
 		{
 			get { return (string)GetValue(DocumentTitleProperty); }
@@ -88,8 +88,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty DocumentTitleProperty { get; } =
 			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
-#endif
 		#endregion
+#endif
 
 		#region IsScrollEnabled
 		public bool IsScrollEnabled

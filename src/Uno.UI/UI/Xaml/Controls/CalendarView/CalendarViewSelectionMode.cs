@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum CalendarViewSelectionMode 
+	public enum CalendarViewSelectionMode
 	{
 		None,
 		Single,

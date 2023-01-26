@@ -33,9 +33,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 
 			var _ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => _ctx.ImgSource = "https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg");
 
-			imageBrush.ImageOpened += (s, e) => { 
+			imageBrush.ImageOpened += (s, e) =>
+			{
 				_ctx.ImgSource2 = "https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
-		   };
+			};
 		}
 	}
 

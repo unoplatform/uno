@@ -61,16 +61,17 @@ namespace Uno.UI.Extensions
 			var code = Interlocked.Increment(ref _permissionRequest);
 			var tcs = new TaskCompletionSource<BaseActivity.RequestPermissionsResultWithResultsEventArgs>();
 
-			void handler(object sender, BaseActivity.RequestPermissionsResultWithResultsEventArgs e) {
+			void handler(object sender, BaseActivity.RequestPermissionsResultWithResultsEventArgs e)
+			{
 
-				if(e.RequestCode == code)
+				if (e.RequestCode == code)
 				{
 					tcs.TrySetResult(e);
 				}
 			}
 
 			var current = await BaseActivity.GetCurrent(ct);
-			 
+
 			try
 			{
 				using (ct.Register(() => tcs.TrySetCanceled()))

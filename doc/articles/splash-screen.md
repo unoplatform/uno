@@ -69,7 +69,7 @@ This article covers how to add a splash screen to your application.
     > [!NOTE]
     > Regardless if you provide a single image or multiple images, you would always refer to this image as `SplashScreen.png`.
 
-1. Add these images under the `Assets\` folder of the `.Shared` project, right-click on each image, go to `Properties` and set their build action as `Content`.
+1. Add these images under the `Assets\` folder of the `MyApp` Class Library project, right-click on each image, go to `Properties` and set their build action as `Content`.
 
 
 ## Step 2 - UWP

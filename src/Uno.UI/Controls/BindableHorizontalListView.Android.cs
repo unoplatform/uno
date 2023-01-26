@@ -24,16 +24,16 @@ namespace Uno.UI.Controls
 		private bool _scrollToIndexChanged;
 
 		public BindableHorizontalListView(Android.Content.Context context, IAttributeSet attrs)
-            : this(context, attrs, new BindableListAdapter(context))
-        {
+			: this(context, attrs, new BindableListAdapter(context))
+		{
 
-        }
+		}
 
 		public BindableHorizontalListView(Android.Content.Context context, IAttributeSet attrs, BindableListAdapter adapter)
-            : base(context, attrs)
-        {
-            Adapter = adapter;
-            SetupItemClickListeners();
+			: base(context, attrs)
+		{
+			Adapter = adapter;
+			SetupItemClickListeners();
 		}
 
 		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
@@ -50,7 +50,8 @@ namespace Uno.UI.Controls
 		public IEnumerable ItemsSource
 		{
 			get { return BindableAdapter.ItemsSource; }
-			set {
+			set
+			{
 				BindableAdapter.ItemsSource = value;
 			}
 		}
@@ -74,25 +75,25 @@ namespace Uno.UI.Controls
 			}
 		}
 
-        private ICommand _itemClickCommand;
-        public ICommand ItemClickCommand
-        {
-            get
-            {
-                return _itemClickCommand;
-            }
-            set
-            {
-                _itemClickCommand = value;
+		private ICommand _itemClickCommand;
+		public ICommand ItemClickCommand
+		{
+			get
+			{
+				return _itemClickCommand;
+			}
+			set
+			{
+				_itemClickCommand = value;
 
-                if (BindableAdapter != null)
-                {
-                    BindableAdapter.ItemClickCommand = value;
-                }
-            }
-        }
+				if (BindableAdapter != null)
+				{
+					BindableAdapter.ItemClickCommand = value;
+				}
+			}
+		}
 
-        public ICommand ItemLongClickCommand { get; set; }
+		public ICommand ItemLongClickCommand { get; set; }
 
 		protected BindableListAdapter BindableAdapter
 		{
@@ -131,5 +132,5 @@ namespace Uno.UI.Controls
 				SetSelection(_scrollToIndex);
 			}
 		}
-    }
+	}
 }

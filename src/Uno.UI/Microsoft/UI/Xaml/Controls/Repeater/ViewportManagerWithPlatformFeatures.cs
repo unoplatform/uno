@@ -571,7 +571,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				REPEATER_TRACE_INFO("%ls: \tViewport is invalid. visible window cleared. \n", GetLayoutId());
 				// We got cleared.
-				m_visibleWindow =  default;
+				m_visibleWindow = default;
 			}
 			else
 			{

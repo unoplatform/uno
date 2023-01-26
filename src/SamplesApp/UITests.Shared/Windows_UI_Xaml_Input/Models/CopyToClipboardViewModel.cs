@@ -21,7 +21,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 		public string Text
 		{
 			get => _text;
-			set {
+			set
+			{
 				_text = value;
 				RaisePropertyChanged();
 			}

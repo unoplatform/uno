@@ -15,6 +15,6 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 		private void ShowHideButton_Click(object sender, RoutedEventArgs e)
 		{
 			MyTextBox.Visibility = MyTextBox.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-        }
-    }
+		}
+	}
 }

@@ -69,7 +69,7 @@ namespace Uno.UI.Controls
 				case { } opaqueColor when opaqueColor.A == byte.MaxValue:
 					if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
 					{
-						
+
 						appearance.ConfigureWithOpaqueBackground();
 						appearance.BackgroundColor = opaqueColor;
 					}
@@ -163,7 +163,7 @@ namespace Uno.UI.Controls
 				{
 					Native.TitleTextAttributes = null;
 				}
-				
+
 			}
 
 			// CommandBarExtensions.BackButtonForeground

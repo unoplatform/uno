@@ -228,7 +228,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				WeakReference wrWeakThis = new WeakReference(this);
 
-				pCurrentWindow.Activated += (s, pArgs) => {
+				pCurrentWindow.Activated += (s, pArgs) =>
+				{
 
 					DatePicker spThis;
 
@@ -1087,15 +1088,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception /*e*/)
 			{
-				if (property == CalendarIdentifierProperty) {
+				if (property == CalendarIdentifierProperty)
+				{
 					CalendarIdentifier = strOldValue;
 				}
-				else if (property == DayFormatProperty) {
+				else if (property == DayFormatProperty)
+				{
 					DayFormat = strOldValue;
 				}
 				else if (property == MonthFormatProperty)
 					MonthFormat = strOldValue;
-				else if (property == YearFormatProperty) {
+				else if (property == YearFormatProperty)
+				{
 					YearFormat = strOldValue;
 				}
 			}
@@ -1372,7 +1376,8 @@ namespace Windows.UI.Xaml.Controls
 
 					if (args.Property == DayVisibleProperty
 					|| args.Property == MonthVisibleProperty
-					|| args.Property == YearVisibleProperty) {
+					|| args.Property == YearVisibleProperty)
+					{
 						UpdateOrderAndLayout();
 					}
 

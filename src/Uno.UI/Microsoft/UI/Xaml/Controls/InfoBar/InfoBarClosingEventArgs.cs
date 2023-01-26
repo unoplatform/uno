@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides data for the InfoBar.Closing event.
 	/// </summary>
 	public partial class InfoBarClosingEventArgs
-    {
+	{
 		internal InfoBarClosingEventArgs(InfoBarCloseReason reason) =>
 			Reason = reason;
 

@@ -20,7 +20,7 @@ internal record TestCase
 	{
 		var result = $"({Parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
 
-		if (Pointer is {} pt)
+		if (Pointer is { } pt)
 		{
 			result += $" [{pt}]";
 		}

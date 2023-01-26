@@ -27,9 +27,9 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 
 			DataContext = _context = new Grid_DataBound_ColumnRow_Definitions_Context();
 
-			while(!ct.IsCancellationRequested)
+			while (!ct.IsCancellationRequested)
 			{
-				if(!toggle)
+				if (!toggle)
 				{
 					_context.Value1 = 42;
 					_context.Value2 = 12;
@@ -62,7 +62,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for Value1.  This enables animation, styling, binding, etc...
-		public static DependencyProperty Value1Property { get ; } =
+		public static DependencyProperty Value1Property { get; } =
 			DependencyProperty.Register("Value1", typeof(int), typeof(Grid_DataBound_ColumnRow_Definitions_Context), new PropertyMetadata(0));
 
 		#endregion
@@ -74,7 +74,7 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 		}
 
 		// Using a DependencyProperty as the backing store for Value2.  This enables animation, styling, binding, etc...
-		public static DependencyProperty Value2Property { get ; } =
+		public static DependencyProperty Value2Property { get; } =
 			DependencyProperty.Register("Value2", typeof(int), typeof(Grid_DataBound_ColumnRow_Definitions_Context), new PropertyMetadata(0));
 
 	}

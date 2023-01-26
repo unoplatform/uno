@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IInvokeProvider
+	public partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IInvokeProvider
 	{
 		public HyperlinkButtonAutomationPeer(HyperlinkButton owner) : base(owner)
 		{

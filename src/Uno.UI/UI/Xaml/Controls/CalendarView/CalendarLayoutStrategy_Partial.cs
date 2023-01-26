@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			Rect windowConstraint,
 			out Rect pReturnValue) /*override*/
 		{
-			pReturnValue =  default;
+			pReturnValue = default;
 			pReturnValue = _layoutStrategyImpl.GetElementBounds(
 				elementType,
 				elementIndex,

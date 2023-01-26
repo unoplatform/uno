@@ -34,71 +34,83 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-		protected override void Dispose (bool disposing)
+		protected override void Dispose(bool disposing)
 		{
-			base.Dispose (disposing);
-			if (!_disposed) {
+			base.Dispose(disposing);
+			if (!_disposed)
+			{
 				_disposed = true;
-				RemoveObservers ();
+				RemoveObservers();
 			}
 		}
 
-		public override void MovedToSuperview ()
+		public override void MovedToSuperview()
 		{
-			base.MovedToSuperview ();
+			base.MovedToSuperview();
 
-			if (Superview != null) {
-				AddObservers ();
-			} else {
-				RemoveObservers ();
+			if (Superview != null)
+			{
+				AddObservers();
+			}
+			else
+			{
+				RemoveObservers();
 			}
 		}
 
-		void AddObservers ()
+		void AddObservers()
 		{
-			RemoveObservers ();
-			RotateAccordingToStatusBarOrientationAndSupportedOrientations ();
+			RemoveObservers();
+			RotateAccordingToStatusBarOrientationAndSupportedOrientations();
 
-			Action<NSNotification> action = delegate {
-				RotateAccordingToStatusBarOrientationAndSupportedOrientations ();
+			Action<NSNotification> action = delegate
+			{
+				RotateAccordingToStatusBarOrientationAndSupportedOrientations();
 			};
 
-			_didChangeStatusBarOrientationObserver = NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarOrientationNotification, action);
-			_didChangeStatusBarFrameObserver = NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarFrameNotification, action);
+			_didChangeStatusBarOrientationObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidChangeStatusBarOrientationNotification, action);
+			_didChangeStatusBarFrameObserver = NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidChangeStatusBarFrameNotification, action);
 		}
 
-		void RemoveObservers ()
+		void RemoveObservers()
 		{
-			if (_didChangeStatusBarOrientationObserver != null) {
-				NSNotificationCenter.DefaultCenter.RemoveObserver (_didChangeStatusBarOrientationObserver);
+			if (_didChangeStatusBarOrientationObserver != null)
+			{
+				NSNotificationCenter.DefaultCenter.RemoveObserver(_didChangeStatusBarOrientationObserver);
 				_didChangeStatusBarOrientationObserver = null;
 			}
 
-			if (_didChangeStatusBarFrameObserver != null) {
-				NSNotificationCenter.DefaultCenter.RemoveObserver (_didChangeStatusBarFrameObserver);
+			if (_didChangeStatusBarFrameObserver != null)
+			{
+				NSNotificationCenter.DefaultCenter.RemoveObserver(_didChangeStatusBarFrameObserver);
 				_didChangeStatusBarFrameObserver = null;
 			}
 		}
 
-		void RotateAccordingToStatusBarOrientationAndSupportedOrientations ()
+		void RotateAccordingToStatusBarOrientationAndSupportedOrientations()
 		{
-			var angle = UIInterfaceOrientationAngleOfOrientation (UIApplication.SharedApplication.StatusBarOrientation);
-			var transform = CGAffineTransform.MakeRotation (angle);
-			if (!Transform.Equals (transform)) {
+			var angle = UIInterfaceOrientationAngleOfOrientation(UIApplication.SharedApplication.StatusBarOrientation);
+			var transform = CGAffineTransform.MakeRotation(angle);
+			if (!Transform.Equals(transform))
+			{
 				Transform = transform;
 			}
 
 			var frame = WindowBounds;
-			if (!Frame.Equals (frame)) {
+			if (!Frame.Equals(frame))
+			{
 				Frame = frame;
 			}
 		}
 
 #if false
-		static nfloat StatusBarHeight {
-			get {
+		static nfloat StatusBarHeight
+		{
+			get
+			{
 				var orientation = UIApplication.SharedApplication.StatusBarOrientation;
-				if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight) {
+				if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight)
+				{
 					return UIApplication.SharedApplication.StatusBarFrame.Width;
 				}
 				return UIApplication.SharedApplication.StatusBarFrame.Height;
@@ -106,8 +118,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-		public CGRect WindowBounds {
-			get {
+		public CGRect WindowBounds
+		{
+			get
+			{
 				var orientation = UIApplication.SharedApplication.StatusBarOrientation;
 				const float statusBarHeight = 0f; // StatusBarHeight;
 
@@ -120,22 +134,23 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		static float UIInterfaceOrientationAngleOfOrientation (UIInterfaceOrientation orientation)
+		static float UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orientation)
 		{
 			float angle = 0f;
 
-			switch (orientation) {
-			case UIInterfaceOrientation.Portrait:
-				break;
-			case UIInterfaceOrientation.PortraitUpsideDown:
-				angle = (float)Math.PI;
-				break;
-			case UIInterfaceOrientation.LandscapeLeft:
-				angle = -(float)Math.PI * 0.5f;
-				break;
-			case UIInterfaceOrientation.LandscapeRight:
-				angle = (float)Math.PI * 0.5f;
-				break;
+			switch (orientation)
+			{
+				case UIInterfaceOrientation.Portrait:
+					break;
+				case UIInterfaceOrientation.PortraitUpsideDown:
+					angle = (float)Math.PI;
+					break;
+				case UIInterfaceOrientation.LandscapeLeft:
+					angle = -(float)Math.PI * 0.5f;
+					break;
+				case UIInterfaceOrientation.LandscapeRight:
+					angle = (float)Math.PI * 0.5f;
+					break;
 			}
 
 			return angle;

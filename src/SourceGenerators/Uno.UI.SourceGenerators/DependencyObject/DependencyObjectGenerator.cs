@@ -18,8 +18,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	[Generator]
 	public partial class DependencyObjectGenerator : ISourceGenerator
 	{
-		internal static bool IsUnitTest { get; set; }
-
 		public void Initialize(GeneratorInitializationContext context)
 		{
 			// Debugger.Launch();
@@ -29,7 +27,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (IsUnitTest || PlatformHelper.IsValidPlatform(context))
+			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
 				visitor.Visit(context.Compilation.SourceModule);

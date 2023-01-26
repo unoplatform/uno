@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewList : ListView
+	public partial class NavigationViewList : ListView
 	{
 		NavigationViewListPosition m_navigationViewListPosition = NavigationViewListPosition.LeftNav;
 		bool m_showFocusVisual = true;
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 			return m_lastItemCalledInIsItemItsOwnContainerOverride;
 		}
 
-		void PropagateChangeToAllContainers<T>(Action<T> function) where T:class
+		void PropagateChangeToAllContainers<T>(Action<T> function) where T : class
 		{
 			var items = Items;
 			if (items != null)

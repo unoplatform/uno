@@ -630,9 +630,9 @@ namespace Uno.UI.Controls
 				if (!manager.HasConfirmedClose)
 				{
 					if (!manager.RequestAppClose())
-                    {
+					{
 						return false;
-                    }
+					}
 				}
 
 				// Closing should continue, perform suspension.

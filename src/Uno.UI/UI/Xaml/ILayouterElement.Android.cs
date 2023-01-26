@@ -29,7 +29,7 @@ internal partial interface ILayouterElement
 			if (StretchAffectsMeasure)
 			{
 				if (HorizontalAlignment == HorizontalAlignment.Stretch &&
-				    !double.IsPositiveInfinity(availableSize.Width))
+					!double.IsPositiveInfinity(availableSize.Width))
 				{
 					measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
 				}

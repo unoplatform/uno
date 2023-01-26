@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void EnsureNotLocked()
 		{
-			if(_isLocked > 0)
+			if (_isLocked > 0)
 			{
 				throw new InvalidOperationException("Collection is locked.");
 			}
@@ -171,10 +171,10 @@ namespace Windows.UI.Xaml
 			RaiseVectorChanged(CollectionChange.Reset, 0);
 		}
 
-		public bool Contains(T item) 
+		public bool Contains(T item)
 			=> _list.Contains(item);
 
-		public void CopyTo(T[] array, int arrayIndex) 
+		public void CopyTo(T[] array, int arrayIndex)
 			=> _list.CopyTo(array, arrayIndex);
 
 		public bool Remove(T item)
@@ -195,13 +195,13 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() 
+		public IEnumerator<T> GetEnumerator()
 			=> _list.GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator() 
+		IEnumerator IEnumerable.GetEnumerator()
 			=> _list.GetEnumerator();
 
-		private void RaiseVectorChanged(CollectionChange change, int index) 
+		private void RaiseVectorChanged(CollectionChange change, int index)
 			=> VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
 
 		private protected virtual void OnAdded(T d)
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml
 			// Because parent propagation doesn't currently support all cases, 
 			// we can't assume that the DependencyObjectCollection will have a parent.
 			// To preserve DataContext propagation, we fallback to self if no parent is set.
-			d.SetParent(this.GetParent() ?? this); 
+			d.SetParent(this.GetParent() ?? this);
 		}
 
 		private protected virtual void OnRemoved(T d)

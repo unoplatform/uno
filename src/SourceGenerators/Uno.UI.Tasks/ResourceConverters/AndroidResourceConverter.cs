@@ -9,17 +9,12 @@ using System.Text.RegularExpressions;
 using Uno;
 using Uno.UI;
 
-#if HAS_UNO
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-#endif
-
 namespace Windows.ApplicationModel.Resources.Core
 {
 	/// <summary>
 	/// Converts a resource candidate to an Android resource path.
 	/// </summary>
-	internal class AndroidResourceConverter
+	internal static class AndroidResourceConverter
 	{
 		public static string? Convert(ResourceCandidate resourceCandidate, string defaultLanguage)
 		{
@@ -31,17 +26,11 @@ namespace Windows.ApplicationModel.Resources.Core
 				var dpi = GetDpi(resourceCandidate.GetQualifierValue("scale"));
 				var theme = GetTheme(resourceCandidate.GetQualifierValue("theme"));
 				var fileName = AndroidResourceNameEncoder.EncodeDrawablePath(resourceCandidate.LogicalPath);
-				
+
 				return Path.Combine($"drawable{language}{theme}{dpi}", fileName);
 			}
-#if HAS_UNO
-			catch (Exception ex)
-			{
-				ex.Log().Info($"Couldn't convert {resourceCandidate.ValueAsString} to an Android resource path.", ex);
-#else
 			catch (Exception)
 			{
-#endif
 				return null;
 			}
 		}
@@ -89,7 +78,7 @@ namespace Windows.ApplicationModel.Resources.Core
 				default: throw new NotSupportedException($"Scale {scale} is not supported on Android.");
 			}
 		}
-		
+
 		private static string GetTheme(string theme)
 		{
 			switch (theme)

@@ -35,7 +35,7 @@ public partial class NativePopupBase : Primitives.Popup
 
 	private void OnBasePropertyChanged(DependencyObject sender, DependencyProperty dp)
 	{
-		if(_forwardedProperties.TryGetValue(dp, out var localProperty))
+		if (_forwardedProperties.TryGetValue(dp, out var localProperty))
 		{
 			SetValue(localProperty, GetValue(dp));
 		}

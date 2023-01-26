@@ -198,7 +198,7 @@ public static partial class ViewExtensions
 	// note: methods for retrieving children/ancestors exist with varying signatures.
 	// re-implementing them with unified & more inclusive signature for convenience.
 #if __IOS__ || __MACOS__
-	private static IEnumerable<_View> EnumerateAncestors(this _View? o)
+	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
 		while (o.Superview is _View parent)

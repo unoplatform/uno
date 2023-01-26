@@ -73,6 +73,12 @@ namespace Windows.UI.Xaml
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied;
+
+		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
+
+		private string _baseUriFromParser;
+		private Uri _baseUri;
+
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 
 		/// <summary>
@@ -177,6 +183,18 @@ namespace Windows.UI.Xaml
 #endif
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
+		public global::System.Uri BaseUri
+		{
+			get
+			{
+				if (_baseUri is null)
+				{
+					_baseUri = _baseUriFromParser is null ? DefaultBaseUri : new Uri(_baseUriFromParser);
+				}
+
+				return _baseUri;
+			}
+		}
 
 #if UNO_HAS_MANAGED_POINTERS || __WASM__
 		/// <summary>

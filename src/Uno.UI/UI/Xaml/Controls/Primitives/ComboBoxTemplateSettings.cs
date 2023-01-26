@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public  partial class ComboBoxTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class ComboBoxTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		[global::Uno.NotImplemented]
-		public  double DropDownClosedHeight
+		public double DropDownClosedHeight
 		{
 			get
 			{
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		[global::Uno.NotImplemented]
-		public  double DropDownOffset
+		public double DropDownOffset
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		[global::Uno.NotImplemented]
-		public  double DropDownOpenedHeight
+		public double DropDownOpenedHeight
 		{
 			get
 			{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection SelectedItemDirection
+		public global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection SelectedItemDirection
 		{
 			get
 			{
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		[global::Uno.NotImplemented]
-		public  double DropDownContentMinWidth
+		public double DropDownContentMinWidth
 		{
 			get
 			{

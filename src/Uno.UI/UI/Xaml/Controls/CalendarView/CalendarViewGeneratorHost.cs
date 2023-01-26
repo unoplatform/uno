@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarViewGeneratorHost spThis = this;
 
-				return new TrackerCollection<DependencyObject>(){spThis};
+				return new TrackerCollection<DependencyObject>() { spThis };
 			}
 		}
 
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 				bool isToday = false;
 				int result = 0;
 
-				date = (DateTime) pItem;
+				date = (DateTime)pItem;
 
 				result = CompareDate(date, Owner.Today);
 				if (result == 0)
@@ -245,13 +245,13 @@ namespace Windows.UI.Xaml.Controls
 			DetachScrollViewerFocusEngagedEvent();
 			DetachVisibleIndicesUpdatedEvent();
 
-			if (m_tpPanel is {} panel)
+			if (m_tpPanel is { } panel)
 			{
 				(panel as CalendarPanel).Owner = null;
 				(panel as CalendarPanel).SetSnapPointFilterFunction(null);
 			}
 
-			if (m_tpScrollViewer is {} scrollviewer)
+			if (m_tpScrollViewer is { } scrollviewer)
 			{
 				(scrollviewer as ScrollViewer).SetDirectManipulationStateChangeHandler(null);
 			}
@@ -402,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 						AddUnits(diffInUnit);
 						break;
 					}
-					catch (Exception){}
+					catch (Exception) { }
 
 #if DEBUG
 					if (retryCount++ > maxReboundCount)
@@ -654,7 +654,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//if (pUnit)
 			//{
-				pUnit = lastUnit;
+			pUnit = lastUnit;
 			//}
 		}
 
@@ -693,7 +693,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void AttachVisibleIndicesUpdatedEvent()
 		{
-			if (m_tpPanel is {})
+			if (m_tpPanel is { })
 			{
 				m_epVisibleIndicesUpdatedHandler ??= new VisibleIndicesUpdatedEventCallback((object pSender, object pArgs) =>
 				{
@@ -708,7 +708,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void DetachVisibleIndicesUpdatedEvent()
 		{
-			if (m_epVisibleIndicesUpdatedHandler is {} && m_tpPanel is {})
+			if (m_epVisibleIndicesUpdatedHandler is { } && m_tpPanel is { })
 			{
 				m_tpPanel.VisibleIndicesUpdated -= m_epVisibleIndicesUpdatedHandler;
 			}
@@ -733,7 +733,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void DetachScrollViewerFocusEngagedEvent()
 		{
-			if (m_epScrollViewerFocusEngagedEventHandler is {} && m_tpScrollViewer is {})
+			if (m_epScrollViewerFocusEngagedEventHandler is { } && m_tpScrollViewer is { })
 			{
 				m_tpScrollViewer.FocusEngaged -= m_epScrollViewerFocusEngagedEventHandler;
 			}
@@ -744,12 +744,12 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				var pPanel = value;
-				if (pPanel is {})
+				if (pPanel is { })
 				{
 					m_tpPanel = pPanel;
 					(m_tpPanel as CalendarPanel).Owner = this;
 				}
-				else if (m_tpPanel is {})
+				else if (m_tpPanel is { })
 				{
 					(m_tpPanel as CalendarPanel).Owner = null;
 					m_tpPanel = null;
@@ -768,7 +768,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				var pScrollViewer = value;
-				if (pScrollViewer is {})
+				if (pScrollViewer is { })
 				{
 					m_tpScrollViewer = pScrollViewer;
 				}
@@ -792,7 +792,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				global::System.Diagnostics.Debug.Assert(m_pOwnerNoRef is {});
+				global::System.Diagnostics.Debug.Assert(m_pOwnerNoRef is { });
 				return m_pOwnerNoRef;
 			}
 			set => m_pOwnerNoRef = value;

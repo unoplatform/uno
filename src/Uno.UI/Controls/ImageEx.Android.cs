@@ -10,6 +10,6 @@ namespace Uno.UI.Controls
 {
 	public partial class ImageEx
 	{
-		
+
 	}
 }

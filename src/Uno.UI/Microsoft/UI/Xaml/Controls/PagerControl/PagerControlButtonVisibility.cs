@@ -3,9 +3,9 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 	public enum PagerControlButtonVisibility
-    {
-        Visible,
+	{
+		Visible,
 		HiddenOnEdge,
 		Hidden,
-    }
+	}
 }

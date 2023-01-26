@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 			UIElement pChildNoRef = GetFirstChildNoAddRef();
 
 			//If we have a child
-			if (pChildNoRef is {})
+			if (pChildNoRef is { })
 			{
 				pChildNoRef.Measure(availableSize);
 				// TODO UNO
@@ -311,7 +311,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UIElement pChildNoRef = GetFirstChildNoAddRef();
 
-			if (pChildNoRef is {})
+			if (pChildNoRef is { })
 			{
 				pChildNoRef.Arrange(finalBounds);
 			}
@@ -368,7 +368,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool IsLabel(TextBlock pTextBlock)
 		{
-			global::System.Diagnostics.Debug.Assert(pTextBlock is {} && (pTextBlock == m_pLabelTextBlock || pTextBlock == m_pMainTextBlock), "the textblock should be main textblock or label textblock.");
+			global::System.Diagnostics.Debug.Assert(pTextBlock is { } && (pTextBlock == m_pLabelTextBlock || pTextBlock == m_pMainTextBlock), "the textblock should be main textblock or label textblock.");
 
 			return pTextBlock == m_pLabelTextBlock;
 		}
@@ -546,7 +546,7 @@ namespace Windows.UI.Xaml.Controls
 			Thickness thickness = GetItemBorderThickness();
 			Brush pBrush = GetItemBorderBrush(false /* forFocus */);
 
-			if (pBrush is {} && thickness.Bottom != 0 && thickness.Top != 0 && thickness.Left != 0 && thickness.Right != 0)
+			if (pBrush is { } && thickness.Bottom != 0 && thickness.Top != 0 && thickness.Left != 0 && thickness.Right != 0)
 			{
 				DrawBorder(pContentRenderer, pBrush, bounds, thickness /* ninegrid */, true /* isHollow */);
 			}
@@ -621,7 +621,7 @@ namespace Windows.UI.Xaml.Controls
 		)
 		{
 			Brush pBrush = GetItemBackgroundBrush();
-			if (pBrush is {})
+			if (pBrush is { })
 			{
 				BrushParams emptyBrushParams = default;
 				pContentRenderer.GeneralImageRenderContent(
@@ -650,7 +650,7 @@ namespace Windows.UI.Xaml.Controls
 			//global::System.Diagnostics.Debug.Assert(cVal.GetType() == ValueType.valueObject);
 			var pBrush = (Brush)(cVal);
 
-			if (pBrush is {})
+			if (pBrush is { })
 			{
 				BrushParams emptyBrushParams = default;
 				pContentRenderer.GeneralImageRenderContent(
@@ -683,7 +683,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void SetDensityColors(
 			IIterable<Color> pColors)
 		{
-			if (pColors is {})
+			if (pColors is { })
 			{
 				IIterator<Color> spIterator;
 				uint index = 0;
@@ -807,7 +807,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateTextBlocksForeground()
 		{
-			if (m_pMainTextBlock is {})
+			if (m_pMainTextBlock is { })
 			{
 				UpdateTextBlockForeground(m_pMainTextBlock);
 			}
@@ -1032,7 +1032,7 @@ namespace Windows.UI.Xaml.Controls
 			//}
 		}
 
-		private Thickness GetItemBorderThickness()
+		internal Thickness GetItemBorderThickness()
 		{
 			var pOwner = GetOwner();
 			if (pOwner is { })
@@ -1365,7 +1365,7 @@ namespace Windows.UI.Xaml.Controls
 			pProperties = default;
 			var pOwner = GetOwner();
 
-			if (pOwner is {})
+			if (pOwner is { })
 			{
 				pProperties.fontSize = isLabel ? pOwner.m_firstOfMonthLabelFontSize : pOwner.m_dayItemFontSize;
 				pProperties.fontStyle = isLabel ? pOwner.m_firstOfMonthLabelFontStyle : pOwner.m_dayItemFontStyle;

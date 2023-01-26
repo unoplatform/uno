@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private CAShapeLayer CreateLayer(CGPath path, FillRule fillRule)
 		{
-			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule()};
+			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule() };
 
 			SetFillAndStroke(pathLayer);
 

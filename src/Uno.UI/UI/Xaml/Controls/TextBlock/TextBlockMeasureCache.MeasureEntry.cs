@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Uno;
@@ -29,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 				var currentAvailableHeight = availableSize.Height;
 
 				// Exact match
-				if(_sizes.TryGetValue(CachedTuple.Create(currentAvailableWidth, currentAvailableHeight), out var sizeEntry))
+				if (_sizes.TryGetValue(CachedTuple.Create(currentAvailableWidth, currentAvailableHeight), out var sizeEntry))
 				{
 					return sizeEntry.MeasuredSize;
 				}
@@ -122,7 +124,8 @@ namespace Windows.UI.Xaml.Controls
 
 			private void MoveToLast(CachedSize key, MeasureSizeEntry value)
 			{
-				if (_queue.Count == 0 || Equals(_queue.Last.Value, key))
+				if (_queue.Count == 0
+					|| (_queue.Last is not null && Equals(_queue.Last.Value, key)))
 				{
 					return;
 				}
@@ -142,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 
 			private void Scavenge()
 			{
-				if (_queue.Count < MaxMeasureSizeKeyEntries)
+				if (_queue.Count < MaxMeasureSizeKeyEntries || _queue.First is null)
 				{
 					return;
 				}

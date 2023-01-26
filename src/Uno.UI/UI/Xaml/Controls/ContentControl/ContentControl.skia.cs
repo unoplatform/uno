@@ -12,8 +12,8 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class ContentControl
-    {
+	public partial class ContentControl
+	{
 		partial void RegisterContentTemplateRoot()
 		{
 			AddChild(ContentTemplateRoot);

@@ -125,9 +125,16 @@ internal partial class PopupPanel : Panel
 		}
 		else if (Popup.CustomLayouter == null)
 		{
-			// TODO: For now, the layouting logic for DatePickerFlyout does not correctly work
+			// TODO: For now, the layouting logic for managed DatePickerFlyout does not correctly work
 			// against the placement target approach.
-			if (Popup.AssociatedFlyout is not DatePickerFlyout &&
+			var isFlyoutManagedDatePicker =
+				Popup.AssociatedFlyout is DatePickerFlyout
+#if __ANDROID__ || __IOS__
+				&& Popup.AssociatedFlyout is not NativeDatePickerFlyout
+#endif
+				;
+
+			if (!isFlyoutManagedDatePicker &&
 				Popup.PlacementTarget is not null
 #if __ANDROID__ || __IOS__
 				|| NativeAnchor is not null
@@ -136,7 +143,7 @@ internal partial class PopupPanel : Panel
 			{
 				return PlacementArrangeOverride(Popup, finalSize);
 			}
-			
+
 			// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
 			// Note: we do not prevent overflow of the popup on any side as UWP does not!
 			//		 (And actually it also lets the view appear out of the window ...)

@@ -46,7 +46,7 @@ namespace UITests.Shared.Windows_Devices
 
 			public HingeAngleSensorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 			{
-				
+
 			}
 
 			public async Task InitializeAsync()

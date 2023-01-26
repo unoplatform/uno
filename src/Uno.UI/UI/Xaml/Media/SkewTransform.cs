@@ -16,8 +16,8 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal static Matrix3x2 GetMatrix(double centerX, double centerY, double angleXDegree, double angleYDegree)
 		{
-			var angleX = (float) MathEx.ToRadians(angleXDegree);
-			var angleY = (float) MathEx.ToRadians(angleYDegree);
+			var angleX = (float)MathEx.ToRadians(angleXDegree);
+			var angleY = (float)MathEx.ToRadians(angleYDegree);
 			var centerPoint = new Vector2((float)centerX, (float)centerY);
 
 			return Matrix3x2.CreateSkew(angleX, angleY, centerPoint);
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterYProperty, value);
 		}
 
-		public static DependencyProperty CenterYProperty { get ; } =
+		public static DependencyProperty CenterYProperty { get; } =
 			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double CenterX
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(CenterXProperty, value);
 		}
 
-		public static DependencyProperty CenterXProperty { get ; } =
+		public static DependencyProperty CenterXProperty { get; } =
 			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 		public double AngleX
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleXProperty, value);
 		}
 
-		public static DependencyProperty AngleXProperty { get ; } =
+		public static DependencyProperty AngleXProperty { get; } =
 			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 
 
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 			set => this.SetValue(AngleYProperty, value);
 		}
 
-		public static DependencyProperty AngleYProperty { get ; } =
+		public static DependencyProperty AngleYProperty { get; } =
 			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
 	}
 }

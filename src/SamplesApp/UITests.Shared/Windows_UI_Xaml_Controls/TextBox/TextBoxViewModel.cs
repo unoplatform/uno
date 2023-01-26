@@ -70,7 +70,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		private void OnToggleHeader()
 		{
-			if(Header == null)
+			if (Header == null)
 			{
 				Header = HeaderText;
 				Placeholder = HeaderVisible;

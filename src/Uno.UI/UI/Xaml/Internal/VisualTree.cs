@@ -184,9 +184,9 @@ namespace Uno.UI.Xaml.Core
 			//EnsureVisualDiagnosticsRoot();
 			//EnsureXamlIslandRootCollection();
 			//EnsureConnectedAnimationRoot();
-			#if !__MACOS__
+#if !__MACOS__
 			EnsurePopupRoot();
-			#endif
+#endif
 
 			//TODO Uno specific: We require some additional layers on top
 			EnsureFocusVisualRoot();

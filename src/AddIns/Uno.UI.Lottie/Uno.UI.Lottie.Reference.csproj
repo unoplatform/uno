@@ -12,7 +12,6 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);Uno0001</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
 		<AssemblyName>Uno.UI.Lottie</AssemblyName>

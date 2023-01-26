@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		public double HorizontalChange { get; }
-		
+
 		public double VerticalChange { get; }
 
 		/// <summary>

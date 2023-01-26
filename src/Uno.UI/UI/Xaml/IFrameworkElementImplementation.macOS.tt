@@ -974,9 +974,10 @@ namespace <#= mixin.NamespaceName #>
 #endif
 		}
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
 		public Uri BaseUri { get; internal set; } = _defaultUri;
-
+#endif
 
 		/// <summary>
 		/// Sets the specified dependency property value using the format "name|value"

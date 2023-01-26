@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public partial class RenderTargetBitmap: IDisposable
+	public partial class RenderTargetBitmap : IDisposable
 	{
 #if !NOT_IMPLEMENTED
 		private static void Swap(ref byte a, ref byte b)
@@ -139,11 +139,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					return Task.FromResult<IBuffer>(new Buffer(Array.Empty<byte>()));
 				}
-				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0,_bufferSize)));
+				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0, _bufferSize)));
 			});
 
 #if NOT_IMPLEMENTED
-		private (int ByteCount,int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
+		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 

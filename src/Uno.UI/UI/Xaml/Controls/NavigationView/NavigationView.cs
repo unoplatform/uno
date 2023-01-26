@@ -329,7 +329,7 @@ namespace Windows.UI.Xaml.Controls
 			if (GetTemplateChild(c_navViewBackButtonToolTip) is ToolTip backButtonToolTip)
 			{
 				string navigationBackButtonToolTip = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NavigationBackButtonToolTip);
-				backButtonToolTip.Content =  navigationBackButtonToolTip;
+				backButtonToolTip.Content = navigationBackButtonToolTip;
 			}
 
 			if (GetTemplateChild(c_buttonHolderGrid) is Grid buttonHolderGrid)
@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var settingsItem = GetTemplateChild(settingsName) as NavigationViewItem;
 			if (settingsItem != null && settingsItem != m_settingsItem)
-			 {
+			{
 				// If the old settings item is selected, move the selection to the new one.
 				var selectedItem = SelectedItem;
 				bool shouldSelectSetting = selectedItem != null && IsSettingsItem(selectedItem);
@@ -1027,7 +1027,7 @@ namespace Windows.UI.Xaml.Controls
 							OnAnimationComplete(sender, args);
 						};
 #else
-						OnAnimationComplete(null, null);
+					OnAnimationComplete(null, null);
 #endif
 				}
 				else
@@ -1508,22 +1508,22 @@ namespace Windows.UI.Xaml.Controls
 
 				switch (visualStateDisplayMode)
 				{
-				case NavigationViewVisualStateDisplayMode.MinimalWithBackButton:
-					visualStateName = "MinimalWithBackButton";
-					splitViewDisplayMode = SplitViewDisplayMode.Overlay;
-					break;
-				case NavigationViewVisualStateDisplayMode.Minimal:
-					visualStateName = visualStateNameMinimal;
-					splitViewDisplayMode = SplitViewDisplayMode.Overlay;
-					break;
-				case NavigationViewVisualStateDisplayMode.Compact:
-					visualStateName = "Compact";
-					splitViewDisplayMode = SplitViewDisplayMode.CompactOverlay;
-					break;
-				case NavigationViewVisualStateDisplayMode.Expanded:
-					visualStateName = "Expanded";
-					splitViewDisplayMode = SplitViewDisplayMode.CompactInline;
-					break;
+					case NavigationViewVisualStateDisplayMode.MinimalWithBackButton:
+						visualStateName = "MinimalWithBackButton";
+						splitViewDisplayMode = SplitViewDisplayMode.Overlay;
+						break;
+					case NavigationViewVisualStateDisplayMode.Minimal:
+						visualStateName = visualStateNameMinimal;
+						splitViewDisplayMode = SplitViewDisplayMode.Overlay;
+						break;
+					case NavigationViewVisualStateDisplayMode.Compact:
+						visualStateName = "Compact";
+						splitViewDisplayMode = SplitViewDisplayMode.CompactOverlay;
+						break;
+					case NavigationViewVisualStateDisplayMode.Expanded:
+						visualStateName = "Expanded";
+						splitViewDisplayMode = SplitViewDisplayMode.CompactInline;
+						break;
 				}
 
 				var handled = false;
@@ -1549,36 +1549,36 @@ namespace Windows.UI.Xaml.Controls
 
 			switch (key)
 			{
-			case VirtualKey.GamepadView:
-				if (!IsPaneOpen)
-				{
-					OpenPane();
-					handled = true;
-				}
-				break;
-			case VirtualKey.GoBack:
-			case VirtualKey.XButton1:
-				if (IsPaneOpen && IsLightDismissible())
-				{
-					handled = AttemptClosePaneLightly();
-				}
-				break;
-			case VirtualKey.GamepadLeftShoulder:
-				handled = BumperNavigation(-1);
-				break;
-			case VirtualKey.GamepadRightShoulder:
-				handled = BumperNavigation(1);
-				break;
-			case VirtualKey.Left:
-				var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
-				bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+				case VirtualKey.GamepadView:
+					if (!IsPaneOpen)
+					{
+						OpenPane();
+						handled = true;
+					}
+					break;
+				case VirtualKey.GoBack:
+				case VirtualKey.XButton1:
+					if (IsPaneOpen && IsLightDismissible())
+					{
+						handled = AttemptClosePaneLightly();
+					}
+					break;
+				case VirtualKey.GamepadLeftShoulder:
+					handled = BumperNavigation(-1);
+					break;
+				case VirtualKey.GamepadRightShoulder:
+					handled = BumperNavigation(1);
+					break;
+				case VirtualKey.Left:
+					var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-				if (isAltPressed && IsPaneOpen && IsLightDismissible())
-				{
-					handled = AttemptClosePaneLightly();
-				}
+					if (isAltPressed && IsPaneOpen && IsLightDismissible())
+					{
+						handled = AttemptClosePaneLightly();
+					}
 
-				break;
+					break;
 			}
 
 			eventArgs.Handled = handled;
@@ -1809,7 +1809,7 @@ namespace Windows.UI.Xaml.Controls
 				// We want to use Effect, but it's not in all os of rs5. as a workaround, we only apply effect to the os which is already remove velocity key.
 				//if (var sliderNav2 = sliderNav.try_as<ISlideNavigationTransitionInfo2>())
 				//{
-					sliderNav.Effect = effect;
+				sliderNav.Effect = effect;
 				//}
 				return sliderNav;
 			}
@@ -1991,7 +1991,7 @@ namespace Windows.UI.Xaml.Controls
 				// If we select an item, we follow the unselect to simplify the code.
 				container.IsSelected = selected;
 			}
-		 }
+		}
 
 		bool IsSettingsItem(object item)
 		{
@@ -1999,7 +1999,7 @@ namespace Windows.UI.Xaml.Controls
 			if (item != null)
 			{
 				var settingItem = m_settingsItem;
-				if (settingItem  != null)
+				if (settingItem != null)
 				{
 					isSettingsItem = (settingItem == item) || (settingItem.Content == item);
 				}
@@ -2234,51 +2234,51 @@ namespace Windows.UI.Xaml.Controls
 			var mode = m_topNavigationMode; // mode is for debugging because m_topNavigationMode is changing but we don't want to loss it in the stack
 			switch (mode)
 			{
-			case TopNavigationViewLayoutState.InitStep1: // Move all data to primary
-				if (HasTopNavigationViewItemNotInPrimaryList())
-				{
-					m_topDataProvider.MoveAllItemsToPrimaryList();
-				}
-				else
-				{
-					 ContinueHandleTopNavigationMeasureOverride(TopNavigationViewLayoutState.InitStep2, availableSize);
-				}
-				break;
-			case TopNavigationViewLayoutState.InitStep2: // Realized virtualization items
-				{
-					// Bug 18196691: For some reason(eg: customer hide topnav grid or it's parent from code directly),
-					// The 2nd item may never been realized. and it will enter into a layout_cycle.
-					// For performance reason, we don't go through the visualtree to determine if ListView is actually visible or not
-					// m_measureOnInitStep2Count is used to avoid the cycle
-
-					// In our test environment, m_measureOnInitStep2Count should <= 2 since we didn't hide anything from code
-					// so the assert count is different from s_measureOnInitStep2CountThreshold
-					// global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
-
-					if (m_measureOnInitStep2Count >= s_measureOnInitStep2CountThreshold || !IsTopNavigationFirstMeasure())
+				case TopNavigationViewLayoutState.InitStep1: // Move all data to primary
+					if (HasTopNavigationViewItemNotInPrimaryList())
 					{
-						m_measureOnInitStep2Count = 0;
-						ContinueHandleTopNavigationMeasureOverride(TopNavigationViewLayoutState.InitStep3, availableSize);
+						m_topDataProvider.MoveAllItemsToPrimaryList();
 					}
 					else
 					{
-						m_measureOnInitStep2Count++;
+						ContinueHandleTopNavigationMeasureOverride(TopNavigationViewLayoutState.InitStep2, availableSize);
 					}
-				}
-				break;
+					break;
+				case TopNavigationViewLayoutState.InitStep2: // Realized virtualization items
+					{
+						// Bug 18196691: For some reason(eg: customer hide topnav grid or it's parent from code directly),
+						// The 2nd item may never been realized. and it will enter into a layout_cycle.
+						// For performance reason, we don't go through the visualtree to determine if ListView is actually visible or not
+						// m_measureOnInitStep2Count is used to avoid the cycle
 
-			case TopNavigationViewLayoutState.InitStep3: // Waiting for moving data to overflow
-				HandleTopNavigationMeasureOverrideStep3(availableSize);
-				break;
-			case TopNavigationViewLayoutState.Normal:
-				HandleTopNavigationMeasureOverrideNormal(availableSize);
-				break;
-			case TopNavigationViewLayoutState.Overflow:
-				HandleTopNavigationMeasureOverrideOverflow(availableSize);
-				break;
-			case TopNavigationViewLayoutState.OverflowNoChange:
-				SetTopNavigationViewNextMode(TopNavigationViewLayoutState.Overflow);
-				break;
+						// In our test environment, m_measureOnInitStep2Count should <= 2 since we didn't hide anything from code
+						// so the assert count is different from s_measureOnInitStep2CountThreshold
+						// global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
+
+						if (m_measureOnInitStep2Count >= s_measureOnInitStep2CountThreshold || !IsTopNavigationFirstMeasure())
+						{
+							m_measureOnInitStep2Count = 0;
+							ContinueHandleTopNavigationMeasureOverride(TopNavigationViewLayoutState.InitStep3, availableSize);
+						}
+						else
+						{
+							m_measureOnInitStep2Count++;
+						}
+					}
+					break;
+
+				case TopNavigationViewLayoutState.InitStep3: // Waiting for moving data to overflow
+					HandleTopNavigationMeasureOverrideStep3(availableSize);
+					break;
+				case TopNavigationViewLayoutState.Normal:
+					HandleTopNavigationMeasureOverrideNormal(availableSize);
+					break;
+				case TopNavigationViewLayoutState.Overflow:
+					HandleTopNavigationMeasureOverrideOverflow(availableSize);
+					break;
+				case TopNavigationViewLayoutState.OverflowNoChange:
+					SetTopNavigationViewNextMode(TopNavigationViewLayoutState.Overflow);
+					break;
 			}
 		}
 
@@ -2310,7 +2310,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					m_topDataProvider.InvalidWidthCacheIfOverflowItemContentChanged();
 
-					var movableItems = FindMovableItemsRecoverToPrimaryList(availableSize.Width- desiredWidth, new List<int>()/*includeItems*/);
+					var movableItems = FindMovableItemsRecoverToPrimaryList(availableSize.Width - desiredWidth, new List<int>()/*includeItems*/);
 					m_topDataProvider.MoveItemsToPrimaryList(movableItems);
 					if (m_topDataProvider.HasInvalidWidth(movableItems))
 					{
@@ -2352,7 +2352,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (visibility != TemplateSettings.OverflowButtonVisibility)
 			{
-			   GetTemplateSettings().OverflowButtonVisibility = visibility;
+				GetTemplateSettings().OverflowButtonVisibility = visibility;
 			}
 		}
 
@@ -2401,7 +2401,7 @@ namespace Windows.UI.Xaml.Controls
 				var toBeRemovedItemWidth = m_topDataProvider.CalculateWidthForItems(itemsToBeRemoved);
 
 				var widthAvailableToRecover = toBeRemovedItemWidth - widthAtLeastToBeRemoved;
-				var itemsToBeAdded = FindMovableItemsRecoverToPrimaryList(widthAvailableToRecover, new List<int>{ selectedOverflowItemIndex }/*includeItems*/);
+				var itemsToBeAdded = FindMovableItemsRecoverToPrimaryList(widthAvailableToRecover, new List<int> { selectedOverflowItemIndex }/*includeItems*/);
 
 				if (!itemsToBeAdded.Contains(selectedOverflowItemIndex))
 				{
@@ -2468,7 +2468,7 @@ namespace Windows.UI.Xaml.Controls
 			var widthAtLeastToBeRemoved = desiredWidth - availableSize.Width;
 			if (widthAtLeastToBeRemoved > 0)
 			{
-				var itemToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, new List<int>{ selectedItemIndex });
+				var itemToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, new List<int> { selectedItemIndex });
 
 				// At least one item is kept on primary list
 				KeepAtLeastOneItemInPrimaryList(itemToBeRemoved, false/*shouldKeepFirst*/);
@@ -2554,7 +2554,7 @@ namespace Windows.UI.Xaml.Controls
 
 				double requiredWidth = 0;
 
-				for (int i = 0; i<size; i++)
+				for (int i = 0; i < size; i++)
 				{
 					if (i != selectedItemIndexInPrimary)
 					{
@@ -2849,7 +2849,8 @@ namespace Windows.UI.Xaml.Controls
 					var paneToggleButton = m_paneToggleButton;
 					if (paneToggleButton != null)
 					{
-						/*thisAsUIElement8.*/KeyTipTarget = paneToggleButton;
+						/*thisAsUIElement8.*/
+						KeyTipTarget = paneToggleButton;
 					}
 				}
 			}
@@ -2869,7 +2870,8 @@ namespace Windows.UI.Xaml.Controls
 					var topNavOverflowButton = m_topNavOverflowButton;
 					if (topNavOverflowButton != null)
 					{
-						/*thisAsUIElement8.*/KeyTipTarget = topNavOverflowButton;
+						/*thisAsUIElement8.*/
+						KeyTipTarget = topNavOverflowButton;
 					}
 				}
 			}
@@ -3412,7 +3414,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 
-		T GetContainerForData<T>(object data) where T:class
+		T GetContainerForData<T>(object data) where T : class
 		{
 			if (data == null)
 			{

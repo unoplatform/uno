@@ -331,7 +331,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				case ViewMode.RightLeft:
 					Assert.AreEqual(paneContent1BoundingRectangle.Y, paneContent2BoundingRectangle.Y, "Assert panes are horizontally aligned");
 					if (mode == ViewMode.LeftRight) Assert.IsTrue(paneContent2BoundingRectangle.X >= paneContent1BoundingRectangle.Right, "Assert left/right pane placement");
-					else Assert.IsTrue(paneContent1BoundingRectangle.X >=- paneContent2BoundingRectangle.Right, "Assert right/left pane placement");
+					else Assert.IsTrue(paneContent1BoundingRectangle.X >= -paneContent2BoundingRectangle.Right, "Assert right/left pane placement");
 					break;
 
 				case ViewMode.TopBottom:

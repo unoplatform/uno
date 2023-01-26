@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="name">The name of the property to get the support object for.</param>
 		/// <param name="type">The type of the indexed collection, specified as a TypeName wrapper.</param>
 		/// <returns>The returned support object for the custom property, or null.</returns>
-		ICustomProperty GetIndexedProperty( string name, Type type);
+		ICustomProperty GetIndexedProperty(string name, Type type);
 
 		/// <summary>
 		/// Provides support for "GetStringFromObject" and/or "ToString" logic

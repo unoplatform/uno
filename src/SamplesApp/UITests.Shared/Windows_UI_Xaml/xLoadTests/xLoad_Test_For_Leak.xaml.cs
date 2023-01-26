@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml.xLoadTests
 {
 	[Sample("x:Load", Name = "xLoad_Test_For_Leak")]
 	public sealed partial class xLoad_Test_For_Leak : UserControl
-    {
+	{
 		public bool IsLoad
 		{
 			get { return (bool)GetValue(IsLoadProperty); }
@@ -32,10 +32,10 @@ namespace UITests.Windows_UI_Xaml.xLoadTests
 			DependencyProperty.Register("IsLoad", typeof(bool), typeof(xLoad_Test_For_Leak), new PropertyMetadata(false));
 
 		public xLoad_Test_For_Leak()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 
 			IsLoad = true;
-        }
-    }
+		}
+	}
 }

@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(TimePicker);
 		}
 
-#region Time DependencyProperty
+		#region Time DependencyProperty
 
 		public TimeSpan Time
 		{
@@ -88,9 +88,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
 		}
-#endregion
+		#endregion
 
-#region SelectedTime DependencyProperty
+		#region SelectedTime DependencyProperty
 		public TimeSpan? SelectedTime
 		{
 			get => (TimeSpan?)this.GetValue(SelectedTimeProperty);
@@ -126,9 +126,9 @@ namespace Windows.UI.Xaml.Controls
 			ValidateTimeSpanForSelectedTimeProperty(ts);
 			return ts;
 		}
-#endregion
+		#endregion
 
-#region MinuteIncrement DependencyProperty
+		#region MinuteIncrement DependencyProperty
 
 		public int MinuteIncrement
 		{
@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(MinuteIncrementProperty, value);
 		}
 
-		public static DependencyProperty MinuteIncrementProperty { get ; } =
+		public static DependencyProperty MinuteIncrementProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinuteIncrement),
 				typeof(int),
@@ -159,9 +159,9 @@ namespace Windows.UI.Xaml.Controls
 					})
 				);
 
-#endregion
+		#endregion
 
-#region FlyoutPlacement DependencyProperty
+		#region FlyoutPlacement DependencyProperty
 
 		public FlyoutPlacementMode FlyoutPlacement
 		{
@@ -169,16 +169,16 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(FlyoutPlacementProperty, value);
 		}
 
-		public static DependencyProperty FlyoutPlacementProperty { get ; } =
+		public static DependencyProperty FlyoutPlacementProperty { get; } =
 			DependencyProperty.Register(
 				nameof(FlyoutPlacement),
 				typeof(FlyoutPlacementMode),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(FlyoutPlacementMode.Full));
 
-#endregion
+		#endregion
 
-#region FlyoutPresenterStyle DependencyProperty
+		#region FlyoutPresenterStyle DependencyProperty
 		// FlyoutPresenterStyle is an Uno-only property to allow the styling of the TimePicker's FlyoutPresenter.
 		public Style FlyoutPresenterStyle
 		{
@@ -195,9 +195,9 @@ namespace Windows.UI.Xaml.Controls
 					default(Style),
 					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
-#endregion
+		#endregion
 
-#region HeaderTemplate DependencyProperty
+		#region HeaderTemplate DependencyProperty
 
 		public DataTemplate HeaderTemplate
 		{
@@ -211,9 +211,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
-#endregion
+		#endregion
 
-#region Header DependencyProperty
+		#region Header DependencyProperty
 
 		public object Header
 		{
@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs e) =>
 			UpdateHeaderVisibility();
 
-#endregion
+		#endregion
 
 		public LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(LightDismissOverlayBackgroundProperty, value);
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(TimePicker), new FrameworkPropertyMetadata(null));
 
 		protected override void OnApplyTemplate()
