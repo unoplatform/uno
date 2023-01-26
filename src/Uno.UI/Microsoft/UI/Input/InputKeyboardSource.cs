@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Input
 {
-	public static class InputKeyboardSource
+	public partial class InputKeyboardSource
 	{
 		public static Windows.UI.Core.CoreVirtualKeyStates GetKeyStateForCurrentThread(Windows.System.VirtualKey virtualKey)
 			=> Xaml.Window.Current.CoreWindow.GetKeyState(virtualKey);

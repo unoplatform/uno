@@ -1,4 +1,4 @@
-#if !HAS_UNO_WINUI && (__ANDROID__ || __IOS__ || NET461 || __MACOS__)
+#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
 
 using System;
 using System.Timers;

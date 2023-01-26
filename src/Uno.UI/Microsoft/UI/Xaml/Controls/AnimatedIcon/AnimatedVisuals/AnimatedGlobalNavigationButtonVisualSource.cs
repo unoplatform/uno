@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 {
 	// TODO Uno: This is currently a stub, as animated visuals are not properly supported
-	public class AnimatedGlobalNavigationButtonVisualSource : IAnimatedVisualSource2
+	public partial class AnimatedGlobalNavigationButtonVisualSource : IAnimatedVisualSource2
 	{
 		public IReadOnlyDictionary<string, double> Markers => new Dictionary<string, double>();
 		public void Load() { }
