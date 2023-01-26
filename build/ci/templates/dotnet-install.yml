@@ -8,9 +8,9 @@ steps:
       version: 6.0.401
 
   - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK 7.0.100-rc.2.22477.23'
+    displayName: 'Use .NET Core SDK 7.0.102'
     retryCountOnTaskFailure: 3
     inputs:
       packageType: sdk
       includePreviewVersions: true
-      version: 7.0.100-rc.2.22477.23
+      version: 7.0.102

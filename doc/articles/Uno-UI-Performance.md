@@ -92,6 +92,9 @@ Here's what to look for:
 	</ItemGroup>
    	```
 	You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics.
+- The size of the application can be reduced by:
+	- Enabling the [IL Linker](features/using-il-linker-webassembly.md)
+	- Enabling [XAML Resources Trimming](features/resources-trimming.md)
 
 ## Advanced performance Tracing
 
