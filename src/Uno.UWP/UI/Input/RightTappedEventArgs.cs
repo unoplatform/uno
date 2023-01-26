@@ -7,7 +7,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public  partial class RightTappedEventArgs 
+	public partial class RightTappedEventArgs
 	{
 		internal RightTappedEventArgs(PointerDeviceType type, Point position)
 		{

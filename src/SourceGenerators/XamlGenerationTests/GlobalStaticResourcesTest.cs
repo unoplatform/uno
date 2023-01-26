@@ -6,15 +6,15 @@ using XamlGenerationTests;
 
 namespace XamlGenerationTests.Shared
 {
-    public static class GlobalStaticResourcesTest
-    {
+	public static class GlobalStaticResourcesTest
+	{
 		static GlobalStaticResourcesTest()
 		{
 			var res = GlobalStaticResources.OtherResources01.ToString();
 
-			GlobalStaticResources.FindResource("test"); 
+			GlobalStaticResources.FindResource("test");
 		}
-    }
+	}
 }
 
 #endif

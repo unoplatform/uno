@@ -35,7 +35,7 @@ namespace Windows.Devices.Midi
 		}
 
 		partial void StartMessageReceived()
-		{			
+		{
 			_messageReceiver = new MessageReceiver(this);
 			_midiPort.Connect(_messageReceiver);
 		}

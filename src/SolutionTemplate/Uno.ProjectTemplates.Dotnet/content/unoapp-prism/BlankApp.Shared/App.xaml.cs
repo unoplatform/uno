@@ -22,10 +22,10 @@ using BlankApp.Views;
 
 namespace BlankApp
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
-    sealed partial class App
+	/// <summary>
+	/// Provides application-specific behavior to supplement the default Application class.
+	/// </summary>
+	sealed partial class App
 	{
 		/// <summary>
 		/// Initializes the singleton application object.  This is the first line of authored code
@@ -45,36 +45,36 @@ namespace BlankApp
 		/// <param name="e">Details about the launch request and process.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-            base.OnLaunched(e);
+			base.OnLaunched(e);
 		}
 
-        /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
-        /// without knowing whether the application will be terminated or resumed with the contents
-        /// of memory still intact.
-        /// </summary>
-        /// <param name="sender">The source of the suspend request.</param>
-        /// <param name="e">Details about the suspend request.</param>
-        protected override void OnSuspending(SuspendingEventArgs e)
-        {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
-            deferral.Complete();
-        }
+		/// <summary>
+		/// Invoked when application execution is being suspended.  Application state is saved
+		/// without knowing whether the application will be terminated or resumed with the contents
+		/// of memory still intact.
+		/// </summary>
+		/// <param name="sender">The source of the suspend request.</param>
+		/// <param name="e">Details about the suspend request.</param>
+		protected override void OnSuspending(SuspendingEventArgs e)
+		{
+			var deferral = e.SuspendingOperation.GetDeferral();
+			//TODO: Save application state and stop any background activity
+			deferral.Complete();
+		}
 
-        protected override UIElement CreateShell()
-        {
-            return Container.Resolve<Shell>();
-        }
+		protected override UIElement CreateShell()
+		{
+			return Container.Resolve<Shell>();
+		}
 
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-        }
+		protected override void RegisterTypes(IContainerRegistry containerRegistry)
+		{
+		}
 
 		/// <summary>
-        /// Configures global logging
-        /// </summary>
-        /// <param name="factory"></param>
+		/// Configures global logging
+		/// </summary>
+		/// <param name="factory"></param>
 		static void ConfigureFilters(ILoggerFactory factory)
 		{
 			factory
@@ -123,5 +123,5 @@ namespace BlankApp
 				.AddConsole(LogLevel.Information);
 #endif
 		}
-    }
+	}
 }

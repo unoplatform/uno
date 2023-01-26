@@ -10,7 +10,7 @@ using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Input.Preview.Injection;
 
-public partial class InputInjector 
+public partial class InputInjector
 {
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()

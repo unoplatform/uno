@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Windows.Storage
 {
-	partial class ApplicationData 
+	partial class ApplicationData
 	{
 		private static string GetLocalCacheFolder()
 			=> Path.GetTempPath();

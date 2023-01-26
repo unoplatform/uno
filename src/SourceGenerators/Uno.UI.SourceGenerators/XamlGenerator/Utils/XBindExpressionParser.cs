@@ -104,9 +104,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var isPathLessCast = Helpers.IsPathLessCast(node);
 				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
 				var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
-                var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
+				var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
 
-                if (e!= null
+				if (e != null
 					&& isValidParent
 					&& !_isStaticMember(node.Expression.ToFullString())
 					&& !isParentMemberStatic
@@ -131,10 +131,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (e != null && isAttachedPropertySyntax.result)
 				{
-					if(e is MemberAccessExpressionSyntax memberAccess
+					if (e is MemberAccessExpressionSyntax memberAccess
 						&& memberAccess.Expression is IdentifierNameSyntax identifierSyntax)
 					{
-						if(
+						if (
 							isAttachedPropertySyntax.expression?.ArgumentList.Arguments.FirstOrDefault() is { } property
 							&& property.Expression is MemberAccessExpressionSyntax memberAccessExpression
 							)
@@ -289,7 +289,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						&& cast.Parent is ArrowExpressionClauseSyntax
 						&& cast.Expression == node ? cast : null);
 
-			internal static (bool result, T? expression) IsInside<T>(SyntaxNode node, Func<SyntaxNode?, T?> predicate) where T: SyntaxNode
+			internal static (bool result, T? expression) IsInside<T>(SyntaxNode node, Func<SyntaxNode?, T?> predicate) where T : SyntaxNode
 			{
 				var currentNode = node.Parent;
 

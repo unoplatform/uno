@@ -47,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 
 		public XamlMember Member => XamlMember.FromMember(_unoReader.Member);
 
-		public NamespaceDeclaration Namespace 
+		public NamespaceDeclaration Namespace
 			=> new NamespaceDeclaration(_unoReader.Namespace);
 
 		public void Dispose() => ((IDisposable)_unoReader).Dispose();

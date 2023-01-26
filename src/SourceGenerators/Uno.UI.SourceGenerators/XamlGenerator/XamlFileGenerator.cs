@@ -283,7 +283,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_String);
 			_objectSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_Object);
-            _assemblyMetadataSymbol = (INamedTypeSymbol)_metadataHelper.FindTypeByFullName("System.Reflection.AssemblyMetadataAttribute");
+			_assemblyMetadataSymbol = (INamedTypeSymbol)_metadataHelper.FindTypeByFullName("System.Reflection.AssemblyMetadataAttribute");
 			_elementStubSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ElementStub);
 			_setterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Setter);
 			_contentPresenterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ContentPresenter);
@@ -826,19 +826,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var reference in _metadataHelper.Compilation.References)
 			{
-                if(_metadataHelper.Compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
-                {
+				if (_metadataHelper.Compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
+				{
 					BuildResourceLoaderFromAssembly(writer, assembly);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"Unsupported resource type for {reference.Display} ({reference.GetType()})");
-                }
-            }
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unsupported resource type for {reference.Display} ({reference.GetType()})");
+				}
+			}
 		}
 
-        private void BuildResourceLoaderFromAssembly(IndentedStringBuilder writer, IAssemblySymbol assembly)
-        {
+		private void BuildResourceLoaderFromAssembly(IndentedStringBuilder writer, IAssemblySymbol assembly)
+		{
 			var unoHasLocalizationResourcesAttribute = assembly.GetAttributes().FirstOrDefault(a =>
 				SymbolEqualityComparer.Default.Equals(a.AttributeClass, _assemblyMetadataSymbol)
 				&& a.ConstructorArguments.Length == 2
@@ -850,7 +850,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Value
 				?.ToString()
 				.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
-			
+
 			// Legacy behavior relying on the fact that GlobalStaticResources is generated using the default namespace.
 			var globalStaticResourcesSymbol = assembly.GetTypeByMetadataName(assembly.Name + ".GlobalStaticResources");
 
@@ -902,7 +902,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"/* Assembly {assembly} does not contain UnoHasLocalizationResources */");
 #endif
 			}
-        }
+		}
 
 		/// <summary>
 		/// Processes a top-level control definition.
@@ -5133,7 +5133,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
 						}
 					}
-					
+
 					return $"\"{rawValue}\"";
 				}
 			}
@@ -5152,7 +5152,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				objectDefinition = objectDefinition.Owner;
-			} 
+			}
 
 			return null;
 		}
@@ -6479,10 +6479,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
-										    if (_isHotReloadEnabled)
-										    {
-											    writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
-										    }
+											if (_isHotReloadEnabled)
+											{
+												writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
+											}
 
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
@@ -6861,7 +6861,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
 		{
-			if(componentDefinition is null)
+			if (componentDefinition is null)
 			{
 				throw new InvalidOperationException("The component definition cannot be null.");
 			}

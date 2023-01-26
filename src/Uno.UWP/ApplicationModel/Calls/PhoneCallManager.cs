@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 				.Where(c =>
 					!char.IsDigit(c) &&
 					!_allowedChars.Contains(c))
-				.Select(c=>(char?)c)
+				.Select(c => (char?)c)
 				.FirstOrDefault();
 
 			if (disallowed != null)

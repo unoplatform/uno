@@ -62,7 +62,7 @@ namespace Windows.Globalization.NumberFormatting
 			{
 				formatted = _formatterHelper.FormatDoubleCore(value);
 			}
-			
+
 			formatted = _translator.TranslateNumerals(formatted);
 			return formatted;
 		}

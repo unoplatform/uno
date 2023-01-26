@@ -132,7 +132,7 @@ namespace Windows.UI.Core
 		internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
 			//Windows.Bounds doesn't implemment X an Y Windows Origin as well.
-			var newBounds = new Rect(0,0,windowSizeChangedEventArgs.Size.Width, windowSizeChangedEventArgs.Size.Height);
+			var newBounds = new Rect(0, 0, windowSizeChangedEventArgs.Size.Width, windowSizeChangedEventArgs.Size.Height);
 			if (newBounds != Bounds)
 			{
 				Bounds = newBounds;

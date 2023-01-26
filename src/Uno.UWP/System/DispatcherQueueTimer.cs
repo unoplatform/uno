@@ -13,7 +13,7 @@ namespace Microsoft.UI.Dispatching
 namespace Windows.System
 #endif
 {
-	public partial class DispatcherQueueTimer 
+	public partial class DispatcherQueueTimer
 	{
 		private static class States
 		{

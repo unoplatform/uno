@@ -31,8 +31,8 @@ namespace Windows.Storage.Pickers
 
 			this.ParseMimeTypeForXml(mimeTypes);
 
-            foreach (var mime in mimeTypes)
-            {
+			foreach (var mime in mimeTypes)
+			{
 				intent.PutExtra(Intent.ExtraMimeTypes, mime);
 			}
 
@@ -43,7 +43,7 @@ namespace Windows.Storage.Pickers
 
 			var activity = await AwaitableResultActivity.StartAsync();
 			var result = await activity.StartActivityForResultAsync(intent, cacellationToken: token);
-			var resultIntent = result?.Intent;			
+			var resultIntent = result?.Intent;
 
 			if (resultIntent?.Data != null)
 			{

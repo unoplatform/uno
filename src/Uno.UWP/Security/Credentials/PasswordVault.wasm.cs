@@ -4,7 +4,8 @@ using Uno;
 namespace Windows.Security.Credentials
 {
 	[NotImplemented] // Not really not implemented, but this will display an error directly in the IDE.
-	/* sealed */ partial class PasswordVault
+	/* sealed */
+	partial class PasswordVault
 	{
 		// This class is ** NOT ** sealed in order to allow projects for which the security limit described bellow is not
 		// really a concern (for instance if they are only storing an OAuth token) to inherit and provide they own

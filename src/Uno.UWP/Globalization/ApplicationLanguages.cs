@@ -82,7 +82,7 @@ namespace Windows.Globalization
 
 			var primaryLanguage = Languages.Count > 0 ? Languages[0] : null;
 
-			if(primaryLanguage is not null)
+			if (primaryLanguage is not null)
 			{
 				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
 				{

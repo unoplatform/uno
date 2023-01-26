@@ -4,9 +4,9 @@ namespace Windows.Devices.Geolocation
 {
 	public partial struct BasicGeoposition : IEquatable<BasicGeoposition>
 	{
-        public double Altitude;
-        public double Latitude;
-        public double Longitude;
+		public double Altitude;
+		public double Latitude;
+		public double Longitude;
 
 		// NOTE: Equality implementation should be modified if a new field/property is added.
 

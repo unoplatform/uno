@@ -2,7 +2,7 @@
 
 namespace Windows.Devices.Enumeration
 {
-	public   enum DeviceInformationKind 
+	public enum DeviceInformationKind
 	{
 		Unknown,
 		DeviceInterface,

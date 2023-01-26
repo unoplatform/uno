@@ -1,6 +1,6 @@
 namespace Windows.Globalization.NumberFormatting
 {
-	public enum RoundingAlgorithm 
+	public enum RoundingAlgorithm
 	{
 		None,
 		RoundDown,

@@ -75,14 +75,14 @@ namespace Windows.Storage.Streams
 
 		public void CheckState()
 		{
-			if (_failure is {})
+			if (_failure is { })
 			{
 				throw new InvalidOperationException(_errorMessage, _failure);
 			}
 		}
 
 		public bool CanRead(ulong position)
-			=> _isCompleted || _failure is {} || position <= _totalLoaded;
+			=> _isCompleted || _failure is { } || position <= _totalLoaded;
 
 		private async Task Download(HttpResponseMessage response, CancellationToken ct)
 		{

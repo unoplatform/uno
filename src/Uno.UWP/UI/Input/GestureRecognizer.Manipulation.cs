@@ -34,9 +34,9 @@ namespace Windows.UI.Input
 			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
 			// Inertia thresholds are expressed in 'unit / millisecond' (unit being either 'logical px' or 'degree')
-			internal static readonly Thresholds InertiaTouch = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
-			internal static readonly Thresholds InertiaPen = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
-			internal static readonly Thresholds InertiaMouse = new Thresholds { TranslateX = 15d/1000, TranslateY = 15d/1000, Rotate = 5d/1000, Expansion = 15d/1000 };
+			internal static readonly Thresholds InertiaTouch = new Thresholds { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
+			internal static readonly Thresholds InertiaPen = new Thresholds { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
+			internal static readonly Thresholds InertiaMouse = new Thresholds { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
 
 			private enum ManipulationState
 			{
@@ -78,8 +78,8 @@ namespace Windows.UI.Input
 			public GestureSettings Settings => _settings;
 			public bool IsTranslateXEnabled => _isTranslateXEnabled;
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
-			public bool IsRotateEnabled	  => _isRotateEnabled;
-			public bool IsScaleEnabled	  => _isScaleEnabled;
+			public bool IsRotateEnabled => _isRotateEnabled;
+			public bool IsScaleEnabled => _isScaleEnabled;
 
 			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
 			{
@@ -643,7 +643,7 @@ namespace Windows.UI.Input
 					Pointer1 = point;
 					_pointer2 = default;
 
-					Identifiers = new[] {point.Pointer};
+					Identifiers = new[] { point.Pointer };
 					Timestamp = point.Timestamp;
 					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
 					Distance = 0;
@@ -657,7 +657,7 @@ namespace Windows.UI.Input
 				public void SetPointer2(PointerPoint point)
 				{
 					_pointer2 = point;
-					Identifiers = new[] {Pointer1.Pointer, _pointer2.Pointer};
+					Identifiers = new[] { Pointer1.Pointer, _pointer2.Pointer };
 					UpdateComputedValues();
 				}
 

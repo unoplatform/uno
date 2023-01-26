@@ -39,7 +39,7 @@ namespace Windows.Graphics.Display
 
 			Window.Brightness = (float)_targetBrightnessLevel;
 
-			GetForCurrentView().IsOverrideActive = true;		
+			GetForCurrentView().IsOverrideActive = true;
 		}
 
 		/// <summary>

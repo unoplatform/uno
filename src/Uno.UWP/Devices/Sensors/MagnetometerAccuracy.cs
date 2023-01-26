@@ -1,6 +1,6 @@
 namespace Windows.Devices.Sensors
 {
-	public enum MagnetometerAccuracy 
+	public enum MagnetometerAccuracy
 	{
 		Unknown,
 		Unreliable,

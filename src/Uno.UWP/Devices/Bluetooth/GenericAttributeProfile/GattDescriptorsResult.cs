@@ -6,9 +6,9 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 	public partial class GattDescriptorsResult
 	{
-		public  IReadOnlyList<GattDescriptor> Descriptors { get; }
-		public  byte? ProtocolError { get; }
-		public  GattCommunicationStatus Status { get; }
+		public IReadOnlyList<GattDescriptor> Descriptors { get; }
+		public byte? ProtocolError { get; }
+		public GattCommunicationStatus Status { get; }
 
 		private GattDescriptorsResult()
 		{

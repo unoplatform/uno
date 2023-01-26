@@ -405,7 +405,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void TryGenerateUnoResourcesKeyAttribute(ImmutableHashSet<string> resourceKeys)
 		{
 			var hasResources = !resourceKeys.IsEmpty;
-			
+
 			_generatorContext.AddSource(
 				"LocalizationResources",
 				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
@@ -508,7 +508,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var query = from sym in assembliesQuery
 						from module in sym.Modules
 
-						// Only consider assemblies that reference Uno.UI
+							// Only consider assemblies that reference Uno.UI
 						where module.ReferencedAssemblies.Any(r => r.Name == "Uno.UI") || sym.Name == "Uno.UI"
 
 						// Don't consider Uno.UI.FluentTheme assemblies, as they manage their own initialization
@@ -621,7 +621,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			ImmutableHashSet<string> resourceKeys = _resourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
-				.SelectMany(file => {
+				.SelectMany(file =>
+				{
 #if DEBUG
 					Console.WriteLine("Parse resource file : " + file.Identity);
 #endif
@@ -659,14 +660,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
 #if NETSTANDARD
-							var diagnostic = Diagnostic.Create(
-								XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
-								null,
-								message);
+						var diagnostic = Diagnostic.Create(
+							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
+							null,
+							message);
 
-							_generatorContext.ReportDiagnostic(diagnostic);
+						_generatorContext.ReportDiagnostic(diagnostic);
 
-							return Array.Empty<string>();
+						return Array.Empty<string>();
 #else
 						throw new InvalidOperationException(message, e);
 #endif

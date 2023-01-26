@@ -8,13 +8,13 @@ using Windows.UI.Xaml.Markup;
 
 namespace XamlGenerationTests.Shared
 {
-    public sealed partial class ConstructIList : UserControl
-    {
-        public ConstructIList()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class ConstructIList : UserControl
+	{
+		public ConstructIList()
+		{
+			this.InitializeComponent();
+		}
+	}
 
 	[ContentProperty(Name = nameof(TabItems))]
 	public partial class TestTabControl : Control

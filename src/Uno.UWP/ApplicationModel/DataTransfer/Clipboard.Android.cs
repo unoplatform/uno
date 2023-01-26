@@ -146,9 +146,9 @@ namespace Windows.ApplicationModel.DataTransfer
 								out string webLink,
 								out string applicationLink);
 
-							clipWebLink         = webLink != null ? new Uri(webLink) : null;
+							clipWebLink = webLink != null ? new Uri(webLink) : null;
 							clipApplicationLink = applicationLink != null ? new Uri(applicationLink) : null;
-							clipUri             = new Uri(itemUriStr); // Deprecated but still added for compatibility
+							clipUri = new Uri(itemUriStr); // Deprecated but still added for compatibility
 						}
 
 						var itemHtml = item.HtmlText;

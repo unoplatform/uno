@@ -9,10 +9,10 @@ namespace Windows.Storage
 			=> new StorageFolder(Android.OS.Environment.GetExternalStoragePublicDirectory(name).CanonicalPath);
 #pragma warning restore CS0618 // Type or member is obsolete
 
-		public static StorageFolder MusicLibrary => FolderFromAndroidName(Android.OS.Environment.DirectoryMusic); 
-		public static StorageFolder VideosLibrary => FolderFromAndroidName(Android.OS.Environment.DirectoryMovies); 
+		public static StorageFolder MusicLibrary => FolderFromAndroidName(Android.OS.Environment.DirectoryMusic);
+		public static StorageFolder VideosLibrary => FolderFromAndroidName(Android.OS.Environment.DirectoryMovies);
 
 	}
 }
 
-#endif 
+#endif

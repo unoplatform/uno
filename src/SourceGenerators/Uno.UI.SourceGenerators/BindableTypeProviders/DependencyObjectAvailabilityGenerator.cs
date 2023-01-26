@@ -267,7 +267,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					using (writer.BlockInvariant("internal class " + LinkerHintsHelpers.GetLinkerHintsClassName()))
 					{
-						foreach(var type in bindableTypes)
+						foreach (var type in bindableTypes)
 						{
 							var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName());
 

@@ -107,7 +107,7 @@ public class ResourcesGenerationTask_v0 : Task
 	{
 		string buildBasePath()
 		{
-			if(resource.GetMetadata("TargetPath") is { Length: > 0 } targetPath)
+			if (resource.GetMetadata("TargetPath") is { Length: > 0 } targetPath)
 			{
 				return Path.GetDirectoryName(targetPath);
 			}

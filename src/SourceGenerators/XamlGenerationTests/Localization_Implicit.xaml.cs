@@ -7,14 +7,14 @@ using Windows.UI.Xaml.Controls;
 
 namespace XamlGenerationTests
 {
-    /// <summary>
-    /// Interaction logic for Localization_Implicit.xaml
-    /// </summary>
-    public partial class Localization_Implicit : UserControl
-    {
-        public Localization_Implicit()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for Localization_Implicit.xaml
+	/// </summary>
+	public partial class Localization_Implicit : UserControl
+	{
+		public Localization_Implicit()
+		{
+			InitializeComponent();
+		}
+	}
 }
