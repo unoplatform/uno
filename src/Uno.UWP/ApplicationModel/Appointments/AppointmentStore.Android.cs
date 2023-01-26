@@ -158,7 +158,7 @@ public partial class AppointmentStore
 
 			if (_durationRequested)
 			{
-				// calculate duration from start/end, as Android Duration field sometimes is null, and is in hard to parse RFC2445 format 
+				// calculate duration from start/end, as Android Duration field sometimes is null, and is in hard to parse RFC2445 format
 				long startTime = cursor.GetLong(colStartTime);
 				long endTime = cursor.GetLong(colEndTime);
 				entry.Duration = TimeSpan.FromMilliseconds(endTime - startTime);
@@ -178,7 +178,7 @@ public partial class AppointmentStore
 
 			if (colHasAlarm > -1)
 			{
-				// first, set it to default value 
+				// first, set it to default value
 				entry.Reminder = TimeSpan.FromMinutes(DefaultReminderInMinutes);
 
 				// now, search for implicite alarm times (non-default)
