@@ -4,7 +4,7 @@
 
 namespace Microsoft.UI.Input
 {
-	public sealed class InputPointerSource : InputObject
+	public sealed partial class InputPointerSource : InputObject
 	{
 		public InputCursor Cursor { get; set; }
 

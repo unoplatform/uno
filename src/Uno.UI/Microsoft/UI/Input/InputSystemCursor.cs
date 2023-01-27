@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Input
 {
-	public sealed class InputSystemCursor : InputCursor
+	public sealed partial class InputSystemCursor : InputCursor
 	{
 		private InputSystemCursor(InputSystemCursorShape type)
 		{
