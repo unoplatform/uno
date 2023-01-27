@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$libarybasetargetframework$</TargetFrameworks>
 		$if$($UseWinUI$ == True)<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
+		<TargetFrameworks>$(TargetFrameworks);$libarybasetargetframework$</TargetFrameworks>
 
 		<!-- 
 			This condition is used when building under Linux. If you're not building under
