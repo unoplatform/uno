@@ -344,7 +344,7 @@ namespace Microsoft.CodeAnalysis
 			return property?.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
-		public static AttributeData? FindAttributeFlattened(this ISymbol? property, INamedTypeSymbol attributeClassSymbol)
+		public static AttributeData? FindAttributeFlattened(this ISymbol? property, INamedTypeSymbol? attributeClassSymbol)
 		{
 			return property?.GetAllAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}

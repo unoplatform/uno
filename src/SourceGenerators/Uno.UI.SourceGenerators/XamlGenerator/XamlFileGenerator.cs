@@ -1914,11 +1914,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				fullTargetType = foundFullTargetType;
 			}
 
-			var propertyType = FindPropertyTypeByFullName(fullTargetType, property);
+			var targetType = _metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol;
+			var propertyType = FindPropertyTypeByOwnerSymbol(targetType, property);
 
 			if (propertyType != null)
 			{
-				bool isDependencyProperty = IsDependencyProperty(_metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol, property);
+				bool isDependencyProperty = IsDependencyProperty(targetType, property);
 
 				if (valueNode.Objects.None())
 				{

@@ -43,7 +43,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _assemblyName;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
 			private INamedTypeSymbol? _additionalLinkerHintAttributeSymbol;
-			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private bool _xamlResourcesTrimming;
 			private bool _isUnoUISolution;
 
@@ -79,7 +78,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							_intermediateOutputPath
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
-						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
 						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
 						_additionalLinkerHintAttributeSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
 
@@ -110,11 +108,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							$"""
 							/*
 							_assemblyName:{_assemblyName}
-							_namedSymbolsLookup:{_namedSymbolsLookup}
 							_dependencyObjectSymbol:{_dependencyObjectSymbol}
 							modules: {string.Join(", ", modules)}
 							_additionalLinkerHintAttributeSymbol: {_additionalLinkerHintAttributeSymbol}
-							additionalLinkerHintSymbols: {String.Join(",", additionalLinkerHintSymbols)}
+							additionalLinkerHintSymbols: {string.Join(",", additionalLinkerHintSymbols)}
 							*/
 							""");
 #endif

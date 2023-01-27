@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -14,7 +15,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private Func<string, INamedTypeSymbol?>? _findType;
 		private Func<XamlType, bool, INamedTypeSymbol?>? _findTypeByXamlType;
-		private Func<string, string, INamedTypeSymbol?>? _findPropertyTypeByFullName;
 		private Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
@@ -39,7 +39,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findType = Funcs.Create<string, INamedTypeSymbol?>(SourceFindType).AsLockedMemoized();
 			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol?>(SourceFindPropertyType).AsLockedMemoized();
 			_findEventType = Funcs.Create<XamlMember, IEventSymbol?>(SourceFindEventType).AsLockedMemoized();
-			_findPropertyTypeByFullName = Funcs.Create<string, string, INamedTypeSymbol?>(SourceFindPropertyTypeByFullName).AsLockedMemoized();
 			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsLockedMemoized();
 			_findTypeByXamlType = Funcs.Create<XamlType, bool, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
 			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
@@ -51,7 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault()
 				?.Namespace ?? "";
 
-			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
+			_clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 		}
 
 		/// <summary>
@@ -369,36 +368,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private INamedTypeSymbol? SourceFindPropertyType(XamlMember xamlMember)
 		{
-			// Search for the type the clr namespaces registered with the xml namespace
-			if (xamlMember.DeclaringType != null)
-			{
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, Array.Empty<string>());
-
-				foreach (var clrNamespace in clrNamespaces)
-				{
-					string declaringTypeName = xamlMember.DeclaringType.Name;
-
-					var propertyType = FindPropertyTypeByFullName(clrNamespace + "." + declaringTypeName, xamlMember.Name);
-
-					if (propertyType != null)
-					{
-						return propertyType;
-					}
-				}
-			}
-
 			var type = FindType(xamlMember.DeclaringType);
-
-			// If not, try to find the closest match using the name only.
 			return FindPropertyTypeByOwnerSymbol(type, xamlMember.Name);
-		}
-
-		private INamedTypeSymbol? FindPropertyTypeByFullName(string ownerType, string propertyName) => _findPropertyTypeByFullName!(ownerType, propertyName);
-
-		private INamedTypeSymbol? SourceFindPropertyTypeByFullName(string ownerType, string propertyName)
-		{
-			var type = _metadataHelper.FindTypeByFullName(ownerType) as INamedTypeSymbol;
-			return FindPropertyTypeByOwnerSymbol(type, propertyName);
 		}
 
 		private INamedTypeSymbol? FindPropertyTypeByOwnerSymbol(INamedTypeSymbol? type, string propertyName) => _findPropertyTypeByOwnerSymbol!(type, propertyName);
@@ -686,7 +657,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Gets the 
+		/// Gets the
 		/// </summary>
 		private IPropertySymbol? GetPropertyWithName(XamlType declaringType, string propertyName)
 		{
@@ -781,7 +752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& type.Name == "Bind"
 				   )
 				{
-					return _findType!(XamlConstants.Namespaces.Data + ".Binding");
+					return _metadataHelper.FindTypeByFullName(XamlConstants.Namespaces.Data + ".Binding") as INamedTypeSymbol;
 				}
 
 				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
@@ -831,26 +802,56 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private INamedTypeSymbol? SourceFindType(string name)
 		{
-			var originalName = name;
-
 			if (name.StartsWith(GlobalPrefix, StringComparison.Ordinal))
 			{
-				name = name.TrimStart(GlobalPrefix);
+				return _metadataHelper.FindTypeByFullName(name.Substring(GlobalPrefix.Length)) as INamedTypeSymbol;
 			}
 			else if (name.Contains(":"))
 			{
 				var fields = name.Split(':');
 
 				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
-
-				if (ns != null)
+				if (ns is null)
 				{
-					var nsName = GetTrimmedNamespace(ns.Namespace);
+					return null;
+				}
 
-					name = nsName + "." + fields[1];
+				var nsName = GetTrimmedNamespace(ns.Namespace);
+				if (nsName.StartsWith("http://", StringComparison.Ordinal))
+				{
+					return SearchClrNamespaces(fields[1]);
+				}
+
+				name = nsName + "." + fields[1];
+
+				if (_metadataHelper.FindTypeByFullName(name) is INamedTypeSymbol namedTypeSymbol1)
+				{
+					return namedTypeSymbol1;
+				}
+
+				// Background on this code path taking the following xaml just as an example:
+				// https://github.com/unoplatform/uno/blob/12c3b1c3cdd6bcd856005d181be4057cd3751212/src/Uno.UI.FluentTheme.v2/Resources/Version2/PriorityDefault/CommandBarFlyout.xaml#L5-L6
+				// In the above XAML, we have 'local:CommandBarFlyoutCommandBar' which refers to 'using:Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar'
+				// However, we have 'CommandBarFlyoutCommandBar' in Windows namespace for UWP tree, and in Microsoft namespace for WinUI tree.
+				// So, if we couldn't get Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar, we try with Windows.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar
+				// Ideally we would like UWP and WinUI trees to individually have the correct namespace. Until that happens, we have to live with this workaround.
+				if (nsName.StartsWith("Microsoft.", StringComparison.Ordinal) &&
+					_metadataHelper.FindTypeByFullName("Windows." + nsName.Substring("Microsoft.".Length) + "." + fields[1]) is INamedTypeSymbol namedTypeSymbol2)
+				{
+					return namedTypeSymbol2;
+				}
+				else if (nsName.Equals("Uno.UI.Controls.Legacy") &&
+					_metadataHelper.FindTypeByFullName(XamlConstants.Namespaces.Controls + "." + fields[1]) is INamedTypeSymbol namedTypeSymbol3)
+				{
+					// Workaround. There are usages of `legacy:ListView` and `legacy:GridView` in XAML where the referenced control is only in Android and iOS.
+					// We fallback to the corresponding non-legacy for this case
+					return namedTypeSymbol3;
 				}
 			}
-			else
+
+			return SearchClrNamespaces(name);
+
+			INamedTypeSymbol? SearchClrNamespaces(string name)
 			{
 				if (_clrNamespaces != null)
 				{
@@ -863,27 +864,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 				}
+
+				return null;
 			}
-
-			var resolvers = new Func<INamedTypeSymbol?>[] {
-
-				// The sanitized name
-				() => _metadataHelper.FindTypeByName(name) as INamedTypeSymbol,
-
-				// As a full name
-				() => _metadataHelper.FindTypeByFullName(name) as INamedTypeSymbol,
-
-				// As a partial name using the original type
-				() => _metadataHelper.FindTypeByName(originalName) as INamedTypeSymbol,
-
-				// As a partial name using the non-qualified name
-				() => _metadataHelper.FindTypeByName(originalName.Split(':').ElementAtOrDefault(1)) as INamedTypeSymbol,
-			};
-
-			return resolvers
-				.Select(m => m())
-				.Trim()
-				.FirstOrDefault();
 		}
 
 		/// <summary>
@@ -942,7 +925,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						.Substring(usingPattern.Length, lastDotIndex - usingPattern.Length)
 						.Replace("]", ".");
 
-					if (GetType(typeName) is { } typeSymbol)
+					if (_metadataHelper.FindTypeByFullName(typeName) is INamedTypeSymbol typeSymbol)
 					{
 						yield return (typeSymbol, propertyName);
 					}

@@ -31,6 +31,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Documents = BaseXamlNamespace + ".Documents";
 			public const string Media = BaseXamlNamespace + ".Media";
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
+			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
 			public const string Input = BaseXamlNamespace + ".Input";
 			public const string Automation = BaseXamlNamespace + ".Automation";
@@ -38,10 +39,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public static readonly string[] PresentationNamespaces =
 			{
 				Controls,
+#if HAS_UNO_WINUI
+				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Windows.UI.Xaml.Controls even in WinUI tree
+#endif
 				Primitives,
 				Shapes,
+				Input,
 				Media,
 				MediaAnimation,
+				MediaImaging,
 				RootWUINamespace,
 				BaseXamlNamespace,
 				Data,
@@ -49,6 +55,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Text,
 				Automation,
 				"System",
+				"Uno.UI.Controls", // BindableCheckBox
+				"Uno.UI.Controls.Legacy", // HorizontalListView
+				"Uno.UI.Views.Controls", // BindableUISwitch
+				"UIKit", // UITabBar
+				"Android.Widget", // TextView
 			};
 
 			public static readonly string[] All =
@@ -86,6 +97,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";
 			public const string CreateFromStringAttribute = Metadata + ".CreateFromStringAttribute";
+			public const string BindableAttribute = Namespaces.Data + ".BindableAttribute";
 			public const string NotImplementedAttribute = "Uno.NotImplementedAttribute";
 
 			// Text

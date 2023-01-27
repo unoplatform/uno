@@ -76,7 +76,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
-		private Dictionary<string, string> _legacyTypes;
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
@@ -106,13 +105,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_generatorContext = context;
 			InitTelemetry(context);
 
-			_legacyTypes = context
-				.GetMSBuildPropertyValue("LegacyTypesProperty")
-				.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				.ToList()
-				.ToDictionary(k => k, fullyQualifiedName => fullyQualifiedName.Split('.').Last());
-
-			_metadataHelper = new RoslynMetadataHelper(context, _legacyTypes);
+			_metadataHelper = new RoslynMetadataHelper(context);
 			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
