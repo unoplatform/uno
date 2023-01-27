@@ -16,20 +16,9 @@ namespace Windows.UI
 	{
 		private static Dictionary<string, Color> _colorMap = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
 
-		public static Color FromARGB(byte a, byte r, byte g, byte b)
-		{
-			return Color.FromArgb(a, r, g, b);
-		}
+		public static Color FromARGB(byte a, byte r, byte g, byte b) => new(a, r, g, b);
 
-		public static Color FromInteger(int color)
-		{
-			return FromARGB(
-				(byte)((color & 0xFF000000) >> 24),
-				(byte)((color & 0x00FF0000) >> 16),
-				(byte)((color & 0x0000FF00) >> 8),
-				(byte)((color & 0x000000FF))
-			);
-		}
+		public static Color FromInteger(int color) => new((uint)color);
 
 		/// <summary>
 		/// Parses a string representing a color
