@@ -2,10 +2,17 @@
 	<PropertyGroup>
 		<TargetFrameworks>$libarybasetargetframework$</TargetFrameworks>
 		$if$($UseWinUI$ == True)<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
-		$if$($UseAndroid$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-android</TargetFrameworks>$endif$
-		$if$($UseIOS$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
-		$if$($UseCatalyst$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
-		$if$($UseAppKit$ == True)<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
+
+		<!-- 
+			This condition is used when building under Linux. If you're not building under
+			 Linux, you can remove this line and the conditions below.
+		-->
+		<_CanUseMobileTargets Condition="$([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('MacOS'))">true</_CanUseMobileTargets>
+
+		$if$($UseAndroid$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-android</TargetFrameworks>$endif$
+		$if$($UseIOS$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
+		$if$($UseCatalyst$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
+		$if$($UseAppKit$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
 		
 		<DefaultLanguage>en</DefaultLanguage>
 
