@@ -14,13 +14,11 @@
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
       <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager.xaml" />
       <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager_themeresources.xaml" />
-      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ProgressRing.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer_themeresources.xaml" />
 	  <!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\SplitView_themeresources.xaml" />
-	  <!-- The excluded files can be restored as the types are made available in Uno.		  
-		  Note: The ProgressRing style can be restored once determinate mode is implemented. https://github.com/unoplatform/uno/issues/3604 -->
+	  <!-- The excluded files can be restored as the types are made available in Uno. -->
 	  <WinUIStylePage
 		  Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" />
 	  <WinUIStylePage

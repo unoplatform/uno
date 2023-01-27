@@ -114,8 +114,8 @@ namespace Windows.UI.Xaml.Controls
 				OnDateChanged(spOldDateReference, spNewDateReference);
 			}
 			else if (args.Property == FrameworkElement.LanguageProperty ||
-			         args.Property == CalendarDatePicker.CalendarIdentifierProperty ||
-			         args.Property == CalendarDatePicker.DateFormatProperty)
+					 args.Property == CalendarDatePicker.CalendarIdentifierProperty ||
+					 args.Property == CalendarDatePicker.DateFormatProperty)
 			{
 				OnDateFormatChanged();
 			}
@@ -531,7 +531,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					DateTime date;
 
-					date =  spDateReference.Value;
+					date = spDateReference.Value;
 
 					if (m_tpDateFormatter is { }) // when there is a formatter, use it
 					{
@@ -858,7 +858,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//CalendarDatePickerGenerated.OnPointerMoved(pArgs);
 
-			 IsEventSourceTarget(pArgs, out isEventSourceTarget);
+			IsEventSourceTarget(pArgs, out isEventSourceTarget);
 
 			if (isEventSourceTarget)
 			{
@@ -1101,7 +1101,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			value = null;
 
-			if (m_tpDateText is {})
+			if (m_tpDateText is { })
 			{
 				value = m_tpDateText.Text;
 			}

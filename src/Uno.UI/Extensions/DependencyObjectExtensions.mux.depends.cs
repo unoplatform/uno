@@ -6,6 +6,8 @@
 
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Documents;
 
 namespace Uno.UI.Extensions
 {
@@ -13,10 +15,20 @@ namespace Uno.UI.Extensions
 	{
 		internal static VisualTree? GetVisualTree(this DependencyObject dependencyObject)
 		{
-			//TODO: This should work for non-UIElement as well! https://github.com/unoplatform/uno/issues/8978
+			// The current implementation does not match MUX https://github.com/unoplatform/uno/issues/8978
 			if (dependencyObject is UIElement uiElement)
 			{
 				return uiElement.VisualTreeCache;
+			}
+
+			if (dependencyObject is FlyoutBase flyoutBase)
+			{
+				return flyoutBase.VisualTreeCache;
+			}
+
+			if (dependencyObject is TextElement textElement)
+			{
+				return textElement.VisualTreeCache;
 			}
 
 			return null;
@@ -24,10 +36,20 @@ namespace Uno.UI.Extensions
 
 		internal static void SetVisualTree(this DependencyObject dependencyObject, VisualTree visualTree)
 		{
-			//TODO: This should work for non-UIElement as well! #8978
+			// The current implementation does not match MUX https://github.com/unoplatform/uno/issues/8978
 			if (dependencyObject is UIElement uiElement)
 			{
 				uiElement.VisualTreeCache = visualTree;
+			}
+
+			if (dependencyObject is FlyoutBase flyoutBase)
+			{
+				flyoutBase.VisualTreeCache = visualTree;
+			}
+
+			if (dependencyObject is TextElement textElement)
+			{
+				textElement.VisualTreeCache = visualTree;
 			}
 		}
 	}

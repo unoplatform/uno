@@ -24,16 +24,15 @@ namespace Uno.Helpers
 			// rules as per https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler
 
 			// The custom scheme's name begins with web+
-			if (scheme.IndexOf("web+", System.StringComparison.InvariantCulture) != 0)
+			if (!scheme.StartsWith("web+", StringComparison.Ordinal))
 			{
 				throw new ArgumentException(
 					"Scheme must start with 'web+'",
 					nameof(scheme));
 			}
 
-			var schemeWithoutPrefix = scheme.Substring("web+".Length);
 			// The custom scheme's name includes at least 1 letter after the web+ prefix
-			if (schemeWithoutPrefix.Length == 0)
+			if (scheme.Length == "web+".Length)
 			{
 				throw new ArgumentException(
 					"Scheme must include at least 1 letter after 'web+' prefix",
@@ -41,12 +40,15 @@ namespace Uno.Helpers
 			}
 
 			// The custom scheme has only lowercase ASCII letters in its name.
-			if (!schemeWithoutPrefix.ToCharArray().All(c => 'a' <= c && c <= 'z'))
+			for (int i = "web+".Length; i < scheme.Length; i++)
 			{
-				throw new ArgumentException(
-					"Scheme must include only lowercase ASCII letters after " +
-					"the 'web+' prefix",
-					nameof(scheme));
+				if (scheme[i] is not (>= 'a' and <= 'z'))
+				{
+					throw new ArgumentException(
+						"Scheme must include only lowercase ASCII letters after " +
+						"the 'web+' prefix",
+						nameof(scheme));
+				}
 			}
 
 			if (domain == null)
@@ -98,7 +100,7 @@ namespace Uno.Helpers
 				}
 				else
 				{
-					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");					
+					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");
 				}
 			}
 

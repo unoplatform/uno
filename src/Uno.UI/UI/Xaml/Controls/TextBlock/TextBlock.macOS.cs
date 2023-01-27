@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 		public override void DrawRect(CGRect rect)
 		{
 			_drawRect = GetDrawRect(rect);
-			if(UseLayoutManager)
+			if (UseLayoutManager)
 			{
 				// DrawGlyphsForGlyphRange is the method we want to use here since DrawBackgroundForGlyphRange is intended for something different.
 				// While DrawBackgroundForGlyphRange will draw the background mark for specified Glyphs DrawGlyphsForGlyphRange will draw the actual Glyphs.
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 			_measureInvalidated = true;
 		}
 
-#region Layout
+		#region Layout
 
 		protected override Size MeasureOverride(Size size)
 		{
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// This measures the height correctly, even if the Text is null or empty
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
-					var font = NSFontHelper.TryGetFont((float)FontSize*2, FontWeight, FontStyle, FontFamily);
+					var font = NSFontHelper.TryGetFont((float)FontSize * 2, FontWeight, FontStyle, FontFamily);
 
 					using var str = new NSAttributedString(Text, font);
 
@@ -151,9 +151,9 @@ namespace Windows.UI.Xaml.Controls
 			return new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 		}
 
-#endregion
+		#endregion
 
-#region Update
+		#region Update
 
 		private int GetLines()
 		{
@@ -268,18 +268,18 @@ namespace Windows.UI.Xaml.Controls
 			return attributes;
 		}
 
-#endregion
+		#endregion
 
-#region IFontScalable
+		#region IFontScalable
 
 		public void RefreshFont()
 		{
 			this.InvalidateMeasure();
 		}
 
-#endregion
+		#endregion
 
-#region Hyperlinks
+		#region Hyperlinks
 
 		internal override bool IsViewHit()
 		{
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
-#endregion
+		#endregion
 
 		private void UpdateTypography()
 		{

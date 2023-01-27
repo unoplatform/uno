@@ -32,14 +32,14 @@ namespace Uno.UI
 			InitializeBinder();
 		}
 
-#pragma warning disable 0672,618
+#pragma warning disable 0672, 618
 		public override void OnAttach(Activity activity)
 		{
 			base.OnAttach(activity);
 
 			BinderAttachedToWindow();
 		}
-#pragma warning restore 0672,618
+#pragma warning restore 0672, 618
 
 		public override void OnDetach()
 		{
@@ -61,7 +61,7 @@ namespace Uno.UI
 		protected abstract void InitializeComponent();
 
 		public View Content { get; protected set; }
-		
+
 		public override void OnCreate(Android.OS.Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
@@ -73,13 +73,13 @@ namespace Uno.UI
 			base.OnDestroy();
 			_tracker().PushDestroyed(this);
 		}
-		
+
 		public override void OnResume()
 		{
 			base.OnResume();
 			_tracker().PushResume(this);
 		}
-		
+
 		public override void OnViewCreated(View view, Android.OS.Bundle savedInstanceState)
 		{
 			base.OnViewCreated(view, savedInstanceState);
@@ -91,7 +91,7 @@ namespace Uno.UI
 			base.OnPause();
 			_tracker().PushPause(this);
 		}
-		
+
 		public override void OnStart()
 		{
 			base.OnStart();
@@ -131,10 +131,10 @@ namespace Uno.UI
 			}
 		}
 
-		public virtual IEnumerable<IDataContextProvider> GetChildrenProviders() => 
+		public virtual IEnumerable<IDataContextProvider> GetChildrenProviders() =>
 			new[] { Content as IDataContextProvider }
 			.Trim();
-		
+
 		public bool OnTouch(View v, MotionEvent e)
 		{
 			return true;

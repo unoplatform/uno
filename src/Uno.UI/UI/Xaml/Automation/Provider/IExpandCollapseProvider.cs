@@ -2,7 +2,7 @@
 {
 	public partial interface IExpandCollapseProvider
 	{
-		ExpandCollapseState ExpandCollapseState	{ get; }
+		ExpandCollapseState ExpandCollapseState { get; }
 
 		void Collapse();
 

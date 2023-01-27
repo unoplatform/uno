@@ -59,7 +59,7 @@ namespace Uno.Extensions
 
 			var classicStream = stream;
 
-			if (classicStream is MemoryStream {Position: 0} memStream)
+			if (classicStream is MemoryStream { Position: 0 } memStream)
 			{
 				// MemoryStream.ToArray() is already optimized, so use it when possible
 				return memStream.ToArray();
@@ -76,7 +76,7 @@ namespace Uno.Extensions
 			{
 				totalBytesRead += bytesRead;
 
-				progressCallback?.Invoke((ulong) totalBytesRead, length);
+				progressCallback?.Invoke((ulong)totalBytesRead, length);
 
 				if (totalBytesRead == bufferSize)
 				{
@@ -90,13 +90,13 @@ namespace Uno.Extensions
 
 					var temp = new byte[bufferSize * 2];
 					SystemBuffer.BlockCopy(readBuffer, 0, temp, 0, bufferSize);
-					SystemBuffer.SetByte(temp, totalBytesRead, (byte) nextBytes[0]);
+					SystemBuffer.SetByte(temp, totalBytesRead, (byte)nextBytes[0]);
 					readBuffer = temp;
 					totalBytesRead++;
 				}
 			}
 
-			progressCallback?.Invoke((ulong) totalBytesRead, (ulong) totalBytesRead);
+			progressCallback?.Invoke((ulong)totalBytesRead, (ulong)totalBytesRead);
 
 			var buffer = readBuffer;
 			if (totalBytesRead != bufferSize)

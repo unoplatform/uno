@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					spOwner = Owner;
 
-					if (spOwner is {})
+					if (spOwner is { })
 					{
 						Size biggestItemSize = default;
 
@@ -130,78 +130,78 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			switch (args.Property)
 			{
 				case DependencyProperty orientationProperty when orientationProperty == CalendarPanel.OrientationProperty:
-				{
-					Orientation orientation = (Orientation)(args.NewValue);
-					ILayoutStrategy spCalendarLayoutStrategy;
-
-					spCalendarLayoutStrategy = LayoutStrategy;
-
-					CacheFirstVisibleElementBeforeOrientationChange();
-
-					// CalendarPanel orientation is the stacking direction. Which is the opposite of the
-					// virtualization direction.
-					if (orientation == Orientation.Horizontal)
 					{
-						((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetVirtualizationDirection(Orientation.Vertical);
-					}
-					else
-					{
-						((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetVirtualizationDirection(Orientation.Horizontal);
-					}
+						Orientation orientation = (Orientation)(args.NewValue);
+						ILayoutStrategy spCalendarLayoutStrategy;
 
-					// let the base know
-					ProcessOrientationChange();
-				}
+						spCalendarLayoutStrategy = LayoutStrategy;
+
+						CacheFirstVisibleElementBeforeOrientationChange();
+
+						// CalendarPanel orientation is the stacking direction. Which is the opposite of the
+						// virtualization direction.
+						if (orientation == Orientation.Horizontal)
+						{
+							((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetVirtualizationDirection(Orientation.Vertical);
+						}
+						else
+						{
+							((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetVirtualizationDirection(Orientation.Horizontal);
+						}
+
+						// let the base know
+						ProcessOrientationChange();
+					}
 					break;
 
 				case DependencyProperty rowsProperty when rowsProperty == CalendarPanel.RowsProperty:
-				{
-					int rows = 0;
-					ILayoutStrategy spCalendarLayoutStrategy;
+					{
+						int rows = 0;
+						ILayoutStrategy spCalendarLayoutStrategy;
 
-					rows = (int)args.NewValue;
-					spCalendarLayoutStrategy = LayoutStrategy;
-					global::System.Diagnostics.Debug.Assert(rows > 0); // guaranteed to be positive number
-					((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetRows(rows);
-					OnRowsOrColsChanged(Orientation.Vertical);
-				}
+						rows = (int)args.NewValue;
+						spCalendarLayoutStrategy = LayoutStrategy;
+						global::System.Diagnostics.Debug.Assert(rows > 0); // guaranteed to be positive number
+						((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetRows(rows);
+						OnRowsOrColsChanged(Orientation.Vertical);
+					}
 					break;
 
 				case DependencyProperty colsProperty when colsProperty == CalendarPanel.ColsProperty:
-				{
-					int cols = 0;
-					ILayoutStrategy spCalendarLayoutStrategy;
+					{
+						int cols = 0;
+						ILayoutStrategy spCalendarLayoutStrategy;
 
-					cols = (int)args.NewValue;
-					spCalendarLayoutStrategy = LayoutStrategy;
-					global::System.Diagnostics.Debug.Assert(cols > 0); // guaranteed to be positive number
-					((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetCols(cols);
-					OnRowsOrColsChanged(Orientation.Horizontal);
-				}
+						cols = (int)args.NewValue;
+						spCalendarLayoutStrategy = LayoutStrategy;
+						global::System.Diagnostics.Debug.Assert(cols > 0); // guaranteed to be positive number
+						((CalendarLayoutStrategy)spCalendarLayoutStrategy).SetCols(cols);
+						OnRowsOrColsChanged(Orientation.Horizontal);
+					}
 					break;
 
 				case DependencyProperty cacheLengthProperty when cacheLengthProperty == CalendarPanel.CacheLengthProperty:
-				{
-					double newCacheLength = (double)args.NewValue;
-					CacheLengthBase = newCacheLength;
-				}
+					{
+						double newCacheLength = (double)args.NewValue;
+						CacheLengthBase = newCacheLength;
+					}
 					break;
 
 				case DependencyProperty startIndexProperty when startIndexProperty == CalendarPanel.StartIndexProperty:
-				{
-					ILayoutStrategy spCalendarLayoutStrategy;
-					int startIndex = 0;
+					{
+						ILayoutStrategy spCalendarLayoutStrategy;
+						int startIndex = 0;
 
-					startIndex = (int)args.NewValue;
+						startIndex = (int)args.NewValue;
 
-					global::System.Diagnostics.Debug.Assert(startIndex >= 0);
+						global::System.Diagnostics.Debug.Assert(startIndex >= 0);
 
-					spCalendarLayoutStrategy = LayoutStrategy;
-					var table = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetIndexCorrectionTable();
-					table.SetCorrectionEntryForElementStartAt(startIndex);
+						spCalendarLayoutStrategy = LayoutStrategy;
+						var table = ((CalendarLayoutStrategy)spCalendarLayoutStrategy).GetIndexCorrectionTable();
+						table.SetCorrectionEntryForElementStartAt(startIndex);
 
-					InvalidateMeasure();
-				}
+						InvalidateMeasure();
+					}
 					break;
 
 				default:
@@ -321,7 +321,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					spParent = VisualTreeHelper.GetParent(this);
 					spParentAsSCP = spParent as ScrollContentPresenter;
-					if (spParentAsSCP is {})
+					if (spParentAsSCP is { })
 					{
 						((ScrollContentPresenter)spParentAsSCP).InvalidateMeasure();
 					}
@@ -378,14 +378,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				ignored = base_MeasureOverride(availableSize);
 
 				spChildAsIDO = ContainerFromIndex(ContainerManager.StartOfContainerVisualSection());
-				global::System.Diagnostics.Debug.Assert(spChildAsIDO is {});
+				global::System.Diagnostics.Debug.Assert(spChildAsIDO is { });
 			}
 
 			// there is at least one item in Panel, and the item has entered visual tree
 			// we are good to measure it to the desired size.
 			spItemAsI = spChildAsIDO as CalendarViewBaseItem;
 
-			if (spItemAsI is {})
+			if (spItemAsI is { })
 			{
 				spCalendarViewBaseItem = (CalendarViewBaseItem)spItemAsI;
 				// save the maintext
@@ -468,7 +468,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private void SetPanelDimension( int col, int row)
+		private void SetPanelDimension(int col, int row)
 		{
 			int actualRows = 0;
 			int actualCols = 0;
@@ -486,7 +486,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				spOwner = Owner;
 
 				// dimension changed, we should check if we need to update the snap point filter function.
-				if (spOwner is {})
+				if (spOwner is { })
 				{
 					bool canPanelShowFullScope = false;
 

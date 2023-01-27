@@ -20,7 +20,7 @@ public partial class ItemsSourceView : INotifyCollectionChanged
 {
 	public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-	private int m_cachedSize  =  -1;
+	private int m_cachedSize = -1;
 
 	#region IDataSource
 

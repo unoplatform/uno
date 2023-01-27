@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
 	[Sample("TextBox")]
 	public sealed partial class TextBox_Wrap : UserControl
-    {
+	{
 
 		public static readonly DependencyProperty LocalTextWrappingProperty = DependencyProperty.Register(
 		"LocalTextWrapping", typeof(TextWrapping), typeof(TextBox_Wrap), new PropertyMetadata(TextWrapping.Wrap));
@@ -32,8 +32,8 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 		}
 
 		public TextBox_Wrap()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 
 			textWrapBind.Text = textWrap.Text;
 		}

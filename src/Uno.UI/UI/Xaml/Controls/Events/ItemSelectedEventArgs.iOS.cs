@@ -4,15 +4,16 @@ namespace Windows.UI.Xaml.Controls
 {
 	public class ItemSelectedEventArgs : EventArgs
 	{
-		public ItemSelectedEventArgs (object item)
+		public ItemSelectedEventArgs(object item)
 		{
 			Item = item;
 		}
 
-		new public static readonly ItemSelectedEventArgs Empty = new ItemSelectedEventArgs (null);
+		new public static readonly ItemSelectedEventArgs Empty = new ItemSelectedEventArgs(null);
 
-		public object Item { 
-			get; 
+		public object Item
+		{
+			get;
 			private set;
 		}
 	}

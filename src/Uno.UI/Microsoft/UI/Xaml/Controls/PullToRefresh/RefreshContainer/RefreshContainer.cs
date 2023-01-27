@@ -16,9 +16,9 @@ public partial class RefreshContainer : ContentControl
 			// TODO Uno specific: We currently don't need to switch refresh info provider adapter.
 			return;
 		}
-		
+
 #if !__ANDROID__ && !__IOS__
-		m_refreshInfoProviderAdapter =  new ProgressRingRefreshInfoProviderAdapter(this);
+		m_refreshInfoProviderAdapter = new ProgressRingRefreshInfoProviderAdapter(this);
 #else
 		m_refreshInfoProviderAdapter = new NativeRefreshInfoProviderAdapter(this);
 #endif

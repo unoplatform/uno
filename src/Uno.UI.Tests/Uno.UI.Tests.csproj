@@ -2,9 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net461</TargetFrameworks>
 		<IsPackable>false</IsPackable>
-		<NoWarn>67</NoWarn>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -22,7 +20,6 @@
 		<DebugType>full</DebugType>
 		<Optimize>false</Optimize>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -35,7 +32,7 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
 		<PackageReference Include="MSTest.TestAdapter" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
@@ -112,6 +109,12 @@
 		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
 		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
 		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
+		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\AndroidResourceConverter.cs">
+			<Link>Resources\AndroidResourceConverter.cs</Link>
+		</Compile>
+		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\iOSResourceConverter.cs">
+			<Link>Resources\iOSResourceConverter.cs</Link>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />

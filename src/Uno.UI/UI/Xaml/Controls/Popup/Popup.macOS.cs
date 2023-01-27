@@ -11,162 +11,161 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives;
+
+public partial class Popup
 {
-	public partial class Popup
+	private NSView _mainWindowContent;
+
+	public NSView MainWindowContent
 	{
-		private NSView _mainWindowContent;
-
-		public NSView MainWindowContent
+		get
 		{
-			get
+			if (_mainWindowContent == null)
 			{
-				if (_mainWindowContent == null)
-				{
-					_mainWindowContent = NSApplication.SharedApplication.KeyWindow?.ContentView;
-				}
-
-				return _mainWindowContent;
+				_mainWindowContent = NSApplication.SharedApplication.KeyWindow?.ContentView;
 			}
+
+			return _mainWindowContent;
+		}
+	}
+
+	partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
+	{
+		if (previousPanel?.Superview != null)
+		{
+			// Remove the current child, if any.
+			previousPanel.Children.Clear();
+
+			previousPanel.RemoveFromSuperview();
 		}
 
-		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
+		if (newPanel != null)
 		{
-			if (previousPanel?.Superview != null)
+			if (Child != null)
 			{
-				// Remove the current child, if any.
-				previousPanel.Children.Clear();
-
-				previousPanel.RemoveFromSuperview();
-			}
-
-			if (newPanel != null)
-			{
-				if (Child != null)
+				// Make sure that the child does not find itself without a TemplatedParent
+				if (newPanel.TemplatedParent == null)
 				{
-					// Make sure that the child does not find itself without a TemplatedParent
-					if (newPanel.TemplatedParent == null)
-					{
-						newPanel.TemplatedParent = TemplatedParent;
-					}
-
-					newPanel.AddSubview(Child);
+					newPanel.TemplatedParent = TemplatedParent;
 				}
 
-				newPanel.Background = GetPanelBackground();
-
-				RegisterPopupPanel();
+				newPanel.AddSubview(Child);
 			}
-		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
+			newPanel.Background = GetPanelBackground();
 
 			RegisterPopupPanel();
 		}
+	}
 
-		private void RegisterPopupPanel()
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+		RegisterPopupPanel();
+	}
+
+	private void RegisterPopupPanel()
+	{
+		if (PopupPanel == null)
 		{
-			if (PopupPanel == null)
-			{
-				PopupPanel = new PopupPanel(this);
-			}			
+			PopupPanel = new PopupPanel(this);
+		}
 
-			if (PopupPanel.Superview == null)
+		if (PopupPanel.Superview == null)
+		{
+			MainWindowContent?.AddSubview(PopupPanel);
+		}
+	}
+
+	partial void OnUnloadedPartial()
+	{
+		PopupPanel?.RemoveFromSuperview();
+	}
+
+	partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
+	{
+		if (PopupPanel != null)
+		{
+			if (oldChild != null)
 			{
-				MainWindowContent?.AddSubview(PopupPanel);
+				PopupPanel.RemoveChild(oldChild);
+			}
+
+			if (newChild != null)
+			{
+				PopupPanel.AddSubview(newChild);
 			}
 		}
+	}
 
-		partial void OnUnloadedPartial()
+	partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
+	{
+		RegisterPopupPanel();
+
+		UpdateLightDismissLayer(newIsOpen);
+
+		// this is necessary as during initial measure the panel was Collapsed
+		// and got 0 available size from its parent (root Window element, usually a Frame)
+		// this will ensure the size of its child will be calculated properly
+		PopupPanel.OnInvalidateMeasure();
+
+		EnsureForward();
+	}
+
+	partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+	{
+		RegisterPopupPanel();
+
+		if (PopupPanel != null)
 		{
-			PopupPanel?.RemoveFromSuperview();
+			PopupPanel.Background = GetPanelBackground();
 		}
+	}
 
-		partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
+	private void UpdateLightDismissLayer(bool newIsOpen)
+	{
+		if (PopupPanel != null && PopupPanel.Superview != null)
 		{
-			if (PopupPanel != null)
+			if (newIsOpen)
 			{
-				if (oldChild != null)
+				if (PopupPanel.Bounds != MainWindowContent.Bounds)
 				{
-					PopupPanel.RemoveChild(oldChild);
+					// If the Bounds are different, the screen has probably been rotated.
+					// We always want the light dismiss layer to have the same bounds (and frame) as the window.
+					PopupPanel.Frame = MainWindowContent.Frame;
+					PopupPanel.Bounds = MainWindowContent.Bounds;
 				}
 
-				if (newChild != null)
-				{
-					PopupPanel.AddSubview(newChild);
-				}
+				PopupPanel.Visibility = Visibility.Visible;
 			}
-		}
-
-		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
-		{
-			RegisterPopupPanel();
-
-			UpdateLightDismissLayer(newIsOpen);
-
-			// this is necessary as during initial measure the panel was Collapsed
-			// and got 0 available size from its parent (root Window element, usually a Frame)
-			// this will ensure the size of its child will be calculated properly
-			PopupPanel.OnInvalidateMeasure();
-
-			EnsureForward();
-		}
-
-		partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled) 
-		{
-			RegisterPopupPanel();
-
-			if (PopupPanel != null)
+			else
 			{
-				PopupPanel.Background = GetPanelBackground();
+				PopupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
+	}
 
-		private void UpdateLightDismissLayer(bool newIsOpen)
+	/// <summary>
+	/// Ensure that Popup panel is forward-most in the window. This ensures it isn't hidden behind the main content, which can happen when
+	/// the Popup is created during initial launch.
+	/// </summary>
+	private void EnsureForward()
+	{
+		//macOS does not have BringSubviewToFront,
+		//solution based on https://stackoverflow.com/questions/4236304/os-x-version-of-bringsubviewtofront
+		if (PopupPanel.Layer.SuperLayer != null)
 		{
-			if (PopupPanel != null && PopupPanel.Superview != null)
-			{
-				if (newIsOpen)
-				{
-					if (PopupPanel.Bounds != MainWindowContent.Bounds)
-					{
-						// If the Bounds are different, the screen has probably been rotated.
-						// We always want the light dismiss layer to have the same bounds (and frame) as the window.
-						PopupPanel.Frame = MainWindowContent.Frame;
-						PopupPanel.Bounds = MainWindowContent.Bounds;						
-					}
-
-					PopupPanel.Visibility = Visibility.Visible;
-				}
-				else
-				{
-					PopupPanel.Visibility = Visibility.Collapsed;
-				}
-			}
+			var superlayer = PopupPanel.Layer.SuperLayer;
+			PopupPanel.Layer.RemoveFromSuperLayer();
+			superlayer.AddSublayer(PopupPanel.Layer);
 		}
-
-		/// <summary>
-		/// Ensure that Popup panel is forward-most in the window. This ensures it isn't hidden behind the main content, which can happen when
-		/// the Popup is created during initial launch.
-		/// </summary>
-		private void EnsureForward()
+		else if (PopupPanel.Superview != null)
 		{
-			//macOS does not have BringSubviewToFront,
-			//solution based on https://stackoverflow.com/questions/4236304/os-x-version-of-bringsubviewtofront
-			if (PopupPanel.Layer.SuperLayer != null)
-			{
-				var superlayer = PopupPanel.Layer.SuperLayer;
-				PopupPanel.Layer.RemoveFromSuperLayer();
-				superlayer.AddSublayer(PopupPanel.Layer);
-			}
-			else if(PopupPanel.Superview != null)
-			{				
-				var superview = PopupPanel.Superview;
-				PopupPanel.RemoveFromSuperview();
-				superview.AddSubview(PopupPanel);
-			}
+			var superview = PopupPanel.Superview;
+			PopupPanel.RemoveFromSuperview();
+			superview.AddSubview(PopupPanel);
 		}
 	}
 }

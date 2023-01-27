@@ -113,7 +113,7 @@ namespace Uno.Roslyn
 
 				var results = Compilation.GetSymbolsWithName(name, SymbolFilter.Type).OfType<INamedTypeSymbol>();
 
-				if(_namedSymbolsLookup.TryGetValue(name, out var metadataResults))
+				if (_namedSymbolsLookup.TryGetValue(name, out var metadataResults))
 				{
 					results = results.Concat(metadataResults);
 				}

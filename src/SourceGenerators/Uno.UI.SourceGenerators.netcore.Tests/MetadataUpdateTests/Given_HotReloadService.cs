@@ -21,11 +21,11 @@ public class Given_HotReloadService
 {
 	[DataTestMethod]
 	[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
-	public async Task HR(string name, Scenario? scenario)
+	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
 		if (scenario != null)
 		{
-			var results = await ApplyScenario(scenario.IsDebug, scenario.IsMono, name);
+			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, scenario.UseXamlReaderReload, name);
 
 			for (int i = 0; i < scenario.PassResults.Length; i++)
 			{
@@ -40,11 +40,18 @@ public class Given_HotReloadService
 		}
 	}
 
-	public record Scenario(bool IsDebug, bool IsMono, params PassResult[] PassResults)
+	public record ScenariosDescriptor(
+		Project[] Projects,
+		Scenario[] Scenarios);
+
+	public record Project(string Name, ProjectReference[]? ProjectReferences);
+	public record ProjectReference(string Name);
+	public record Scenario(bool IsDebug, bool IsMono, bool UseXamlReaderReload, params PassResult[] PassResults)
 	{
 		public override string ToString()
-			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")}";
+			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")},XR:{UseXamlReaderReload}";
 	}
+
 	public record PassResult(int MetadataUpdates, params DiagnosticsResult[] Diagnostics);
 	public record DiagnosticsResult(string Id);
 
@@ -55,22 +62,23 @@ public class Given_HotReloadService
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
-			//if (scenarioName != "When_Simple_Xaml_ResourceDictionary_Change_One")
+			//if (scenarioName != "When_Two_Projects_Single_Code_File_With_Code_Update")
 			//{
 			//	continue;
 			//}
 
 			if (File.Exists(path))
 			{
-				var scenarios = ReadScenarioConfig(path);
+				var scenariosDescriptor = ReadScenarioConfig(path);
 
-				if (scenarios != null)
+				if (scenariosDescriptor is not null)
 				{
-					foreach (var scenario in scenarios)
+					foreach (var scenario in scenariosDescriptor.Scenarios)
 					{
 						yield return new object?[] {
 							scenarioName,
-							scenario
+							scenario,
+							scenariosDescriptor.Projects
 						};
 					}
 				}
@@ -81,20 +89,20 @@ public class Given_HotReloadService
 			}
 		}
 
-		static Scenario[]? ReadScenarioConfig(string path)
+		static ScenariosDescriptor? ReadScenarioConfig(string path)
 		{
 			try
 			{
 				var detailsContent = File.ReadAllText(path);
 
-				var scenarios = System.Text.Json.JsonSerializer.Deserialize<Scenario[]>(
+				var scenarioDescriptor = System.Text.Json.JsonSerializer.Deserialize<ScenariosDescriptor>(
 					detailsContent,
 					new System.Text.Json.JsonSerializerOptions()
 					{
 						ReadCommentHandling = System.Text.Json.JsonCommentHandling.Skip,
 						AllowTrailingCommas = true
 					});
-				return scenarios;
+				return scenarioDescriptor;
 			}
 			catch (Exception e)
 			{
@@ -109,17 +117,32 @@ public class Given_HotReloadService
 			"MetadataUpdateTests",
 			"Scenarios");
 
-	private async Task<HotReloadWorkspace.UpdateResult[]> ApplyScenario(bool isDebugCompilation, bool isMono, [CallerMemberName] string? name = null)
+	private async Task<HotReloadWorkspace.UpdateResult[]> ApplyScenario(
+		Project[]? projects
+		, bool isDebugCompilation
+		, bool isMono
+		, bool useXamlReaderReload
+		, [CallerMemberName] string? name = null)
 	{
-		if(name is null)
+		if (name is null)
 		{
 			throw new InvalidOperationException($"A test scenario name must be provided.");
 		}
 
 		var scenarioFolder = Path.Combine(ScenariosFolder, name);
-		
-		HotReloadWorkspace SUT = new(isDebugCompilation, isMono);
+
+		HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
 		List<HotReloadWorkspace.UpdateResult> results = new();
+
+		if (projects is not null)
+		{
+			foreach (var project in projects)
+			{
+				SUT.AddProject(
+					project.Name
+					, (project.ProjectReferences ?? Array.Empty<ProjectReference>()).Select(r => r.Name).ToArray());
+			}
+		}
 
 		var steps = Directory
 			.GetFiles(scenarioFolder, "*.*", SearchOption.AllDirectories)
@@ -131,13 +154,13 @@ public class Given_HotReloadService
 		{
 			foreach (var file in step)
 			{
-				if(file == Path.Combine(scenarioFolder, "Scenario.json"))
+				if (file == Path.Combine(scenarioFolder, "Scenario.json"))
 				{
 					continue;
 				}
 
 				var pathParts = Path.GetRelativePath(scenarioFolder, file).Split(Path.DirectorySeparatorChar);
-				
+
 				var fileContent = File.ReadAllText(file);
 
 				if (Path.GetExtension(file) == ".cs")
@@ -150,7 +173,7 @@ public class Given_HotReloadService
 				}
 			}
 
-			if(index++ == 0)
+			if (index++ == 0)
 			{
 				await SUT.Initialize(CancellationToken.None);
 			}
@@ -159,7 +182,7 @@ public class Given_HotReloadService
 				results.Add(await SUT.Update());
 			}
 		}
-		
+
 		return results.ToArray();
 	}
 }

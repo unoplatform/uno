@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class CarouselPanel : VirtualizingPanel
 	{
 		private readonly ItemsStackPanelLayout _layout = new ItemsStackPanelLayout();
-		
+
 		public CarouselPanel()
 		{
 			_layout.Initialize(this);

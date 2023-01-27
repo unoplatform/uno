@@ -158,6 +158,6 @@
     </ImageAsset>
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" Condition="Exists('..\BlankApp.Shared\BlankApp.Shared.projitems')" />
+  <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

@@ -1,31 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-		
+
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
@@ -36,13 +31,9 @@
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-	
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -61,7 +52,7 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -69,7 +60,7 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-	
+
 	<ItemGroup Condition="'$(DocsGeneration)'=='' and $([MSBuild]::IsOsPlatform('Windows'))">
 		<ProjectReference Include="..\Uno.UI.RemoteControl.VS\Uno.UI.RemoteControl.VS.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>

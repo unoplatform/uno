@@ -4,7 +4,7 @@
 		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
     <Authors>nventive</Authors>
     <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
@@ -12,22 +12,20 @@
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
-		
+
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
   </PropertyGroup>
-	
+
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
@@ -36,7 +34,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

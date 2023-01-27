@@ -1,9 +1,11 @@
 #nullable enable
 
+using System;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml;
 
@@ -56,7 +58,7 @@ public sealed partial class XamlRoot
 			{
 				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
 				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
-				return new Size(width,  height);
+				return new Size(width, height);
 			}
 
 			return default;
@@ -77,7 +79,7 @@ public sealed partial class XamlRoot
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)
 			{
 				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
-				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;				
+				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
 				return new Rect(0, 0, width, height);
 			}
 
@@ -105,5 +107,36 @@ public sealed partial class XamlRoot
 	internal void NotifyChanged()
 	{
 		Changed?.Invoke(this, new XamlRootChangedEventArgs());
+	}
+
+	internal static XamlRoot? GetForElement(DependencyObject element)
+	{
+		XamlRoot? result = null;
+
+		var visualTree = VisualTree.GetForElement(element);
+		if (visualTree is not null)
+		{
+			result = visualTree.GetOrCreateXamlRoot();
+		}
+
+		return result;
+	}
+
+	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
+	{
+		if (currentRoot == newRoot)
+		{
+			return;
+		}
+
+		if (currentRoot is not null)
+		{
+			throw new InvalidOperationException("Cannot change XamlRoot for existing element");
+		}
+
+		if (newRoot is not null)
+		{
+			element.SetVisualTree(newRoot.VisualTree);
+		}
 	}
 }

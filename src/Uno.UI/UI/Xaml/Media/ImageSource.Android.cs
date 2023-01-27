@@ -112,11 +112,6 @@ namespace Windows.UI.Xaml.Media
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
 
-			if (uri.Host is { Length: > 0 } host)
-			{
-				ResourceString = host.ToLowerInvariant() + "/" + ResourceString.TrimStart("/");
-			}
-
 			ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
 		}
 

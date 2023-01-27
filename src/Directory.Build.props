@@ -8,6 +8,7 @@
     <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
     <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
+
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
@@ -61,7 +62,7 @@
 
   <ItemGroup>
     <!--This override is used to validate the use of specific version of the C# Compiler-->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.4.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.5.0-2.final" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -188,33 +189,33 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <IsMonoAndroid>false</IsMonoAndroid>
-    <IsMonoAndroid Condition="
+    <IsAndroid>false</IsAndroid>
+    <IsAndroid Condition="
 		$(TargetFramework.ToLower().StartsWith('monoandroid'))
 		or '$(TargetFramework)'=='net6.0-android'
 		or '$(TargetFramework)'=='net7.0-android'
-		">true</IsMonoAndroid>
+		">true</IsAndroid>
 
-    <IsXamarinIOS>false</IsXamarinIOS>
-    <IsXamarinIOS Condition="
+    <IsIOS>false</IsIOS>
+    <IsIOS Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinios'))
 		or '$(TargetFramework)'=='net6.0-ios'
 		or '$(TargetFramework)'=='net7.0-ios'
-		">true</IsXamarinIOS>
+		">true</IsIOS>
 
-    <IsXamarinMac>false</IsXamarinMac>
-    <IsXamarinMac Condition="
+    <IsMacOS>false</IsMacOS>
+    <IsMacOS Condition="
 		$(TargetFramework.ToLower().StartsWith('xamarinmac'))
 		or '$(TargetFramework)'=='net6.0-macos'
 		or '$(TargetFramework)'=='net7.0-macos'
-		">true</IsXamarinMac>
+		">true</IsMacOS>
   </PropertyGroup>
 
   <PropertyGroup>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
-    <WarningsAsErrors>$(WarningsAsErrors);nullable;CS8032;CS0168;CS0169;CS0618;CS1998;CS4014</WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -229,10 +230,12 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
         <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+        <!-- Enable CodeStyle analyzers -->
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
       </PropertyGroup>
       <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22403.2" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
       </ItemGroup>
     </When>
     <Otherwise>

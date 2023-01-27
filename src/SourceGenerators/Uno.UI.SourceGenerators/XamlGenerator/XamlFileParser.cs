@@ -52,14 +52,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_metadataHelper = roslynMetadataHelper;
 		}
 
-		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, CancellationToken cancellationToken)
+		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, string projectDirectory, CancellationToken cancellationToken)
 		{
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(cancellationToken)
-				.Select(f => ParseFile(f.File, cancellationToken))
+				.Select(f => InnerParseFile(f, cancellationToken))
 				.Where(f => f != null)
 				.ToArray()!;
+
+			XamlFileDefinition? InnerParseFile(MSBuildItem fileItem, CancellationToken cancellationToken)
+			{
+				// Generate an actual TargetPath to be used with BaseUri, so that
+				// it maps to the actual path in the app package.
+				var targetFilePath = fileItem.GetMetadataValue("TargetPath") is { Length: > 0 } targetPath
+					? targetPath
+					: fileItem.GetMetadataValue("Link") is { Length: > 0 } link
+						? link
+						: fileItem.GetMetadataValue("Identity").Replace(projectDirectory, "");
+
+				return ParseFile(fileItem.File, targetFilePath.Replace("\\", "/"), cancellationToken);
+			}
 		}
 
 		private static void ScavengeCache()
@@ -67,7 +80,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 		}
 
-		private XamlFileDefinition? ParseFile(AdditionalText file, CancellationToken cancellationToken)
+		private XamlFileDefinition? ParseFile(AdditionalText file, string targetFilePath, CancellationToken cancellationToken)
 		{
 			try
 			{
@@ -107,7 +120,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file.Path);
+						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
 						if (!disableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -391,11 +404,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return (included, excluded, disableCaching);
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file)
+		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath)
 		{
 			WriteState(reader);
 
-			var xamlFile = new XamlFileDefinition(file);
+			var xamlFile = new XamlFileDefinition(file, targetFilePath);
 
 			do
 			{

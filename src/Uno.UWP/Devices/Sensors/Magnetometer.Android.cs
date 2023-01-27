@@ -81,7 +81,7 @@ namespace Windows.Devices.Sensors
 				_magnetometer = magnetometer;
 			}
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy) =>
+			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy) =>
 				_lastAccuracy = accuracy;
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent e)
@@ -107,8 +107,8 @@ namespace Windows.Devices.Sensors
 					case SensorStatus.AccuracyHigh:
 						return MagnetometerAccuracy.High;
 					case SensorStatus.AccuracyLow:
-					case SensorStatus.AccuracyMedium:						
-						return MagnetometerAccuracy.Approximate;					
+					case SensorStatus.AccuracyMedium:
+						return MagnetometerAccuracy.Approximate;
 					case SensorStatus.NoContact:
 					case SensorStatus.Unreliable:
 					default:

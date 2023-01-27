@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FramePages;
+using Uno.UI.RuntimeTests.FramePages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static Private.Infrastructure.TestServices;

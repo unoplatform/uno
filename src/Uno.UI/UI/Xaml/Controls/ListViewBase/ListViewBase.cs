@@ -683,7 +683,7 @@ namespace Windows.UI.Xaml.Controls
 		private void CleanUpContainers(int startingIndex, int length)
 		{
 			if (ShouldItemsControlManageChildren) return;
-			
+
 			foreach (var container in MaterializedContainers)
 			{
 				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
@@ -692,6 +692,13 @@ namespace Windows.UI.Xaml.Controls
 					CleanUpContainer(container);
 				}
 			}
+		}
+
+		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnItemsSourceChanged(e);
+
+			InitializeDataSourceSelectionInfo();
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -908,18 +915,26 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsSelected(int index)
 		{
-			switch (SelectionMode)
+			if (SelectionMode == ListViewSelectionMode.None)
 			{
-				case ListViewSelectionMode.None:
-					return false;
-				case ListViewSelectionMode.Single:
-					return index == SelectedIndex;
-				case ListViewSelectionMode.Multiple:
-				case ListViewSelectionMode.Extended:
-					return SelectedItems.Any(item => IndexFromItem(item).Equals(index));
+				return false;
 			}
-
-			return false;
+			else if (DataSourceAsSelectionInfo is { } info)
+			{
+				return info.IsSelected(index);
+			}
+			else if (SelectionMode == ListViewSelectionMode.Single)
+			{
+				return index == SelectedIndex;
+			}
+			else if (SelectionMode is ListViewSelectionMode.Multiple or ListViewSelectionMode.Extended)
+			{
+				return SelectedItems.Any(item => IndexFromItem(item).Equals(index));
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -958,7 +973,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool SourceHasMoreItems => (GetItems() is ISupportIncrementalLoading incrementalSource && incrementalSource.HasMoreItems) ||
 			(GetItems() is ICollectionView collectionView && collectionView.HasMoreItems);
-
 
 		private void TryLoadMoreItemsInner(int count)
 		{

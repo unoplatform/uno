@@ -4,9 +4,10 @@ using Uno;
 namespace Windows.Security.Credentials
 {
 	[NotImplemented]
-	/* sealed */ partial class PasswordVault
+	/* sealed */
+	partial class PasswordVault
 	{
-		[NotImplemented] 
+		[NotImplemented]
 		public PasswordVault()
 		{
 			throw new NotImplementedException();

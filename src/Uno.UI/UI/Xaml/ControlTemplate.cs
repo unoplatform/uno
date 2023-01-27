@@ -42,7 +42,8 @@ namespace Windows.UI.Xaml.Controls
 		public static implicit operator ControlTemplate(Func<View>? obj)
 			=> new ControlTemplate(obj);
 
-		public Type? TargetType { 
+		public Type? TargetType
+		{
 			get;
 			set;
 		}

@@ -17,14 +17,14 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.Flyout
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Flyout_Local : Windows.UI.Xaml.Controls.Flyout
-    {
-        public Flyout_Local()
-        {
-            this.InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class Flyout_Local : Windows.UI.Xaml.Controls.Flyout
+	{
+		public Flyout_Local()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

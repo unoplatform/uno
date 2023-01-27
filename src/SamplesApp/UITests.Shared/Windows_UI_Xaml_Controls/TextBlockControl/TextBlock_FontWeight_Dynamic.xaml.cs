@@ -12,11 +12,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 		int CurrentIndex;
 		List<FontWeight> Weights;
 
-        public TextBlock_FontWeight_Dynamic()
-        {
-            this.InitializeComponent();
+		public TextBlock_FontWeight_Dynamic()
+		{
+			this.InitializeComponent();
 			this.InitWeights();
-        }
+		}
 
 		private void InitWeights()
 		{
@@ -29,8 +29,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 			Weights.Add(FontWeights.Black);
 		}
 
-        private void OnClick(object sender, object args)
-        {
+		private void OnClick(object sender, object args)
+		{
 			ChangeFontWeight();
 		}
 

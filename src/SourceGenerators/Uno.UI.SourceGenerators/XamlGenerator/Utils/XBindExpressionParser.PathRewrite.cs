@@ -35,7 +35,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		/// </remarks>
 		internal static string RewriteDocumentPaths(string markup)
 		{
-			var result =DocumentPaths.Replace(
+			var result = DocumentPaths.Replace(
 				markup,
 				e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\""
 			);
@@ -63,7 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		private static string RewriteParameters(string value)
 		{
-			var parts = value.Split(',').SelectToArray(v => v.Replace("^'" , XBindSubstitute));
+			var parts = value.Split(',').SelectToArray(v => v.Replace("^'", XBindSubstitute));
 
 			if (parts.Length != 0)
 			{
@@ -130,7 +130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				parenthesisCount += parts[i].Count(c => c == '(');
 				parenthesisCount -= parts[i].Count(c => c == ')');
 
-				if(parenthesisCount == 0)
+				if (parenthesisCount == 0)
 				{
 					break;
 				}

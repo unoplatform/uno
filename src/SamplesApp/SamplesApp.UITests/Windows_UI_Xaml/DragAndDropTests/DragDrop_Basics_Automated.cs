@@ -84,7 +84,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			var raw = output.GetDependencyPropertyValue<string>("Text");
 			var logEntries = raw
-				.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 				.Select(op =>
 				{
 					var match = _logEntry.Match(op);

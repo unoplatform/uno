@@ -2,7 +2,7 @@
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	public partial class CoreDropOperationTargetRequestedEventArgs 
+	public partial class CoreDropOperationTargetRequestedEventArgs
 	{
 		internal ICoreDropOperationTarget? Target { get; private set; }
 

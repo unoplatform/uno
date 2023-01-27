@@ -37,11 +37,6 @@ public partial class ImageSource
 			// UWP supports backward slash in path for directory separators.
 			.Replace("\\", "/");
 
-		if (uri.Host is { Length: > 0 } host)
-		{
-			path = host.ToLowerInvariant() + "/" + path.TrimStart("/");
-		}
-
 		BundlePath = path;
 
 		BundleName = uri != null
@@ -61,7 +56,7 @@ public partial class ImageSource
 
 		_imageData = ImageData.Empty;
 	}
-	
+
 	/// <summary>
 	/// Similar to Dispose, but the ImageSource can still be used in the future.
 	/// </summary>

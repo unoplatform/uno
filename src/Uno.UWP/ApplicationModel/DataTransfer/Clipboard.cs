@@ -5,7 +5,7 @@ using System;
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class Clipboard
-    {
+	{
 		private static object _syncLock = new object();
 		private static EventHandler<object> _contentChanged;
 
@@ -44,10 +44,12 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__ || __WASM__
 		private static void OnContentChanged()
 		{
 			_contentChanged?.Invoke(null, null);
 		}
+#endif
 	}
 }
 #endif

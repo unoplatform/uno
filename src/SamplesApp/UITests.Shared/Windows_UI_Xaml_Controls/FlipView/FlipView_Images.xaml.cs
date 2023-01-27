@@ -18,10 +18,10 @@ namespace UITests.Windows_UI_Xaml_Controls.FlipView
 {
 	[SampleControlInfo("FlipView", "FlipView_Images")]
 	public sealed partial class FlipView_Images : UserControl
-    {
-        public FlipView_Images()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public FlipView_Images()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

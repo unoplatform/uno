@@ -20,18 +20,18 @@ using _TextBox = Windows.UI.Xaml.Controls.TextBox;
 namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[Sample("Dialogs", IsManualTest = true, IgnoreInSnapshotTests = true)]
-    public sealed partial class ContentDialog_TextBox : UserControl
-    {
+	public sealed partial class ContentDialog_TextBox : UserControl
+	{
 #if __ANDROID__
 		private bool _initialEnableNativePopups;
 #endif
 
 		public ContentDialog_TextBox()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 			Loaded += OnLoaded;
 			Unloaded += OnUnloaded;
-        }
+		}
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{

@@ -131,7 +131,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-    <Page>
+    </Page>
     ```
 1. Now we'll add a few new controls that are defined in the Toolkit.UI package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
     ```xml
@@ -178,7 +178,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 > - Check out the [Uno.Gallery web app](https://gallery.platform.uno/) (Click on the `<>` button to view xaml source)
 
 ### Section 3: Overriding Color Palette
-1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `[MyApp]` project
 1. Add a new Resource Dictionary `ColorPaletteOverride.xaml` under `Styles\Application\`
 1. Replace the content of that res-dict with the source from [here](https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Material/Styles/Application/ColorPalette.xaml)
 1. Make a few changes to the color:
@@ -254,7 +254,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 By default, Uno.Material will attempt to apply a FontFamily with a name of `Roboto` to its controls. This FontFamily resource is given the key `MaterialFontFamily`. If there is no FontFamily with name `Roboto` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<MaterialFonts />` initialization within your `App.xaml`.
 
 1. Install your custom font following the steps [here](../features/custom-fonts.md)
-1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `[MyApp]` project
 1. Add a new Resource Dictionary `MaterialFontsOverride.xaml` under `Styles\Application\`
 1. Add your custom font with the resource key `MaterialFontFamily`:
     ```xml

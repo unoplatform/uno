@@ -16,36 +16,36 @@ using Uno.UI.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent
 {
-    public sealed partial class CommandBar_Page1 : Page
-    {
-        public CommandBar_Page1()
-        {
-            this.InitializeComponent();
-            this.Loaded += OnLoaded;
-        }
+	public sealed partial class CommandBar_Page1 : Page
+	{
+		public CommandBar_Page1()
+		{
+			this.InitializeComponent();
+			this.Loaded += OnLoaded;
+		}
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
+		private void OnLoaded(object sender, RoutedEventArgs e)
+		{
 #if __IOS__
-	        UIView parent = this;
-	        while (parent.HasParent())
-	        {
-		        parent = parent.Superview;
-	        }
+			UIView parent = this;
+			while (parent.HasParent())
+			{
+				parent = parent.Superview;
+			}
 
-	        var titleViewChild  = parent.FindFirstChild<TitleView>()?.Child;
+			var titleViewChild = parent.FindFirstChild<TitleView>()?.Child;
 
-	        var height = titleViewChild?.Frame.Height ?? 0;
-	        var width = titleViewChild?.Frame.Width ?? 0;
+			var height = titleViewChild?.Frame.Height ?? 0;
+			var width = titleViewChild?.Frame.Width ?? 0;
 
-	        var expectedHeight = titleViewChild?.DesiredSize.Height ?? 0;
-	        var expectedWidth = titleViewChild?.DesiredSize.Width ?? 0;
+			var expectedHeight = titleViewChild?.DesiredSize.Height ?? 0;
+			var expectedWidth = titleViewChild?.DesiredSize.Width ?? 0;
 
-	        ExpectedSize.Text = $"Title Content desired size: ({expectedWidth}x{expectedHeight})";
-	        CurrentSize.Text = $"Title Content current size: ({width}x{height})";
+			ExpectedSize.Text = $"Title Content desired size: ({expectedWidth}x{expectedHeight})";
+			CurrentSize.Text = $"Title Content current size: ({width}x{height})";
 
-	        Result.Text = height > 0 && width > 0 ? "PASSED" : "FAILED";
+			Result.Text = height > 0 && width > 0 ? "PASSED" : "FAILED";
 #endif
-        }
-    }
+		}
+	}
 }

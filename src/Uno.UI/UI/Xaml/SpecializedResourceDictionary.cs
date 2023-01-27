@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Uno.Foundation;
 
@@ -117,7 +118,7 @@ namespace Windows.UI.Xaml
 		private Entry[] _entries;
 #if TARGET_64BIT
 		private ulong _fastModMultiplier;
-		private static bool Is64Bits = IntPtr.Size >= 8
+		private static bool Is64Bits = Marshal.SizeOf(typeof(IntPtr)) >= 8
 #if __WASM__
 			|| WebAssemblyRuntime.IsWebAssembly;
 #else

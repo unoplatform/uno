@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public UIElement GetOrCreateElementAt(int index)
 			=> GetOrCreateElementAtCore(index, ElementRealizationOptions.None);
 
-		public UIElement GetOrCreateElementAt(int index, ElementRealizationOptions  options)
+		public UIElement GetOrCreateElementAt(int index, ElementRealizationOptions options)
 			=> GetOrCreateElementAtCore(index, options);
 
 		public void RecycleElement(UIElement element)

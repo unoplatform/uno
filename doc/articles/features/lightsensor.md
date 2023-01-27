@@ -23,8 +23,8 @@
 ### Capturing sensor readings
 
 ```csharp
-var LightSensor = LightSensor.GetDefault();
-LightSensor.ReadingChanged += LightSensor_ReadingChanged;
+var lightSensor = LightSensor.GetDefault();
+lightSensor.ReadingChanged += LightSensor_ReadingChanged;
 
 private async void LightSensor_ReadingChanged(LightSensor sender, LightSensorReadingChangedEventArgs args)
 {
@@ -42,5 +42,5 @@ private async void LightSensor_ReadingChanged(LightSensor sender, LightSensorRea
 ### Unsubscribing from the readings
 
 ```csharp
-LightSensor.ReadingChanged -= LightSensor_ReadingChanged;
+lightSensor.ReadingChanged -= LightSensor_ReadingChanged;
 ```

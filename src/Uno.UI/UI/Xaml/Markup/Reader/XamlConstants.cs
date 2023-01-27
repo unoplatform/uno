@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Windows.UI.Xaml.Markup.Reader
 {
-    internal static class XamlConstants
+	internal static class XamlConstants
 	{
 		public const string XamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
 		public const string PresentationXamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		public const string BundleResourcePrefix = "ms-appx:///";
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
-		public const string RootWUINamespace = "Windows.UI";
+		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
 		public const string RootMUINamespace = "Windows.UI";
 		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			public const string Panel = Namespaces.Controls + ".Panel";
 			public const string Button = Namespaces.Controls + ".Button";
 			public const string TextBox = Namespaces.Controls + ".TextBox";
-			
+
 			// Documents
 			public const string Run = Namespaces.Documents + ".Run";
 			public const string Span = Namespaces.Documents + ".Span";

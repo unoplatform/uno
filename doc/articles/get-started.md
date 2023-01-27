@@ -1,6 +1,8 @@
 ### Select your development environment
 
-Welcome to Uno Platform! You'll be creating cross-platform applications with XAML and C# in no time.
+Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and C# in no time. 
+
+The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials. 
 
 To set up your development environment, first select the operating system you're developing on.
 
@@ -19,12 +21,12 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
  #### Target platform coverage by IDE on Windows
 
-|                                                  | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
-|--------------------------------------------------|----------------------------|---------|-----|-------------------|---------------- |------------------|------------------|-----------------------|
-| [**Visual Studio**](get-started-vs-2022.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
-| [**VS Code**](get-started-vscode.md)             | ❌                         | ❌     | ❌  | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
-| [**Codespaces / Gitpod**](get-started-vscode.md) | ❌                         | ❌     | ❌  | ✔️               | ❌             | ✔️               | ✔️              | ✔️                   |
-| [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌             | ✔️             | ✔️              | ✔️                   |
+|                                                  | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|--------------------------------------------------|----------------------------|---------|-----|-------------------|--------------|------------------|------------------|-----------------------|
+| [**Visual Studio**](get-started-vs-2022.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
+| [**VS Code**](get-started-vscode.md)             | ❌                         | ❌     | ❌  | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
+| [**Codespaces / Gitpod**](get-started-vscode.md) | ❌                         | ❌     | ❌  | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
+| [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️             | ✔️              | ✔️                   |
 
 
  † You'll need to be connected to a Mac to run and debug iOS apps from Windows.
@@ -41,7 +43,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 
  #### Target platform coverage by IDE on macOS
 
-|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |---------------------------------------------------|-------------------------|---------|-----|-------------------|-------|--------|-------------------|-----------------------|
 | [**Visual Studio for Mac**](get-started-vsmac.md) | ❌                      | ✔️     | ✔️ | ❌                | ✔️    | ✔️    | ✔️               | ❌                   |
 | [**VS Code**](get-started-vscode.md)              | ❌                      | ❌     | ❌ | ✔️                | ❌    | ✔️    | ✔️               | ❌                   |
@@ -61,10 +63,10 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 
  #### Target platform coverage by IDE on Linux
 
-|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | macOS (Xamarin) | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |---------------------------------------------------|------------------------|---------|-----|--------------------|-------|-------|------------------|-----------------------|
 | [**VS Code**](get-started-vscode.md)              | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
-| [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ✔️                    |
+| [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
 | [**JetBrains Rider**](get-started-rider.md)       | ❌                    | ❌†      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
 
 † Notes:

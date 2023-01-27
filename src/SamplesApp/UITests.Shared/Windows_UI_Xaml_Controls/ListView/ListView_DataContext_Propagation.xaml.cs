@@ -18,17 +18,17 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-    [SampleControlInfo("ListView", "ListView_DataContext_Propagation")]
-    public sealed partial class ListView_DataContext_Propagation : UserControl
-    {
-        public ListView_DataContext_Propagation()
-        {
-            this.InitializeComponent();
-        }
+	[SampleControlInfo("ListView", "ListView_DataContext_Propagation")]
+	public sealed partial class ListView_DataContext_Propagation : UserControl
+	{
+		public ListView_DataContext_Propagation()
+		{
+			this.InitializeComponent();
+		}
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            topGrid.DataContext = "Button Clicked " + sender.ToString();
-        }
-    }
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			topGrid.DataContext = "Button Clicked " + sender.ToString();
+		}
+	}
 }

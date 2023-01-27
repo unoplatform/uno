@@ -32,7 +32,9 @@ namespace Uno.UI.DataBindingAdapters
 
 			if (textView != null)
 			{
+#pragma warning disable CA1422 // Validate platform compatibility
 				return textView.Context.Resources.GetColor(textView.TextColors.DefaultColor);
+#pragma warning restore CA1422 // Validate platform compatibility
 			}
 
 			return null;

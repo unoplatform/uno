@@ -3,14 +3,11 @@
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>xamarinmac20;MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworksCI>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
@@ -26,7 +23,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
+	<ItemGroup Condition=" $(IsAndroid) or $(IsIOS) or $(IsMacOS) ">
 		<Reference Include="System.Numerics" />
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
@@ -38,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'MonoAndroid12.0' ">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="4.1.0" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="4.2.2" PrivateAssets="none" />
 		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 	</ItemGroup>
 

@@ -4,13 +4,10 @@
 		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;uap10.0.18362</TargetFrameworks>
 		<TargetFrameworksCI>xamarinmac20;MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;uap10.0.18362</TargetFrameworksCI>
 		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<Authors>nventive</Authors>

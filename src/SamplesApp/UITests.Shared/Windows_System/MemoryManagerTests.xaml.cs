@@ -9,10 +9,10 @@ namespace UITests.Shared.Windows_System
 {
 	[Sample("Windows.System")]
 	public sealed partial class MemoryManagerTests : Page
-    {
-        public MemoryManagerTests()
-        {
-            this.InitializeComponent();
+	{
+		public MemoryManagerTests()
+		{
+			this.InitializeComponent();
 		}
 
 		public void SetValueMemoryManager()

@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class ListViewBaseHeaderItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
+	public partial class ListViewBaseHeaderItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
 		[global::Uno.NotImplemented]
-		protected ListViewBaseHeaderItemAutomationPeer( object owner)
+		protected ListViewBaseHeaderItemAutomationPeer(object owner)
 		{
 			throw new global::System.NotSupportedException();
 		}

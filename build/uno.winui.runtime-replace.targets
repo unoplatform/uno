@@ -11,6 +11,10 @@
 		</PropertyGroup>
 
 		<ItemGroup>
+			<_UnoRuntimeEnabledPackage2 Include="@(UnoRuntimeEnabledPackage)"/>
+		</ItemGroup>
+
+		<ItemGroup>
 
 			<!-- Create a list of all copy local items that are part of the UnoRuntimeEnabledPackage items -->
 			<_RuntimeCopyLocalItemsToRemove Include="@(RuntimeCopyLocalItems)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
@@ -28,6 +32,9 @@
 			-->
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				NuGetPackageId="%(Identity)" />
+			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
 				NuGetPackageId="%(Identity)" />
 
@@ -42,11 +49,15 @@
 
 			<!-- Publish pdb files -->
 			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 
 			<!-- 
 			Uno 4.6 or later convention: netstandard2.0, net7.0 or later (uno-runtime/[TargetFramework]/**)
 			-->
 			<!-- Add the files for the current selected runtime identifier -->
+			<RuntimeCopyLocalItemsMerged
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				NuGetPackageId="%(Identity)" />
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
 				NuGetPackageId="%(Identity)" />
@@ -64,6 +75,7 @@
 				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
 
 			<!-- Publish pdb files -->
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 		</ItemGroup>
 
@@ -74,7 +86,7 @@
 
 	<!-- Force a rebuild on runtime files changes -->
 	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
-		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../../uno-runtime/*" />
+		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/uno-runtime/*" />
 	</ItemGroup>
 
 

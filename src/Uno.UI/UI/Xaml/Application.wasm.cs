@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 			var window = Windows.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
-				application?.RaiseLeavingBackground(()=>
+				application?.RaiseLeavingBackground(() =>
 				{
 					window?.OnVisibilityChanged(true);
 					window?.OnActivated(CoreWindowActivationState.CodeActivated);

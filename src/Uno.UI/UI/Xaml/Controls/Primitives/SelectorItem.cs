@@ -23,9 +23,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string Pressed = "Pressed";
 			public const string OverSelected = "PointerOverSelected"; // "SelectedPointerOver" for ListBoxItem, ComboBoxItem and PivotHeaderItem
 			public const string PressedSelected = "PressedSelected"; // "SelectedPressed" for ListBoxItem, ComboBoxItem and PivotHeaderItem
-			// On ListViewItem and GridViewItem we also have this state declared in default style,
-			// however it seems to never been activated
-			// public const string OverPressed = "PointerOverPressed";
+																	 // On ListViewItem and GridViewItem we also have this state declared in default style,
+																	 // however it seems to never been activated
+																	 // public const string OverPressed = "PointerOverPressed";
 		}
 
 		private static class DisabledStates
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			UpdateCommonStates();
 
-			Selector?.OnSelectorItemIsSelectedChanged(this, oldIsSelected, newIsSelected);
+			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
 		}
 
 		private void UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)

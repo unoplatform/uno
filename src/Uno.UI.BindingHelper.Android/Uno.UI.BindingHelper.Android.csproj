@@ -22,9 +22,7 @@
 		<_AndroidGenerateManagedBindings>true</_AndroidGenerateManagedBindings>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
 	<PropertyGroup>
@@ -84,19 +82,6 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
-	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml" Condition="'$(MSBuildVersion)' &lt; '16.8' and !$([MSBuild]::IsOsPlatform(OSX))">
-
-		<!--
-		This is required to ensure the first pass of the BindingsGenerator task is
-		executed properly (inside of ExportJarToXml). If not, the second pass in the
-		GenerateBindings target is not given proper api mappings, ending in the generation
-		of an empty assembly.
-		-->
-
-		<Delete Files="$(IntermediateOutputPath)\api.xml" />
-	</Target>
-
 	<ItemGroup>
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings" />
@@ -117,8 +102,6 @@
 		</ItemGroup>
 		<PropertyGroup>
 			<_JavaVersion>1.8</_JavaVersion>
-
-			<_JavaVersion Condition="'$(MSBuildVersion)' &lt; '15.4'">1.7</_JavaVersion>
 
 			<_JavaCBinPath>javac</_JavaCBinPath>
 			<_JavaCBinPath Condition="Exists('$(_JavaSdkDirectory)bin\javac.exe')">$(_JavaSdkDirectory)bin\javac.exe</_JavaCBinPath>
@@ -156,9 +139,9 @@
 
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="$(IsMonoAndroid)">
+	<ItemGroup Condition="$(IsAndroid)">
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsMonoAndroid)" />
+	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsAndroid)" />
 
 </Project>

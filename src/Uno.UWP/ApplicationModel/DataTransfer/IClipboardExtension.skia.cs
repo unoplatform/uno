@@ -5,7 +5,7 @@ using Windows.ApplicationModel.DataTransfer;
 namespace Uno.ApplicationModel.DataTransfer
 {
 	internal interface IClipboardExtension
-    {
+	{
 		event EventHandler<object> ContentChanged;
 		void StartContentChanged();
 		void StopContentChanged();

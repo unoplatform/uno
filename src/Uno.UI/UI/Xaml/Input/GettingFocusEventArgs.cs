@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// Gets the last focused object.
 		/// </summary>
-		public DependencyObject? OldFocusedElement { get; }		
+		public DependencyObject? OldFocusedElement { get; }
 
 		/// <summary>
 		/// Gets the unique ID generated when a focus movement event is initiated.

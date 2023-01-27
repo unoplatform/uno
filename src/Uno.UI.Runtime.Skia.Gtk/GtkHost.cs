@@ -87,7 +87,11 @@ namespace Uno.UI.Runtime.Skia
 		{
 			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
 
-			Gtk.Application.Init();
+			if (!InitializeGtk())
+			{
+				return;
+			}
+			
 			SetupTheme();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
@@ -135,6 +139,23 @@ namespace Uno.UI.Runtime.Skia
 			SetupRenderSurface();
 
 			Gtk.Application.Run();
+		}
+
+		private bool InitializeGtk()
+		{
+			try
+			{
+				Gtk.Application.Init();
+				return true;
+			}
+			catch (TypeInitializationException e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
+				}
+				return false;
+			}
 		}
 
 		void DispatchNative(System.Action d)
@@ -454,7 +475,7 @@ namespace Uno.UI.Runtime.Skia
 			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 			{
 				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path, basePath);
+				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
 
 				if (File.Exists(iconPath))
 				{

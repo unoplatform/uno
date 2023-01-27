@@ -10,7 +10,6 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);Uno0001</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
 		<AssemblyName>Uno.UI.Lottie</AssemblyName>
@@ -19,9 +18,7 @@
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_SKOTTIE</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />

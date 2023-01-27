@@ -8,22 +8,22 @@ namespace UnoXFQuickStart.Wasm
 	{
 		static int Main(string[] args)
 		{
-            ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+			ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
 
-            Windows.UI.Xaml.Application.Start(_ => new UnoXFQuickStart.UWP.App());
+			Windows.UI.Xaml.Application.Start(_ => new UnoXFQuickStart.UWP.App());
 
 			return 0;
 		}
 
-        static void ConfigureFilters(ILoggerFactory factory)
-        {
-//-:cnd:noEmit
+		static void ConfigureFilters(ILoggerFactory factory)
+		{
+			//-:cnd:noEmit
 #if DEBUG
-            factory
-                .WithFilter(new FilterLoggerSettings
-                    {
-                        { "Uno", LogLevel.Warning },
-                        { "Windows", LogLevel.Warning },
+			factory
+				.WithFilter(new FilterLoggerSettings
+					{
+						{ "Uno", LogLevel.Warning },
+						{ "Windows", LogLevel.Warning },
 
 						// Generic Xaml events
 						// { "Windows.UI.Xaml", LogLevel.Debug },
@@ -44,17 +44,17 @@ namespace UnoXFQuickStart.Wasm
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
 					}
-                )
-                .AddConsole(LogLevel.Trace);
+				)
+				.AddConsole(LogLevel.Trace);
 #else
-            factory
-                .AddConsole(LogLevel.Error);
+			factory
+				.AddConsole(LogLevel.Error);
 #endif
 
 #if HAS_UNO
 			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
-//-:cnd:noEmit
-        }
-    }
+			//-:cnd:noEmit
+		}
+	}
 }

@@ -8,9 +8,9 @@ using Uno.Xaml;
 namespace Windows.UI.Xaml.Markup.Reader
 {
 #if DEBUG
-    [DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]
+	[DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]
 #endif
-    internal class XamlMemberDefinition
+	internal class XamlMemberDefinition
 	{
 		private XamlMember _xamlMember;
 

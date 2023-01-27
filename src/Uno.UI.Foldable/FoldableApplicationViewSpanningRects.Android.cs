@@ -41,7 +41,7 @@ namespace Uno.UI.Foldable
 		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
 		{
 			windowInfoTrackerCallbackAdapter = new WindowInfoTrackerCallbackAdapter(WindowInfoTracker.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
-			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(	
+			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnCreateEvent");
@@ -199,22 +199,6 @@ namespace Uno.UI.Foldable
 	             _previousMode = EmptyMode;
 			}
 			return _previousMode.result ?? _emptyList;
-		}
-
-		private SurfaceOrientation GetOrientation()
-		{
-			switch (DisplayInformation.GetForCurrentView().CurrentOrientation)
-			{
-				default:
-				case DisplayOrientations.Portrait:
-					return SurfaceOrientation.Rotation0;
-				case DisplayOrientations.Landscape:
-					return SurfaceOrientation.Rotation90;
-				case DisplayOrientations.PortraitFlipped:
-					return SurfaceOrientation.Rotation180;
-				case DisplayOrientations.LandscapeFlipped:
-					return SurfaceOrientation.Rotation270;
-			}
 		}
 
 		/// <summary>

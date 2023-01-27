@@ -15,23 +15,16 @@ namespace Uno.UI.SourceGenerators.Helpers
 	{
 		public static bool IsValidPlatform(GeneratorExecutionContext context)
 		{
-			var evaluatedValue = context.GetMSBuildPropertyValue("TargetPlatformIdentifier");
-			var windowsAppSDKWinUI = context.GetMSBuildPropertyValue("WindowsAppSDKWinUI");
 			var projectTypeGuids = context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty");
-
-			var isUAP = evaluatedValue?.Equals("UAP", StringComparison.OrdinalIgnoreCase) ?? false;
 
 			// Those two checks are now required since VS 16.9 which enables source generators by default
 			// and the uno targets files are not present for uap targets.
 			var isWindowsRuntimeApplicationOutput = context.Compilation.Options.OutputKind == OutputKind.WindowsRuntimeApplication;
 			var isWindowsRuntimeMetadataOutput = context.Compilation.Options.OutputKind == OutputKind.WindowsRuntimeMetadata;
 
-			var isWinAppSDK = windowsAppSDKWinUI?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
 			var isNetCoreDesktop = projectTypeGuids?.Equals("{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
-			return !isUAP
-				&& !isWinAppSDK
-				&& !isNetCoreDesktop
+			return !isNetCoreDesktop
 				&& !isWindowsRuntimeMetadataOutput
 				&& !isWindowsRuntimeApplicationOutput;
 		}
@@ -39,10 +32,10 @@ namespace Uno.UI.SourceGenerators.Helpers
 		public static bool IsAndroid(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
-		public static bool IsiOS(GeneratorExecutionContext context)
+		public static bool IsXamariniOS(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
-		public static bool IsMacOs(GeneratorExecutionContext context)
+		public static bool IsXamarinMacOs(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
 		public static bool IsExe(GeneratorExecutionContext context)
@@ -53,8 +46,8 @@ namespace Uno.UI.SourceGenerators.Helpers
 
 		public static bool IsApplication(GeneratorExecutionContext context)
 			=> IsAndroid(context)
-				|| (IsiOS(context) && IsExe(context))
-				|| (IsMacOs(context) && IsExe(context))
+				|| (IsXamariniOS(context) && IsExe(context))
+				|| (IsXamarinMacOs(context) && IsExe(context))
 				|| IsUnoHead(context);
 	}
 }

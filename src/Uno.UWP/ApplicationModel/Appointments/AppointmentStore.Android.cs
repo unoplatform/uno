@@ -64,7 +64,7 @@ public partial class AppointmentStore
 		var results = ReadAppointments(cursor, contentResolver, options);
 
 		cursor.Close();
-		
+
 		return Task.FromResult<IReadOnlyList<Appointment>?>(results);
 	}
 
@@ -114,7 +114,7 @@ public partial class AppointmentStore
 
 		return cursor;
 	}
-	
+
 	private IReadOnlyList<Appointment> ReadAppointments(ICursor cursor, Android.Content.ContentResolver? contentResolver, FindAppointmentsOptions options)
 	{
 		List<Appointment> results = new List<Appointment>();

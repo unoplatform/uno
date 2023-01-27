@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 	{
 		internal BarometerReading(
 			double stationPressureInHectopascals,
-			DateTimeOffset timestamp )
+			DateTimeOffset timestamp)
 		{
 			StationPressureInHectopascals = stationPressureInHectopascals;
 			Timestamp = timestamp;

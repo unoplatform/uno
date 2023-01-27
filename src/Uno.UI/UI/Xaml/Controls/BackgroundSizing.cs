@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum BackgroundSizing 
+	public enum BackgroundSizing
 	{
 		InnerBorderEdge,
 		OuterBorderEdge

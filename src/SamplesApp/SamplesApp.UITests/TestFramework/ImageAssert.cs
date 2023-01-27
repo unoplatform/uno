@@ -272,8 +272,8 @@ namespace SamplesApp.UITests.TestFramework
 
 			var bitmap = screenshot.GetBitmap();
 
-			x = (int)(x*scale);
-			y = (int)(y *scale);
+			x = (int)(x * scale);
+			y = (int)(y * scale);
 
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{

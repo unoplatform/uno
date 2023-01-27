@@ -17,7 +17,7 @@ namespace Windows.System
 
 		private void StartNative(TimeSpan interval)
 		{
-			if(_timer == null)
+			if (_timer == null)
 			{
 				_timer = new Timer(_ => RaiseTick());
 			}
@@ -29,10 +29,15 @@ namespace Windows.System
 		{
 			if (_timer == null)
 			{
-				_timer = new Timer(_ => RaiseTick());
+				_timer = new Timer(_ => DispatchRaiseTick());
 			}
 
 			_timer.Change(dueTime, interval);
+		}
+
+		private void DispatchRaiseTick()
+		{
+			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(Uno.UI.Dispatching.CoreDispatcherPriority.Normal, () => RaiseTick());
 		}
 
 		private void StopNative()

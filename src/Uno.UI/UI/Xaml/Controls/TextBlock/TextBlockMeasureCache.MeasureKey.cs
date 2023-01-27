@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.UI.Text;
@@ -19,9 +21,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				public static Comparer Instance { get; } = new Comparer();
 
-				public bool Equals(MeasureKey x, MeasureKey y)
+				public bool Equals(MeasureKey? x, MeasureKey? y)
 				{
-					var v = x._text == y._text
+					var v = x is not null
+						&& y is not null
+						&& x._text == y._text
 						&& Math.Abs(x._fontSize - y._fontSize) < 0.1e-8
 						&& x._fontFamily == y._fontFamily
 						&& x._fontStyle == y._fontStyle
@@ -71,14 +75,14 @@ namespace Windows.UI.Xaml.Controls
 
 			public override int GetHashCode() => _hashCode;
 
-			public override bool Equals(object obj)
+			public override bool Equals(object? obj)
 				=> obj is MeasureKey key && Comparer.Instance.Equals(this, key);
 
 			private readonly FontStyle _fontStyle;
 			private readonly TextWrapping _textWrapping;
 			private readonly FontWeight _fontWeight;
-			private readonly string _text;
-			private readonly FontFamily _fontFamily;
+			private readonly string? _text;
+			private readonly FontFamily? _fontFamily;
 			private readonly double _fontSize;
 			private readonly int _maxLines;
 			private readonly TextTrimming _textTrimming;
@@ -89,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			private readonly int _characterSpacing;
 			private readonly TextDecorations _textDecorations;
 
-			public FontFamily FontFamily => _fontFamily;
+			public FontFamily? FontFamily => _fontFamily;
 
 			internal bool IsWrapping => _textWrapping != TextWrapping.NoWrap;
 			internal bool IsClipping => _textTrimming != TextTrimming.None;

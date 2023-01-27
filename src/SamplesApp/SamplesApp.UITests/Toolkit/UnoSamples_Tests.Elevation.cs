@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Toolkit
 			_app.WaitForElement(_app.Marked("TurnElevation_ON_Button"));
 
 			var turnElevation_ON_Button = _app.Marked("TurnElevation_ON_Button");
-			
+
 			// Take ScreenShot with no elevation
 			using var screenshot_NoElevation = TakeScreenshot("Elevation - No Elevation");
 

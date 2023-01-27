@@ -8,13 +8,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 	partial class UniformGridLayout : VirtualizingLayout
 	{
-//		class UniformGridLayout :
-//    public ReferenceTracker<UniformGridLayout, implementation.UniformGridLayoutT, VirtualizingLayout>,
-//    public IFlowLayoutAlgorithmDelegates,
-//    public OrientationBasedMeasures,
-//    public UniformGridLayoutProperties
-//{
-// public
+		//		class UniformGridLayout :
+		//    public ReferenceTracker<UniformGridLayout, implementation.UniformGridLayoutT, VirtualizingLayout>,
+		//    public IFlowLayoutAlgorithmDelegates,
+		//    public OrientationBasedMeasures,
+		//    public UniformGridLayoutProperties
+		//{
+		// public
 		//UniformGridLayout();
 
 		#region IVirtualizingLayoutOverrides
@@ -78,15 +78,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-//		void OnPropertyChanged(const DependencyPropertyChangedEventArgs args);
+		//		void OnPropertyChanged(const DependencyPropertyChangedEventArgs args);
 
-//// private
-//		// Methods
-//		float GetMinorSizeWithSpacing(VirtualizingLayoutContext context);
-//		float GetMajorSizeWithSpacing(VirtualizingLayoutContext context);
+		//// private
+		//		// Methods
+		//		float GetMinorSizeWithSpacing(VirtualizingLayoutContext context);
+		//		float GetMajorSizeWithSpacing(VirtualizingLayoutContext context);
 
-//		Rect GetLayoutRectForDataIndex(const Size availableSize,  int index, const Rect lastExtent,  const
-//			VirtualizingLayoutContext context);
+		//		Rect GetLayoutRectForDataIndex(const Size availableSize,  int index, const Rect lastExtent,  const
+		//			VirtualizingLayoutContext context);
 
 		UniformGridLayoutState GetAsGridState(object state)
 		{

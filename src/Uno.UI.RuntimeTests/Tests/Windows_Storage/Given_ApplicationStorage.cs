@@ -1,15 +1,45 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Storage;
-using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 {
 	[TestClass]
 	public class Given_ApplicationStorage
 	{
+
+		[TestMethod]
+		public async Task When_FileDoesNotExistsInPackage()
+		{
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.ExistsInPackage("Asset_InvalidFile.xml");
+
+			Assert.IsFalse(fileExists);
+		}
+
+		[TestMethod]
+		public async Task When_FileExistsInPackage_Nested()
+		{
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.ExistsInPackage("Assets/Fonts/RoteFlora.ttf");
+
+			Assert.IsTrue(fileExists);
+		}
+
+		[TestMethod]
+		public async Task When_FileExistsInPackage_RootPath()
+		{
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.ExistsInPackage("Asset_GetFileFromApplicationUriAsync.xml");
+
+			Assert.IsTrue(fileExists);
+		}
+
+		[TestMethod]
+		public async Task When_ResourceFileExistsInPackage_Nested()
+		{
+			var fileExists = await Uno.UI.Toolkit.StorageFileHelper.ExistsInPackage("Assets/Icons/menu.png");
+
+			Assert.IsTrue(fileExists);
+		}
+
 		[TestMethod]
 		public async Task When_GetFileFromApplicationUriAsync_RootPath()
 		{

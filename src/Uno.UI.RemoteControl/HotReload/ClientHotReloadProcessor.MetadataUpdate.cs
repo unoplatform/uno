@@ -197,7 +197,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
             // Search for all types in the main window's tree that
             // match the last modified uri.
-            ReplaceViewInstances(i => uri.OriginalString == i.BaseUri?.OriginalString);
+            ReplaceViewInstances(i => uri.OriginalString == i.DebugParseContext?.LocalFileUri);
         }
 
         private static void ReplaceViewInstances(Func<FrameworkElement, bool> predicate)

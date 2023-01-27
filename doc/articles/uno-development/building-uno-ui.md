@@ -4,7 +4,7 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2022 (17.4 or later)
+- Visual Studio 2022 (17.4.4 or later)
     - `Visual Studio extensions development` (for the VSIX projects)
     - `MAUI`
     - `Xamarin development` (Under the MAUI optional components)
@@ -50,6 +50,7 @@ The step by step process is:
 1. To confirm that everything works:
    - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'.
    - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
+1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers` which can improve the build time during debugging sessions.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
 

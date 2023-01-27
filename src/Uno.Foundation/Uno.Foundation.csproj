@@ -4,14 +4,11 @@
 		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
 		<RootNamespace>Windows.Foundation</RootNamespace>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -29,7 +26,7 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsAndroid) or $(_IsIOS) or $(_IsMacOS)">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOSOrCatalyst) or $(IsMacOS)">
 		<Reference Include="System.Memory" />
 	</ItemGroup>
 
@@ -39,6 +36,10 @@
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml
 {
-	public partial class DragUI 
+	public partial class DragUI
 	{
 		internal ImageSource? Content { get; set; }
 

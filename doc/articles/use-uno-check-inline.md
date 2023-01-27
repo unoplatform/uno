@@ -1,4 +1,4 @@
-## Finalize your environment
+## Verify your developer environment
 
 # [**Windows**](#tab/windows)
 

@@ -1,27 +1,23 @@
 ﻿<Project ToolsVersion="15.0">
 
-  <Import Project="PlatformItemGroups.props" />
+	<Import Project="PlatformItemGroups.props" />
 
-  <PropertyGroup>
-	<Product>$(AssemblyName) ($(TargetFramework))</Product>
-	<DefaultLanguage>en-US</DefaultLanguage>
+	<PropertyGroup>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 
-	<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
-	<Version>255.255.255.255</Version>
+		<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
+		<Copyright>nventive</Copyright>
+		<Author>nventive</Author>
 
-	<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
-	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-	<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-	<Copyright>nventive</Copyright>
-	<Author>nventive</Author>
+	</PropertyGroup>
 
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-	<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
-	<NoWarn>$(NoWarn);0105</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
+		<NoWarn>$(NoWarn);0105</NoWarn>
+	</PropertyGroup>
 
 	<Import Project="uno.mobile-cross-targeting-disable.props" Condition="'$(_UnoMobileCrossTargetingWasImported)'!='true'" />
 
@@ -44,119 +40,120 @@
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
-  <PropertyGroup Condition="$(_IsNetStd)">
-	  <DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
-	<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
-	<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
-	<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(IsXamarinIOS)">
-	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)'=='net6.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">
-	<DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
-
-	<!-- Remove Warnings about -->
-	<NoWarn>$(NoWarn);NU1703</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(IsXamarinMac)">
-	<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(IsMonoAndroid)">
-	<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_ANDROID</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">
-	<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.18362' ">
-	<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
-	<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
-	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
-
-	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-	<GenerateLibraryLayout>true</GenerateLibraryLayout>
-  </PropertyGroup>
-
-  <ItemGroup Condition=" ($(IsMonoAndroid) or $(IsXamarinIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
-	<!-- remove files included by msbuild extras -->
-	<Page Remove="@(Page)" />
-	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-  </ItemGroup>
-
-  <Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-
-  <Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
-	<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
-  </Target>
-
-  <Target Name="_UnoOverrideNuget"
-		AfterTargets="AfterBuild"
-		DependsOnTargets="BuiltProjectOutputGroup"
-		Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
-
-	<PropertyGroup>
-		<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-		<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-		<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-		<_overridePackageId>$(AssemblyName)</_overridePackageId>
-		<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('Uno.UI','Uno.WinUI'))</_overridePackageId>
-		<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-	  <_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
-	</PropertyGroup>
-	<ItemGroup>
-		<_OutputFiles Include="$(TargetDir)\*.*" />
-		<_OutputRefFiles Include="$(TargetDir)\ref\*.*" />
-	</ItemGroup>
-	<MakeDir Directories="$(_TargetNugetFolder)" />
-
-    <!-- Add override file to notify a developer that the used package is modified -->
-    <WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
-             Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
-             Overwrite="True" />
-	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
-
-	<Copy SourceFiles="@(_OutputFiles)"
-		  DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy SourceFiles="@(_OutputRefFiles)"
-		  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
-
-
-  <Target Name="CommonOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and '$(UseCommonOverridePackage)'!=''">
-	<PropertyGroup>
-	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-	  <CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
-	  <CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('Uno.UI','Uno.WinUI'))</CommonOverridePackageId>
-	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-	  <_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+	<PropertyGroup Condition="$(_IsNetStd)">
+		<DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
+		<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
+		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(IsIOS)">
+		<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(IsCatalyst)">
+		<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(IsMacOS)">
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+		<SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(IsAndroid)">
+		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;XAMARIN_ANDROID</DefineConstants>
+		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">
+		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.18362' ">
+		<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+		<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+	</PropertyGroup>
+
+	<ItemGroup Condition=" ($(IsAndroid) or $(IsIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
+		<!-- remove files included by msbuild extras -->
+		<Page Remove="@(Page)" />
+		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
 
-	<MakeDir Directories="$(_TargetNugetFolder)" />
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
-	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
+		<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
+	</Target>
 
-	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
+	<Target Name="_UnoOverrideNuget"
+		  AfterTargets="AfterBuild"
+		  DependsOnTargets="BuiltProjectOutputGroup"
+		  Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_overridePackageId>$(AssemblyName)</_overridePackageId>
+			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('Uno.UI','Uno.WinUI'))</_overridePackageId>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)\*.*" />
+			<_OutputRefFiles Include="$(TargetDir)\ref\*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<!-- Add override file to notify a developer that the used package is modified -->
+		<WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
+				 Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
+				 Overwrite="True" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)"
+			  DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputRefFiles)"
+			  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
+
+
+	<Target Name="CommonOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and '$(UseCommonOverridePackage)'!=''">
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
+			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('Uno.UI','Uno.WinUI'))</CommonOverridePackageId>
+			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
 </Project>

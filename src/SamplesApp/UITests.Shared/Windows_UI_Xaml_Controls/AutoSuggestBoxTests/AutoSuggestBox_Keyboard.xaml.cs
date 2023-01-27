@@ -44,14 +44,14 @@ public sealed partial class AutoSuggestBox_Keyboard : UserControl
 	}
 
 	public Book Book { get; } = new Book { Author = new Author { Name = "A0" } };
-	
+
 	private void AutoSuggestBox_TextChanged(AutoSuggestBox s, AutoSuggestBoxTextChangedEventArgs e)
 	{
 		if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 		{
 			s.ItemsSource = Author.All.Where(a => a.Name.StartsWith(s.Text?.Trim())).ToArray();
 		}
-	}	
+	}
 
 	private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox s, AutoSuggestBoxQuerySubmittedEventArgs e)
 	{

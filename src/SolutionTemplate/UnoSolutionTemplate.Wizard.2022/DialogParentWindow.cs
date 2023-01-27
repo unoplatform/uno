@@ -54,7 +54,7 @@ namespace UnoSolutionTemplate.Wizard
 				{
 					var service = _serviceProvider.GetService(typeof(IVsUIShell));
 
-					if(service is IVsUIShell uiShell)
+					if (service is IVsUIShell uiShell)
 					{
 						uiShell.EnableModeless(1);
 					}

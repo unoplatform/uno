@@ -8,6 +8,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
-	
+
 	}
 }

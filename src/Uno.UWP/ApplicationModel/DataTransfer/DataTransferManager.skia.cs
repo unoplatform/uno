@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static async Task<bool> ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)
 		{
 			var extension = _dataTransferManagerExtension.Value;
-			if(extension != null)
+			if (extension != null)
 			{
 				return await extension.ShowShareUIAsync(options, dataPackage);
 			}

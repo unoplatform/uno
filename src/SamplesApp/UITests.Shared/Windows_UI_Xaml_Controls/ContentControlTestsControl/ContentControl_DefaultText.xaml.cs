@@ -19,10 +19,10 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
 	[SampleControlInfo("ContentControl", "ContentControl_DefaultText")]
 	public sealed partial class ContentControl_DefaultText : UserControl
-    {
-        public ContentControl_DefaultText()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public ContentControl_DefaultText()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

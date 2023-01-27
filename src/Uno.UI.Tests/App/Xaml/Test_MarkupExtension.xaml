@@ -12,9 +12,24 @@
 		<x:String x:Key="ResourceString">From a Resource String</x:String>
 		<x:String x:Key="ResourceStringFull">From a Resource String FullName</x:String>
 		<ex:TestEntityObject x:Key="TestEntity" />
+		<Style TargetType="TextBlock" x:Key="MarkupExtensionStyle">
+			<Setter Property="Text" Value="{ex:StyleSetterExtension Wrapped=Test}" />
+		</Style>
 	</UserControl.Resources>
 
 	<StackPanel>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup>
+				<VisualState>
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="0" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="VisualStateTextBlock.Text" Value="{ex:VisualStateSetterExtension Wrapped=Test}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
 		<TextBlock x:Name="Text1"
 				   Text="{ex:SimpleMarkupExt TextValue='Just a simple ...'}" />
 
@@ -76,6 +91,10 @@
 				<TextBlock Text="This should compile and not be confused with TextBlockExtension" />
 			</Border.Child>
 		</Border>
+
+		<TextBlock x:Name="StyleSetterTextBlock1" x:FieldModifier="public" Style="{StaticResource MarkupExtensionStyle}" />
+		<TextBlock x:Name="StyleSetterTextBlock2" x:FieldModifier="public" Style="{StaticResource MarkupExtensionStyle}" />
+		<TextBlock x:Name="VisualStateTextBlock" x:FieldModifier="public" />
 	</StackPanel>
 
 </UserControl>

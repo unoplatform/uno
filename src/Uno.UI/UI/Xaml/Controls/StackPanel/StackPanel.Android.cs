@@ -9,8 +9,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class StackPanel
-    {
+	public partial class StackPanel
+	{
 		public StackPanel()
 		{
 		}

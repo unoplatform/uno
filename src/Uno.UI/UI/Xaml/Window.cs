@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml
 						"between Uno Platform targets and Windows App SDK).");
 				}
 			}
-			
+
 			InitPlatform();
 
 			InitializeCommon();
@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml
 
 				Visible = newVisibility;
 
-				var args = new VisibilityChangedEventArgs();
+				var args = new VisibilityChangedEventArgs() { Visible = newVisibility };
 				CoreWindow.OnVisibilityChanged(args);
 				VisibilityChanged?.Invoke(this, args);
 			}

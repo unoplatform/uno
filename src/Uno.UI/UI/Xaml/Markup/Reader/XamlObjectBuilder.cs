@@ -133,6 +133,16 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 					}
 
+					if (rootInstance is null)
+					{
+						// This is a top level dictionary, where explicit members need to
+						// be process explicitly (other types are processed below).
+						foreach (var member in control.Members.Where(m => m != unknownContent))
+						{
+							ProcessNamedMember(control, rd, member, rd);
+						}
+					}
+
 					return rd;
 				}
 				else
@@ -582,7 +592,15 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
+				if (propertyInfo.PropertyType == typeof(ResourceDictionary)
+					|| (
+						propertyInfo.DeclaringType == typeof(ResourceDictionary)
+						&& (
+							propertyInfo.Name == nameof(ResourceDictionary.ThemeDictionaries)
+							|| propertyInfo.Name == nameof(ResourceDictionary.MergedDictionaries)
+						)
+					)
+				)
 				{
 					var methods = propertyInfo.PropertyType.GetMethods();
 					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
@@ -886,7 +904,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				// further up in the tree.
 			}
 
-			if(bindingNode == null && templateBindingNode == null && xBindNode == null)
+			if (bindingNode == null && templateBindingNode == null && xBindNode == null)
 			{
 				throw new InvalidOperationException("Unable to find Binding or TemplateBinding or x:Bind node");
 			}

@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var type = RepeatBehaviorType.Duration;
 
-			if(string.Equals(str, __forever, StringComparison.InvariantCultureIgnoreCase))
+			if (string.Equals(str, __forever, StringComparison.InvariantCultureIgnoreCase))
 			{
 				type = RepeatBehaviorType.Forever;
 			}

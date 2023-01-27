@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewTemplateSettings : DependencyObject
+	public partial class NavigationViewTemplateSettings : DependencyObject
 	{
 		public Visibility BackButtonVisibility
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			internal set => SetValue(PaneToggleButtonVisibilityProperty, value);
 		}
 
-		public  bool SingleSelectionFollowsFocus
+		public bool SingleSelectionFollowsFocus
 		{
 			get
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 			internal set => SetValue(SingleSelectionFollowsFocusProperty, value);
 		}
 
-		public  double TopPadding
+		public double TopPadding
 		{
 			get
 			{
@@ -76,44 +76,44 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty BackButtonVisibilityProperty { get; } =
 		DependencyProperty.Register(
-			"BackButtonVisibility", typeof(Visibility), 
-			typeof(NavigationViewTemplateSettings), 
+			"BackButtonVisibility", typeof(Visibility),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(Visibility.Collapsed));
 
 		public static DependencyProperty LeftPaneVisibilityProperty { get; } =
 		DependencyProperty.Register(
-			"LeftPaneVisibility", typeof(Visibility), 
-			typeof(NavigationViewTemplateSettings), 
+			"LeftPaneVisibility", typeof(Visibility),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public static DependencyProperty OverflowButtonVisibilityProperty { get; } =
 		DependencyProperty.Register(
-			"OverflowButtonVisibility", typeof(Visibility), 
-			typeof(NavigationViewTemplateSettings), 
+			"OverflowButtonVisibility", typeof(Visibility),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(Visibility.Collapsed));
 
 		public static DependencyProperty PaneToggleButtonVisibilityProperty { get; } =
 		DependencyProperty.Register(
-			"PaneToggleButtonVisibility", typeof(Visibility), 
-			typeof(NavigationViewTemplateSettings), 
+			"PaneToggleButtonVisibility", typeof(Visibility),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public static DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
 		DependencyProperty.Register(
-			"SingleSelectionFollowsFocus", typeof(bool), 
-			typeof(NavigationViewTemplateSettings), 
+			"SingleSelectionFollowsFocus", typeof(bool),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(false));
 
 		public static DependencyProperty TopPaddingProperty { get; } =
 		DependencyProperty.Register(
-			"TopPadding", typeof(double), 
-			typeof(NavigationViewTemplateSettings), 
+			"TopPadding", typeof(double),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(0.0));
 
 		public static DependencyProperty TopPaneVisibilityProperty { get; } =
 		DependencyProperty.Register(
-			"TopPaneVisibility", typeof(Visibility), 
-			typeof(NavigationViewTemplateSettings), 
+			"TopPaneVisibility", typeof(Visibility),
+			typeof(NavigationViewTemplateSettings),
 			new FrameworkPropertyMetadata(Visibility.Collapsed));
 	}
 }

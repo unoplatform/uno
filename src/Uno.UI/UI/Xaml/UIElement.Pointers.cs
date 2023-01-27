@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml
 			// This is **not** the behavior of windows which dispatches each pointer to the right target,
 			// so we keep the initial value which is true.
 			// MotionEventSplittingEnabled = true;
-			
+
 			InitializePointersPartial();
 			if (this is FrameworkElement fwElt)
 			{
@@ -286,7 +286,7 @@ namespace Windows.UI.Xaml
 			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
 		};
 
-		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
@@ -420,7 +420,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endregion
-		
+
 		#region Manipulations (recognizer settings / custom bubbling)
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 			}
 		}
-				#endregion
+		#endregion
 
 		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
 		private void UpdateDragAndDrop(bool isEnabled)
@@ -578,21 +578,21 @@ namespace Windows.UI.Xaml
 					break;
 
 				case RoutedEventFlag.DragEnter:
-				{
-					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
-					var wasDragOver = IsDragOver(pt);
-
-					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
-					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
-					SetIsDragOver(pt, true);
-
-					if (!AllowDrop // The Drag and Drop "routed" events are raised only on controls that opted-in
-						|| wasDragOver) // If we already had a DragEnter do not raise it twice
 					{
-						bubblingMode = BubblingMode.IgnoreElement;
+						var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
+						var wasDragOver = IsDragOver(pt);
+
+						// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
+						// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
+						SetIsDragOver(pt, true);
+
+						if (!AllowDrop // The Drag and Drop "routed" events are raised only on controls that opted-in
+							|| wasDragOver) // If we already had a DragEnter do not raise it twice
+						{
+							bubblingMode = BubblingMode.IgnoreElement;
+						}
+						break;
 					}
-					break;
-				}
 
 				case RoutedEventFlag.DragOver:
 					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
@@ -607,21 +607,21 @@ namespace Windows.UI.Xaml
 
 				case RoutedEventFlag.DragLeave:
 				case RoutedEventFlag.Drop:
-				{
-					var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
-					var wasDragOver = IsDragOver(pt);
-
-					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
-					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
-					SetIsDragOver(pt, false);
-
-					if (!AllowDrop // The Drag and Drop "routed" events are raised only on controls that opted-in
-						|| !wasDragOver) // No Leave or Drop if we was not effectively over ^^
 					{
-						bubblingMode = BubblingMode.IgnoreElement;
+						var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
+						var wasDragOver = IsDragOver(pt);
+
+						// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
+						// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
+						SetIsDragOver(pt, false);
+
+						if (!AllowDrop // The Drag and Drop "routed" events are raised only on controls that opted-in
+							|| !wasDragOver) // No Leave or Drop if we was not effectively over ^^
+						{
+							bubblingMode = BubblingMode.IgnoreElement;
+						}
+						break;
 					}
-					break;
-				}
 			}
 		}
 
@@ -639,7 +639,7 @@ namespace Windows.UI.Xaml
 				// But: (1.) on UWP only the top-most draggable element starts the drag operation;
 				// (2.) as CoreDragDropManager.AreConcurrentOperationsEnabled is false by default, the parent would cancel the drag of its child
 				// So here we allow only one "starting" per "FrameId".
-				|| args.Pointer.FrameId <= _lastDragStartFrameId) 
+				|| args.Pointer.FrameId <= _lastDragStartFrameId)
 			{
 				return;
 			}
@@ -842,9 +842,9 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.PointerCanceled:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
-				// No local state (over/pressed/manipulation/gestures) to update for
-				//	- PointerCaptureLost:
-				//	- PointerWheelChanged:
+					// No local state (over/pressed/manipulation/gestures) to update for
+					//	- PointerCaptureLost:
+					//	- PointerWheelChanged:
 			}
 		}
 

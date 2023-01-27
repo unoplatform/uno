@@ -14,9 +14,9 @@ public sealed partial class AppointmentStoreTests : Page
 	{
 		this.InitializeComponent();
 	}
-	
+
 	public ObservableCollection<Appointment> Results { get; } = new();
-	
+
 	private async void GetAppointments_Click(object sender, RoutedEventArgs e)
 	{
 		uiErrorMsg.Text = "";

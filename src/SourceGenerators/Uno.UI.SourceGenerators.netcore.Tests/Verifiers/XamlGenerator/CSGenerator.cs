@@ -72,14 +72,14 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					TestState.AdditionalFiles.Add(($"/0/{xamlFile.FileName}", xamlFile.Contents));
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
-				
+
 				ReferenceAssemblies = new ReferenceAssemblies(
 						"net7.0",
 						new PackageIdentity(
 							"Microsoft.NETCore.App.Ref",
 							"7.0.0"),
 						Path.Combine("ref", "net7.0"));
-				
+
 				TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck;
 			}
 
@@ -89,13 +89,13 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 			{
 				var options = (CSharpParseOptions)base.CreateParseOptions();
 				return options.WithPreprocessorSymbols(PreprocessorSymbols);
-				
+
 			}
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
 				var p = project.AddMetadataReferences(BuildUnoReferences());
-				
+
 				return base.ApplyCompilationOptions(p);
 			}
 

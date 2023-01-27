@@ -8,8 +8,8 @@ using Windows.Gaming.Input;
 
 namespace UITests.Windows_Gaming
 {
-    internal class GamepadReadingViewModel : ViewModelBase
-    {
+	internal class GamepadReadingViewModel : ViewModelBase
+	{
 		private static int _id = 0;
 
 		public GamepadReadingViewModel(Gamepad gamepad)

@@ -50,9 +50,9 @@ namespace Windows.Graphics.Display
 
 		public DisplayOrientations CurrentOrientation => GetCurrentOrientation();
 
-		
+
 		/// <summary>
-		/// Gets the native orientation of the display monitor, 
+		/// Gets the native orientation of the display monitor,
 		///  which is typically the orientation where the buttons
 		///  on the device match the orientation of the monitor.
 		/// </summary>
@@ -80,7 +80,7 @@ namespace Windows.Graphics.Display
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
 		/// </summary>
 		/// <remarks>
-		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpix#remarks">Docs</see> 
+		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpix#remarks">Docs</see>
 		/// defaults to 0 if not set
 		/// </remarks>
 		public float RawDpiX
@@ -90,7 +90,7 @@ namespace Windows.Graphics.Display
 		/// Gets the raw dots per inch (DPI) along the y axis of the display monitor.
 		/// </summary>
 		/// <remarks>
-		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpiy#remarks">Docs</see> 
+		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpiy#remarks">Docs</see>
 		/// defaults to 0 if not set
 		/// </remarks>
 		public float RawDpiY
@@ -100,7 +100,7 @@ namespace Windows.Graphics.Display
 		/// Diagonal size of the display in inches.
 		/// </summary>
 		/// <remarks>
-		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.diagonalsizeininches#property-value">Docs</see> 
+		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.diagonalsizeininches#property-value">Docs</see>
 		/// defaults to null if not set
 		/// </remarks>
 		public double? DiagonalSizeInInches
@@ -158,63 +158,63 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-					int width = _cachedDisplayMetrics.WidthPixels;
-					int height = _cachedDisplayMetrics.HeightPixels;
+				int width = _cachedDisplayMetrics.WidthPixels;
+				int height = _cachedDisplayMetrics.HeightPixels;
 
-					if (width == height)
-					{
-						//square device, can't tell orientation
-						return DisplayOrientations.None;
-					}
+				if (width == height)
+				{
+					//square device, can't tell orientation
+					return DisplayOrientations.None;
+				}
 
-					if (NativeOrientation == DisplayOrientations.Portrait)
+				if (NativeOrientation == DisplayOrientations.Portrait)
+				{
+					switch (_cachedRotation)
 					{
-						switch (_cachedRotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.PortraitFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.LandscapeFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else if (NativeOrientation == DisplayOrientations.Landscape)
-					{
-						//device is landscape or square
-						switch (_cachedRotation)
-						{
-							case SurfaceOrientation.Rotation0:
-								return DisplayOrientations.Landscape;
-							case SurfaceOrientation.Rotation90:
-								return DisplayOrientations.Portrait;
-							case SurfaceOrientation.Rotation180:
-								return DisplayOrientations.LandscapeFlipped;
-							case SurfaceOrientation.Rotation270:
-								return DisplayOrientations.PortraitFlipped;
-							default:
-								//invalid rotation
-								return DisplayOrientations.None;
-						}
-					}
-					else
-					{
-						//fallback
-						return DisplayOrientations.None;
+						case SurfaceOrientation.Rotation0:
+							return DisplayOrientations.Portrait;
+						case SurfaceOrientation.Rotation90:
+							return DisplayOrientations.Landscape;
+						case SurfaceOrientation.Rotation180:
+							return DisplayOrientations.PortraitFlipped;
+						case SurfaceOrientation.Rotation270:
+							return DisplayOrientations.LandscapeFlipped;
+						default:
+							//invalid rotation
+							return DisplayOrientations.None;
 					}
 				}
+				else if (NativeOrientation == DisplayOrientations.Landscape)
+				{
+					//device is landscape or square
+					switch (_cachedRotation)
+					{
+						case SurfaceOrientation.Rotation0:
+							return DisplayOrientations.Landscape;
+						case SurfaceOrientation.Rotation90:
+							return DisplayOrientations.Portrait;
+						case SurfaceOrientation.Rotation180:
+							return DisplayOrientations.LandscapeFlipped;
+						case SurfaceOrientation.Rotation270:
+							return DisplayOrientations.PortraitFlipped;
+						default:
+							//invalid rotation
+							return DisplayOrientations.None;
+					}
+				}
+				else
+				{
+					//fallback
+					return DisplayOrientations.None;
+				}
+			}
 		}
 
 		private IWindowManager CreateWindowManager()
 		{
-			if(ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
+			if (ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
 			{
-				return windowService.JavaCast<IWindowManager>();;
+				return windowService.JavaCast<IWindowManager>(); ;
 			}
 
 			throw new InvalidOperationException("Failed to get the system Window Service");
@@ -242,7 +242,9 @@ namespace Windows.Graphics.Display
 				if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.R)
 				{
 #pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 					defaultDisplay.GetRealMetrics(displayMetrics);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // GetRealMetrics is obsolete in API 31
 					_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
 				}
@@ -275,11 +277,11 @@ namespace Windows.Graphics.Display
 			{
 				HeightPixels = windowMetric.Bounds.Height();
 				WidthPixels = windowMetric.Bounds.Width();
-				if(configuration != null)
+				if (configuration != null)
 				{
 					Xdpi = configuration.DensityDpi;
 					Ydpi = configuration.DensityDpi;
-					Density = configuration.DensityDpi/160;
+					Density = configuration.DensityDpi / 160;
 					ScaledDensity = Density;
 					DensityDpi = ConvertIntToDensityEnum(configuration.DensityDpi);
 				}

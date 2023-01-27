@@ -56,8 +56,8 @@ public partial class MessageDialog
 
 			if (actualCommandOrder.Count == 0)
 			{
-					// There is no button specified, return dummy OK result.
-					return new UICommand("OK");
+				// There is no button specified, return dummy OK result.
+				return new UICommand("OK");
 			}
 
 			var commandIndex = (int)response - FirstButtonResultIndex;

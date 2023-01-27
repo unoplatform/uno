@@ -260,7 +260,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		{
 			private static long _nextFrameId;
 			private readonly NSDraggingInfo? _macOSDraggingInfo;
-			private	readonly NSWindow _window;
+			private readonly NSWindow _window;
 
 			public DragEventSource(long pointerId, NSWindow window)
 			{

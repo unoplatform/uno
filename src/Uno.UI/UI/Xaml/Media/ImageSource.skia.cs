@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Media
 {
-	partial class ImageSource 
+	partial class ImageSource
 	{
 		protected ImageSource()
 		{

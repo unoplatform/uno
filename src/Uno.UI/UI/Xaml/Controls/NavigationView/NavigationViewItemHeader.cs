@@ -15,13 +15,13 @@ using Windows.UI.Xaml.Hosting;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class NavigationViewItemHeader : NavigationViewItemBase
+	public partial class NavigationViewItemHeader : NavigationViewItemBase
 	{
 		private long m_splitViewIsPaneOpenChangedRevoker;
 		private long m_splitViewDisplayModeChangedRevoker;
 		private bool m_isClosedCompact;
 
-		public NavigationViewItemHeader() 
+		public NavigationViewItemHeader()
 		{
 			DefaultStyleKey = typeof(NavigationViewItemHeader);
 

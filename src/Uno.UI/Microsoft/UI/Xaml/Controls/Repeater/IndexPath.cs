@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return result;
-		}		
+		}
 
 		internal bool IsValid()
 		{
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal IndexPath CloneWithChildIndex(int childIndex)
-		{			
+		{
 			var newPath = new IndexPath(m_path);
 			newPath.m_path.Add(childIndex);
 			return newPath;

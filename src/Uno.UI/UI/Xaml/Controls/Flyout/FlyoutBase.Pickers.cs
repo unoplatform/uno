@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 
 			//_popup.CustomLayouter = new PickerLayouter(this);
-			SetPopupPositionPartial(target, relativeLocation);
+			SetPopupPosition(target, relativeLocation);
 
 			//IFC_RETURN(ForwardPopupFlowDirection());
 			//SetTargetPosition(point);

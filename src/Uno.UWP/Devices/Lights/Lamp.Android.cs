@@ -85,11 +85,13 @@ namespace Windows.Devices.Lights
 			else
 			{
 #pragma warning disable CS0618
-				// using deprecated API for older Android versions				
+#pragma warning disable CA1422 // Validate platform compatibility
+				// using deprecated API for older Android versions
 				var surfaceTexture = new SurfaceTexture(0);
 				var camera = Android.Hardware.Camera.Open();
 				camera.SetPreviewTexture(surfaceTexture);
 				return new Lamp(camera, surfaceTexture);
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618
 			}
 			return null;
@@ -118,6 +120,7 @@ namespace Windows.Devices.Lights
 				else
 				{
 #pragma warning disable CS0618
+#pragma warning disable CA1422 // Validate platform compatibility
 					// using deprecated API for older Android versions
 					var param = _camera.GetParameters();
 					param.FlashMode = _isEnabled ?
@@ -134,6 +137,7 @@ namespace Windows.Devices.Lights
 						_camera.StopPreview();
 					}
 #pragma warning restore CS0618
+#pragma warning restore CA1422 // Validate platform compatibility
 				}
 			}
 		}
@@ -144,7 +148,9 @@ namespace Windows.Devices.Lights
 			lock (_lock)
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CA1422 // Validate platform compatibility
 				_camera?.Release();
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 				_camera?.Dispose();
 				_camera = null;

@@ -14,7 +14,7 @@ namespace Windows.Services.Store
 	public sealed partial class StoreContext
 	{
 		private static HttpClient _httpClient;
-		
+
 		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
 		{
 			return AsyncOperation.FromTask(async ct =>

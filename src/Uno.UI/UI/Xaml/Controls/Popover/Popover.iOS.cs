@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void CreatePopoverController()
 		{
-			if(_popover != null)
+			if (_popover != null)
 			{
 				return;
 			}
@@ -138,16 +138,16 @@ namespace Windows.UI.Xaml.Controls
 				_popover = null;
 				_host = null;
 			});
-        }
+		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
 			_popoverSubscription.Disposable = null;
-        }
+		}
 
-		public new UIKit.UIView Anchor
+		public UIKit.UIView Anchor
 		{
 			get => (UIKit.UIView)this.GetValue(AnchorProperty);
 			set => SetValue(AnchorProperty, value);

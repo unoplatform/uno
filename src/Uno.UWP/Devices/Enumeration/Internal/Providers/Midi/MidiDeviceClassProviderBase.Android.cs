@@ -59,7 +59,9 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 			OnEnumerationCompleted(devices.LastOrDefault());
 
+#pragma warning disable CA1422 // Validate platform compatibility
 			_watchMidiManager.RegisterDeviceCallback(_deviceCallback = new DeviceCallback(this), null);
+#pragma warning restore CA1422 // Validate platform compatibility
 		}
 
 		public void WatchStop()
@@ -82,6 +84,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			var parsed = ParseMidiDeviceId(midiDeviceId);
 			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
 			{
+#pragma warning disable CA1422 // Validate platform compatibility
 				return midiManager
 					.GetDevices()
 					.Where(d => d.Id == parsed.id)
@@ -92,6 +95,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 								p.PortNumber == parsed.portNumber)
 							.Select(p => (device: d, port: p)))
 					.FirstOrDefault();
+#pragma warning restore CA1422 // Validate platform compatibility
 			}
 		}
 
@@ -116,10 +120,13 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			{
 				this.Log().LogDebug("Retrieving MIDI devices");
 			}
+
+#pragma warning disable CA1422 // Validate platform compatibility
 			return midiManager
 				.GetDevices()
 				.SelectMany(d => FilterMatchingPorts(d.GetPorts()).Select(p => (device: d, port: p)))
 				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
+#pragma warning restore CA1422 // Validate platform compatibility
 		}
 
 		private IEnumerable<MidiDeviceInfo.PortInfo> FilterMatchingPorts(IEnumerable<MidiDeviceInfo.PortInfo> port)

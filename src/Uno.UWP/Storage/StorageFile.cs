@@ -191,7 +191,7 @@ namespace Windows.Storage
 					this.Log().Error("The thumbnail could not retrieved.", e);
 					return null;
 				}
-					
+
 			}, ct);
 
 			return stream;

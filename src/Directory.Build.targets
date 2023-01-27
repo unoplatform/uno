@@ -32,7 +32,7 @@
 
 	<Target Name="AndroidResourceGenWorkaround"
 			BeforeTargets="Build"
-			Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android' and '$(TargetFramework)'!='net7.0-android'">
+			Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsAndroid) and '$(TargetFramework)'!='net6.0-android' and '$(TargetFramework)'!='net7.0-android'">
 	<MakeDir Directories="obj\$(TargetFramework)\Resources" />
 	<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
@@ -67,6 +67,7 @@
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.24" />
+	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0-dev.20" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="Xamarin.UITest" Version="3.2.9" />
@@ -171,4 +172,12 @@
 	  <ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
 	</ItemGroup>
   </Target>
+
+	<!-- Workaround for https://github.com/xamarin/xamarin-macios/issues/17005 -->
+	<Target Name="_DisableRemoteBuildForLibraries" BeforeTargets="_SayHello" Condition="'$(OutputType)'=='Library'">
+		<PropertyGroup>
+			<IsRemoteBuild>false</IsRemoteBuild>
+			<ServerAddress></ServerAddress>
+		</PropertyGroup>
+	</Target>
 </Project>

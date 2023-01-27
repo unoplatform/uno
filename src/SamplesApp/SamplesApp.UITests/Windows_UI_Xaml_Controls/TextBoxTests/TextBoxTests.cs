@@ -931,10 +931,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void TextBox_Selection_IsReadOnly()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Selection");
-			
+
 			var readonlyTextBoxRect = _app.WaitForElement("MyReadOnlyTextBox").Single().Rect;
 			var readonlyTextBox = _app.Marked("MyReadOnlyTextBox");
-			
+
 			var centerPointReadOnlyX = (int)readonlyTextBoxRect.CenterX;
 			var centerPointReadOnlyY = (int)readonlyTextBoxRect.CenterY;
 

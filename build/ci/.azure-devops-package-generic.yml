@@ -105,6 +105,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts-generic
@@ -112,6 +113,7 @@ jobs:
 
   # - task: PublishBuildArtifacts@1
   #   displayName: Publish Tizen Artifacts
+  #   retryCountOnTaskFailure: 3
   #   condition: always()
   #   inputs:
   #     PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50

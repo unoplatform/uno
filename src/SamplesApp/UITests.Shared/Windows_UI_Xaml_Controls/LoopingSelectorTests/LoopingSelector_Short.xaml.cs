@@ -27,7 +27,10 @@ namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 #if !NETFX_CORE
 			var loopingSelector = new LoopingSelector
 			{
-				ItemHeight = 30, ShouldLoop = false, SelectedIndex = 5, Items = _items
+				ItemHeight = 30,
+				ShouldLoop = false,
+				SelectedIndex = 5,
+				Items = _items
 			};
 
 			loopingSelector.SelectionChanged += OnSelectionChanged;

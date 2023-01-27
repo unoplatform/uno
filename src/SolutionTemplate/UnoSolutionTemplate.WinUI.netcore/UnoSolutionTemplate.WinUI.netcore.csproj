@@ -66,29 +66,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.CoreUtility">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Base\base.props" />
+    <None Include="Base\UnoQuickStart.Base.shproj" />
     <None Include="Server\Controllers\WeatherForecastController.cs" />
     <None Include="Server\Program.cs" />
     <None Include="Server\WeatherForecast.cs" />
     <None Include="Server\appsettings.Development.json" />
     <None Include="Server\appsettings.json" />
     <None Include="Server\UnoQuickStart.Server.csproj" />
-    <None Include="Shared\UnoQuickStart.Shared.globs.props" />
-    <None Include="Skia.WPF\App.xaml.cs">
+    <None Include="Skia.WPF\Wpf\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </None>
-    <None Include="Skia.WPF\MainWindow.xaml.cs">
+    <None Include="Skia.WPF\Wpf\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </None>
-    <None Include="Mobile\Android\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\Android\environment.conf" />
     <None Include="Mobile\iOS\Entitlements.plist" />
     <None Include="Mobile\iOS\Info.plist" />
@@ -109,57 +106,53 @@
     <None Include="Mobile\macOS\Resources\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\UnoQuickStart.Mobile.csproj" />
     <None Include="Skia.Linux.FrameBuffer\Program.cs" />
-    <None Include="Skia.Linux.FrameBuffer\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
-    <None Include="Skia.WPF\Assets\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
+    <None Include="Views\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
     <None Include="Mobile\Android\Main.Android.cs" />
     <None Include="Mobile\Android\MainActivity.Android.cs" />
     <None Include="Mobile\iOS\Main.iOS.cs" />
     <None Include="Mobile\MacCatalyst\Main.maccatalyst.cs" />
-    <None Include="Mobile\macOS\Main.cs" />
+    <None Include="Mobile\macOS\Main.macOS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Shared\Assets\SharedAssets.md" />
-    <None Include="Shared\Strings\en\Resources.resw">
+    <None Include="Views\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
-    <None Include="Shared\App.xaml.cs" />
-    <None Include="Shared\MainPage.xaml.cs" />
+    <None Include="Base\App.xaml.cs" />
+    <None Include="Views\MainPage.xaml.cs" />
     <None Include="Wasm\wwwroot\web.config" />
-    <None Include="WinUI\app.manifest" />
-    <None Include="WinUI\Package.appxmanifest">
+    <None Include="Windows\app.manifest" />
+    <None Include="Windows\Package.appxmanifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="WinUI\Properties\launchSettings.json" />
-    <None Include="WinUI\Properties\PublishProfiles\win10-arm64.pubxml" />
-    <None Include="WinUI\Properties\PublishProfiles\win10-x64.pubxml" />
-    <None Include="WinUI\Properties\PublishProfiles\win10-x86.pubxml" />
-    <None Include="WinUI\UnoQuickStart.Windows.csproj" />
+    <None Include="Windows\Properties\launchSettings.json" />
+    <None Include="Windows\Properties\PublishProfiles\win10-arm64.pubxml" />
+    <None Include="Windows\Properties\PublishProfiles\win10-x64.pubxml" />
+    <None Include="Windows\Properties\PublishProfiles\win10-x86.pubxml" />
+    <None Include="Windows\UnoQuickStart.Windows.csproj" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="UnoApp.netcore.vstemplate">
       <SubType>Designer</SubType>
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <None Include="Shared\Shared.netcore.vstemplate" />
-    <VSTemplate Include="WinUI\WinUI.netcore.vstemplate">
+    <VSTemplate Include="Views\Views.netcore.vstemplate" />
+    <VSTemplate Include="Windows\WinUI.netcore.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shared\UnoQuickStart.Shared.projitems" />
-    <None Include="Shared\UnoQuickStart.Shared.shproj" />
+    <None Include="Views\UnoQuickStart.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shared\App.xaml">
+    <None Include="Base\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Shared\MainPage.xaml">
+    <None Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
@@ -183,6 +176,9 @@
     <VSTemplate Include="Skia.Linux.FrameBuffer\SkiaLinuxFrameBuffer.winui.netcore.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
+    <VSTemplate Include="Base\Base.winui.netcore.vstemplate" />
+    <Content Include="Base\__PreviewImage.png" />
+    <Content Include="Base\__TemplateIcon.png" />
     <Content Include="Mobile\Android\AndroidManifest.xml" />
     <Content Include="Mobile\Android\Assets\AboutAssets.txt" />
     <Content Include="Mobile\Android\Resources\AboutResources.txt" />
@@ -251,6 +247,8 @@
     <VSTemplate Include="Skia.WPF\SkiaWpf.winui.netcore.vstemplate" />
     <Content Include="Skia.WPF\__PreviewImage.png" />
     <Content Include="Skia.WPF\__TemplateIcon.png" />
+    <Content Include="Views\__PreviewImage.png" />
+    <Content Include="Views\__TemplateIcon.png" />
     <Content Include="Wasm\Assets\SplashScreen.png" />
     <Content Include="Wasm\LinkerConfig.xml" />
     <Content Include="Wasm\manifest.webmanifest" />
@@ -259,30 +257,31 @@
     <Content Include="Wasm\WasmScripts\AppManifest.js" />
     <Content Include="Wasm\__PreviewImage.png" />
     <Content Include="Wasm\__TemplateIcon.png" />
-    <Content Include="WinUI\Images\LockScreenLogo.scale-200.png" />
-    <Content Include="WinUI\Images\SplashScreen.scale-200.png" />
-    <Content Include="WinUI\Images\Square150x150Logo.scale-200.png" />
-    <Content Include="WinUI\Images\Square44x44Logo.scale-200.png" />
-    <Content Include="WinUI\Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="WinUI\Images\StoreLogo.png" />
-    <Content Include="WinUI\Images\Wide310x150Logo.scale-200.png" />
-    <Content Include="WinUI\__PreviewImage.png" />
-    <Content Include="WinUI\__TemplateIcon.png" />
+    <Content Include="Windows\Images\LockScreenLogo.scale-200.png" />
+    <Content Include="Windows\Images\SplashScreen.scale-200.png" />
+    <Content Include="Windows\Images\Square150x150Logo.scale-200.png" />
+    <Content Include="Windows\Images\Square44x44Logo.scale-200.png" />
+    <Content Include="Windows\Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Windows\Images\StoreLogo.png" />
+    <Content Include="Windows\Images\Wide310x150Logo.scale-200.png" />
+    <Content Include="Windows\__PreviewImage.png" />
+    <Content Include="Windows\__TemplateIcon.png" />
     <Content Include="__PreviewImage.png" />
     <Content Include="__TemplateIcon.png" />
     <VSTemplate Include="Wasm\Wasm.winui.netcore.vstemplate" />
     <Content Include="Wasm\UnoQuickStart.Wasm.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Skia.WPF\App.xaml">
+    <None Include="Skia.WPF\Wpf\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Skia.WPF\MainWindow.xaml">
+    <None Include="Skia.WPF\Wpf\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

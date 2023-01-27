@@ -23,7 +23,7 @@ namespace SamplesApp.Windows_UI_Xaml.Clipping
 		{
 			var sut = MainContent.FindFirstChild<Rectangle>(x => x.Name == "SUT");
 
-			var colors = new [] {Colors.Blue, Colors.Pink, Colors.Yellow, Colors.Lime};
+			var colors = new[] { Colors.Blue, Colors.Pink, Colors.Yellow, Colors.Lime };
 			var color = colors[random.Next(colors.Length)];
 
 			sut.Fill = new SolidColorBrush(color);

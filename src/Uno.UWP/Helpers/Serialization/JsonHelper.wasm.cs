@@ -14,11 +14,7 @@ namespace Uno.Helpers.Serialization
 				throw new ArgumentNullException(nameof(json));
 			}
 
-			using (var stream = new MemoryStream(Encoding.Default.GetBytes(json)))
-			{
-				var serializer = new DataContractJsonSerializer(typeof(T));
-				return (T)serializer.ReadObject(stream);
-			}
+			return System.Text.Json.JsonSerializer.Deserialize<T>(json);
 		}
 
 		public static bool TryDeserialize<T>(string json, out T value)
@@ -37,12 +33,7 @@ namespace Uno.Helpers.Serialization
 
 		public static string Serialize<T>(T value)
 		{
-			using var stream = new MemoryStream();
-			var serializer = new DataContractJsonSerializer(typeof(T));
-			serializer.WriteObject(stream, value);
-			stream.Position = 0;
-			using StreamReader reader = new StreamReader(stream);
-			return reader.ReadToEnd();
+			return System.Text.Json.JsonSerializer.Serialize(value);
 		}
 	}
 }

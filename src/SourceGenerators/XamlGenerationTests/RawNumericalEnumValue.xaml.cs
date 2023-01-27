@@ -14,7 +14,8 @@ namespace XamlGenerationTests.Shared
 	{
 		public enum MyEnum { }
 		public enum MyUnsignedEnum : uint { }
-		[Flags] public enum MyFlagEnum
+		[Flags]
+		public enum MyFlagEnum
 		{
 			None = 0,
 			Qwe = 1 << 0,

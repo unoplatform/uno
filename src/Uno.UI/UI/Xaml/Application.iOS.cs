@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler) =>
-			TryHandleUniversalLinkFromUserActivity(userActivity);		
+			TryHandleUniversalLinkFromUserActivity(userActivity);
 
 		public override void UserActivityUpdated(UIApplication application, NSUserActivity userActivity) =>
 			TryHandleUniversalLinkFromUserActivity(userActivity);

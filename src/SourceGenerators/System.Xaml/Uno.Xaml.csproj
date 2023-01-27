@@ -13,6 +13,14 @@
 
 		<!-- This target must always be built, regardless of the override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
+
+        <NoWarn>$(NoWarn);IDE0051</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('net461'))">$(UnoTargetFrameworkOverride);net461</TargetFrameworks>
+		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('netstandard2.0'))">$(UnoTargetFrameworkOverride);netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
@@ -32,11 +40,6 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Remove="Test\**\*.cs" />
-		<None Remove="Test\**\*.*" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<Reference Remove="System.Xaml" />

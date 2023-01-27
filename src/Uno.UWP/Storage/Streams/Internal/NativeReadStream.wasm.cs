@@ -8,8 +8,6 @@ namespace Uno.Storage.Streams.Internal
 {
 	internal class NativeReadStream : Stream, IRentableStream
 	{
-		private const string CacheFolderName = "WasmNativeCache";
-
 		private readonly NativeReadStreamAdapter _readStreamAdapter;
 		private readonly Guid _fileId;
 
@@ -36,7 +34,7 @@ namespace Uno.Storage.Streams.Internal
 		{
 			get => _readStreamAdapter.Position;
 			set => _readStreamAdapter.Position = value;
-		}	
+		}
 
 		public RentedStream Rent()
 		{

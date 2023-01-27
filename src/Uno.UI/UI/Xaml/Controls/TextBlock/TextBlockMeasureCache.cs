@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -24,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
 		private readonly LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
-		
+
 		public static readonly TextBlockMeasureCache Instance = new TextBlockMeasureCache();
 
 		/// <summary>
@@ -78,7 +80,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_entries.TryGetValue(key, out var entry))
 			{
-				if (_queue.Count > 1 && !_queue.Last.Value.Equals(key))
+				if (_queue.Count > 1
+					&& _queue.Last is not null
+					&& !_queue.Last.Value.Equals(key))
 				{
 					// Move this key as last in the queue for perf
 					_queue.Remove(entry.ListNode);
@@ -103,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Scavenge()
 		{
-			while (_queue.Count >= MaxMeasureKeyEntries)
+			while (_queue.Count >= MaxMeasureKeyEntries && _queue.First is not null)
 			{
 				_entries.Remove(_queue.First.Value);
 				_queue.RemoveFirst();

@@ -81,6 +81,9 @@ public partial sealed class MyInputControl : FrameworkElement
 }
 ```
 
+> [!NOTE]
+> When using `HtmlElementAttribute` in a WebAssembly-only library, importing the `Uno.WinUI.Runtime.WebAssembly` is required. If multiple targets frameworks are needed, you'll need to create a [cross-targeted library](../cross-targeted-libraries.md), as well as adding the `Uno.WinUI.Runtime.WebAssembly` library.
+
 Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the _Wasm_ platform. It is possible to use [conditional code](https://platform.uno/docs/articles/platform-specific-csharp.html) to use these methods in a multi-platform project.
 
 Here is a list of helper methods used to facilitate the integration with the HTML DOM:

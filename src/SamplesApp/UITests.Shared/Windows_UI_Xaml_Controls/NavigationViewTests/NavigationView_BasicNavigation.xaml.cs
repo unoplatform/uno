@@ -11,11 +11,11 @@ namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 	/// </summary>
 	[SampleControlInfo("NavigationView", "NavigationView_BasicNavigation")]
 	public sealed partial class NavigationView_BasicNavigation : Page
-    {
-        public NavigationView_BasicNavigation()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public NavigationView_BasicNavigation()
+		{
+			this.InitializeComponent();
+		}
 
 		private void BasicNavigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
 		{

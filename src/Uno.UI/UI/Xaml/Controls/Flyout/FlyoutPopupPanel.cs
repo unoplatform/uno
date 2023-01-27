@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 	/// This panel is *NOT* used by types derived from <see cref="PickerFlyoutBase"/>. Pickers use a plain
 	/// <see cref="PopupPanel"/> (see <see cref="PickerFlyoutBase.InitializePopupPanel()"/>).
 	/// </remarks>
-	internal partial class FlyoutBasePopupPanel : PlacementPopupPanel
+	internal partial class FlyoutBasePopupPanel : PopupPanel
 	{
 		private readonly FlyoutBase _flyout;
 
@@ -30,13 +30,11 @@ namespace Windows.UI.Xaml.Controls
 			Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 		}
 
-		protected override FlyoutPlacementMode PopupPlacement => _flyout.EffectivePlacement;
-
-		protected override FrameworkElement AnchorControl => _flyout.Target as FrameworkElement;
-
-		protected override Point? PositionInAnchorControl => _flyout.PopupPositionInTarget;
+		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
 
 		internal override FlyoutBase Flyout => _flyout;
+
+		protected override int PopupPlacementTargetMargin => 5;
 	}
 }
 #endif

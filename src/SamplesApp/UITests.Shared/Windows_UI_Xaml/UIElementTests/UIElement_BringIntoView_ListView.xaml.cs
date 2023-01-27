@@ -17,14 +17,14 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {
 	[Sample("UIElement")]
-    public sealed partial class UIElement_BringIntoView_ListView : Page
-    {
-        private readonly Random _randomizer = new Random();
+	public sealed partial class UIElement_BringIntoView_ListView : Page
+	{
+		private readonly Random _randomizer = new Random();
 
-        public UIElement_BringIntoView_ListView()
-        {
-            this.InitializeComponent();
-        }
+		public UIElement_BringIntoView_ListView()
+		{
+			this.InitializeComponent();
+		}
 
 		private void BringRandomItemIntoView_Click(object sender, RoutedEventArgs e)
 		{

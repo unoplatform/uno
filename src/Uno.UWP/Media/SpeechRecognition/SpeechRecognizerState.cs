@@ -1,31 +1,31 @@
 namespace Windows.Media.SpeechRecognition
 {
-	public enum SpeechRecognizerState 
+	public enum SpeechRecognizerState
 	{
 		Idle,
 
 		Capturing,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		Processing,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		SoundStarted,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		SoundEnded,
 
 		SpeechDetected,
 
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__
 		[global::Uno.NotImplemented]
-		#endif
+#endif
 		Paused
 	}
 }

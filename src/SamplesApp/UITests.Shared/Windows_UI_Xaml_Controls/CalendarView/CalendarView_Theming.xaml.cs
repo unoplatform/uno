@@ -9,13 +9,13 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
-	[Sample("Date Picking")]
-    public sealed partial class CalendarView_Theming : Page
-    {
-        public CalendarView_Theming()
-        {
-            this.InitializeComponent();
-        }
+	[Sample("Pickers")]
+	public sealed partial class CalendarView_Theming : Page
+	{
+		public CalendarView_Theming()
+		{
+			this.InitializeComponent();
+		}
 
 		private void ToggleButton_Click(object sender, RoutedEventArgs e)
 		{

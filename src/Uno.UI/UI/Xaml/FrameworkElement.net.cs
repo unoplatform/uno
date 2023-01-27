@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 				fe.EnterTree();
 			}
 		}
-		
+
 		public T RemoveChild<T>(T child) where T : View
 		{
 			_children.Remove(child);
@@ -148,8 +148,6 @@ namespace Windows.UI.Xaml
 		public double ActualHeight => Arranged.Height;
 
 		public Size UnclippedDesiredSize => _layouter._unclippedDesiredSize;
-
-		public global::System.Uri BaseUri { get; internal set; }
 
 		private protected override double GetActualWidth() => ActualWidth;
 		private protected override double GetActualHeight() => ActualHeight;

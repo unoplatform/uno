@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		internal DatePickerSelectedValueChangedEventArgs(
 			DateTimeOffset? newDate = null,
-			DateTimeOffset? oldDate= null)
+			DateTimeOffset? oldDate = null)
 		{
 			NewDate = newDate;
 			OldDate = oldDate;

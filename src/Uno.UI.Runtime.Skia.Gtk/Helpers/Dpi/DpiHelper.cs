@@ -26,8 +26,6 @@ namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 			remove => _dpiChangedWrapper.RemoveHandler(value);
 		}
 
-		public float GetLogicalDpi() => _dpi ??= GetNativeDpi();
-
 		private void StartDpiChanged()
 		{
 			_window.AddEvents((int)Gdk.EventType.Configure);

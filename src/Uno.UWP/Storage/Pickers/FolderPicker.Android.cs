@@ -58,7 +58,7 @@ namespace Windows.Storage.Pickers
 					if (uri != null)
 					{
 						return StorageFolder.GetFromSafUri(uri);
-					}	
+					}
 				}
 			}
 

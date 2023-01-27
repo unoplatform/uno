@@ -301,7 +301,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
-						.Split(new[]{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
+						.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 						.Where(line => !line.StartsWith("#", StringComparison.Ordinal))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
@@ -493,17 +493,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 
-		[DataContract]
 		private struct DataEntry
 		{
 #pragma warning disable CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public int id;
 
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public string kind;
 
-			[DataMember]
+			[global::System.Text.Json.Serialization.JsonIncludeAttribute]
 			public string type;
 #pragma warning restore CS0649 // error CS0649: Field 'DragDropExtension.DataEntry.kind' is never assigned to, and will always have its default value null
 

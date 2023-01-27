@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.Popup
 		private void RegisterContent(object sender, RoutedEventArgs e)
 		{
 			var ctl = sender as FrameworkElement;
-			while(ctl != null)
+			while (ctl != null)
 			{
 				Register(ctl);
 				Write($"{ctl}-registered, IsHitTestVisible={ctl.IsHitTestVisible}");

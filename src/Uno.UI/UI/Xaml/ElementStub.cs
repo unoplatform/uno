@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	/// <remarks>This control is added in the visual tree, in place of the original content.</remarks>
 	public partial class ElementStub : FrameworkElement
-    {
+	{
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		ManagedWeakReference _contentReference;
 
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
 			}
@@ -188,8 +188,8 @@ namespace Windows.UI.Xaml
 			{
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-				{
 #endif
+				{
 					_isMaterializing = true;
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
@@ -206,9 +206,8 @@ namespace Windows.UI.Xaml
 					}
 
 					MaterializationChanged?.Invoke(this);
-
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
 #endif
 				{

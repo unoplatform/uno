@@ -120,7 +120,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			// Verify that border is drawn with the same thickness with/without CornerRadius
 			const string white = "#FFFFFFFF";
-			const string red = "#FFFF0000";
 
 #if __MACOS__
 			Assert.Inconclusive(); // MACOS interpret colors differently
@@ -134,7 +133,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var result = await TakeScreenshot(SUT);
 			var sample = SUT.GetRelativeCoords(SUT.Sample1);
 			var eighth = sample.Width / 8;
-			
+
 			ImageAssert.HasPixels(
 				result,
 				ExpectedPixels.At(sample.X + eighth, sample.Y + eighth).Named("top left corner").WithPixelTolerance(2, 2).Pixel(white),
@@ -171,13 +170,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_CornerRadius_BorderThickness()
 		{
-			// White Background color underneath
-			const string white = "#FFFFFF";
-
-			//Colors with 50% Opacity
-			const string red50 = "#80FF0000";
-			const string blue50 = "#800000FF";
-
 			//Same colors but with the addition of a White background color underneath
 			const string lightPink = "#FF7F7F";
 			const string lightBlue = "#7F7FFF";
@@ -289,6 +281,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task Border_CornerRadius_Content_Clipping()
+		{
+			const string blue = "#FF0000FF";
+
+#if __MACOS__
+			Assert.Inconclusive(); //MACOS interprets colors differently
+#endif
+
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Border() { Background = new SolidColorBrush(Colors.Blue) };
+			var inner = new Border() { CornerRadius = CornerRadiusHelper.FromUniformRadius(40), Width = 80, Height = 80 };
+			inner.Child = new Windows.UI.Xaml.Shapes.Rectangle() { Fill = new SolidColorBrush(Colors.Red), Width = 80, Height = 80 };
+			SUT.Child = inner;
+
+			var snapshot = await TakeScreenshot(SUT);
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At($"top-left", 4, 4)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue),
+				ExpectedPixels
+					.At($"top-right", 76, 4)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue),
+				ExpectedPixels
+					.At($"bottom-left", 4, 76)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue),
+				ExpectedPixels
+					.At($"bottom-right", 76, 76)
+					.WithPixelTolerance(1, 1)
+					.Pixel(blue)
+			);
+		}
+
+		[TestMethod]
 		public async Task Border_LinearGradient()
 		{
 #if __MACOS__
@@ -332,7 +366,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__ANDROID__
 			Assert.Inconclusive();
 #endif
-			const string firstRectBlueish = "#ff6262ff";
 			const string secondRectBlueish = "#ff9e9eff";
 
 			var SUT = new Border_AntiAlias();

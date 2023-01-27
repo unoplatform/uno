@@ -22,7 +22,6 @@ namespace Windows.Media.Capture
 {
 	public partial class CameraCaptureUI
 	{
-		private const int CameraRollRequestCode = 1;
 		private const int CameraRequestCode = 2;
 
 

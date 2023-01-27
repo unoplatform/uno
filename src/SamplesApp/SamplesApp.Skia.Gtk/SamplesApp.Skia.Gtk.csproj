@@ -28,7 +28,7 @@
 		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 	</PropertyGroup>
-
+	
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<Prefer32Bit>true</Prefer32Bit>
 	</PropertyGroup>
@@ -66,7 +66,7 @@
 			AfterTargets="Build"
 			Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />
-		<Error Condition="!Exists('$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
+		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
 	</Target>
 
 </Project>

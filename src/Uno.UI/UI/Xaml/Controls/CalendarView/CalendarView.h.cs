@@ -97,6 +97,6 @@ namespace Windows.UI.Xaml.Controls
 			m_wrKeyDownEventArgsFromCalendarItem.SetTarget(pArgs);
 		}
 
-		internal bool IsMultipleEraCalendar {get{ return m_isMultipleEraCalendar; }}
+		internal bool IsMultipleEraCalendar { get { return m_isMultipleEraCalendar; } }
 	}
 }

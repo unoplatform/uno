@@ -15,21 +15,21 @@ using Windows.UI.Xaml.Navigation;
 
 namespace MUXControlsTestApp
 {
-    public sealed partial class DialogWithNavView : ContentDialog
-    {
-        public DialogWithNavView()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class DialogWithNavView : ContentDialog
+	{
+		public DialogWithNavView()
+		{
+			this.InitializeComponent();
+		}
 
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            Hide();
-        }
+		private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+		{
+			Hide();
+		}
 
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            Hide();
-        }
-    }
+		private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+		{
+			Hide();
+		}
+	}
 }

@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// private
 		FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
-		
+
 		double m_effectiveItemWidth = 0.0;
 		double m_effectiveItemHeight = 0.0;
 

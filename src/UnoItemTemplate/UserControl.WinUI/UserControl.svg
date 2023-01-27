@@ -1,15 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs>
-    <style>.canvas{fill: none; opacity: 0;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-blue{fill: #005dba; opacity: 1;}</style>
-  </defs>
-  <title>IconLightWPFUserControl</title>
-  <g id="canvas" class="canvas">
-    <path class="canvas" d="M16,0V16H0V0Z" />
-  </g>
-  <g id="level-1">
-    <path class="light-defaultgrey-10" d="M14.5,11.025H10.1L8.707,9.637,7.318,11.025H5.5a4.727,4.727,0,0,1,4.5-4.5A4.5,4.5,0,0,1,14.5,11.025Zm-2-7a2.5,2.5,0,1,0-2.5,2.5A2.5,2.5,0,0,0,12.5,4.025Z" />
-    <path class="light-defaultgrey" d="M11.832,6.384a2.993,2.993,0,1,0-3.664,0A5,5,0,0,0,5,11.025H6a4,4,0,1,1,8,0h1A5.065,5.065,0,0,0,11.832,6.384ZM8,4.025a2,2,0,1,1,2,2A2,2,0,0,1,8,4.025Z" />
-    <path class="light-blue" d="M7,12.025v3H4v-3Z" />
-    <path class="light-defaultgrey" d="M10.828,13.172v.707L8.707,16,8,15.293l1.768-1.768L8,11.758l.707-.707ZM2.293,11.051.172,13.172v.707L2.293,16,3,15.293,1.232,13.525,3,11.758Z" />
-  </g>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.11999 7.64C9.95357 7.64 11.44 6.15359 11.44 4.32C11.44 2.48641 9.95357 1 8.11999 1C6.2864 1 4.79999 2.48641 4.79999 4.32C4.79999 6.15359 6.2864 7.64 8.11999 7.64Z" stroke="#000000" stroke-linejoin="round"/>
+<path d="M3.33002 9.44H12.67C13.0413 9.44 13.3974 9.5875 13.66 9.85005C13.9225 10.1126 14.07 10.4687 14.07 10.84C14.07 11.9433 13.6317 13.0014 12.8516 13.7816C12.0714 14.5617 11.0133 15 9.91002 15H8.12002" stroke="#000000" stroke-linejoin="round"/>
+<path d="M3.09997 14.79L1.40997 13.11" stroke="#00E9A8" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M5.72998 11.43L7.40998 13.11" stroke="#FF4775" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M7.40998 13.11L5.72998 14.79" stroke="#8061FE" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M1.40997 13.11L3.09997 11.43" stroke="#009AFF" stroke-miterlimit="10" stroke-linecap="square"/>
 </svg>

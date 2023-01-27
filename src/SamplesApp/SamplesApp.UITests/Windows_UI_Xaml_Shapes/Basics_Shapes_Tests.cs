@@ -54,9 +54,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			// se we increase the pixel offset tolerance to ignore it.
 			var tolerance = new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
-				.WithOffset(10, 10, LocationToleranceKind.PerPixel) 
+				.WithOffset(10, 10, LocationToleranceKind.PerPixel)
 				.Discrete(2);
-				
+
 			ValidateShape("Polygon", tolerance);
 		}
 
@@ -70,7 +70,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			// se we increase the pixel offset tolerance to ignore it.
 			var tolerance = new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
-				.WithOffset(6, 6, LocationToleranceKind.PerPixel) 
+				.WithOffset(6, 6, LocationToleranceKind.PerPixel)
 				.Discrete(2);
 
 			ValidateShape("Path", tolerance);
@@ -84,7 +84,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var expectedDirectory = Path.Combine(
 				TestContext.CurrentContext.TestDirectory,
 				"Windows_UI_Xaml_Shapes/Basics_Shapes_Tests_EpectedResults");
-			var actualDirectory  = Path.Combine(
+			var actualDirectory = Path.Combine(
 				TestContext.CurrentContext.WorkDirectory,
 				nameof(Windows_UI_Xaml_Shapes),
 				nameof(Basics_Shapes_Tests),
@@ -99,7 +99,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			// To improve performance, we run all test for a given stretch at once.
 			var testGroups = _tests
 				.Where(t => t.StartsWith(shapeName))
-				.GroupBy(t => string.Join("_", t.Split(new[] {'_'}, 3, StringSplitOptions.RemoveEmptyEntries).Take(2)));
+				.GroupBy(t => string.Join("_", t.Split(new[] { '_' }, 3, StringSplitOptions.RemoveEmptyEntries).Take(2)));
 
 			foreach (var testGroup in testGroups)
 			{
@@ -107,9 +107,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")), timeout: TimeSpan.FromMinutes(1));
 				var testResultsRaw = ctrl.GetDependencyPropertyValue<string>("TestResult");
 
-				var testResults= testResultsRaw
-					.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
-					.Select(line => line.Split(new[] {';'}, 3, StringSplitOptions.RemoveEmptyEntries))
+				var testResults = testResultsRaw
+					.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+					.Select(line => line.Split(new[] { ';' }, 3, StringSplitOptions.RemoveEmptyEntries))
 					.Where(line => line.Length == 3)
 					.ToDictionary(
 						line => line[0],
@@ -119,14 +119,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 							var isSuccess = line[1] == "SUCCESS";
 							var data = Convert.FromBase64String(line[2]);
 
-							var target =Path
+							var target = Path
 								.Combine(actualDirectory, testName + (isSuccess ? ".png" : ".txt"))
 								.GetNormalizedLongPath();
 							var targetFile = new FileInfo(target);
 
 							targetFile.Directory.Create();
 							File.WriteAllBytes(target, data);
-							SetOptions(targetFile, new ScreenshotOptions {IgnoreInSnapshotCompare = true});
+							SetOptions(targetFile, new ScreenshotOptions { IgnoreInSnapshotCompare = true });
 							TestContext.AddTestAttachment(target, testName);
 
 							return isSuccess
@@ -160,7 +160,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);
 						}
 					}
-					catch(IgnoreException e)
+					catch (IgnoreException e)
 					{
 						Console.WriteLine($"{test} is ignored: " + e);
 					}

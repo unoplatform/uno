@@ -1,16 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <style>.canvas{fill: none; opacity: 0;}.light-blue{fill: #005dba; opacity: 1;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.cls-1{opacity:0.75;}</style>
-  </defs>
-  <title>IconLightWPFApplication</title>
-  <g id="canvas" class="canvas">
-    <path class="canvas" d="M16,16H0V0H16Z"/>
-  </g>
-  <g id="level-1">
-    <path class="light-blue" d="M7,12v3H4V12Z"/>
-    <path class="light-defaultgrey" d="M10.854,13.146v.708l-2,2-.708-.708L9.793,13.5,8.146,11.854l.708-.708Zm-8.708-2,.708.708L1.207,13.5l1.647,1.646-.708.708-2-2v-.708Z"/>
-    <path class="light-blue-10" d="M 13.444 3.252 L 7.887 8.809 L 6.405 7.291 L 11.944 1.752 C 12.358 1.337 13.03 1.337 13.444 1.752 C 13.857 2.166 13.857 2.837 13.444 3.252 Z" style="opacity: 0.1; fill: rgb(113, 113, 113);"/>
-    <path class="light-blue" d="M 13.83 1.383 C 13.222 0.777 12.239 0.777 11.63 1.383 L 6.38 6.633 L 4.798 9.879 L 5.473 10.553 L 8.468 8.924 L 13.833 3.588 C 14.44 2.977 14.438 1.991 13.83 1.383 Z M 13.13 2.883 L 7.93 8.083 L 7.147 7.283 L 12.337 2.094 C 12.642 1.789 13.163 1.929 13.275 2.345 C 13.326 2.539 13.271 2.745 13.129 2.887 L 13.13 2.883 Z" style="fill: rgb(46, 46, 46);"/>
-  </g>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.03 8.67L6.94 9.06L7.33 6.97L12.53 1.78L14.22 3.47L9.03 8.67Z" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.6388 1.34025C14.8638 1.56529 14.9902 1.87051 14.9902 2.18877C14.9902 2.50703 14.8638 2.81226 14.6388 3.0373L14.2145 3.46157L12.5316 1.77865L12.9559 1.35439C13.1784 1.13174 13.4796 1.00549 13.7944 1.00284C14.1092 1.00019 14.4125 1.12137 14.6388 1.34025V1.34025Z" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 6.57999V14.07C14 14.3166 13.902 14.5532 13.7276 14.7276C13.5532 14.902 13.3167 15 13.07 15H8.27002" stroke="#000000" stroke-miterlimit="10"/>
+<path d="M1 10.56V2.93C1 2.68335 1.09798 2.4468 1.27239 2.27239C1.4468 2.09798 1.68335 2 1.93 2H9.21" stroke="#000000" stroke-miterlimit="10"/>
+<path d="M3.09997 14.79L1.40997 13.11" stroke="#00E9A8" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M5.72998 11.43L7.40998 13.11" stroke="#FF4775" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M7.40998 13.11L5.72998 14.79" stroke="#8061FE" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M1.40997 13.11L3.09997 11.43" stroke="#009AFF" stroke-miterlimit="10" stroke-linecap="square"/>
 </svg>

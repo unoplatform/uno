@@ -8,9 +8,9 @@ namespace Windows.ApplicationModel.Background
 {
 	public partial class SystemTrigger : IBackgroundTrigger
 	{
-		public  bool OneShot { get; }
+		public bool OneShot { get; }
 		public SystemTriggerType TriggerType { get; }
-		public SystemTrigger( SystemTriggerType triggerType,  bool oneShot) 
+		public SystemTrigger(SystemTriggerType triggerType, bool oneShot)
 		{
 			OneShot = oneShot;
 			TriggerType = triggerType;

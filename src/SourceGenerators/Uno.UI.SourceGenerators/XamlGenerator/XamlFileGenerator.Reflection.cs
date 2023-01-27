@@ -788,7 +788,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (strictSearch)
 				{
-					if(isKnownNamespace && ns != null)
+					if (isKnownNamespace && ns != null)
 					{
 						var nsName = GetTrimmedNamespace(ns.Namespace);
 						return _metadataHelper.FindTypeByFullName(nsName + "." + type.Name) as INamedTypeSymbol;
@@ -933,7 +933,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				const string usingPattern = "[using:";
 
-				if(propertyPath.StartsWith(usingPattern, StringComparison.Ordinal))
+				if (propertyPath.StartsWith(usingPattern, StringComparison.Ordinal))
 				{
 					var lastDotIndex = propertyPath.LastIndexOf('.');
 
@@ -942,7 +942,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						.Substring(usingPattern.Length, lastDotIndex - usingPattern.Length)
 						.Replace("]", ".");
 
-					if(GetType(typeName) is { } typeSymbol)
+					if (GetType(typeName) is { } typeSymbol)
 					{
 						yield return (typeSymbol, propertyName);
 					}

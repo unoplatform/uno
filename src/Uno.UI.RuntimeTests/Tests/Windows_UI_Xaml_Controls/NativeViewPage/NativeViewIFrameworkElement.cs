@@ -106,10 +106,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public bool IsParsing { get; set; }
 
-		public event RoutedEventHandler Loaded;
-		public event RoutedEventHandler Unloaded;
-		public event EventHandler<object> LayoutUpdated;
-		public event SizeChangedEventHandler SizeChanged;
+#if __IOS__ || __ANDROID__ || __MACOS__
+		public event RoutedEventHandler Loaded { add { } remove { } }
+		public event RoutedEventHandler Unloaded { add { } remove { } }
+		public event EventHandler<object> LayoutUpdated { add { } remove { } }
+		public event SizeChangedEventHandler SizeChanged { add { } remove { } }
+#endif
 
 		public Size AdjustArrange(Size finalSize) => finalSize;
 

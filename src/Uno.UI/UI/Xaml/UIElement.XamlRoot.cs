@@ -13,32 +13,8 @@ public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 
 	public XamlRoot? XamlRoot
 	{
-		get
-		{
-			var visualTree = VisualTree.GetForElement(this);
-			if (visualTree is not null)
-			{
-				var xamlRoot = visualTree.GetOrCreateXamlRoot();
-				return xamlRoot;
-			}
-
-			return null;
-		}
-		set
-		{
-			var xamlRoot = XamlRoot;
-			if (xamlRoot == value)
-			{
-				return;
-			}
-
-			if (xamlRoot is not null)
-			{
-				throw new InvalidOperationException("Cannot change XamlRoot for existing element");
-			}
-
-			this.SetVisualTree(value!.VisualTree);
-		}
+		get => XamlRoot.GetForElement(this);
+		set => XamlRoot.SetForElement(this, XamlRoot, value);
 	}
 
 	internal VisualTree? VisualTreeCache

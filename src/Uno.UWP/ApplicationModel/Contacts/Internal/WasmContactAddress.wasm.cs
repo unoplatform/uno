@@ -4,37 +4,36 @@ using System.Runtime.Serialization;
 
 namespace Uno.ApplicationModel.Contacts.Internal
 {
-	[DataContract]
 	internal class WasmContactAddress
 	{
-		[DataMember(Name = "city")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("city")]
 		public string? City { get; set; }
 
-		[DataMember(Name = "country")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("country")]
 		public string? Country { get; set; }
 
-		[DataMember(Name = "dependentLocality")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("dependentLocality")]
 		public string? DependentLocality { get; set; }
 
-		[DataMember(Name = "organization")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("organization")]
 		public string? Organization { get; set; }
 
-		[DataMember(Name = "phone")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("phone")]
 		public string? Phone { get; set; }
 
-		[DataMember(Name = "postalCode")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("postalCode")]
 		public string? PostalCode { get; set; }
 
-		[DataMember(Name = "recipient")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("recipient")]
 		public string? Recipient { get; set; }
 
-		[DataMember(Name = "region")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("region")]
 		public string? Region { get; set; }
 
-		[DataMember(Name = "sortingCode")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("sortingCode")]
 		public string? SortingCode { get; set; }
 
-		[DataMember(Name = "addressLine")]
+		[global::System.Text.Json.Serialization.JsonPropertyName("addressLine")]
 		public string?[]? AddressLine { get; set; }
 	}
 }

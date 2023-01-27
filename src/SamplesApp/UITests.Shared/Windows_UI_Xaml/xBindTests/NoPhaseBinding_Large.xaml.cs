@@ -23,10 +23,10 @@ namespace Uno.UI.Samples.Content.UITests.XBind
 	/// </summary>
 	[SampleControlInfo("x:Bind", "NoPhase_Large")]
 	public sealed partial class NoPhaseBinding_Large : Page
-    {
-        public NoPhaseBinding_Large()
-        {
-            this.InitializeComponent();
+	{
+		public NoPhaseBinding_Large()
+		{
+			this.InitializeComponent();
 
 			MyItems = Enumerable.Range(0, 1000).ToArray();
 		}

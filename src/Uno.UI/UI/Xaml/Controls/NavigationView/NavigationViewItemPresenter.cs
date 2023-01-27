@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public  partial class NavigationViewItemPresenter : ContentControl
+	public partial class NavigationViewItemPresenter : ContentControl
 	{
 		NavigationViewItemHelper<NavigationViewItemPresenter> m_helper = new NavigationViewItemHelper<NavigationViewItemPresenter>();
 
@@ -35,8 +35,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public static DependencyProperty IconProperty { get; } =
 			DependencyProperty.Register(
 				"Icon",
-				typeof(IconElement), 
-				typeof(NavigationViewItemPresenter), 
+				typeof(IconElement),
+				typeof(NavigationViewItemPresenter),
 				new FrameworkPropertyMetadata(
 					default(IconElement)
 				)
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			DefaultStyleKey = typeof(NavigationViewItemPresenter);
 		}
-		
+
 		protected override void OnApplyTemplate()
 		{
 			// Retrieve pointers to stable controls 
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal UIElement GetSelectionIndicator()
 		{
-			return m_helper.GetSelectionIndicator();  
+			return m_helper.GetSelectionIndicator();
 		}
 
 		protected override bool GoToElementStateCore(string state, bool useTransitions)

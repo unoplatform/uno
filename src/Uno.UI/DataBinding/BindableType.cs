@@ -43,7 +43,7 @@ namespace Uno.UI.DataBinding
 		{
 			var property = _properties[name] as IBindableProperty;
 
-			if(property == null)
+			if (property == null)
 			{
 				var prop = DependencyPropertyDescriptor.Parse(name);
 

@@ -124,7 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
-
+		 
 		[TestMethod]
 		[RunsOnUIThread]
 		public void TargetNullValue_Is_Correctly_Applied()
@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Transitive_Asset_Loaded()
 		{
-			string url = "ms-appx://Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
+			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
 			var img = new Image();
 			var SUT = new BitmapImage(new Uri(url));
 			img.Source = SUT;
@@ -153,6 +153,88 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(img.ActualHeight > 0);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
+		public async Task When_Explicit_BitmapImage_Relative_NonRooted()
+		{
+			ImageControls.When_Image SUT = new();
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => SUT.explicitRelativeNonRooted.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(SUT.explicitRelativeNonRooted.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
+		public async Task When_Relative_NonRooted()
+		{
+			ImageControls.When_Image SUT = new();
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => SUT.relativeNonRooted.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(SUT.relativeNonRooted.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
+		public async Task When_Relative_Rooted()
+		{
+			ImageControls.When_Image SUT = new();
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => SUT.relativeRooted.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(SUT.relativeRooted.ActualHeight > 0);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
+		public async Task When_AbsoluteLocal()
+		{
+			ImageControls.When_Image SUT = new();
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => SUT.absoluteLocal.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(SUT.absoluteLocal.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
+		public async Task When_AbsoluteMain()
+		{
+			ImageControls.When_Image SUT = new();
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => SUT.absoluteMain.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(SUT.absoluteMain.ActualHeight > 0);
+		}
+
 
 		[TestMethod]
 		[RunsOnUIThread]

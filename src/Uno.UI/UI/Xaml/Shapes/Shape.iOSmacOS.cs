@@ -72,14 +72,15 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			RemoveSublayers();
 
+			CGColor fillColor;
 			switch (Fill)
 			{
 				case SolidColorBrush colorFill:
-					pathLayer.FillColor = colorFill.ColorWithOpacity;
+					fillColor = colorFill.ColorWithOpacity;
 					break;
 
 				case ImageBrush imageFill when TryCreateImageBrushLayers(imageFill, GetFillMask(pathLayer.Path), out var imageLayer):
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					pathLayer.AddSublayer(imageLayer);
 					break;
 
@@ -89,22 +90,27 @@ namespace Windows.UI.Xaml.Shapes
 					gradientLayer.Mask ??= GetFillMask(pathLayer.Path);
 					gradientLayer.MasksToBounds = true;
 
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					pathLayer.AddSublayer(gradientLayer);
 					break;
 
 				case null:
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					break;
 
 				default:
 					Application.Current.RaiseRecoverableUnhandledException(new NotSupportedException($"The brush {Fill} is not supported as Fill for a {this} on this platform."));
-					pathLayer.FillColor = Colors.Transparent;
+					fillColor = Colors.Transparent;
 					break;
 			}
 
 			pathLayer.StrokeColor = Brush.GetColorWithOpacity(Stroke, Colors.Transparent);
 			pathLayer.LineWidth = (nfloat)ActualStrokeThickness;
+			pathLayer.FillColor = fillColor;
+
+			// Make sure to hold native object ref until it has been retained by native itself
+			// https://github.com/unoplatform/uno/issues/10283
+			GC.KeepAlive(fillColor);
 
 			if (StrokeDashArray is { } sda)
 			{
@@ -137,7 +143,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private CAShapeLayer CreateLayer(CGPath path, FillRule fillRule)
 		{
-			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule()};
+			var pathLayer = new CAShapeLayer() { Path = path, FillRule = fillRule.ToCAShapeLayerFillRule() };
 
 			SetFillAndStroke(pathLayer);
 

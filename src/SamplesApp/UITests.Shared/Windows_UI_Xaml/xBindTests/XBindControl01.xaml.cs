@@ -17,21 +17,21 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.XBind
 {
-    public sealed partial class XBindControl01 : UserControl
-    {
-        private int _bindingCounter;
+	public sealed partial class XBindControl01 : UserControl
+	{
+		private int _bindingCounter;
 
-        public XBindControl01()
-        {
-            this.InitializeComponent();
-        }
+		public XBindControl01()
+		{
+			this.InitializeComponent();
+		}
 
-        public int MyValue => 42;
+		public int MyValue => 42;
 
-        public int BindingCounter => ++_bindingCounter;
+		public int BindingCounter => ++_bindingCounter;
 
-        public Data01 Data { get; } = new Data01();
-    }
+		public Data01 Data { get; } = new Data01();
+	}
 
 	[Bindable]
 	public class Data01
@@ -44,10 +44,10 @@ namespace Uno.UI.Samples.Content.UITests.XBind
 	[Bindable]
 	public class Data02
 	{
-        private int _bindingCounter;
+		private int _bindingCounter;
 
-        public int Value02 { get; } = 44;
+		public int Value02 { get; } = 44;
 
-        public int BindingCounter => ++_bindingCounter;
-    }
+		public int BindingCounter => ++_bindingCounter;
+	}
 }

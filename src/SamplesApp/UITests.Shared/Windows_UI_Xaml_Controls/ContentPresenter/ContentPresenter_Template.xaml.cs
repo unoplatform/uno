@@ -20,13 +20,13 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
 	[SampleControlInfo("ContentPresenter", "ContentPresenter_Template")]
 	public sealed partial class ContentPresenter_Template : UserControl
-    {
-        public ContentPresenter_Template()
-        {
-            this.InitializeComponent();
+	{
+		public ContentPresenter_Template()
+		{
+			this.InitializeComponent();
 
-            DataContext = nameof(DataContext);
-        }
+			DataContext = nameof(DataContext);
+		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{

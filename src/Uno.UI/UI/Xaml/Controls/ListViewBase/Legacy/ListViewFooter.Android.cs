@@ -6,8 +6,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls.Legacy
 {
-    internal partial class ListViewFooter : ContentControl
-    {
+	internal partial class ListViewFooter : ContentControl
+	{
 		public ListViewFooter()
 		{
 

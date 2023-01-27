@@ -25,7 +25,7 @@ namespace SampleControl.Presentation
 	{
 		public void PrintViewHierarchy(UIElement vg, StringBuilder sb, int level = 0)
 		{
-			
+
 		}
 
 		private async Task<StorageFolder> GetStorageFolderFromNameOrCreate(CancellationToken ct, string folderName)

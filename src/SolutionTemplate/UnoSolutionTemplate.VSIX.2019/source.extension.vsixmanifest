@@ -6,7 +6,7 @@
 				  Language="en-US"
 				  Publisher="unoplatform" />
         <DisplayName>Uno Platform Solution Templates</DisplayName>
-        <Description xml:space="preserve">Solution templates for Uno Platform enabled projects</Description>
+        <Description xml:space="preserve">Solution templates for Uno Platform enabled projects (Visual Studio 2019 only, a Visual Studio 2022 compatible version is also available)</Description>
         <MoreInfo>https://github.com/unoplatform/uno</MoreInfo>
         <GettingStartedGuide>https://github.com/unoplatform/uno/blob/master/doc/index.md</GettingStartedGuide>
         <Icon>logo.png</Icon>

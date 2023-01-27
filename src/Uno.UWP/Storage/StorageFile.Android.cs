@@ -24,17 +24,12 @@ namespace Windows.Storage
 
 		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
-			if(uri.Scheme != "ms-appx")
+			if (uri.Scheme != "ms-appx")
 			{
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
 			var originalPath = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
-
-			if (uri.Host is { Length: > 0 } host)
-			{
-				originalPath = host.ToLowerInvariant() + "/" + originalPath.TrimStart('/');
-			}
 
 			var path = AndroidResourceNameEncoder.EncodeResourcePath(originalPath);
 

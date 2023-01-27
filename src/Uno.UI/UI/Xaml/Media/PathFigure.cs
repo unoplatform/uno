@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty StartPointProperty { get; } =
 			DependencyProperty.Register(
-				"StartPoint", 
+				"StartPoint",
 				typeof(Point),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Media
 			get => (PathSegmentCollection)this.GetValue(SegmentsProperty);
 			set => this.SetValue(SegmentsProperty, value);
 		}
-		
+
 		public static DependencyProperty SegmentsProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Segments),
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Media
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
 					propertyChangedCallback: OnSegmentsChanged,
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext  | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure
+					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region IsFilled
 
-		public  bool IsFilled
+		public bool IsFilled
 		{
 			get => (bool)this.GetValue(IsFilledProperty);
 			set => this.SetValue(IsFilledProperty, value);
@@ -79,11 +79,11 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty IsFilledProperty { get; } =
 			DependencyProperty.Register(
-				"IsFilled", 
+				"IsFilled",
 				typeof(bool),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
-					defaultValue: true, 
+					defaultValue: true,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty IsClosedProperty { get; } =
 			DependencyProperty.Register(
-				"IsClosed", 
+				"IsClosed",
 				typeof(bool),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(

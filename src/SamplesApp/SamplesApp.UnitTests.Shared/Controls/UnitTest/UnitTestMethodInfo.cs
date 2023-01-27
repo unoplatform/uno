@@ -34,7 +34,7 @@ internal record UnitTestMethodInfo
 			.GetCustomAttributes<DataRowAttribute>()
 			.Select(d => d.Data)
 			.ToList();
-		if (method.GetCustomAttribute<DynamicDataAttribute>() is {} dynamicData)
+		if (method.GetCustomAttribute<DynamicDataAttribute>() is { } dynamicData)
 		{
 			_casesParameters.AddRange(dynamicData.GetData(method));
 		}

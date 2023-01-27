@@ -219,7 +219,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Transform_Tests
 			y *= dpiScale;
 			b *= dpiScale;
 
-			x = x >= 0 ? _sut.X + x + b : _sut.Right + x - (2*b);
+			x = x >= 0 ? _sut.X + x + b : _sut.Right + x - (2 * b);
 			y = y >= 0 ? _sut.Y + y + b : _sut.Bottom + y - (2 * b);
 
 			ImageAssert.HasColorAt(_result, x, y, color ?? Color.White, tolerance: 25);

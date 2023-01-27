@@ -18,10 +18,10 @@ namespace UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 {
 	[Sample("Icons")]
 	public sealed partial class BitmapIcon_Sizing : Page
-    {
-        public BitmapIcon_Sizing()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public BitmapIcon_Sizing()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

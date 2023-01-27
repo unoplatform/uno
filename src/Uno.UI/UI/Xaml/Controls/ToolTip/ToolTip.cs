@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 					_popup.Closed += (sender, e) => IsOpen = false;
 				}
 
-				return _popup; 
+				return _popup;
 			}
 		}
 
@@ -122,6 +122,11 @@ namespace Windows.UI.Xaml.Controls
 		private void OnOpenChanged(bool isOpen)
 		{
 			PerformPlacementInternal();
+			if (_owner is not null)
+			{
+				XamlRoot = XamlRoot.GetForElement(_owner);
+				Popup.XamlRoot = XamlRoot.GetForElement(_owner);
+			}
 			Popup.IsOpen = isOpen;
 			if (isOpen && IsEnabled)
 			{

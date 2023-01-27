@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Media.Animation
 {
-	public  partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
+	public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 	{
 		public CommonNavigationTransitionInfo() : base() { }
 
@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public static DependencyProperty IsStaggeringEnabledProperty { get; } =
 		DependencyProperty.Register(
-			"IsStaggeringEnabled", typeof(bool), 
-			typeof(CommonNavigationTransitionInfo), 
+			"IsStaggeringEnabled", typeof(bool),
+			typeof(CommonNavigationTransitionInfo),
 			new FrameworkPropertyMetadata(default(bool))
 		);
 
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(CommonNavigationTransitionInfo),
 			new FrameworkPropertyMetadata(default(bool))
 		);
-		
+
 		#endregion
 	}
 }

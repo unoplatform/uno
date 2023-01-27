@@ -150,6 +150,32 @@ namespace Uno.Foundation.Interop
 			return value;
 		}
 
+		public static AutoPtr AllocateBlittableStructure(Type type)
+		{
+			var size = Marshal.SizeOf(type);
+
+			return new AutoPtr(Marshal.AllocHGlobal(size));
+		}
+
+		public static StructPtr AllocateStructure(Type type)
+		{
+			var size = Marshal.SizeOf(type);
+
+			return new StructPtr(Marshal.AllocHGlobal(size), type);
+		}
+
+		public static T UnmarshalStructure<T>(AutoPtr ptr)
+			where T : struct
+		{
+			return Marshal.PtrToStructure<T>(ptr);
+		}
+
+		public static T UnmarshalStructure<T>(StructPtr ptr)
+			where T : struct
+		{
+			return Marshal.PtrToStructure<T>(ptr);
+		}
+
 #if TRACE_MEMORY_LAYOUT
 		private static HashSet<Type> _structureDump = new HashSet<Type>();
 #endif

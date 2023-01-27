@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		public SplitButtonAutomationPeer(SplitButton owner) : base(owner)
 		{
-			_owner = owner;			
+			_owner = owner;
 		}
 
 		// IAutomationPeerOverrides

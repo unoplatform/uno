@@ -15,6 +15,7 @@
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <ProvisioningType>manual</ProvisioningType>
+	<NoWarn>$(NoWarn);CS1701</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -151,6 +152,7 @@
     <PackageReference Include="System.Reflection.Emit" Version="4.6.0">
       <ExcludeAssets>all</ExcludeAssets>
     </PackageReference>
+    <PackageReference Include="Uno.Fonts.Fluent" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
@@ -225,7 +227,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
-  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />

@@ -7,7 +7,6 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
 	<Import Project="../../targetframework-override.props"/>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
@@ -15,7 +14,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MSAL</AssemblyName>
 		<RootNamespace>Uno.UI.MSAL</RootNamespace>
@@ -25,10 +23,6 @@
 	<PropertyGroup>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>

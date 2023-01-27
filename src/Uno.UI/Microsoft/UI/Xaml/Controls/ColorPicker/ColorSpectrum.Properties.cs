@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(ColorProperty, value);
 		}
 
-		public static DependencyProperty ColorProperty { get ; } =
+		public static DependencyProperty ColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Color),
 				typeof(Color),
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(ComponentsProperty, value);
 		}
 
-		public static DependencyProperty ComponentsProperty { get ; } =
+		public static DependencyProperty ComponentsProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Components),
 				typeof(ColorSpectrumComponents),
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(HsvColorProperty, value);
 		}
 
-		public static DependencyProperty HsvColorProperty { get ; } =
+		public static DependencyProperty HsvColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(HsvColor),
 				typeof(Vector4),
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MaxHueProperty, value);
 		}
 
-		public static DependencyProperty MaxHueProperty { get ; } =
+		public static DependencyProperty MaxHueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MaxHue),
 				typeof(int),
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MaxSaturationProperty, value);
 		}
 
-		public static DependencyProperty MaxSaturationProperty { get ; } =
+		public static DependencyProperty MaxSaturationProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MaxSaturation),
 				typeof(int),
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MaxValueProperty, value);
 		}
 
-		public static DependencyProperty MaxValueProperty { get ; } =
+		public static DependencyProperty MaxValueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MaxValue),
 				typeof(int),
@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MinHueProperty, value);
 		}
 
-		public static DependencyProperty MinHueProperty { get ; } =
+		public static DependencyProperty MinHueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinHue),
 				typeof(int),
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MinSaturationProperty, value);
 		}
 
-		public static DependencyProperty MinSaturationProperty { get ; } =
+		public static DependencyProperty MinSaturationProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinSaturation),
 				typeof(int),
@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MinValueProperty, value);
 		}
 
-		public static DependencyProperty MinValueProperty { get ; } =
+		public static DependencyProperty MinValueProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MinValue),
 				typeof(int),
@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(ShapeProperty, value);
 		}
 
-		public static DependencyProperty ShapeProperty { get ; } =
+		public static DependencyProperty ShapeProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Shape),
 				typeof(ColorSpectrumShape),

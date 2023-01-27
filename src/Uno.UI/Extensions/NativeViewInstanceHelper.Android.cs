@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Uno.UI
 {
-    public class NativeInstanceHelper
+	public class NativeInstanceHelper
 	{
 		private static readonly string _statsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "cache", "nativeInstances.cache");
 
@@ -43,7 +43,7 @@ namespace Uno.UI
 		/// </summary>
 		public static void InitializeCachedInstances()
 		{
-			if(_cacheInitialized)
+			if (_cacheInitialized)
 			{
 				// This will always happen, as the method is called in the
 				// cctor. Yet, it gives the method more visibility, as it must 
@@ -53,8 +53,8 @@ namespace Uno.UI
 
 			_cacheInitialized = true;
 
-			ThreadPool.QueueUserWorkItem(_ => 
-			{ 
+			ThreadPool.QueueUserWorkItem(_ =>
+			{
 				try
 				{
 					if (File.Exists(_statsFilePath))
@@ -70,7 +70,7 @@ namespace Uno.UI
 							if (typeof(NativeInstanceHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 							{
 								typeof(NativeInstanceHelper).Log().DebugFormat("Pre-fecthing native type information {0}", type);
-                            }
+							}
 
 							CreateTypeReference(type);
 						}
@@ -113,7 +113,7 @@ namespace Uno.UI
 		{
 			System.Tuple<IntPtr, IntPtr> typeRefInfo;
 
-			lock(_typeCache)
+			lock (_typeCache)
 			{
 				if (!_typeCache.TryGetValue(type, out typeRefInfo))
 				{
@@ -140,7 +140,7 @@ namespace Uno.UI
 			{
 				using (var writer = new StreamWriter(stream))
 				{
-					lock(_typeCache)
+					lock (_typeCache)
 					{
 						foreach (var pairs in _typeCache)
 						{

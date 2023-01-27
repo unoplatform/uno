@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml
 					try
 					{
 						InvokeLoaded();
-   					}
+					}
 					catch (Exception error)
 					{
 						_log.Error("OnElementLoaded failed in FrameworkElement", error);

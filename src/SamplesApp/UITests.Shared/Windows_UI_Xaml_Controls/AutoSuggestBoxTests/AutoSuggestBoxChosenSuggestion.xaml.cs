@@ -17,9 +17,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 	{
 		private Book book = new Book { Author = new Author { Name = "A0" } };
 
-        public AutoSuggestBoxChosenSuggestion()
-        {
-            this.InitializeComponent();		
+		public AutoSuggestBoxChosenSuggestion()
+		{
+			this.InitializeComponent();
 		}
 
 		private async void autoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs e)
@@ -36,7 +36,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 			}
 			else
 			{
-				logger.Text = $"ChosenSuggestion -> {(e.ChosenSuggestion?.ToString() ?? "<null>")}";				
+				logger.Text = $"ChosenSuggestion -> {(e.ChosenSuggestion?.ToString() ?? "<null>")}";
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 		{
 			if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput && s.Text?.Trim() is { Length: > 0 } searchTerm)
 			{
-				s.ItemsSource = Author.All.Where(a => a.Name.StartsWith(searchTerm)).ToList();				
+				s.ItemsSource = Author.All.Where(a => a.Name.StartsWith(searchTerm)).ToList();
 			}
 		}
 	}

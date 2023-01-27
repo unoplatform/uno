@@ -23,13 +23,15 @@ namespace Windows.System
 		{
 			if (_current == null) // Do not even check for thread access if we already have a value!
 			{
-#if !__WASM__
 				// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
-				if (!CoreDispatcher.Main.HasThreadAccess)
+				if (
+#if __WASM__
+					CoreDispatcher.IsThreadingSupported &&
+#endif
+					!CoreDispatcher.Main.HasThreadAccess)
 				{
 					return default;
 				}
-#endif
 
 				_current = new DispatcherQueue();
 			}
@@ -42,13 +44,10 @@ namespace Windows.System
 		/// </summary>
 		internal static void CheckThreadAccess()
 		{
-#if !__WASM__
-			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
 			if (!CoreDispatcher.Main.HasThreadAccess)
 			{
 				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
 			}
-#endif
 		}
 
 		public bool TryEnqueue(DispatcherQueueHandler callback)
@@ -70,12 +69,6 @@ namespace Windows.System
 		}
 
 		public bool HasThreadAccess
-#if !__WASM__
 			=> CoreDispatcher.Main.HasThreadAccess;
-#else
-			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
-			=> true;
-#endif
-
 	}
 }

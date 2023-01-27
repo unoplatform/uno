@@ -8,7 +8,7 @@ using Uno.UI;
 namespace Windows.UI.Xaml.Controls
 {
 	public abstract class NativePage : BaseActivity
-    {
+	{
 		public NativePage(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
 		}
@@ -20,14 +20,16 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
-			
+
 			InitializeComponent();
 
 			var decorView = (ContextHelper.Current as Android.App.Activity).Window.DecorView;
 
 #pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 			Windows.UI.Xaml.Window.Current.SystemUiVisibility = (int)decorView.SystemUiVisibility;
 			decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener());
+#pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 		}
 
@@ -44,7 +46,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public View Content
 		{
-			get {
+			get
+			{
 				return ContentView;
 			}
 			set
@@ -52,5 +55,5 @@ namespace Windows.UI.Xaml.Controls
 				SetContentView(value, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent));
 			}
 		}
-    }
+	}
 }

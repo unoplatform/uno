@@ -223,8 +223,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var measureSizeMinor = Minor(measureSize);
 			return MinorMajorSize(
-				(float) (measureSizeMinor.IsFinite() ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
-				(float) Major(desiredSize));
+				(float)(measureSizeMinor.IsFinite() ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
+				(float)Major(desiredSize));
 		}
 
 		bool IFlowLayoutAlgorithmDelegates.Algorithm_ShouldBreakLine(int index, double remainingSpace)
@@ -362,7 +362,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var size = Math.Max(MajorSize(oldViewport), MajorSize(newViewport));
 			var minDelta = Math.Min(elementSize * 5, size);
-			
+
 			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > minDelta
 				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > minDelta;
 		}

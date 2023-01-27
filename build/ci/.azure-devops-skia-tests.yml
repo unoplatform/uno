@@ -34,6 +34,7 @@ jobs:
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net7.0
@@ -44,13 +45,26 @@ jobs:
     displayName: Build WPF Head
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\net7.0-windows
       ArtifactName: skia-wpf-samples-app
       ArtifactType: Container
 
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Linux.FrameBuffer/SamplesApp.Skia.Linux.FrameBuffer.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-framebuffer.binlog
+    displayName: Build Framebuffer Head
+
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Linux.FrameBuffer\bin\Release\net7.0
+      ArtifactName: skia-framebuffer-samples-app
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -87,6 +101,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -153,6 +168,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results

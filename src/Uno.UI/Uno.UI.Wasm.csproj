@@ -13,7 +13,6 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props" />
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
@@ -26,7 +25,6 @@
 		<RootNamespace>Uno.UI</RootNamespace>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsBindings</TSBindingsPath>
 		<TSBindingAssemblySource>Uno;Uno.UI</TSBindingAssemblySource>
@@ -77,6 +75,7 @@
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
+		<PackageReference Include="System.Text.Json" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -104,10 +103,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -170,7 +165,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

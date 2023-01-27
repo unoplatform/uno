@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
@@ -14,7 +14,7 @@
 		<PropertyGroup Condition="'$(UnoSkipLibraryLayout)' != 'true'">
 			<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_UnoIncludeLibraryAssets</TargetsForTfmSpecificContentInPackage>
 		
-			<UnoPriInitialPath>$(AssemblyName.ToLowerInvariant())</UnoPriInitialPath>
+			<UnoPriInitialPath>$(AssemblyName)</UnoPriInitialPath>
 			<ProjectUnoPriFileName Condition="'$(ProjectUnoPriFileName)' == '' and '$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath).uprimarker</ProjectUnoPriFileName>
 			<ProjectUnoPriFullPath Condition="'$(ProjectUnoPriFullPath)' == ''">$(TargetDir)$(ProjectUnoPriFileName)</ProjectUnoPriFullPath>
 		</PropertyGroup>
@@ -113,15 +113,32 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<_UnoFindPackageAssetMarkersDependsOn Condition="'$(ProjectTypeGuids)'!=''">
+			$(_UnoFindPackageAssetMarkersDependsOn);
+			ResolveNuGetPackageAssets
+		</_UnoFindPackageAssetMarkersDependsOn>
+	</PropertyGroup>
+
 	<!--
 	Determines the marker location for project references
 	-->
-	<Target Name="_UnoFindPackageAssetMarkers" 
+	<Target Name="_UnoFindPackageAssetMarkers"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
-			AfterTargets="ResolveAssemblyReferences">
-		<ItemGroup>
+			DependsOnTargets="$(_UnoFindPackageAssetMarkersDependsOn)">
+
+		<ItemGroup Condition="'$(ProjectTypeGuids)'!=''">
+			<!-- Xamarin-based targets which don't set RuntimeCopyLocalItems must use  -->
+			<_UnoPriFiles Include="@(Reference->'%(RootDir)%(Directory)%(Filename).uprimarker')"
+						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+		</ItemGroup>
+
+		<ItemGroup Condition="'$(ProjectTypeGuids)'==''">
 			<_UnoPriFiles Include="@(RuntimeCopyLocalItems->'%(RootDir)%(Directory)%(Filename).uprimarker')"
 						  Condition="$([System.IO.File]::Exists('%(RootDir)%(Directory)%(Filename).uprimarker'))"/>
+		</ItemGroup>
+
+		<ItemGroup>
 			<ReferenceCopyLocalPaths Include="@(_UnoPriFiles)"/>
 		</ItemGroup>
 	</Target>
@@ -171,6 +188,20 @@
 			<Content Include="@(_SourceItemsToCopyToOutputDirectory)"
 					 Condition="'%(_SourceItemsToCopyToOutputDirectory.TargetPath)'!=''"
 					 Link="%(_SourceItemsToCopyToOutputDirectory.TargetPath)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+	Ensure that project transitive references are copied to the publish directory, as well
+	as nuget packages content.
+	-->
+	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
+	BeforeTargets="GetCopyToPublishDirectoryItems">
+		<ItemGroup>
+			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
+				<TargetPath>%(TargetPath)</TargetPath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ContentWithTargetPath>
 		</ItemGroup>
 	</Target>
 

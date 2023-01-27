@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Android -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'android' and '$(MonoAndroidResourcePrefix)' != '' ">
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.xml" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.axml" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.png" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.jpg" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/*/*.gif" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/font/*.ttf" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/font/*.otf" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/font/*.ttc" />
+		<AndroidResource Include="$(MonoAndroidResourcePrefix)/raw/*" Exclude="$(MonoAndroidResourcePrefix)/raw/.*" />
+		<AndroidAsset Include="$(MonoAndroidAssetsPrefix)/**/*" Exclude="$(MonoAndroidAssetsPrefix)/**/.*/**" />
+	</ItemGroup>
+
+	<!-- iOS -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'ios' and '$(iOSProjectFolder)' != '' ">
+		<None Include="$(iOSProjectFolder)Info.plist" LogicalName="Info.plist" />
+		<ImageAsset Include="$(iOSProjectFolder)**/*.xcassets/**/*.png;$(iOSProjectFolder)**/*.xcassets/*/*.jpg;$(iOSProjectFolder)**/*.xcassets/**/*.pdf;$(iOSProjectFolder)**/*.xcassets/**/*.json" Exclude="$(_SingleLocationProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" Visible="false" IsDefaultItem="true" />
+		<SceneKitAsset Include="$(iOSProjectFolder)**/*.scnassets/*" Exclude="$(_SingleLocationProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<InterfaceDefinition Include="$(iOSProjectFolder)**/*.storyboard;$(iOSProjectFolder)**/*.xib" Exclude="$(_SingleLocationProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<BundleResource Include="$(iOSProjectFolder)Resources\**" Exclude="$(_SingleLocationProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+	</ItemGroup>
+
+	<!-- MacCatalyst -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'maccatalyst' and '$(MacCatalystProjectFolder)' != '' ">
+		<None Include="$(MacCatalystProjectFolder)Info.plist" LogicalName="Info.plist" />
+		<ImageAsset Include="$(MacCatalystProjectFolder)**/*.xcassets/**/*.png;$(MacCatalystProjectFolder)**/*.xcassets/*/*.jpg;$(MacCatalystProjectFolder)**/*.xcassets/**/*.pdf;$(MacCatalystProjectFolder)**/*.xcassets/**/*.json" Exclude="$(_SingleLocationProjectMacCatalystExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" Visible="false" IsDefaultItem="true" />
+		<SceneKitAsset Include="$(MacCatalystProjectFolder)**/*.scnassets/*" Exclude="$(_SingleLocationProjectMacCatalystExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<InterfaceDefinition Include="$(MacCatalystProjectFolder)**/*.storyboard;$(MacCatalystProjectFolder)**/*.xib" Exclude="$(_SingleLocationProjectMacCatalystExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<BundleResource Include="$(MacCatalystProjectFolder)Resources\**" Exclude="$(_SingleLocationProjectMacCatalystExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+	</ItemGroup>
+
+	<!-- macOS -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'macos' and '$(MacOSProjectFolder)' != '' ">
+		<None Include="$(MacOSProjectFolder)Info.plist" LogicalName="Info.plist" />
+		<ImageAsset Include="$(MacOSProjectFolder)**/*.xcassets/**/*.png;$(MacOSProjectFolder)**/*.xcassets/*/*.jpg;$(MacOSProjectFolder)**/*.xcassets/**/*.pdf;$(MacOSProjectFolder)**/*.xcassets/**/*.json" Exclude="$(_SingleLocationProjectMacOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" Visible="false" IsDefaultItem="true" />
+		<SceneKitAsset Include="$(MacOSProjectFolder)**/*.scnassets/*" Exclude="$(_SingleLocationProjectMacOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<InterfaceDefinition Include="$(MacOSProjectFolder)**/*.storyboard;$(MacOSProjectFolder)**/*.xib" Exclude="$(_SingleLocationProjectMacOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<BundleResource Include="$(MacOSProjectFolder)Resources\**" Exclude="$(_SingleLocationProjectMacOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+	</ItemGroup>
+
+	<!-- Windows -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(WindowsAppSDKWinUI)'=='true' and '$(WindowsProjectFolder)' != '' ">
+		<Manifest Include="$(ApplicationManifest)" Condition="Exists('$(ApplicationManifest)')" />
+		<AppxManifest Include="$(PackageManifest)" Condition="Exists('$(PackageManifest)')" />
+	</ItemGroup>
+
+	<!-- Page Default includes -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(WindowsAppSDKWinUI)'!='true' ">
+		<Page Include="**/*.xaml" XamlRuntime="WinUI" Exclude="Platforms/**/*.xaml;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<UnoPage Include="**/*.xaml" XamlRuntime="WinUI" Exclude="Platforms/**/*.xaml;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<ApplicationDefinition Include="App.xaml" XamlRuntime="WinUI" Condition="Exists('App.xaml')" />
+		<UnoApplicationDefinition Include="App.xaml" XamlRuntime="WinUI" Condition="Exists('App.xaml')" />
+
+		<PRIResource Include="**/*.resw" XamlRuntime="WinUI" Exclude="Platforms/**/*.resw;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+
+		<!-- Force VS to refresh caches based on additional non C# content -->
+		<UpToDateCheckInput Include="@(UnoPage);@(ApplicationDefinition);@(PRIResource)" />
+
+		<!-- Automatically include content assets -->
+		<Content Condition="'$(EnableDefaultContentItems)'=='true'" Include="Assets\**" />
+	</ItemGroup>
+
+	<!-- Page WPF Default includes -->
+	<ItemGroup  Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' and '$(UseWPF)'=='true' ">
+		<Page Include="$(SkiaWpfProjectFolder)/**/*.xaml" XamlRuntime="Wpf" />
+		<ApplicationDefinition Include="$(SkiaWpfProjectFolder)/App.xaml" XamlRuntime="Wpf" />
+	</ItemGroup>
+
+	<!-- Targets -->
+
+	<PropertyGroup Condition=" '$(UnoSingleLocationProject)' == 'true' ">
+		<!-- Android -->
+		<EnableDefaultAndroidItems>false</EnableDefaultAndroidItems>
+		<AndroidProjectFolder Condition=" '$(AndroidProjectFolder)' == '' ">Platforms\Android\</AndroidProjectFolder>
+		<AndroidManifest>$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
+		<MonoAndroidResourcePrefix>$(AndroidProjectFolder)Resources</MonoAndroidResourcePrefix>
+		<MonoAndroidAssetsPrefix>$(AndroidProjectFolder)Assets</MonoAndroidAssetsPrefix>
+		<UnoPlatformProjectFolder Condition="'$(TargetPlatformIdentifier)' == 'android'">Android</UnoPlatformProjectFolder>
+
+		<!-- iOS -->
+		<EnableDefaultiOSItems>false</EnableDefaultiOSItems>
+		<iOSProjectFolder Condition=" '$(iOSProjectFolder)' == '' ">Platforms\iOS\</iOSProjectFolder>
+		<IPhoneResourcePrefix Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'ios' ">$(iOSProjectFolder)Resources</IPhoneResourcePrefix>
+		<_SingleLocationProjectiOSExcludes>$(iOSProjectFolder)/**/.*/**</_SingleLocationProjectiOSExcludes>
+		<UnoPlatformProjectFolder Condition="'$(TargetPlatformIdentifier)' == 'ios'">iOS</UnoPlatformProjectFolder>
+
+		<!-- MacCatalyst -->
+		<EnableDefaultMacCatalystItems>false</EnableDefaultMacCatalystItems>
+		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">Platforms\MacCatalyst\</MacCatalystProjectFolder>
+		<IPhoneResourcePrefix Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'maccatalyst' ">$(MacCatalystProjectFolder)Resources</IPhoneResourcePrefix>
+		<_SingleLocationProjectMacCatalystExcludes>$(MacCatalystProjectFolder)/**/.*/**</_SingleLocationProjectMacCatalystExcludes>
+		<UnoPlatformProjectFolder Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">MacCatalyst</UnoPlatformProjectFolder>
+
+		<!-- MacOS -->
+		<EnableDefaultMacOSItems>false</EnableDefaultMacOSItems>
+		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">Platforms\MacOS\</MacOSProjectFolder>
+		<IPhoneResourcePrefix Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'macos' ">$(MacOSProjectFolder)Resources</IPhoneResourcePrefix>
+		<_SingleLocationProjectMacOSExcludes>$(MacOSProjectFolder)/**/.*/**</_SingleLocationProjectMacOSExcludes>
+		<UnoPlatformProjectFolder Condition="'$(TargetPlatformIdentifier)' == 'macos'">MacOS</UnoPlatformProjectFolder>
+
+		<!-- WebAssembly -->
+		<EnableDefaultUnoWebAssemblyItems>false</EnableDefaultUnoWebAssemblyItems>
+		<WebAssemblyProjectFolder Condition=" '$(UnoWebAssemblyProjectFolder)' == '' ">Platforms\WebAssembly\</WebAssemblyProjectFolder>
+		<_SingleLocationProjectWebAssemblyExcludes>$(UnoWebAssemblyProjectFolder)/**/.*/**</_SingleLocationProjectWebAssemblyExcludes>
+		<UnoPlatformProjectFolder Condition="'$(UnoIsWebAssemblyBrowserHead)'=='true'">WebAssembly</UnoPlatformProjectFolder>
+
+		<!-- Skia.Gtk -->
+		<EnableDefaultUnoSkiaGtkItems>false</EnableDefaultUnoSkiaGtkItems>
+		<SkiaGtkProjectFolder Condition=" '$(SkiaGtkProjectFolder)' == '' ">Platforms\Skia.Gtk\</SkiaGtkProjectFolder>
+		<_SingleLocationProjectSkiaGtkExcludes>$(SkiaGtkProjectFolder)/**/.*/**</_SingleLocationProjectSkiaGtkExcludes>
+		<UnoPlatformProjectFolder Condition="'$(UnoIsSkiaGtkHead)'=='true'">Skia.Gtk</UnoPlatformProjectFolder>
+
+		<!-- Skia.Wpf -->
+		<EnableDefaultUnoSkiaWpfItems>false</EnableDefaultUnoSkiaWpfItems>
+		<SkiaWpfProjectFolder Condition=" '$(SkiaWpfProjectFolder)' == '' ">Platforms\Skia.Wpf\</SkiaWpfProjectFolder>
+		<_SingleLocationProjectSkiaWpfExcludes>$(SkiaWpfProjectFolder)/**/.*/**</_SingleLocationProjectSkiaWpfExcludes>
+		<UnoPlatformProjectFolder Condition="'$(UseWPF)'=='true'">Skia.Wpf</UnoPlatformProjectFolder>
+
+		<!-- Skia.Framebuffer -->
+		<EnableDefaultUnoSkiaFramebufferItems>false</EnableDefaultUnoSkiaFramebufferItems>
+		<SkiaFramebufferProjectFolder Condition=" '$(SkiaFramebufferProjectFolder)' == '' ">Platforms\Skia.Framebuffer\</SkiaFramebufferProjectFolder>
+		<_SingleLocationProjectSkiaFramebufferExcludes>$(SkiaFramebufferProjectFolder)/**/.*/**</_SingleLocationProjectSkiaFramebufferExcludes>
+		<UnoPlatformProjectFolder Condition="'$(UnoIsSkiaLinuxFramebufferHead)'=='true'">Skia.Framebuffer</UnoPlatformProjectFolder>
+
+		<!-- Windows -->
+		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">Platforms\Windows\</WindowsProjectFolder>
+		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
+		<UnoPlatformProjectFolder Condition="'$(WindowsAppSDKWinUI)'=='true'">Windows</UnoPlatformProjectFolder>
+
+		<ApplicationManifest Condition=" Exists('$(WindowsProjectFolder)app.manifest') ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
+		<PackageManifest Condition=" Exists('$(WindowsProjectFolder)Package.appxmanifest') ">$(WindowsProjectFolder)Package.appxmanifest</PackageManifest>
+		<_SingleLocationProjectWindowsExcludes>$(WindowsProjectFolder)/**/.*/**</_SingleLocationProjectWindowsExcludes>
+
+		<!-- Override the path for the "Properties" folder containing launchSettings.json -->
+		<AppDesignerFolder Condition="'$(AppDesignerFolder)'=='' or '$(AppDesignerFolder)'=='Properties'">Platforms\$(UnoPlatformProjectFolder)\Properties</AppDesignerFolder>
+
+		<EnableDefaultContentItems Condition="'$(EnableDefaultContentItems)'==''">true</EnableDefaultContentItems>
+
+		<!-- Flag mobile targets to show all mobile related file in mobile targets -->
+		<_UnoIsMobileProject Condition="
+			'$(TargetPlatformIdentifier)' == 'android'
+			or '$(TargetPlatformIdentifier)' == 'ios'
+			or '$(TargetPlatformIdentifier)' == 'maccatalyst'
+			or '$(TargetPlatformIdentifier)' == 'macos'
+			">true</_UnoIsMobileProject>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(UseWPF)'=='true' ">
+		<!-- Disable default WPF items-->
+		<EnableDefaultPageItems>false</EnableDefaultPageItems>
+		<EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+	</PropertyGroup>
+
+	<!-- Removals -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(UnoSingleLocationProject)' == 'true' ">
+
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'android' and '$(AndroidProjectFolder)' != '' " Remove="$(AndroidProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'ios' and '$(iOSProjectFolder)' != '' " Remove="$(iOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'maccatalyst' and '$(MacCatalystProjectFolder)' != '' " Remove="$(MacCatalystProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'macos' and '$(MacOSProjectFolder)' != '' " Remove="$(MacOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(WindowsAppSDKWinUI)'!='true' and '$(WindowsProjectFolder)' != '' " Remove="$(WindowsProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(UnoIsSkiaGtkHead)'!='true' and '$(SkiaGtkProjectFolder)' != '' " Remove="$(SkiaGtkProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(UseWPF)'!='true' and '$(SkiaWpfProjectFolder)' != '' " Remove="$(SkiaWpfProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(UnoIsSkiaLinuxFramebufferHead)'!='true' and '$(SkiaFramebufferProjectFolder)' != '' " Remove="$(SkiaFramebufferProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(UnoIsWebAssemblyBrowserHead)'!='true' and '$(WebAssemblyProjectFolder)' != '' " Remove="$(WebAssemblyProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+
+		<_UnoPlatformExcludes Include="$(DefaultItemExcludes)" />
+		<_UnoPlatformExcludes Include="$(DefaultExcludesInProjectFolder)" />
+
+		<_UnoPlatformExcludes Include="$(AndroidProjectFolder)/**" Condition="'$(TargetPlatformIdentifier)' != 'android'" />
+		<_UnoPlatformExcludes Include="$(iOSProjectFolder)/**" Condition="'$(TargetPlatformIdentifier)' != 'ios'" />
+		<_UnoPlatformExcludes Include="$(MacCatalystProjectFolder)/**" Condition="'$(TargetPlatformIdentifier)' != 'maccatalyst'" />
+		<_UnoPlatformExcludes Include="$(MacOSProjectFolder)/**" Condition="'$(TargetPlatformIdentifier)' != 'macos'" />
+		<_UnoPlatformExcludes Include="$(WindowsProjectFolder)/**" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
+		<_UnoPlatformExcludes Include="$(SkiaGtkProjectFolder)/**" Condition="'$(UnoIsSkiaGtkHead)'!='true'" />
+		<_UnoPlatformExcludes Include="$(SkiaWpfProjectFolder)/**" Condition="'$(UseWPF)'!='true'" />
+		<_UnoPlatformExcludes Include="$(SkiaFramebufferProjectFolder)/**" Condition="'$(UnoIsSkiaLinuxFramebufferHead)'!='true'" />
+		<_UnoPlatformExcludes Include="$(WebAssemblyProjectFolder)/**" Condition="'$(UnoIsWebAssemblyBrowserHead)'!='true'" />
+
+		<!-- Remove items that are not applicable to the current platform -->
+		<None Remove="@(_UnoPlatformExcludes)" />
+		<Content Remove="@(_UnoPlatformExcludes)" />
+		<Page Remove="@(_UnoPlatformExcludes)" />
+		<ApplicationDefinition Remove="@(_UnoPlatformExcludes)" />
+
+	</ItemGroup>
+
+	<!-- Files visiblity for the mobile project -->
+	<ItemGroup>
+		<_UnoPlatformMobileIncludes Include="$(AndroidProjectFolder)/**" Condition="'$(_UnoIsMobileProject)'=='true'" />
+		<_UnoPlatformMobileIncludes Include="$(iOSProjectFolder)/**" Condition="'$(_UnoIsMobileProject)'=='true'" />
+		<_UnoPlatformMobileIncludes Include="$(MacCatalystProjectFolder)/**" Condition="'$(_UnoIsMobileProject)'=='true'" />
+		<_UnoPlatformMobileIncludes Include="$(MacOSProjectFolder)/**" Condition="'$(_UnoIsMobileProject)'=='true'" />
+
+		<!-- Make files available in the tree -->
+		<None Include="@(_UnoPlatformMobileIncludes)" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="'$(WindowsAppSDKWinUI)'!='true'">
+			<!-- IDE capabilities -->
+
+			<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
+			<PropertyGroup>
+				<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
+				<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
+			</PropertyGroup>
+
+			<ItemGroup Condition=" '$(UnoSingleLocationProject)' == 'true' ">
+				<ProjectCapability Include="MauiSingleLocationProject" />
+				<ProjectCapability Include="LaunchProfiles" />
+				<!-- If VS is older than Dev17 -->
+				<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
+				<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
+				<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
+				<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
+
+				<ProjectCapability Include="UseMauiCore" />
+
+				<!-- Required since VS 2022 17.4 Preview 1 -->
+				<ProjectCapability Include="MauiCore" />
+				<ProjectCapability Include="Maui" />
+			</ItemGroup>
+
+
+			<!-- Additional capabilities to enable XAML Intellisense for non UWP/WinUI native projects -->
+			<ItemGroup Condition="'$(BuildingInsideVisualStudio)'=='true'">
+				<AvailableItemName Include="PRIResource" />
+				<AvailableItemName Include="AppxManifest" />
+				<AvailableItemName Include="ApplicationDefinition" />
+				<AvailableItemName Include="Page" />
+				<AvailableItemName Include="DesignData" />
+				<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
+			</ItemGroup>
+
+			<ItemGroup>
+				<ProjectCapability Include="WindowsXaml"/>
+				<ProjectCapability Include="WindowsXamlPage"/>
+				<ProjectCapability Include="WindowsXamlCodeBehind"/>
+				<ProjectCapability Include="WindowsXamlResourceDictionary"/>
+				<ProjectCapability Include="WindowsXamlUserControl"/>
+				<ProjectCapability Include="WindowsUniversalMultiViews"/>
+			</ItemGroup>
+		</When>
+		<When Condition="'$(WindowsAppSDKWinUI)'=='true'">
+			<ItemGroup>
+				<ProjectCapability Include="Msix" Condition="'$(EnableMsixTooling)'=='true'" />
+			</ItemGroup>
+		</When>
+	</Choose>
+
+	<Target Name="_RemoveRoslynUnoSourceGenerationWinUI" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(WindowsAppSDKWinUI)'=='true'">
+		<!---
+		Remove uno source generators when building under WinAppSDK
+		-->
+		<ItemGroup>
+			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
+			<Analyzer Remove="@(_AnalyzerToRemove)"/>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CleanupMarkupPass1" BeforeTargets="MarkupCompilePass1" Condition="'$(UseWPF)'=='true'">
+		<!--
+		Remove Uno files when building for WPF, and move those files to the
+		UnoPage and UnoApplicationDefinition to avoid conflicts with the WPF ones.
+		-->
+		<ItemGroup>
+			<!-- Remove all pages included (including ones picked up by WPF's targets) -->
+			<Page Remove="@(UnoPage)" />
+			<ApplicationDefinition Remove="@(UnoApplicationDefinition)"/>
+		</ItemGroup>
+	</Target>
+
+</Project>

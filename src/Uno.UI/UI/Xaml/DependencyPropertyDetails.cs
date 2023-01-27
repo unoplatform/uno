@@ -52,9 +52,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        public DependencyPropertyCallbackManager CallbackManager => _callbackManager ??= new DependencyPropertyCallbackManager();
+		public DependencyPropertyCallbackManager CallbackManager => _callbackManager ??= new DependencyPropertyCallbackManager();
 
-        public DependencyProperty Property { get; }
+		public DependencyProperty Property { get; }
 
 		public PropertyMetadata Metadata => _metadata ??= Property.GetMetadata(_dependencyObjectType);
 
@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml
 		{
 			if (_stack == null)
 			{
-				if(_highestPrecedence == DependencyPropertyValuePrecedences.Local)
+				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
 				{
 					return (Unwrap(_fastLocalValue), DependencyPropertyValuePrecedences.Local);
 				}

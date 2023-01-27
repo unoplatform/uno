@@ -8,10 +8,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.PasswordBoxTests
 	[Sample("PasswordBox")]
 
 	public sealed partial class PasswordBoxPage : Page
-    {
-        public PasswordBoxPage()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public PasswordBoxPage()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

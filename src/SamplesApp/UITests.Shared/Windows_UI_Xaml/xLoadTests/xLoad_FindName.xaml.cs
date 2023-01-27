@@ -20,12 +20,12 @@ namespace UITests.Windows_UI_Xaml.xLoadTests
 {
 	[Sample("x:Load", Name = "xLoad_FindName")]
 	public sealed partial class xLoad_FindName : UserControl
-    {
-        public xLoad_FindName()
-        {
-            this.InitializeComponent();
+	{
+		public xLoad_FindName()
+		{
+			this.InitializeComponent();
 			LoadButton.Click += LoadButton_Click;
-        }
+		}
 
 		private void LoadButton_Click(object sender, RoutedEventArgs e)
 		{

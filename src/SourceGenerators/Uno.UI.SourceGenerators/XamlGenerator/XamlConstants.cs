@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-    internal static class XamlConstants
+	internal static class XamlConstants
 	{
 		public const string XamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
 		public const string PresentationXamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
@@ -113,6 +113,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string KeyTime = Namespaces.MediaAnimation + ".KeyTime";
 			public const string Duration = BaseXamlNamespace + ".Duration";
 			public const string FontFamily = Namespaces.Media + ".FontFamily";
+			public const string ImageSource = Namespaces.Media + ".ImageSource";
 
 			// Controls
 			public const string NativePage = Namespaces.Controls + ".NativePage";
@@ -123,6 +124,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Control = Namespaces.Controls + ".Control";
 			public const string Panel = Namespaces.Controls + ".Panel";
 			public const string Button = Namespaces.Controls + ".Button";
+			public const string Image = Namespaces.Controls + ".Image";
 			public const string TextBox = Namespaces.Controls + ".TextBox";
 			public const string ColumnDefinition = Namespaces.Controls + ".ColumnDefinition";
 			public const string RowDefinition = Namespaces.Controls + ".RowDefinition";

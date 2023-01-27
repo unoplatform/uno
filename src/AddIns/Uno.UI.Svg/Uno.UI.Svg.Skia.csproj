@@ -7,11 +7,9 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props" />
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 
 		<AssemblyName>Uno.UI.Svg</AssemblyName>

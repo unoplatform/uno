@@ -84,7 +84,7 @@
 			<PackagePath>content\unoapp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
-		<Content Include="content\unolib-crossruntime\**">
+		<Content Include="content\unolib-crossruntime\**" Exclude="content\unolib-crossruntime\**\bin\**;content\unolib-crossruntime\**\obj\**">
 			<PackagePath>content\unolib-crossruntime</PackagePath>
 			<Pack>true</Pack>
 		</Content>
@@ -116,11 +116,11 @@
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\*.vstemplate" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\__*.png" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\obj\**" />
-		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\bin\**" />
+		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\**\*.shproj" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\Properties\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj" />
 
-		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -324,8 +324,10 @@
 							.Replace("UseAppKit", "macos")
 							.Replace("UseCatalyst", "maccatalyst")
 							.Replace("UseServer", "hosted")
-							.Replace("UseWebAssemblyManifestJson", "wasm-pwa-manifest")
-							.Replace("$basetargetframework$", "net6.0")
+							.Replace("$UseWinUI$", "$Windows$")
+							.Replace("$UseWebAssembly$", "$WebAssembly$")
+							.Replace("$UseWebAssemblyManifestJson$", "$wasm-pwa-manifest$")
+							.Replace("$basetargetframework$", "net7.0")
 							;
 
 		
@@ -333,9 +335,9 @@
 						{
 							// Avoid value replacement with msbuild's CodeTaskFactory expansion
 							string pattern = string.Format("^{0}\\$if\\$\\(\\${0}\\${0} == True\\)", "(.*?)");
-
+							
 							s = Regex.Replace(s, pattern, @"$1<!--#if ($2)" + Environment.NewLine + "$1", RegexOptions.Multiline);
-
+							
 							s = s
 								.Replace("$endif$", "\n#endif -->");
 								;
@@ -386,7 +388,7 @@
 
 					}
 
-					var platforms = new string[] { "iOS", "UWP", "Wasm", "Server", "Droid", "macOS", "Mobile", "Shared", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
+					var platforms = new string[] { "iOS", "UWP", "Wasm", "Server", "Droid", "macOS", "Mobile", "Shared", "Views", "Base", "Windows", "Skia.Gtk", "Skia.WPF", "Skia.WPF.Host", "Skia.Tizen", "Skia.Linux.FrameBuffer" };
 
 					foreach(var platform in platforms)
 					{
@@ -394,7 +396,9 @@
 
 						if(Directory.Exists(source))
 						{
-							Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, SafeProjectName + "." + platform));
+							var targetName = platform == "Views" ? SafeProjectName : SafeProjectName + "." + platform;
+
+							Directory.Move(Path.Combine(SourcePath, platform), Path.Combine(SourcePath, targetName));
 						}
 					}
 				]]>
@@ -415,7 +419,7 @@
 			<Using Namespace="System.IO" />
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
-					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.props" };
+					string[] filters = new[] { "*.cs", "*.xml", "*.xaml", "*.plist", "*.js", "*.json", "*.config", "*.appxmanifest", "*.projitems", "*.shproj", "*.csproj", "*.sln", "*.props", "*.resw" };
 
 					foreach (var file in filters.SelectMany(f => Directory.EnumerateFiles(SourcePath, f, SearchOption.AllDirectories)))
 					{

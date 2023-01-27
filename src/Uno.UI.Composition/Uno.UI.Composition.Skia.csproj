@@ -7,7 +7,6 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props" />
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
@@ -15,14 +14,9 @@
 		<AssemblyName>Uno.UI.Composition</AssemblyName>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
-
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>

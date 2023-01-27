@@ -390,7 +390,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[Timeout(3*60*1000)] // On iOS, this test is slow
+		[Timeout(3 * 60 * 1000)] // On iOS, this test is slow
 		public void ListView_SelectedItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
@@ -438,9 +438,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var clearButton = _app.Marked("ClearButton");
 			var outputTextBlock = _app.Marked("OutputTextBlock");
 			var listViewItem = _app.Marked("TestListViewItem");
-			
+
 			var listViewItemRect = listViewItem.FirstResult().Rect;
-			
+
 			_app.WaitForElement(clearButton);
 
 			_app.Tap(clearButton);
@@ -450,7 +450,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Assert.AreNotEqual("F", outputTextBlock.GetText());
 
 			_app.Tap(listViewItem);
-			
+
 			Assert.AreEqual("F", outputTextBlock.GetText());
 		}
 
@@ -520,7 +520,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.Tap("Item_1");
 			var logs = eventLogs.GetDependencyPropertyValue<string>("Text");
 			Assert.AreEqual(logs, GenerateItemSelectionLogs(1, "Item_1"));
-			
+
 			// selecting item 0 programmatically
 			clearLogsButton.FastTap(); // clear events from the step above
 			setSelectIndexTo0Button.FastTap();
@@ -582,7 +582,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
 
 			addButton.FastTap();
-			
+
 			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
 
 			Assert.AreNotEqual(listHeight, newListHeight);

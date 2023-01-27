@@ -1,6 +1,6 @@
 namespace Windows.System
 {
-	public enum VirtualKey 
+	public enum VirtualKey
 	{
 		None,
 		LeftButton,

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
@@ -26,19 +27,40 @@ internal class HotReloadWorkspace
 	private readonly string _baseWorkFolder;
 	private readonly bool _isDebugCompilation;
 	private readonly bool _isMono;
+	private readonly bool _useXamlReaderReload;
+	
+	private Dictionary<string, string[]> _projects = new();
 	private Dictionary<string, Dictionary<string, string>> _sourceFiles = new();
 	private Dictionary<string, Dictionary<string, string>> _additionalFiles = new();
+	
 	private Solution? _currentSolution;
 	private WatchHotReloadService? _hotReloadService;
 
-	public HotReloadWorkspace(bool isDebugCompilation, bool isMono)
+	public HotReloadWorkspace(bool isDebugCompilation, bool isMono, bool useXamlReaderReload)
 	{
 		_isDebugCompilation = isDebugCompilation;
 		_isMono = isMono;
+		_useXamlReaderReload = useXamlReaderReload;
 		_baseWorkFolder = Path.Combine(Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!, "work");
 		Directory.CreateDirectory(_baseWorkFolder);
 
 		Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", _baseWorkFolder);
+	}
+
+	internal void AddProject(string name, string[] references)
+	{
+		var exists = _projects.TryGetValue(name, out var existingReferences);
+		if (exists
+			&& existingReferences is not null
+			&& !references.SequenceEqual(existingReferences))
+		{
+			throw new InvalidOperationException($"Project {name} already exists with a different set of project references");
+		}
+
+		if (!exists)
+		{
+			_projects.Add(name, references);
+		}
 	}
 
 	public void SetSourceFile(string project, string fileName, string content)
@@ -49,7 +71,8 @@ internal class HotReloadWorkspace
 		}
 		else
 		{
-			_sourceFiles[project] = new() {
+			_sourceFiles[project] = new()
+			{
 				[fileName] = content
 			};
 		}
@@ -58,7 +81,7 @@ internal class HotReloadWorkspace
 		Directory.CreateDirectory(basePath);
 		File.WriteAllText(filePath, content, Encoding.UTF8);
 
-		if(_currentSolution is not null)
+		if (_currentSolution is not null)
 		{
 			var documents = _currentSolution
 				.Projects
@@ -84,7 +107,7 @@ internal class HotReloadWorkspace
 				[fileName] = content
 			};
 		}
-		
+
 		var basePath = Path.Combine(_baseWorkFolder, project);
 		Directory.CreateDirectory(basePath);
 		var filePath = Path.Combine(basePath, fileName);
@@ -124,11 +147,13 @@ internal class HotReloadWorkspace
 		var currentSolution = workspace.CurrentSolution;
 		var frameworkReferences = BuildFrameworkReferences();
 		var references = BuildUnoReferences().Concat(frameworkReferences);
-		
+
 		var generatorReference = new MyGeneratorReference(
 			ImmutableArray.Create<ISourceGenerator>(new XamlGenerator.XamlCodeGenerator()));
 
-		foreach (var projectName in _additionalFiles.Keys.Concat(_sourceFiles.Keys).Distinct())
+		FillProjectsFromFiles();
+
+		foreach (var projectName in EnumerateProjects())
 		{
 			var projectInfo = ProjectInfo.Create(
 							ProjectId.CreateNewId(),
@@ -149,9 +174,20 @@ internal class HotReloadWorkspace
 
 			projectInfo = projectInfo
 				.WithCompilationOutputInfo(
-					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".exe")));
+					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".dll")));
 
-			var project = workspace.AddProject(projectInfo);
+			if (!_projects.TryGetValue(projectName, out var projectReferences))
+			{
+				throw new InvalidOperationException($"Project {projectName} is not defined in the project list.");
+			}
+
+			var project = workspace
+				.AddProject(projectInfo)
+				.AddProjectReferences(currentSolution
+					.Projects
+					.Where(p => projectReferences.Contains(p.Name))
+					.Select(p => new ProjectReference(p.Id)));
+
 			currentSolution = project.Solution;
 
 			if (_sourceFiles.TryGetValue(projectName, out var sourceFiles))
@@ -193,13 +229,14 @@ internal class HotReloadWorkspace
 						build_property.RootNamespace = {project.Name}
 						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
 						build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
+						build_property.UnoUseXamlReaderHotReload = {(_useXamlReaderReload ? "True" : "False")}
 						
 						"""); ;
 
 					foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
 					{
 						globalConfigBuilder.Append($"""
-							[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\","/")}]
+							[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
 							build_metadata.AdditionalFiles.SourceItemGroup = Page
 							""");
 					}
@@ -209,11 +246,13 @@ internal class HotReloadWorkspace
 						name: ".globalconfig",
 						filePath: "/.globalconfig",
 						text: SourceText.From(globalConfigBuilder.ToString())
-					); ;	
+					); ;
 				}
 			}
+
+			workspace.TryApplyChanges(currentSolution);
 		}
-	
+
 
 		// Materialize the first build
 		foreach (var p in currentSolution.Projects)
@@ -231,7 +270,7 @@ internal class HotReloadWorkspace
 
 				throw new InvalidOperationException($"Compilation errors: {string.Join("\n", errors)}");
 			}
-			
+
 			var emitResult = c.Emit(
 				p.CompilationOutputInfo.AssemblyPath!,
 				pdbPath: Path.ChangeExtension(p.CompilationOutputInfo.AssemblyPath, ".pdb"));
@@ -250,9 +289,64 @@ internal class HotReloadWorkspace
 		_hotReloadService = hotReloadService;
 	}
 
+	private IEnumerable<string> EnumerateProjects()
+	{
+		Stack<string> currentProjects = new();
+		HashSet<string> processed = new();
+
+		foreach (var project in InnerEnumerate(_projects.Keys))
+		{
+			yield return project;
+		}
+
+		IEnumerable<string> InnerEnumerate(IEnumerable<string> projects)
+		{
+			foreach (var project in projects)
+			{
+				if (currentProjects.Contains(project))
+				{
+					throw new InvalidOperationException($"Circular dependency detected: {string.Join(" -> ", currentProjects)} -> {project}");
+				}
+
+				currentProjects.Push(project);
+
+				if (_projects.TryGetValue(project, out var children))
+				{
+					foreach (var child in InnerEnumerate(children))
+					{
+						yield return child;
+					}
+				}
+
+				if (!processed.Contains(project))
+				{
+					yield return project;
+
+					processed.Add(project);
+				}
+
+				currentProjects.Pop();
+			}
+		}
+	}
+
+	private void FillProjectsFromFiles()
+	{
+		var projects = _additionalFiles
+			.Keys
+			.Concat(_sourceFiles.Keys)
+			.Distinct()
+			.Except(_projects.Keys);
+
+		foreach (var project in projects)
+		{
+			AddProject(project, Array.Empty<string>());
+		}
+	}
+
 	public async Task<UpdateResult> Update()
 	{
-		if(_hotReloadService is null || _currentSolution is null)
+		if (_hotReloadService is null || _currentSolution is null)
 		{
 			throw new InvalidOperationException($"Initialize must be called before Update");
 		}
@@ -297,7 +391,7 @@ internal class HotReloadWorkspace
 			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
 			.FirstOrDefault(File.Exists);
 
-		if(unoTarget is null)
+		if (unoTarget is null)
 		{
 			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
 		}
