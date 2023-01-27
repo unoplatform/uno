@@ -7,7 +7,7 @@
 			This condition is used when building under Linux. If you're not building under
 			 Linux, you can remove this line and the conditions below.
 		-->
-		<_CanUseMobileTargets Condition="$([MSBuild]::IsOSPlatform('Windows')) or $([MSBuild]::IsOSPlatform('MacOS'))">true</_CanUseMobileTargets>
+		<_CanUseMobileTargets Condition="!$([MSBuild]::IsOSPlatform('Linux'))">true</_CanUseMobileTargets>
 
 		$if$($UseAndroid$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-android</TargetFrameworks>$endif$
 		$if$($UseIOS$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
