@@ -37,13 +37,23 @@ namespace Windows.UI
 
 		public static Color FromArgb(byte a, byte r, byte g, byte b) => new Color(a, r, g, b);
 
-		private Color(byte a, byte r, byte g, byte b)
+		internal Color(byte a, byte r, byte g, byte b)
 		{
 			_color = 0; // Required for field initialization rules in C#
 			_b = b;
 			_g = g;
 			_r = r;
 			_a = a;
+		}
+
+		internal Color(uint color)
+		{
+			// Required for field initialization rules in C#
+			_b = 0;
+			_g = 0;
+			_r = 0;
+			_a = 0;
+			_color = color;
 		}
 
 		public override bool Equals(object o) => o is Color color && Equals(color);
