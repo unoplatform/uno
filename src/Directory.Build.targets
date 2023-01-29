@@ -99,6 +99,7 @@
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
 	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+	<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0'">

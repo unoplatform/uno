@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
     <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
   </ItemGroup>
