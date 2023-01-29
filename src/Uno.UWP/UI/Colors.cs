@@ -14,7 +14,7 @@ namespace Windows.UI
 #endif
 	static partial class Colors
 	{
-		private static Dictionary<string, Color> _colorMap = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
+		private static readonly Dictionary<string, Color?> _colorMap = new(StringComparer.OrdinalIgnoreCase);
 
 		public static Color FromARGB(byte a, byte r, byte g, byte b) => new(a, r, g, b);
 
@@ -25,25 +25,23 @@ namespace Windows.UI
 		/// </summary>
 		/// <param name="colorCode"></param>
 		/// <returns></returns>
-		public static Color Parse(string colorCode)
+		public static Color? Parse(string colorCode)
 		{
-			if (colorCode?.StartsWith("#", StringComparison.Ordinal) ?? false)
+			if (!string.IsNullOrWhiteSpace(colorCode))
 			{
-				return FromARGB(colorCode);
-			}
-			else
-			{
-				if (!string.IsNullOrWhiteSpace(colorCode))
+				if (colorCode[0] == '#')
 				{
-					Color color;
-
-					if (!_colorMap.TryGetValue(colorCode, out color))
+					return FromARGB(colorCode);
+				}
+				else
+				{
+					if (!_colorMap.TryGetValue(colorCode, out var color))
 					{
 						var property = typeof(Colors).GetProperty(colorCode);
 
 						if (property != null)
 						{
-							_colorMap[colorCode] = color = (Color)property.GetValue(null);
+							_colorMap[colorCode] = color = (Color?)property.GetValue(null);
 						}
 						else
 						{
@@ -53,10 +51,10 @@ namespace Windows.UI
 
 					return color;
 				}
-				else
-				{
-					throw new InvalidOperationException($"Cannot parse an empty color string");
-				}
+			}
+			else
+			{
+				throw new InvalidOperationException($"Cannot parse an empty color string");
 			}
 		}
 
