@@ -38,7 +38,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
 			Assert.AreEqual("https://bing.com", uri.OriginalString);
-			Assert.AreSame(uri, webView.Source);
 
 			webView.NavigateToString("<html></html>");
 			Assert.IsNull(webView.Source);
