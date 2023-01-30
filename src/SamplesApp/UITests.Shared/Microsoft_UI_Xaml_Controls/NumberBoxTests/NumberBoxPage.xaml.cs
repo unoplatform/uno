@@ -136,22 +136,13 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
-		private void CustomFormatterCheckBox_CheckChanged(object sender, RoutedEventArgs e)
+		private void CustomFormatterButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (CustomFormatterCheckBox.IsChecked.GetValueOrDefault())
-			{
-				DecimalFormatter formatter = new DecimalFormatter();
-				formatter.IntegerDigits = 1;
-				formatter.FractionDigits = 2;
-				formatter.NumeralSystem = "ArabExt";
-				formatter.NumberRounder = new IncrementNumberRounder { Increment = 0.25 };
-
-				TestNumberBox.NumberFormatter = formatter;
-			}
-			else
-			{
-				TestNumberBox.NumberFormatter = null;
-			}
+			List<string> languages = new List<string>() { "fr-FR" };
+			DecimalFormatter formatter = new DecimalFormatter(languages, "FR");
+			formatter.IntegerDigits = 1;
+			formatter.FractionDigits = 2;
+			TestNumberBox.NumberFormatter = formatter;
 		}
 
 		private void SetTextButton_Click(object sender, RoutedEventArgs e)
