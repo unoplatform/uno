@@ -43,7 +43,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			_app.FastTap("MinCheckBox");
 			_app.FastTap("MaxCheckBox");
-			_app.Marked("CustomFormatterCheckBox").SetDependencyPropertyValue("IsChecked", "True");
+			_app.FastTap("CustomFormatterButton");
 			EnterTextInNumberBox(numBox, "۱٫۷");
 
 			Assert.AreEqual("۱٫۷۵", numBox.GetDependencyPropertyValue<string>("Text"));
