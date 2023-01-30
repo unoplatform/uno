@@ -48,10 +48,10 @@ The step by step process is:
 1. Optionally, adjust additional parameters in `crosstargeting_override.props`, such as `OptimizeImplicitlyTriggeredBuild` which can improve the build time during debugging sessions.
 
 > [!NOTE]
-> Building two open solution filters in parallel can fail if both are doing restore operation. This is because `project.assets.json` must be in a TFM-agnostic directory, but each filter uses a different TFM and the both write the `project.assets.json` in the same directory.
+> Building two open solution filters in parallel can fail, for example, if both are doing restore operation. This is because `project.assets.json` must be in a TFM-agnostic directory, but each filter uses a different TFM and the both write the `project.assets.json` in the same directory. Support for opening multiple filters is experimental and might not be 100% reliable.
 
 > [!NOTE]
-> If you prefer to open a slnf from `filters` directory directly without using the cmd scripts, you must copy `crosstargeting_override.props.sample` in `src` directory and rename it to `crosstargeting_override.props`, then uncomment and set `UnoTargetFrameworkOverride` value according to the solution filter you want to open. Note that you should close all open Visual Studio instances before changing the property, and thus, you can't open multiple filters at the same time.
+> The older way to build Uno.UI is opening a slnf from `filters` directory directly without using the cmd scripts, you must copy `crosstargeting_override.props.sample` in `src` directory and rename it to `crosstargeting_override.props`, then uncomment and set `UnoTargetFrameworkOverride` value according to the solution filter you want to open. Note that you should close all open Visual Studio instances before changing the property, and thus, you can't open multiple filters at the same time.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
 
