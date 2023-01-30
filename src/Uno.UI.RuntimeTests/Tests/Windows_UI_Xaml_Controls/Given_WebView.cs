@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public void When_NavigateToString()
 		{
 			var webView = new WebView();
-			var uri = new Uri("https://bing.com/");
+			var uri = new Uri("https://bing.com");
 			webView.Source = uri;
 
 			Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
