@@ -14,7 +14,7 @@ namespace Windows.UI
 #endif
 	static partial class Colors
 	{
-		private static readonly Dictionary<string, Color?> _colorMap = new(StringComparer.OrdinalIgnoreCase);
+		private static readonly Dictionary<string, Color> _colorMap = new(StringComparer.OrdinalIgnoreCase);
 
 		public static Color FromARGB(byte a, byte r, byte g, byte b) => new(a, r, g, b);
 
@@ -25,7 +25,7 @@ namespace Windows.UI
 		/// </summary>
 		/// <param name="colorCode"></param>
 		/// <returns></returns>
-		public static Color? Parse(string colorCode)
+		public static Color Parse(string colorCode)
 		{
 			if (!string.IsNullOrWhiteSpace(colorCode))
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI
 
 						if (property != null)
 						{
-							_colorMap[colorCode] = color = (Color?)property.GetValue(null);
+							_colorMap[colorCode] = color = (Color)property.GetValue(null)!;
 						}
 						else
 						{
