@@ -6,6 +6,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_WebView
 	{
+#if __ANDROID__ || __IOS__ || __MACOS__
 		[TestMethod]
 		public void When_Navigate()
 		{
@@ -42,5 +43,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			webView.NavigateToString("<html></html>");
 			Assert.IsNull(webView.Source);
 		}
+#endif
 	}
 }
