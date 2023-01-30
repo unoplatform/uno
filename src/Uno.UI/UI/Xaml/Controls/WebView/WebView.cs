@@ -19,7 +19,7 @@ using Uno;
 namespace Windows.UI.Xaml.Controls
 {
 #if __WASM__ || __SKIA__
-	[NotImplemented]
+	[NotImplemented("__WASM__", "__SKIA__")]
 #endif
 	public partial class WebView : Control
 	{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Uri BlankUri = new Uri(BlankUrl);
 
 		private object _internalSource;
-		private string _invokeScriptResponse = string.Empty;
+		private bool _isUpdatingSource;
 
 #pragma warning disable CS0414 // not used in skia
 		private bool _isLoaded;
@@ -129,6 +129,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Navigate(Uri uri)
 		{
+			if (_isUpdatingSource)
+			{
+				// This avoids Stackoverflow. When Navigate is called, we end up setting Source property, and the property changed callback for SourceProperty is Navigate.
+				// So this breaks the cycle (Navigate → set_Source → Navigate → ...)
+				return;
+			}
 			this.SetInternalSource(uri ?? BlankUri);
 		}
 
@@ -182,22 +188,23 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateFromInternalSource()
 		{
-			var uri = _internalSource as Uri;
-			if (uri != null)
+			if (_internalSource is Uri uri)
 			{
+				_isUpdatingSource = true;
+				Source = new Uri(uri.ToString());
+				_isUpdatingSource = false;
 				NavigatePartial(uri);
-				return;
 			}
-
-			var html = _internalSource as string;
-			if (html != null)
+			else if (_internalSource is string html)
 			{
+				Source = null;
 				NavigateToStringPartial(html);
 			}
-
-			var message = _internalSource as HttpRequestMessage;
-			if (message != null)
+			else if (_internalSource is HttpRequestMessage message)
 			{
+				_isUpdatingSource = true;
+				Source = new Uri(message.RequestUri.ToString());
+				_isUpdatingSource = false;
 				NavigateWithHttpRequestMessagePartial(message);
 			}
 		}
