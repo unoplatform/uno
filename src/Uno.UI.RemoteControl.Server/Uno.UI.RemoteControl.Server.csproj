@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Newtonsoft.Json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
-		<PropertyGroup>			
+		<PropertyGroup>
 			<_OverridePackageId>Uno.UI</_OverridePackageId>
 			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
 

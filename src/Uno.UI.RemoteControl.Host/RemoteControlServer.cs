@@ -97,7 +97,7 @@ namespace Uno.UI.RemoteControl.Host
 
 		private void ProcessDiscoveryFrame(Frame frame)
 		{
-			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content);
+			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
 			var serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name;
 
 			var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);

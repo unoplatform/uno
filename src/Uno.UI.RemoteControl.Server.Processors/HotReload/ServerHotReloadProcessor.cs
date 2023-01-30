@@ -34,10 +34,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			switch (frame.Name)
 			{
 				case ConfigureServer.Name:
-					ProcessConfigureServer(JsonConvert.DeserializeObject<ConfigureServer>(frame.Content));
+					ProcessConfigureServer(JsonConvert.DeserializeObject<ConfigureServer>(frame.Content)!);
 					break;
 				case XamlLoadError.Name:
-					ProcessXamlLoadError(JsonConvert.DeserializeObject<XamlLoadError>(frame.Content));
+					ProcessXamlLoadError(JsonConvert.DeserializeObject<XamlLoadError>(frame.Content)!);
 					break;
 			}
 
