@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "Uno.UI.sln",
+    "path": "..\\Uno.UI.sln",
     "projects": [
       "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
       "SolutionTemplate\\UnoLibraryTemplate.netcore\\UnoLibraryTemplate.netcore.csproj",

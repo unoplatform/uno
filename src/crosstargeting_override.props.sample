@@ -6,13 +6,14 @@
             Instructions:
             1) Copy this file and remove the ".sample" name
             2) Uncomment and adjust the UnoNugetOverrideVersion property below
-            3) Make sure to do a Rebuild, so that nuget restores the proper packages for the new target
+            3) Make sure to do a Rebuild, so that NuGet restores the proper packages for the new target
     -->
 
   <PropertyGroup>
     <!--
-        This property controls the platform built by Visual Studio.
-
+        `UnoTargetFrameworkOverride` property controls the platform built by Visual Studio.
+        We have cmd scripts that opens each solution filter with the correct value of the property.
+        Using these scripts, you can open multiple solution filters at the same time.
         Available build targets and corresponding solution filters:
 
         ┌───────────────────────────────────────────┬─────────────────────────┬────────────────────────────────────────────────────────────────────────────────────┐
@@ -31,8 +32,8 @@
         │ net461                                    │ Uno.UI.Tests            │ Uno.UI-UnitTests-only.slnf                                                         │
         └───────────────────────────────────────────┴─────────────────────────┴────────────────────────────────────────────────────────────────────────────────────┘
 
-        Only one target can be built, and the corresponding solution filter file must
-        be loaded in Visual Studio (see next to Uno.UI.sln).
+        If you uncomment the property, then only one target can be built, and the corresponding solution filter file must
+        be loaded in Visual Studio (solution filters are in the filters directory).
 
         *** WARNING ***
         Note that changing that property while the solution is opened leads to
@@ -41,6 +42,8 @@
 
         Always close the solution before changing or activating this property.
         *** WARNING ***
+
+        Note that it is recommended to not uncomment this property, and instead open solution filters using the provided scripts.
     -->
     <!--<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>-->
 
