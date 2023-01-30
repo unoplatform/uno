@@ -37,41 +37,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(gridView);
 			await WindowHelper.WaitForIdle();
 
-			RectAssert.AreEqual(new Rect
-			{
-				X = 0d,
-				Y = 0d,
-				Width = 104d,
-				Height = 104d,
-			},
-			gvi.LayoutSlot);
-
-			RectAssert.AreEqual(new Rect
-			{
-				X = 0d,
-				Y = 0d,
-				Width = 100d,
-				Height = 100d,
-			},
-			gvi.LayoutSlotWithMarginsAndAlignments);
-
-			RectAssert.AreEqual(new Rect
-			{
-				X = 104d,
-				Y = 0d,
-				Width = 104d,
-				Height = 104d,
-			},
-			gvi2.LayoutSlot);
-
-			RectAssert.AreEqual(new Rect
-			{
-				X = 104d,
-				Y = 0d,
-				Width = 100d,
-				Height = 100d,
-			},
-			gvi2.LayoutSlotWithMarginsAndAlignments);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi.LayoutSlot);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi.LayoutSlotWithMarginsAndAlignments);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi2.LayoutSlot);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi2.LayoutSlotWithMarginsAndAlignments);
 		}
 	}
 #endif

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -184,9 +184,17 @@ namespace Windows.UI.Xaml
 						switch (parent)
 						{
 							case ListViewBaseInternalContainer listViewBaseInternalContainer:
-								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter. We omit
-								// the offset since it's incorporated separately via the layout slot propagated to ListViewItem + the scroll offset.
+								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter.
+								// Normally, the offset should be appended in all cases. However with ObservableCollection::Move, it can result in
+								// the offset to be included in LVI.LayoutSlot already. The if-case guards against that case.
 								parentElement = listViewBaseInternalContainer.FindFirstParent<UIElement>();
+								if (listViewBaseInternalContainer.Content is { } container &&
+									container.LayoutSlot.Left == container.Margin.Left &&
+									container.LayoutSlot.Top == container.Margin.Top)
+								{
+									offsetX += parent.Frame.X;
+									offsetY += parent.Frame.Y;
+								}
 								return true;
 
 							case UIElement eltParent:
