@@ -34,7 +34,7 @@ jobs:
 
   - task: MSBuild@1
     inputs:
-      solution: src/Uno.UI-Windows-only.slnf
+      solution: src/filters/Uno.UI-Windows-only.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86

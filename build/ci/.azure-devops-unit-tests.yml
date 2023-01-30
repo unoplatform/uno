@@ -15,12 +15,12 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
         ADDITIONAL_FLAGS: ''
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
         ADDITIONAL_FLAGS: ''
 
       # Keep for future previews
@@ -54,7 +54,7 @@ jobs:
 
   - task: MSBuild@1
     inputs:
-      solution: src/Uno.UI-UnitTests-only.slnf
+      solution: src/filters/Uno.UI-UnitTests-only.slnf
       msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /p:TargetFrameworksCI=net461 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
 
   - task: PublishBuildArtifacts@1
