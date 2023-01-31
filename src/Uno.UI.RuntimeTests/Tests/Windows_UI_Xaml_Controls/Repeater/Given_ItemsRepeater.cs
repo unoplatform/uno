@@ -11,6 +11,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using FluentAssertions;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 {
@@ -64,6 +68,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis()
+		{
+			var sut = default(ItemsRepeater);
+			var sv = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Children = {
+						new Border { Background = new SolidColorBrush(Colors.DeepPink), Height = 8192, Width = 150 },
+						(sut = new ItemsRepeater
+						{
+							ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item #{i}"),
+							Layout = new StackLayout { Orientation = Orientation.Horizontal },
+							ItemTemplate = new DataTemplate(() => new Border
+							{
+								Width = 100,
+								Height = 100,
+								Background = new SolidColorBrush(Colors.DeepSkyBlue),
+								Margin = new Thickness(10),
+								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							})
+						})
+					}
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = sv;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			sut.Children.Count.Should().BeLessOrEqualTo(1);
+
+			sv.ChangeView(null, sv.ExtentHeight, null, disableAnimation: true);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			sut.Children.Count.Should().BeGreaterThan(1);
+		}
+#endif
 
 		private async Task RetryAssert(Action assertion)
 		{
