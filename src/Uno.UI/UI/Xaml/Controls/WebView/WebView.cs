@@ -197,7 +197,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (_internalSource is string html)
 			{
+				_isUpdatingSource = true;
 				Source = null;
+				_isUpdatingSource = false;
 				NavigateToStringPartial(html);
 			}
 			else if (_internalSource is HttpRequestMessage message)
