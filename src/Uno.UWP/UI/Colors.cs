@@ -71,45 +71,62 @@ namespace Windows.UI
 		public static Color FromARGB(string colorCode)
 		{
 			byte a, r, b, g;
+			int offset;
+			int len;
 
-			colorCode = colorCode.TrimStart(new char[] { '#' });
+			if (colorCode is null)
+			{
+				len = 0;
+				offset = 0;
+			}
+			else
+			{
+				len = colorCode.Length;
+				// skip a starting `#` if present 
+				offset = (len > 0 && colorCode[0] == '#' ? 1 : 0);
+				len -= offset;
+			}
 
-			if (colorCode.Length == 3)
+			// deal with optional alpha value
+			if (len == 4)
 			{
-				a = 0xFF;
-				r = Convert.ToByte(new String(colorCode[0], 2), 16);
-				g = Convert.ToByte(new String(colorCode[1], 2), 16);
-				b = Convert.ToByte(new String(colorCode[2], 2), 16);
+				a = Convert.ToByte(colorCode[offset++]);
+				a = (byte)(a << 4 + a);
+				len = 3;
 			}
-			else if (colorCode.Length == 4)
+			else if (len == 8)
 			{
-				a = Convert.ToByte(new String(colorCode[0], 2), 16);
-				r = Convert.ToByte(new String(colorCode[1], 2), 16);
-				g = Convert.ToByte(new String(colorCode[2], 2), 16);
-				b = Convert.ToByte(new String(colorCode[3], 2), 16);
-			}
-			else if (colorCode.Length == 6)
-			{
-				a = 0xFF;
-				r = Convert.ToByte(colorCode.Substring(0, 2), 16);
-				g = Convert.ToByte(colorCode.Substring(2, 2), 16);
-				b = Convert.ToByte(colorCode.Substring(4, 2), 16);
-			}
-			else if (colorCode.Length == 8)
-			{
-				a = Convert.ToByte(colorCode.Substring(0, 2), 16);
-				r = Convert.ToByte(colorCode.Substring(2, 2), 16);
-				g = Convert.ToByte(colorCode.Substring(4, 2), 16);
-				b = Convert.ToByte(colorCode.Substring(6, 2), 16);
+				a = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
+				len = 6;
 			}
 			else
 			{
 				a = 0xFF;
+			}
+
+			// the process the required R G and B values
+			if (len == 3)
+			{
+				r = Convert.ToByte(colorCode[offset++]);
+				r = (byte)(r << 4 + r);
+				g = Convert.ToByte(colorCode[offset++]);
+				g = (byte)(g << 4 + g);
+				b = Convert.ToByte(colorCode[offset++]);
+				b = (byte)(b << 4 + b);
+			}
+			else if (len == 6)
+			{
+				r = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
+				g = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
+				b = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
+			}
+			else
+			{
 				r = 0xFF;
 				g = 0x0;
 				b = 0x0;
 			}
-			return Color.FromArgb(a, r, g, b);
+			return new Color(a, r, g, b);
 		}
 
 		private static Color? _transparent;
