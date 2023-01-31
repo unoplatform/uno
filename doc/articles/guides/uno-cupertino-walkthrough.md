@@ -47,7 +47,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
             <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.1.0" />
         ```
         solution: Add the mentioned version of `Xamarin.AndroidX.Lifecycle.LiveData` to the `.Droid` project
-1. Add the following code inside `App.xaml`:
+1. Add the following code inside `AppResources.xaml`:
     ```xml
     <Application.Resources>
         <ResourceDictionary>
@@ -117,7 +117,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
     <!-- ... -->
     ```
 
-1. In `App.xaml`, update the line that initializes the `CupertinoColors` to include the new palette override:    
+1. In `AppResources.xaml`, update the line that initializes the `CupertinoColors` to include the new palette override:    
     ```diff
     <Application.Resources>
 		<ResourceDictionary>
@@ -137,7 +137,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 
 
 ### Section 4: Fonts
-By default, Uno.Cupertino will attempt to apply a FontFamily with the name of `SF Pro` to its controls. This FontFamily resource is given the key `CupertinoFontFamily`. If there is no FontFamily with the name `SF Pro` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<CupertinoFonts />` initialization within your `App.xaml`.
+By default, Uno.Cupertino will attempt to apply a FontFamily with the name of `SF Pro` to its controls. This FontFamily resource is given the key `CupertinoFontFamily`. If there is no FontFamily with the name `SF Pro` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<CupertinoFonts />` initialization within your `AppResources.xaml`.
 
 1. Install your custom font following the steps [here](../features/custom-fonts.md)
 1. Create the nested folders `Styles\` and then `Styles\Application\` under the `[MyApp]` project
@@ -152,7 +152,7 @@ By default, Uno.Cupertino will attempt to apply a FontFamily with the name of `S
         
     </ResourceDictionary>
     ```
-1. In `App.xaml`, add the line that initializes the `CupertinoFonts` to include the new font override:
+1. In `AppResources.xaml`, add the line that initializes the `CupertinoFonts` to include the new font override:
     ```xml
     <Application.Resources>
     <ResourceDictionary>

@@ -61,7 +61,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     Now, if you change the language of the targeted PC or the mobile device AND restart the app, that text should also change accordingly.
 
     You can also set the starting culture to see the result, without having to modify the system language:
-    - `App.xaml.cs`:
+    - `App.cs` or `App.xaml.cs`:
         ```cs
         public App()
         {

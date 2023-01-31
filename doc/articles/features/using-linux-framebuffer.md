@@ -44,7 +44,7 @@ dotnet publish -c Release -r linux-x64 --self-contained true
 ```
 
 > [!NOTE]
-> When using the `Release` configuration, logging is disabled for performance considerations. You can restore logging in the App.xaml.cs file.
+> When using the `Release` configuration, logging is disabled for performance considerations. You can restore logging in the `App.xaml.cs` file.
 
 Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
 
