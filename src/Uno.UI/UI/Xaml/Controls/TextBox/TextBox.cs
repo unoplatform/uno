@@ -193,7 +193,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (value == null)
 				{
+#if HAS_UNO_WINUI
+					value = string.Empty;
+#else
 					throw new ArgumentNullException();
+#endif
 				}
 
 				this.SetValue(TextProperty, value);
