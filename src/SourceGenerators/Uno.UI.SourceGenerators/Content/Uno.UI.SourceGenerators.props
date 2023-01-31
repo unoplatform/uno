@@ -109,7 +109,7 @@
 		<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
-		<CompilerVisibleProperty Include="LegacyTypesProperty" />
+		<CompilerVisibleProperty Include="UnoEnableXamlFuzzyMatching" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>

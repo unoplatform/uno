@@ -10,6 +10,9 @@
 		<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>
 		-->$endif$
 
+		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+		<!-- It is recommended to turn it off -->
+		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
   	</PropertyGroup>
 
   	<PropertyGroup>
@@ -108,10 +111,10 @@
 			</PropertyGroup>
 		</When>
 	</Choose>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

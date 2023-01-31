@@ -56,6 +56,8 @@
 
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 
+    <UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
+
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
   </PropertyGroup>

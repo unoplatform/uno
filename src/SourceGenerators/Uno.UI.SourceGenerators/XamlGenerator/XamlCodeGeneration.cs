@@ -79,7 +79,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private bool _skipUserControlsInVisualTree;
+		private readonly bool _skipUserControlsInVisualTree;
+
+		/// <summary>
+		/// Exists for compatibility only. This option should be removed in Uno 5 and fuzzy matching should be disabled.
+		/// </summary>
+		private readonly bool _enableFuzzyMatching;
+
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		private bool IsUnoAssembly
@@ -189,6 +195,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			else
 			{
 				_isHotReloadEnabled = _isDebug;
+			}
+
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableXamlFuzzyMatching"), out _enableFuzzyMatching))
+			{
+				_enableFuzzyMatching = true;
 			}
 
 			_targetPath = Path.Combine(
@@ -357,6 +368,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isUnoAssembly: IsUnoAssembly,
 									isUnoFluentAssembly: IsUnoFluentAssembly,
 									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
+									enableFuzzyMatching: _enableFuzzyMatching,
 									generatorContext: _generatorContext,
 									xamlResourcesTrimming: _xamlResourcesTrimming,
 									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),

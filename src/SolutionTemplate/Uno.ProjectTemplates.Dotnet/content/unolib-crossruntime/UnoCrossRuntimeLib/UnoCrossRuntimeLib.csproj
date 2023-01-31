@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>uap10.0.18362;netstandard2.0;xamarinios10;xamarinmac20;monoandroid12.0</TargetFrameworks>
     <AssemblyName>UnoCrossRuntimeLib</AssemblyName>
+
+    <!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+	<!-- It is recommended to turn it off -->
+    <UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
   </PropertyGroup>
 
 	<ItemGroup>

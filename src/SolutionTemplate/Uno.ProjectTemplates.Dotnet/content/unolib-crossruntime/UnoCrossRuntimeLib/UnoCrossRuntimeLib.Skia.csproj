@@ -5,6 +5,10 @@
 		<IsPackable>false</IsPackable>
 		<RootNamespace>UnoCrossRuntimeLib</RootNamespace>
     <AssemblyName>UnoCrossRuntimeLib</AssemblyName>
+
+    <!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+	<!-- It is recommended to turn it off -->
+    <UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
   </PropertyGroup>
 
   <ItemGroup>

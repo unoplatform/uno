@@ -7,7 +7,6 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
-using System.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -849,7 +848,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			return SearchClrNamespaces(name);
+			if (SearchClrNamespaces(name) is INamedTypeSymbol namedTypeSymbol4)
+			{
+				return namedTypeSymbol4;
+			}
+
+			if (_enableFuzzyMatching)
+			{
+				return SearchWithFuzzyMatching(name);
+			}
+
+			return null;
 
 			INamedTypeSymbol? SearchClrNamespaces(string name)
 			{
@@ -861,6 +870,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
 						{
 							return type;
+						}
+					}
+				}
+
+				return null;
+			}
+
+			INamedTypeSymbol? SearchWithFuzzyMatching(string name)
+			{
+				var symbol = _metadataHelper.Compilation.GetSymbolsWithName(name, SymbolFilter.Type).OfType<INamedTypeSymbol>().FirstOrDefault();
+				if (symbol is not null)
+				{
+					return symbol;
+				}
+
+				return SearchFromMetadata(name);
+			}
+
+			INamedTypeSymbol? SearchFromMetadata(string name)
+			{
+				var compilation = _metadataHelper.Compilation;
+				foreach (var metadataReference in compilation.References)
+				{
+					if (compilation.GetAssemblyOrModuleSymbol(metadataReference) is IAssemblySymbol assembly &&
+						assembly.TypeNames.Contains(name))
+					{
+						foreach (var candidate in assembly.GlobalNamespace.GetNamespaceTypes())
+						{
+							if (candidate.Name == name)
+							{
+								return candidate;
+							}
 						}
 					}
 				}

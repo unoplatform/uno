@@ -5,7 +5,7 @@
 
 		<!-- Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401-->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net6.0-macos</TargetFrameworks> -->
-		
+
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
 
@@ -21,6 +21,10 @@
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='net6.0-macos'">10.14</SupportedOSPlatformVersion>
+
+		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+		<!-- It is recommended to turn it off -->
+		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
   	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(RuntimeIdentifier)'==''">
@@ -53,7 +57,7 @@
 
 				<!-- See https://github.com/unoplatform/uno/issues/9430 for more details. -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
-								
+
 				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
 			</PropertyGroup>

@@ -103,6 +103,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled;
 
+		private readonly bool _enableFuzzyMatching;
+
 		/// <summary>
 		/// True if XAML resource trimming is enabled
 		/// </summary>
@@ -248,6 +250,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isUnoAssembly,
 			bool isUnoFluentAssembly,
 			bool isLazyVisualStateManagerEnabled,
+			bool enableFuzzyMatching,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			GenerationRunFileInfo generationRunFileInfo,
@@ -273,6 +276,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
+			_enableFuzzyMatching = enableFuzzyMatching;
 			_generatorContext = generatorContext;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_generationRunFileInfo = generationRunFileInfo;

@@ -5,6 +5,10 @@
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>$basetargetframework$-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
+
+		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+		<!-- It is recommended to turn it off -->
+		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
 	</PropertyGroup>
 
 	<ItemGroup Label="AssemblyInfo">
@@ -28,7 +32,7 @@
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ApplicationDefinition Include="Wpf\App.xaml" XamlRuntime="Wpf" />
 	</ItemGroup>

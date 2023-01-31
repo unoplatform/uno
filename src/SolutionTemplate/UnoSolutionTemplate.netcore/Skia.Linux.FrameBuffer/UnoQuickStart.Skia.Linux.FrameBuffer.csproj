@@ -4,6 +4,10 @@
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
+
+		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+		<!-- It is recommended to turn it off -->
+		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
 	</PropertyGroup>
 
 	<ItemGroup Condition="exists('..\$ext_safeprojectname$.UWP')">

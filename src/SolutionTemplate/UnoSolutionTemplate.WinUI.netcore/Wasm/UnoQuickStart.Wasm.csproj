@@ -5,6 +5,10 @@
 		<TargetFramework>$basetargetframework$</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
 		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
+
+		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
+		<!-- It is recommended to turn it off -->
+		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -71,7 +75,7 @@
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.11" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>
