@@ -56,4 +56,4 @@ For UWP, the `Package.appxmanifest` file can be copied directly from your old UW
 
 ## What if my existing app targets WinUI 3?
 
-The basic idea is the same, however you'll use the [`dotnet new` templates](get-started-dotnet-new.md) to create a WinUI 3-compatible Uno Platform app, into which you can transfer files and dependencies in a similar manner.
+The basic idea is the same, however, you'll use the [`dotnet new` templates](get-started-dotnet-new.md) to create a WinUI 3-compatible Uno Platform app, into which you can transfer files and dependencies in a similar manner.

@@ -35,7 +35,7 @@ Earlier application platforms had a simple lifecycle - once launched, they conti
 > * [App Lifecycle](https://docs.microsoft.com/windows/uwp/launch-resume/app-lifecycle)
 > * [Application Class](https://docs.microsoft.com/uwp/api/windows.ui.xaml.application?view=winrt-19041)
 
-The Uno template generates a basic `App.cs` and `App.xaml.cs` file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
+The Uno template generates a basic `App.cs` and `App.xaml.cs` file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
 
 Briefly reviewing the `App.cs` and `App.xaml.cs` files will reveal the following structure:
 
