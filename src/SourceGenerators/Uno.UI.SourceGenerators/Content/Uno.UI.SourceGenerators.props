@@ -470,14 +470,11 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_UnoUIValidateLongPathSupport"
-			BeforeTargets="CoreCompile"
-			Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOsPlatform(Windows)) and ( ('$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
+	<Target Name="_UnoUIValidateLongPathSupport" BeforeTargets="CoreCompile">
 		<!---
-	Validation for LongPath support (source https://github.com/dotnet/roslyn/blob/c8eecdb9563127988b3cb564a493eae9ef254a88/eng/build.ps1#L607)
-	https://docs.microsoft.com/en-us/archive/blogs/jeremykuhne/net-4-6-2-and-long-paths-on-windows-10#enabling-win32-long-path-support
-	-->
-
+			Validation for LongPath support (source https://github.com/dotnet/roslyn/blob/c8eecdb9563127988b3cb564a493eae9ef254a88/eng/build.ps1#L607)
+			https://docs.microsoft.com/en-us/archive/blogs/jeremykuhne/net-4-6-2-and-long-paths-on-windows-10#enabling-win32-long-path-support
+		-->
 		<Warning
 		  Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
 		  Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
