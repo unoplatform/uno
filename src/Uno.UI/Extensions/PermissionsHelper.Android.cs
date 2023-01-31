@@ -15,8 +15,7 @@ namespace Uno.UI.Extensions
 	{
 		public static void Initialize()
 		{
-			var getPermission = Funcs
-					.CreateAsync<string, bool>(TryGetPermissionCore)
+			var getPermission = ((FuncAsync<string, bool>)TryGetPermissionCore)
 					.LockInvocation(InvocationLockingMode.Share);
 
 			Windows.Extensions.PermissionsHelper.Initialize(getPermission, CheckPermission);
