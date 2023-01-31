@@ -4,10 +4,6 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net5.0</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
-
-		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
-		<!-- It is recommended to turn it off -->
-		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>

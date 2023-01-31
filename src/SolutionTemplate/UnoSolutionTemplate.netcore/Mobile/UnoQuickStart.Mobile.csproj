@@ -21,10 +21,6 @@
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='net6.0-macos'">10.14</SupportedOSPlatformVersion>
-
-		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
-		<!-- It is recommended to turn it off -->
-		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
   	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(RuntimeIdentifier)'==''">

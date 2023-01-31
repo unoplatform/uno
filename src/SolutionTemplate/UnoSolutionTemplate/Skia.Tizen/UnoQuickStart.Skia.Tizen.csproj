@@ -6,10 +6,6 @@
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__TIZEN__;</DefineConstants>
 		<LangVersion>latest</LangVersion>
-
-		<!-- Xaml fuzzy matching will be removed in Uno 5 to match Windows and also improve performance -->
-		<!-- It is recommended to turn it off -->
-		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
 	</PropertyGroup>
 
 	<ItemGroup>
