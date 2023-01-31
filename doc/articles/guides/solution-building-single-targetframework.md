@@ -3,17 +3,17 @@ uid: Build.Solution.TargetFramework-override
 ---
 # Adjust an Uno Solution for a faster build with Visual Studio 2022
 
-The Uno Platform template provides a cross-targeted Class library which includes multiple target frameworks. While building with the command line `dotnet build -f net7.0-ios` does only build the application's head and the class library for `net7.0-ios`, Visual Studio builds all the target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372).
+The Uno Platform template provides a cross-targeted Class library that includes multiple target frameworks. While building with the command line `dotnet build -f net7.0-ios` only builds the application's head and the class library for `net7.0-ios`, Visual Studio builds all the target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372).
 
-Considering that during development, it is common to work on a single platform at a given time, here's a suggested set of modification that can be performed on the solution to restrict the active build platform:
+Considering that during development, it is common to work on a single platform at a given time, here's a suggested set of modifications that can be performed on the solution to restrict the active build platform:
 
 1. Let's create a set of solution filters to ensure that individual project heads can be loaded:
 
     1. Create a new app template with **iOS**, **Android**, **WebAssembly** and **Windows** targets   selected.
     1. Right click on the **.Mobile** and **.Wasm** projects and select **Unload Project**
-    1. On the top level Solution node, right click to select **Save As Solution Filter**, name the    filter **MyApp-Windows-Only.slnf**
-    1. Right click on the **Mobile** project, select **Reload Project**
-    1. Unload the **.Windows** project, then save a new solution filter called **MyApp-Mobile-    Only.slnf**
+    1. On the top level Solution node, right-click to select **Save As Solution Filter**, name the    filter **MyApp-Windows-Only.slnf**
+    1. Right-click on the **Mobile** project, select **Reload Project**
+    1. Unload the **.Windows** project, then save a new solution filter called **MyApp-Mobile-Only.slnf**
     1. Repeat the operation with the **.Wasm** project, with a solution filter called **MyApp-Wasm-Only.slnf**
 
     These solution filters will prevent Visual Studio to restore NuGet packages for TargetFrameworks that will be ignored by the configuration done below.
@@ -37,7 +37,7 @@ Considering that during development, it is common to work on a single platform a
     <Project>
         <PropertyGroup>
             <!--
-            Uncomment the following line to enable single target framework builds
+            Uncomment the following line to enable single-target framework builds
             in order to get faster performance when debugging for a single platform.
 
             Once this file is modified, use the appropriate solution filter to avoid
