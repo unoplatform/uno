@@ -27,21 +27,21 @@ namespace Windows.Media.ContentRestrictions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy> GetBrowsePolicyAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ContentRestrictionsBrowsePolicy> RatedContentRestrictions.GetBrowsePolicyAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ContentRestrictionsBrowsePolicy> RatedContentRestrictions.GetBrowsePolicyAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CContentRestrictionsBrowsePolicy%3E%20RatedContentRestrictions.GetBrowsePolicyAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentAccessRestrictionLevel> GetRestrictionLevelAsync( global::Windows.Media.ContentRestrictions.RatedContentDescription RatedContentDescription)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ContentAccessRestrictionLevel> RatedContentRestrictions.GetRestrictionLevelAsync(RatedContentDescription RatedContentDescription) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ContentAccessRestrictionLevel> RatedContentRestrictions.GetRestrictionLevelAsync(RatedContentDescription RatedContentDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CContentAccessRestrictionLevel%3E%20RatedContentRestrictions.GetRestrictionLevelAsync%28RatedContentDescription%20RatedContentDescription%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> RequestContentAccessAsync( global::Windows.Media.ContentRestrictions.RatedContentDescription RatedContentDescription)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RatedContentRestrictions.RequestContentAccessAsync(RatedContentDescription RatedContentDescription) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RatedContentRestrictions.RequestContentAccessAsync(RatedContentDescription RatedContentDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20RatedContentRestrictions.RequestContentAccessAsync%28RatedContentDescription%20RatedContentDescription%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RestrictionsChanged.add

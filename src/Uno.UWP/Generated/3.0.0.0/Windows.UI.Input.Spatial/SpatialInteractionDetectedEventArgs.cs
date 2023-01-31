@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteraction SpatialInteractionDetectedEventArgs.Interaction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialInteraction SpatialInteractionDetectedEventArgs.Interaction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteraction%20SpatialInteractionDetectedEventArgs.Interaction");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialInteractionDetectedEventArgs.InteractionSourceKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialInteractionDetectedEventArgs.InteractionSourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteractionSourceKind%20SpatialInteractionDetectedEventArgs.InteractionSourceKind");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSource SpatialInteractionDetectedEventArgs.InteractionSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialInteractionSource SpatialInteractionDetectedEventArgs.InteractionSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteractionSource%20SpatialInteractionDetectedEventArgs.InteractionSource");
 			}
 		}
 		#endif
@@ -42,7 +42,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialInteractionDetectedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialInteractionDetectedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialPointerPose%20SpatialInteractionDetectedEventArgs.TryGetPointerPose%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs.Interaction.get

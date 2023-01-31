@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RoutedEvent EventTrigger.RoutedEvent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RoutedEvent EventTrigger.RoutedEvent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RoutedEvent%20EventTrigger.RoutedEvent");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TriggerActionCollection EventTrigger.Actions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TriggerActionCollection EventTrigger.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TriggerActionCollection%20EventTrigger.Actions");
 			}
 		}
 		#endif

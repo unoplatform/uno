@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PlaybackRateChangeRequestedEventArgs.Rate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PlaybackRateChangeRequestedEventArgs.Rate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PlaybackRateChangeRequestedEventArgs.Rate");
 			}
 		}
 		#endif

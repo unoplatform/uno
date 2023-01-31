@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid MobileBroadbandDeviceServiceInformation.DeviceServiceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid MobileBroadbandDeviceServiceInformation.DeviceServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20MobileBroadbandDeviceServiceInformation.DeviceServiceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandDeviceServiceInformation.IsDataReadSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandDeviceServiceInformation.IsDataReadSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandDeviceServiceInformation.IsDataReadSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandDeviceServiceInformation.IsDataWriteSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandDeviceServiceInformation.IsDataWriteSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandDeviceServiceInformation.IsDataWriteSupported");
 			}
 		}
 		#endif

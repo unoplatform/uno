@@ -13,7 +13,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GazeEnteredPreviewEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GazeEnteredPreviewEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GazeEnteredPreviewEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GazePointPreview GazeEnteredPreviewEventArgs.CurrentPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GazePointPreview GazeEnteredPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GazePointPreview%20GazeEnteredPreviewEventArgs.CurrentPoint");
 			}
 		}
 		#endif

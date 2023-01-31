@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception LicenseSatisfactionResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception LicenseSatisfactionResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20LicenseSatisfactionResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, LicenseSatisfactionInfo> LicenseSatisfactionResult.LicenseSatisfactionInfos is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, LicenseSatisfactionInfo> LicenseSatisfactionResult.LicenseSatisfactionInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20LicenseSatisfactionInfo%3E%20LicenseSatisfactionResult.LicenseSatisfactionInfos");
 			}
 		}
 		#endif

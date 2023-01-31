@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioFileInputNode.PlaybackSpeedFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioFileInputNode.PlaybackSpeedFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioFileInputNode.PlaybackSpeedFactor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? AudioFileInputNode.LoopCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? AudioFileInputNode.LoopCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20AudioFileInputNode.LoopCount");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AudioFileInputNode.EndTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AudioFileInputNode.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AudioFileInputNode.EndTime");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AudioFileInputNode.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AudioFileInputNode.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AudioFileInputNode.StartTime");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AudioFileInputNode.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan AudioFileInputNode.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20AudioFileInputNode.Position");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile AudioFileInputNode.SourceFile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFile AudioFileInputNode.SourceFile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFile%20AudioFileInputNode.SourceFile");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AudioFileInputNode.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan AudioFileInputNode.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20AudioFileInputNode.Duration");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioFileInputNode.OutgoingConnections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioFileInputNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAudioGraphConnection%3E%20AudioFileInputNode.OutgoingConnections");
 			}
 		}
 		#endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioFileInputNode.Emitter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioFileInputNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitter%20AudioFileInputNode.Emitter");
 			}
 		}
 		#endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioFileInputNode.OutgoingGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioFileInputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioFileInputNode.OutgoingGain");
 			}
 			set
 			{
@@ -133,7 +133,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFileInputNode.ConsumeInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AudioFileInputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AudioFileInputNode.ConsumeInput");
 			}
 			set
 			{
@@ -147,7 +147,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFileInputNode.EffectDefinitions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFileInputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CIAudioEffectDefinition%3E%20AudioFileInputNode.EffectDefinitions");
 			}
 		}
 		#endif
@@ -157,7 +157,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFileInputNode.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFileInputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioFileInputNode.EncodingProperties");
 			}
 		}
 		#endif

@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SettingsFlyoutTemplateSettings SettingsFlyout.TemplateSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SettingsFlyoutTemplateSettings SettingsFlyout.TemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SettingsFlyoutTemplateSettings%20SettingsFlyout.TemplateSettings");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaDeviceControlCapabilities.AutoModeSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaDeviceControlCapabilities.AutoModeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaDeviceControlCapabilities.AutoModeSupported");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Default is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Default is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaDeviceControlCapabilities.Default");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaDeviceControlCapabilities.Max");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaDeviceControlCapabilities.Min");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Step is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaDeviceControlCapabilities.Step");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaDeviceControlCapabilities.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaDeviceControlCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaDeviceControlCapabilities.Supported");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Print3DWorkflowPrinterChangedEventArgs.NewDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Print3DWorkflowPrinterChangedEventArgs.NewDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Print3DWorkflowPrinterChangedEventArgs.NewDeviceId");
 			}
 		}
 		#endif

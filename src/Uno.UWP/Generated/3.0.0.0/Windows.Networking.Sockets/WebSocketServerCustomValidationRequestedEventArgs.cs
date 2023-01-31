@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketSslErrorSeverity%20WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CChainValidationResult%3E%20WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrors");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> WebSocketServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> WebSocketServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20WebSocketServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates");
 			}
 		}
 		#endif
@@ -62,7 +62,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral WebSocketServerCustomValidationRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral WebSocketServerCustomValidationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20WebSocketServerCustomValidationRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

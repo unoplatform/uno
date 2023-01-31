@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.IdleTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.IdleTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SystemCpuUsageReport.IdleTime");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.KernelTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.KernelTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SystemCpuUsageReport.KernelTime");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.UserTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.UserTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SystemCpuUsageReport.UserTime");
 			}
 		}
 		#endif

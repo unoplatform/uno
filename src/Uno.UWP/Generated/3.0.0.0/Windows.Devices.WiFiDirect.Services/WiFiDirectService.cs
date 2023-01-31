@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectService.SessionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectService.SessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20WiFiDirectService.SessionInfo");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectService.PreferGroupOwnerMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WiFiDirectService.PreferGroupOwnerMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WiFiDirectService.PreferGroupOwnerMode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectService.RemoteServiceInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectService.RemoteServiceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20WiFiDirectService.RemoteServiceInfo");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceError WiFiDirectService.ServiceError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceError WiFiDirectService.ServiceError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectServiceError%20WiFiDirectService.ServiceError");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WiFiDirectServiceConfigurationMethod> WiFiDirectService.SupportedConfigurationMethods is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<WiFiDirectServiceConfigurationMethod> WiFiDirectService.SupportedConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWiFiDirectServiceConfigurationMethod%3E%20WiFiDirectService.SupportedConfigurationMethods");
 			}
 		}
 		#endif
@@ -78,42 +78,42 @@ namespace Windows.Devices.WiFiDirect.Services
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo> GetProvisioningInfoAsync( global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceConfigurationMethod selectedConfigurationMethod)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceProvisioningInfo> WiFiDirectService.GetProvisioningInfoAsync(WiFiDirectServiceConfigurationMethod selectedConfigurationMethod) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceProvisioningInfo> WiFiDirectService.GetProvisioningInfoAsync(WiFiDirectServiceConfigurationMethod selectedConfigurationMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CWiFiDirectServiceProvisioningInfo%3E%20WiFiDirectService.GetProvisioningInfoAsync%28WiFiDirectServiceConfigurationMethod%20selectedConfigurationMethod%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceSession> WiFiDirectService.ConnectAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceSession> WiFiDirectService.ConnectAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CWiFiDirectServiceSession%3E%20WiFiDirectService.ConnectAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync( string pin)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceSession> WiFiDirectService.ConnectAsync(string pin) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectServiceSession> WiFiDirectService.ConnectAsync(string pin) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CWiFiDirectServiceSession%3E%20WiFiDirectService.ConnectAsync%28string%20pin%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetSelector( string serviceName)
 		{
-			throw new global::System.NotImplementedException("The member string WiFiDirectService.GetSelector(string serviceName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string WiFiDirectService.GetSelector(string serviceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WiFiDirectService.GetSelector%28string%20serviceName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetSelector( string serviceName,  global::Windows.Storage.Streams.IBuffer serviceInfoFilter)
 		{
-			throw new global::System.NotImplementedException("The member string WiFiDirectService.GetSelector(string serviceName, IBuffer serviceInfoFilter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string WiFiDirectService.GetSelector(string serviceName, IBuffer serviceInfoFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WiFiDirectService.GetSelector%28string%20serviceName%2C%20IBuffer%20serviceInfoFilter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectService> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectService> WiFiDirectService.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectService> WiFiDirectService.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CWiFiDirectService%3E%20WiFiDirectService.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

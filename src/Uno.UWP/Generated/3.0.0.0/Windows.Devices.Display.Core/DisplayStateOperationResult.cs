@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DisplayStateOperationResult.ExtendedErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception DisplayStateOperationResult.ExtendedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20DisplayStateOperationResult.ExtendedErrorCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayStateOperationStatus DisplayStateOperationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayStateOperationStatus DisplayStateOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayStateOperationStatus%20DisplayStateOperationResult.Status");
 			}
 		}
 		#endif

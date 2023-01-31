@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioFrameOutputNode.OutgoingGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioFrameOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioFrameOutputNode.OutgoingGain");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFrameOutputNode.ConsumeInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AudioFrameOutputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AudioFrameOutputNode.ConsumeInput");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFrameOutputNode.EffectDefinitions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFrameOutputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CIAudioEffectDefinition%3E%20AudioFrameOutputNode.EffectDefinitions");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFrameOutputNode.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFrameOutputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioFrameOutputNode.EncodingProperties");
 			}
 		}
 		#endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.AudioFrame GetFrame()
 		{
-			throw new global::System.NotImplementedException("The member AudioFrame AudioFrameOutputNode.GetFrame() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioFrame AudioFrameOutputNode.GetFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioFrame%20AudioFrameOutputNode.GetFrame%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.AudioFrameOutputNode.EffectDefinitions.get

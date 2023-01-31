@@ -15,14 +15,14 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync( string launchArguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartAsync(string launchArguments) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartAsync(string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAppRestartFailureReason%3E%20WebUIApplication.RequestRestartAsync%28string%20launchArguments%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync( global::Windows.System.User user,  string launchArguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartForUserAsync(User user, string launchArguments) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartForUserAsync(User user, string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAppRestartFailureReason%3E%20WebUIApplication.RequestRestartForUserAsync%28User%20user%2C%20string%20launchArguments%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.LeavingBackground.add

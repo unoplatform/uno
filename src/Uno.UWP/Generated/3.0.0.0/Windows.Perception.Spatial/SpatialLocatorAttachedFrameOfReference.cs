@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpatialLocatorAttachedFrameOfReference.RelativePosition");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialLocatorAttachedFrameOfReference.RelativeOrientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Quaternion SpatialLocatorAttachedFrameOfReference.RelativeOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Quaternion%20SpatialLocatorAttachedFrameOfReference.RelativeOrientation");
 			}
 			set
 			{
@@ -50,14 +50,14 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem GetStationaryCoordinateSystemAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialCoordinateSystem%20SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp%28PerceptionTimestamp%20timestamp%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double? TryGetRelativeHeadingAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw new global::System.NotImplementedException("The member double? SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member double? SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp%28PerceptionTimestamp%20timestamp%29");
 		}
 		#endif
 	}

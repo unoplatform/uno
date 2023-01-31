@@ -13,7 +13,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageLibraryChangeTrackerTriggerDetails.ChangeTracker is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageLibraryChangeTrackerTriggerDetails.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageLibraryChangeTracker%20StorageLibraryChangeTrackerTriggerDetails.ChangeTracker");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder StorageLibraryChangeTrackerTriggerDetails.Folder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder StorageLibraryChangeTrackerTriggerDetails.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20StorageLibraryChangeTrackerTriggerDetails.Folder");
 			}
 		}
 		#endif

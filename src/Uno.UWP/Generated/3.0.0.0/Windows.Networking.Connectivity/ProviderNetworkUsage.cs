@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProviderNetworkUsage.BytesReceived is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ProviderNetworkUsage.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ProviderNetworkUsage.BytesReceived");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProviderNetworkUsage.BytesSent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ProviderNetworkUsage.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ProviderNetworkUsage.BytesSent");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProviderNetworkUsage.ProviderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProviderNetworkUsage.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProviderNetworkUsage.ProviderId");
 			}
 		}
 		#endif

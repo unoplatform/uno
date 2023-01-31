@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.FriendlyName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> Certificate.EnhancedKeyUsages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> Certificate.EnhancedKeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20Certificate.EnhancedKeyUsages");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Certificate.HasPrivateKey is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Certificate.HasPrivateKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Certificate.HasPrivateKey");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Certificate.IsStronglyProtected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Certificate.IsStronglyProtected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Certificate.IsStronglyProtected");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.Issuer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.Issuer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.Issuer");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] Certificate.SerialNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte[] Certificate.SerialNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20Certificate.SerialNumber");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.Subject is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.Subject");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset Certificate.ValidFrom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset Certificate.ValidFrom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20Certificate.ValidFrom");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset Certificate.ValidTo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset Certificate.ValidTo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20Certificate.ValidTo");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Certificate.IsSecurityDeviceBound is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Certificate.IsSecurityDeviceBound is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Certificate.IsSecurityDeviceBound");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.KeyAlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.KeyAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.KeyAlgorithmName");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CertificateKeyUsages Certificate.KeyUsages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CertificateKeyUsages Certificate.KeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CertificateKeyUsages%20Certificate.KeyUsages");
 			}
 		}
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.SignatureAlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.SignatureAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.SignatureAlgorithmName");
 			}
 		}
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.SignatureHashAlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.SignatureHashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.SignatureHashAlgorithmName");
 			}
 		}
 		#endif
@@ -157,7 +157,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SubjectAlternativeNameInfo Certificate.SubjectAlternativeName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SubjectAlternativeNameInfo Certificate.SubjectAlternativeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SubjectAlternativeNameInfo%20Certificate.SubjectAlternativeName");
 			}
 		}
 		#endif
@@ -167,7 +167,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Certificate.IsPerUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Certificate.IsPerUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Certificate.IsPerUser");
 			}
 		}
 		#endif
@@ -177,7 +177,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.KeyStorageProviderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.KeyStorageProviderName");
 			}
 		}
 		#endif
@@ -187,7 +187,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Certificate.StoreName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Certificate.StoreName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Certificate.StoreName");
 			}
 		}
 		#endif
@@ -203,14 +203,14 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCertificateChain%3E%20Certificate.BuildChainAsync%28IEnumerable%3CCertificate%3E%20certificates%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates,  global::Windows.Security.Cryptography.Certificates.ChainBuildingParameters parameters)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates, ChainBuildingParameters parameters) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates, ChainBuildingParameters parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCertificateChain%3E%20Certificate.BuildChainAsync%28IEnumerable%3CCertificate%3E%20certificates%2C%20ChainBuildingParameters%20parameters%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.SerialNumber.get
@@ -218,21 +218,21 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  byte[] GetHashValue()
 		{
-			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20Certificate.GetHashValue%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  byte[] GetHashValue( string hashAlgorithmName)
 		{
-			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue(string hashAlgorithmName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue(string hashAlgorithmName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20Certificate.GetHashValue%28string%20hashAlgorithmName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IBuffer GetCertificateBlob()
 		{
-			throw new global::System.NotImplementedException("The member IBuffer Certificate.GetCertificateBlob() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IBuffer Certificate.GetCertificateBlob() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20Certificate.GetCertificateBlob%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.Subject.get

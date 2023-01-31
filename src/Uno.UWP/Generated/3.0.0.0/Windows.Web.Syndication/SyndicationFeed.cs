@@ -13,7 +13,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISyndicationText SyndicationFeed.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ISyndicationText SyndicationFeed.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ISyndicationText%20SyndicationFeed.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISyndicationText SyndicationFeed.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ISyndicationText SyndicationFeed.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ISyndicationText%20SyndicationFeed.Subtitle");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISyndicationText SyndicationFeed.Rights is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ISyndicationText SyndicationFeed.Rights is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ISyndicationText%20SyndicationFeed.Rights");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SyndicationGenerator SyndicationFeed.Generator is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SyndicationGenerator SyndicationFeed.Generator is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SyndicationGenerator%20SyndicationFeed.Generator");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SyndicationFeed.LastUpdatedTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset SyndicationFeed.LastUpdatedTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20SyndicationFeed.LastUpdatedTime");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.ImageUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.ImageUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.ImageUri");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.IconUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.IconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.IconUri");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationFeed.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SyndicationFeed.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SyndicationFeed.Id");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.FirstUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.FirstUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.FirstUri");
 			}
 		}
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationItem> SyndicationFeed.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationItem> SyndicationFeed.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationItem%3E%20SyndicationFeed.Items");
 			}
 		}
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.LastUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.LastUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.LastUri");
 			}
 		}
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationLink> SyndicationFeed.Links is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationLink> SyndicationFeed.Links is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationLink%3E%20SyndicationFeed.Links");
 			}
 		}
 		#endif
@@ -165,7 +165,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.NextUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.NextUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.NextUri");
 			}
 		}
 		#endif
@@ -175,7 +175,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.PreviousUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.PreviousUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.PreviousUri");
 			}
 		}
 		#endif
@@ -185,7 +185,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationCategory> SyndicationFeed.Categories is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationCategory> SyndicationFeed.Categories is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationCategory%3E%20SyndicationFeed.Categories");
 			}
 		}
 		#endif
@@ -195,7 +195,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SyndicationFormat SyndicationFeed.SourceFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SyndicationFormat SyndicationFeed.SourceFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SyndicationFormat%20SyndicationFeed.SourceFormat");
 			}
 		}
 		#endif
@@ -205,7 +205,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationPerson> SyndicationFeed.Contributors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationPerson> SyndicationFeed.Contributors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationPerson%3E%20SyndicationFeed.Contributors");
 			}
 		}
 		#endif
@@ -215,7 +215,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationPerson> SyndicationFeed.Authors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationPerson> SyndicationFeed.Authors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationPerson%3E%20SyndicationFeed.Authors");
 			}
 		}
 		#endif
@@ -225,7 +225,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationFeed.NodeValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SyndicationFeed.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SyndicationFeed.NodeValue");
 			}
 			set
 			{
@@ -239,7 +239,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationFeed.NodeNamespace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SyndicationFeed.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SyndicationFeed.NodeNamespace");
 			}
 			set
 			{
@@ -253,7 +253,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationFeed.NodeName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SyndicationFeed.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SyndicationFeed.NodeName");
 			}
 			set
 			{
@@ -267,7 +267,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationFeed.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SyndicationFeed.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SyndicationFeed.Language");
 			}
 			set
 			{
@@ -281,7 +281,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.BaseUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SyndicationFeed.BaseUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SyndicationFeed.BaseUri");
 			}
 			set
 			{
@@ -295,7 +295,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationFeed.AttributeExtensions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationFeed.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationAttribute%3E%20SyndicationFeed.AttributeExtensions");
 			}
 		}
 		#endif
@@ -305,7 +305,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> SyndicationFeed.ElementExtensions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> SyndicationFeed.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CISyndicationNode%3E%20SyndicationFeed.ElementExtensions");
 			}
 		}
 		#endif
@@ -381,7 +381,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument( global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument SyndicationFeed.GetXmlDocument(SyndicationFormat format) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlDocument SyndicationFeed.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20SyndicationFeed.GetXmlDocument%28SyndicationFormat%20format%29");
 		}
 		#endif
 		// Processing: Windows.Web.Syndication.ISyndicationNode

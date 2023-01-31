@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterStatus PosPrinterStatusUpdatedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterStatus PosPrinterStatusUpdatedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterStatus%20PosPrinterStatusUpdatedEventArgs.Status");
 			}
 		}
 		#endif

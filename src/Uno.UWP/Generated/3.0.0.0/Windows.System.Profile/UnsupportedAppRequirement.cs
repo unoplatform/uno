@@ -13,7 +13,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnsupportedAppRequirementReasons UnsupportedAppRequirement.Reasons is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnsupportedAppRequirementReasons UnsupportedAppRequirement.Reasons is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnsupportedAppRequirementReasons%20UnsupportedAppRequirement.Reasons");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UnsupportedAppRequirement.Requirement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UnsupportedAppRequirement.Requirement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UnsupportedAppRequirement.Requirement");
 			}
 		}
 		#endif

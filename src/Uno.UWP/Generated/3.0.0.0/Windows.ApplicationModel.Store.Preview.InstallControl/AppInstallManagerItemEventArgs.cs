@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallItem AppInstallManagerItemEventArgs.Item is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInstallItem AppInstallManagerItemEventArgs.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallItem%20AppInstallManagerItemEventArgs.Item");
 			}
 		}
 		#endif

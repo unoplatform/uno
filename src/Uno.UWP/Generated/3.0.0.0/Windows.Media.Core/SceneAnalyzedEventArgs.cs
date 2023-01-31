@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneAnalysisEffectFrame SceneAnalyzedEventArgs.ResultFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneAnalysisEffectFrame SceneAnalyzedEventArgs.ResultFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneAnalysisEffectFrame%20SceneAnalyzedEventArgs.ResultFrame");
 			}
 		}
 		#endif

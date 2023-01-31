@@ -13,7 +13,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataEncodingProperties.Subtype is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataEncodingProperties.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataEncodingProperties.Subtype");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPropertySet TimedMetadataEncodingProperties.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPropertySet TimedMetadataEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPropertySet%20TimedMetadataEncodingProperties.Properties");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataEncodingProperties.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataEncodingProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataEncodingProperties.Type");
 			}
 		}
 		#endif
@@ -60,14 +60,14 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetFormatUserData(out byte[] value)
 		{
-			throw new global::System.NotImplementedException("The member void TimedMetadataEncodingProperties.GetFormatUserData(out byte[] value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void TimedMetadataEncodingProperties.GetFormatUserData(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20TimedMetadataEncodingProperties.GetFormatUserData%28out%20byte%5B%5D%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties Copy()
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.Copy() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.Copy%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Properties.get
@@ -78,28 +78,28 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreatePgs()
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreatePgs() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreatePgs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreatePgs%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSrt()
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSrt() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSrt() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreateSrt%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSsa( byte[] formatUserData)
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSsa(byte[] formatUserData) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSsa(byte[] formatUserData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreateSsa%28byte%5B%5D%20formatUserData%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateVobSub( byte[] formatUserData)
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateVobSub(byte[] formatUserData) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateVobSub(byte[] formatUserData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreateVobSub%28byte%5B%5D%20formatUserData%29");
 		}
 		#endif
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties

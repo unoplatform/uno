@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PerceptionControlGroup.FrameProviderIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PerceptionControlGroup.FrameProviderIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20PerceptionControlGroup.FrameProviderIds");
 			}
 		}
 		#endif

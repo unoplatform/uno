@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapCamera MapTargetCameraChangedEventArgs.Camera is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapCamera MapTargetCameraChangedEventArgs.Camera is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapCamera%20MapTargetCameraChangedEventArgs.Camera");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapCameraChangeReason MapTargetCameraChangedEventArgs.ChangeReason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapCameraChangeReason MapTargetCameraChangedEventArgs.ChangeReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapCameraChangeReason%20MapTargetCameraChangedEventArgs.ChangeReason");
 			}
 		}
 		#endif

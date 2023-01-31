@@ -13,7 +13,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PickerClosingOperation PickerClosingEventArgs.ClosingOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PickerClosingOperation PickerClosingEventArgs.ClosingOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PickerClosingOperation%20PickerClosingEventArgs.ClosingOperation");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PickerClosingEventArgs.IsCanceled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PickerClosingEventArgs.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PickerClosingEventArgs.IsCanceled");
 			}
 		}
 		#endif

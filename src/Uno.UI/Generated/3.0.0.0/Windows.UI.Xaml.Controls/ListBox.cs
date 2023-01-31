@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ListBox.SelectedItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<object> ListBox.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cobject%3E%20ListBox.SelectedItems");
 			}
 		}
 		#endif

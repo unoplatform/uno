@@ -13,7 +13,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionServiceCompletion ServiceRequestedEventArgs.Completion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaProtectionServiceCompletion ServiceRequestedEventArgs.Completion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaProtectionServiceCompletion%20ServiceRequestedEventArgs.Completion");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaProtectionServiceRequest%20ServiceRequestedEventArgs.Request");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem ServiceRequestedEventArgs.MediaPlaybackItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem ServiceRequestedEventArgs.MediaPlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20ServiceRequestedEventArgs.MediaPlaybackItem");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedPhotoControl.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedPhotoControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdvancedPhotoMode%20AdvancedPhotoControl.Mode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AdvancedPhotoControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AdvancedPhotoControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AdvancedPhotoControl.Supported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AdvancedPhotoMode> AdvancedPhotoControl.SupportedModes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AdvancedPhotoMode> AdvancedPhotoControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAdvancedPhotoMode%3E%20AdvancedPhotoControl.SupportedModes");
 			}
 		}
 		#endif

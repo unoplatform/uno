@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.HasInvitees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.HasInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.HasInvitees");
 			}
 		}
 		#endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.AllowNewTimeProposal is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.AllowNewTimeProposal is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.AllowNewTimeProposal");
 			}
 		}
 		#endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.BusyStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.BusyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.BusyStatus");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Recurrence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.Recurrence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.Recurrence");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Invitees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.Invitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.Invitees");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsCanceledMeeting is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsCanceledMeeting is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.IsCanceledMeeting");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsOrganizedByUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsOrganizedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.IsOrganizedByUser");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsResponseRequested is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsResponseRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.IsResponseRequested");
 			}
 		}
 		#endif
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.OnlineMeetingLink is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.OnlineMeetingLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.OnlineMeetingLink");
 			}
 		}
 		#endif
@@ -109,27 +109,18 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.OriginalStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.OriginalStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.OriginalStartTime");
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string Reminder
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Reminder is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Reminder
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string ReplyTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.ReplyTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.ReplyTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.ReplyTime");
 			}
 		}
 		#endif
@@ -139,7 +130,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Sensitivity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.Sensitivity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.Sensitivity");
 			}
 		}
 		#endif
@@ -151,7 +142,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.Uri");
 			}
 		}
 		#endif
@@ -161,7 +152,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.UserResponse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.UserResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.UserResponse");
 			}
 		}
 		#endif
@@ -171,7 +162,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.DetailsKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.DetailsKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.DetailsKind");
 			}
 		}
 		#endif
@@ -181,7 +172,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.RemoteChangeNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.RemoteChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.RemoteChangeNumber");
 			}
 		}
 		#endif
@@ -191,7 +182,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.ChangeNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentProperties.ChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentProperties.ChangeNumber");
 			}
 		}
 		#endif

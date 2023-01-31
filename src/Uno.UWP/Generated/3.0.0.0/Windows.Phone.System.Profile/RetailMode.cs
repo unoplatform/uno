@@ -13,7 +13,7 @@ namespace Windows.Phone.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RetailMode.RetailModeEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RetailMode.RetailModeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RetailMode.RetailModeEnabled");
 			}
 		}
 		#endif

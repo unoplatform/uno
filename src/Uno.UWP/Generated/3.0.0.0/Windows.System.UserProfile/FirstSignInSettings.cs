@@ -13,7 +13,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FirstSignInSettings.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FirstSignInSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FirstSignInSettings.Size");
 			}
 		}
 		#endif
@@ -26,7 +26,7 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.UserProfile.FirstSignInSettings GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member FirstSignInSettings FirstSignInSettings.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member FirstSignInSettings FirstSignInSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FirstSignInSettings%20FirstSignInSettings.GetDefault%28%29");
 		}
 		#endif
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>

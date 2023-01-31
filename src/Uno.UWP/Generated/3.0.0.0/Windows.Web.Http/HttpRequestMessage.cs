@@ -13,7 +13,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri HttpRequestMessage.RequestUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri HttpRequestMessage.RequestUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20HttpRequestMessage.RequestUri");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpRequestMessage.Method is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpRequestMessage.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpRequestMessage.Method");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IHttpContent HttpRequestMessage.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IHttpContent HttpRequestMessage.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IHttpContent%20HttpRequestMessage.Content");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestHeaderCollection HttpRequestMessage.Headers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpRequestHeaderCollection HttpRequestMessage.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestHeaderCollection%20HttpRequestMessage.Headers");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, object> HttpRequestMessage.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, object> HttpRequestMessage.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20object%3E%20HttpRequestMessage.Properties");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpTransportInformation HttpRequestMessage.TransportInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpTransportInformation HttpRequestMessage.TransportInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpTransportInformation%20HttpRequestMessage.TransportInformation");
 			}
 		}
 		#endif
@@ -115,7 +115,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpRequestMessage.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpRequestMessage.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestMessage.ToString%28%29");
 		}
 		#endif
 		// Processing: System.IDisposable

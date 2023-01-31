@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PhotoConfirmationCapturedEventArgs.CaptureTimeOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PhotoConfirmationCapturedEventArgs.CaptureTimeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PhotoConfirmationCapturedEventArgs.CaptureTimeOffset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame PhotoConfirmationCapturedEventArgs.Frame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrame PhotoConfirmationCapturedEventArgs.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrame%20PhotoConfirmationCapturedEventArgs.Frame");
 			}
 		}
 		#endif

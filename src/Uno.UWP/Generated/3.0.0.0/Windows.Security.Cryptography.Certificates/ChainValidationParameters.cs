@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20ChainValidationParameters.ServerDnsName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CertificateChainPolicy ChainValidationParameters.CertificateChainPolicy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CertificateChainPolicy ChainValidationParameters.CertificateChainPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CertificateChainPolicy%20ChainValidationParameters.CertificateChainPolicy");
 			}
 			set
 			{

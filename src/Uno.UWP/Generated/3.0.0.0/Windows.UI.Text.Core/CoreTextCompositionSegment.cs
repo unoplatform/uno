@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreTextCompositionSegment.PreconversionString is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CoreTextCompositionSegment.PreconversionString is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreTextCompositionSegment.PreconversionString");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextCompositionSegment.Range is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextCompositionSegment.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextRange%20CoreTextCompositionSegment.Range");
 			}
 		}
 		#endif

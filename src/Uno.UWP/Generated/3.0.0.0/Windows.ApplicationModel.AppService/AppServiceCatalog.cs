@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.AppService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppInfo>> FindAppServiceProvidersAsync( string appServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppInfo>> AppServiceCatalog.FindAppServiceProvidersAsync(string appServiceName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppInfo>> AppServiceCatalog.FindAppServiceProvidersAsync(string appServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppInfo%3E%3E%20AppServiceCatalog.FindAppServiceProvidersAsync%28string%20appServiceName%29");
 		}
 		#endif
 	}

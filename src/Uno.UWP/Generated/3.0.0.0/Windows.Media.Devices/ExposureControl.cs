@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposureControl.Auto is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ExposureControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ExposureControl.Auto");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ExposureControl.Max");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ExposureControl.Min");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Step is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ExposureControl.Step");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposureControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ExposureControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ExposureControl.Supported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ExposureControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ExposureControl.Value");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetAutoAsync( bool value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetAutoAsync(bool value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetAutoAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ExposureControl.SetAutoAsync%28bool%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.ExposureControl.Min.get
@@ -84,7 +84,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetValueAsync( global::System.TimeSpan shutterDuration)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetValueAsync(TimeSpan shutterDuration) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetValueAsync(TimeSpan shutterDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ExposureControl.SetValueAsync%28TimeSpan%20shutterDuration%29");
 		}
 		#endif
 	}

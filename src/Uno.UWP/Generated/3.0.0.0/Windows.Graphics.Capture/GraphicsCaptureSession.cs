@@ -13,7 +13,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsCursorCaptureEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsCursorCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GraphicsCaptureSession.IsCursorCaptureEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsBorderRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsBorderRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GraphicsCaptureSession.IsBorderRequired");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GraphicsCaptureSession.IsSupported%28%29");
 		}
 		#endif
 		// Processing: System.IDisposable

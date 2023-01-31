@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? HttpMediaTypeWithQualityHeaderValue.Quality is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? HttpMediaTypeWithQualityHeaderValue.Quality is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20HttpMediaTypeWithQualityHeaderValue.Quality");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.MediaType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMediaTypeWithQualityHeaderValue.MediaType");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.CharSet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.CharSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMediaTypeWithQualityHeaderValue.CharSet");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpMediaTypeWithQualityHeaderValue.Parameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpMediaTypeWithQualityHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHttpNameValueHeaderValue%3E%20HttpMediaTypeWithQualityHeaderValue.Parameters");
 			}
 		}
 		#endif
@@ -86,21 +86,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMediaTypeWithQualityHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValue HttpMediaTypeWithQualityHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValue HttpMediaTypeWithQualityHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMediaTypeWithQualityHeaderValue%20HttpMediaTypeWithQualityHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValue.TryParse(string input, out HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValue.TryParse(string input, out HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpMediaTypeWithQualityHeaderValue.TryParse%28string%20input%2C%20out%20HttpMediaTypeWithQualityHeaderValue%20mediaTypeWithQualityHeaderValue%29");
 		}
 		#endif
 	}

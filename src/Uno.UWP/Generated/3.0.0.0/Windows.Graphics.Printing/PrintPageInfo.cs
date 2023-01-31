@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size PrintPageInfo.PageSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size PrintPageInfo.PageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20PrintPageInfo.PageSize");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOrientation PrintPageInfo.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOrientation PrintPageInfo.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOrientation%20PrintPageInfo.Orientation");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintMediaSize PrintPageInfo.MediaSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintMediaSize PrintPageInfo.MediaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintMediaSize%20PrintPageInfo.MediaSize");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintPageInfo.DpiY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PrintPageInfo.DpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PrintPageInfo.DpiY");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintPageInfo.DpiX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PrintPageInfo.DpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PrintPageInfo.DpiX");
 			}
 			set
 			{

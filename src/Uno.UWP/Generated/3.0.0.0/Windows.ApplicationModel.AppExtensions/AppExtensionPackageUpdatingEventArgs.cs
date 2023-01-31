@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppExtensionPackageUpdatingEventArgs.AppExtensionName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppExtensionPackageUpdatingEventArgs.AppExtensionName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppExtensionPackageUpdatingEventArgs.AppExtensionName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package AppExtensionPackageUpdatingEventArgs.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package AppExtensionPackageUpdatingEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20AppExtensionPackageUpdatingEventArgs.Package");
 			}
 		}
 		#endif

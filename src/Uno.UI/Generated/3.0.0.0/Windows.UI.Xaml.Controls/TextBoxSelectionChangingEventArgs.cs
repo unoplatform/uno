@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TextBoxSelectionChangingEventArgs.Cancel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TextBoxSelectionChangingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TextBoxSelectionChangingEventArgs.Cancel");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextBoxSelectionChangingEventArgs.SelectionLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextBoxSelectionChangingEventArgs.SelectionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextBoxSelectionChangingEventArgs.SelectionLength");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextBoxSelectionChangingEventArgs.SelectionStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextBoxSelectionChangingEventArgs.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextBoxSelectionChangingEventArgs.SelectionStart");
 			}
 		}
 		#endif

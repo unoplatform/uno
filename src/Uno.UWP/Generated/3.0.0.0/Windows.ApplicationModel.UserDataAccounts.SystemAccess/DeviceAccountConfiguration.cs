@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.EmailAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.EmailAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.EmailAddress");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.Domain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.Domain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.Domain");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.DeviceAccountTypeId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.DeviceAccountTypeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.DeviceAccountTypeId");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.OutgoingServerAddress");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.ContactsSyncEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.ContactsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.ContactsSyncEnabled");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalendarSyncEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalendarSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.CalendarSyncEnabled");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.AccountName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.AccountName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.AccountName");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerUsername is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.IncomingServerUsername");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IncomingServerRequiresSsl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IncomingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IncomingServerRequiresSsl");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.IncomingServerPort is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.IncomingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20DeviceAccountConfiguration.IncomingServerPort");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.IncomingServerAddress");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.EmailSyncEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.EmailSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.EmailSyncEnabled");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountServerType DeviceAccountConfiguration.ServerType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountServerType DeviceAccountConfiguration.ServerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountServerType%20DeviceAccountConfiguration.ServerType");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerUsername is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.OutgoingServerUsername");
 			}
 			set
 			{
@@ -209,7 +209,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.OutgoingServerRequiresSsl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.OutgoingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.OutgoingServerRequiresSsl");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.OutgoingServerPort is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.OutgoingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20DeviceAccountConfiguration.OutgoingServerPort");
 			}
 			set
 			{
@@ -237,7 +237,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountIconId DeviceAccountConfiguration.AccountIconId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountIconId DeviceAccountConfiguration.AccountIconId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountIconId%20DeviceAccountConfiguration.AccountIconId");
 			}
 			set
 			{
@@ -251,7 +251,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CalDavServerUrl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CalDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20DeviceAccountConfiguration.CalDavServerUrl");
 			}
 			set
 			{
@@ -265,7 +265,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalDavRequiresSsl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.CalDavRequiresSsl");
 			}
 			set
 			{
@@ -279,7 +279,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
 			}
 			set
 			{
@@ -293,7 +293,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountAuthenticationType%20DeviceAccountConfiguration.AuthenticationType");
 			}
 			set
 			{
@@ -307,7 +307,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.AuthenticationCertificateId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.AuthenticationCertificateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.AuthenticationCertificateId");
 			}
 			set
 			{
@@ -321,7 +321,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
 			}
 			set
 			{
@@ -335,7 +335,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
 			}
 			set
 			{
@@ -349,7 +349,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.IncomingServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.IncomingServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20DeviceAccountConfiguration.IncomingServerCredential");
 			}
 			set
 			{
@@ -363,7 +363,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
 			}
 			set
 			{
@@ -377,7 +377,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.CardDavSyncScheduleKind");
 			}
 			set
 			{
@@ -391,7 +391,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AlwaysDownloadFullMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AlwaysDownloadFullMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.AlwaysDownloadFullMessage");
 			}
 			set
 			{
@@ -405,7 +405,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CardDavServerUrl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CardDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20DeviceAccountConfiguration.CardDavServerUrl");
 			}
 			set
 			{
@@ -419,7 +419,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CardDavRequiresSsl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CardDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.CardDavRequiresSsl");
 			}
 			set
 			{
@@ -433,7 +433,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CalDavSyncScheduleKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CalDavSyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.CalDavSyncScheduleKind");
 			}
 			set
 			{
@@ -447,7 +447,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerCertificateHash is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerCertificateHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.IncomingServerCertificateHash");
 			}
 			set
 			{
@@ -461,7 +461,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
 			}
 			set
 			{
@@ -475,7 +475,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasModifiedByUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasModifiedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.WasModifiedByUser");
 			}
 			set
 			{
@@ -489,7 +489,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.SyncScheduleKind");
 			}
 			set
 			{
@@ -503,7 +503,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.SsoAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.SsoAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.SsoAccountId");
 			}
 			set
 			{
@@ -517,7 +517,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
 			}
 			set
 			{
@@ -531,7 +531,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OAuthRefreshToken is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OAuthRefreshToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.OAuthRefreshToken");
 			}
 			set
 			{
@@ -545,7 +545,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsExternallyManaged is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsExternallyManaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IsExternallyManaged");
 			}
 			set
 			{
@@ -559,7 +559,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccountMailAgeFilter%20DeviceAccountConfiguration.MailAgeFilter");
 			}
 			set
 			{
@@ -573,7 +573,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IsSyncScheduleManagedBySystem");
 			}
 			set
 			{
@@ -587,7 +587,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerCertificateHash is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerCertificateHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccountConfiguration.OutgoingServerCertificateHash");
 			}
 			set
 			{
@@ -601,7 +601,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.OutgoingServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.OutgoingServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20DeviceAccountConfiguration.OutgoingServerCredential");
 			}
 			set
 			{
@@ -615,7 +615,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.DoesPolicyAllowMailSync is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.DoesPolicyAllowMailSync is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.DoesPolicyAllowMailSync");
 			}
 		}
 		#endif
@@ -625,7 +625,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSsoAuthenticationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSsoAuthenticationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceAccountConfiguration.IsSsoAuthenticationSupported");
 			}
 		}
 		#endif

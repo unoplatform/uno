@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoStreamDescriptor.Name");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoStreamDescriptor.Language");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VideoStreamDescriptor.IsSelected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VideoStreamDescriptor.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VideoStreamDescriptor.IsSelected");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoStreamDescriptor.Label");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoStreamDescriptor.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoStreamDescriptor.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoEncodingProperties%20VideoStreamDescriptor.EncodingProperties");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.VideoStreamDescriptor Copy()
 		{
-			throw new global::System.NotImplementedException("The member VideoStreamDescriptor VideoStreamDescriptor.Copy() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoStreamDescriptor VideoStreamDescriptor.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoStreamDescriptor%20VideoStreamDescriptor.Copy%28%29");
 		}
 		#endif
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor

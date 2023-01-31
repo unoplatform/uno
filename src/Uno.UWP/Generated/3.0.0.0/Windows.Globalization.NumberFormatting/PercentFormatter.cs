@@ -18,7 +18,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PercentFormatter.GeographicRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PercentFormatter.GeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PercentFormatter.GeographicRegion");
 			}
 		}
 		#endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PercentFormatter.ResolvedGeographicRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PercentFormatter.ResolvedGeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PercentFormatter.ResolvedGeographicRegion");
 			}
 		}
 		#endif
@@ -65,14 +65,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Format( long value)
 		{
-			throw new global::System.NotImplementedException("The member string PercentFormatter.Format(long value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PercentFormatter.Format(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PercentFormatter.Format%28long%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Format( ulong value)
 		{
-			throw new global::System.NotImplementedException("The member string PercentFormatter.Format(ulong value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PercentFormatter.Format(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PercentFormatter.Format%28ulong%20value%29");
 		}
 		#endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.Format(double)
@@ -80,14 +80,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatInt( long value)
 		{
-			throw new global::System.NotImplementedException("The member string PercentFormatter.FormatInt(long value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PercentFormatter.FormatInt(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PercentFormatter.FormatInt%28long%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatUInt( ulong value)
 		{
-			throw new global::System.NotImplementedException("The member string PercentFormatter.FormatUInt(ulong value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PercentFormatter.FormatUInt(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PercentFormatter.FormatUInt%28ulong%20value%29");
 		}
 		#endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.FormatDouble(double)
@@ -95,14 +95,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long? ParseInt( string text)
 		{
-			throw new global::System.NotImplementedException("The member long? PercentFormatter.ParseInt(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long? PercentFormatter.ParseInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%3F%20PercentFormatter.ParseInt%28string%20text%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong? ParseUInt( string text)
 		{
-			throw new global::System.NotImplementedException("The member ulong? PercentFormatter.ParseUInt(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ulong? PercentFormatter.ParseUInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20PercentFormatter.ParseUInt%28string%20text%29");
 		}
 		#endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.ParseDouble(string)

@@ -13,7 +13,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.Position");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime");
 			}
 		}
 		#endif

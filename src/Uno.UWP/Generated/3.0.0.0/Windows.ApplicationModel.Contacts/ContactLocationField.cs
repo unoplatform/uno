@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactLocationField.Category is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactLocationField.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactFieldCategory%20ContactLocationField.Category");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactLocationField.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactFieldType ContactLocationField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactFieldType%20ContactLocationField.Type");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.Value");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.City is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.City");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Country is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.Country");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.PostalCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.PostalCode");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Region is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Region is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.Region");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Street is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.Street is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.Street");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.UnstructuredAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLocationField.UnstructuredAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLocationField.UnstructuredAddress");
 			}
 		}
 		#endif

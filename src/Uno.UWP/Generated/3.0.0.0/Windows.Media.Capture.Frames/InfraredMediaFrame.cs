@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReference InfraredMediaFrame.FrameReference is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameReference InfraredMediaFrame.FrameReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameReference%20InfraredMediaFrame.FrameReference");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InfraredMediaFrame.IsIlluminated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InfraredMediaFrame.IsIlluminated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InfraredMediaFrame.IsIlluminated");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrame InfraredMediaFrame.VideoMediaFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoMediaFrame InfraredMediaFrame.VideoMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoMediaFrame%20InfraredMediaFrame.VideoMediaFrame");
 			}
 		}
 		#endif

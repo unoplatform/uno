@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%3F%20InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerInertiaStateEnteredArgs.RequestId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InteractionTrackerInertiaStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InteractionTrackerInertiaStateEnteredArgs.RequestId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsFromBinding");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Print3DWorkflowStatus Print3DWorkflowPrintRequestedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Print3DWorkflowStatus Print3DWorkflowPrintRequestedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Print3DWorkflowStatus%20Print3DWorkflowPrintRequestedEventArgs.Status");
 			}
 		}
 		#endif

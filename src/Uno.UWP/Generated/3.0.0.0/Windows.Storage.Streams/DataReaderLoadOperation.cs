@@ -13,7 +13,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DataReaderLoadOperation.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception DataReaderLoadOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20DataReaderLoadOperation.ErrorCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DataReaderLoadOperation.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus DataReaderLoadOperation.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AsyncStatus DataReaderLoadOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AsyncStatus%20DataReaderLoadOperation.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AsyncOperationCompletedHandler%3Cuint%3E%20DataReaderLoadOperation.Completed");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint GetResults()
 		{
-			throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.GetResults() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DataReaderLoadOperation.GetResults%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Id.get

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCharacteristic GattCharacteristicNotificationTriggerDetails.Characteristic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattCharacteristic GattCharacteristicNotificationTriggerDetails.Characteristic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattCharacteristic%20GattCharacteristicNotificationTriggerDetails.Characteristic");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattCharacteristicNotificationTriggerDetails.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer GattCharacteristicNotificationTriggerDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20GattCharacteristicNotificationTriggerDetails.Value");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattCharacteristicNotificationTriggerDetails.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError GattCharacteristicNotificationTriggerDetails.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20GattCharacteristicNotificationTriggerDetails.Error");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothEventTriggeringMode GattCharacteristicNotificationTriggerDetails.EventTriggeringMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothEventTriggeringMode GattCharacteristicNotificationTriggerDetails.EventTriggeringMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothEventTriggeringMode%20GattCharacteristicNotificationTriggerDetails.EventTriggeringMode");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattValueChangedEventArgs> GattCharacteristicNotificationTriggerDetails.ValueChangedEvents is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<GattValueChangedEventArgs> GattCharacteristicNotificationTriggerDetails.ValueChangedEvents is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CGattValueChangedEventArgs%3E%20GattCharacteristicNotificationTriggerDetails.ValueChangedEvents");
 			}
 		}
 		#endif

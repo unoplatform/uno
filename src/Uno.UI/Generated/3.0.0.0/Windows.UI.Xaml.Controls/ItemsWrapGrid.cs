@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstCacheIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsWrapGrid.FirstCacheIndex");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstVisibleIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsWrapGrid.FirstVisibleIndex");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastCacheIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsWrapGrid.LastCacheIndex");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastVisibleIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsWrapGrid.LastVisibleIndex");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsWrapGrid.ScrollingDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsWrapGrid.ScrollingDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PanelScrollingDirection%20ItemsWrapGrid.ScrollingDirection");
 			}
 		}
 		#endif

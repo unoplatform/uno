@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSession RemoteSystemSessionMessageChannel.Session is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RemoteSystemSession RemoteSystemSessionMessageChannel.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemSession%20RemoteSystemSessionMessageChannel.Session");
 			}
 		}
 		#endif
@@ -38,21 +38,21 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> BroadcastValueSetAsync( global::Windows.Foundation.Collections.ValueSet messageData)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionMessageChannel.BroadcastValueSetAsync(ValueSet messageData) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionMessageChannel.BroadcastValueSetAsync(ValueSet messageData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20RemoteSystemSessionMessageChannel.BroadcastValueSetAsync%28ValueSet%20messageData%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SendValueSetAsync( global::Windows.Foundation.Collections.ValueSet messageData,  global::Windows.System.RemoteSystems.RemoteSystemSessionParticipant participant)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionMessageChannel.SendValueSetAsync(ValueSet messageData, RemoteSystemSessionParticipant participant) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionMessageChannel.SendValueSetAsync(ValueSet messageData, RemoteSystemSessionParticipant participant) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20RemoteSystemSessionMessageChannel.SendValueSetAsync%28ValueSet%20messageData%2C%20RemoteSystemSessionParticipant%20participant%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SendValueSetToParticipantsAsync( global::Windows.Foundation.Collections.ValueSet messageData,  global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.RemoteSystemSessionParticipant> participants)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionMessageChannel.SendValueSetToParticipantsAsync(ValueSet messageData, IEnumerable<RemoteSystemSessionParticipant> participants) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionMessageChannel.SendValueSetToParticipantsAsync(ValueSet messageData, IEnumerable<RemoteSystemSessionParticipant> participants) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20RemoteSystemSessionMessageChannel.SendValueSetToParticipantsAsync%28ValueSet%20messageData%2C%20IEnumerable%3CRemoteSystemSessionParticipant%3E%20participants%29");
 		}
 		#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.ValueSetReceived.add

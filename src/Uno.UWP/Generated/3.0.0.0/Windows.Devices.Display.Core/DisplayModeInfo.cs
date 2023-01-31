@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsInterlaced is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsInterlaced is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayModeInfo.IsInterlaced");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsStereo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsStereo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayModeInfo.IsStereo");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPresentationRate DisplayModeInfo.PresentationRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayPresentationRate DisplayModeInfo.PresentationRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayPresentationRate%20DisplayModeInfo.PresentationRate");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> DisplayModeInfo.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> DisplayModeInfo.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20DisplayModeInfo.Properties");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat DisplayModeInfo.SourcePixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat DisplayModeInfo.SourcePixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20DisplayModeInfo.SourcePixelFormat");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 DisplayModeInfo.SourceResolution is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 DisplayModeInfo.SourceResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20DisplayModeInfo.SourceResolution");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 DisplayModeInfo.TargetResolution is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 DisplayModeInfo.TargetResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20DisplayModeInfo.TargetResolution");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPresentationRate DisplayModeInfo.PhysicalPresentationRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayPresentationRate DisplayModeInfo.PhysicalPresentationRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayPresentationRate%20DisplayModeInfo.PhysicalPresentationRate");
 			}
 		}
 		#endif
@@ -97,14 +97,14 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Display.Core.DisplayBitsPerChannel GetWireFormatSupportedBitsPerChannel( global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding encoding)
 		{
-			throw new global::System.NotImplementedException("The member DisplayBitsPerChannel DisplayModeInfo.GetWireFormatSupportedBitsPerChannel(DisplayWireFormatPixelEncoding encoding) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayBitsPerChannel DisplayModeInfo.GetWireFormatSupportedBitsPerChannel(DisplayWireFormatPixelEncoding encoding) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayBitsPerChannel%20DisplayModeInfo.GetWireFormatSupportedBitsPerChannel%28DisplayWireFormatPixelEncoding%20encoding%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsWireFormatSupported( global::Windows.Devices.Display.Core.DisplayWireFormat wireFormat)
 		{
-			throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsWireFormatSupported(DisplayWireFormat wireFormat) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsWireFormatSupported(DisplayWireFormat wireFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayModeInfo.IsWireFormatSupported%28DisplayWireFormat%20wireFormat%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.Properties.get

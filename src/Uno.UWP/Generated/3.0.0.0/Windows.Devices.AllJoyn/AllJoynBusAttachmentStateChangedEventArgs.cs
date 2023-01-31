@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynBusAttachmentState AllJoynBusAttachmentStateChangedEventArgs.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AllJoynBusAttachmentState AllJoynBusAttachmentStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynBusAttachmentState%20AllJoynBusAttachmentStateChangedEventArgs.State");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynBusAttachmentStateChangedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynBusAttachmentStateChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynBusAttachmentStateChangedEventArgs.Status");
 			}
 		}
 		#endif

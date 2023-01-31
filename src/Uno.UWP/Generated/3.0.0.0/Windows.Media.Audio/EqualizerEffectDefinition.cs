@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEqualizerBand%3E%20EqualizerEffectDefinition.Bands");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EqualizerEffectDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EqualizerEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EqualizerEffectDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet EqualizerEffectDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet EqualizerEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20EqualizerEffectDefinition.Properties");
 			}
 		}
 		#endif

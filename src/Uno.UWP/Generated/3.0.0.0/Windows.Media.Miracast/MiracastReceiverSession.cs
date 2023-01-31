@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MiracastReceiverSession.MaxSimultaneousConnections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MiracastReceiverSession.MaxSimultaneousConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MiracastReceiverSession.MaxSimultaneousConnections");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverSession.AllowConnectionTakeover is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverSession.AllowConnectionTakeover is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverSession.AllowConnectionTakeover");
 			}
 			set
 			{
@@ -49,14 +49,14 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Miracast.MiracastReceiverSessionStartResult Start()
 		{
-			throw new global::System.NotImplementedException("The member MiracastReceiverSessionStartResult MiracastReceiverSession.Start() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MiracastReceiverSessionStartResult MiracastReceiverSession.Start() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverSessionStartResult%20MiracastReceiverSession.Start%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Miracast.MiracastReceiverSessionStartResult> StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MiracastReceiverSessionStartResult> MiracastReceiverSession.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MiracastReceiverSessionStartResult> MiracastReceiverSession.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMiracastReceiverSessionStartResult%3E%20MiracastReceiverSession.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

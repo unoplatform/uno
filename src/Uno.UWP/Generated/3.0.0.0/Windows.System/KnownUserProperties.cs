@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.AccountName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.AccountName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.AccountName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.DomainName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.DomainName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.DomainName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.FirstName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.FirstName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.FirstName");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.GuestHost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.GuestHost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.GuestHost");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.LastName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.LastName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.LastName");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.PrincipalName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.PrincipalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.PrincipalName");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.ProviderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.ProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.ProviderName");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.SessionInitiationProtocolUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.SessionInitiationProtocolUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.SessionInitiationProtocolUri");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.AgeEnforcementRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownUserProperties.AgeEnforcementRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownUserProperties.AgeEnforcementRegion");
 			}
 		}
 		#endif

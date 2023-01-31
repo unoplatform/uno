@@ -13,7 +13,7 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaActionableInsightsOptions.SurroundingText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaActionableInsightsOptions.SurroundingText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaActionableInsightsOptions.SurroundingText");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri CortanaActionableInsightsOptions.ContentSourceWebLink is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri CortanaActionableInsightsOptions.ContentSourceWebLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20CortanaActionableInsightsOptions.ContentSourceWebLink");
 			}
 			set
 			{

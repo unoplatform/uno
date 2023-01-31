@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskQuerySortProperty%20UserDataTaskQueryOptions.SortProperty");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQueryKind UserDataTaskQueryOptions.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskQueryKind UserDataTaskQueryOptions.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskQueryKind%20UserDataTaskQueryOptions.Kind");
 			}
 			set
 			{

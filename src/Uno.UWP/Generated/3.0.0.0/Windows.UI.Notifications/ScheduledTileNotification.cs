@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ScheduledTileNotification.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ScheduledTileNotification.Id");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledTileNotification.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledTileNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20ScheduledTileNotification.ExpirationTime");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument ScheduledTileNotification.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member XmlDocument ScheduledTileNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20ScheduledTileNotification.Content");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ScheduledTileNotification.DeliveryTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ScheduledTileNotification.DeliveryTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ScheduledTileNotification.DeliveryTime");
 			}
 		}
 		#endif

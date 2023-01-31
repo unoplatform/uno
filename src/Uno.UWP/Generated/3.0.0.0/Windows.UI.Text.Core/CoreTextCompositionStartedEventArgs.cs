@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextCompositionStartedEventArgs.IsCanceled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreTextCompositionStartedEventArgs.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreTextCompositionStartedEventArgs.IsCanceled");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextCompositionStartedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral CoreTextCompositionStartedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20CoreTextCompositionStartedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

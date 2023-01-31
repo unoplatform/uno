@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageCatalogRemoveResourcePackagesResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PackageCatalogRemoveResourcePackagesResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PackageCatalogRemoveResourcePackagesResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Package> PackageCatalogRemoveResourcePackagesResult.PackagesRemoved is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Package> PackageCatalogRemoveResourcePackagesResult.PackagesRemoved is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPackage%3E%20PackageCatalogRemoveResourcePackagesResult.PackagesRemoved");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IppPrintDevice PrintSupportSessionInfo.Printer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IppPrintDevice PrintSupportSessionInfo.Printer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IppPrintDevice%20PrintSupportSessionInfo.Printer");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInfo PrintSupportSessionInfo.SourceAppInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInfo PrintSupportSessionInfo.SourceAppInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInfo%20PrintSupportSessionInfo.SourceAppInfo");
 			}
 		}
 		#endif

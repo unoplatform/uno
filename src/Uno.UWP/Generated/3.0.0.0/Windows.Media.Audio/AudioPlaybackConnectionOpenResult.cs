@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AudioPlaybackConnectionOpenResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception AudioPlaybackConnectionOpenResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20AudioPlaybackConnectionOpenResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioPlaybackConnectionOpenResultStatus AudioPlaybackConnectionOpenResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioPlaybackConnectionOpenResultStatus AudioPlaybackConnectionOpenResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioPlaybackConnectionOpenResultStatus%20AudioPlaybackConnectionOpenResult.Status");
 			}
 		}
 		#endif

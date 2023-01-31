@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] CertificateQuery.Thumbprint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte[] CertificateQuery.Thumbprint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20CertificateQuery.Thumbprint");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateQuery.IssuerName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateQuery.IssuerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateQuery.IssuerName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateQuery.HardwareOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateQuery.HardwareOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateQuery.HardwareOnly");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateQuery.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateQuery.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateQuery.FriendlyName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> CertificateQuery.EnhancedKeyUsages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> CertificateQuery.EnhancedKeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20CertificateQuery.EnhancedKeyUsages");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateQuery.StoreName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateQuery.StoreName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateQuery.StoreName");
 			}
 			set
 			{
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateQuery.IncludeExpiredCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateQuery.IncludeExpiredCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateQuery.IncludeExpiredCertificates");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateQuery.IncludeDuplicates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateQuery.IncludeDuplicates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateQuery.IncludeDuplicates");
 			}
 			set
 			{

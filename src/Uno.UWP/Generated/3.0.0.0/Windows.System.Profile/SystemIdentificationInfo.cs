@@ -13,7 +13,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SystemIdentificationInfo.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer SystemIdentificationInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20SystemIdentificationInfo.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemIdentificationSource SystemIdentificationInfo.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SystemIdentificationSource SystemIdentificationInfo.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemIdentificationSource%20SystemIdentificationInfo.Source");
 			}
 		}
 		#endif

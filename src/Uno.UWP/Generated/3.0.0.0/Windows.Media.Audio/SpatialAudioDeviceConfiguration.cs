@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioDeviceConfiguration.DeviceId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialAudioDeviceConfiguration.IsSpatialAudioSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsSpatialAudioFormatSupported( string subtype)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported%28string%20subtype%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat.get
@@ -62,7 +62,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.SetDefaultSpatialAudioFormatResult> SetDefaultSpatialAudioFormatAsync( string subtype)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetDefaultSpatialAudioFormatResult> SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync(string subtype) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SetDefaultSpatialAudioFormatResult> SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CSetDefaultSpatialAudioFormatResult%3E%20SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync%28string%20subtype%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ConfigurationChanged.add
@@ -71,7 +71,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Audio.SpatialAudioDeviceConfiguration GetForDeviceId( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialAudioDeviceConfiguration%20SpatialAudioDeviceConfiguration.GetForDeviceId%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -11,7 +11,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.User FindUserFromDeviceId( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member User UserDeviceAssociation.FindUserFromDeviceId(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member User UserDeviceAssociation.FindUserFromDeviceId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20UserDeviceAssociation.FindUserFromDeviceId%28string%20deviceId%29");
 		}
 		#endif
 		// Forced skipping of method Windows.System.UserDeviceAssociation.UserDeviceAssociationChanged.add

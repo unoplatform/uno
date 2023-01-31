@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount RemoteSystemWebAccountFilter.Account is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccount RemoteSystemWebAccountFilter.Account is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccount%20RemoteSystemWebAccountFilter.Account");
 			}
 		}
 		#endif

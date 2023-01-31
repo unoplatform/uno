@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBinder MediaBindingEventArgs.MediaBinder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaBinder MediaBindingEventArgs.MediaBinder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaBinder%20MediaBindingEventArgs.MediaBinder");
 			}
 		}
 		#endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral MediaBindingEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral MediaBindingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20MediaBindingEventArgs.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

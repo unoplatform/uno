@@ -13,7 +13,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HostName.CanonicalName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HostName.CanonicalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HostName.CanonicalName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HostName.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HostName.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HostName.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPInformation HostName.IPInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPInformation HostName.IPInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPInformation%20HostName.IPInformation");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HostName.RawName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HostName.RawName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HostName.RawName");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostNameType HostName.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostNameType HostName.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostNameType%20HostName.Type");
 			}
 		}
 		#endif
@@ -74,21 +74,21 @@ namespace Windows.Networking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEqual( global::Windows.Networking.HostName hostName)
 		{
-			throw new global::System.NotImplementedException("The member bool HostName.IsEqual(HostName hostName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HostName.IsEqual(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HostName.IsEqual%28HostName%20hostName%29");
 		}
 		#endif
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HostName.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HostName.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HostName.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static int Compare( string value1,  string value2)
 		{
-			throw new global::System.NotImplementedException("The member int HostName.Compare(string value1, string value2) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int HostName.Compare(string value1, string value2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20HostName.Compare%28string%20value1%2C%20string%20value2%29");
 		}
 		#endif
 	}

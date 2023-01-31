@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EmailConversation> EmailConversationBatch.Conversations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<EmailConversation> EmailConversationBatch.Conversations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEmailConversation%3E%20EmailConversationBatch.Conversations");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailBatchStatus EmailConversationBatch.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailBatchStatus EmailConversationBatch.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailBatchStatus%20EmailConversationBatch.Status");
 			}
 		}
 		#endif

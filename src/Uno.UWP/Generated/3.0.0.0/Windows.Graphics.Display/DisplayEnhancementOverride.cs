@@ -13,7 +13,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ColorOverrideSettings%20DisplayEnhancementOverride.ColorOverrideSettings");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BrightnessOverrideSettings DisplayEnhancementOverride.BrightnessOverrideSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BrightnessOverrideSettings DisplayEnhancementOverride.BrightnessOverrideSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BrightnessOverrideSettings%20DisplayEnhancementOverride.BrightnessOverrideSettings");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverride.CanOverride is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverride.CanOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayEnhancementOverride.CanOverride");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverride.IsOverrideActive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverride.IsOverrideActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayEnhancementOverride.IsOverrideActive");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities GetCurrentDisplayEnhancementOverrideCapabilities()
 		{
-			throw new global::System.NotImplementedException("The member DisplayEnhancementOverrideCapabilities DisplayEnhancementOverride.GetCurrentDisplayEnhancementOverrideCapabilities() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayEnhancementOverrideCapabilities DisplayEnhancementOverride.GetCurrentDisplayEnhancementOverrideCapabilities() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayEnhancementOverrideCapabilities%20DisplayEnhancementOverride.GetCurrentDisplayEnhancementOverrideCapabilities%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -92,7 +92,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Graphics.Display.DisplayEnhancementOverride GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member DisplayEnhancementOverride DisplayEnhancementOverride.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayEnhancementOverride DisplayEnhancementOverride.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayEnhancementOverride%20DisplayEnhancementOverride.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

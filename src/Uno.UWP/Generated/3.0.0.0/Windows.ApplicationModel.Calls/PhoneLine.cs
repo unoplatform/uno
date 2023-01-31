@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLine.CanDial is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneLine.CanDial is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneLine.CanDial");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineCellularDetails PhoneLine.CellularDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneLineCellularDetails PhoneLine.CellularDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineCellularDetails%20PhoneLine.CellularDetails");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PhoneLine.DisplayColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color PhoneLine.DisplayColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20PhoneLine.DisplayColor");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneLine.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneLine.DisplayName");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneLine.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PhoneLine.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PhoneLine.Id");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineConfiguration PhoneLine.LineConfiguration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneLineConfiguration PhoneLine.LineConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineConfiguration%20PhoneLine.LineConfiguration");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.NetworkName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneLine.NetworkName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneLine.NetworkName");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneNetworkState PhoneLine.NetworkState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneNetworkState PhoneLine.NetworkState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneNetworkState%20PhoneLine.NetworkState");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLine.SupportsTile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneLine.SupportsTile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneLine.SupportsTile");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineTransport PhoneLine.Transport is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneLineTransport PhoneLine.Transport is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineTransport%20PhoneLine.Transport");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallVideoCapabilities PhoneLine.VideoCallingCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallVideoCapabilities PhoneLine.VideoCallingCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallVideoCapabilities%20PhoneLine.VideoCallingCapabilities");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneVoicemail PhoneLine.Voicemail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneVoicemail PhoneLine.Voicemail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneVoicemail%20PhoneLine.Voicemail");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.TransportDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneLine.TransportDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneLine.TransportDeviceId");
 			}
 		}
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> IsImmediateDialNumberAsync( string number)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneLine.IsImmediateDialNumberAsync(string number) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneLine.IsImmediateDialNumberAsync(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20PhoneLine.IsImmediateDialNumberAsync%28string%20number%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -184,35 +184,35 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Calls.PhoneLineDialResult DialWithResult( string number,  string displayName)
 		{
-			throw new global::System.NotImplementedException("The member PhoneLineDialResult PhoneLine.DialWithResult(string number, string displayName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PhoneLineDialResult PhoneLine.DialWithResult(string number, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineDialResult%20PhoneLine.DialWithResult%28string%20number%2C%20string%20displayName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLineDialResult> DialWithResultAsync( string number,  string displayName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLineDialResult> PhoneLine.DialWithResultAsync(string number, string displayName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLineDialResult> PhoneLine.DialWithResultAsync(string number, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPhoneLineDialResult%3E%20PhoneLine.DialWithResultAsync%28string%20number%2C%20string%20displayName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Calls.PhoneCallsResult GetAllActivePhoneCalls()
 		{
-			throw new global::System.NotImplementedException("The member PhoneCallsResult PhoneLine.GetAllActivePhoneCalls() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PhoneCallsResult PhoneLine.GetAllActivePhoneCalls() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallsResult%20PhoneLine.GetAllActivePhoneCalls%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallsResult> GetAllActivePhoneCallsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallsResult> PhoneLine.GetAllActivePhoneCallsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallsResult> PhoneLine.GetAllActivePhoneCallsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPhoneCallsResult%3E%20PhoneLine.GetAllActivePhoneCallsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync( global::System.Guid lineId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPhoneLine%3E%20PhoneLine.FromIdAsync%28Guid%20lineId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

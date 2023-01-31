@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundWorkCostValue BackgroundWorkCost.CurrentBackgroundWorkCost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BackgroundWorkCostValue BackgroundWorkCost.CurrentBackgroundWorkCost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundWorkCostValue%20BackgroundWorkCost.CurrentBackgroundWorkCost");
 			}
 		}
 		#endif

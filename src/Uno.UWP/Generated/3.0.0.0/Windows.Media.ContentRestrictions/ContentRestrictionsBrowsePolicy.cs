@@ -13,7 +13,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentRestrictionsBrowsePolicy.GeographicRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContentRestrictionsBrowsePolicy.GeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContentRestrictionsBrowsePolicy.GeographicRegion");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ContentRestrictionsBrowsePolicy.MaxBrowsableAgeRating is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? ContentRestrictionsBrowsePolicy.MaxBrowsableAgeRating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20ContentRestrictionsBrowsePolicy.MaxBrowsableAgeRating");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ContentRestrictionsBrowsePolicy.PreferredAgeRating is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? ContentRestrictionsBrowsePolicy.PreferredAgeRating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20ContentRestrictionsBrowsePolicy.PreferredAgeRating");
 			}
 		}
 		#endif

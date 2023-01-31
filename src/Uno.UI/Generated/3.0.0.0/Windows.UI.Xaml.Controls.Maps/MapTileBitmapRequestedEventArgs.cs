@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapTileBitmapRequest MapTileBitmapRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapTileBitmapRequest MapTileBitmapRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapTileBitmapRequest%20MapTileBitmapRequestedEventArgs.Request");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.X is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.X is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileBitmapRequestedEventArgs.X");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.Y is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.Y is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileBitmapRequestedEventArgs.Y");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.ZoomLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.ZoomLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileBitmapRequestedEventArgs.ZoomLevel");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.FrameIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileBitmapRequestedEventArgs.FrameIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileBitmapRequestedEventArgs.FrameIndex");
 			}
 		}
 		#endif

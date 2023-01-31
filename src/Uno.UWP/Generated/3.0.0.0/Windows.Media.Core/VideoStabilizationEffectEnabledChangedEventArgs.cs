@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoStabilizationEffectEnabledChangedReason VideoStabilizationEffectEnabledChangedEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoStabilizationEffectEnabledChangedReason VideoStabilizationEffectEnabledChangedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoStabilizationEffectEnabledChangedReason%20VideoStabilizationEffectEnabledChangedEventArgs.Reason");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverStatus.IsConnectionTakeoverSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverStatus.IsConnectionTakeoverSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverStatus.IsConnectionTakeoverSupported");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MiracastTransmitter> MiracastReceiverStatus.KnownTransmitters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MiracastTransmitter> MiracastReceiverStatus.KnownTransmitters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMiracastTransmitter%3E%20MiracastReceiverStatus.KnownTransmitters");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverListeningStatus MiracastReceiverStatus.ListeningStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverListeningStatus MiracastReceiverStatus.ListeningStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverListeningStatus%20MiracastReceiverStatus.ListeningStatus");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MiracastReceiverStatus.MaxSimultaneousConnections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MiracastReceiverStatus.MaxSimultaneousConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MiracastReceiverStatus.MaxSimultaneousConnections");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverWiFiStatus MiracastReceiverStatus.WiFiStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverWiFiStatus MiracastReceiverStatus.WiFiStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverWiFiStatus%20MiracastReceiverStatus.WiFiStatus");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributesBuilder.IsDecodeLengthSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributesBuilder.IsDecodeLengthSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributesBuilder.IsDecodeLengthSupported");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributesBuilder.IsCheckDigitValidationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributesBuilder.IsCheckDigitValidationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributesBuilder.IsCheckDigitValidationSupported");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributesBuilder.IsCheckDigitTransmissionSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributesBuilder.IsCheckDigitTransmissionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributesBuilder.IsCheckDigitTransmissionSupported");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.Devices.PointOfService.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes CreateAttributes()
 		{
-			throw new global::System.NotImplementedException("The member BarcodeSymbologyAttributes BarcodeSymbologyAttributesBuilder.CreateAttributes() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BarcodeSymbologyAttributes BarcodeSymbologyAttributesBuilder.CreateAttributes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BarcodeSymbologyAttributes%20BarcodeSymbologyAttributesBuilder.CreateAttributes%28%29");
 		}
 		#endif
 	}

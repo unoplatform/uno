@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyValuePair<string, NamedResource> ResourceMapIterator.Current is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyValuePair<string, NamedResource> ResourceMapIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyValuePair%3Cstring%2C%20NamedResource%3E%20ResourceMapIterator.Current");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceMapIterator.HasCurrent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ResourceMapIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceMapIterator.HasCurrent");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool MoveNext()
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceMapIterator.MoveNext() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ResourceMapIterator.MoveNext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceMapIterator.MoveNext%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint GetMany( global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>[] items)
 		{
-			throw new global::System.NotImplementedException("The member uint ResourceMapIterator.GetMany(KeyValuePair<string, NamedResource>[] items) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member uint ResourceMapIterator.GetMany(KeyValuePair<string, NamedResource>[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ResourceMapIterator.GetMany%28KeyValuePair%3Cstring%2C%20NamedResource%3E%5B%5D%20items%29");
 		}
 		#endif
 		// Processing: Windows.Foundation.Collections.IIterator<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>

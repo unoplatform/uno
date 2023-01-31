@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandDeviceServiceTriggerDetails.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandDeviceServiceTriggerDetails.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandDeviceServiceTriggerDetails.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid MobileBroadbandDeviceServiceTriggerDetails.DeviceServiceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid MobileBroadbandDeviceServiceTriggerDetails.DeviceServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20MobileBroadbandDeviceServiceTriggerDetails.DeviceServiceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandDeviceServiceTriggerDetails.ReceivedData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandDeviceServiceTriggerDetails.ReceivedData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20MobileBroadbandDeviceServiceTriggerDetails.ReceivedData");
 			}
 		}
 		#endif

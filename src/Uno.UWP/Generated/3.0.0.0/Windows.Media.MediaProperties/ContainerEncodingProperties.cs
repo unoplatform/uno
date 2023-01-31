@@ -13,7 +13,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContainerEncodingProperties.Subtype is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContainerEncodingProperties.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContainerEncodingProperties.Subtype");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPropertySet ContainerEncodingProperties.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPropertySet ContainerEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPropertySet%20ContainerEncodingProperties.Properties");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContainerEncodingProperties.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContainerEncodingProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContainerEncodingProperties.Type");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.ContainerEncodingProperties Copy()
 		{
-			throw new global::System.NotImplementedException("The member ContainerEncodingProperties ContainerEncodingProperties.Copy() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ContainerEncodingProperties ContainerEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContainerEncodingProperties%20ContainerEncodingProperties.Copy%28%29");
 		}
 		#endif
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties

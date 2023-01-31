@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MessageWebSocketControl MessageWebSocket.Control is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MessageWebSocketControl MessageWebSocket.Control is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MessageWebSocketControl%20MessageWebSocket.Control");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MessageWebSocketInformation MessageWebSocket.Information is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MessageWebSocketInformation MessageWebSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MessageWebSocketInformation%20MessageWebSocket.Information");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream MessageWebSocket.OutputStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IOutputStream MessageWebSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IOutputStream%20MessageWebSocket.OutputStream");
 			}
 		}
 		#endif
@@ -54,7 +54,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ConnectAsync( global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MessageWebSocket.ConnectAsync(Uri uri) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MessageWebSocket.ConnectAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MessageWebSocket.ConnectAsync%28Uri%20uri%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -86,14 +86,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendNonfinalFrameAsync( global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20MessageWebSocket.SendNonfinalFrameAsync%28IBuffer%20data%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendFinalFrameAsync( global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20MessageWebSocket.SendFinalFrameAsync%28IBuffer%20data%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

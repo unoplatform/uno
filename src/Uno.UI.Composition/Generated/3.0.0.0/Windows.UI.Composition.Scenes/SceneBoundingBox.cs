@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Center is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneBoundingBox.Center");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Extents is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Extents is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneBoundingBox.Extents");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneBoundingBox.Max");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneBoundingBox.Min");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneBoundingBox.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneBoundingBox.Size");
 			}
 		}
 		#endif

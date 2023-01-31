@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.LimitedAccessFeatureRequestResult TryUnlockFeature( string featureId,  string token,  string attestation)
 		{
-			throw new global::System.NotImplementedException("The member LimitedAccessFeatureRequestResult LimitedAccessFeatures.TryUnlockFeature(string featureId, string token, string attestation) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member LimitedAccessFeatureRequestResult LimitedAccessFeatures.TryUnlockFeature(string featureId, string token, string attestation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LimitedAccessFeatureRequestResult%20LimitedAccessFeatures.TryUnlockFeature%28string%20featureId%2C%20string%20token%2C%20string%20attestation%29");
 		}
 		#endif
 	}

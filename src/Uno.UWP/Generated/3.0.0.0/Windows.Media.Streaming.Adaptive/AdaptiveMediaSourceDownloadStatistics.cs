@@ -13,7 +13,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AdaptiveMediaSourceDownloadStatistics.ContentBytesReceivedCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AdaptiveMediaSourceDownloadStatistics.ContentBytesReceivedCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AdaptiveMediaSourceDownloadStatistics.ContentBytesReceivedCount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToFirstByteReceived is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToFirstByteReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AdaptiveMediaSourceDownloadStatistics.TimeToFirstByteReceived");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToHeadersReceived is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToHeadersReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AdaptiveMediaSourceDownloadStatistics.TimeToHeadersReceived");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToLastByteReceived is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToLastByteReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AdaptiveMediaSourceDownloadStatistics.TimeToLastByteReceived");
 			}
 		}
 		#endif

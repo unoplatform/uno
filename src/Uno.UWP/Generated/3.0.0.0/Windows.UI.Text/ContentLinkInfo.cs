@@ -13,7 +13,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContentLinkInfo.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri ContentLinkInfo.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20ContentLinkInfo.Uri");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentLinkInfo.SecondaryText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContentLinkInfo.SecondaryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContentLinkInfo.SecondaryText");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentLinkInfo.LinkContentKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContentLinkInfo.LinkContentKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContentLinkInfo.LinkContentKind");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ContentLinkInfo.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ContentLinkInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ContentLinkInfo.Id");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentLinkInfo.DisplayText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContentLinkInfo.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContentLinkInfo.DisplayText");
 			}
 			set
 			{

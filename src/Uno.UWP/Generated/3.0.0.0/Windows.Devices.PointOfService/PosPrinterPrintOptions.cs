@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Underline is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Underline is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.Underline");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PosPrinterPrintOptions.TypeFace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PosPrinterPrintOptions.TypeFace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PosPrinterPrintOptions.TypeFace");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Superscript is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Superscript is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.Superscript");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Subscript is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Subscript is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.Subscript");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Strikethrough is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Strikethrough is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.Strikethrough");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.ReverseVideo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.ReverseVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.ReverseVideo");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Italic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Italic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.Italic");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.DoubleWide is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.DoubleWide is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.DoubleWide");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.DoubleHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.DoubleHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.DoubleHigh");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterPrintOptions.CharacterSet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PosPrinterPrintOptions.CharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PosPrinterPrintOptions.CharacterSet");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterPrintOptions.CharacterHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PosPrinterPrintOptions.CharacterHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PosPrinterPrintOptions.CharacterHeight");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Bold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterPrintOptions.Bold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterPrintOptions.Bold");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterAlignment PosPrinterPrintOptions.Alignment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterAlignment PosPrinterPrintOptions.Alignment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterAlignment%20PosPrinterPrintOptions.Alignment");
 			}
 			set
 			{

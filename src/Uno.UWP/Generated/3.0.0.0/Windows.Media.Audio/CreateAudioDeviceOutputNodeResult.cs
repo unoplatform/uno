@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDeviceOutputNode CreateAudioDeviceOutputNodeResult.DeviceOutputNode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioDeviceOutputNode CreateAudioDeviceOutputNodeResult.DeviceOutputNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDeviceOutputNode%20CreateAudioDeviceOutputNodeResult.DeviceOutputNode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDeviceNodeCreationStatus CreateAudioDeviceOutputNodeResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioDeviceNodeCreationStatus CreateAudioDeviceOutputNodeResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDeviceNodeCreationStatus%20CreateAudioDeviceOutputNodeResult.Status");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception CreateAudioDeviceOutputNodeResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception CreateAudioDeviceOutputNodeResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20CreateAudioDeviceOutputNodeResult.ExtendedError");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.BaseStationId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.BaseStationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellCdma.BaseStationId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MobileBroadbandCellCdma.BaseStationLastBroadcastGpsTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? MobileBroadbandCellCdma.BaseStationLastBroadcastGpsTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20MobileBroadbandCellCdma.BaseStationLastBroadcastGpsTime");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellCdma.BaseStationLatitude is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellCdma.BaseStationLatitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MobileBroadbandCellCdma.BaseStationLatitude");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellCdma.BaseStationLongitude is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellCdma.BaseStationLongitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MobileBroadbandCellCdma.BaseStationLongitude");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.BaseStationPNCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.BaseStationPNCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellCdma.BaseStationPNCode");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.NetworkId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.NetworkId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellCdma.NetworkId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellCdma.PilotSignalStrengthInDB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellCdma.PilotSignalStrengthInDB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MobileBroadbandCellCdma.PilotSignalStrengthInDB");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.SystemId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellCdma.SystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellCdma.SystemId");
 			}
 		}
 		#endif

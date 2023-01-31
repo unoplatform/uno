@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallDirection PhoneCallInfo.CallDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallDirection PhoneCallInfo.CallDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallDirection%20PhoneCallInfo.CallDirection");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallInfo.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallInfo.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallInfo.IsHoldSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallInfo.IsHoldSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallInfo.IsHoldSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneCallInfo.LineId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PhoneCallInfo.LineId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PhoneCallInfo.LineId");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallInfo.PhoneNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallInfo.PhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallInfo.PhoneNumber");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PhoneCallInfo.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PhoneCallInfo.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PhoneCallInfo.StartTime");
 			}
 		}
 		#endif

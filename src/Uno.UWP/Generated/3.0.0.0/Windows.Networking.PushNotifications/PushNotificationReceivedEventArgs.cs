@@ -13,7 +13,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PushNotificationReceivedEventArgs.Cancel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PushNotificationReceivedEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PushNotificationReceivedEventArgs.Cancel");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BadgeNotification PushNotificationReceivedEventArgs.BadgeNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BadgeNotification PushNotificationReceivedEventArgs.BadgeNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BadgeNotification%20PushNotificationReceivedEventArgs.BadgeNotification");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PushNotificationType PushNotificationReceivedEventArgs.NotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PushNotificationType PushNotificationReceivedEventArgs.NotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PushNotificationType%20PushNotificationReceivedEventArgs.NotificationType");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RawNotification PushNotificationReceivedEventArgs.RawNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RawNotification PushNotificationReceivedEventArgs.RawNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RawNotification%20PushNotificationReceivedEventArgs.RawNotification");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileNotification PushNotificationReceivedEventArgs.TileNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TileNotification PushNotificationReceivedEventArgs.TileNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileNotification%20PushNotificationReceivedEventArgs.TileNotification");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastNotification PushNotificationReceivedEventArgs.ToastNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ToastNotification PushNotificationReceivedEventArgs.ToastNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToastNotification%20PushNotificationReceivedEventArgs.ToastNotification");
 			}
 		}
 		#endif

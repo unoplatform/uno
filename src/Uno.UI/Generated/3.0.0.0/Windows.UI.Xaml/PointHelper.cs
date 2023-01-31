@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.Point FromCoordinates( float x,  float y)
 		{
-			throw new global::System.NotImplementedException("The member Point PointHelper.FromCoordinates(float x, float y) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Point PointHelper.FromCoordinates(float x, float y) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20PointHelper.FromCoordinates%28float%20x%2C%20float%20y%29");
 		}
 		#endif
 	}

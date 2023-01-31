@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.EmailFolderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.EmailFolderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxMoveFolderRequest.EmailFolderId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.EmailMailboxId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxMoveFolderRequest.EmailMailboxId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.NewFolderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.NewFolderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxMoveFolderRequest.NewFolderName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.NewParentFolderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxMoveFolderRequest.NewParentFolderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxMoveFolderRequest.NewParentFolderId");
 			}
 		}
 		#endif
@@ -55,14 +55,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxMoveFolderRequest.ReportCompletedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxMoveFolderRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxMoveFolderRequest.ReportCompletedAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxMoveFolderRequest.ReportFailedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxMoveFolderRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxMoveFolderRequest.ReportFailedAsync%28%29");
 		}
 		#endif
 	}

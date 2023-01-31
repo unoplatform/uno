@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? DataPlanStatus.DataLimitInMegabytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? DataPlanStatus.DataLimitInMegabytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20DataPlanStatus.DataLimitInMegabytes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPlanUsage DataPlanStatus.DataPlanUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DataPlanUsage DataPlanStatus.DataPlanUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPlanUsage%20DataPlanStatus.DataPlanUsage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? DataPlanStatus.InboundBitsPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? DataPlanStatus.InboundBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20DataPlanStatus.InboundBitsPerSecond");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? DataPlanStatus.MaxTransferSizeInMegabytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? DataPlanStatus.MaxTransferSizeInMegabytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20DataPlanStatus.MaxTransferSizeInMegabytes");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? DataPlanStatus.NextBillingCycle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? DataPlanStatus.NextBillingCycle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20DataPlanStatus.NextBillingCycle");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? DataPlanStatus.OutboundBitsPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? DataPlanStatus.OutboundBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20DataPlanStatus.OutboundBitsPerSecond");
 			}
 		}
 		#endif

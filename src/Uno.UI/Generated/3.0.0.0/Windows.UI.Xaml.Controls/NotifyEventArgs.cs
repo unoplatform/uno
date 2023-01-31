@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotifyEventArgs.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NotifyEventArgs.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NotifyEventArgs.Value");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri NotifyEventArgs.CallingUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri NotifyEventArgs.CallingUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20NotifyEventArgs.CallingUri");
 			}
 		}
 		#endif

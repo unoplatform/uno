@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteraction.SourceState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteraction.SourceState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteractionSourceState%20SpatialInteraction.SourceState");
 			}
 		}
 		#endif

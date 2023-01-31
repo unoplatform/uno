@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallBlocking.BlockUnknownNumbers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallBlocking.BlockUnknownNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallBlocking.BlockUnknownNumbers");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallBlocking.BlockPrivateNumbers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallBlocking.BlockPrivateNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallBlocking.BlockPrivateNumbers");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> SetCallBlockingListAsync( global::System.Collections.Generic.IEnumerable<string> phoneNumberList)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallBlocking.SetCallBlockingListAsync(IEnumerable<string> phoneNumberList) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallBlocking.SetCallBlockingListAsync(IEnumerable<string> phoneNumberList) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20PhoneCallBlocking.SetCallBlockingListAsync%28IEnumerable%3Cstring%3E%20phoneNumberList%29");
 		}
 		#endif
 	}

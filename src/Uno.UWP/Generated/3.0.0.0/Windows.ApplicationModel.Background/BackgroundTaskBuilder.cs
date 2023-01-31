@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundTaskBuilder.TaskEntryPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string BackgroundTaskBuilder.TaskEntryPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BackgroundTaskBuilder.TaskEntryPoint");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundTaskBuilder.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string BackgroundTaskBuilder.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BackgroundTaskBuilder.Name");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTaskBuilder.CancelOnConditionLoss is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BackgroundTaskBuilder.CancelOnConditionLoss is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BackgroundTaskBuilder.CancelOnConditionLoss");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTaskBuilder.IsNetworkRequested is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BackgroundTaskBuilder.IsNetworkRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BackgroundTaskBuilder.IsNetworkRequested");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTaskRegistrationGroup BackgroundTaskBuilder.TaskGroup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BackgroundTaskRegistrationGroup BackgroundTaskBuilder.TaskGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTaskRegistrationGroup%20BackgroundTaskBuilder.TaskGroup");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Background.BackgroundTaskRegistration Register()
 		{
-			throw new global::System.NotImplementedException("The member BackgroundTaskRegistration BackgroundTaskBuilder.Register() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BackgroundTaskRegistration BackgroundTaskBuilder.Register() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTaskRegistration%20BackgroundTaskBuilder.Register%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.CancelOnConditionLoss.set

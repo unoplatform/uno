@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AudioGraph.CompletedQuantumCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AudioGraph.CompletedQuantumCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AudioGraph.CompletedQuantumCount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioGraph.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioGraph.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioGraph.EncodingProperties");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AudioGraph.LatencyInSamples is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AudioGraph.LatencyInSamples is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AudioGraph.LatencyInSamples");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation AudioGraph.PrimaryRenderDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation AudioGraph.PrimaryRenderDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20AudioGraph.PrimaryRenderDevice");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioProcessing AudioGraph.RenderDeviceAudioProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioProcessing AudioGraph.RenderDeviceAudioProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioProcessing%20AudioGraph.RenderDeviceAudioProcessing");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AudioGraph.SamplesPerQuantum is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AudioGraph.SamplesPerQuantum is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AudioGraph.SamplesPerQuantum");
 			}
 		}
 		#endif
@@ -71,91 +71,91 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioFrameInputNode CreateFrameInputNode()
 		{
-			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioFrameInputNode%20AudioGraph.CreateFrameInputNode%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioFrameInputNode CreateFrameInputNode( global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode(AudioEncodingProperties encodingProperties) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode(AudioEncodingProperties encodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioFrameInputNode%20AudioGraph.CreateFrameInputNode%28AudioEncodingProperties%20encodingProperties%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioDeviceInputNodeResult> CreateDeviceInputNodeAsync( global::Windows.Media.Capture.MediaCategory category)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioDeviceInputNodeResult%3E%20AudioGraph.CreateDeviceInputNodeAsync%28MediaCategory%20category%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioDeviceInputNodeResult> CreateDeviceInputNodeAsync( global::Windows.Media.Capture.MediaCategory category,  global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category, AudioEncodingProperties encodingProperties) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category, AudioEncodingProperties encodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioDeviceInputNodeResult%3E%20AudioGraph.CreateDeviceInputNodeAsync%28MediaCategory%20category%2C%20AudioEncodingProperties%20encodingProperties%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioDeviceInputNodeResult> CreateDeviceInputNodeAsync( global::Windows.Media.Capture.MediaCategory category,  global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties,  global::Windows.Devices.Enumeration.DeviceInformation device)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category, AudioEncodingProperties encodingProperties, DeviceInformation device) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category, AudioEncodingProperties encodingProperties, DeviceInformation device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioDeviceInputNodeResult%3E%20AudioGraph.CreateDeviceInputNodeAsync%28MediaCategory%20category%2C%20AudioEncodingProperties%20encodingProperties%2C%20DeviceInformation%20device%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioFrameOutputNode CreateFrameOutputNode()
 		{
-			throw new global::System.NotImplementedException("The member AudioFrameOutputNode AudioGraph.CreateFrameOutputNode() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioFrameOutputNode AudioGraph.CreateFrameOutputNode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioFrameOutputNode%20AudioGraph.CreateFrameOutputNode%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioFrameOutputNode CreateFrameOutputNode( global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member AudioFrameOutputNode AudioGraph.CreateFrameOutputNode(AudioEncodingProperties encodingProperties) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioFrameOutputNode AudioGraph.CreateFrameOutputNode(AudioEncodingProperties encodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioFrameOutputNode%20AudioGraph.CreateFrameOutputNode%28AudioEncodingProperties%20encodingProperties%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioDeviceOutputNodeResult> CreateDeviceOutputNodeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceOutputNodeResult> AudioGraph.CreateDeviceOutputNodeAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceOutputNodeResult> AudioGraph.CreateDeviceOutputNodeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioDeviceOutputNodeResult%3E%20AudioGraph.CreateDeviceOutputNodeAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioFileInputNodeResult> CreateFileInputNodeAsync( global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileInputNodeResult> AudioGraph.CreateFileInputNodeAsync(IStorageFile file) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileInputNodeResult> AudioGraph.CreateFileInputNodeAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioFileInputNodeResult%3E%20AudioGraph.CreateFileInputNodeAsync%28IStorageFile%20file%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioFileOutputNodeResult> CreateFileOutputNodeAsync( global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileOutputNodeResult> AudioGraph.CreateFileOutputNodeAsync(IStorageFile file) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileOutputNodeResult> AudioGraph.CreateFileOutputNodeAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioFileOutputNodeResult%3E%20AudioGraph.CreateFileOutputNodeAsync%28IStorageFile%20file%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioFileOutputNodeResult> CreateFileOutputNodeAsync( global::Windows.Storage.IStorageFile file,  global::Windows.Media.MediaProperties.MediaEncodingProfile fileEncodingProfile)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileOutputNodeResult> AudioGraph.CreateFileOutputNodeAsync(IStorageFile file, MediaEncodingProfile fileEncodingProfile) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileOutputNodeResult> AudioGraph.CreateFileOutputNodeAsync(IStorageFile file, MediaEncodingProfile fileEncodingProfile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioFileOutputNodeResult%3E%20AudioGraph.CreateFileOutputNodeAsync%28IStorageFile%20file%2C%20MediaEncodingProfile%20fileEncodingProfile%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioSubmixNode CreateSubmixNode()
 		{
-			throw new global::System.NotImplementedException("The member AudioSubmixNode AudioGraph.CreateSubmixNode() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioSubmixNode AudioGraph.CreateSubmixNode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioSubmixNode%20AudioGraph.CreateSubmixNode%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioSubmixNode CreateSubmixNode( global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member AudioSubmixNode AudioGraph.CreateSubmixNode(AudioEncodingProperties encodingProperties) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioSubmixNode AudioGraph.CreateSubmixNode(AudioEncodingProperties encodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioSubmixNode%20AudioGraph.CreateSubmixNode%28AudioEncodingProperties%20encodingProperties%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -202,56 +202,56 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioFrameInputNode CreateFrameInputNode( global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties,  global::Windows.Media.Audio.AudioNodeEmitter emitter)
 		{
-			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode(AudioEncodingProperties encodingProperties, AudioNodeEmitter emitter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode(AudioEncodingProperties encodingProperties, AudioNodeEmitter emitter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioFrameInputNode%20AudioGraph.CreateFrameInputNode%28AudioEncodingProperties%20encodingProperties%2C%20AudioNodeEmitter%20emitter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioDeviceInputNodeResult> CreateDeviceInputNodeAsync( global::Windows.Media.Capture.MediaCategory category,  global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties,  global::Windows.Devices.Enumeration.DeviceInformation device,  global::Windows.Media.Audio.AudioNodeEmitter emitter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category, AudioEncodingProperties encodingProperties, DeviceInformation device, AudioNodeEmitter emitter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioDeviceInputNodeResult> AudioGraph.CreateDeviceInputNodeAsync(MediaCategory category, AudioEncodingProperties encodingProperties, DeviceInformation device, AudioNodeEmitter emitter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioDeviceInputNodeResult%3E%20AudioGraph.CreateDeviceInputNodeAsync%28MediaCategory%20category%2C%20AudioEncodingProperties%20encodingProperties%2C%20DeviceInformation%20device%2C%20AudioNodeEmitter%20emitter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioFileInputNodeResult> CreateFileInputNodeAsync( global::Windows.Storage.IStorageFile file,  global::Windows.Media.Audio.AudioNodeEmitter emitter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileInputNodeResult> AudioGraph.CreateFileInputNodeAsync(IStorageFile file, AudioNodeEmitter emitter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioFileInputNodeResult> AudioGraph.CreateFileInputNodeAsync(IStorageFile file, AudioNodeEmitter emitter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioFileInputNodeResult%3E%20AudioGraph.CreateFileInputNodeAsync%28IStorageFile%20file%2C%20AudioNodeEmitter%20emitter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioSubmixNode CreateSubmixNode( global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties,  global::Windows.Media.Audio.AudioNodeEmitter emitter)
 		{
-			throw new global::System.NotImplementedException("The member AudioSubmixNode AudioGraph.CreateSubmixNode(AudioEncodingProperties encodingProperties, AudioNodeEmitter emitter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioSubmixNode AudioGraph.CreateSubmixNode(AudioEncodingProperties encodingProperties, AudioNodeEmitter emitter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioSubmixNode%20AudioGraph.CreateSubmixNode%28AudioEncodingProperties%20encodingProperties%2C%20AudioNodeEmitter%20emitter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioGraphBatchUpdater CreateBatchUpdater()
 		{
-			throw new global::System.NotImplementedException("The member AudioGraphBatchUpdater AudioGraph.CreateBatchUpdater() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioGraphBatchUpdater AudioGraph.CreateBatchUpdater() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioGraphBatchUpdater%20AudioGraph.CreateBatchUpdater%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult> CreateMediaSourceAudioInputNodeAsync( global::Windows.Media.Core.MediaSource mediaSource)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateMediaSourceAudioInputNodeResult> AudioGraph.CreateMediaSourceAudioInputNodeAsync(MediaSource mediaSource) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateMediaSourceAudioInputNodeResult> AudioGraph.CreateMediaSourceAudioInputNodeAsync(MediaSource mediaSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateMediaSourceAudioInputNodeResult%3E%20AudioGraph.CreateMediaSourceAudioInputNodeAsync%28MediaSource%20mediaSource%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult> CreateMediaSourceAudioInputNodeAsync( global::Windows.Media.Core.MediaSource mediaSource,  global::Windows.Media.Audio.AudioNodeEmitter emitter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateMediaSourceAudioInputNodeResult> AudioGraph.CreateMediaSourceAudioInputNodeAsync(MediaSource mediaSource, AudioNodeEmitter emitter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateMediaSourceAudioInputNodeResult> AudioGraph.CreateMediaSourceAudioInputNodeAsync(MediaSource mediaSource, AudioNodeEmitter emitter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateMediaSourceAudioInputNodeResult%3E%20AudioGraph.CreateMediaSourceAudioInputNodeAsync%28MediaSource%20mediaSource%2C%20AudioNodeEmitter%20emitter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioGraphResult> CreateAsync( global::Windows.Media.Audio.AudioGraphSettings settings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioGraphResult> AudioGraph.CreateAsync(AudioGraphSettings settings) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioGraphResult> AudioGraph.CreateAsync(AudioGraphSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCreateAudioGraphResult%3E%20AudioGraph.CreateAsync%28AudioGraphSettings%20settings%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

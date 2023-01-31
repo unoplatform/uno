@@ -25,7 +25,7 @@ namespace Windows.Phone.Devices.Notification
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Phone.Devices.Notification.VibrationDevice GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member VibrationDevice VibrationDevice.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VibrationDevice VibrationDevice.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VibrationDevice%20VibrationDevice.GetDefault%28%29");
 		}
 		#endif
 	}

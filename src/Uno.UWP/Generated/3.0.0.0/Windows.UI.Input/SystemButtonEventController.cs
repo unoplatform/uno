@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.SystemButtonEventController CreateForDispatcherQueue( global::Windows.System.DispatcherQueue queue)
 		{
-			throw new global::System.NotImplementedException("The member SystemButtonEventController SystemButtonEventController.CreateForDispatcherQueue(DispatcherQueue queue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SystemButtonEventController SystemButtonEventController.CreateForDispatcherQueue(DispatcherQueue queue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemButtonEventController%20SystemButtonEventController.CreateForDispatcherQueue%28DispatcherQueue%20queue%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

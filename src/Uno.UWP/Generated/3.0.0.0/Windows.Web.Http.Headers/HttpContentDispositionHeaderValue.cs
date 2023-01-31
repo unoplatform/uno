@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentDispositionHeaderValue.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? HttpContentDispositionHeaderValue.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20HttpContentDispositionHeaderValue.Size");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentDispositionHeaderValue.Name");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.FileNameStar is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.FileNameStar is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentDispositionHeaderValue.FileNameStar");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.FileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentDispositionHeaderValue.FileName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.DispositionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.DispositionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentDispositionHeaderValue.DispositionType");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpContentDispositionHeaderValue.Parameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpContentDispositionHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHttpNameValueHeaderValue%3E%20HttpContentDispositionHeaderValue.Parameters");
 			}
 		}
 		#endif
@@ -110,21 +110,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentDispositionHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentDispositionHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentDispositionHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpContentDispositionHeaderValue%20HttpContentDispositionHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue contentDispositionHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentDispositionHeaderValue.TryParse(string input, out HttpContentDispositionHeaderValue contentDispositionHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpContentDispositionHeaderValue.TryParse(string input, out HttpContentDispositionHeaderValue contentDispositionHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpContentDispositionHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentDispositionHeaderValue%20contentDispositionHeaderValue%29");
 		}
 		#endif
 	}

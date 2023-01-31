@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ListViewBaseAutomationPeer.DropEffect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ListViewBaseAutomationPeer.DropEffect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ListViewBaseAutomationPeer.DropEffect");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string[] ListViewBaseAutomationPeer.DropEffects is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string[] ListViewBaseAutomationPeer.DropEffects is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%5B%5D%20ListViewBaseAutomationPeer.DropEffects");
 			}
 		}
 		#endif

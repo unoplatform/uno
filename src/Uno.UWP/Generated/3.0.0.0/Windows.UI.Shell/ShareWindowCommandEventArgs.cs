@@ -13,7 +13,7 @@ namespace Windows.UI.Shell
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ShareWindowCommand ShareWindowCommandEventArgs.Command is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ShareWindowCommand ShareWindowCommandEventArgs.Command is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ShareWindowCommand%20ShareWindowCommandEventArgs.Command");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Shell
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowId ShareWindowCommandEventArgs.WindowId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WindowId ShareWindowCommandEventArgs.WindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WindowId%20ShareWindowCommandEventArgs.WindowId");
 			}
 		}
 		#endif

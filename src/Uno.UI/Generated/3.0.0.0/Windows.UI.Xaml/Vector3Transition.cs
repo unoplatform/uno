@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan Vector3Transition.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan Vector3Transition.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20Vector3Transition.Duration");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3TransitionComponents Vector3Transition.Components is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3TransitionComponents Vector3Transition.Components is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3TransitionComponents%20Vector3Transition.Components");
 			}
 			set
 			{

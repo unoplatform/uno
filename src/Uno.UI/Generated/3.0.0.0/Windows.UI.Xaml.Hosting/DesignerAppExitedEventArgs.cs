@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DesignerAppExitedEventArgs.ExitCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DesignerAppExitedEventArgs.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DesignerAppExitedEventArgs.ExitCode");
 			}
 		}
 		#endif

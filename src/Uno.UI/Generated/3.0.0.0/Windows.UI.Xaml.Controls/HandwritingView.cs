@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreInputDeviceTypes HandwritingView.InputDeviceTypes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreInputDeviceTypes HandwritingView.InputDeviceTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreInputDeviceTypes%20HandwritingView.InputDeviceTypes");
 			}
 			set
 			{
@@ -172,14 +172,14 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryClose()
 		{
-			throw new global::System.NotImplementedException("The member bool HandwritingView.TryClose() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HandwritingView.TryClose() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HandwritingView.TryClose%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryOpen()
 		{
-			throw new global::System.NotImplementedException("The member bool HandwritingView.TryOpen() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HandwritingView.TryOpen() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HandwritingView.TryOpen%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsSwitchToKeyboardEnabled.get
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<string> GetCandidates( uint candidatesSessionId)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<string> HandwritingView.GetCandidates(uint candidatesSessionId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<string> HandwritingView.GetCandidates(uint candidatesSessionId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20HandwritingView.GetCandidates%28uint%20candidatesSessionId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

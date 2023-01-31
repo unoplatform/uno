@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskDataProviderConnection UserDataTaskDataProviderTriggerDetails.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskDataProviderConnection UserDataTaskDataProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskDataProviderConnection%20UserDataTaskDataProviderTriggerDetails.Connection");
 			}
 		}
 		#endif

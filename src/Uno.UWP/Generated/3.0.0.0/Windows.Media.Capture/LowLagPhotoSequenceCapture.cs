@@ -11,21 +11,21 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20LowLagPhotoSequenceCapture.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.StopAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20LowLagPhotoSequenceCapture.StopAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction FinishAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.FinishAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoSequenceCapture.FinishAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20LowLagPhotoSequenceCapture.FinishAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.PhotoCaptured.add

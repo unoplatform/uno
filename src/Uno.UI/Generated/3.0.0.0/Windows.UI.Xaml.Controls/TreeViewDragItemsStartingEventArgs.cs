@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TreeViewDragItemsStartingEventArgs.Cancel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TreeViewDragItemsStartingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TreeViewDragItemsStartingEventArgs.Cancel");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackage TreeViewDragItemsStartingEventArgs.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DataPackage TreeViewDragItemsStartingEventArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPackage%20TreeViewDragItemsStartingEventArgs.Data");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> TreeViewDragItemsStartingEventArgs.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<object> TreeViewDragItemsStartingEventArgs.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cobject%3E%20TreeViewDragItemsStartingEventArgs.Items");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.DomainJoinServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.DomainJoinServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.DomainJoinServiceRequestType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.DomainLeaveServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.DomainLeaveServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.DomainLeaveServiceRequestType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.IndividualizationServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.IndividualizationServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.IndividualizationServiceRequestType");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.LicenseAcquirerServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.LicenseAcquirerServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.LicenseAcquirerServiceRequestType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.MediaProtectionSystemId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.MediaProtectionSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.MediaProtectionSystemId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.MeteringReportServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.MeteringReportServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.MeteringReportServiceRequestType");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyStatics.PlayReadySecurityVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PlayReadyStatics.PlayReadySecurityVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PlayReadyStatics.PlayReadySecurityVersion");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.RevocationServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.RevocationServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.RevocationServiceRequestType");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyStatics.PlayReadyCertificateSecurityLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PlayReadyStatics.PlayReadyCertificateSecurityLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PlayReadyStatics.PlayReadyCertificateSecurityLevel");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.SecureStopServiceRequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.SecureStopServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.SecureStopServiceRequestType");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.ProtectionSystemId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.ProtectionSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyStatics.ProtectionSystemId");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyStatics.InputTrustAuthorityToCreate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadyStatics.InputTrustAuthorityToCreate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadyStatics.InputTrustAuthorityToCreate");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledUntilTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledUntilTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20PlayReadyStatics.HardwareDRMDisabledUntilTime");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledAtTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledAtTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20PlayReadyStatics.HardwareDRMDisabledAtTime");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool CheckSupportedHardware( global::Windows.Media.Protection.PlayReady.PlayReadyHardwareDRMFeatures hwdrmFeature)
 		{
-			throw new global::System.NotImplementedException("The member bool PlayReadyStatics.CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PlayReadyStatics.CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlayReadyStatics.CheckSupportedHardware%28PlayReadyHardwareDRMFeatures%20hwdrmFeature%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyStatics.PlayReadyCertificateSecurityLevel.get

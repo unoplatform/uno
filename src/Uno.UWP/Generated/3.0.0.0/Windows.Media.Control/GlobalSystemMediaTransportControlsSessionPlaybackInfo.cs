@@ -13,7 +13,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode? GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode? GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackAutoRepeatMode%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackControls GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackControls GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GlobalSystemMediaTransportControlsSessionPlaybackControls%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool? GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackStatus GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackStatus GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GlobalSystemMediaTransportControlsSessionPlaybackStatus%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackType%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType");
 			}
 		}
 		#endif

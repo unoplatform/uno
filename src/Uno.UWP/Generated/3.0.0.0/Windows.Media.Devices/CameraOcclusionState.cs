@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CameraOcclusionState.IsOccluded is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CameraOcclusionState.IsOccluded is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CameraOcclusionState.IsOccluded");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsOcclusionKind( global::Windows.Media.Devices.CameraOcclusionKind occlusionKind)
 		{
-			throw new global::System.NotImplementedException("The member bool CameraOcclusionState.IsOcclusionKind(CameraOcclusionKind occlusionKind) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CameraOcclusionState.IsOcclusionKind(CameraOcclusionKind occlusionKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CameraOcclusionState.IsOcclusionKind%28CameraOcclusionKind%20occlusionKind%29");
 		}
 		#endif
 	}

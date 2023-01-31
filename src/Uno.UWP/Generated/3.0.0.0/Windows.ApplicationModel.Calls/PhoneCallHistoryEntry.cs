@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryMedia PhoneCallHistoryEntry.Media is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryMedia PhoneCallHistoryEntry.Media is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallHistoryEntryMedia%20PhoneCallHistoryEntry.Media");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsCallerIdBlocked is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsCallerIdBlocked is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallHistoryEntry.IsCallerIdBlocked");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsSeen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsSeen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallHistoryEntry.IsSeen");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsEmergency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsEmergency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallHistoryEntry.IsEmergency");
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsSuppressed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsSuppressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallHistoryEntry.IsSuppressed");
 			}
 			set
 			{
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallHistorySourceIdKind PhoneCallHistoryEntry.SourceIdKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallHistorySourceIdKind PhoneCallHistoryEntry.SourceIdKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallHistorySourceIdKind%20PhoneCallHistoryEntry.SourceIdKind");
 			}
 			set
 			{
@@ -102,7 +102,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.SourceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.SourceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallHistoryEntry.SourceId");
 			}
 			set
 			{
@@ -116,7 +116,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallHistoryEntry.RemoteId");
 			}
 			set
 			{
@@ -130,7 +130,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryOtherAppReadAccess PhoneCallHistoryEntry.OtherAppReadAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryOtherAppReadAccess PhoneCallHistoryEntry.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallHistoryEntryOtherAppReadAccess%20PhoneCallHistoryEntry.OtherAppReadAccess");
 			}
 			set
 			{
@@ -144,7 +144,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsRinging is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallHistoryEntry.IsRinging is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallHistoryEntry.IsRinging");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallHistoryEntry.Id");
 			}
 		}
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.SourceDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntry.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallHistoryEntry.SourceDisplayName");
 			}
 		}
 		#endif

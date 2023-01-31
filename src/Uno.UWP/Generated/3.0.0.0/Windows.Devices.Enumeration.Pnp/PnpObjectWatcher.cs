@@ -13,7 +13,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceWatcherStatus PnpObjectWatcher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceWatcherStatus PnpObjectWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceWatcherStatus%20PnpObjectWatcher.Status");
 			}
 		}
 		#endif

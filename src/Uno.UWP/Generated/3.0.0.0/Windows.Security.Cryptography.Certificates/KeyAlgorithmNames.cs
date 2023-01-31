@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Dsa is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Dsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Dsa");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdh256");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdh384");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh521 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh521 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdh521");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdsa256");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdsa384");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa521 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa521 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdsa521");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Rsa is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Rsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Rsa");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdh");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyAlgorithmNames.Ecdsa");
 			}
 		}
 		#endif

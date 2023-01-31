@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSample.KeyFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaStreamSample.KeyFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaStreamSample.KeyFrame");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaStreamSample.Duration");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSample.Discontinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaStreamSample.Discontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaStreamSample.Discontinuous");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.DecodeTimestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.DecodeTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaStreamSample.DecodeTimestamp");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Buffer MediaStreamSample.Buffer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Buffer MediaStreamSample.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Buffer%20MediaStreamSample.Buffer");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSamplePropertySet MediaStreamSample.ExtendedProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaStreamSamplePropertySet MediaStreamSample.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSamplePropertySet%20MediaStreamSample.ExtendedProperties");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSampleProtectionProperties MediaStreamSample.Protection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaStreamSampleProtectionProperties MediaStreamSample.Protection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSampleProtectionProperties%20MediaStreamSample.Protection");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSample.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaStreamSample.Timestamp");
 			}
 		}
 		#endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface MediaStreamSample.Direct3D11Surface is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDirect3DSurface MediaStreamSample.Direct3D11Surface is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDirect3DSurface%20MediaStreamSample.Direct3D11Surface");
 			}
 		}
 		#endif
@@ -132,21 +132,21 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface,  global::System.TimeSpan timestamp)
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSample%20MediaStreamSample.CreateFromDirect3D11Surface%28IDirect3DSurface%20surface%2C%20TimeSpan%20timestamp%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Core.MediaStreamSample CreateFromBuffer( global::Windows.Storage.Streams.IBuffer buffer,  global::System.TimeSpan timestamp)
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromBuffer(IBuffer buffer, TimeSpan timestamp) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromBuffer(IBuffer buffer, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSample%20MediaStreamSample.CreateFromBuffer%28IBuffer%20buffer%2C%20TimeSpan%20timestamp%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Core.MediaStreamSample> CreateFromStreamAsync( global::Windows.Storage.Streams.IInputStream stream,  uint count,  global::System.TimeSpan timestamp)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaStreamSample> MediaStreamSample.CreateFromStreamAsync(IInputStream stream, uint count, TimeSpan timestamp) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaStreamSample> MediaStreamSample.CreateFromStreamAsync(IInputStream stream, uint count, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMediaStreamSample%3E%20MediaStreamSample.CreateFromStreamAsync%28IInputStream%20stream%2C%20uint%20count%2C%20TimeSpan%20timestamp%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

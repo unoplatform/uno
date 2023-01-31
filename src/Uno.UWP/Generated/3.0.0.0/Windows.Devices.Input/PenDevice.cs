@@ -13,7 +13,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PenDevice.PenId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PenDevice.PenId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PenDevice.PenId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SimpleHapticsController PenDevice.SimpleHapticsController is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SimpleHapticsController PenDevice.SimpleHapticsController is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SimpleHapticsController%20PenDevice.SimpleHapticsController");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Input.PenDevice GetFromPointerId( uint pointerId)
 		{
-			throw new global::System.NotImplementedException("The member PenDevice PenDevice.GetFromPointerId(uint pointerId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PenDevice PenDevice.GetFromPointerId(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PenDevice%20PenDevice.GetFromPointerId%28uint%20pointerId%29");
 		}
 		#endif
 	}

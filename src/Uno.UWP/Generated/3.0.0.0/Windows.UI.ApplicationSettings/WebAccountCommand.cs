@@ -13,7 +13,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SupportedWebAccountActions WebAccountCommand.Actions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SupportedWebAccountActions WebAccountCommand.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SupportedWebAccountActions%20WebAccountCommand.Actions");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountCommandInvokedHandler WebAccountCommand.Invoked is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountCommandInvokedHandler WebAccountCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountCommandInvokedHandler%20WebAccountCommand.Invoked");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountCommand.WebAccount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccount WebAccountCommand.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccount%20WebAccountCommand.WebAccount");
 			}
 		}
 		#endif

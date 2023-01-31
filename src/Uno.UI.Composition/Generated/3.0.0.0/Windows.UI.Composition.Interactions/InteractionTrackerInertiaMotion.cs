@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaMotion.Motion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaMotion.Motion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExpressionAnimation%20InteractionTrackerInertiaMotion.Motion");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaMotion.Condition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaMotion.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExpressionAnimation%20InteractionTrackerInertiaMotion.Condition");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion Create( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaMotion InteractionTrackerInertiaMotion.Create(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaMotion InteractionTrackerInertiaMotion.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InteractionTrackerInertiaMotion%20InteractionTrackerInertiaMotion.Create%28Compositor%20compositor%29");
 		}
 		#endif
 	}

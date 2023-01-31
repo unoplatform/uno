@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListCreateOrUpdateContactRequest ContactListCreateOrUpdateContactRequestEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactListCreateOrUpdateContactRequest ContactListCreateOrUpdateContactRequestEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactListCreateOrUpdateContactRequest%20ContactListCreateOrUpdateContactRequestEventArgs.Request");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral ContactListCreateOrUpdateContactRequestEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral ContactListCreateOrUpdateContactRequestEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20ContactListCreateOrUpdateContactRequestEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

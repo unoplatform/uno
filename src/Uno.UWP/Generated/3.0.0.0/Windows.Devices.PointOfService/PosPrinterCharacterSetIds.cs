@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Ansi is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Ansi is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PosPrinterCharacterSetIds.Ansi");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Ascii is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Ascii is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PosPrinterCharacterSetIds.Ascii");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Utf16LE is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Utf16LE is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PosPrinterCharacterSetIds.Utf16LE");
 			}
 		}
 		#endif

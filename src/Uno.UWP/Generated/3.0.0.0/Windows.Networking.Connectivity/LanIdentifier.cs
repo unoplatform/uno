@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LanIdentifierData LanIdentifier.InfrastructureId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LanIdentifierData LanIdentifier.InfrastructureId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LanIdentifierData%20LanIdentifier.InfrastructureId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid LanIdentifier.NetworkAdapterId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid LanIdentifier.NetworkAdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20LanIdentifier.NetworkAdapterId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LanIdentifierData LanIdentifier.PortId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LanIdentifierData LanIdentifier.PortId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LanIdentifierData%20LanIdentifier.PortId");
 			}
 		}
 		#endif

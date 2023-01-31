@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAudioTrackList MediaPlaybackItem.AudioTracks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackAudioTrackList MediaPlaybackItem.AudioTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackAudioTrackList%20MediaPlaybackItem.AudioTracks");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MediaPlaybackItem.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaSource MediaPlaybackItem.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSource%20MediaPlaybackItem.Source");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackTimedMetadataTrackList MediaPlaybackItem.TimedMetadataTracks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackTimedMetadataTrackList MediaPlaybackItem.TimedMetadataTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackTimedMetadataTrackList%20MediaPlaybackItem.TimedMetadataTracks");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackVideoTrackList MediaPlaybackItem.VideoTracks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackVideoTrackList MediaPlaybackItem.VideoTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackVideoTrackList%20MediaPlaybackItem.VideoTracks");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackItem.CanSkip is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackItem.CanSkip is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlaybackItem.CanSkip");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreakSchedule MediaPlaybackItem.BreakSchedule is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaBreakSchedule MediaPlaybackItem.BreakSchedule is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaBreakSchedule%20MediaPlaybackItem.BreakSchedule");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaPlaybackItem.DurationLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? MediaPlaybackItem.DurationLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20MediaPlaybackItem.DurationLimit");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaPlaybackItem.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaPlaybackItem.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaPlaybackItem.StartTime");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackItem.IsDisabledInPlaybackList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackItem.IsDisabledInPlaybackList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlaybackItem.IsDisabledInPlaybackList");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutoLoadedDisplayPropertyKind%20MediaPlaybackItem.AutoLoadedDisplayProperties");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlaybackItem.TotalDownloadProgress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaPlaybackItem.TotalDownloadProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaPlaybackItem.TotalDownloadProgress");
 			}
 		}
 		#endif
@@ -172,7 +172,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaItemDisplayProperties GetDisplayProperties()
 		{
-			throw new global::System.NotImplementedException("The member MediaItemDisplayProperties MediaPlaybackItem.GetDisplayProperties() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaItemDisplayProperties MediaPlaybackItem.GetDisplayProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaItemDisplayProperties%20MediaPlaybackItem.GetDisplayProperties%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -191,7 +191,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Playback.MediaPlaybackItem FindFromMediaSource( global::Windows.Media.Core.MediaSource source)
 		{
-			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackItem.FindFromMediaSource(MediaSource source) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackItem.FindFromMediaSource(MediaSource source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20MediaPlaybackItem.FindFromMediaSource%28MediaSource%20source%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

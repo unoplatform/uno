@@ -13,7 +13,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MouseDelta MouseEventArgs.MouseDelta is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MouseDelta MouseEventArgs.MouseDelta is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MouseDelta%20MouseEventArgs.MouseDelta");
 			}
 		}
 		#endif

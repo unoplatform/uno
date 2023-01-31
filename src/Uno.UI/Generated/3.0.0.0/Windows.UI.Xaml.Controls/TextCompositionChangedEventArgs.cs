@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextCompositionChangedEventArgs.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextCompositionChangedEventArgs.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextCompositionChangedEventArgs.Length");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextCompositionChangedEventArgs.StartIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextCompositionChangedEventArgs.StartIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextCompositionChangedEventArgs.StartIndex");
 			}
 		}
 		#endif

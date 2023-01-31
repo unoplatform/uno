@@ -13,7 +13,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square150x150Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square150x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Square150x150Logo");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForegroundText SecondaryTileVisualElements.ForegroundText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ForegroundText SecondaryTileVisualElements.ForegroundText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ForegroundText%20SecondaryTileVisualElements.ForegroundText");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color SecondaryTileVisualElements.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color SecondaryTileVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20SecondaryTileVisualElements.BackgroundColor");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Wide310x150Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Wide310x150Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Wide310x150Logo");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square70x70Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square70x70Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Square70x70Logo");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square310x310Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square310x310Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Square310x310Logo");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square30x30Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square30x30Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Square30x30Logo");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square71x71Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square71x71Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Square71x71Logo");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square44x44Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri SecondaryTileVisualElements.Square44x44Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20SecondaryTileVisualElements.Square44x44Logo");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileMixedRealityModel SecondaryTileVisualElements.MixedRealityModel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TileMixedRealityModel SecondaryTileVisualElements.MixedRealityModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileMixedRealityModel%20SecondaryTileVisualElements.MixedRealityModel");
 			}
 		}
 		#endif

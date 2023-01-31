@@ -29,14 +29,14 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> RemoveParticipantAsync( global::Windows.System.RemoteSystems.RemoteSystemSessionParticipant pParticipant)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionController.RemoveParticipantAsync(RemoteSystemSessionParticipant pParticipant) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionController.RemoveParticipantAsync(RemoteSystemSessionParticipant pParticipant) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20RemoteSystemSessionController.RemoveParticipantAsync%28RemoteSystemSessionParticipant%20pParticipant%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystemSessionCreationResult> CreateSessionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystemSessionCreationResult> RemoteSystemSessionController.CreateSessionAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystemSessionCreationResult> RemoteSystemSessionController.CreateSessionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CRemoteSystemSessionCreationResult%3E%20RemoteSystemSessionController.CreateSessionAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceState MediaSourceStateChangedEventArgs.NewState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaSourceState MediaSourceStateChangedEventArgs.NewState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSourceState%20MediaSourceStateChangedEventArgs.NewState");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceState MediaSourceStateChangedEventArgs.OldState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaSourceState MediaSourceStateChangedEventArgs.OldState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSourceState%20MediaSourceStateChangedEventArgs.OldState");
 			}
 		}
 		#endif

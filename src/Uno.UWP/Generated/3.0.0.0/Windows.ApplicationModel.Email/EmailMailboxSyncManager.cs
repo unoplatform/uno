@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSyncStatus EmailMailboxSyncManager.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxSyncStatus EmailMailboxSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxSyncStatus%20EmailMailboxSyncManager.Status");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxSyncManager.LastSuccessfulSyncTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxSyncManager.LastSuccessfulSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20EmailMailboxSyncManager.LastSuccessfulSyncTime");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20EmailMailboxSyncManager.LastAttemptedSyncTime");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EmailMailboxSyncManager.SyncAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EmailMailboxSyncManager.SyncAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20EmailMailboxSyncManager.SyncAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.SyncStatusChanged.add

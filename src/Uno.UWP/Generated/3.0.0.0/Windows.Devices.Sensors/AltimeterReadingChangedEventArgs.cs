@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AltimeterReading AltimeterReadingChangedEventArgs.Reading is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AltimeterReading AltimeterReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AltimeterReading%20AltimeterReadingChangedEventArgs.Reading");
 			}
 		}
 		#endif

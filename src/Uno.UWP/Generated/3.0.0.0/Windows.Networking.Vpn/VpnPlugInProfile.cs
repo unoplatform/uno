@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.VpnPluginPackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.VpnPluginPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnPlugInProfile.VpnPluginPackageFamilyName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.CustomConfiguration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.CustomConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnPlugInProfile.CustomConfiguration");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> VpnPlugInProfile.ServerUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> VpnPlugInProfile.ServerUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20VpnPlugInProfile.ServerUris");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RequireVpnClientAppUI is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RequireVpnClientAppUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnPlugInProfile.RequireVpnClientAppUI");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnManagementConnectionStatus%20VpnPlugInProfile.ConnectionStatus");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.ProfileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnPlugInProfile.ProfileName");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RememberCredentials is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RememberCredentials is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnPlugInProfile.RememberCredentials");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.AlwaysOn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.AlwaysOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnPlugInProfile.AlwaysOn");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnPlugInProfile.AppTriggers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnPlugInProfile.AppTriggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CVpnAppId%3E%20VpnPlugInProfile.AppTriggers");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CVpnDomainNameInfo%3E%20VpnPlugInProfile.DomainNameInfoList");
 			}
 		}
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnPlugInProfile.Routes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnPlugInProfile.Routes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CVpnRoute%3E%20VpnPlugInProfile.Routes");
 			}
 		}
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnPlugInProfile.TrafficFilters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnPlugInProfile.TrafficFilters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CVpnTrafficFilter%3E%20VpnPlugInProfile.TrafficFilters");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.ExcessiveUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.ExcessiveUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.ExcessiveUsageLevel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.LowUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.LowUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.LowUsageLevel");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.MaxAcceptableUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.MaxAcceptableUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.MaxAcceptableUsageLevel");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.NearMaxAcceptableUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.NearMaxAcceptableUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.NearMaxAcceptableUsageLevel");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.NearTerminationUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.NearTerminationUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.NearTerminationUsageLevel");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.RecentEnergyUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.RecentEnergyUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.RecentEnergyUsage");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.RecentEnergyUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.RecentEnergyUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.RecentEnergyUsageLevel");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.TerminationUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.TerminationUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundEnergyManager.TerminationUsageLevel");
 			}
 		}
 		#endif

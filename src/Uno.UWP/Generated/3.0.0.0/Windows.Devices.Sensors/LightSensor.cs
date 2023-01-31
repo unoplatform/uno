@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LightSensor.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LightSensor.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LightSensor.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LightSensor.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.ReportLatency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LightSensor.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LightSensor.ReportLatency");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.MaxBatchSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LightSensor.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LightSensor.MaxBatchSize");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LightSensorDataThreshold LightSensor.ReportThreshold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LightSensorDataThreshold LightSensor.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LightSensorDataThreshold%20LightSensor.ReportThreshold");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LightSensor.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LightSensor.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LightSensor.DeviceId");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Sensors.LightSensorReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member LightSensorReading LightSensor.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member LightSensorReading LightSensor.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LightSensorReading%20LightSensor.GetCurrentReading%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.MinimumReportInterval.get
@@ -96,14 +96,14 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string LightSensor.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string LightSensor.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LightSensor.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.LightSensor> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LightSensor> LightSensor.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LightSensor> LightSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLightSensor%3E%20LightSensor.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		// Skipping already declared method Windows.Devices.Sensors.LightSensor.GetDefault()

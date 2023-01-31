@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.LaunchArgs is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastCollection.LaunchArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastCollection.LaunchArgs");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ToastCollection.Icon is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri ToastCollection.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20ToastCollection.Icon");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastCollection.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastCollection.DisplayName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastCollection.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastCollection.Id");
 			}
 		}
 		#endif

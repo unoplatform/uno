@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CrossSlidingState CrossSlidingEventArgs.CrossSlidingState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CrossSlidingState CrossSlidingEventArgs.CrossSlidingState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CrossSlidingState%20CrossSlidingEventArgs.CrossSlidingState");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType CrossSlidingEventArgs.PointerDeviceType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PointerDeviceType CrossSlidingEventArgs.PointerDeviceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PointerDeviceType%20CrossSlidingEventArgs.PointerDeviceType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CrossSlidingEventArgs.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point CrossSlidingEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CrossSlidingEventArgs.Position");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CrossSlidingEventArgs.ContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CrossSlidingEventArgs.ContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CrossSlidingEventArgs.ContactCount");
 			}
 		}
 		#endif

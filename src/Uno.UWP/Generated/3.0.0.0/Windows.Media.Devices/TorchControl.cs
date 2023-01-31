@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float TorchControl.PowerPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float TorchControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20TorchControl.PowerPercent");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TorchControl.Enabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TorchControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TorchControl.Enabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TorchControl.PowerSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TorchControl.PowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TorchControl.PowerSupported");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TorchControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TorchControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TorchControl.Supported");
 			}
 		}
 		#endif

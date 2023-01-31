@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Compass.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Compass.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Compass.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Compass.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Compass.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Compass.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Compass.ReadingTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations Compass.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20Compass.ReadingTransform");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Compass.ReportLatency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Compass.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Compass.ReportLatency");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Compass.MaxBatchSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Compass.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Compass.MaxBatchSize");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompassDataThreshold Compass.ReportThreshold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompassDataThreshold Compass.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompassDataThreshold%20Compass.ReportThreshold");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Compass.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Compass.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Compass.DeviceId");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Sensors.CompassReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member CompassReading Compass.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompassReading Compass.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompassReading%20Compass.GetCurrentReading%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sensors.Compass.MinimumReportInterval.get
@@ -112,21 +112,21 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Compass.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Compass.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Compass.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Compass> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Compass> Compass.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Compass> Compass.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCompass%3E%20Compass.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Sensors.Compass GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member Compass Compass.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Compass Compass.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Compass%20Compass.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

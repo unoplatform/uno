@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Base is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Base is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Base");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.BaseSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.BaseSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.BaseSubtle");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Body is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Body");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.BodySubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.BodySubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.BodySubtle");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Caption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Caption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Caption");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.CaptionSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.CaptionSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.CaptionSubtle");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Header is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Header is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Header");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.HeaderNumeral is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.HeaderNumeral is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.HeaderNumeral");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.HeaderNumeralSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.HeaderNumeralSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.HeaderNumeralSubtle");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.HeaderSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.HeaderSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.HeaderSubtle");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Subheader is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Subheader is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Subheader");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubheaderNumeral is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubheaderNumeral is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.SubheaderNumeral");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubheaderNumeralSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubheaderNumeralSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.SubheaderNumeralSubtle");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubheaderSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubheaderSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.SubheaderSubtle");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Subtitle");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubtitleSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.SubtitleSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.SubtitleSubtle");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.Title");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.TitleNumeral is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.TitleNumeral is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.TitleNumeral");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.TitleSubtle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationTextStyles.TitleSubtle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationTextStyles.TitleSubtle");
 			}
 		}
 		#endif

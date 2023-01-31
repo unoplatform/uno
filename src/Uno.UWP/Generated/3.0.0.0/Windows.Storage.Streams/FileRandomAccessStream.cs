@@ -28,56 +28,56 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync( string filePath,  global::Windows.Storage.FileAccessMode accessMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenAsync(string filePath, FileAccessMode accessMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenAsync(string filePath, FileAccessMode accessMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20FileRandomAccessStream.OpenAsync%28string%20filePath%2C%20FileAccessMode%20accessMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync( string filePath,  global::Windows.Storage.FileAccessMode accessMode,  global::Windows.Storage.StorageOpenOptions sharingOptions,  global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenAsync(string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenAsync(string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20FileRandomAccessStream.OpenAsync%28string%20filePath%2C%20FileAccessMode%20accessMode%2C%20StorageOpenOptions%20sharingOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync( string filePath)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteAsync(string filePath) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteAsync(string filePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteAsync%28string%20filePath%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync( string filePath,  global::Windows.Storage.StorageOpenOptions openOptions,  global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteAsync(string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteAsync(string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteAsync%28string%20filePath%2C%20StorageOpenOptions%20openOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenForUserAsync( global::Windows.System.User user,  string filePath,  global::Windows.Storage.FileAccessMode accessMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenForUserAsync(User user, string filePath, FileAccessMode accessMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenForUserAsync(User user, string filePath, FileAccessMode accessMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20FileRandomAccessStream.OpenForUserAsync%28User%20user%2C%20string%20filePath%2C%20FileAccessMode%20accessMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenForUserAsync( global::Windows.System.User user,  string filePath,  global::Windows.Storage.FileAccessMode accessMode,  global::Windows.Storage.StorageOpenOptions sharingOptions,  global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenForUserAsync(User user, string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenForUserAsync(User user, string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20FileRandomAccessStream.OpenForUserAsync%28User%20user%2C%20string%20filePath%2C%20FileAccessMode%20accessMode%2C%20StorageOpenOptions%20sharingOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteForUserAsync( global::Windows.System.User user,  string filePath)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteForUserAsync%28User%20user%2C%20string%20filePath%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteForUserAsync( global::Windows.System.User user,  string filePath,  global::Windows.Storage.StorageOpenOptions openOptions,  global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteForUserAsync%28User%20user%2C%20string%20filePath%2C%20StorageOpenOptions%20openOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 		#endif
 		// Processing: Windows.Storage.Streams.IRandomAccessStream

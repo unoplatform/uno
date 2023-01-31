@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntryAddress.ContactId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneCallHistoryEntryAddress.ContactId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneCallHistoryEntryAddress.ContactId");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProvisionFromXmlDocumentResults.AllElementsProvisioned is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ProvisionFromXmlDocumentResults.AllElementsProvisioned is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProvisionFromXmlDocumentResults.AllElementsProvisioned");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProvisionFromXmlDocumentResults.ProvisionResultsXml is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProvisionFromXmlDocumentResults.ProvisionResultsXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProvisionFromXmlDocumentResults.ProvisionResultsXml");
 			}
 		}
 		#endif

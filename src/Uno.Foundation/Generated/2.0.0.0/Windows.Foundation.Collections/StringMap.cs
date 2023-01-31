@@ -13,7 +13,7 @@ namespace Windows.Foundation.Collections
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StringMap.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint StringMap.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20StringMap.Size");
 			}
 		}
 		#endif

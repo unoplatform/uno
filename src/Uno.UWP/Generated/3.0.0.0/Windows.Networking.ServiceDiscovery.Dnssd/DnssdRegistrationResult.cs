@@ -13,7 +13,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DnssdRegistrationResult.HasInstanceNameChanged is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DnssdRegistrationResult.HasInstanceNameChanged is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DnssdRegistrationResult.HasInstanceNameChanged");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName DnssdRegistrationResult.IPAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName DnssdRegistrationResult.IPAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20DnssdRegistrationResult.IPAddress");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DnssdRegistrationStatus DnssdRegistrationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DnssdRegistrationStatus DnssdRegistrationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DnssdRegistrationStatus%20DnssdRegistrationResult.Status");
 			}
 		}
 		#endif
@@ -52,7 +52,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string DnssdRegistrationResult.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string DnssdRegistrationResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DnssdRegistrationResult.ToString%28%29");
 		}
 		#endif
 	}

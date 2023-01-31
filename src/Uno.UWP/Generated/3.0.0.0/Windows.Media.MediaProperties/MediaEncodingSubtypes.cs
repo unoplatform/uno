@@ -13,7 +13,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Asf");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Aac is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Aac is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Aac");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AacAdts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AacAdts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.AacAdts");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ac3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ac3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Ac3");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AmrNb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AmrNb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.AmrNb");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AmrWb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AmrWb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.AmrWb");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Argb32 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Argb32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Argb32");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Mpeg1");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Avi is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Avi is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Avi");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bgra8 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bgra8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Bgra8");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bmp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bmp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Bmp");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Eac3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Eac3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Eac3");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Float is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Float is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Float");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Gif is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Gif is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Gif");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H263 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H263 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.H263");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H264 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H264 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.H264");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H264Es is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H264Es is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.H264Es");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Hevc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Hevc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Hevc");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.HevcEs is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.HevcEs is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.HevcEs");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Iyuv is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Iyuv is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Iyuv");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Jpeg is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Jpeg is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Jpeg");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.JpegXr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.JpegXr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.JpegXr");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mjpg is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mjpg is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Mjpg");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mp3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mp3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Mp3");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Mpeg");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Mpeg2");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Mpeg4");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Nv12 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Nv12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Nv12");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pcm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Pcm");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Png is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Png is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Png");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Rgb24 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Rgb24 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Rgb24");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Rgb32 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Rgb32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Rgb32");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Tiff is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Tiff is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Tiff");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wave is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wave is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Wave");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wma8 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wma8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Wma8");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wma9 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wma9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Wma9");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wmv3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wmv3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Wmv3");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wvc1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wvc1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Wvc1");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Yuy2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Yuy2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Yuy2");
 			}
 		}
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Yv12 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Yv12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Yv12");
 			}
 		}
 		#endif
@@ -413,7 +413,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.D16 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.D16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.D16");
 			}
 		}
 		#endif
@@ -423,7 +423,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L16 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.L16");
 			}
 		}
 		#endif
@@ -433,7 +433,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L8 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.L8");
 			}
 		}
 		#endif
@@ -443,7 +443,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Vp9 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Vp9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Vp9");
 			}
 		}
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Alac is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Alac is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Alac");
 			}
 		}
 		#endif
@@ -463,7 +463,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Flac is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Flac is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Flac");
 			}
 		}
 		#endif
@@ -473,7 +473,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.P010 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.P010 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.P010");
 			}
 		}
 		#endif
@@ -483,7 +483,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Heif is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Heif is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Heif");
 			}
 		}
 		#endif
@@ -493,7 +493,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Srt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Srt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Srt");
 			}
 		}
 		#endif
@@ -503,7 +503,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ssa is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ssa is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Ssa");
 			}
 		}
 		#endif
@@ -513,7 +513,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.VobSub is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.VobSub is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.VobSub");
 			}
 		}
 		#endif
@@ -523,7 +523,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pgs is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaEncodingSubtypes.Pgs");
 			}
 		}
 		#endif

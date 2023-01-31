@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType EmailNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType EmailNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20EmailNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20EmailNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.AccountName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.AccountName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailNotificationTriggerDetails.AccountName");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMessage EmailNotificationTriggerDetails.EmailMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMessage EmailNotificationTriggerDetails.EmailMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMessage%20EmailNotificationTriggerDetails.EmailMessage");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.ParentFolderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.ParentFolderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailNotificationTriggerDetails.ParentFolderName");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.SenderAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.SenderAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailNotificationTriggerDetails.SenderAddress");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.SenderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailNotificationTriggerDetails.SenderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailNotificationTriggerDetails.SenderName");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailNotificationTriggerDetails.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailNotificationTriggerDetails.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20EmailNotificationTriggerDetails.Timestamp");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BinaryId EmailNotificationTriggerDetails.MessageEntryId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BinaryId EmailNotificationTriggerDetails.MessageEntryId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BinaryId%20EmailNotificationTriggerDetails.MessageEntryId");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsImagePreviewSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsImagePreviewSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeScannerCapabilities.IsImagePreviewSupported");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsStatisticsReportingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsStatisticsReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeScannerCapabilities.IsStatisticsReportingSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsStatisticsUpdatingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsStatisticsUpdatingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeScannerCapabilities.IsStatisticsUpdatingSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType BarcodeScannerCapabilities.PowerReportingType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType BarcodeScannerCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnifiedPosPowerReportingType%20BarcodeScannerCapabilities.PowerReportingType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsSoftwareTriggerSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsSoftwareTriggerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeScannerCapabilities.IsSoftwareTriggerSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsVideoPreviewSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerCapabilities.IsVideoPreviewSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeScannerCapabilities.IsVideoPreviewSupported");
 			}
 		}
 		#endif

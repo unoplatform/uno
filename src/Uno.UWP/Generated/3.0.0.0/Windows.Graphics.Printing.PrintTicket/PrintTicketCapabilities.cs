@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentBindingFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentBindingFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentBindingFeature");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentCollateFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentCollateFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentCollateFeature");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentDuplexFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentDuplexFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentDuplexFeature");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentHolePunchFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentHolePunchFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentHolePunchFeature");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentInputBinFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentInputBinFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentInputBinFeature");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentNUpFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentNUpFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentNUpFeature");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentStapleFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.DocumentStapleFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.DocumentStapleFeature");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.JobPasscodeFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.JobPasscodeFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.JobPasscodeFeature");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketCapabilities.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketCapabilities.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketCapabilities.Name");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageBorderlessFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageBorderlessFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageBorderlessFeature");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageMediaSizeFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageMediaSizeFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageMediaSizeFeature");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageMediaTypeFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageMediaTypeFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageMediaTypeFeature");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageOrientationFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageOrientationFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageOrientationFeature");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageOutputColorFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageOutputColorFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageOutputColorFeature");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageOutputQualityFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageOutputQualityFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageOutputQualityFeature");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageResolutionFeature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.PageResolutionFeature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.PageResolutionFeature");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketCapabilities.XmlNamespace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketCapabilities.XmlNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketCapabilities.XmlNamespace");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketCapabilities.XmlNode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketCapabilities.XmlNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20PrintTicketCapabilities.XmlNode");
 			}
 		}
 		#endif
@@ -209,14 +209,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature( string name,  string xmlNamespace)
 		{
-			throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.GetFeature(string name, string xmlNamespace) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.GetFeature(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketFeature%20PrintTicketCapabilities.GetFeature%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition GetParameterDefinition( string name,  string xmlNamespace)
 		{
-			throw new global::System.NotImplementedException("The member PrintTicketParameterDefinition PrintTicketCapabilities.GetParameterDefinition(string name, string xmlNamespace) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintTicketParameterDefinition PrintTicketCapabilities.GetParameterDefinition(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketParameterDefinition%20PrintTicketCapabilities.GetParameterDefinition%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 		#endif
 	}

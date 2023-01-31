@@ -23,42 +23,42 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult> AddOptionalPackageAsync( string optionalPackageFamilyName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogAddOptionalPackageResult> PackageCatalog.AddOptionalPackageAsync(string optionalPackageFamilyName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogAddOptionalPackageResult> PackageCatalog.AddOptionalPackageAsync(string optionalPackageFamilyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPackageCatalogAddOptionalPackageResult%3E%20PackageCatalog.AddOptionalPackageAsync%28string%20optionalPackageFamilyName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult> RemoveOptionalPackagesAsync( global::System.Collections.Generic.IEnumerable<string> optionalPackageFamilyNames)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogRemoveOptionalPackagesResult> PackageCatalog.RemoveOptionalPackagesAsync(IEnumerable<string> optionalPackageFamilyNames) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogRemoveOptionalPackagesResult> PackageCatalog.RemoveOptionalPackagesAsync(IEnumerable<string> optionalPackageFamilyNames) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPackageCatalogRemoveOptionalPackagesResult%3E%20PackageCatalog.RemoveOptionalPackagesAsync%28IEnumerable%3Cstring%3E%20optionalPackageFamilyNames%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.ApplicationModel.PackageCatalogAddResourcePackageResult, global::Windows.ApplicationModel.PackageInstallProgress> AddResourcePackageAsync( string resourcePackageFamilyName,  string resourceID,  global::Windows.ApplicationModel.AddResourcePackageOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PackageCatalogAddResourcePackageResult, PackageInstallProgress> PackageCatalog.AddResourcePackageAsync(string resourcePackageFamilyName, string resourceID, AddResourcePackageOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PackageCatalogAddResourcePackageResult, PackageInstallProgress> PackageCatalog.AddResourcePackageAsync(string resourcePackageFamilyName, string resourceID, AddResourcePackageOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3CPackageCatalogAddResourcePackageResult%2C%20PackageInstallProgress%3E%20PackageCatalog.AddResourcePackageAsync%28string%20resourcePackageFamilyName%2C%20string%20resourceID%2C%20AddResourcePackageOptions%20options%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult> RemoveResourcePackagesAsync( global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Package> resourcePackages)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogRemoveResourcePackagesResult> PackageCatalog.RemoveResourcePackagesAsync(IEnumerable<Package> resourcePackages) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogRemoveResourcePackagesResult> PackageCatalog.RemoveResourcePackagesAsync(IEnumerable<Package> resourcePackages) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPackageCatalogRemoveResourcePackagesResult%3E%20PackageCatalog.RemoveResourcePackagesAsync%28IEnumerable%3CPackage%3E%20resourcePackages%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentPackage()
 		{
-			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentPackage() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentPackage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageCatalog%20PackageCatalog.OpenForCurrentPackage%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentUser()
 		{
-			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentUser() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentUser() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageCatalog%20PackageCatalog.OpenForCurrentUser%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapRequestedEventArgs.SinceStarted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapRequestedEventArgs.SinceStarted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBitmapRequestedEventArgs.SinceStarted");
 			}
 		}
 		#endif

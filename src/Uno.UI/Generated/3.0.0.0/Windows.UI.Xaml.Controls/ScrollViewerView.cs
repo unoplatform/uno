@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerView.HorizontalOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ScrollViewerView.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ScrollViewerView.HorizontalOffset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerView.VerticalOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ScrollViewerView.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ScrollViewerView.VerticalOffset");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScrollViewerView.ZoomFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ScrollViewerView.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ScrollViewerView.ZoomFactor");
 			}
 		}
 		#endif

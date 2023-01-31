@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynSession AllJoynSessionJoinedEventArgs.Session is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AllJoynSession AllJoynSessionJoinedEventArgs.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynSession%20AllJoynSessionJoinedEventArgs.Session");
 			}
 		}
 		#endif

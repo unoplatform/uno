@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InputActivationState InputActivationListener.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InputActivationState InputActivationListener.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InputActivationState%20InputActivationListener.State");
 			}
 		}
 		#endif

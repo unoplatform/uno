@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpRequestHeaderCollection.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HttpRequestHeaderCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HttpRequestHeaderCollection.Size");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri HttpRequestHeaderCollection.Referer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri HttpRequestHeaderCollection.Referer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20HttpRequestHeaderCollection.Referer");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.ProxyAuthorization");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? HttpRequestHeaderCollection.MaxForwards is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? HttpRequestHeaderCollection.MaxForwards is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20HttpRequestHeaderCollection.MaxForwards");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfUnmodifiedSince is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfUnmodifiedSince is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20HttpRequestHeaderCollection.IfUnmodifiedSince");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20HttpRequestHeaderCollection.IfModifiedSince");
 			}
 			set
 			{
@@ -93,7 +93,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName HttpRequestHeaderCollection.Host is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName HttpRequestHeaderCollection.Host is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20HttpRequestHeaderCollection.Host");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.From is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestHeaderCollection.From");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.Date is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20HttpRequestHeaderCollection.Date");
 			}
 			set
 			{
@@ -135,7 +135,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.Authorization");
 			}
 			set
 			{
@@ -149,7 +149,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValueCollection HttpRequestHeaderCollection.Accept is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValueCollection HttpRequestHeaderCollection.Accept is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMediaTypeWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.Accept");
 			}
 		}
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentCodingWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptEncoding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpContentCodingWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpContentCodingWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.AcceptEncoding");
 			}
 		}
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpLanguageRangeWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.AcceptLanguage");
 			}
 		}
 		#endif
@@ -179,7 +179,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCacheDirectiveHeaderValueCollection HttpRequestHeaderCollection.CacheControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCacheDirectiveHeaderValueCollection HttpRequestHeaderCollection.CacheControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCacheDirectiveHeaderValueCollection%20HttpRequestHeaderCollection.CacheControl");
 			}
 		}
 		#endif
@@ -189,7 +189,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpConnectionOptionHeaderValueCollection HttpRequestHeaderCollection.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpConnectionOptionHeaderValueCollection HttpRequestHeaderCollection.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpConnectionOptionHeaderValueCollection%20HttpRequestHeaderCollection.Connection");
 			}
 		}
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCookiePairHeaderValueCollection%20HttpRequestHeaderCollection.Cookie");
 			}
 		}
 		#endif
@@ -209,7 +209,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpExpectationHeaderValueCollection%20HttpRequestHeaderCollection.Expect");
 			}
 		}
 		#endif
@@ -219,7 +219,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpTransferCodingHeaderValueCollection HttpRequestHeaderCollection.TransferEncoding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpTransferCodingHeaderValueCollection HttpRequestHeaderCollection.TransferEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpTransferCodingHeaderValueCollection%20HttpRequestHeaderCollection.TransferEncoding");
 			}
 		}
 		#endif
@@ -229,7 +229,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValueCollection HttpRequestHeaderCollection.UserAgent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValueCollection HttpRequestHeaderCollection.UserAgent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpProductInfoHeaderValueCollection%20HttpRequestHeaderCollection.UserAgent");
 			}
 		}
 		#endif
@@ -271,7 +271,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryAppendWithoutValidation( string name,  string value)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpRequestHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Lookup(string)
@@ -286,7 +286,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestHeaderCollection.ToString%28%29");
 		}
 		#endif
 		// Processing: System.Collections.Generic.IDictionary<string, string>

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppServiceRequest AppServiceRequestReceivedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppServiceRequest AppServiceRequestReceivedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppServiceRequest%20AppServiceRequestReceivedEventArgs.Request");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.AppService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.AppService.AppServiceDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member AppServiceDeferral AppServiceRequestReceivedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppServiceDeferral AppServiceRequestReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppServiceDeferral%20AppServiceRequestReceivedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

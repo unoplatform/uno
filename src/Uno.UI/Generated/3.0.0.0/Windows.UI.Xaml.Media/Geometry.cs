@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geometry Geometry.Empty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geometry Geometry.Empty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geometry%20Geometry.Empty");
 			}
 		}
 		#endif
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double Geometry.StandardFlatteningTolerance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double Geometry.StandardFlatteningTolerance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20Geometry.StandardFlatteningTolerance");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationViewConsolidatedEventArgs.IsUserInitiated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ApplicationViewConsolidatedEventArgs.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ApplicationViewConsolidatedEventArgs.IsUserInitiated");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationViewConsolidatedEventArgs.IsAppInitiated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ApplicationViewConsolidatedEventArgs.IsAppInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ApplicationViewConsolidatedEventArgs.IsAppInitiated");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionInfraredFrameReader.IsPaused is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PerceptionInfraredFrameReader.IsPaused is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PerceptionInfraredFrameReader.IsPaused");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionInfraredFrameSource PerceptionInfraredFrameReader.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PerceptionInfraredFrameSource PerceptionInfraredFrameReader.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionInfraredFrameSource%20PerceptionInfraredFrameReader.Source");
 			}
 		}
 		#endif
@@ -40,7 +40,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Perception.PerceptionInfraredFrame TryReadLatestFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionInfraredFrame PerceptionInfraredFrameReader.TryReadLatestFrame() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PerceptionInfraredFrame PerceptionInfraredFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionInfraredFrame%20PerceptionInfraredFrameReader.TryReadLatestFrame%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowPdlModificationRequestedEventArgs.Configuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowPdlModificationRequestedEventArgs.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowConfiguration%20PrintWorkflowPdlModificationRequestedEventArgs.Configuration");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowPrinterJob PrintWorkflowPdlModificationRequestedEventArgs.PrinterJob is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowPrinterJob PrintWorkflowPdlModificationRequestedEventArgs.PrinterJob is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPrinterJob%20PrintWorkflowPdlModificationRequestedEventArgs.PrinterJob");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowPdlSourceContent PrintWorkflowPdlModificationRequestedEventArgs.SourceContent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowPdlSourceContent PrintWorkflowPdlModificationRequestedEventArgs.SourceContent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPdlSourceContent%20PrintWorkflowPdlModificationRequestedEventArgs.SourceContent");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowUILauncher PrintWorkflowPdlModificationRequestedEventArgs.UILauncher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowUILauncher PrintWorkflowPdlModificationRequestedEventArgs.UILauncher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowUILauncher%20PrintWorkflowPdlModificationRequestedEventArgs.UILauncher");
 			}
 		}
 		#endif
@@ -55,35 +55,35 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowPdlTargetStream CreateJobOnPrinter( string targetContentType)
 		{
-			throw new global::System.NotImplementedException("The member PrintWorkflowPdlTargetStream PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinter(string targetContentType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintWorkflowPdlTargetStream PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinter(string targetContentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPdlTargetStream%20PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinter%28string%20targetContentType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowPdlTargetStream CreateJobOnPrinterWithAttributes( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Devices.Printers.IppAttributeValue>> jobAttributes,  string targetContentType)
 		{
-			throw new global::System.NotImplementedException("The member PrintWorkflowPdlTargetStream PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinterWithAttributes(IEnumerable<KeyValuePair<string, IppAttributeValue>> jobAttributes, string targetContentType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintWorkflowPdlTargetStream PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinterWithAttributes(IEnumerable<KeyValuePair<string, IppAttributeValue>> jobAttributes, string targetContentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPdlTargetStream%20PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinterWithAttributes%28IEnumerable%3CKeyValuePair%3Cstring%2C%20IppAttributeValue%3E%3E%20jobAttributes%2C%20string%20targetContentType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowPdlTargetStream CreateJobOnPrinterWithAttributesBuffer( global::Windows.Storage.Streams.IBuffer jobAttributesBuffer,  string targetContentType)
 		{
-			throw new global::System.NotImplementedException("The member PrintWorkflowPdlTargetStream PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinterWithAttributesBuffer(IBuffer jobAttributesBuffer, string targetContentType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintWorkflowPdlTargetStream PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinterWithAttributesBuffer(IBuffer jobAttributesBuffer, string targetContentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPdlTargetStream%20PrintWorkflowPdlModificationRequestedEventArgs.CreateJobOnPrinterWithAttributesBuffer%28IBuffer%20jobAttributesBuffer%2C%20string%20targetContentType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowPdlConverter GetPdlConverter( global::Windows.Graphics.Printing.Workflow.PrintWorkflowPdlConversionType conversionType)
 		{
-			throw new global::System.NotImplementedException("The member PrintWorkflowPdlConverter PrintWorkflowPdlModificationRequestedEventArgs.GetPdlConverter(PrintWorkflowPdlConversionType conversionType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintWorkflowPdlConverter PrintWorkflowPdlModificationRequestedEventArgs.GetPdlConverter(PrintWorkflowPdlConversionType conversionType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPdlConverter%20PrintWorkflowPdlModificationRequestedEventArgs.GetPdlConverter%28PrintWorkflowPdlConversionType%20conversionType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowPdlModificationRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowPdlModificationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20PrintWorkflowPdlModificationRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

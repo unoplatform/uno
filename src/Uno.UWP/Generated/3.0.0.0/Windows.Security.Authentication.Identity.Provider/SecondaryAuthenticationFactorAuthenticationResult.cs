@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthentication SecondaryAuthenticationFactorAuthenticationResult.Authentication is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthentication SecondaryAuthenticationFactorAuthenticationResult.Authentication is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryAuthenticationFactorAuthentication%20SecondaryAuthenticationFactorAuthenticationResult.Authentication");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStatus SecondaryAuthenticationFactorAuthenticationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStatus SecondaryAuthenticationFactorAuthenticationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryAuthenticationFactorAuthenticationStatus%20SecondaryAuthenticationFactorAuthenticationResult.Status");
 			}
 		}
 		#endif

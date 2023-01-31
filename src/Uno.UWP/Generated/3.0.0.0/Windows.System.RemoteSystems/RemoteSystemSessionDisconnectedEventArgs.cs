@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionDisconnectedReason RemoteSystemSessionDisconnectedEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RemoteSystemSessionDisconnectedReason RemoteSystemSessionDisconnectedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemSessionDisconnectedReason%20RemoteSystemSessionDisconnectedEventArgs.Reason");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.CameraRoll is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.CameraRoll is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.CameraRoll");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Cookies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Cookies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Cookies");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Desktop is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Desktop is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Desktop");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Documents is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Documents is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Documents");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Downloads is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Downloads is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Downloads");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Favorites is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Favorites is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Favorites");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.History is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.History is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.History");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.InternetCache is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.InternetCache is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.InternetCache");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.LocalAppData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.LocalAppData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.LocalAppData");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.LocalAppDataLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.LocalAppDataLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.LocalAppDataLow");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Music is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Music is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Music");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Pictures is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Pictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Pictures");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Profile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Profile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Profile");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Recent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Recent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Recent");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.RoamingAppData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.RoamingAppData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.RoamingAppData");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.SavedPictures is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.SavedPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.SavedPictures");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Screenshots is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Screenshots is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Screenshots");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Templates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Templates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Templates");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataPaths.Videos is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataPaths.Videos is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataPaths.Videos");
 			}
 		}
 		#endif
@@ -220,14 +220,14 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.UserDataPaths GetForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataPaths%20UserDataPaths.GetForUser%28User%20user%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.UserDataPaths GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataPaths%20UserDataPaths.GetDefault%28%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CastingConnectionErrorStatus CastingConnectionErrorOccurredEventArgs.ErrorStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CastingConnectionErrorStatus CastingConnectionErrorOccurredEventArgs.ErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CastingConnectionErrorStatus%20CastingConnectionErrorOccurredEventArgs.ErrorStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CastingConnectionErrorOccurredEventArgs.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CastingConnectionErrorOccurredEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CastingConnectionErrorOccurredEventArgs.Message");
 			}
 		}
 		#endif

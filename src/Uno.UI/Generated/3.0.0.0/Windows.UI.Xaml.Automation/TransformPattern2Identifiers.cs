@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.CanZoomProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.CanZoomProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPattern2Identifiers.CanZoomProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.MaxZoomProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.MaxZoomProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPattern2Identifiers.MaxZoomProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.MinZoomProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.MinZoomProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPattern2Identifiers.MinZoomProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.ZoomLevelProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPattern2Identifiers.ZoomLevelProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPattern2Identifiers.ZoomLevelProperty");
 			}
 		}
 		#endif

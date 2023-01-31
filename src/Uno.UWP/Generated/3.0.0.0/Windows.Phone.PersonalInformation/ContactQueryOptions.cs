@@ -13,7 +13,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQueryResultOrdering ContactQueryOptions.OrderBy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactQueryResultOrdering ContactQueryOptions.OrderBy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactQueryResultOrdering%20ContactQueryOptions.OrderBy");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.DesiredFields is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.DesiredFields is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ContactQueryOptions.DesiredFields");
 			}
 		}
 		#endif

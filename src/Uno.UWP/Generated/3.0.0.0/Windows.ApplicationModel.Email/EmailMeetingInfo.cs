@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMeetingInfo.Location is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMeetingInfo.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMeetingInfo.Location");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsResponseRequested is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsResponseRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMeetingInfo.IsResponseRequested");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsAllDay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsAllDay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMeetingInfo.IsAllDay");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.AllowNewTimeProposal is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.AllowNewTimeProposal is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMeetingInfo.AllowNewTimeProposal");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan EmailMeetingInfo.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan EmailMeetingInfo.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20EmailMeetingInfo.Duration");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMeetingInfo.AppointmentRoamingId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMeetingInfo.AppointmentRoamingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMeetingInfo.AppointmentRoamingId");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.AppointmentOriginalStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.AppointmentOriginalStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20EmailMeetingInfo.AppointmentOriginalStartTime");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? EmailMeetingInfo.ProposedDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? EmailMeetingInfo.ProposedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20EmailMeetingInfo.ProposedDuration");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong EmailMeetingInfo.RemoteChangeNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong EmailMeetingInfo.RemoteChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20EmailMeetingInfo.RemoteChangeNumber");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMeetingInfo.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMeetingInfo.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20EmailMeetingInfo.StartTime");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.RecurrenceStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.RecurrenceStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20EmailMeetingInfo.RecurrenceStartTime");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentRecurrence EmailMeetingInfo.Recurrence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentRecurrence EmailMeetingInfo.Recurrence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentRecurrence%20EmailMeetingInfo.Recurrence");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.ProposedStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.ProposedStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20EmailMeetingInfo.ProposedStartTime");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsReportedOutOfDateByServer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsReportedOutOfDateByServer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMeetingInfo.IsReportedOutOfDateByServer");
 			}
 		}
 		#endif

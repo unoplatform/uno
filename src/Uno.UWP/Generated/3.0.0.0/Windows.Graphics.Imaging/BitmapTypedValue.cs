@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PropertyType BitmapTypedValue.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PropertyType BitmapTypedValue.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PropertyType%20BitmapTypedValue.Type");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object BitmapTypedValue.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object BitmapTypedValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20BitmapTypedValue.Value");
 			}
 		}
 		#endif

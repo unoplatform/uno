@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DefaultAudioRenderDeviceChangedEventArgs.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DefaultAudioRenderDeviceChangedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DefaultAudioRenderDeviceChangedEventArgs.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDeviceRole DefaultAudioRenderDeviceChangedEventArgs.Role is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioDeviceRole DefaultAudioRenderDeviceChangedEventArgs.Role is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDeviceRole%20DefaultAudioRenderDeviceChangedEventArgs.Role");
 			}
 		}
 		#endif

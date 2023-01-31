@@ -13,7 +13,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder StorageItemQueryResult.Folder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder StorageItemQueryResult.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20StorageItemQueryResult.Folder");
 			}
 		}
 		#endif
@@ -21,21 +21,21 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync( uint startIndex,  uint maxNumberOfItems)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IStorageItem>> StorageItemQueryResult.GetItemsAsync(uint startIndex, uint maxNumberOfItems) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IStorageItem>> StorageItemQueryResult.GetItemsAsync(uint startIndex, uint maxNumberOfItems) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CIStorageItem%3E%3E%20StorageItemQueryResult.GetItemsAsync%28uint%20startIndex%2C%20uint%20maxNumberOfItems%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IStorageItem>> StorageItemQueryResult.GetItemsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IStorageItem>> StorageItemQueryResult.GetItemsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CIStorageItem%3E%3E%20StorageItemQueryResult.GetItemsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<uint> GetItemCountAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageItemQueryResult.GetItemCountAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageItemQueryResult.GetItemCountAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cuint%3E%20StorageItemQueryResult.GetItemCountAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Search.StorageItemQueryResult.Folder.get
@@ -47,14 +47,14 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync( object value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageItemQueryResult.FindStartIndexAsync(object value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageItemQueryResult.FindStartIndexAsync(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cuint%3E%20StorageItemQueryResult.FindStartIndexAsync%28object%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Search.QueryOptions GetCurrentQueryOptions()
 		{
-			throw new global::System.NotImplementedException("The member QueryOptions StorageItemQueryResult.GetCurrentQueryOptions() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member QueryOptions StorageItemQueryResult.GetCurrentQueryOptions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=QueryOptions%20StorageItemQueryResult.GetCurrentQueryOptions%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

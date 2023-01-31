@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxCreateFolderRequest.EmailMailboxId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxCreateFolderRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxCreateFolderRequest.EmailMailboxId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxCreateFolderRequest.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxCreateFolderRequest.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxCreateFolderRequest.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxCreateFolderRequest.ParentFolderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxCreateFolderRequest.ParentFolderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxCreateFolderRequest.ParentFolderId");
 			}
 		}
 		#endif
@@ -44,14 +44,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Email.EmailFolder folder)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxCreateFolderRequest.ReportCompletedAsync(EmailFolder folder) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxCreateFolderRequest.ReportCompletedAsync(EmailFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxCreateFolderRequest.ReportCompletedAsync%28EmailFolder%20folder%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync( global::Windows.ApplicationModel.Email.EmailMailboxCreateFolderStatus status)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxCreateFolderRequest.ReportFailedAsync(EmailMailboxCreateFolderStatus status) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxCreateFolderRequest.ReportFailedAsync(EmailMailboxCreateFolderStatus status) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxCreateFolderRequest.ReportFailedAsync%28EmailMailboxCreateFolderStatus%20status%29");
 		}
 		#endif
 	}

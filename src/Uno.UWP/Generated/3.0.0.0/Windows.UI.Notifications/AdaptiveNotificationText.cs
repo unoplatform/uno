@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> AdaptiveNotificationText.Hints is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> AdaptiveNotificationText.Hints is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20AdaptiveNotificationText.Hints");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveNotificationContentKind AdaptiveNotificationText.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdaptiveNotificationContentKind AdaptiveNotificationText.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdaptiveNotificationContentKind%20AdaptiveNotificationText.Kind");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AdaptiveNotificationText.Text");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AdaptiveNotificationText.Language");
 			}
 			set
 			{

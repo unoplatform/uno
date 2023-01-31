@@ -13,7 +13,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccessStatus DeviceAccessChangedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceAccessStatus DeviceAccessChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccessStatus%20DeviceAccessChangedEventArgs.Status");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccessChangedEventArgs.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceAccessChangedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceAccessChangedEventArgs.Id");
 			}
 		}
 		#endif

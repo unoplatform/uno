@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSource InitializeMediaStreamSourceRequestedEventArgs.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaStreamSource InitializeMediaStreamSourceRequestedEventArgs.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSource%20InitializeMediaStreamSourceRequestedEventArgs.Source");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral InitializeMediaStreamSourceRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral InitializeMediaStreamSourceRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20InitializeMediaStreamSourceRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpTransferCodingHeaderValueCollection.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HttpTransferCodingHeaderValueCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HttpTransferCodingHeaderValueCollection.Size");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryParseAdd( string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpTransferCodingHeaderValueCollection.TryParseAdd(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpTransferCodingHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpTransferCodingHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.GetAt(uint)
@@ -48,7 +48,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpTransferCodingHeaderValueCollection.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpTransferCodingHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpTransferCodingHeaderValueCollection.ToString%28%29");
 		}
 		#endif
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpTransferCodingHeaderValue>

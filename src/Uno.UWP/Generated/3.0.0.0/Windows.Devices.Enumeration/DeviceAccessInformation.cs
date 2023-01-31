@@ -15,21 +15,21 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Enumeration.DeviceAccessInformation CreateFromId( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromId(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccessInformation%20DeviceAccessInformation.CreateFromId%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Enumeration.DeviceAccessInformation CreateFromDeviceClassId( global::System.Guid deviceClassId)
 		{
-			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromDeviceClassId(Guid deviceClassId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromDeviceClassId(Guid deviceClassId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccessInformation%20DeviceAccessInformation.CreateFromDeviceClassId%28Guid%20deviceClassId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Enumeration.DeviceAccessInformation CreateFromDeviceClass( global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
-			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromDeviceClass(DeviceClass deviceClass) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromDeviceClass(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceAccessInformation%20DeviceAccessInformation.CreateFromDeviceClass%28DeviceClass%20deviceClass%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

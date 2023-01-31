@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.SelectionEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.SelectionEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlock.SelectionEnd");
 			}
 		}
 		#endif
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.SelectionStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlock.SelectionStart");
 			}
 		}
 		#endif
@@ -277,7 +277,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RichTextBlock.BaselineOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double RichTextBlock.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20RichTextBlock.BaselineOffset");
 			}
 		}
 		#endif
@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.ContentEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlock.ContentEnd");
 			}
 		}
 		#endif
@@ -298,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.ContentStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlock.ContentStart");
 			}
 		}
 		#endif
@@ -444,7 +444,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TextHighlighter> RichTextBlock.TextHighlighters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TextHighlighter> RichTextBlock.TextHighlighters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTextHighlighter%3E%20RichTextBlock.TextHighlighters");
 			}
 		}
 		#endif
@@ -756,7 +756,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Documents.TextPointer GetPositionFromPoint( global::Windows.Foundation.Point point)
 		{
-			throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.GetPositionFromPoint(Point point) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlock.GetPositionFromPoint%28Point%20point%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RichTextBlock.Focus(Windows.UI.Xaml.FocusState)

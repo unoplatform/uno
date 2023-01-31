@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToggleState SemanticZoomAutomationPeer.ToggleState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ToggleState SemanticZoomAutomationPeer.ToggleState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToggleState%20SemanticZoomAutomationPeer.ToggleState");
 			}
 		}
 		#endif

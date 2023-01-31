@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.ColumnProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.ColumnProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridItemPatternIdentifiers.ColumnProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.ColumnSpanProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.ColumnSpanProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridItemPatternIdentifiers.ColumnSpanProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.ContainingGridProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.ContainingGridProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridItemPatternIdentifiers.ContainingGridProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.RowProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.RowProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridItemPatternIdentifiers.RowProperty");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.RowSpanProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridItemPatternIdentifiers.RowSpanProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridItemPatternIdentifiers.RowSpanProperty");
 			}
 		}
 		#endif

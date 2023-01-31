@@ -13,7 +13,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EndpointPair.RemoteServiceName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EndpointPair.RemoteServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EndpointPair.RemoteServiceName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName EndpointPair.RemoteHostName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName EndpointPair.RemoteHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20EndpointPair.RemoteHostName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EndpointPair.LocalServiceName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EndpointPair.LocalServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EndpointPair.LocalServiceName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName EndpointPair.LocalHostName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName EndpointPair.LocalHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20EndpointPair.LocalHostName");
 			}
 			set
 			{

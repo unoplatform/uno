@@ -13,7 +13,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardPinResetRequest.Challenge is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer SmartCardPinResetRequest.Challenge is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20SmartCardPinResetRequest.Challenge");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmartCardPinResetRequest.Deadline is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset SmartCardPinResetRequest.Deadline is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20SmartCardPinResetRequest.Deadline");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.SmartCards.SmartCardPinResetDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member SmartCardPinResetDeferral SmartCardPinResetRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SmartCardPinResetDeferral SmartCardPinResetRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmartCardPinResetDeferral%20SmartCardPinResetRequest.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

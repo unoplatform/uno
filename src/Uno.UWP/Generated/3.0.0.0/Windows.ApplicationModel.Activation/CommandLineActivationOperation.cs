@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CommandLineActivationOperation.ExitCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int CommandLineActivationOperation.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CommandLineActivationOperation.ExitCode");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CommandLineActivationOperation.Arguments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CommandLineActivationOperation.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CommandLineActivationOperation.Arguments");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CommandLineActivationOperation.CurrentDirectoryPath is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CommandLineActivationOperation.CurrentDirectoryPath is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CommandLineActivationOperation.CurrentDirectoryPath");
 			}
 		}
 		#endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CommandLineActivationOperation.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral CommandLineActivationOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20CommandLineActivationOperation.GetDeferral%28%29");
 		}
 		#endif
 	}

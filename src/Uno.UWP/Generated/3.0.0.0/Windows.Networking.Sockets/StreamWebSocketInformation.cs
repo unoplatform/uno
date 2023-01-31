@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BandwidthStatistics StreamWebSocketInformation.BandwidthStatistics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BandwidthStatistics StreamWebSocketInformation.BandwidthStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BandwidthStatistics%20StreamWebSocketInformation.BandwidthStatistics");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName StreamWebSocketInformation.LocalAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName StreamWebSocketInformation.LocalAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20StreamWebSocketInformation.LocalAddress");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StreamWebSocketInformation.Protocol is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StreamWebSocketInformation.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StreamWebSocketInformation.Protocol");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate StreamWebSocketInformation.ServerCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate StreamWebSocketInformation.ServerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20StreamWebSocketInformation.ServerCertificate");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity StreamWebSocketInformation.ServerCertificateErrorSeverity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity StreamWebSocketInformation.ServerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketSslErrorSeverity%20StreamWebSocketInformation.ServerCertificateErrorSeverity");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> StreamWebSocketInformation.ServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> StreamWebSocketInformation.ServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CChainValidationResult%3E%20StreamWebSocketInformation.ServerCertificateErrors");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> StreamWebSocketInformation.ServerIntermediateCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> StreamWebSocketInformation.ServerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20StreamWebSocketInformation.ServerIntermediateCertificates");
 			}
 		}
 		#endif

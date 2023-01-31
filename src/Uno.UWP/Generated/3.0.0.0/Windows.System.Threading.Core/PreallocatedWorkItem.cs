@@ -35,7 +35,7 @@ namespace Windows.System.Threading.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction RunAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PreallocatedWorkItem.RunAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PreallocatedWorkItem.RunAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PreallocatedWorkItem.RunAsync%28%29");
 		}
 		#endif
 	}

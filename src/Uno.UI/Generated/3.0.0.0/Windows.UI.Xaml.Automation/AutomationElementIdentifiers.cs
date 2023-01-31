@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.BoundingRectangleProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.BoundingRectangleProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.BoundingRectangleProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HasKeyboardFocusProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HasKeyboardFocusProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.HasKeyboardFocusProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HelpTextProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HelpTextProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.HelpTextProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsContentElementProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsContentElementProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsContentElementProperty");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsControlElementProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsControlElementProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsControlElementProperty");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsEnabledProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsEnabledProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsEnabledProperty");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsKeyboardFocusableProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsKeyboardFocusableProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsKeyboardFocusableProperty");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsOffscreenProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsOffscreenProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsOffscreenProperty");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsPasswordProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsPasswordProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsPasswordProperty");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsRequiredForFormProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsRequiredForFormProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsRequiredForFormProperty");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ItemStatusProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ItemStatusProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.ItemStatusProperty");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ItemTypeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ItemTypeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.ItemTypeProperty");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LabeledByProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LabeledByProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.LabeledByProperty");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LiveSettingProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LiveSettingProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.LiveSettingProperty");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LocalizedControlTypeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LocalizedControlTypeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.LocalizedControlTypeProperty");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.NameProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.NameProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.NameProperty");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AcceleratorKeyProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AcceleratorKeyProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.AcceleratorKeyProperty");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AccessKeyProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AccessKeyProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.AccessKeyProperty");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AutomationIdProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AutomationIdProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.AutomationIdProperty");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.OrientationProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.OrientationProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.OrientationProperty");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClassNameProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClassNameProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.ClassNameProperty");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClickablePointProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ClickablePointProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.ClickablePointProperty");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlTypeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlTypeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.ControlTypeProperty");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlledPeersProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.ControlledPeersProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.ControlledPeersProperty");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AnnotationsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.AnnotationsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.AnnotationsProperty");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LevelProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LevelProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.LevelProperty");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.PositionInSetProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.PositionInSetProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.PositionInSetProperty");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.SizeOfSetProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.SizeOfSetProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.SizeOfSetProperty");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LandmarkTypeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LandmarkTypeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.LandmarkTypeProperty");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LocalizedLandmarkTypeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.LocalizedLandmarkTypeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.LocalizedLandmarkTypeProperty");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.DescribedByProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.DescribedByProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.DescribedByProperty");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FlowsFromProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FlowsFromProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.FlowsFromProperty");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FlowsToProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FlowsToProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.FlowsToProperty");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FullDescriptionProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.FullDescriptionProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.FullDescriptionProperty");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsDataValidForFormProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsDataValidForFormProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsDataValidForFormProperty");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsPeripheralProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsPeripheralProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsPeripheralProperty");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.CultureProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.CultureProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.CultureProperty");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HeadingLevelProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.HeadingLevelProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.HeadingLevelProperty");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsDialogProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AutomationElementIdentifiers.IsDialogProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AutomationElementIdentifiers.IsDialogProperty");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattRequestStateChangedEventArgs.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError GattRequestStateChangedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20GattRequestStateChangedEventArgs.Error");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattRequestState GattRequestStateChangedEventArgs.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattRequestState GattRequestStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattRequestState%20GattRequestStateChangedEventArgs.State");
 			}
 		}
 		#endif
