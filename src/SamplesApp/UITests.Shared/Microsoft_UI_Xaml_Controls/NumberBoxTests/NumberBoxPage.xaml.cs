@@ -145,6 +145,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			formatter.IntegerDigits = 1;
 			formatter.FractionDigits = 2;
+
+			// Uno specific: Workaround DecimalFormatter behavior in Uno which doesn't match Windows.
+			// new DecimalFormatter().ParseDouble("۱٫۷") works in Windows but not Uno. Setting NumeralSystem works around that.
+			formatter.NumeralSystem = "ArabExt";
+
 			TestNumberBox.NumberFormatter = formatter;
 		}
 
