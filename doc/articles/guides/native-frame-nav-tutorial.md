@@ -59,7 +59,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
         private void NavigateBack(object sender, RoutedEventArgs e) => Frame.GoBack(); // in both pages
         ```
 
-6. Enable native frame navigation in `App.xaml.cs`:
+6. Enable native frame navigation in `App.cs` or `App.xaml.cs`:
     ```cs
     public App()
     {
