@@ -27,7 +27,7 @@ namespace Windows.UI
 		/// <returns></returns>
 		public static Color Parse(string colorCode)
 		{
-			if (!string.IsNullOrWhiteSpace(colorCode))
+			if (!string.IsNullOrEmpty(colorCode))
 			{
 				if (colorCode[0] == '#')
 				{
