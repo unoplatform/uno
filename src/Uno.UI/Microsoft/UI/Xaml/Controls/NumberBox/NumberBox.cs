@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NumberBox.cpp, commit 8d856a3c9393d13d9d49a20d5cde984d1f5b397a
+// MUX Reference NumberBox.cpp, commit b4e5f2cafeae04f3a799123d48dca9516832becb
 
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		bool m_valueUpdating = false;
 		bool m_textUpdating = false;
 
-		SignificantDigitsNumberRounder m_displayRounder = new SignificantDigitsNumberRounder();
+		IncrementNumberRounder m_displayRounder = new();
 
 		TextBox m_textBox;
 		Popup m_popup;
@@ -248,8 +248,10 @@ namespace Microsoft.UI.Xaml.Controls
 			IsEnabledChanged += OnIsEnabledChanged;
 			registrations.Add(() => IsEnabledChanged -= OnIsEnabledChanged);
 
-			// .NET rounds to 12 significant digits when displaying doubles, so we will do the same.
-			m_displayRounder.SignificantDigits = 12;
+			// printf() defaults to 6 digits. 6 digits are sufficient for most
+			// users under most circumstances, while simultaneously avoiding most
+			// rounding errors for instance during double/float conversion.
+			m_displayRounder.Increment = 1e-6;
 
 			UpdateSpinButtonPlacement();
 			UpdateSpinButtonEnabled();
@@ -328,6 +330,7 @@ namespace Microsoft.UI.Xaml.Controls
 			CoerceValue();
 
 			UpdateSpinButtonEnabled();
+			ReevaluateForwardedUIAName();
 		}
 
 		private void OnMaximumPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -336,6 +339,7 @@ namespace Microsoft.UI.Xaml.Controls
 			CoerceValue();
 
 			UpdateSpinButtonEnabled();
+			ReevaluateForwardedUIAName();
 		}
 
 		private void OnSmallChangePropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -416,17 +420,19 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_textBox is TextBox textBox)
 			{
 				var name = AutomationProperties.GetName(this);
+				var minimum = Minimum == -double.MaxValue ? "" : " " + ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NumberBoxMinimumValueStatus) + Minimum.ToString(CultureInfo.InvariantCulture);
+				var maximum = Maximum == double.MaxValue ? "" : " " + ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_NumberBoxMaximumValueStatus) + Maximum.ToString(CultureInfo.InvariantCulture);
 				if (!string.IsNullOrEmpty(name))
 				{
 					// AutomationProperties.Name is a non empty string, we will use that value.
-					AutomationProperties.SetName(textBox, name);
+					AutomationProperties.SetName(textBox, name + minimum + maximum);
 				}
 				else
 				{
 					if (Header is string headerAsString)
 					{
 						// Header is a string, we can use that as our UIA name.
-						AutomationProperties.SetName(textBox, headerAsString);
+						AutomationProperties.SetName(textBox, headerAsString + minimum + maximum);
 					}
 				}
 			}
@@ -679,7 +685,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						newText = roundedValue.ToString($"0." + new string('#', (int)m_displayRounder.SignificantDigits), CultureInfo.CurrentCulture);
+						newText = roundedValue.ToString($"0." + new string('#', 6), CultureInfo.CurrentCulture);
 					}
 				}
 
