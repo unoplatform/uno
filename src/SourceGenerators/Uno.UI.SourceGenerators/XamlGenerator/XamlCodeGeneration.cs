@@ -216,7 +216,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					Value = i.GetMetadataValue("Mappings")
 						?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
 						.Select(m => m.Trim())
-						.Where(m => m.HasValueTrimmed())
+						.Where(m => !m.IsNullOrWhiteSpace())
 				})
 				.GroupBy(p => p.Key)
 				.ToDictionary(p => p.Key, p => p.SelectMany(x => x.Value.Safe()).ToArray());

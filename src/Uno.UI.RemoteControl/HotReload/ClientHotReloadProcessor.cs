@@ -41,12 +41,12 @@ namespace Uno.UI.RemoteControl.HotReload
 			switch (frame.Name)
 			{
 				case FileReload.Name:
-					ReloadFile(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content));
+					ReloadFile(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
 					break;
 
 #if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 				case AssemblyDeltaReload.Name:
-					AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content));
+					AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content)!);
 					break;
 #endif
 
@@ -64,7 +64,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		private async Task ConfigureServer()
 		{
 			var assembly = _rcClient.AppType.Assembly;
-			
+
 			if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
 			{
 				var config = configs.First();
@@ -102,7 +102,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					_useXamlReaderHotReload = useXamlReaderHotReload;
 				}
-				
+
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().LogDebug($"UseXamlReaderHotReload={_useXamlReaderHotReload}");

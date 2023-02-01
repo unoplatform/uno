@@ -135,7 +135,7 @@ Because the `custom` qualifier doesn't have any special meaning on UWP, we have 
 
 On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
 
-On UWP, you must add the following code to your `App.xaml.cs` constructor:
+On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constructor:
 
 ```csharp
 #if WINDOWS_UWP

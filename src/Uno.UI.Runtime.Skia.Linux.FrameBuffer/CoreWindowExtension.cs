@@ -66,14 +66,17 @@ namespace Uno.UI.Runtime.Skia
 
 			var timeval = stackalloc IntPtr[2];
 
-			foreach (var f in Directory.GetFiles("/dev/input", "event*"))
+			if (Directory.Exists("/dev/input"))
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				foreach (var f in Directory.GetFiles("/dev/input", "event*"))
 				{
-					this.Log().Debug($"Opening input device {f}");
-				}
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Opening input device {f}");
+					}
 
-				libinput_path_add_device(_libInputContext, f);
+					libinput_path_add_device(_libInputContext, f);
+				}
 			}
 
 			while (!_cts.IsCancellationRequested)

@@ -248,7 +248,7 @@ namespace SampleControl.Presentation
 
 			private bool Matches(string category, string sampleName)
 			{
-				return category.HasValue() &&
+				return !category.IsNullOrEmpty() &&
 						Category.Category.Equals(category, StringComparison.OrdinalIgnoreCase) &&
 						(sampleName.IsNullOrEmpty() || (Sample?.ControlName?.Equals(sampleName, StringComparison.OrdinalIgnoreCase) ?? false));
 			}
@@ -342,7 +342,7 @@ namespace SampleControl.Presentation
 				);
 
 				var tests = testQuery
-					.SkipWhile(testInfo => _firstTargetToRun.HasValue() && !testInfo.Matches(_firstTargetToRun))
+					.SkipWhile(testInfo => !_firstTargetToRun.IsNullOrEmpty() && !testInfo.Matches(_firstTargetToRun))
 					.Where(testInfo => _targetsToSkip.None(testInfo.Matches))
 					.ToArray();
 
@@ -1105,7 +1105,7 @@ description: {sample.Description}";
 				}
 			}
 
-			if (json.HasValueTrimmed())
+			if (!json.IsNullOrWhiteSpace())
 			{
 				try
 				{

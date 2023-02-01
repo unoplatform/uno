@@ -9,7 +9,7 @@ Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Boots
 ## Enable Memory instances counter
 
 1. Install the `Uno.Core` NuGet package;
-2. In your application, as early as possible in the initialization (generally in the App.xaml.cs constructor), add and call the following method:
+2. In your application, as early as possible in the initialization (generally in the `App.cs` or `App.xaml.cs` constructor), add and call the following method:
 
 ``` csharp
 using Uno.UI.DataBinding;

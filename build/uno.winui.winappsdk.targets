@@ -37,4 +37,31 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_UnoIncludeUIToolkit"
+			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)">
+		
+		<!-- 
+		Since we're not using the standard packaging mechanism, the Uno.UI.Toolkit resources
+		need to be included explicitly.
+		-->
+		
+		<ItemGroup>
+			<PriOutputs Include="$(PkgUno_WinUI)/lib/net5.0-windows10.0.18362.0/Uno.UI.Toolkit.pri"
+						TargetPath="Uno.UI.Toolkit.pri"
+						CopyLocal="True"
+						CopyToOutputDirectory="PreserveNewest"
+						OutputGroup="CopyLocalFilesOutputGroup" />
+
+			<_UnoUIToolkitAssets Include="$(PkgUno_WinUI)/lib/net5.0-windows10.0.18362.0/Uno.UI.Toolkit/**"/>
+
+			<None
+				Include="@(_UnoUIToolkitAssets)"
+				TargetPath="Uno.UI.Toolkit/%(RecursiveDir)%(Filename)%(Extension)"
+				CopyToOutputDirectory="PreserveNewest" />
+
+			<_UnoUIToolkitAssets Remove="@(_UnoUIToolkitAssets)" />
+		</ItemGroup>
+
+	</Target>
+
 </Project>

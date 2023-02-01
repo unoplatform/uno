@@ -46,7 +46,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				IDisposable blockDisposable;
 
-				var delegateString = _delegateType.HasValue() ? "(" + _delegateType + ")" : "";
+				var delegateString = !_delegateType.IsNullOrEmpty() ? "(" + _delegateType + ")" : "";
 
 				if (_applyPrefix != null)
 				{

@@ -78,7 +78,7 @@ Here's what to look for:
        ```
 - Resources
     - Avoid using `x:Name` in `ResourceDictionary` as those force early instantiation of the resource
-    - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level App.xaml resource dictionaries
+    - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level `AppResources.xaml` or `App.xaml` resource dictionaries
 
 ## WebAssembly specifics
 - Building your application in Release configuration is critical to get the best performance.

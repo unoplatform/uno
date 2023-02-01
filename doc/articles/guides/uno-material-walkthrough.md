@@ -87,8 +87,8 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         You can also copy-and-paste the following snippet into your .csproj file:
             <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.1.0" />
         ```
-        The solution: Simply add the specific version of `Xamarin.AndroidX.Lifecycle.LiveData` to the `.Droid` project
-1. Add the following code inside `App.xaml`:
+        The solution: Simply add the specific version of `Xamarin.AndroidX.Lifecycle.LiveData` to the `.Mobile` project
+1. Add the following code inside `AppResources.xaml`:
     ```xml
     <Application.Resources>
         <ResourceDictionary>
@@ -229,7 +229,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     <!-- ... -->
     ```
     > You may also use this for picking colors: https://material.io/design/color/the-color-system.html#tools-for-picking-colors
-1. In `App.xaml`, update the line that initializes the `MaterialColors` to include the new palette override:
+1. In `AppResources.xaml`, update the line that initializes the `MaterialColors` to include the new palette override:
     ```xml
     <Application.Resources>
         <ResourceDictionary>
@@ -251,7 +251,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 1. Run the app, you should now see the controls using your new color scheme.
 
 ### Section 4: Fonts
-By default, Uno.Material will attempt to apply a FontFamily with a name of `Roboto` to its controls. This FontFamily resource is given the key `MaterialFontFamily`. If there is no FontFamily with name `Roboto` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<MaterialFonts />` initialization within your `App.xaml`.
+By default, Uno.Material will attempt to apply a FontFamily with the name of `Roboto` to its controls. This FontFamily resource is given the key `MaterialFontFamily`. If there is no FontFamily with the name `Roboto` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<MaterialFonts />` initialization within your `AppResources.xaml` or `App.xaml`.
 
 1. Install your custom font following the steps [here](../features/custom-fonts.md)
 1. Create the nested folders `Styles\` and then `Styles\Application\` under the `[MyApp]` project
@@ -266,7 +266,7 @@ By default, Uno.Material will attempt to apply a FontFamily with a name of `Robo
         
     </ResourceDictionary>
     ```
-1. In `App.xaml`, add the line that initializes the `MaterialFonts` to include the new font override:
+1. In `AppResources.xaml` or `App.xaml`, add the line that initializes the `MaterialFonts` to include the new font override:
     ```xml
     <Application.Resources>
     <ResourceDictionary>

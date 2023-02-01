@@ -12,6 +12,9 @@ After creating a new solution with the [Uno Platform App Template](https://marke
 
 ![Uno Platform solution structure](Assets/solution-structure.png)
 
+> [!NOTE]
+> The `App.xaml` and `App.xaml.cs` in an Uno Platform solution template are named `AppResources.xaml` and `App.cs`, respectively. Both are automatically included as part of each head's `App.xaml` and `App.xaml.cs` in order to create a cross-platform experience. It is recommended to use `AppResources.xaml` and `App.cs` for editing the application's startup.
+
 ## Handling dependencies
 
 Dependencies in Uno solutions can be added preferably in the app's **Class Library Project**, but can also be added per platform at the project heads level.
@@ -19,3 +22,5 @@ Dependencies in Uno solutions can be added preferably in the app's **Class Libra
 ## Further information
 
 See additional guides on handling platform-specific [C# code](platform-specific-csharp.md) and [XAML markup](platform-specific-xaml.md) in an Uno Platform project.
+
+The Uno Platform solution also [can be further optimized](xref:Build.Solution.TargetFramework-override) to build larger projects with Visual Studio 2022.

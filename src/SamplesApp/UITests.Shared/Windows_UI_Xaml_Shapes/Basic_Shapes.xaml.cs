@@ -580,7 +580,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				Name = name;
 				Id = Regex.Replace(name, @"([^\w]|[ ])(?<first>[a-z])", m => m.Groups["first"].Value.ToUpperInvariant());
 
-				var desc = details?.HasValue() ?? false ? $"{name} ({details})" : name;
+				var desc = !details.IsNullOrEmpty() ? $"{name} ({details})" : name;
 				Option = new ToggleSwitch { OnContent = desc, OffContent = desc, IsOn = isEnabled };
 			}
 

@@ -50,7 +50,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
     public CommandBar GetCommandBar() => MyCommandBar;
     ```
 
-5. In `App.xaml.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the UWP style. Make sure that the `#if ... #endif` block is before `this.InitializeComponent()`:
+5. In `App.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the UWP style. Make sure that the `#if ... #endif` block is before `this.InitializeComponent()`:
     ```cs
     public App()
     {
@@ -66,7 +66,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
     }
     ```
 
-6. Subscribe to the `UISettings.ColorValuesChanged` event from `App.xaml.cs`:
+6. Subscribe to the `UISettings.ColorValuesChanged` event from `App.cs`:
     > Note that the instance of `UISettings` is kept to prevent it from being disposed when going out of scope, which would otherwise dispose the event subscription.
     ```cs
     public sealed partial class App : Application
