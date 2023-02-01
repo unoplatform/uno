@@ -102,11 +102,11 @@
 			</ItemGroup>
 		</When>
 
-		<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
+		$if$($UseAppKit$ == True)<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
 			<PropertyGroup>
 				<TrimMode Condition="'$(Configuration)'=='Release'">link</TrimMode>
 			</PropertyGroup>
-		</When>
+		</When>$endif$
 	</Choose>
 	
 	<ItemGroup>
