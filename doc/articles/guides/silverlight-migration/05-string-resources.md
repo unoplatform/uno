@@ -12,7 +12,7 @@ In the Silverlight project, the application string resources are found within th
 
 ![String Resource Home Navigation Page Title](assets/StringResource-HomeNav.png)
 
-The **ResourceWrapper** helper is instantiated in the application resources defined in **App.xaml** as:
+The **ResourceWrapper** helper is instantiated in the application resources defined in **AppResources.xaml** as:
 
 ```xml
 <ResourceDictionary>

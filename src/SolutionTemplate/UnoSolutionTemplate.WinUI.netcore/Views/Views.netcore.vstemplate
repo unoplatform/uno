@@ -26,6 +26,8 @@
 					<ProjectItem TargetFileName="Resources.resw" ReplaceParameters="true">Resources.resw</ProjectItem>
 				</Folder>
 			</Folder>
+			<ProjectItem TargetFileName="App.cs" ReplaceParameters="true">App.cs</ProjectItem>
+			<ProjectItem TargetFileName="AppResources.xaml" ReplaceParameters="true">AppResources.xaml</ProjectItem>
 			<ProjectItem TargetFileName="MainPage.xaml" ReplaceParameters="true">mainpage.xaml</ProjectItem>
 			<ProjectItem TargetFileName="MainPage.xaml.cs" ReplaceParameters="true">mainpage.xaml.cs</ProjectItem>
 		</Project>

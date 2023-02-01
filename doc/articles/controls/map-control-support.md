@@ -12,7 +12,7 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 
 1. Ensure your app is targeting Uno 3.3 or later.
 2. Install the [Uno.UI.Maps NuGet package](https://www.nuget.org/packages/Uno.UI.Maps/) in the Android and/or iOS head projects of your app.
-3. Add the `MapResources` resource dictionary to `Application.Resources` in your `App.xaml` file:
+3. Add the `MapResources` resource dictionary to `Application.Resources` in your `AppResources.xaml` or `App.xaml` file:
 	```xml
 	<Application.Resources>
 		<MapResources xmlns="using:Uno.UI.Maps"/>

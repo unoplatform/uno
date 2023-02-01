@@ -685,7 +685,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented($"#if __ANDROID__");
 #if NETSTANDARD
-			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.App.DrawableResourcesIdResolver.Resolve);");
+			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
 #else
 			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 #endif

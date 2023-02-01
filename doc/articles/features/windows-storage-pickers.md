@@ -47,7 +47,7 @@ WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 await picker.PickSingleFileAsync();
 ```
 
-To get the `Window` instance in single-window apps, it is easiest to create an `internal static MainWindow` property in the `App.xaml.cs` file, initialize it in `OnLaunched`, and then use it for this purpose:
+To get the `Window` instance in single-window apps, it is easiest to create an `internal static MainWindow` property in the `App.cs` or `App.xaml.cs` file, initialize it in `OnLaunched`, and then use it for this purpose:
 
 ```csharp
 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
@@ -355,16 +355,18 @@ namespace Custom.Pickers
 #endif
 ```
 
-When done, register this extension in `App.xaml.cs`:
+When done, register this extension in `App.cs` or `App.xaml.cs`:
 
 ```csharp
 public App()
 {
+...
 #if __IOS__
     ApiExtensibility.Register(
         typeof(Uno.Extensions.Storage.Pickers.IFileSavePickerExtension),
         picker => new CustomFileSavePickerExtension(picker));
 #endif
+...
 }
 ```
 

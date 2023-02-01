@@ -2,7 +2,7 @@
 
 Uno Platform supports `Light`, `Dark` and `HighContrast` themes similarly to UWP.
 
-As in UWP, the default theme is `Dark`, but in the case of Uno we use `Light` for all supported systems, as that is the default on all except Windows. However, if you don't specify a theme in the constructor of `App` and don't specify it in `App.xaml` either, it will be determined by the current system theme on iOS, Android and to current system/browser theme (depending on browser implementation) on WASM.
+As in UWP, the default theme is `Dark`, but in the case of Uno, we use `Light` for all supported systems, as that is the default on all except Windows. However, if you don't specify a theme in the constructor of `App` and don't specify it in `AppResources.xaml` or `App.xaml` either, it will be determined by the current system theme on iOS, Android and to current system/browser theme (depending on browser implementation) on WASM.
 
 To set `HighContrast` theme or a custom theme, you can use the `Uno.UI.ApplicationHelper` class:
 
@@ -16,7 +16,7 @@ Setting `Application.Current.RequestedTheme` outside of `App` constructor is not
 
 ## Reacting to OS theme changes
 
-If you don't specify the theme in `App` constructor and `App.xaml`, your app will automatically adapt to OS theme changes at runtime. However, on Android, you need to make sure to add `ConfigChanges.UiMode` to the `MainActivity` `[Application]` attribute, for example:
+If you don't specify the theme in `App` constructor and `AppResources.xaml` or `App.xaml`, your app will automatically adapt to OS theme changes at runtime. However, on Android, you need to make sure to add `ConfigChanges.UiMode` to the `MainActivity` `[Application]` attribute, for example:
 
 ``` c#
 [Activity(
