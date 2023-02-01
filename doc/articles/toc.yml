@@ -394,6 +394,8 @@
                   href: wpf-migration.md
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
+            - name: Faster Single Target App Builds
+              href: solution-building-single-targetframework.md
             - name: Hosting a WebAssembly app
               href: how-to-host-a-webassembly-app.md
             - name: Updating to WinUI 3.0

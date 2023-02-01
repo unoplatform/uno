@@ -22,3 +22,5 @@ Dependencies in Uno solutions can be added preferably in the app's **Class Libra
 ## Further information
 
 See additional guides on handling platform-specific [C# code](platform-specific-csharp.md) and [XAML markup](platform-specific-xaml.md) in an Uno Platform project.
+
+The Uno Platform solution also [can be further optimized](xref:Build.Solution.TargetFramework-override) to build larger projects with Visual Studio 2022.
