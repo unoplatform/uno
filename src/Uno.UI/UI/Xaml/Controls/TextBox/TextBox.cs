@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ContentPresenter _header;
 		protected private bool _isButtonEnabled = true;
-		protected private bool CanShowButton => Text.HasValue() && FocusState != FocusState.Unfocused && !IsReadOnly && !AcceptsReturn && TextWrapping == TextWrapping.NoWrap;
+		protected private bool CanShowButton => !Text.IsNullOrEmpty() && FocusState != FocusState.Unfocused && !IsReadOnly && !AcceptsReturn && TextWrapping == TextWrapping.NoWrap;
 
 		public event TextChangedEventHandler TextChanged;
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;

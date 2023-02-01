@@ -320,7 +320,7 @@ namespace Windows.UI
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)
 			var rootFontFamilyName = fontFamilyName.Split(new[] { '-' }).FirstOrDefault();
 
-			if (rootFontFamilyName.HasValue())
+			if (!rootFontFamilyName.IsNullOrEmpty())
 			{
 				var font = new StringBuilder(rootFontFamilyName);
 				if (fontWeight != FontWeights.Normal || fontStyle == FontStyle.Italic)

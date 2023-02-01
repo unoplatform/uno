@@ -56,13 +56,13 @@ namespace Windows.UI.Xaml
 				{
 					var source = fontFamily.Source;
 
-					source = source.TrimStart("ms-appx://", StringComparison.OrdinalIgnoreCase);
+					source = source.TrimStart("ms-appx://", ignoreCase: true);
 
 					if (!TryLoadFromPath(style, source, out typeface))
 					{
 						// The lookup used to be performed without the assets folder, even if its required to specify it
 						// with UWP. Keep this behavior for backward compatibility.
-						var legacySource = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
+						var legacySource = source.TrimStart("/assets/", ignoreCase: true);
 
 						// The path for AndroidAssets is not encoded, unlike assets processed by the RetargetAssets tool.
 						if (!TryLoadFromPath(style, legacySource, out typeface, encodePath: false))

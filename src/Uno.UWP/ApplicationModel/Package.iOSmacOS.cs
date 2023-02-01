@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel
 
 		private static bool IsAdHoc
 			// See https://github.com/bitstadium/HockeySDK-iOS/blob/develop/Classes/BITHockeyHelper.m
-			=> NSBundle.MainBundle.PathForResource("embedded", "mobileprovision").HasValue();
+			=> !NSBundle.MainBundle.PathForResource("embedded", "mobileprovision").IsNullOrEmpty();
 #else
 		private bool GetInnerIsDevelopmentMode() => false; //detection not possible on macOS
 #endif

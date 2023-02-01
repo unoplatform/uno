@@ -121,7 +121,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public GenerationCandidateData(ISymbol dpSymbol, AttributeData attribute)
 			{
-				PropertyName = dpSymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
+				PropertyName = dpSymbol.Name.TrimEnd("Property");
 				HasPropertySuffix = dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal);
 
 				MetadataOptions = GetAttributeValue(attribute, "Options")?.Value.Value?.ToString() ?? "0";

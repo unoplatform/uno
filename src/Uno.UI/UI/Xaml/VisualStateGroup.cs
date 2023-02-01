@@ -354,8 +354,8 @@ namespace Windows.UI.Xaml
 			// The most specific transition wins (i.e. with matching From and To),
 			// then we validate for transitions that have only From or To defined which match.
 
-			var hasOld = oldStateName.HasValue();
-			var hasNew = newStateName.HasValue();
+			var hasOld = !oldStateName.IsNullOrEmpty();
+			var hasNew = !newStateName.IsNullOrEmpty();
 
 			if (hasOld && hasNew && Transitions.FirstOrDefault(Match(oldStateName, newStateName)) is { } perfectMatch)
 			{

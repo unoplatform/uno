@@ -37,7 +37,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		}
 
 		public string Name
-			=> (_name?.HasValue() ?? false) ? _name : _unoMember?.Name!;
+			=> !_name.IsNullOrEmpty() ? _name : _unoMember?.Name!;
 
 		public XamlType DeclaringType
 			=> _declaringType != null ? _declaringType : XamlType.FromType(_unoMember?.DeclaringType);
@@ -54,7 +54,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		public override string ToString() => _unoMember?.ToString() ?? "";
 
 		public bool Equals(XamlMember? other)
-			=> _name.HasValue()
+			=> !_name.IsNullOrEmpty()
 			? (
 				other != null
 				&& _name == other._name
@@ -67,7 +67,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> other is XamlMember otherMember ? Equals(otherMember) : false;
 
 		public override int GetHashCode()
-			=> _name.HasValue()
+			=> !_name.IsNullOrEmpty()
 			? _name?.GetHashCode() ?? 0
 			: _unoMember?.GetHashCode() ?? 0;
 	}
