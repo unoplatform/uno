@@ -83,10 +83,8 @@ namespace Umbrella.UI.TestComparer
 
 				var artifactsBasePath = Path.Combine(basePath, "artifacts");
 				var results = new List<CompareResult>();
-
-				var platforms = GetValidPlatforms(artifactsBasePath).ToArray();
 				
-				var tasks = platforms.Select(platform => Task.Factory.StartNew(() => Task.FromResult(ProcessFiles(basePath, artifactsBasePath, artifacts, artifactInnerBasePath, platform, currentBuild.ToString())), TaskCreationOptions.LongRunning));
+				var tasks = GetValidPlatforms(artifactsBasePath).Select(platform => Task.Factory.StartNew(() => ProcessFiles(basePath, artifactsBasePath, artifacts, artifactInnerBasePath, platform, currentBuild.ToString()), TaskCreationOptions.LongRunning));
 				Task.WaitAll(tasks.ToArray());
 				
 				foreach (var task in tasks)
