@@ -371,7 +371,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Only the first item has been measured so far, this might be because the IR is within a SV and not visible yet.
 				// Note: In that case we have to make sure to not only validate the Major axis since the parent SV could be vertical while local layout itself is horizontal.
 				// Note2: Depending of the platform (Android), we might be invoked with empty viewport, make sure to consider out-of-bound in such case.
-				// Text case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
+				// Test case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
 				const int threshold = 100; // Allows 100px above and after to trigger loading even before IR is visible.
 				var wasOutOfBounds = oldViewport is { Width: 0 } or { Height: 0 }
 					|| MajorEnd(oldViewport) < -threshold
