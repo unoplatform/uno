@@ -191,4 +191,18 @@
 		</ItemGroup>
 	</Target>
 
+	<!--
+	Ensure that project transitive references are copied to the publish directory, as well
+	as nuget packages content.
+	-->
+	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
+	BeforeTargets="GetCopyToPublishDirectoryItems">
+		<ItemGroup>
+			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
+				<TargetPath>%(TargetPath)</TargetPath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ContentWithTargetPath>
+		</ItemGroup>
+	</Target>
+
 </Project>
