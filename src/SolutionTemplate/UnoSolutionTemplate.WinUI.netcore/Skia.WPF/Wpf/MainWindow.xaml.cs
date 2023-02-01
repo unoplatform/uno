@@ -23,13 +23,8 @@ namespace $ext_safeprojectname$.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-<<<<<<< HEAD
-	
-			root.Content = new global::Uno.UI.Skia.Platform.WpfHost(Dispatcher, () => new $ext_safeprojectname$.App());
-=======
 
 			root.Content = new global::Uno.UI.Skia.Platform.WpfHost(Dispatcher, () => new $ext_safeprojectname$.AppHead());
->>>>>>> a27ca7001c (chore: Adjust AppHead references)
 		}
 	}
 }
