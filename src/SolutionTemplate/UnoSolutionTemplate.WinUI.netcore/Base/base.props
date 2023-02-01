@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 	<ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)App.xaml" />
+		<None Include="$(MSBuildThisFileDirectory)AppHead.xaml" />
 		<ApplicationDefinition
-			Include="$(MSBuildThisFileDirectory)App.xaml"
+			Include="$(MSBuildThisFileDirectory)AppHead.xaml"
 			SubType="Designer"
 			XamlRuntime="WinUI"
 			Generator="MSBuild:Compile"
-			Link="App.xaml" />
+			Link="AppHead.xaml" />
 		<Compile
-			Include="$(MSBuildThisFileDirectory)App.xaml.cs"
+			Include="$(MSBuildThisFileDirectory)AppHead.xaml.cs"
 			XamlRuntime="WinUI"
-			DependentUpon="App.xaml"
-			Link="App.xaml.cs" />	</ItemGroup>
+			DependentUpon="AppHead.xaml"
+			Link="AppHead.xaml.cs" />
+	</ItemGroup>
 </Project>

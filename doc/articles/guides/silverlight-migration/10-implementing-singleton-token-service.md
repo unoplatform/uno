@@ -160,7 +160,7 @@ The next task will discuss an approach to initializing the service.
 
 ## TokenService initialization
 
-As the **TokenService** utilizes asynchronous initialization, there is an advantage to starting the initialization process as early as feasible in the application lifecycle. An example would be adding it to the **App.xaml.cs OnLaunched** method, as shown below:
+As the **TokenService** utilizes asynchronous initialization, there is an advantage to starting the initialization process as early as feasible in the application lifecycle. An example would be adding it to the `App.cs` `OnLaunched` method, as shown below:
 
 ```csharp
 protected override void OnLaunched(LaunchActivatedEventArgs e)
