@@ -4,9 +4,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-#if __MACOS__ // UIKit.UIKitThreadAccessException: UIKit Consistency error: you are calling a UIKit method that can only be invoked from the UI thread.
 	[RunsOnUIThread]
-#endif
 	public class Given_WebView
 	{
 #if __ANDROID__ || __IOS__ || __MACOS__
