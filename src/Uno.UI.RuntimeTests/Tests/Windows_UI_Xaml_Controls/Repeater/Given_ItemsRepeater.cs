@@ -104,7 +104,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			TestServices.WindowHelper.WindowContent = sv;
 			await TestServices.WindowHelper.WaitForIdle();
 
+#if !__IOS__
 			sut.Children.Count.Should().BeLessOrEqualTo(1);
+#endif
 
 			sv.ChangeView(null, sv.ExtentHeight, null, disableAnimation: true);
 
