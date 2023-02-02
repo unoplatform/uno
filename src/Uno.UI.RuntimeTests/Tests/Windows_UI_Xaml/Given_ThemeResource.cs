@@ -44,5 +44,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				} 
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Parent_Resource_Override_On_Loaded()
+		{
+			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
+			{
+				var userControl = new When_Parent_Resource_Override_On_Loaded();
+
+				WindowHelper.WindowContent = userControl;
+				await WindowHelper.WaitForLoaded(userControl);
+
+				Assert.AreEqual(Colors.Yellow, (userControl.innerBorder.Background as SolidColorBrush).Color);
+			}
+		}
 	}
 }
