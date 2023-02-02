@@ -133,22 +133,8 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-		public new static DependencyProperty CornerRadiusProperty { get; } = DependencyProperty.Register(
-			"CornerRadius",
-			typeof(CornerRadius),
-			typeof(ElevatedView),
-#if __IOS__ || __MACOS__
-			new FrameworkPropertyMetadata(default(CornerRadius))
-#else
-			new FrameworkPropertyMetadata(default(CornerRadius), OnChanged)
-#endif
-		);
-
-		public new CornerRadius CornerRadius
-		{
-			get => (CornerRadius)GetValue(CornerRadiusProperty);
-			set => SetValue(CornerRadiusProperty, value);
-		}
+#if !__IOS__ && !__MACOS__
+		private protected override void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{

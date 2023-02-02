@@ -689,8 +689,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
-		[GeneratedDependencyProperty]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiousChanged))]
 		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
+		private protected virtual void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args)
+		{
+		}
+
 
 		#endregion
 
