@@ -11,7 +11,6 @@ namespace Windows.ApplicationModel;
 /// </summary>
 public sealed partial class SuspendingDeferral : ISuspendingDeferral
 {
-	private readonly Action? _deferralDone;
 	private readonly DeferralCompletedHandler? _handler;
 
 	internal SuspendingDeferral(DeferralCompletedHandler handler) =>
@@ -22,7 +21,6 @@ public sealed partial class SuspendingDeferral : ISuspendingDeferral
 	/// </summary>
 	public void Complete()
 	{
-		_deferralDone?.Invoke();
 		_handler?.Invoke();
 	}
 }
