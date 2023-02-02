@@ -53,7 +53,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (fileReload.FilePath.IsNullOrEmpty() && this.Log().IsEnabled(LogLevel.Debug))
 				{
-			    		this.Log().LogDebug($"FileReload is missing a file path");
+					this.Log().LogDebug($"FileReload is missing a file path");
 				}
 
 				if (fileReload.Content is null && this.Log().IsEnabled(LogLevel.Debug))
