@@ -9216,7 +9216,6 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallbackProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::StateProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::TargetThemeProperty()" reason="Not present in WinAppSDK 1.2" />
-			<Member fullName="System.String Windows.UI.Xaml.Markup.ContentPropertyAttribute::Name()" reason="Property changed to field to match Windows" />
 		</Properties>
 		<Methods>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
@@ -9381,6 +9380,7 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Media.RevealBrush.SetState(Microsoft.UI.Xaml.UIElement element, Microsoft.UI.Xaml.Media.RevealBrushState value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState Microsoft.UI.Xaml.Media.RevealBrush.GetState(Microsoft.UI.Xaml.UIElement element)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection..ctor()" reason="Not in Windows and must not be instantiated by user." />
+			<Member fullName="Uno.UI.Xaml.RoutedEventFlag Windows.UI.Xaml.Controls.Control.GetImplementedRoutedEvents(System.Type type)" reason="Not in Windows and is unnecessary now." />
 			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnLocationChanged(Android.Locations.Location location)" reason="Not present in Windows" />
 			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderDisabled(System.String provider)" reason="Not present in Windows" />
 			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderEnabled(System.String provider)" reason="Not present in Windows" />
@@ -9389,7 +9389,6 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnIsSpellCheckEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnIsTextPredictionEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnTextAlignmentChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
-			<Member fullName="Uno.UI.Xaml.RoutedEventFlag Windows.UI.Xaml.Controls.Control.GetImplementedRoutedEvents(System.Type type)" reason="Not in Windows and is unnecessary now." />
 		</Methods>
 	</IgnoreSet>
 
