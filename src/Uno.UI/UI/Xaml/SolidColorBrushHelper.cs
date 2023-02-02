@@ -24,7 +24,7 @@ using GenericColor = System.Drawing.Color;
 
 namespace Windows.UI.Xaml
 {
-	public static class SolidColorBrushHelper
+	internal static class SolidColorBrushHelper
 	{
 #if XAMARIN_IOS
 		public static SolidColorBrush FromARGB(byte a, byte r, byte g, byte b)
@@ -44,8 +44,8 @@ namespace Windows.UI.Xaml
 #endif
 
 		/// <summary>
-		/// Takes a color code as an ARGB or RGB string and returns a solid color brush. 
-		/// 
+		/// Takes a color code as an ARGB or RGB string and returns a solid color brush.
+		///
 		/// Remark: if single digits are used to define the color, they will
 		/// be duplicated (example: FFD8 will become FFFFDD88)
 		/// </summary>
@@ -55,8 +55,8 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Takes a color code as an ARGB or RGB, or textual string from <see cref="Colors"/> string and returns a solid color brush. 
-		/// 
+		/// Takes a color code as an ARGB or RGB, or textual string from <see cref="Colors"/> string and returns a solid color brush.
+		///
 		/// Remark: if single digits are used to define the color, they will
 		/// be duplicated (example: FFD8 will become FFFFDD88)
 		/// </summary>
