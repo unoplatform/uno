@@ -11,6 +11,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.Wasm.Bootstrap.Server" Version="7.0.0-dev.195" />
-	</ItemGroup>$endif$
+	</ItemGroup>
+
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);USE_WASM</DefineConstants>
+	</PropertyGroup>$endif$
 
 </Project>
