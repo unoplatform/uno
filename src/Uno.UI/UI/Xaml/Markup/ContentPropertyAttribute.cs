@@ -22,5 +22,5 @@ public sealed partial class ContentPropertyAttribute : Attribute
 	/// <summary>
 	/// Gets or sets the Content property name.
 	/// </summary>
-	public string Name { get; set; }
+	public string Name;
 }
