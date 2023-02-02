@@ -9378,6 +9378,8 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush.get_TargetThemeProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Media.RevealBrush.SetState(Microsoft.UI.Xaml.UIElement element, Microsoft.UI.Xaml.Media.RevealBrushState value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState Microsoft.UI.Xaml.Media.RevealBrush.GetState(Microsoft.UI.Xaml.UIElement element)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.String Windows.UI.Xaml.Markup.ContentPropertyAttribute.get_Name()" reason="Property changed to field to match Windows" />
+			<Member fullName="System.Void Windows.UI.Xaml.Markup.ContentPropertyAttribute.set_Name(System.String value)" reason="Property changed to field to match Windows" />
 		</Methods>
 	</IgnoreSet>
 
