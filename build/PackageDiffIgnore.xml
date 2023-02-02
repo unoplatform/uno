@@ -9216,6 +9216,7 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallbackProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::StateProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::TargetThemeProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.String Windows.UI.Xaml.Markup.ContentPropertyAttribute::Name()" reason="Property changed to field to match Windows" />
 		</Properties>
 		<Methods>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
