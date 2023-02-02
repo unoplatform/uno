@@ -101,7 +101,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Misc
 			public const string Setter = BaseXamlNamespace + ".Setter";
 			public const string CornerRadius = BaseXamlNamespace + ".CornerRadius";
-			public const string SolidColorBrushHelper = BaseXamlNamespace + ".SolidColorBrushHelper";
 			public const string GridLength = BaseXamlNamespace + ".GridLength";
 			public const string GridUnitType = BaseXamlNamespace + ".GridUnitType";
 			public const string Color = RootWUINamespace + ".Color";
