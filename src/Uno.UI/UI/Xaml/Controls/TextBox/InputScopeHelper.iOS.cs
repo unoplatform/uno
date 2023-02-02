@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml.Controls
 				default:
 					return UIKeyboardType.Default;
 
-				case InputScopeNameValue.Number:
 				case InputScopeNameValue.DateDayNumber:
 				case InputScopeNameValue.DateMonthNumber:
 				case InputScopeNameValue.DateYear:
@@ -50,6 +49,7 @@ namespace Windows.UI.Xaml.Controls
 				case InputScopeNameValue.Url:
 					return UIKeyboardType.Url;
 
+				case InputScopeNameValue.Number:
 				case InputScopeNameValue.TelephoneNumber:
 					return UIKeyboardType.PhonePad;
 
