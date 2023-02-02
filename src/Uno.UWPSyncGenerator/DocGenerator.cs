@@ -110,7 +110,6 @@ namespace Uno.UWPSyncGenerator
 						continue;
 					}
 
-
 					var currentNamespace = group.Key.ToDisplayString();
 
 					foreach (var view in group.Where(ps => ps.ImplementedForMain != ImplementedFor.None).OrderBy(ps => ps.UAPSymbol.Name))
@@ -122,89 +121,99 @@ namespace Uno.UWPSyncGenerator
 						var formattedViewName = $"`{viewName}`";
 						using (_sb.Section($"{viewName} : {ConstructBaseClassString(view)}"))
 						{
-							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
-
-							var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
-
-							var customDocLink = GetCustomDocLink(viewName);
-							if (customDocLink != null)
+							// Our usage of obsolete attribte is for all platforms.
+							if (view.AndroidSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass.Name == "ObsoleteAttribute") is { } obsoleteAttribute)
 							{
-								_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
+								var message = (string)obsoleteAttribute.ConstructorArguments[0].Value;
+								_sb.AppendParagraph(message);
 							}
-
-							var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
-							var methods = view.UAPSymbol
-								.GetMembers()
-								.OfType<IMethodSymbol>()
-								.Where(m => m.MethodKind == MethodKind.Ordinary &&
-									!(m.Name.StartsWith("add_", StringComparison.Ordinal) || m.Name.StartsWith("remove_", StringComparison.Ordinal)) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
-								)
-								.Select(m => GetAllMatchingMethods(view, m))
-								.ToArray();
-							var events = view.UAPSymbol.GetMembers().OfType<IEventSymbol>().Select(e => GetAllMatchingEvents(view, e)).ToArray();
-
-							AppendImplementedMembers("properties", "Property", properties);
-							AppendImplementedMembers("methods", "Method", methods);
-							AppendImplementedMembers("events", "Event", events);
-
-							_sb.AppendHorizontalRule();
-
-							_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
-
-							AppendNotImplementedMembers("properties", "Property", properties);
-							AppendNotImplementedMembers("methods", "Method", methods);
-							AppendNotImplementedMembers("events", "Event", events);
-
-							_sb.AppendHorizontalRule();
-
-							_sb.AppendParagraph();
-							_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f", CultureInfo.InvariantCulture)}.");
-
-							void AppendImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+							else
 							{
-								var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
-								if (implemented.None())
+								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
+
+								var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
+								_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
+
+								var customDocLink = GetCustomDocLink(viewName);
+								if (customDocLink != null)
 								{
-									return;
+									_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 								}
-								using (_sb.Section($"Implemented {memberTypePlural} "))
+
+								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
+								var methods = view.UAPSymbol
+									.GetMembers()
+									.OfType<IMethodSymbol>()
+									.Where(m => m.MethodKind == MethodKind.Ordinary &&
+										!(m.Name.StartsWith("add_", StringComparison.Ordinal) || m.Name.StartsWith("remove_", StringComparison.Ordinal)) // Filter out explicit event add/remove methods (associated with routed events). These should already be filtered out by the MethodKind.Ordinary check but for some reason, on the build server only, aren't.
+									)
+									.Select(m => GetAllMatchingMethods(view, m))
+									.ToArray();
+								var events = view.UAPSymbol.GetMembers().OfType<IEventSymbol>().Select(e => GetAllMatchingEvents(view, e)).ToArray();
+
+								AppendImplementedMembers("properties", "Property", properties);
+								AppendImplementedMembers("methods", "Method", methods);
+								AppendImplementedMembers("events", "Event", events);
+
+								_sb.AppendHorizontalRule();
+
+								_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
+
+								AppendNotImplementedMembers("properties", "Property", properties);
+								AppendNotImplementedMembers("methods", "Method", methods);
+								AppendNotImplementedMembers("events", "Event", events);
+
+								_sb.AppendHorizontalRule();
+
+								_sb.AppendParagraph();
+								_sb.AppendParagraph($"Last updated {DateTimeOffset.UtcNow.ToString("f", CultureInfo.InvariantCulture)}.");
+
+								void AppendImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 								{
-									using (_sb.Table(memberTypeSingular, "*Supported on*"))
+									var implemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.None);
+									if (implemented.None())
 									{
-										foreach (var member in implemented)
+										return;
+									}
+									using (_sb.Section($"Implemented {memberTypePlural} "))
+									{
+										using (_sb.Table(memberTypeSingular, "*Supported on*"))
 										{
-											var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-											var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
-											_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
+											foreach (var member in implemented)
+											{
+												var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
+												var implementedQualifier = $"*{ToDisplayString(member.ImplementedForMain)}*";
+												_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), implementedQualifier);
+											}
+											_sb.AppendParagraph();
 										}
-										_sb.AppendParagraph();
 									}
 								}
-							}
 
-							void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
-							{
-								var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
-								if (notImplemented.None())
+								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 								{
-									return;
-								}
-								using (_sb.Section($"Not implemented {memberTypePlural}"))
-								{
-									using (_sb.Table(memberTypeSingular, "Not supported on"))
+									var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+									if (notImplemented.None())
 									{
-										foreach (var member in notImplemented)
+										return;
+									}
+									using (_sb.Section($"Not implemented {memberTypePlural}"))
+									{
+										using (_sb.Table(memberTypeSingular, "Not supported on"))
 										{
-											var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
-											var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
-											_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
+											foreach (var member in notImplemented)
+											{
+												var linkUrl = $"{baseDocLinkUrl}.{member.UAPSymbol.Name.ToLowerInvariant()}";
+												var notImplementedQualifier = $"*{ToDisplayString(member.ImplementedForMain ^ ImplementedFor.Main)}*";
+												_sb.AppendRow(Hyperlink(member.UAPSymbol.ToDisplayString(DisplayFormat), linkUrl), notImplementedQualifier);
+											}
+											_sb.AppendParagraph();
 										}
-										_sb.AppendParagraph();
 									}
 								}
 							}
 						}
+
 						using (var fileWriter = new StreamWriter(Path.Combine(DocPath, GetImplementedMembersFilename(view.UAPSymbol))))
 						{
 							fileWriter.Write(_sb.ToString());

@@ -13,7 +13,7 @@ On Uno you can change this behavior.
 
 ### Change the default value for all the `ComboBox` in you application
 
-The default placement for all `ComboBox` instances can be changed by setting the feature flag in the startup of your app (app.xaml.cs) :
+The default placement for all `ComboBox` instances can be changed by setting the feature flag in the startup of your app (`app.cs` or `app.xaml.cs`) :
 
 ```cs
 Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement = DropDownPlacement.Below;

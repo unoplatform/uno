@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Media
 
 		private static UIImage OpenBundleFromString(string bundle)
 		{
-			if (bundle.HasValueTrimmed())
+			if (!bundle.IsNullOrWhiteSpace())
 			{
 				return UIImage.FromBundle(bundle);
 			}
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Media
 							if (SupportsFromBundle)
 							{
 								// FromBundle calls UIImage:fromName which caches the decoded image.
-								// This is done to avoid decoding images from the byte array returned 
+								// This is done to avoid decoding images from the byte array returned
 								// from the cache.
 								var nativeImage = UIImage.FromBundle(localFileUri.LocalPath);
 								if (nativeImage is not null)

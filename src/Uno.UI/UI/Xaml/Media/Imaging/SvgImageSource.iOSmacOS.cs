@@ -40,7 +40,7 @@ partial class SvgImageSource
 				return ImageData.FromBytes(bytes);
 			}
 
-			if (FilePath.HasValue())
+			if (!FilePath.IsNullOrEmpty())
 			{
 				using var data = NSData.FromFile(FilePath);
 				var bytes = data.ToArray();

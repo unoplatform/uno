@@ -784,7 +784,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return _findType!(XamlConstants.Namespaces.Data + ".Binding");
 				}
 
-				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
+				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
 
 				if (strictSearch)
 				{

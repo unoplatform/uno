@@ -99,8 +99,8 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Internal use.
 		/// </summary>
-		/// <remarks>This constructor is *REQUIRED* for the Mono/Java 
-		/// binding layer to function properly, in case java objects need to call methods 
+		/// <remarks>This constructor is *REQUIRED* for the Mono/Java
+		/// binding layer to function properly, in case java objects need to call methods
 		/// on a collected .NET instance.
 		/// </remarks>
 		internal BindableImageView(System.IntPtr ptr, Android.Runtime.JniHandleOwnership ownership)
@@ -227,7 +227,7 @@ namespace Uno.UI.Controls
 
 			ResetImage();
 
-			if (!UriSource.HasValue())
+			if (UriSource.IsNullOrEmpty())
 			{
 				return;
 			}
@@ -262,7 +262,7 @@ namespace Uno.UI.Controls
 
 				var filePath = newUri.IsAppData() ?
 					AppDataUriEvaluator.ToPath(newUri) :
-					UriSource.TrimStart("file://", StringComparison.OrdinalIgnoreCase);
+					UriSource.TrimStart("file://", ignoreCase: true);
 
 				var options = new BitmapFactory.Options();
 				options.InJustDecodeBounds = true;

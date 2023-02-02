@@ -33,26 +33,5 @@ namespace Uno.Extensions
 		{
 			return Math.Min(Math.Max(valueToClamp, minimum), maximum);
 		}
-
-		/// <summary>
-		/// When a number is halfway between two others, it is rounded toward the nearest number that is away from zero.
-		/// </summary>
-		/// <param name="number"></param>
-		/// <returns></returns>
-		public static double RoundAwayFromZero(this double number)
-		{
-			return Math.Round(number, MidpointRounding.AwayFromZero);
-		}
-
-		/// <summary>
-		/// Returns a specified fallback if double is NaN
-		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="targetValueIfNan"></param>
-		/// <returns></returns>
-		public static double EnsureNumber(this double value, double targetValueIfNan = 0)
-		{
-			return double.IsNaN(value) ? targetValueIfNan : value;
-		}
 	}
 }

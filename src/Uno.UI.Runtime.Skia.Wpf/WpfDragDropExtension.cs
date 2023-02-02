@@ -99,7 +99,7 @@ namespace Uno.UI.Skia.Platform
 				?? src.GetData(DataFormats.OemText) as string
 				?? src.GetData(DataFormats.StringFormat) as string;
 
-			if (text.HasValueTrimmed())
+			if (!text.IsNullOrWhiteSpace())
 			{
 				if (Uri.IsWellFormedUriString(text, UriKind.Absolute))
 				{

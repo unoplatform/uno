@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Media
 
 		private static NSImage OpenBundleFromString(string name)
 		{
-			if (name.HasValueTrimmed())
+			if (!name.IsNullOrWhiteSpace())
 			{
 				var path = Path.Combine(NSBundle.MainBundle.ResourcePath, name);
 				if (File.Exists(path))

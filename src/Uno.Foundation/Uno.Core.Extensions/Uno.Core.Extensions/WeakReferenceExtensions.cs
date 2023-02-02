@@ -15,40 +15,14 @@
 //
 // ******************************************************************
 #if !SILVERLIGHT
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
 	internal static class WeakReferenceExtensions
 	{
-		public static bool HasTarget<T>(this System.WeakReference<T> wr) where T : class
-		{
-			T value;
-			return wr.TryGetTarget(out value);
-		}
-
 		public static T GetTarget<T>(this System.WeakReference<T> wr) where T : class
 		{
-			T value;
-			if (!wr.TryGetTarget(out value))
-			{
-				value = default(T);
-			}
-			return value;
-		}
-
-		public static T FindOrCreate<T>(this System.WeakReference<T> wr, Func<T> factory) where T : class
-		{
-			T value;
-			if (!wr.TryGetTarget(out value))
-			{
-				value = factory();
-				wr.SetTarget(value);
-			}
+			_ = wr.TryGetTarget(out var value);
 			return value;
 		}
 	}
