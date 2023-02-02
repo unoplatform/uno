@@ -1,35 +1,42 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+using System;
+
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates how a programming element is composed.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public partial class ComposableAttribute : Attribute
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ComposableAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="type">The type of the factory object that is used to create the programming element.</param>
+	/// <param name="compositionType">One of the enumeration values.</param>
+	/// <param name="version">The version.</param>
+	public ComposableAttribute(Type type, CompositionType compositionType, uint version) : base()
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ComposableAttribute( global::System.Type type,  global::Windows.Foundation.Metadata.CompositionType compositionType,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ComposableAttribute", "ComposableAttribute.ComposableAttribute(Type type, CompositionType compositionType, uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ComposableAttribute( global::System.Type type,  global::Windows.Foundation.Metadata.CompositionType compositionType,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ComposableAttribute", "ComposableAttribute.ComposableAttribute(Type type, CompositionType compositionType, uint version, Platform platform)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint, Windows.Foundation.Metadata.Platform)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ComposableAttribute( global::System.Type type,  global::Windows.Foundation.Metadata.CompositionType compositionType,  uint version,  string contract) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ComposableAttribute", "ComposableAttribute.ComposableAttribute(Type type, CompositionType compositionType, uint version, string contract)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint, string)
+	}
+
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="type">The type of the factory object that is used to create the programming element.</param>
+	/// <param name="compositionType">One of the enumeration values.</param>
+	/// <param name="version">The version.</param>
+	/// <param name="platform">A value of the enumeration. The default is Windows.</param>
+	public ComposableAttribute(Type type, CompositionType compositionType, uint version, Platform platform) : base()
+	{
+	}
+
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="type">The type of the factory object that is used to create the programming element.</param>
+	/// <param name="compositionType">One of the enumeration values.</param>
+	/// <param name="version">The version.</param>
+	/// <param name="contract">A string representing the type of the API contract implementing the class.</param>
+	public ComposableAttribute(Type type, CompositionType compositionType, uint version, string contract) : base()
+	{
 	}
 }

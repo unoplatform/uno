@@ -1,35 +1,46 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+using System;
+
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates the version of the API contract.
+/// </summary>
+[AttributeUsage(
+	AttributeTargets.Delegate |
+	AttributeTargets.Enum |
+	AttributeTargets.Event |
+	AttributeTargets.Field |
+	AttributeTargets.Interface |
+	AttributeTargets.Method |
+	AttributeTargets.Property |
+	AttributeTargets.Class |
+	AttributeTargets.Struct,
+	AllowMultiple = true)]
+public partial class ContractVersionAttribute : Attribute
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ContractVersionAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="version">The version of the API contract.</param>
+	public ContractVersionAttribute(uint version) : base()
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContractVersionAttribute( uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ContractVersionAttribute", "ContractVersionAttribute.ContractVersionAttribute(uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ContractVersionAttribute.ContractVersionAttribute(uint)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContractVersionAttribute( global::System.Type contract,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ContractVersionAttribute", "ContractVersionAttribute.ContractVersionAttribute(Type contract, uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ContractVersionAttribute.ContractVersionAttribute(System.Type, uint)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContractVersionAttribute( string contract,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ContractVersionAttribute", "ContractVersionAttribute.ContractVersionAttribute(string contract, uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ContractVersionAttribute.ContractVersionAttribute(string, uint)
+	}
+
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="contract">The type to associate with the API contract.</param>
+	/// <param name="version">The version of the API contract.</param>
+	public ContractVersionAttribute(Type contract, uint version) : base()
+	{
+	}
+
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="contract">The type to associate with the API contract.</param>
+	/// <param name="version">The version of the API contract.</param>
+	public ContractVersionAttribute(string contract, uint version) : base()
+	{
 	}
 }

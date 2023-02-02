@@ -1,19 +1,18 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+using System;
+
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates the name of the attribute.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public partial class AttributeNameAttribute : Attribute
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class AttributeNameAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="A_0">One or more of the enumeration values.</param>
+	public AttributeNameAttribute(string A_0) : base()
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AttributeNameAttribute( string A_0) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.AttributeNameAttribute", "AttributeNameAttribute.AttributeNameAttribute(string A_0)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.AttributeNameAttribute.AttributeNameAttribute(string)
 	}
 }

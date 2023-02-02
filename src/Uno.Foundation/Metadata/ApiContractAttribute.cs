@@ -1,19 +1,17 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+using System;
+
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Specifies that the type represents an API contract.
+/// </summary>
+[AttributeUsage(AttributeTargets.Enum)]
+public partial class ApiContractAttribute : Attribute
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ApiContractAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	public ApiContractAttribute() : base()
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ApiContractAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ApiContractAttribute", "ApiContractAttribute.ApiContractAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ApiContractAttribute.ApiContractAttribute()
 	}
 }

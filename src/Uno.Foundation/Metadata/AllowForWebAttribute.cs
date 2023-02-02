@@ -1,19 +1,15 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+using System;
+
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Enables developers to expose a native object as a global parameter in the context of the top-level document
+/// inside of a WebView.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public partial class AllowForWebAttribute : Attribute
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class AllowForWebAttribute : global::System.Attribute
+	public AllowForWebAttribute() : base()
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllowForWebAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.AllowForWebAttribute", "AllowForWebAttribute.AllowForWebAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.AllowForWebAttribute.AllowForWebAttribute()
 	}
 }

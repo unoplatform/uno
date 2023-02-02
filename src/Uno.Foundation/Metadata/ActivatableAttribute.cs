@@ -1,59 +1,68 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+using System;
+
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates that the class is an activatable runtime class.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public partial class ActivatableAttribute : Attribute
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ActivatableAttribute : global::System.Attribute
+	/// <summary>
+	/// Indicates that the runtime class can be activated with no parameters,
+	/// starting in a particular version.
+	/// </summary>
+	/// <param name="version"></param>
+	public ActivatableAttribute(uint version) : base()
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( uint version,  string type) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(uint version, string type)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(uint version, Platform platform)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, Windows.Foundation.Metadata.Platform)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( global::System.Type type,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(Type type, uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( global::System.Type type,  uint version,  string contractName) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(Type type, uint version, string contractName)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( global::System.Type type,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(Type type, uint version, Platform platform)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, Windows.Foundation.Metadata.Platform)
+	}
+
+	/// <summary>
+	/// Indicates that the runtime class can be activated with no parameters,
+	/// starting in a particular version of a particular API contract.
+	/// </summary>
+	/// <param name="version">The minimum version that can activate the runtime class with the specified interface.</param>
+	/// <param name="type">The name of the API contract that can activate the runtime class with no parameters.</param>
+	public ActivatableAttribute(uint version, string type) : base()
+	{
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="version">The version of the platform that can activate the runtime class with the specified interface.</param>
+	/// <param name="platform">The platform that can activate the runtime class with the specified interface.</param>
+	public ActivatableAttribute(uint version, Platform platform) : base()
+	{
+	}
+
+	/// <summary>
+	/// Indicates that the runtime class can be activated with parameters, starting in a particular version.
+	/// </summary>
+	/// <param name="type">The type of the interface that is used to activate objects.</param>
+	/// <param name="version">The minimum version that can activate the runtime class with the specified interface.</param>
+	public ActivatableAttribute(Type type, uint version) : base()
+	{
+	}
+
+	/// <summary>
+	/// Indicates that the runtime class can be activated with parameters, starting in a particular version of a particular API contract.
+	/// </summary>
+	/// <param name="type">The type of the interface that is used to activate objects.</param>
+	/// <param name="version">The minimum version of the API contract that can activate the runtime class with the specified interface. The major version is in the high-order 16-bits and the minor version is in the low-order 16 bits.</param>
+	/// <param name="contractName">The name of the API contract that can activate the runtime class with the specified interface.</param>
+	public ActivatableAttribute(Type type, uint version, string contractName) : base()
+	{
+	}
+
+	/// <summary>
+	/// Indicates that the runtime class can be activated with parameters,
+	/// starting in a particular version of a particular platform.
+	/// </summary>
+	/// <param name="type">The type of the interface that is used to activate objects.</param>
+	/// <param name="version">The version of the platform that can activate the runtime class with the specified interface.</param>
+	/// <param name="platform">The platform that can activate the runtime class with the specified interface.</param>
+	public ActivatableAttribute(Type type, uint version, Platform platform) : base()
+	{
 	}
 }
