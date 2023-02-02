@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		public static implicit operator Brush(Color uiColor) => SolidColorBrushHelper.FromARGB(uiColor.A, uiColor.R, uiColor.G, uiColor.B);
+		public static implicit operator Brush(Color uiColor) => new SolidColorBrush(uiColor);
 
 		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
 
