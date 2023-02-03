@@ -113,6 +113,7 @@ namespace Windows.Devices.Lights
 			var isOn = _isEnabled && _brightness > 0;
 			lock (_lock)
 			{
+#if ANDROID33_0_OR_GREATER || (MONOANDROID && !MONOANDROID12_0)
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.Tiramisu)
 				{
 					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
@@ -120,7 +121,6 @@ namespace Windows.Devices.Lights
 					{
 						return;
 					}
-
 					var characteristics = _cameraManager.GetCameraCharacteristics(_defaultCameraId);
 					const int minLevel = 1;
 					var maxLevel = (Java.Lang.Integer)characteristics.Get(CameraCharacteristics.FlashInfoStrengthMaximumLevel);
@@ -136,7 +136,9 @@ namespace Windows.Devices.Lights
 					var nativeLevel = minLevel + _brightness * ((int)maxLevel - minLevel);
 					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId, (int)Math.Round(nativeLevel));
 				}
-				else if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
+				else
+#endif
+				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
 				{
 					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
 				}
