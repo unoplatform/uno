@@ -12,7 +12,7 @@
 		<TextBlock x:Uid="When_xUid"
 				   x:FieldModifier="public"
 				   x:Name="defaultResolver" />
-		<TextBlock x:Uid="/TopLevelNamedRuntimeTests/When_xUid_Explicit"
+		<TextBlock x:Uid="/Uno.UI.RuntimeTests/TopLevelNamedRuntimeTests/When_xUid_Explicit"
 				   x:FieldModifier="public"
 				   x:Name="namedResolver" />
 		<TextBlock x:Uid="SomePrefix/When_xUid_With_Prefix"

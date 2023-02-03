@@ -14,6 +14,8 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 	[TestClass]
 	public class Given_ResourceLoader
 	{
+		private const string UITestResources = "Uno.UI.Tests/Resources";
+
 		[TestInitialize]
 		public void Init()
 		{
@@ -34,7 +36,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		{
 			_ResourceLoader.DefaultLanguage = "en";
 
-			Assert.AreEqual("App70-en", _ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
+			Assert.AreEqual("App70-en", _ResourceLoader.GetForCurrentView(UITestResources).GetString("ApplicationName"));
 		}
 
 		[TestMethod]
@@ -42,7 +44,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		{
 			_ResourceLoader.DefaultLanguage = "en";
 
-			Assert.AreEqual("", _ResourceLoader.GetForCurrentView().GetString("TestEmptyResource"));
+			Assert.AreEqual("", _ResourceLoader.GetForCurrentView(UITestResources).GetString("TestEmptyResource"));
 		}
 
 		[TestMethod]
@@ -55,19 +57,19 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 			}
 
 			setResources("fr");
-			Assert.AreEqual("App70-fr", _ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
+			Assert.AreEqual("App70-fr", _ResourceLoader.GetForCurrentView(UITestResources).GetString("ApplicationName"));
 
 			setResources("fr-FR");
-			Assert.AreEqual("App70-fr", _ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
+			Assert.AreEqual("App70-fr", _ResourceLoader.GetForCurrentView(UITestResources).GetString("ApplicationName"));
 
 			setResources("en");
-			Assert.AreEqual("App70-en", _ResourceLoader.GetForCurrentView().GetString("ApplicationName"));
+			Assert.AreEqual("App70-en", _ResourceLoader.GetForCurrentView(UITestResources).GetString("ApplicationName"));
 		}
 
 		[TestMethod]
 		public void When_MissingLocalizedResource_FallbackOnParent()
 		{
-			var SUT = _ResourceLoader.GetForCurrentView();
+			var SUT = _ResourceLoader.GetForCurrentView(UITestResources);
 
 			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
 			Assert.AreEqual(@"Text in 'fr'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
@@ -76,7 +78,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		[TestMethod]
 		public void When_MissingLocalizedResource_FallbackOnDefault()
 		{
-			var SUT = _ResourceLoader.GetForCurrentView();
+			var SUT = _ResourceLoader.GetForCurrentView(UITestResources);
 
 			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
 			Assert.AreEqual(@"Text in 'en'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));

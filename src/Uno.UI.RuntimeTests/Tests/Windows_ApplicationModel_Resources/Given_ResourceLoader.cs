@@ -88,6 +88,27 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		public void When_Assembly_NamedLoader_TopLevelNamedRuntimeTests()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse("Uno.UI.RuntimeTests/TopLevelNamedRuntimeTests");
+			Assert.AreEqual(@"en-US Value for When_xUid_Explicit in TopLevelNamedRuntimeTests", SUT.GetString("When_xUid_Explicit/Text"));
+		}
+
+		[TestMethod]
+		public void When_Assembly_NamedLoader_Resources()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse("Uno.UI.RuntimeTests/Resources");
+			Assert.AreEqual(@"RuntimeTest Additional Resource", SUT.GetString("RuntimeTests_AdditionalResource"));
+		}
+
+		[TestMethod]
+		public void When_Assembly_NamedLoader_Resources_With_Prefix()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse("Uno.UI.RuntimeTests/Resources");
+			Assert.AreEqual(@"en-US Value for SomePrefix/When_xUid_With_Prefix", SUT.GetString("SomePrefix/When_xUid_With_Prefix/Text"));
+		}
+
+		[TestMethod]
 		public void When_UnnamedLoader_UnknownResource()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
@@ -95,7 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		public void When_NnamedLoader_UnknownResource()
+		public void When_NamedLoader_UnknownResource()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse("Test01");
 			Assert.AreEqual(@"", SUT.GetString("Given_ResourceLoader/INVALID_RESOURCE_NAME"));
