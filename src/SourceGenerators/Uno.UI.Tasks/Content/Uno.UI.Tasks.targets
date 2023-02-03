@@ -85,6 +85,8 @@
 									 TargetPlatform="$(XamarinProjectType)"
 									 IntermediateOutputPath="$(IntermediateOutputPath)"
 									 DefaultLanguage="$(DefaultLanguage)"
+									 IsUnoHead="$(IsUnoHead)"
+									 ProjectName="$(AssemblyName)"
 									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
 			<Output TaskParameter="GeneratedFiles"
 							ItemName="GeneratedFiles" />
