@@ -10,12 +10,6 @@ namespace Windows.UI.Composition
 {
 	public partial class Compositor
 	{
-		private const float ShadowOffsetMax = 150;
-		private const byte ShadowAlphaFallback = 150;
-		private const float ShadowAlphaModifier = 1f / 650f;
-		private const float ShadowSigmaXModifier = 1f / 5f;
-		private const float ShadowSigmaYModifier = 1f / 3.5f;
-
 		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
 		private bool _isDirty;
@@ -175,31 +169,6 @@ namespace Windows.UI.Composition
 				_isDirty = true;
 				CoreWindow.QueueInvalidateRender();
 			}
-		}
-
-		private void ComputeDropShadowValues(float offsetZ, out float dx, out float dy, out float sigmaX, out float sigmaY, out SKColor shadowColor)
-		{
-			// Following math magic seems to follow UWP ThemeShadow quite nicely.
-			byte alpha;
-			if (offsetZ <= ShadowOffsetMax)
-			{
-				// Alpha should slightly decrease as the offset increases
-				alpha = (byte)((1.0f - (offsetZ * ShadowAlphaModifier)) * 255);
-			}
-			else
-			{
-				alpha = ShadowAlphaFallback;
-				offsetZ = ShadowOffsetMax;
-			}
-
-			// Make black less prominent
-			alpha = (byte)(alpha / 3);
-
-			dx = 0;
-			dy = offsetZ / 2 - offsetZ * ShadowSigmaYModifier;
-			sigmaX = offsetZ * ShadowSigmaXModifier;
-			sigmaY = offsetZ * ShadowSigmaYModifier;
-			shadowColor = SKColor.Parse("000000").WithAlpha(alpha);
-		}
+		}		
 	}
 }
