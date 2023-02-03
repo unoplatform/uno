@@ -90,13 +90,13 @@ namespace Windows.UI
 			// deal with optional alpha value
 			if (len == 4)
 			{
-				a = Convert.ToByte(colorCode[offset++]);
+				a = ToByte(colorCode[offset++]);
 				a = (byte)(a << 4 + a);
 				len = 3;
 			}
 			else if (len == 8)
 			{
-				a = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
+				a = (byte)((ToByte(colorCode[offset++]) << 4) + ToByte(colorCode[offset++]));
 				len = 6;
 			}
 			else
@@ -107,18 +107,18 @@ namespace Windows.UI
 			// the process the required R G and B values
 			if (len == 3)
 			{
-				r = Convert.ToByte(colorCode[offset++]);
+				r = ToByte(colorCode[offset++]);
 				r = (byte)(r << 4 + r);
-				g = Convert.ToByte(colorCode[offset++]);
+				g = ToByte(colorCode[offset++]);
 				g = (byte)(g << 4 + g);
-				b = Convert.ToByte(colorCode[offset++]);
+				b = ToByte(colorCode[offset++]);
 				b = (byte)(b << 4 + b);
 			}
 			else if (len == 6)
 			{
-				r = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
-				g = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
-				b = (byte)(Convert.ToByte(colorCode[offset++]) << 8 + Convert.ToByte(colorCode[offset++]));
+				r = (byte)((ToByte(colorCode[offset++]) << 4) + ToByte(colorCode[offset++]));
+				g = (byte)((ToByte(colorCode[offset++]) << 4) + ToByte(colorCode[offset++]));
+				b = (byte)((ToByte(colorCode[offset++]) << 4) + ToByte(colorCode[offset++]));
 			}
 			else
 			{
@@ -127,6 +127,26 @@ namespace Windows.UI
 				b = 0x0;
 			}
 			return new Color(a, r, g, b);
+		}
+
+		static private byte ToByte(char c)
+		{
+			if (c >= '0' && c <= '9')
+			{
+				return (byte)(c - '0');
+			}
+			else if (c >= 'a' && c <= 'f')
+			{
+				return (byte)(c - 'a' + 10);
+			}
+			else if (c >= 'A' && c <= 'F')
+			{
+				return (byte)(c - 'A' + 10);
+			}
+			else
+			{
+				throw new FormatException();
+			}
 		}
 
 		private static Color? _transparent;
