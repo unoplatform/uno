@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
-    public class EmptyTestControl : FrameworkElement
-    {
-    }
+	public class EmptyTestControl : FrameworkElement
+	{
+	}
 }

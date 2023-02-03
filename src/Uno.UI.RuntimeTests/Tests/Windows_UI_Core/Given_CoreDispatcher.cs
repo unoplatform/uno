@@ -21,33 +21,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 			string result = string.Empty;
 			try
 			{
-			  await CoreDispatcher.Main.RunAsync(() => result = Success);
+				await CoreDispatcher.Main.RunAsync(() => result = Success);
 			}
 			catch (Exception)
 			{
-			  result = "failure";
+				result = "failure";
 			}
 			Assert.AreEqual(Success, result);
 
 			result = string.Empty;
 			try
 			{
-			  await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => result = Success);
+				await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => result = Success);
 			}
 			catch (Exception)
 			{
-			  result = "failure";
+				result = "failure";
 			}
 			Assert.AreEqual(Success, result);
 
 			result = string.Empty;
 			try
 			{
-			  await Task.Run(() => result = Success);
+				await Task.Run(() => result = Success);
 			}
 			catch (Exception)
 			{
-			  result = "failure";
+				result = "failure";
 			}
 			Assert.AreEqual(Success, result);
 		}

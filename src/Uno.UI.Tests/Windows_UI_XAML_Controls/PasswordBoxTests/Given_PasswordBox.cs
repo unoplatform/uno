@@ -70,7 +70,7 @@ namespace Uno.UI.Tests.PasswordBoxTests
 					if (_sourceText != value)
 					{
 						_sourceText = value;
-						OnPropertyChanged(); 
+						OnPropertyChanged();
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;  
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,7 +150,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			var SUT = new Selector();
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -182,7 +183,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			var SUT = new Selector();
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -217,7 +219,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 		[TestMethod]
 		public void When_SelectionChanged_And_SelectorItem_IsSelected_Changed()
 		{
-			var SUT = new Selector() {
+			var SUT = new Selector()
+			{
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 			};
@@ -225,7 +228,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 

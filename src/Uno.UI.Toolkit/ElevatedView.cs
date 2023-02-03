@@ -84,7 +84,7 @@ namespace Uno.UI.Toolkit
 			UpdateElevation();
 		}
 
-		public static DependencyProperty ElevationProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ElevationProperty { get; } = DependencyProperty.Register(
 			"Elevation", typeof(double), typeof(ElevatedView), new PropertyMetadata(default(double), OnChanged));
 
 #if __ANDROID__
@@ -97,7 +97,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(ElevationProperty, value);
 		}
 
-		public static DependencyProperty ShadowColorProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ShadowColorProperty { get; } = DependencyProperty.Register(
 			"ShadowColor", typeof(Color), typeof(ElevatedView), new PropertyMetadata(DefaultShadowColor, OnChanged));
 
 		public Color ShadowColor
@@ -106,7 +106,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(ShadowColorProperty, value);
 		}
 
-		public static DependencyProperty ElevatedContentProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ElevatedContentProperty { get; } = DependencyProperty.Register(
 			"ElevatedContent", typeof(object), typeof(ElevatedView), new PropertyMetadata(default(object)));
 
 		public object ElevatedContent
@@ -116,7 +116,7 @@ namespace Uno.UI.Toolkit
 		}
 
 #if HAS_UNO
-		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
+		public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 			"Background",
 			typeof(Brush),
 			typeof(ElevatedView),
@@ -133,7 +133,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-		public new static DependencyProperty CornerRadiusProperty { get ; } = DependencyProperty.Register(
+		public new static DependencyProperty CornerRadiusProperty { get; } = DependencyProperty.Register(
 			"CornerRadius",
 			typeof(CornerRadius),
 			typeof(ElevatedView),

@@ -97,7 +97,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		{
 			var currentCulture = Thread.CurrentThread.CurrentCulture;
 			try
-			{				
+			{
 				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 				var app = UnitTestsApp.App.EnsureApplication();
 

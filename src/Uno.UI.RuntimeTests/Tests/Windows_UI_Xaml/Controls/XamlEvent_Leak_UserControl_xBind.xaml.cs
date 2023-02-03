@@ -17,12 +17,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
-    public sealed partial class XamlEvent_Leak_UserControl_xBind : UserControl
-    {
-        public XamlEvent_Leak_UserControl_xBind()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class XamlEvent_Leak_UserControl_xBind : UserControl
+	{
+		public XamlEvent_Leak_UserControl_xBind()
+		{
+			this.InitializeComponent();
+		}
 
 		public int Value { get; set; }
 	}

@@ -18,15 +18,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.App.Xaml
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Test_Control_With_Initializer : UserControl
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class Test_Control_With_Initializer : UserControl
+	{
 
 		public Test_Control_With_Initializer()
-        {
-            this.InitializeComponent();
-        }
-    }
+		{
+			this.InitializeComponent();
+		}
+	}
 }

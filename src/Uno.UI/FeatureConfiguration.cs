@@ -163,7 +163,7 @@ namespace Uno.UI
 
 		public static class Font
 		{
-			private static string _symbolsFont = 
+			private static string _symbolsFont =
 #if __WASM__ || __MACOS__ || __IOS__
 				"Symbols";
 #else

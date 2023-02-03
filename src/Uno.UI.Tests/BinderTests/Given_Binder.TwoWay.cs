@@ -171,7 +171,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			var dp1 = new MyDP();
 			var dp2 = new MyDP();
-			
+
 			var binding = new Binding
 			{
 				Source = dp1,

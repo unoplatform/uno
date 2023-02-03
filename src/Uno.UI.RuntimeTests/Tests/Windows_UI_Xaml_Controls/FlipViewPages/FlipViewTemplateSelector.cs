@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FlipViewPages
 		{
 			return Convert.ToInt32(item) % 2 == 0
 					? TemplateEven
-					: TemplateOdd;			
+					: TemplateOdd;
 		}
 	}
 }

@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			FlyoutBase.ShowAttachedFlyout(button);
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 			flyout.Hide();
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);			
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
 		}
 
 		[TestMethod]

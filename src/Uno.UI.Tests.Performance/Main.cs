@@ -10,8 +10,8 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Performance
 {
-    class Program
-    {
+	class Program
+	{
 		static void Main(string[] args)
 		{
 			DataContextOnly_GraphPropagation();
@@ -86,9 +86,9 @@ namespace Uno.UI.Tests.Performance
 
 		private static void Validate01(MyClass root)
 		{
-			foreach(var item in root.Flatten(v => v.Children))
+			foreach (var item in root.Flatten(v => v.Children))
 			{
-				if(item.DataContext != root.DataContext)
+				if (item.DataContext != root.DataContext)
 				{
 					throw new Exception();
 				}
@@ -178,11 +178,11 @@ namespace Uno.UI.Tests.Performance
 		// Using a DependencyProperty as the backing store for FontSize.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty FontSizeProperty =
 			DependencyProperty.Register(
-				name: "FontSize", 
-				propertyType: typeof(int), 
+				name: "FontSize",
+				propertyType: typeof(int),
 				ownerType: typeof(MyNamedPropertyClass),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: 0, 
+					defaultValue: 0,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((MyNamedPropertyClass)s)?.OnFontSizeChanged(e)
 				)

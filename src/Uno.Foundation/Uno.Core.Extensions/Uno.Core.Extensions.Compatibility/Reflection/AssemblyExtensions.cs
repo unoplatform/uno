@@ -21,13 +21,13 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Extensions
 {
-    internal static class AssemblyExtensions
-    {
-        public static Version GetVersionNumber(this Assembly assembly)
-        {
-            // Note: Assembly.GetExecutingAssembly().GetName() is not accessible in WP7
-            return new Version(Regex.Match(assembly.FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString());
-        }
+	internal static class AssemblyExtensions
+	{
+		public static Version GetVersionNumber(this Assembly assembly)
+		{
+			// Note: Assembly.GetExecutingAssembly().GetName() is not accessible in WP7
+			return new Version(Regex.Match(assembly.FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString());
+		}
 
 		public static string GetProductName(this Assembly assembly)
 		{
@@ -35,7 +35,7 @@ namespace Uno.Extensions
 			return productNameAttribute == null ? null : productNameAttribute.Product;
 		}
 
-    	public static string GetCopyright(this Assembly assembly)
+		public static string GetCopyright(this Assembly assembly)
 		{
 			var assemblyCopyrightAttribute = assembly.GetAssemblyAttribute<AssemblyCopyrightAttribute>();
 			return assemblyCopyrightAttribute == null ? null : assemblyCopyrightAttribute.Copyright;
@@ -52,5 +52,5 @@ namespace Uno.Extensions
 			return (T)Attribute.GetCustomAttribute(assembly, typeof(T));
 		}
 #endif
-	} 
+	}
 }

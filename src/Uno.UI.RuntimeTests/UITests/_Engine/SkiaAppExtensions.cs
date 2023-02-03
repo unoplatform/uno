@@ -28,5 +28,5 @@ internal static class SkiaAppExtensions
 	public static IEnumerable<QueryResult> WaitForElement(this IApp app, Func<IAppQuery, IAppQuery> query)
 		=> app.Query(query);
 
-	
+
 }

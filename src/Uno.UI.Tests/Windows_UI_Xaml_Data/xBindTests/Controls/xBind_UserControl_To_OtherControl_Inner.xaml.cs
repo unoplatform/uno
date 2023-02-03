@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
-	#pragma warning disable UXAML0002
+#pragma warning disable UXAML0002
 	public sealed partial class xBind_UserControl_To_OtherControl_Inner /* : UserControl: Don't specify the base type so x:Bind generator lookups uses the XAML control type */
 #pragma warning restore UXAML0002
 	{

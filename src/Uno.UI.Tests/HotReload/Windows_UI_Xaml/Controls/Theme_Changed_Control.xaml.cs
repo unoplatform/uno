@@ -18,17 +18,17 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.HotReload.Windows_UI_Xaml.Controls
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Theme_Changed_Control : UserControl
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class Theme_Changed_Control : UserControl
+	{
 		public ResourceTestControl InlineTemplateControl => inlineTemplateControl;
 		public ResourceTestControl TemplateFromResourceControl => templateFromResourceControl;
 
 		public Theme_Changed_Control()
-        {
-            this.InitializeComponent();
-        }
-    }
+		{
+			this.InitializeComponent();
+		}
+	}
 }

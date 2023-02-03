@@ -78,7 +78,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_ContentPresenter_Recylced()
 		{
 			_mockProvider.CanUseMemoryManager = false;
-			
+
 			var SUT = new ContentControl();
 			SUT.Content = "asd";
 

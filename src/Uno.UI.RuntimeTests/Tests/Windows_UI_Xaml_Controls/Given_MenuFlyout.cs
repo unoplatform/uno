@@ -256,7 +256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var flyoutItem = new MenuFlyoutItem
 			{
 				Command = command1,
-				Text="test flyout"
+				Text = "test flyout"
 			};
 
 			SUT.Items.Add(item);

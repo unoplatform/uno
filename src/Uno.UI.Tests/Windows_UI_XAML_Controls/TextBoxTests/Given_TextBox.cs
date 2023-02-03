@@ -214,7 +214,7 @@ namespace Uno.UI.Tests.TextBoxTests
 					if (_sourceText != value)
 					{
 						_sourceText = value;
-						OnPropertyChanged(); 
+						OnPropertyChanged();
 					}
 				}
 			}

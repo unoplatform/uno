@@ -8,9 +8,9 @@ namespace Uno.UWPSyncGenerator
 	{
 		public bool Equals(ITypeSymbol x, ITypeSymbol y)
 		{
-			while(y?.BaseType?.Name != "Object")
+			while (y?.BaseType?.Name != "Object")
 			{
-				if(SymbolEqualityComparer.Default.Equals(x, y))
+				if (SymbolEqualityComparer.Default.Equals(x, y))
 				{
 					return true;
 				}

@@ -46,7 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 			yield return new object[] { BitmapEncoder.JpegEncoderId, false };
 			yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
 			yield return new object[] { BitmapEncoder.PngEncoderId, false };
-			yield return new object[] { BitmapEncoder.TiffEncoderId, true};
+			yield return new object[] { BitmapEncoder.TiffEncoderId, true };
 #elif __ANDROID__
 			yield return new object[] { BitmapEncoder.BmpEncoderId, true };
 			yield return new object[] { BitmapEncoder.GifEncoderId, true };

@@ -39,16 +39,16 @@ namespace Windows.UI.Composition
 
 		private void AnimateKeyFrameAnimation(string propertyName, KeyFrameAnimation kfa)
 		{
-			switch(propertyName)
+			switch (propertyName)
 			{
 				case nameof(RotationAngleInDegrees):
 					var animations = new List<UnoCoreAnimation>();
-					for (int i = 0; i < kfa.Keys.Length-1; i++)
+					for (int i = 0; i < kfa.Keys.Length - 1; i++)
 					{
-						animations.Add(CreateCoreAnimation(NativeLayer, kfa.Keys[i], kfa.Keys[i+1], "transform.rotation", value => new NSNumber(ToRadians(value))));
+						animations.Add(CreateCoreAnimation(NativeLayer, kfa.Keys[i], kfa.Keys[i + 1], "transform.rotation", value => new NSNumber(ToRadians(value))));
 					}
 
-					foreach(var a in animations)
+					foreach (var a in animations)
 					{
 						a.Start();
 					}
@@ -57,22 +57,22 @@ namespace Windows.UI.Composition
 		}
 
 		private UnoCoreAnimation CreateCoreAnimation(
-			CALayer layer, 
+			CALayer layer,
 			KeyFrameAnimation.KeyFrame from,
-			KeyFrameAnimation.KeyFrame to, 
-			string property, 
+			KeyFrameAnimation.KeyFrame to,
+			string property,
 			Func<float, NSValue> nsValueConversion
 		)
 		{
 			var timingFunction = CAMediaTimingFunction.FromName(CAMediaTimingFunction.Linear);
 
 			return new UnoCoreAnimation(
-				layer, 
+				layer,
 				property,
 				from.Value,
 				to.Value,
 				from.NormalizedProgressKey,
-				from.NormalizedProgressKey - to.NormalizedProgressKey, 
+				from.NormalizedProgressKey - to.NormalizedProgressKey,
 				timingFunction,
 				nsValueConversion,
 				FinalizeAnimation,

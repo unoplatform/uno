@@ -26,7 +26,7 @@ namespace Uno.Conversion
 		/// </summary>
 		/// <returns>true=supported</returns>
 		bool CanConvert(object value, Type toType, CultureInfo culture = null);
-		
+
 		/// <summary>
 		/// Issue the conversion result
 		/// </summary>

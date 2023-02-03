@@ -8,8 +8,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 {
 	[TestClass]
 	public class Given_MidiProgramChangeMessage
-    {
-        [TestMethod]
+	{
+		[TestMethod]
 		public void When_RawData()
 		{
 			var message = new MidiProgramChangeMessage(2, 98);

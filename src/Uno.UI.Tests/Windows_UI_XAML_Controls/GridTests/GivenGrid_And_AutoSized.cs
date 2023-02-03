@@ -39,7 +39,7 @@ namespace Uno.UI.Tests.GridTests
 
 			Assert.AreEqual(new Rect(0, 0, 5, 20), c1.Arranged);
 			Assert.AreEqual(new Rect(5, 0, 15, 20), c2.Arranged);
-			
+
 			Assert.AreEqual(2, SUT.GetChildren().Count());
 		}
 

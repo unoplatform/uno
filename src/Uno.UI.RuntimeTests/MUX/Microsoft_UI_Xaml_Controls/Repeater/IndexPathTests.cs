@@ -38,15 +38,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Verify.AreEqual(2, path.GetSize());
 				Verify.AreEqual(1, path.GetAt(0));
 				Verify.AreEqual(2, path.GetAt(1));
-				
+
 				Verify.AreEqual(0, IndexPath.CreateFrom(0, 1).CompareTo(IndexPath.CreateFrom(0, 1)));
 				Verify.AreEqual(-1, IndexPath.CreateFrom(0, 1).CompareTo(IndexPath.CreateFrom(1, 0)));
 				Verify.AreEqual(1, IndexPath.CreateFrom(0, 1).CompareTo(IndexPath.CreateFrom(0, 0)));
-				
+
 				Verify.AreEqual(-1, IndexPath.CreateFrom(1, 0).CompareTo(IndexPath.CreateFrom(1, 1)));
 				Verify.AreEqual(0, IndexPath.CreateFrom(1, 0).CompareTo(IndexPath.CreateFrom(1, 0)));
 				Verify.AreEqual(1, IndexPath.CreateFrom(1, 1).CompareTo(IndexPath.CreateFrom(1, 0)));
-				
+
 
 				var emptyPath = IndexPath.CreateFromIndices(null);
 				Verify.AreEqual(0, emptyPath.CompareTo(emptyPath));

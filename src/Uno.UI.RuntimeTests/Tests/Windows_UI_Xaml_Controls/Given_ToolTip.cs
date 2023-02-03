@@ -140,7 +140,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				ToolTipService.SetToolTip(host, toolTip);
 				toolTip.IsOpen = true;
-				
+
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.WindowHelper.WaitForIdle();
 

@@ -78,8 +78,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				dataSource.ValidateGetAtCalls();
 				dataSource.ValidateGetSizeCalls(1); // GetSize calls are cached by ItemsSourceView
-				// Whenever we get an element from the view generator, we call HasKeyIndexMapping to see if we should
-				// store its unique id or not.
+													// Whenever we get an element from the view generator, we call HasKeyIndexMapping to see if we should
+													// store its unique id or not.
 				dataSource.ValidateGetItemIdCalls();
 				elementFactory.ValidateGetElementCalls();
 				elementFactory.ValidateRecycleElementCalls(new MockElementFactory.RecycleElementCallInfo(item1, repeater));
@@ -620,7 +620,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				var elementFactory = new DataAsElementElementFactory();
 
-				var repeater = new ItemsRepeater() {
+				var repeater = new ItemsRepeater()
+				{
 					ItemsSource = data,
 					ItemTemplate = elementFactory
 				};
@@ -658,7 +659,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				var elementFactory = new ElementFromElementElementFactory();
 
-				var repeater = new ItemsRepeater() 
+				var repeater = new ItemsRepeater()
 				{
 					ItemsSource = data,
 					ItemTemplate = elementFactory
@@ -794,12 +795,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Log.Comment("Initialize ItemsRepeater");
 			RunOnUIThread.Execute(() =>
 			{
-				elementFactory = new MockElementFactory() {
-					GetElementFunc = delegate (int index, UIElement owner) {
+				elementFactory = new MockElementFactory()
+				{
+					GetElementFunc = delegate (int index, UIElement owner)
+					{
 						return new Button() { Content = index };
-						   },
+					},
 
-					ClearElementFunc = delegate (UIElement element, UIElement owner) {
+					ClearElementFunc = delegate (UIElement element, UIElement owner)
+					{
 						elementClearingRaisedCount++;
 						Verify.IsNull((element as FrameworkElement).DataContext);
 					}
@@ -872,7 +876,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return layout;
 		}
 
-		private ItemsRepeater SetupRepeater(object dataSource, string itemContent= @"<Button Content='{Binding}' Height='100' />")
+		private ItemsRepeater SetupRepeater(object dataSource, string itemContent = @"<Button Content='{Binding}' Height='100' />")
 		{
 			VirtualizingLayout layout = null;
 			RunOnUIThread.Execute(() => layout = new StackLayout());
@@ -882,7 +886,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		private ItemsRepeater SetupRepeater(object dataSource, VirtualizingLayout layout, out ScrollViewer scrollViewer)
 		{
-			return SetupRepeater( dataSource, layout, @"<Button Content='{Binding}' Height='100' />", out scrollViewer);
+			return SetupRepeater(dataSource, layout, @"<Button Content='{Binding}' Height='100' />", out scrollViewer);
 		}
 
 		private ItemsRepeater SetupRepeater(object dataSource, VirtualizingLayout layout, string itemContent, out ScrollViewer scrollViewer)

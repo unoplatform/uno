@@ -254,7 +254,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__ANDROID__ && !__IOS__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
 			Assert.AreEqual(27, SUT.ActualHeight);
-			NumberAssert.Greater(SUT.ActualWidth, 0); 
+			NumberAssert.Greater(SUT.ActualWidth, 0);
 #endif
 		}
 

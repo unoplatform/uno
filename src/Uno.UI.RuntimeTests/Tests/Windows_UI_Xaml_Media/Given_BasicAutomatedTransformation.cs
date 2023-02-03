@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.RotateHost;
 			var result = await Arrange(SUT);
-			
+
 			Assert(SUT, result, 50, 50, colored);
 
 			// Top left
@@ -44,7 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			// Top right
 			Assert(SUT, result, 62 - PixelIncertitude, 0, colored);
-			Assert(SUT, result,65 + PixelIncertitude, 0, White);
+			Assert(SUT, result, 65 + PixelIncertitude, 0, White);
 			Assert(SUT, result, 99, 19 - PixelIncertitude, White);
 			Assert(SUT, result, 99, 21 + PixelIncertitude, colored);
 
@@ -59,7 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public async Task When_Translate()
 		{
 			const string colored = "#FF8000";
-			
+
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.TranslateHost;
 			var result = await Arrange(SUT);
@@ -69,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert(SUT, result, 15 + PixelIncertitude, 14 + PixelIncertitude, colored);
 
 			// Bottom left
-			Assert(SUT, result,14 - PixelIncertitude, 99, White);
+			Assert(SUT, result, 14 - PixelIncertitude, 99, White);
 			Assert(SUT, result, 15 + PixelIncertitude, 99, colored);
 
 			// Top right
@@ -131,7 +131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public async Task When_Composite()
 		{
 			const string colored = "#0000FF";
-			
+
 			var grid = new Basics_Automated_Transformation();
 			var SUT = grid.CompositeHost;
 			var result = await Arrange(SUT);
@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public async Task When_Group()
 		{
 			const string colored = "#A000C0";
-			
+
 			var grid = new Basics_Automated_Transformation();
 			FrameworkElement SUT = grid.GroupHost;
 			var result = await Arrange(SUT);
@@ -203,10 +203,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		private void Assert(FrameworkElement SUT, RawBitmap result, float x, float y, string color)
 		{
-			float border = 3; 
+			float border = 3;
 			float width = (float)SUT.ActualWidth;
 			float height = (float)SUT.ActualHeight;
-			float dpiScale =  width / (border + 100 + border);
+			float dpiScale = width / (border + 100 + border);
 
 			x *= dpiScale;
 			y *= dpiScale;

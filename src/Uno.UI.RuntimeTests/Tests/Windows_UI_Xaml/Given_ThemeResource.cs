@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					var brush = control.ThemeBoundBorder?.Background as SolidColorBrush;
 					Assert.IsNotNull(brush);
 					return brush.Color;
-				} 
+				}
 			}
 		}
 

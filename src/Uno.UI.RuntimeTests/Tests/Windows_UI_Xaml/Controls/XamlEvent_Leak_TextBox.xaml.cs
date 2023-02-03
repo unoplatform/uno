@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
-    public sealed partial class XamlEvent_Leak_TextBox : UserControl
-    {
-        public XamlEvent_Leak_TextBox()
-        {
-            this.InitializeComponent();
-        }
+	public sealed partial class XamlEvent_Leak_TextBox : UserControl
+	{
+		public XamlEvent_Leak_TextBox()
+		{
+			this.InitializeComponent();
+		}
 	}
 }

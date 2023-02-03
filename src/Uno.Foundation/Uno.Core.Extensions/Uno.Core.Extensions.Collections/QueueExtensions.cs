@@ -19,31 +19,31 @@ using System.Collections.Generic;
 
 namespace Uno.Extensions
 {
-    internal static class QueueExtensions
-    {
-        public static bool Remove<T>(this Queue<T> queue, Func<T, bool> predicate)
-        {
-            var result = false;
-            var allValues = queue.ToArray();
-            queue.Clear();
-            foreach (var v in allValues)
-            {
-                if (predicate(v))
-                {
-                    result = true;
-                    continue;
-                }
-                queue.Enqueue(v);
-            }
+	internal static class QueueExtensions
+	{
+		public static bool Remove<T>(this Queue<T> queue, Func<T, bool> predicate)
+		{
+			var result = false;
+			var allValues = queue.ToArray();
+			queue.Clear();
+			foreach (var v in allValues)
+			{
+				if (predicate(v))
+				{
+					result = true;
+					continue;
+				}
+				queue.Enqueue(v);
+			}
 
-            return result;
-        }
+			return result;
+		}
 
-	    public static T DequeueOrDefault<T>(this Queue<T> queue)
-	    {
-		    return queue.Count > 0
-			    ? queue.Dequeue()
-			    : default(T);
+		public static T DequeueOrDefault<T>(this Queue<T> queue)
+		{
+			return queue.Count > 0
+				? queue.Dequeue()
+				: default(T);
 		}
 	}
 }
