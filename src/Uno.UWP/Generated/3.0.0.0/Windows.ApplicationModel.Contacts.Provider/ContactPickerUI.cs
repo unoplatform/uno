@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ContactPickerUI.DesiredFields is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ContactPickerUI.DesiredFields is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20ContactPickerUI.DesiredFields");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPickerUI.SelectionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPickerUI.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactSelectionMode%20ContactPickerUI.SelectionMode");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactFieldType> ContactPickerUI.DesiredFieldsWithContactFieldType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ContactFieldType> ContactPickerUI.DesiredFieldsWithContactFieldType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CContactFieldType%3E%20ContactPickerUI.DesiredFieldsWithContactFieldType");
 			}
 		}
 		#endif
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.Provider.AddContactResult AddContact( string id,  global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw new global::System.NotImplementedException("The member AddContactResult ContactPickerUI.AddContact(string id, Contact contact) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AddContactResult ContactPickerUI.AddContact(string id, Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AddContactResult%20ContactPickerUI.AddContact%28string%20id%2C%20Contact%20contact%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ContainsContact( string id)
 		{
-			throw new global::System.NotImplementedException("The member bool ContactPickerUI.ContainsContact(string id) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ContactPickerUI.ContainsContact(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContactPickerUI.ContainsContact%28string%20id%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFields.get
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.Provider.AddContactResult AddContact( global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw new global::System.NotImplementedException("The member AddContactResult ContactPickerUI.AddContact(Contact contact) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AddContactResult ContactPickerUI.AddContact(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AddContactResult%20ContactPickerUI.AddContact%28Contact%20contact%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFieldsWithContactFieldType.get

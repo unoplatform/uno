@@ -13,7 +13,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CastingDevice.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CastingDevice.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CastingDevice.FriendlyName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType CastingDevice.Icon is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType CastingDevice.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamWithContentType%20CastingDevice.Icon");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CastingDevice.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CastingDevice.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CastingDevice.Id");
 			}
 		}
 		#endif
@@ -44,42 +44,42 @@ namespace Windows.Media.Casting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingPlaybackTypes> GetSupportedCastingPlaybackTypesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingPlaybackTypes> CastingDevice.GetSupportedCastingPlaybackTypesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingPlaybackTypes> CastingDevice.GetSupportedCastingPlaybackTypesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCastingPlaybackTypes%3E%20CastingDevice.GetSupportedCastingPlaybackTypesAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Casting.CastingConnection CreateCastingConnection()
 		{
-			throw new global::System.NotImplementedException("The member CastingConnection CastingDevice.CreateCastingConnection() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CastingConnection CastingDevice.CreateCastingConnection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CastingConnection%20CastingDevice.CreateCastingConnection%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector( global::Windows.Media.Casting.CastingPlaybackTypes type)
 		{
-			throw new global::System.NotImplementedException("The member string CastingDevice.GetDeviceSelector(CastingPlaybackTypes type) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CastingDevice.GetDeviceSelector(CastingPlaybackTypes type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CastingDevice.GetDeviceSelector%28CastingPlaybackTypes%20type%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetDeviceSelectorFromCastingSourceAsync( global::Windows.Media.Casting.CastingSource castingSource)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CastingDevice.GetDeviceSelectorFromCastingSourceAsync(CastingSource castingSource) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CastingDevice.GetDeviceSelectorFromCastingSourceAsync(CastingSource castingSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20CastingDevice.GetDeviceSelectorFromCastingSourceAsync%28CastingSource%20castingSource%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingDevice> FromIdAsync( string value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingDevice> CastingDevice.FromIdAsync(string value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingDevice> CastingDevice.FromIdAsync(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCastingDevice%3E%20CastingDevice.FromIdAsync%28string%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> DeviceInfoSupportsCastingAsync( global::Windows.Devices.Enumeration.DeviceInformation device)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CastingDevice.DeviceInfoSupportsCastingAsync(DeviceInformation device) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CastingDevice.DeviceInfoSupportsCastingAsync(DeviceInformation device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20CastingDevice.DeviceInfoSupportsCastingAsync%28DeviceInformation%20device%29");
 		}
 		#endif
 	}

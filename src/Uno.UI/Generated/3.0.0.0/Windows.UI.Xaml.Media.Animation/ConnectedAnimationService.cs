@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionEasingFunction ConnectedAnimationService.DefaultEasingFunction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionEasingFunction ConnectedAnimationService.DefaultEasingFunction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionEasingFunction%20ConnectedAnimationService.DefaultEasingFunction");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConnectedAnimationService.DefaultDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ConnectedAnimationService.DefaultDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ConnectedAnimationService.DefaultDuration");
 			}
 			set
 			{
@@ -43,21 +43,21 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareToAnimate( string key,  global::Windows.UI.Xaml.UIElement source)
 		{
-			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.PrepareToAnimate(string key, UIElement source) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.PrepareToAnimate(string key, UIElement source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectedAnimation%20ConnectedAnimationService.PrepareToAnimate%28string%20key%2C%20UIElement%20source%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation GetAnimation( string key)
 		{
-			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.GetAnimation(string key) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.GetAnimation(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectedAnimation%20ConnectedAnimationService.GetAnimation%28string%20key%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Media.Animation.ConnectedAnimationService GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member ConnectedAnimationService ConnectedAnimationService.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConnectedAnimationService ConnectedAnimationService.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectedAnimationService%20ConnectedAnimationService.GetForCurrentView%28%29");
 		}
 		#endif
 	}

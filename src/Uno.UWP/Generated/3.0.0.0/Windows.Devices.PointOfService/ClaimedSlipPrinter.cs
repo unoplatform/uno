@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LinesNearEndToEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LinesNearEndToEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.LinesNearEndToEnd");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.MaxLines is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.MaxLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.MaxLines");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size ClaimedSlipPrinter.PageSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size ClaimedSlipPrinter.PageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20ClaimedSlipPrinter.PageSize");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect ClaimedSlipPrinter.PrintArea is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect ClaimedSlipPrinter.PrintArea is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20ClaimedSlipPrinter.PrintArea");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterPrintSide ClaimedSlipPrinter.PrintSide is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterPrintSide ClaimedSlipPrinter.PrintSide is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterPrintSide%20ClaimedSlipPrinter.PrintSide");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.SidewaysMaxChars is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.SidewaysMaxChars is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.SidewaysMaxChars");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.SidewaysMaxLines is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.SidewaysMaxLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.SidewaysMaxLines");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LineSpacing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LineSpacing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.LineSpacing");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LineHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.LineHeight");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsLetterQuality is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsLetterQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsLetterQuality");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterColorCartridge ClaimedSlipPrinter.ColorCartridge is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterColorCartridge ClaimedSlipPrinter.ColorCartridge is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterColorCartridge%20ClaimedSlipPrinter.ColorCartridge");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.CharactersPerLine is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.CharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.CharactersPerLine");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCartridgeEmpty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCartridgeEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsCartridgeEmpty");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCartridgeRemoved is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCartridgeRemoved is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsCartridgeRemoved");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCoverOpen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCoverOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsCoverOpen");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsHeadCleaning is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsHeadCleaning is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsHeadCleaning");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsPaperEmpty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsPaperEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsPaperEmpty");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsPaperNearEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsPaperNearEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsPaperNearEnd");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsReadyToPrint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsReadyToPrint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.IsReadyToPrint");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LineWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedSlipPrinter.LineWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedSlipPrinter.LineWidth");
 			}
 		}
 		#endif
@@ -252,14 +252,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> InsertSlipAsync( global::System.TimeSpan timeout)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedSlipPrinter.InsertSlipAsync(TimeSpan timeout) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedSlipPrinter.InsertSlipAsync(TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ClaimedSlipPrinter.InsertSlipAsync%28TimeSpan%20timeout%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> RemoveSlipAsync( global::System.TimeSpan timeout)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedSlipPrinter.RemoveSlipAsync(TimeSpan timeout) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedSlipPrinter.RemoveSlipAsync(TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ClaimedSlipPrinter.RemoveSlipAsync%28TimeSpan%20timeout%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -273,7 +273,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.PointOfService.SlipPrintJob CreateJob()
 		{
-			throw new global::System.NotImplementedException("The member SlipPrintJob ClaimedSlipPrinter.CreateJob() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SlipPrintJob ClaimedSlipPrinter.CreateJob() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SlipPrintJob%20ClaimedSlipPrinter.CreateJob%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.CharactersPerLine.set
@@ -298,7 +298,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ValidateData( string data)
 		{
-			throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.ValidateData(string data) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.ValidateData(string data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedSlipPrinter.ValidateData%28string%20data%29");
 		}
 		#endif
 		// Processing: Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation

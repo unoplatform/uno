@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.RoughnessFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.RoughnessFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneMetallicRoughnessMaterial.RoughnessFactor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMaterialInput%20SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.MetallicFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.MetallicFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneMetallicRoughnessMaterial.MetallicFactor");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput SceneMetallicRoughnessMaterial.BaseColorInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMaterialInput SceneMetallicRoughnessMaterial.BaseColorInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMaterialInput%20SceneMetallicRoughnessMaterial.BaseColorInput");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector4%20SceneMetallicRoughnessMaterial.BaseColorFactor");
 			}
 			set
 			{
@@ -91,7 +91,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial Create( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneMetallicRoughnessMaterial SceneMetallicRoughnessMaterial.Create(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SceneMetallicRoughnessMaterial SceneMetallicRoughnessMaterial.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMetallicRoughnessMaterial%20SceneMetallicRoughnessMaterial.Create%28Compositor%20compositor%29");
 		}
 		#endif
 	}

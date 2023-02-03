@@ -13,7 +13,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlatformDataCollectionLevel PlatformDiagnosticsAndUsageDataSettings.CollectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlatformDataCollectionLevel PlatformDiagnosticsAndUsageDataSettings.CollectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlatformDataCollectionLevel%20PlatformDiagnosticsAndUsageDataSettings.CollectionLevel");
 			}
 		}
 		#endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool CanCollectDiagnostics( global::Windows.System.Profile.PlatformDataCollectionLevel level)
 		{
-			throw new global::System.NotImplementedException("The member bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics%28PlatformDataCollectionLevel%20level%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

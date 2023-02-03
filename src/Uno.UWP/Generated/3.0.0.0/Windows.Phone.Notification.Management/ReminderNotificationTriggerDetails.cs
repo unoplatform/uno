@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReminderNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReminderNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReminderNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType ReminderNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType ReminderNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20ReminderNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReminderNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReminderNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ReminderNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ReminderNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ReminderNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Appointment ReminderNotificationTriggerDetails.Appointment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Appointment ReminderNotificationTriggerDetails.Appointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Appointment%20ReminderNotificationTriggerDetails.Appointment");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReminderNotificationTriggerDetails.Description");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.Details is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.Details is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReminderNotificationTriggerDetails.Details");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid ReminderNotificationTriggerDetails.ReminderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid ReminderNotificationTriggerDetails.ReminderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20ReminderNotificationTriggerDetails.ReminderId");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ReminderState ReminderNotificationTriggerDetails.ReminderState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ReminderState ReminderNotificationTriggerDetails.ReminderState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ReminderState%20ReminderNotificationTriggerDetails.ReminderState");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ReminderNotificationTriggerDetails.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ReminderNotificationTriggerDetails.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ReminderNotificationTriggerDetails.Timestamp");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReminderNotificationTriggerDetails.Title");
 			}
 		}
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.InstanceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReminderNotificationTriggerDetails.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReminderNotificationTriggerDetails.InstanceId");
 			}
 		}
 		#endif

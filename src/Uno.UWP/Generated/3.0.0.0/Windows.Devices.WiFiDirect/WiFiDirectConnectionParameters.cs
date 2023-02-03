@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short WiFiDirectConnectionParameters.GroupOwnerIntent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member short WiFiDirectConnectionParameters.GroupOwnerIntent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=short%20WiFiDirectConnectionParameters.GroupOwnerIntent");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectPairingProcedure WiFiDirectConnectionParameters.PreferredPairingProcedure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectPairingProcedure WiFiDirectConnectionParameters.PreferredPairingProcedure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectPairingProcedure%20WiFiDirectConnectionParameters.PreferredPairingProcedure");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CWiFiDirectConfigurationMethod%3E%20WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods");
 			}
 		}
 		#endif
@@ -62,7 +62,7 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Enumeration.DevicePairingKinds GetDevicePairingKinds( global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod configurationMethod)
 		{
-			throw new global::System.NotImplementedException("The member DevicePairingKinds WiFiDirectConnectionParameters.GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DevicePairingKinds WiFiDirectConnectionParameters.GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DevicePairingKinds%20WiFiDirectConnectionParameters.GetDevicePairingKinds%28WiFiDirectConfigurationMethod%20configurationMethod%29");
 		}
 		#endif
 		// Processing: Windows.Devices.Enumeration.IDevicePairingSettings

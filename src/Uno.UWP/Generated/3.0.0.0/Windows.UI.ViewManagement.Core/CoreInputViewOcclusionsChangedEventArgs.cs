@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewOcclusionsChangedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreInputViewOcclusionsChangedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreInputViewOcclusionsChangedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreInputViewOcclusion> CoreInputViewOcclusionsChangedEventArgs.Occlusions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreInputViewOcclusion> CoreInputViewOcclusionsChangedEventArgs.Occlusions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCoreInputViewOcclusion%3E%20CoreInputViewOcclusionsChangedEventArgs.Occlusions");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StatusBarProgressIndicator.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StatusBarProgressIndicator.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StatusBarProgressIndicator.Text");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? StatusBarProgressIndicator.ProgressValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? StatusBarProgressIndicator.ProgressValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20StatusBarProgressIndicator.ProgressValue");
 			}
 			set
 			{
@@ -39,14 +39,14 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ShowAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StatusBarProgressIndicator.ShowAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StatusBarProgressIndicator.ShowAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StatusBarProgressIndicator.ShowAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction HideAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StatusBarProgressIndicator.HideAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StatusBarProgressIndicator.HideAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StatusBarProgressIndicator.HideAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.ViewManagement.StatusBarProgressIndicator.Text.get

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? LimitedAccessFeatureRequestResult.EstimatedRemovalDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? LimitedAccessFeatureRequestResult.EstimatedRemovalDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20LimitedAccessFeatureRequestResult.EstimatedRemovalDate");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LimitedAccessFeatureRequestResult.FeatureId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LimitedAccessFeatureRequestResult.FeatureId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LimitedAccessFeatureRequestResult.FeatureId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LimitedAccessFeatureStatus LimitedAccessFeatureRequestResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LimitedAccessFeatureStatus LimitedAccessFeatureRequestResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LimitedAccessFeatureStatus%20LimitedAccessFeatureRequestResult.Status");
 			}
 		}
 		#endif

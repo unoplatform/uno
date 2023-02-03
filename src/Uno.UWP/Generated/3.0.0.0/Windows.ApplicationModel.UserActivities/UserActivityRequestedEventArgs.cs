@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserActivityRequest UserActivityRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserActivityRequest UserActivityRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserActivityRequest%20UserActivityRequestedEventArgs.Request");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.UserActivities
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral UserActivityRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral UserActivityRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20UserActivityRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateStatus FileUpdateRequest.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FileUpdateStatus FileUpdateRequest.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileUpdateStatus%20FileUpdateRequest.Status");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileUpdateRequest.ContentId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileUpdateRequest.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileUpdateRequest.ContentId");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile FileUpdateRequest.File is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFile FileUpdateRequest.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFile%20FileUpdateRequest.File");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileUpdateRequest.UserInputNeededMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileUpdateRequest.UserInputNeededMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileUpdateRequest.UserInputNeededMessage");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral FileUpdateRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral FileUpdateRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileUpdateRequestDeferral%20FileUpdateRequest.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

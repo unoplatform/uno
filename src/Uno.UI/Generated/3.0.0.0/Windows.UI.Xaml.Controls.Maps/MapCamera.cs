@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapCamera.Roll is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapCamera.Roll is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapCamera.Roll");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapCamera.Pitch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapCamera.Pitch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapCamera.Pitch");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopoint MapCamera.Location is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geopoint MapCamera.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geopoint%20MapCamera.Location");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapCamera.Heading is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapCamera.Heading is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapCamera.Heading");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapCamera.FieldOfView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapCamera.FieldOfView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapCamera.FieldOfView");
 			}
 			set
 			{

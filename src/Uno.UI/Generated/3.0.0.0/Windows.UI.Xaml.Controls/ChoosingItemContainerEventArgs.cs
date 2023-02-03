@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SelectorItem ChoosingItemContainerEventArgs.ItemContainer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SelectorItem ChoosingItemContainerEventArgs.ItemContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SelectorItem%20ChoosingItemContainerEventArgs.ItemContainer");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChoosingItemContainerEventArgs.IsContainerPrepared is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChoosingItemContainerEventArgs.IsContainerPrepared is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChoosingItemContainerEventArgs.IsContainerPrepared");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ChoosingItemContainerEventArgs.Item is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object ChoosingItemContainerEventArgs.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ChoosingItemContainerEventArgs.Item");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChoosingItemContainerEventArgs.ItemIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ChoosingItemContainerEventArgs.ItemIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ChoosingItemContainerEventArgs.ItemIndex");
 			}
 		}
 		#endif

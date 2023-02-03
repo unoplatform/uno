@@ -11,28 +11,28 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Notifications.TileFlyoutUpdater CreateTileFlyoutUpdaterForApplication()
 		{
-			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileFlyoutUpdater%20TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Notifications.TileFlyoutUpdater CreateTileFlyoutUpdaterForApplication( string applicationId)
 		{
-			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication(string applicationId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileFlyoutUpdater%20TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForApplication%28string%20applicationId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Notifications.TileFlyoutUpdater CreateTileFlyoutUpdaterForSecondaryTile( string tileId)
 		{
-			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForSecondaryTile(string tileId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TileFlyoutUpdater TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForSecondaryTile(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileFlyoutUpdater%20TileFlyoutUpdateManager.CreateTileFlyoutUpdaterForSecondaryTile%28string%20tileId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Data.Xml.Dom.XmlDocument GetTemplateContent( global::Windows.UI.Notifications.TileFlyoutTemplateType type)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument TileFlyoutUpdateManager.GetTemplateContent(TileFlyoutTemplateType type) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlDocument TileFlyoutUpdateManager.GetTemplateContent(TileFlyoutTemplateType type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20TileFlyoutUpdateManager.GetTemplateContent%28TileFlyoutTemplateType%20type%29");
 		}
 		#endif
 	}

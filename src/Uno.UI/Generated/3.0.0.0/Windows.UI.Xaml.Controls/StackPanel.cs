@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second)
 		{
-			throw new global::System.NotImplementedException("The member void StackPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void StackPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20StackPanel.GetInsertionIndexes%28Point%20position%2C%20out%20int%20first%2C%20out%20int%20second%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.BackgroundSizingProperty.get

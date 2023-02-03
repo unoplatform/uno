@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.AppointmentCalendarLocalId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.AppointmentCalendarLocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendarUpdateMeetingResponseRequest.AppointmentCalendarLocalId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.AppointmentLocalId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.AppointmentLocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendarUpdateMeetingResponseRequest.AppointmentLocalId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? AppointmentCalendarUpdateMeetingResponseRequest.AppointmentOriginalStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? AppointmentCalendarUpdateMeetingResponseRequest.AppointmentOriginalStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20AppointmentCalendarUpdateMeetingResponseRequest.AppointmentOriginalStartTime");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.Comment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendarUpdateMeetingResponseRequest.Comment");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentParticipantResponse AppointmentCalendarUpdateMeetingResponseRequest.Response is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentParticipantResponse AppointmentCalendarUpdateMeetingResponseRequest.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentParticipantResponse%20AppointmentCalendarUpdateMeetingResponseRequest.Response");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendarUpdateMeetingResponseRequest.SendUpdate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendarUpdateMeetingResponseRequest.SendUpdate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendarUpdateMeetingResponseRequest.SendUpdate");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.Subject is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendarUpdateMeetingResponseRequest.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendarUpdateMeetingResponseRequest.Subject");
 			}
 		}
 		#endif
@@ -88,14 +88,14 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarUpdateMeetingResponseRequest.ReportCompletedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarUpdateMeetingResponseRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendarUpdateMeetingResponseRequest.ReportCompletedAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarUpdateMeetingResponseRequest.ReportFailedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarUpdateMeetingResponseRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendarUpdateMeetingResponseRequest.ReportFailedAsync%28%29");
 		}
 		#endif
 	}

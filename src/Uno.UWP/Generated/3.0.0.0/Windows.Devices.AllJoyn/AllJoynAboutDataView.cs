@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.AJSoftwareVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.AJSoftwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.AJSoftwareVersion");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid AllJoynAboutDataView.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid AllJoynAboutDataView.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20AllJoynAboutDataView.AppId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.AppName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.AppName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.AppName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? AllJoynAboutDataView.DateOfManufacture is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? AllJoynAboutDataView.DateOfManufacture is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20AllJoynAboutDataView.DateOfManufacture");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Language AllJoynAboutDataView.DefaultLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Language AllJoynAboutDataView.DefaultLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Language%20AllJoynAboutDataView.DefaultLanguage");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.Description");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.DeviceId");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.DeviceName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.DeviceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.DeviceName");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.HardwareVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.HardwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.HardwareVersion");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.Manufacturer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.Manufacturer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.Manufacturer");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.ModelNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.ModelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.ModelNumber");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AllJoynAboutDataView.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AllJoynAboutDataView.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20AllJoynAboutDataView.Properties");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.SoftwareVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynAboutDataView.SoftwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynAboutDataView.SoftwareVersion");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynAboutDataView.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynAboutDataView.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynAboutDataView.Status");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AllJoynAboutDataView.SupportUrl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri AllJoynAboutDataView.SupportUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20AllJoynAboutDataView.SupportUrl");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Language> AllJoynAboutDataView.SupportedLanguages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Language> AllJoynAboutDataView.SupportedLanguages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CLanguage%3E%20AllJoynAboutDataView.SupportedLanguages");
 			}
 		}
 		#endif
@@ -187,14 +187,14 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetDataBySessionPortAsync( string uniqueName,  global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment,  ushort sessionPort)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynAboutDataView.GetDataBySessionPortAsync%28string%20uniqueName%2C%20AllJoynBusAttachment%20busAttachment%2C%20ushort%20sessionPort%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetDataBySessionPortAsync( string uniqueName,  global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment,  ushort sessionPort,  global::Windows.Globalization.Language language)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort, Language language) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort, Language language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynAboutDataView.GetDataBySessionPortAsync%28string%20uniqueName%2C%20AllJoynBusAttachment%20busAttachment%2C%20ushort%20sessionPort%2C%20Language%20language%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Lamp.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Lamp.IsEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color Lamp.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color Lamp.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20Lamp.Color");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Lamp.BrightnessLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float Lamp.BrightnessLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20Lamp.BrightnessLevel");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Lamp.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Lamp.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Lamp.DeviceId");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsColorSettable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Lamp.IsColorSettable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Lamp.IsColorSettable");
 			}
 		}
 		#endif
@@ -90,21 +90,21 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Lamp.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Lamp.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Lamp.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.Lamp> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLamp%3E%20Lamp.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.Lamp> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.GetDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLamp%3E%20Lamp.GetDefaultAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

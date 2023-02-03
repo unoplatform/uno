@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemsPanelTemplate GroupStyle.Panel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ItemsPanelTemplate GroupStyle.Panel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ItemsPanelTemplate%20GroupStyle.Panel");
 			}
 			set
 			{
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StyleSelector GroupStyle.ContainerStyleSelector is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StyleSelector GroupStyle.ContainerStyleSelector is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StyleSelector%20GroupStyle.ContainerStyleSelector");
 			}
 			set
 			{
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Style GroupStyle.ContainerStyle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Style GroupStyle.ContainerStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Style%20GroupStyle.ContainerStyle");
 			}
 			set
 			{

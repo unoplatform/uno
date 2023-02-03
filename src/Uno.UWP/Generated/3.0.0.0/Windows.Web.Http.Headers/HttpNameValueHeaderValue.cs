@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpNameValueHeaderValue.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpNameValueHeaderValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpNameValueHeaderValue.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpNameValueHeaderValue.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpNameValueHeaderValue.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpNameValueHeaderValue.Name");
 			}
 		}
 		#endif
@@ -54,21 +54,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpNameValueHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpNameValueHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpNameValueHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpNameValueHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpNameValueHeaderValue HttpNameValueHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpNameValueHeaderValue HttpNameValueHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpNameValueHeaderValue%20HttpNameValueHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpNameValueHeaderValue nameValueHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpNameValueHeaderValue.TryParse(string input, out HttpNameValueHeaderValue nameValueHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpNameValueHeaderValue.TryParse(string input, out HttpNameValueHeaderValue nameValueHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpNameValueHeaderValue.TryParse%28string%20input%2C%20out%20HttpNameValueHeaderValue%20nameValueHeaderValue%29");
 		}
 		#endif
 	}

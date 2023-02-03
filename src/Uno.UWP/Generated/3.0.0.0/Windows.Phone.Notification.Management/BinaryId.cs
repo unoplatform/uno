@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BinaryId.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte BinaryId.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20BinaryId.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BinaryId.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BinaryId.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BinaryId.Length");
 			}
 		}
 		#endif

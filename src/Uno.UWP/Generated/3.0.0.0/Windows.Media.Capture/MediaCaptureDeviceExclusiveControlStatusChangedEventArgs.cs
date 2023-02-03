@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureDeviceExclusiveControlStatus MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureDeviceExclusiveControlStatus MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureDeviceExclusiveControlStatus%20MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status");
 			}
 		}
 		#endif

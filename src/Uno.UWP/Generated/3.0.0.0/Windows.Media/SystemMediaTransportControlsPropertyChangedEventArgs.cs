@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMediaTransportControlsProperty SystemMediaTransportControlsPropertyChangedEventArgs.Property is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SystemMediaTransportControlsProperty SystemMediaTransportControlsPropertyChangedEventArgs.Property is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemMediaTransportControlsProperty%20SystemMediaTransportControlsPropertyChangedEventArgs.Property");
 			}
 		}
 		#endif

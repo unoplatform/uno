@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.AlbumArtist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.AlbumArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.AlbumArtist");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.AlbumTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.AlbumTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.AlbumTitle");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Artist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.Artist");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Composer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Composer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.Composer");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Conductor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Conductor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.Conductor");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.DisplayArtist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.DisplayArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.DisplayArtist");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Genre is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Genre is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.Genre");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.TrackNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMusicProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMusicProperties.TrackNumber");
 			}
 		}
 		#endif

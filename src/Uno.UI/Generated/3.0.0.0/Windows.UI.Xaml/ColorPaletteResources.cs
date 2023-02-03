@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListMedium is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ListMedium");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ListLow");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ErrorText");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeWhite is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeWhite is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeWhite");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMediumLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeMediumLow");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMedium is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeMedium");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeLow");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeHigh");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeGray is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeGray is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeGray");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeDisabledLow");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeDisabledHigh");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMediumLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeBlackMediumLow");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMedium is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeBlackMedium");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeBlackLow");
 			}
 			set
 			{
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeBlackHigh");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeAltLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeAltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.ChromeAltLow");
 			}
 			set
 			{
@@ -237,7 +237,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.BaseMediumLow");
 			}
 			set
 			{
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.BaseMediumHigh");
 			}
 			set
 			{
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMedium is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.BaseMedium");
 			}
 			set
 			{
@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.BaseLow");
 			}
 			set
 			{
@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.BaseHigh");
 			}
 			set
 			{
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.AltMediumLow");
 			}
 			set
 			{
@@ -321,7 +321,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.AltMediumHigh");
 			}
 			set
 			{
@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMedium is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.AltMedium");
 			}
 			set
 			{
@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltLow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.AltLow");
 			}
 			set
 			{
@@ -363,7 +363,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltHigh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.AltHigh");
 			}
 			set
 			{
@@ -377,7 +377,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.Accent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.Accent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20ColorPaletteResources.Accent");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Language CoreTextServicesManager.InputLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Language CoreTextServicesManager.InputLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Language%20CoreTextServicesManager.InputLanguage");
 			}
 		}
 		#endif
@@ -24,14 +24,14 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Text.Core.CoreTextEditContext CreateEditContext()
 		{
-			throw new global::System.NotImplementedException("The member CoreTextEditContext CoreTextServicesManager.CreateEditContext() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreTextEditContext CoreTextServicesManager.CreateEditContext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextEditContext%20CoreTextServicesManager.CreateEditContext%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Text.Core.CoreTextServicesManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member CoreTextServicesManager CoreTextServicesManager.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreTextServicesManager CoreTextServicesManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextServicesManager%20CoreTextServicesManager.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

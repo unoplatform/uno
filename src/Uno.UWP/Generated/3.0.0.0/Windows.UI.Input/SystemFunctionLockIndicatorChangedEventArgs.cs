@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionLockIndicatorChangedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SystemFunctionLockIndicatorChangedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SystemFunctionLockIndicatorChangedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemFunctionLockIndicatorChangedEventArgs.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong SystemFunctionLockIndicatorChangedEventArgs.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemFunctionLockIndicatorChangedEventArgs.Timestamp");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailDataProviderConnection EmailDataProviderTriggerDetails.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailDataProviderConnection EmailDataProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailDataProviderConnection%20EmailDataProviderTriggerDetails.Connection");
 			}
 		}
 		#endif

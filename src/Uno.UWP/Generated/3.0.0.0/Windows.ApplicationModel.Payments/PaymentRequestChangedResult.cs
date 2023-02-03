@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentDetails%20PaymentRequestChangedResult.UpdatedPaymentDetails");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentRequestChangedResult.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentRequestChangedResult.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentRequestChangedResult.Message");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentRequestChangedResult.ChangeAcceptedByMerchant is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PaymentRequestChangedResult.ChangeAcceptedByMerchant is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PaymentRequestChangedResult.ChangeAcceptedByMerchant");
 			}
 			set
 			{

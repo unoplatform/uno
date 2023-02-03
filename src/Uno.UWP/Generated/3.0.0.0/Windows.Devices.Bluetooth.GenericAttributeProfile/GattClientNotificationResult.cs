@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattClientNotificationResult.ProtocolError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte? GattClientNotificationResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%3F%20GattClientNotificationResult.ProtocolError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattClientNotificationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattClientNotificationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattCommunicationStatus%20GattClientNotificationResult.Status");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattSubscribedClient GattClientNotificationResult.SubscribedClient is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattSubscribedClient GattClientNotificationResult.SubscribedClient is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattSubscribedClient%20GattClientNotificationResult.SubscribedClient");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattClientNotificationResult.BytesSent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort GattClientNotificationResult.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20GattClientNotificationResult.BytesSent");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SearchPaneQueryLinguisticDetails.QueryTextAlternatives is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SearchPaneQueryLinguisticDetails.QueryTextAlternatives is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20SearchPaneQueryLinguisticDetails.QueryTextAlternatives");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchPaneQueryLinguisticDetails.QueryTextCompositionLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SearchPaneQueryLinguisticDetails.QueryTextCompositionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SearchPaneQueryLinguisticDetails.QueryTextCompositionLength");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchPaneQueryLinguisticDetails.QueryTextCompositionStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SearchPaneQueryLinguisticDetails.QueryTextCompositionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SearchPaneQueryLinguisticDetails.QueryTextCompositionStart");
 			}
 		}
 		#endif

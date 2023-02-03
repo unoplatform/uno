@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisingParameters GattServiceProviderTrigger.AdvertisingParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisingParameters GattServiceProviderTrigger.AdvertisingParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattServiceProviderAdvertisingParameters%20GattServiceProviderTrigger.AdvertisingParameters");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProviderTrigger.Service is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProviderTrigger.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattLocalService%20GattServiceProviderTrigger.Service");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattServiceProviderTrigger.TriggerId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GattServiceProviderTrigger.TriggerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GattServiceProviderTrigger.TriggerId");
 			}
 		}
 		#endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.GattServiceProviderTriggerResult> CreateAsync( string triggerId,  global::System.Guid serviceUuid)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattServiceProviderTriggerResult%3E%20GattServiceProviderTrigger.CreateAsync%28string%20triggerId%2C%20Guid%20serviceUuid%29");
 		}
 		#endif
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger

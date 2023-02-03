@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ItemAutomationPeer.Item is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object ItemAutomationPeer.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ItemAutomationPeer.Item");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemsControlAutomationPeer ItemAutomationPeer.ItemsControlAutomationPeer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ItemsControlAutomationPeer ItemAutomationPeer.ItemsControlAutomationPeer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ItemsControlAutomationPeer%20ItemAutomationPeer.ItemsControlAutomationPeer");
 			}
 		}
 		#endif

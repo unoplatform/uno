@@ -11,7 +11,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlDocument GetCurrentPrintDeviceCapabilities()
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument PrintSupportPrintDeviceCapabilitiesChangedEventArgs.GetCurrentPrintDeviceCapabilities() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlDocument PrintSupportPrintDeviceCapabilitiesChangedEventArgs.GetCurrentPrintDeviceCapabilities() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20PrintSupportPrintDeviceCapabilitiesChangedEventArgs.GetCurrentPrintDeviceCapabilities%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -25,7 +25,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral PrintSupportPrintDeviceCapabilitiesChangedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral PrintSupportPrintDeviceCapabilitiesChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20PrintSupportPrintDeviceCapabilitiesChangedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

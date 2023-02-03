@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DockPatternIdentifiers.DockPositionProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DockPatternIdentifiers.DockPositionProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DockPatternIdentifiers.DockPositionProperty");
 			}
 		}
 		#endif

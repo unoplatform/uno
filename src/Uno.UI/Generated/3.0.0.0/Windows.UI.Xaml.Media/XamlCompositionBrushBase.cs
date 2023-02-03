@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush XamlCompositionBrushBase.CompositionBrush is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBrush XamlCompositionBrushBase.CompositionBrush is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20XamlCompositionBrushBase.CompositionBrush");
 			}
 			set
 			{

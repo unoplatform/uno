@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExtendedExecutionForegroundReason%20ExtendedExecutionForegroundSession.Reason");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ExtendedExecutionForegroundSession.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ExtendedExecutionForegroundSession.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ExtendedExecutionForegroundSession.Description");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundResult> RequestExtensionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionForegroundResult> ExtendedExecutionForegroundSession.RequestExtensionAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionForegroundResult> ExtendedExecutionForegroundSession.RequestExtensionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CExtendedExecutionForegroundResult%3E%20ExtendedExecutionForegroundSession.RequestExtensionAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Reason.get

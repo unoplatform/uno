@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextBoutenType TimedTextBouten.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextBoutenType TimedTextBouten.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextBoutenType%20TimedTextBouten.Type");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextBoutenPosition TimedTextBouten.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextBoutenPosition TimedTextBouten.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextBoutenPosition%20TimedTextBouten.Position");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextBouten.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color TimedTextBouten.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20TimedTextBouten.Color");
 			}
 			set
 			{

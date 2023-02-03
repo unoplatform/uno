@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HubSection> SectionsInViewChangedEventArgs.AddedSections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HubSection> SectionsInViewChangedEventArgs.AddedSections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHubSection%3E%20SectionsInViewChangedEventArgs.AddedSections");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HubSection> SectionsInViewChangedEventArgs.RemovedSections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HubSection> SectionsInViewChangedEventArgs.RemovedSections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHubSection%3E%20SectionsInViewChangedEventArgs.RemovedSections");
 			}
 		}
 		#endif

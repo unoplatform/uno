@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StorePreviewProductInfo.Description");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.ProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StorePreviewProductInfo.ProductId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.ProductType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.ProductType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StorePreviewProductInfo.ProductType");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StorePreviewSkuInfo> StorePreviewProductInfo.SkuInfoList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<StorePreviewSkuInfo> StorePreviewProductInfo.SkuInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CStorePreviewSkuInfo%3E%20StorePreviewProductInfo.SkuInfoList");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StorePreviewProductInfo.Title");
 			}
 		}
 		#endif

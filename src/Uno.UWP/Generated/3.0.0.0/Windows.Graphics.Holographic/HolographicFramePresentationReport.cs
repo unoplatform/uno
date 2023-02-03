@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.AppGpuDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.AppGpuDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20HolographicFramePresentationReport.AppGpuDuration");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.AppGpuOverrun is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.AppGpuOverrun is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20HolographicFramePresentationReport.AppGpuOverrun");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.CompositorGpuDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.CompositorGpuDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20HolographicFramePresentationReport.CompositorGpuDuration");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicFramePresentationReport.MissedPresentationOpportunityCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HolographicFramePresentationReport.MissedPresentationOpportunityCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HolographicFramePresentationReport.MissedPresentationOpportunityCount");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicFramePresentationReport.PresentationCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HolographicFramePresentationReport.PresentationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HolographicFramePresentationReport.PresentationCount");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer EncryptedAndAuthenticatedData.AuthenticationTag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer EncryptedAndAuthenticatedData.AuthenticationTag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20EncryptedAndAuthenticatedData.AuthenticationTag");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer EncryptedAndAuthenticatedData.EncryptedData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer EncryptedAndAuthenticatedData.EncryptedData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20EncryptedAndAuthenticatedData.EncryptedData");
 			}
 		}
 		#endif

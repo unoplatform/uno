@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricKeyAlgorithmProvider.AlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricKeyAlgorithmProvider.AlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricKeyAlgorithmProvider.AlgorithmName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SymmetricKeyAlgorithmProvider.BlockLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SymmetricKeyAlgorithmProvider.BlockLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SymmetricKeyAlgorithmProvider.BlockLength");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Cryptography.Core.CryptographicKey CreateSymmetricKey( global::Windows.Storage.Streams.IBuffer keyMaterial)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey SymmetricKeyAlgorithmProvider.CreateSymmetricKey(IBuffer keyMaterial) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CryptographicKey SymmetricKeyAlgorithmProvider.CreateSymmetricKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CryptographicKey%20SymmetricKeyAlgorithmProvider.CreateSymmetricKey%28IBuffer%20keyMaterial%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider OpenAlgorithm( string algorithm)
 		{
-			throw new global::System.NotImplementedException("The member SymmetricKeyAlgorithmProvider SymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SymmetricKeyAlgorithmProvider SymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SymmetricKeyAlgorithmProvider%20SymmetricKeyAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
 		}
 		#endif
 	}

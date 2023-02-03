@@ -13,7 +13,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoCompositorDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoCompositorDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoCompositorDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet VideoCompositorDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet VideoCompositorDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20VideoCompositorDefinition.Properties");
 			}
 		}
 		#endif

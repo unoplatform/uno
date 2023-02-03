@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextLineAlignment TimedTextStyle.LineAlignment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextLineAlignment TimedTextStyle.LineAlignment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextLineAlignment%20TimedTextStyle.LineAlignment");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsBackgroundAlwaysShown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsBackgroundAlwaysShown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TimedTextStyle.IsBackgroundAlwaysShown");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.OutlineColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color TimedTextStyle.OutlineColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20TimedTextStyle.OutlineColor");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.Foreground is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color TimedTextStyle.Foreground is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20TimedTextStyle.Foreground");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextWeight TimedTextStyle.FontWeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextWeight TimedTextStyle.FontWeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextWeight%20TimedTextStyle.FontWeight");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.Background is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color TimedTextStyle.Background is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20TimedTextStyle.Background");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.FontSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.FontSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextDouble%20TimedTextStyle.FontSize");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextStyle.FontFamily is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextStyle.FontFamily is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedTextStyle.FontFamily");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextFlowDirection TimedTextStyle.FlowDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextFlowDirection TimedTextStyle.FlowDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextFlowDirection%20TimedTextStyle.FlowDirection");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineThickness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineThickness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextDouble%20TimedTextStyle.OutlineThickness");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextDouble%20TimedTextStyle.OutlineRadius");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextStyle.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextStyle.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedTextStyle.Name");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsUnderlineEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsUnderlineEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TimedTextStyle.IsUnderlineEnabled");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsOverlineEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsOverlineEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TimedTextStyle.IsOverlineEnabled");
 			}
 			set
 			{
@@ -209,7 +209,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsLineThroughEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsLineThroughEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TimedTextStyle.IsLineThroughEnabled");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextFontStyle TimedTextStyle.FontStyle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextFontStyle TimedTextStyle.FontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextFontStyle%20TimedTextStyle.FontStyle");
 			}
 			set
 			{
@@ -237,7 +237,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsTextCombined is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsTextCombined is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TimedTextStyle.IsTextCombined");
 			}
 			set
 			{
@@ -251,7 +251,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double TimedTextStyle.FontAngleInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double TimedTextStyle.FontAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20TimedTextStyle.FontAngleInDegrees");
 			}
 			set
 			{
@@ -265,7 +265,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextBouten TimedTextStyle.Bouten is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextBouten TimedTextStyle.Bouten is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextBouten%20TimedTextStyle.Bouten");
 			}
 		}
 		#endif
@@ -275,7 +275,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextRuby TimedTextStyle.Ruby is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextRuby TimedTextStyle.Ruby is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextRuby%20TimedTextStyle.Ruby");
 			}
 		}
 		#endif

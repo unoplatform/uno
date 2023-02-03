@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowSubmittedOperation.Configuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowSubmittedOperation.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowConfiguration%20PrintWorkflowSubmittedOperation.Configuration");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowSourceContent PrintWorkflowSubmittedOperation.XpsContent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowSourceContent PrintWorkflowSubmittedOperation.XpsContent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowSourceContent%20PrintWorkflowSubmittedOperation.XpsContent");
 			}
 		}
 		#endif

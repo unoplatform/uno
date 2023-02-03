@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Verb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Verb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Verb");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.ActivatedOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivatedOperation%20WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.ActivatedOperation");
 			}
 		}
 		#endif

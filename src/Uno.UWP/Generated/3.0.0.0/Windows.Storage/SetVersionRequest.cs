@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SetVersionRequest.CurrentVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SetVersionRequest.CurrentVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SetVersionRequest.CurrentVersion");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SetVersionRequest.DesiredVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SetVersionRequest.DesiredVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SetVersionRequest.DesiredVersion");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.SetVersionDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member SetVersionDeferral SetVersionRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SetVersionDeferral SetVersionRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SetVersionDeferral%20SetVersionRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

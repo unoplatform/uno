@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionShadow SpriteVisual.Shadow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionShadow SpriteVisual.Shadow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionShadow%20SpriteVisual.Shadow");
 			}
 			set
 			{

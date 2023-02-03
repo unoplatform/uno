@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivityType ActivitySensorReading.Activity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivityType ActivitySensorReading.Activity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivityType%20ActivitySensorReading.Activity");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivitySensorReadingConfidence ActivitySensorReading.Confidence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivitySensorReadingConfidence ActivitySensorReading.Confidence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivitySensorReadingConfidence%20ActivitySensorReading.Confidence");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ActivitySensorReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ActivitySensorReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ActivitySensorReading.Timestamp");
 			}
 		}
 		#endif

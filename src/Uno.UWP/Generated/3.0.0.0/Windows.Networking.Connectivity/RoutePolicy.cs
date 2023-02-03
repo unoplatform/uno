@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConnectionProfile RoutePolicy.ConnectionProfile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ConnectionProfile RoutePolicy.ConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectionProfile%20RoutePolicy.ConnectionProfile");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName RoutePolicy.HostName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName RoutePolicy.HostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20RoutePolicy.HostName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DomainNameType RoutePolicy.HostNameType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DomainNameType RoutePolicy.HostNameType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DomainNameType%20RoutePolicy.HostNameType");
 			}
 		}
 		#endif

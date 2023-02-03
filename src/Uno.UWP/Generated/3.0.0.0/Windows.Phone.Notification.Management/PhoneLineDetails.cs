@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLineDetails.DefaultOutgoingLine is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneLineDetails.DefaultOutgoingLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneLineDetails.DefaultOutgoingLine");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLineDetails.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneLineDetails.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneLineDetails.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneLineDetails.LineId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PhoneLineDetails.LineId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PhoneLineDetails.LineId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLineDetails.LineNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneLineDetails.LineNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneLineDetails.LineNumber");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineRegistrationState PhoneLineDetails.RegistrationState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneLineRegistrationState PhoneLineDetails.RegistrationState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineRegistrationState%20PhoneLineDetails.RegistrationState");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhoneLineDetails.VoicemailCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PhoneLineDetails.VoicemailCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PhoneLineDetails.VoicemailCount");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhoneLineDetails.MissedCallCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PhoneLineDetails.MissedCallCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PhoneLineDetails.MissedCallCount");
 			}
 		}
 		#endif

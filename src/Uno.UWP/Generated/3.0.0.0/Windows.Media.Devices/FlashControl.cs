@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReduction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.RedEyeReduction");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FlashControl.PowerPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float FlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20FlashControl.PowerPercent");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Enabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.Enabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Auto is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.Auto");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.PowerSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.PowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.PowerSupported");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReductionSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReductionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.RedEyeReductionSupported");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.Supported");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.AssistantLightEnabled");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlashControl.AssistantLightSupported");
 			}
 		}
 		#endif

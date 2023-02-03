@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size UIElement.DesiredSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size UIElement.DesiredSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20UIElement.DesiredSize");
 			}
 		}
 		#endif
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size UIElement.RenderSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size UIElement.RenderSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20UIElement.RenderSize");
 			}
 		}
 		#endif
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.ActualOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.ActualOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.ActualOffset");
 			}
 		}
 		#endif
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext UIElement.UIContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIContext UIElement.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIContext%20UIElement.UIContext");
 			}
 		}
 		#endif
@@ -372,7 +372,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3Transition UIElement.TranslationTransition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3Transition UIElement.TranslationTransition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3Transition%20UIElement.TranslationTransition");
 			}
 			set
 			{
@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScalarTransition UIElement.OpacityTransition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ScalarTransition UIElement.OpacityTransition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ScalarTransition%20UIElement.OpacityTransition");
 			}
 			set
 			{
@@ -400,7 +400,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 UIElement.TransformMatrix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Matrix4x4 UIElement.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Matrix4x4%20UIElement.TransformMatrix");
 			}
 			set
 			{
@@ -414,7 +414,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3Transition UIElement.ScaleTransition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3Transition UIElement.ScaleTransition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3Transition%20UIElement.ScaleTransition");
 			}
 			set
 			{
@@ -428,7 +428,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.Scale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.Scale");
 			}
 			set
 			{
@@ -442,7 +442,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScalarTransition UIElement.RotationTransition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ScalarTransition UIElement.RotationTransition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ScalarTransition%20UIElement.RotationTransition");
 			}
 			set
 			{
@@ -456,7 +456,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.RotationAxis is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.RotationAxis");
 			}
 			set
 			{
@@ -470,7 +470,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float UIElement.Rotation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float UIElement.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20UIElement.Rotation");
 			}
 			set
 			{
@@ -484,7 +484,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.Translation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.Translation");
 			}
 			set
 			{
@@ -498,7 +498,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.CenterPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.CenterPoint");
 			}
 			set
 			{
@@ -716,7 +716,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.CharacterReceivedEvent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.CharacterReceivedEvent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RoutedEvent%20UIElement.CharacterReceivedEvent");
 			}
 		}
 		#endif
@@ -726,7 +726,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.PreviewKeyDownEvent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.PreviewKeyDownEvent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RoutedEvent%20UIElement.PreviewKeyDownEvent");
 			}
 		}
 		#endif
@@ -736,7 +736,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.PreviewKeyUpEvent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.PreviewKeyUpEvent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RoutedEvent%20UIElement.PreviewKeyUpEvent");
 			}
 		}
 		#endif
@@ -747,7 +747,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ContextRequestedEvent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ContextRequestedEvent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RoutedEvent%20UIElement.ContextRequestedEvent");
 			}
 		}
 		#endif
@@ -909,7 +909,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CancelDirectManipulations()
 		{
-			throw new global::System.NotImplementedException("The member bool UIElement.CancelDirectManipulations() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool UIElement.CancelDirectManipulations() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UIElement.CancelDirectManipulations%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.UIElement.Transform3D.get
@@ -1049,7 +1049,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>> FindSubElementsForTouchTargeting( global::Windows.Foundation.Point point,  global::Windows.Foundation.Rect boundingRect)
 		{
-			throw new global::System.NotImplementedException("The member IEnumerable<IEnumerable<Point>> UIElement.FindSubElementsForTouchTargeting(Point point, Rect boundingRect) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IEnumerable<IEnumerable<Point>> UIElement.FindSubElementsForTouchTargeting(Point point, Rect boundingRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IEnumerable%3CIEnumerable%3CPoint%3E%3E%20UIElement.FindSubElementsForTouchTargeting%28Point%20point%2C%20Rect%20boundingRect%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.UIElement.GetChildrenInTabFocusOrder()
@@ -1118,7 +1118,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryStartDirectManipulation( global::Windows.UI.Xaml.Input.Pointer value)
 		{
-			throw new global::System.NotImplementedException("The member bool UIElement.TryStartDirectManipulation(Pointer value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool UIElement.TryStartDirectManipulation(Pointer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UIElement.TryStartDirectManipulation%28Pointer%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.UIElement.CompositeModeProperty.get

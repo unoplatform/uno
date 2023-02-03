@@ -71,7 +71,7 @@ namespace Windows.UI.Input.Preview.Injection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Preview.Injection.InputInjector TryCreateForAppBroadcastOnly()
 		{
-			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreateForAppBroadcastOnly() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreateForAppBroadcastOnly() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InputInjector%20InputInjector.TryCreateForAppBroadcastOnly%28%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.TryCreate()

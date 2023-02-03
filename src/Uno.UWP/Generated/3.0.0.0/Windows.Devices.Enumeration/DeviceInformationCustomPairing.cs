@@ -11,21 +11,21 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationCustomPairing.PairAsync%28DevicePairingKinds%20pairingKindsSupported%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported,  global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationCustomPairing.PairAsync%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync( global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported,  global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel,  global::Windows.Devices.Enumeration.IDevicePairingSettings devicePairingSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationCustomPairing.PairAsync%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%2C%20IDevicePairingSettings%20devicePairingSettings%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.PairingRequested.add

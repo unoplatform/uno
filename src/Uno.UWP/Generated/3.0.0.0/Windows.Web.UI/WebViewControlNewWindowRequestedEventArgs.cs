@@ -13,7 +13,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlNewWindowRequestedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlNewWindowRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlNewWindowRequestedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlNewWindowRequestedEventArgs.Referrer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewControlNewWindowRequestedEventArgs.Referrer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewControlNewWindowRequestedEventArgs.Referrer");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlNewWindowRequestedEventArgs.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewControlNewWindowRequestedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewControlNewWindowRequestedEventArgs.Uri");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IWebViewControl WebViewControlNewWindowRequestedEventArgs.NewWindow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IWebViewControl WebViewControlNewWindowRequestedEventArgs.NewWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IWebViewControl%20WebViewControlNewWindowRequestedEventArgs.NewWindow");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Web.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral WebViewControlNewWindowRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral WebViewControlNewWindowRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20WebViewControlNewWindowRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

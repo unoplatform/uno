@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectServiceRemotePortAddedEventArgs.EndpointPairs is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectServiceRemotePortAddedEventArgs.EndpointPairs is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEndpointPair%3E%20WiFiDirectServiceRemotePortAddedEventArgs.EndpointPairs");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceIPProtocol WiFiDirectServiceRemotePortAddedEventArgs.Protocol is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceIPProtocol WiFiDirectServiceRemotePortAddedEventArgs.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectServiceIPProtocol%20WiFiDirectServiceRemotePortAddedEventArgs.Protocol");
 			}
 		}
 		#endif

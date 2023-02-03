@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DepthMediaFrameFormat VideoMediaFrameFormat.DepthFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DepthMediaFrameFormat VideoMediaFrameFormat.DepthFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DepthMediaFrameFormat%20VideoMediaFrameFormat.DepthFormat");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoMediaFrameFormat.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoMediaFrameFormat.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoMediaFrameFormat.Height");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameFormat VideoMediaFrameFormat.MediaFrameFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameFormat VideoMediaFrameFormat.MediaFrameFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameFormat%20VideoMediaFrameFormat.MediaFrameFormat");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoMediaFrameFormat.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoMediaFrameFormat.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoMediaFrameFormat.Width");
 			}
 		}
 		#endif

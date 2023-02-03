@@ -11,7 +11,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> TransmitAsync( global::Windows.Storage.Streams.IBuffer command)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> SmartCardConnection.TransmitAsync(IBuffer command) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> SmartCardConnection.TransmitAsync(IBuffer command) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIBuffer%3E%20SmartCardConnection.TransmitAsync%28IBuffer%20command%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

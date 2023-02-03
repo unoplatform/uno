@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.FormattedPrice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.FormattedPrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.FormattedPrice");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.ProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.ProductId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.FormattedBasePrice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.FormattedBasePrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.FormattedBasePrice");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProductListing.IsOnSale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ProductListing.IsOnSale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProductListing.IsOnSale");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ProductListing.SaleEndDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ProductListing.SaleEndDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ProductListing.SaleEndDate");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.CurrencyCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.CurrencyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.CurrencyCode");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.Description");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ProductListing.ImageUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri ProductListing.ImageUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20ProductListing.ImageUri");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IEnumerable<string> ProductListing.Keywords is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IEnumerable<string> ProductListing.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IEnumerable%3Cstring%3E%20ProductListing.Keywords");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProductListing.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProductListing.Tag");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProductType ProductListing.ProductType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProductType ProductListing.ProductType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProductType%20ProductListing.ProductType");
 			}
 		}
 		#endif

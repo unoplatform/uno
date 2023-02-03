@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InkRecognizer.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string InkRecognizer.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InkRecognizer.Name");
 			}
 		}
 		#endif

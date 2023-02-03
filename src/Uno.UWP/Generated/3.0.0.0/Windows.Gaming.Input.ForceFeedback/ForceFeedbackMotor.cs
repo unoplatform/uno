@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ForceFeedbackMotor.MasterGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ForceFeedbackMotor.MasterGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ForceFeedbackMotor.MasterGain");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ForceFeedbackMotor.AreEffectsPaused is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ForceFeedbackMotor.AreEffectsPaused is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ForceFeedbackMotor.AreEffectsPaused");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ForceFeedbackMotor.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ForceFeedbackMotor.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ForceFeedbackMotor.IsEnabled");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectAxes ForceFeedbackMotor.SupportedAxes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ForceFeedbackEffectAxes ForceFeedbackMotor.SupportedAxes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ForceFeedbackEffectAxes%20ForceFeedbackMotor.SupportedAxes");
 			}
 		}
 		#endif
@@ -60,7 +60,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackLoadEffectResult> LoadEffectAsync( global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ForceFeedbackLoadEffectResult> ForceFeedbackMotor.LoadEffectAsync(IForceFeedbackEffect effect) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ForceFeedbackLoadEffectResult> ForceFeedbackMotor.LoadEffectAsync(IForceFeedbackEffect effect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CForceFeedbackLoadEffectResult%3E%20ForceFeedbackMotor.LoadEffectAsync%28IForceFeedbackEffect%20effect%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -88,28 +88,28 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryDisableAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryDisableAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryDisableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ForceFeedbackMotor.TryDisableAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryEnableAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryEnableAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryEnableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ForceFeedbackMotor.TryEnableAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryResetAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryResetAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryResetAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ForceFeedbackMotor.TryResetAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryUnloadEffectAsync( global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryUnloadEffectAsync(IForceFeedbackEffect effect) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryUnloadEffectAsync(IForceFeedbackEffect effect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ForceFeedbackMotor.TryUnloadEffectAsync%28IForceFeedbackEffect%20effect%29");
 		}
 		#endif
 	}

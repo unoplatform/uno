@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationControllerProgressBehavior AnimationController.ProgressBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AnimationControllerProgressBehavior AnimationController.ProgressBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AnimationControllerProgressBehavior%20AnimationController.ProgressBehavior");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.Progress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float AnimationController.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20AnimationController.Progress");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.PlaybackRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float AnimationController.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20AnimationController.PlaybackRate");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.MaxPlaybackRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float AnimationController.MaxPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20AnimationController.MaxPlaybackRate");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.MinPlaybackRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float AnimationController.MinPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20AnimationController.MinPlaybackRate");
 			}
 		}
 		#endif

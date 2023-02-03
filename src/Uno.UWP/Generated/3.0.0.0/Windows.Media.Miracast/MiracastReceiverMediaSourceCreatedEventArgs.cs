@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverConnection MiracastReceiverMediaSourceCreatedEventArgs.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverConnection MiracastReceiverMediaSourceCreatedEventArgs.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverConnection%20MiracastReceiverMediaSourceCreatedEventArgs.Connection");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverCursorImageChannelSettings MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverCursorImageChannelSettings MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverCursorImageChannelSettings%20MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MiracastReceiverMediaSourceCreatedEventArgs.MediaSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaSource MiracastReceiverMediaSourceCreatedEventArgs.MediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSource%20MiracastReceiverMediaSourceCreatedEventArgs.MediaSource");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

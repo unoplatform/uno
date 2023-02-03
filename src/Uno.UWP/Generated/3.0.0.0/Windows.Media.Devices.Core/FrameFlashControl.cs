@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashControl.RedEyeReduction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameFlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameFlashControl.RedEyeReduction");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameFlashControl.PowerPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float FrameFlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20FrameFlashControl.PowerPercent");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFlashMode FrameFlashControl.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameFlashMode FrameFlashControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameFlashMode%20FrameFlashControl.Mode");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashControl.Auto is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameFlashControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameFlashControl.Auto");
 			}
 			set
 			{

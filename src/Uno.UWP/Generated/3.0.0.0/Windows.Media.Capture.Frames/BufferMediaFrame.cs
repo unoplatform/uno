@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BufferMediaFrame.Buffer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer BufferMediaFrame.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20BufferMediaFrame.Buffer");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReference BufferMediaFrame.FrameReference is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameReference BufferMediaFrame.FrameReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameReference%20BufferMediaFrame.FrameReference");
 			}
 		}
 		#endif

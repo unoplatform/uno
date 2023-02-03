@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Headset ArcadeStick.Headset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Headset ArcadeStick.Headset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Headset%20ArcadeStick.Headset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ArcadeStick.IsWireless is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ArcadeStick.IsWireless is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ArcadeStick.IsWireless");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User ArcadeStick.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User ArcadeStick.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20ArcadeStick.User");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ArcadeStick> ArcadeStick.ArcadeSticks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ArcadeStick> ArcadeStick.ArcadeSticks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CArcadeStick%3E%20ArcadeStick.ArcadeSticks");
 			}
 		}
 		#endif
@@ -51,14 +51,14 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( global::Windows.Gaming.Input.ArcadeStickButtons button)
 		{
-			throw new global::System.NotImplementedException("The member GameControllerButtonLabel ArcadeStick.GetButtonLabel(ArcadeStickButtons button) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GameControllerButtonLabel ArcadeStick.GetButtonLabel(ArcadeStickButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GameControllerButtonLabel%20ArcadeStick.GetButtonLabel%28ArcadeStickButtons%20button%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Gaming.Input.ArcadeStickReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member ArcadeStickReading ArcadeStick.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ArcadeStickReading ArcadeStick.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ArcadeStickReading%20ArcadeStick.GetCurrentReading%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.HeadsetConnected.add
@@ -74,14 +74,14 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport ArcadeStick.TryGetBatteryReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BatteryReport ArcadeStick.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BatteryReport%20ArcadeStick.TryGetBatteryReport%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Gaming.Input.ArcadeStick FromGameController( global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw new global::System.NotImplementedException("The member ArcadeStick ArcadeStick.FromGameController(IGameController gameController) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ArcadeStick ArcadeStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ArcadeStick%20ArcadeStick.FromGameController%28IGameController%20gameController%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.add

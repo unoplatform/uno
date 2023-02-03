@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArraySolidEffect.ZIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArraySolidEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArraySolidEffect.ZIndex");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.StartDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArraySolidEffect.StartDelay");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArraySolidEffect.Duration");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayEffectCompletionBehavior LampArraySolidEffect.CompletionBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LampArrayEffectCompletionBehavior LampArraySolidEffect.CompletionBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LampArrayEffectCompletionBehavior%20LampArraySolidEffect.CompletionBehavior");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArraySolidEffect.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color LampArraySolidEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20LampArraySolidEffect.Color");
 			}
 			set
 			{

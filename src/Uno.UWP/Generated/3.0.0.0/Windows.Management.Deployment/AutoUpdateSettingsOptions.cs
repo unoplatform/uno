@@ -13,7 +13,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVersion AutoUpdateSettingsOptions.Version is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PackageVersion AutoUpdateSettingsOptions.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageVersion%20AutoUpdateSettingsOptions.Version");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.UpdateBlocksActivation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.UpdateBlocksActivation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AutoUpdateSettingsOptions.UpdateBlocksActivation");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.ShowPrompt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.ShowPrompt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AutoUpdateSettingsOptions.ShowPrompt");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.OnLaunch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.OnLaunch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AutoUpdateSettingsOptions.OnLaunch");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.IsAutoRepairEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.IsAutoRepairEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AutoUpdateSettingsOptions.IsAutoRepairEnabled");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AutoUpdateSettingsOptions.HoursBetweenUpdateChecks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint AutoUpdateSettingsOptions.HoursBetweenUpdateChecks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20AutoUpdateSettingsOptions.HoursBetweenUpdateChecks");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.ForceUpdateFromAnyVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AutoUpdateSettingsOptions.ForceUpdateFromAnyVersion");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.AutomaticBackgroundTask is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AutoUpdateSettingsOptions.AutomaticBackgroundTask is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AutoUpdateSettingsOptions.AutomaticBackgroundTask");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AutoUpdateSettingsOptions.AppInstallerUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri AutoUpdateSettingsOptions.AppInstallerUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20AutoUpdateSettingsOptions.AppInstallerUri");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.DependencyPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AutoUpdateSettingsOptions.DependencyPackageUris");
 			}
 		}
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.OptionalPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.OptionalPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AutoUpdateSettingsOptions.OptionalPackageUris");
 			}
 		}
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.RepairUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.RepairUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AutoUpdateSettingsOptions.RepairUris");
 			}
 		}
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.UpdateUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AutoUpdateSettingsOptions.UpdateUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AutoUpdateSettingsOptions.UpdateUris");
 			}
 		}
 		#endif
@@ -207,7 +207,7 @@ namespace Windows.Management.Deployment
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Management.Deployment.AutoUpdateSettingsOptions CreateFromAppInstallerInfo( global::Windows.ApplicationModel.AppInstallerInfo appInstallerInfo)
 		{
-			throw new global::System.NotImplementedException("The member AutoUpdateSettingsOptions AutoUpdateSettingsOptions.CreateFromAppInstallerInfo(AppInstallerInfo appInstallerInfo) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AutoUpdateSettingsOptions AutoUpdateSettingsOptions.CreateFromAppInstallerInfo(AppInstallerInfo appInstallerInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutoUpdateSettingsOptions%20AutoUpdateSettingsOptions.CreateFromAppInstallerInfo%28AppInstallerInfo%20appInstallerInfo%29");
 		}
 		#endif
 	}

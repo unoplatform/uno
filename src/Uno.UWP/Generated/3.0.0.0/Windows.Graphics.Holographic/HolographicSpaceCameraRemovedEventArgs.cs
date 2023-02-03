@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicCamera HolographicSpaceCameraRemovedEventArgs.Camera is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicCamera HolographicSpaceCameraRemovedEventArgs.Camera is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicCamera%20HolographicSpaceCameraRemovedEventArgs.Camera");
 			}
 		}
 		#endif

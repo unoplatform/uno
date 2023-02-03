@@ -13,7 +13,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OfflineMapPackageStartDownloadStatus OfflineMapPackageStartDownloadResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member OfflineMapPackageStartDownloadStatus OfflineMapPackageStartDownloadResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OfflineMapPackageStartDownloadStatus%20OfflineMapPackageStartDownloadResult.Status");
 			}
 		}
 		#endif

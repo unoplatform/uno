@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBufferList.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBufferList.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPacketBufferStatus%20VpnPacketBufferList.Status");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnPacketBufferList.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VpnPacketBufferList.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VpnPacketBufferList.Size");
 			}
 		}
 		#endif
@@ -49,14 +49,14 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtEnd()
 		{
-			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtEnd() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtEnd() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPacketBuffer%20VpnPacketBufferList.RemoveAtEnd%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtBegin()
 		{
-			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtBegin() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtBegin() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPacketBuffer%20VpnPacketBufferList.RemoveAtBegin%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

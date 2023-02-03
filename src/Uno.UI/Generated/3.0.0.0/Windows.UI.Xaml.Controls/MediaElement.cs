@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimelineMarkerCollection MediaElement.Markers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimelineMarkerCollection MediaElement.Markers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimelineMarkerCollection%20MediaElement.Markers");
 			}
 		}
 		#endif
@@ -477,7 +477,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTransportControls MediaElement.TransportControls is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaTransportControls MediaElement.TransportControls is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaTransportControls%20MediaElement.TransportControls");
 			}
 			set
 			{
@@ -884,7 +884,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.MediaCanPlayResponse CanPlayType( string type)
 		{
-			throw new global::System.NotImplementedException("The member MediaCanPlayResponse MediaElement.CanPlayType(string type) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaCanPlayResponse MediaElement.CanPlayType(string type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCanPlayResponse%20MediaElement.CanPlayType%28string%20type%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -898,7 +898,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetAudioStreamLanguage( int? index)
 		{
-			throw new global::System.NotImplementedException("The member string MediaElement.GetAudioStreamLanguage(int? index) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MediaElement.GetAudioStreamLanguage(int? index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaElement.GetAudioStreamLanguage%28int%3F%20index%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -953,7 +953,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Casting.CastingSource GetAsCastingSource()
 		{
-			throw new global::System.NotImplementedException("The member CastingSource MediaElement.GetAsCastingSource() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CastingSource MediaElement.GetAsCastingSource() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CastingSource%20MediaElement.GetAsCastingSource%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaElement.AreTransportControlsEnabledProperty.get

@@ -13,7 +13,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet PlayReadySoapMessage.MessageHeaders is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet PlayReadySoapMessage.MessageHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20PlayReadySoapMessage.MessageHeaders");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadySoapMessage.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri PlayReadySoapMessage.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20PlayReadySoapMessage.Uri");
 			}
 		}
 		#endif
@@ -31,7 +31,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  byte[] GetMessageBody()
 		{
-			throw new global::System.NotImplementedException("The member byte[] PlayReadySoapMessage.GetMessageBody() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member byte[] PlayReadySoapMessage.GetMessageBody() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20PlayReadySoapMessage.GetMessageBody%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.MessageHeaders.get

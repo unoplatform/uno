@@ -13,7 +13,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpVersion HttpResponseMessage.Version is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpVersion HttpResponseMessage.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpVersion%20HttpResponseMessage.Version");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpStatusCode HttpResponseMessage.StatusCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpStatusCode HttpResponseMessage.StatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpStatusCode%20HttpResponseMessage.StatusCode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessageSource HttpResponseMessage.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseMessageSource HttpResponseMessage.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessageSource%20HttpResponseMessage.Source");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpResponseMessage.RequestMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpResponseMessage.RequestMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestMessage%20HttpResponseMessage.RequestMessage");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpResponseMessage.ReasonPhrase is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpResponseMessage.ReasonPhrase is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpResponseMessage.ReasonPhrase");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IHttpContent HttpResponseMessage.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IHttpContent HttpResponseMessage.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IHttpContent%20HttpResponseMessage.Content");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseHeaderCollection HttpResponseMessage.Headers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseHeaderCollection HttpResponseMessage.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseHeaderCollection%20HttpResponseMessage.Headers");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpResponseMessage.IsSuccessStatusCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpResponseMessage.IsSuccessStatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpResponseMessage.IsSuccessStatusCode");
 			}
 		}
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.HttpResponseMessage EnsureSuccessStatusCode()
 		{
-			throw new global::System.NotImplementedException("The member HttpResponseMessage HttpResponseMessage.EnsureSuccessStatusCode() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpResponseMessage HttpResponseMessage.EnsureSuccessStatusCode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessage%20HttpResponseMessage.EnsureSuccessStatusCode%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -159,7 +159,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpResponseMessage.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpResponseMessage.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpResponseMessage.ToString%28%29");
 		}
 		#endif
 		// Processing: System.IDisposable

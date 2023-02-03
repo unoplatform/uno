@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTaskInstance BackgroundActivatedEventArgs.TaskInstance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBackgroundTaskInstance BackgroundActivatedEventArgs.TaskInstance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBackgroundTaskInstance%20BackgroundActivatedEventArgs.TaskInstance");
 			}
 		}
 		#endif

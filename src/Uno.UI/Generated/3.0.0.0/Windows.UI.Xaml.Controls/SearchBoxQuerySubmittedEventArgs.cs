@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers SearchBoxQuerySubmittedEventArgs.KeyModifiers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VirtualKeyModifiers SearchBoxQuerySubmittedEventArgs.KeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VirtualKeyModifiers%20SearchBoxQuerySubmittedEventArgs.KeyModifiers");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxQuerySubmittedEventArgs.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxQuerySubmittedEventArgs.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxQuerySubmittedEventArgs.Language");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchQueryLinguisticDetails SearchBoxQuerySubmittedEventArgs.LinguisticDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SearchQueryLinguisticDetails SearchBoxQuerySubmittedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SearchQueryLinguisticDetails%20SearchBoxQuerySubmittedEventArgs.LinguisticDetails");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxQuerySubmittedEventArgs.QueryText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxQuerySubmittedEventArgs.QueryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxQuerySubmittedEventArgs.QueryText");
 			}
 		}
 		#endif

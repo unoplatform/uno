@@ -13,7 +13,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HdmiDisplayMode.BitsPerPixel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort HdmiDisplayMode.BitsPerPixel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20HdmiDisplayMode.BitsPerPixel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdmiDisplayColorSpace HdmiDisplayMode.ColorSpace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HdmiDisplayColorSpace HdmiDisplayMode.ColorSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HdmiDisplayColorSpace%20HdmiDisplayMode.ColorSpace");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.Is2086MetadataSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.Is2086MetadataSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HdmiDisplayMode.Is2086MetadataSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsSdrLuminanceSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsSdrLuminanceSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HdmiDisplayMode.IsSdrLuminanceSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsSmpte2084Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsSmpte2084Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HdmiDisplayMode.IsSmpte2084Supported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdmiDisplayPixelEncoding HdmiDisplayMode.PixelEncoding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HdmiDisplayPixelEncoding HdmiDisplayMode.PixelEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HdmiDisplayPixelEncoding%20HdmiDisplayMode.PixelEncoding");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HdmiDisplayMode.RefreshRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double HdmiDisplayMode.RefreshRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20HdmiDisplayMode.RefreshRate");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HdmiDisplayMode.ResolutionHeightInRawPixels is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HdmiDisplayMode.ResolutionHeightInRawPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HdmiDisplayMode.ResolutionHeightInRawPixels");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HdmiDisplayMode.ResolutionWidthInRawPixels is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HdmiDisplayMode.ResolutionWidthInRawPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HdmiDisplayMode.ResolutionWidthInRawPixels");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.StereoEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.StereoEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HdmiDisplayMode.StereoEnabled");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsDolbyVisionLowLatencySupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsDolbyVisionLowLatencySupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HdmiDisplayMode.IsDolbyVisionLowLatencySupported");
 			}
 		}
 		#endif
@@ -126,7 +126,7 @@ namespace Windows.Graphics.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEqual( global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
 		{
-			throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsEqual(HdmiDisplayMode mode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsEqual(HdmiDisplayMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HdmiDisplayMode.IsEqual%28HdmiDisplayMode%20mode%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ColorSpace.get

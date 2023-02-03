@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaPlaybackVideoTrackList.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MediaPlaybackVideoTrackList.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MediaPlaybackVideoTrackList.Size");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MediaPlaybackVideoTrackList.SelectedIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MediaPlaybackVideoTrackList.SelectedIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MediaPlaybackVideoTrackList.SelectedIndex");
 			}
 			set
 			{

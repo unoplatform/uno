@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.AppService is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.AppService is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.AppService");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.LaunchUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.LaunchUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.LaunchUri");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.RemoteSession is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.RemoteSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.RemoteSession");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.SpatialEntity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.SpatialEntity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.SpatialEntity");
 			}
 		}
 		#endif

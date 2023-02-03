@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CmsTimestampInfo.Certificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CmsTimestampInfo.Certificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20CmsTimestampInfo.Certificates");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CmsTimestampInfo.SigningCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate CmsTimestampInfo.SigningCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20CmsTimestampInfo.SigningCertificate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CmsTimestampInfo.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset CmsTimestampInfo.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20CmsTimestampInfo.Timestamp");
 			}
 		}
 		#endif

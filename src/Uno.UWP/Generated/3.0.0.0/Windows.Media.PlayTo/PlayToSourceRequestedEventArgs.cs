@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSourceRequest PlayToSourceRequestedEventArgs.SourceRequest is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlayToSourceRequest PlayToSourceRequestedEventArgs.SourceRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToSourceRequest%20PlayToSourceRequestedEventArgs.SourceRequest");
 			}
 		}
 		#endif

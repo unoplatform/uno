@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CapturedFrame.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CapturedFrame.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CapturedFrame.Height");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CapturedFrame.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CapturedFrame.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CapturedFrame.Width");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPropertySet CapturedFrame.BitmapProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapPropertySet CapturedFrame.BitmapProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapPropertySet%20CapturedFrame.BitmapProperties");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrameControlValues CapturedFrame.ControlValues is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrameControlValues CapturedFrame.ControlValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrameControlValues%20CapturedFrame.ControlValues");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoftwareBitmap CapturedFrame.SoftwareBitmap is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SoftwareBitmap CapturedFrame.SoftwareBitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20CapturedFrame.SoftwareBitmap");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CapturedFrame.ContentType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CapturedFrame.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CapturedFrame.ContentType");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CapturedFrame.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong CapturedFrame.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20CapturedFrame.Size");
 			}
 			set
 			{
@@ -87,7 +87,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CapturedFrame.CanRead is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CapturedFrame.CanRead is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CapturedFrame.CanRead");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CapturedFrame.CanWrite is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CapturedFrame.CanWrite is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CapturedFrame.CanWrite");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CapturedFrame.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong CapturedFrame.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20CapturedFrame.Position");
 			}
 		}
 		#endif
@@ -119,14 +119,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IInputStream GetInputStreamAt( ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IInputStream CapturedFrame.GetInputStreamAt(ulong position) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IInputStream CapturedFrame.GetInputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IInputStream%20CapturedFrame.GetInputStreamAt%28ulong%20position%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt( ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IOutputStream CapturedFrame.GetOutputStreamAt(ulong position) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IOutputStream CapturedFrame.GetOutputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IOutputStream%20CapturedFrame.GetOutputStreamAt%28ulong%20position%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Capture.CapturedFrame.Position.get
@@ -141,7 +141,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream CapturedFrame.CloneStream() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRandomAccessStream CapturedFrame.CloneStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20CapturedFrame.CloneStream%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Capture.CapturedFrame.CanRead.get
@@ -157,21 +157,21 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync( global::Windows.Storage.Streams.IBuffer buffer,  uint count,  global::Windows.Storage.Streams.InputStreamOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> CapturedFrame.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> CapturedFrame.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20CapturedFrame.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync( global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> CapturedFrame.WriteAsync(IBuffer buffer) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> CapturedFrame.WriteAsync(IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20CapturedFrame.WriteAsync%28IBuffer%20buffer%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CapturedFrame.FlushAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CapturedFrame.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20CapturedFrame.FlushAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Capture.CapturedFrame.ContentType.get

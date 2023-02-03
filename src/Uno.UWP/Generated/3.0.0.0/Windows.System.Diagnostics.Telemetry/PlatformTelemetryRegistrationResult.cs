@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics.Telemetry
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlatformTelemetryRegistrationStatus PlatformTelemetryRegistrationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlatformTelemetryRegistrationStatus PlatformTelemetryRegistrationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlatformTelemetryRegistrationStatus%20PlatformTelemetryRegistrationResult.Status");
 			}
 		}
 		#endif

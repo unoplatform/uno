@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? StatusBar.ForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? StatusBar.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20StatusBar.ForegroundColor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double StatusBar.BackgroundOpacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double StatusBar.BackgroundOpacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20StatusBar.BackgroundOpacity");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? StatusBar.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? StatusBar.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20StatusBar.BackgroundColor");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect StatusBar.OccludedRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect StatusBar.OccludedRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20StatusBar.OccludedRect");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StatusBarProgressIndicator StatusBar.ProgressIndicator is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StatusBarProgressIndicator StatusBar.ProgressIndicator is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StatusBarProgressIndicator%20StatusBar.ProgressIndicator");
 			}
 		}
 		#endif
@@ -73,14 +73,14 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ShowAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.ShowAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.ShowAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StatusBar.ShowAsync%28%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction HideAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.HideAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.HideAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StatusBar.HideAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.ViewManagement.StatusBar.BackgroundOpacity.get
@@ -99,7 +99,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.ViewManagement.StatusBar GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member StatusBar StatusBar.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member StatusBar StatusBar.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StatusBar%20StatusBar.GetForCurrentView%28%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

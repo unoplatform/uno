@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceGetPropertyStatus MediaFrameSourceGetPropertyResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameSourceGetPropertyStatus MediaFrameSourceGetPropertyResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameSourceGetPropertyStatus%20MediaFrameSourceGetPropertyResult.Status");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object MediaFrameSourceGetPropertyResult.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object MediaFrameSourceGetPropertyResult.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20MediaFrameSourceGetPropertyResult.Value");
 			}
 		}
 		#endif

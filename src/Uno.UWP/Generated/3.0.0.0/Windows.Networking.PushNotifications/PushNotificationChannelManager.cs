@@ -13,35 +13,35 @@ namespace Windows.Networking.PushNotifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member PushNotificationChannelManagerForUser PushNotificationChannelManager.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PushNotificationChannelManagerForUser PushNotificationChannelManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PushNotificationChannelManagerForUser%20PushNotificationChannelManager.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser GetForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member PushNotificationChannelManagerForUser PushNotificationChannelManager.GetForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PushNotificationChannelManagerForUser PushNotificationChannelManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PushNotificationChannelManagerForUser%20PushNotificationChannelManager.GetForUser%28User%20user%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForApplicationAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForApplicationAsync( string applicationId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync(string applicationId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync%28string%20applicationId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForSecondaryTileAsync( string tileId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForSecondaryTileAsync(string tileId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForSecondaryTileAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManager.CreatePushNotificationChannelForSecondaryTileAsync%28string%20tileId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

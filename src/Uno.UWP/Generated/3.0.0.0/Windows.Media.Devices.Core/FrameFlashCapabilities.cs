@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashCapabilities.PowerSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameFlashCapabilities.PowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameFlashCapabilities.PowerSupported");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashCapabilities.RedEyeReductionSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameFlashCapabilities.RedEyeReductionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameFlashCapabilities.RedEyeReductionSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFlashCapabilities.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameFlashCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameFlashCapabilities.Supported");
 			}
 		}
 		#endif

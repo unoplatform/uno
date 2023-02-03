@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionMaskBrush.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBrush CompositionMaskBrush.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20CompositionMaskBrush.Source");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionMaskBrush.Mask is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBrush CompositionMaskBrush.Mask is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20CompositionMaskBrush.Mask");
 			}
 			set
 			{

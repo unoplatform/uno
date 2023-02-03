@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ApplicationViewTransferContext.ViewId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ApplicationViewTransferContext.ViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ApplicationViewTransferContext.ViewId");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ApplicationViewTransferContext.DataPackageFormatId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ApplicationViewTransferContext.DataPackageFormatId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ApplicationViewTransferContext.DataPackageFormatId");
 			}
 		}
 		#endif

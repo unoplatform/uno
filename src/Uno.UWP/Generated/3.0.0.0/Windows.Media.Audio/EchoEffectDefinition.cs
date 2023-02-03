@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.WetDryMix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.WetDryMix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EchoEffectDefinition.WetDryMix");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Feedback is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Feedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EchoEffectDefinition.Feedback");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Delay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Delay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EchoEffectDefinition.Delay");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EchoEffectDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EchoEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EchoEffectDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet EchoEffectDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet EchoEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20EchoEffectDefinition.Properties");
 			}
 		}
 		#endif

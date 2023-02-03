@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameExposureCapabilities FrameControlCapabilities.Exposure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameExposureCapabilities FrameControlCapabilities.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameExposureCapabilities%20FrameControlCapabilities.Exposure");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameExposureCompensationCapabilities FrameControlCapabilities.ExposureCompensation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameExposureCompensationCapabilities FrameControlCapabilities.ExposureCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameExposureCompensationCapabilities%20FrameControlCapabilities.ExposureCompensation");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFocusCapabilities FrameControlCapabilities.Focus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameFocusCapabilities FrameControlCapabilities.Focus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameFocusCapabilities%20FrameControlCapabilities.Focus");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameIsoSpeedCapabilities FrameControlCapabilities.IsoSpeed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameIsoSpeedCapabilities FrameControlCapabilities.IsoSpeed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameIsoSpeedCapabilities%20FrameControlCapabilities.IsoSpeed");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameControlCapabilities.PhotoConfirmationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameControlCapabilities.PhotoConfirmationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameControlCapabilities.PhotoConfirmationSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFlashCapabilities FrameControlCapabilities.Flash is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameFlashCapabilities FrameControlCapabilities.Flash is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameFlashCapabilities%20FrameControlCapabilities.Flash");
 			}
 		}
 		#endif

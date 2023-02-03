@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DetectedFace> FaceDetectionEffectFrame.DetectedFaces is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<DetectedFace> FaceDetectionEffectFrame.DetectedFaces is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CDetectedFace%3E%20FaceDetectionEffectFrame.DetectedFaces");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20FaceDetectionEffectFrame.SystemRelativeTime");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.RelativeTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20FaceDetectionEffectFrame.RelativeTime");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsDiscontinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FaceDetectionEffectFrame.IsDiscontinuous");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20FaceDetectionEffectFrame.Duration");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet FaceDetectionEffectFrame.ExtendedProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet FaceDetectionEffectFrame.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20FaceDetectionEffectFrame.ExtendedProperties");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsReadOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FaceDetectionEffectFrame.IsReadOnly");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FaceDetectionEffectFrame.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FaceDetectionEffectFrame.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FaceDetectionEffectFrame.Type");
 			}
 		}
 		#endif

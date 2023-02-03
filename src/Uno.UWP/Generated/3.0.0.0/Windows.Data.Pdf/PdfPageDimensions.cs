@@ -13,7 +13,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.ArtBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.ArtBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PdfPageDimensions.ArtBox");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.BleedBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.BleedBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PdfPageDimensions.BleedBox");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.CropBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.CropBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PdfPageDimensions.CropBox");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.MediaBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.MediaBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PdfPageDimensions.MediaBox");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.TrimBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.TrimBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PdfPageDimensions.TrimBox");
 			}
 		}
 		#endif

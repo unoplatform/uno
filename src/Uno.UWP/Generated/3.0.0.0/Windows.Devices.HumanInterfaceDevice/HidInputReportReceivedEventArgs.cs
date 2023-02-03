@@ -13,7 +13,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidInputReport HidInputReportReceivedEventArgs.Report is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HidInputReport HidInputReportReceivedEventArgs.Report is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HidInputReport%20HidInputReportReceivedEventArgs.Report");
 			}
 		}
 		#endif

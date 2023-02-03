@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbBulkOutEndpointDescriptor.EndpointNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbBulkOutEndpointDescriptor.EndpointNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbBulkOutEndpointDescriptor.EndpointNumber");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbBulkOutEndpointDescriptor.MaxPacketSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbBulkOutEndpointDescriptor.MaxPacketSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbBulkOutEndpointDescriptor.MaxPacketSize");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbBulkOutPipe UsbBulkOutEndpointDescriptor.Pipe is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbBulkOutPipe UsbBulkOutEndpointDescriptor.Pipe is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbBulkOutPipe%20UsbBulkOutEndpointDescriptor.Pipe");
 			}
 		}
 		#endif

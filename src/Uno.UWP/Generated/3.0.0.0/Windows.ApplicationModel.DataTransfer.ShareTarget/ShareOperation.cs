@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageView ShareOperation.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DataPackageView ShareOperation.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPackageView%20ShareOperation.Data");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ShareOperation.QuickLinkId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ShareOperation.QuickLinkId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ShareOperation.QuickLinkId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Contact> ShareOperation.Contacts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Contact> ShareOperation.Contacts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContact%3E%20ShareOperation.Contacts");
 			}
 		}
 		#endif

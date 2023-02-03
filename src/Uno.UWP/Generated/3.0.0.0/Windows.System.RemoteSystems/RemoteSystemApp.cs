@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> RemoteSystemApp.Attributes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> RemoteSystemApp.Attributes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20RemoteSystemApp.Attributes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemApp.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemApp.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemApp.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemApp.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemApp.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemApp.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RemoteSystemApp.IsAvailableByProximity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RemoteSystemApp.IsAvailableByProximity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RemoteSystemApp.IsAvailableByProximity");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RemoteSystemApp.IsAvailableBySpatialProximity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RemoteSystemApp.IsAvailableBySpatialProximity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RemoteSystemApp.IsAvailableBySpatialProximity");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemApp.ConnectionToken");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User RemoteSystemApp.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User RemoteSystemApp.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20RemoteSystemApp.User");
 			}
 		}
 		#endif

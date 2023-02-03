@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpandCollapseState LoopingSelectorAutomationPeer.ExpandCollapseState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExpandCollapseState LoopingSelectorAutomationPeer.ExpandCollapseState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExpandCollapseState%20LoopingSelectorAutomationPeer.ExpandCollapseState");
 			}
 		}
 		#endif
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter,  global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty,  object value)
 		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple LoopingSelectorAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRawElementProviderSimple LoopingSelectorAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRawElementProviderSimple%20LoopingSelectorAutomationPeer.FindItemByProperty%28IRawElementProviderSimple%20startAfter%2C%20AutomationProperty%20automationProperty%2C%20object%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.ExpandCollapseState.get

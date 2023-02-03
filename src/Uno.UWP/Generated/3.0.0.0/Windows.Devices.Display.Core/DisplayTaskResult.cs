@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DisplayTaskResult.PresentId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong DisplayTaskResult.PresentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20DisplayTaskResult.PresentId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPresentStatus DisplayTaskResult.PresentStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayPresentStatus DisplayTaskResult.PresentStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayPresentStatus%20DisplayTaskResult.PresentStatus");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplaySourceStatus DisplayTaskResult.SourceStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplaySourceStatus DisplayTaskResult.SourceStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplaySourceStatus%20DisplayTaskResult.SourceStatus");
 			}
 		}
 		#endif

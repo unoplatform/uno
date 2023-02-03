@@ -13,7 +13,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeerWatcherStatus PeerWatcher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PeerWatcherStatus PeerWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PeerWatcherStatus%20PeerWatcher.Status");
 			}
 		}
 		#endif

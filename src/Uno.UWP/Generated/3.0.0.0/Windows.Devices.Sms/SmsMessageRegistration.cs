@@ -13,7 +13,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsMessageRegistration.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsMessageRegistration.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsMessageRegistration.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSmsMessageRegistration%3E%20SmsMessageRegistration.AllRegistrations");
 			}
 		}
 		#endif
@@ -42,7 +42,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Sms.SmsMessageRegistration Register( string id,  global::Windows.Devices.Sms.SmsFilterRules filterRules)
 		{
-			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsMessageRegistration%20SmsMessageRegistration.Register%28string%20id%2C%20SmsFilterRules%20filterRules%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

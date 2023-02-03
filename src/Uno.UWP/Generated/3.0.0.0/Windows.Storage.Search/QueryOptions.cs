@@ -13,7 +13,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QueryOptions.UserSearchFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string QueryOptions.UserSearchFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QueryOptions.UserSearchFilter");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QueryOptions.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string QueryOptions.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QueryOptions.Language");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IndexerOption QueryOptions.IndexerOption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IndexerOption QueryOptions.IndexerOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IndexerOption%20QueryOptions.IndexerOption");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FolderDepth QueryOptions.FolderDepth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FolderDepth QueryOptions.FolderDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FolderDepth%20QueryOptions.FolderDepth");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QueryOptions.ApplicationSearchFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string QueryOptions.ApplicationSearchFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QueryOptions.ApplicationSearchFilter");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateStackOption QueryOptions.DateStackOption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateStackOption QueryOptions.DateStackOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateStackOption%20QueryOptions.DateStackOption");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> QueryOptions.FileTypeFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> QueryOptions.FileTypeFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20QueryOptions.FileTypeFilter");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QueryOptions.GroupPropertyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string QueryOptions.GroupPropertyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QueryOptions.GroupPropertyName");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SortEntry> QueryOptions.SortOrder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SortEntry> QueryOptions.SortOrder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSortEntry%3E%20QueryOptions.SortOrder");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> QueryOptions.StorageProviderIdFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> QueryOptions.StorageProviderIdFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20QueryOptions.StorageProviderIdFilter");
 			}
 		}
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string SaveToString()
 		{
-			throw new global::System.NotImplementedException("The member string QueryOptions.SaveToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string QueryOptions.SaveToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QueryOptions.SaveToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

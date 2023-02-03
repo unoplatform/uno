@@ -13,7 +13,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlMoveFocusReason WebViewControlMoveFocusRequestedEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewControlMoveFocusReason WebViewControlMoveFocusRequestedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewControlMoveFocusReason%20WebViewControlMoveFocusRequestedEventArgs.Reason");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GattSession.MaintainConnection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GattSession.MaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GattSession.MaintainConnection");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GattSession.CanMaintainConnection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GattSession.CanMaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GattSession.CanMaintainConnection");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothDeviceId GattSession.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothDeviceId GattSession.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothDeviceId%20GattSession.DeviceId");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattSession.MaxPduSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort GattSession.MaxPduSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20GattSession.MaxPduSize");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattSessionStatus GattSession.SessionStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattSessionStatus GattSession.SessionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattSessionStatus%20GattSession.SessionStatus");
 			}
 		}
 		#endif
@@ -82,7 +82,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession> FromDeviceIdAsync( global::Windows.Devices.Bluetooth.BluetoothDeviceId deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattSession> GattSession.FromDeviceIdAsync(BluetoothDeviceId deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattSession> GattSession.FromDeviceIdAsync(BluetoothDeviceId deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattSession%3E%20GattSession.FromDeviceIdAsync%28BluetoothDeviceId%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

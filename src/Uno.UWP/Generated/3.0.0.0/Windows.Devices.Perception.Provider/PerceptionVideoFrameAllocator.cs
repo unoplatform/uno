@@ -19,14 +19,14 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Perception.Provider.PerceptionFrame AllocateFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.AllocateFrame() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.AllocateFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionFrame%20PerceptionVideoFrameAllocator.AllocateFrame%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame( global::Windows.Media.VideoFrame frame)
 		{
-			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.CopyFromVideoFrame(VideoFrame frame) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.CopyFromVideoFrame(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionFrame%20PerceptionVideoFrameAllocator.CopyFromVideoFrame%28VideoFrame%20frame%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

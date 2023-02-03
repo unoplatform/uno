@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CameraCaptureUIMaxVideoResolution%20CameraCaptureUIVideoCaptureSettings.MaxResolution");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraCaptureUIVideoFormat CameraCaptureUIVideoCaptureSettings.Format is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CameraCaptureUIVideoFormat CameraCaptureUIVideoCaptureSettings.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CameraCaptureUIVideoFormat%20CameraCaptureUIVideoCaptureSettings.Format");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CameraCaptureUIVideoCaptureSettings.AllowTrimming is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CameraCaptureUIVideoCaptureSettings.AllowTrimming is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CameraCaptureUIVideoCaptureSettings.AllowTrimming");
 			}
 			set
 			{

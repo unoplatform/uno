@@ -11,7 +11,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionDrawingSurface CreateDrawingSurface( global::Windows.Foundation.Size sizePixels,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode)
 		{
-			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionGraphicsDevice.CreateDrawingSurface(Size sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionGraphicsDevice.CreateDrawingSurface(Size sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionDrawingSurface%20CompositionGraphicsDevice.CreateDrawingSurface%28Size%20sizePixels%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXAlphaMode%20alphaMode%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.RenderingDeviceReplaced.add
@@ -20,21 +20,21 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionDrawingSurface CreateDrawingSurface2( global::Windows.Graphics.SizeInt32 sizePixels,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode)
 		{
-			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionGraphicsDevice.CreateDrawingSurface2(SizeInt32 sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionGraphicsDevice.CreateDrawingSurface2(SizeInt32 sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionDrawingSurface%20CompositionGraphicsDevice.CreateDrawingSurface2%28SizeInt32%20sizePixels%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXAlphaMode%20alphaMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionVirtualDrawingSurface CreateVirtualDrawingSurface( global::Windows.Graphics.SizeInt32 sizePixels,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode)
 		{
-			throw new global::System.NotImplementedException("The member CompositionVirtualDrawingSurface CompositionGraphicsDevice.CreateVirtualDrawingSurface(SizeInt32 sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionVirtualDrawingSurface CompositionGraphicsDevice.CreateVirtualDrawingSurface(SizeInt32 sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionVirtualDrawingSurface%20CompositionGraphicsDevice.CreateVirtualDrawingSurface%28SizeInt32%20sizePixels%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXAlphaMode%20alphaMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionMipmapSurface CreateMipmapSurface( global::Windows.Graphics.SizeInt32 sizePixels,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode)
 		{
-			throw new global::System.NotImplementedException("The member CompositionMipmapSurface CompositionGraphicsDevice.CreateMipmapSurface(SizeInt32 sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionMipmapSurface CompositionGraphicsDevice.CreateMipmapSurface(SizeInt32 sizePixels, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionMipmapSurface%20CompositionGraphicsDevice.CreateMipmapSurface%28SizeInt32%20sizePixels%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXAlphaMode%20alphaMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -48,7 +48,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Composition.ICompositionSurface> CaptureAsync( global::Windows.UI.Composition.Visual captureVisual,  global::Windows.Graphics.SizeInt32 size,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode,  float sdrBoost)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ICompositionSurface> CompositionGraphicsDevice.CaptureAsync(Visual captureVisual, SizeInt32 size, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode, float sdrBoost) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ICompositionSurface> CompositionGraphicsDevice.CaptureAsync(Visual captureVisual, SizeInt32 size, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode, float sdrBoost) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CICompositionSurface%3E%20CompositionGraphicsDevice.CaptureAsync%28Visual%20captureVisual%2C%20SizeInt32%20size%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXAlphaMode%20alphaMode%2C%20float%20sdrBoost%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

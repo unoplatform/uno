@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Contact ContactListCreateOrUpdateContactRequest.Contact is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Contact ContactListCreateOrUpdateContactRequest.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Contact%20ContactListCreateOrUpdateContactRequest.Contact");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactListCreateOrUpdateContactRequest.ContactListId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactListCreateOrUpdateContactRequest.ContactListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactListCreateOrUpdateContactRequest.ContactListId");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Contacts.Contact createdOrUpdatedContact)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportCompletedAsync(Contact createdOrUpdatedContact) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportCompletedAsync(Contact createdOrUpdatedContact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactListCreateOrUpdateContactRequest.ReportCompletedAsync%28Contact%20createdOrUpdatedContact%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportFailedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactListCreateOrUpdateContactRequest.ReportFailedAsync%28%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement ElementFactoryGetArgs.Parent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIElement ElementFactoryGetArgs.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElement%20ElementFactoryGetArgs.Parent");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ElementFactoryGetArgs.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object ElementFactoryGetArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ElementFactoryGetArgs.Data");
 			}
 			set
 			{

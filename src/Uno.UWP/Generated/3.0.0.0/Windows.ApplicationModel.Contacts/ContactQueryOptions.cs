@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactQueryOptions.IncludeContactsFromHiddenLists is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ContactQueryOptions.IncludeContactsFromHiddenLists is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContactQueryOptions.IncludeContactsFromHiddenLists");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactQueryOptions.DesiredOperations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactQueryOptions.DesiredOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactAnnotationOperations%20ContactQueryOptions.DesiredOperations");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.AnnotationListIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.AnnotationListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ContactQueryOptions.AnnotationListIds");
 			}
 		}
 		#endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.ContactListIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.ContactListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ContactQueryOptions.ContactListIds");
 			}
 		}
 		#endif
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQueryTextSearch ContactQueryOptions.TextSearch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactQueryTextSearch ContactQueryOptions.TextSearch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactQueryTextSearch%20ContactQueryOptions.TextSearch");
 			}
 		}
 		#endif

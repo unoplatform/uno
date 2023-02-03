@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactMatchReasonKind ContactMatchReason.Field is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactMatchReasonKind ContactMatchReason.Field is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactMatchReasonKind%20ContactMatchReason.Field");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<TextSegment> ContactMatchReason.Segments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<TextSegment> ContactMatchReason.Segments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CTextSegment%3E%20ContactMatchReason.Segments");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactMatchReason.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactMatchReason.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactMatchReason.Text");
 			}
 		}
 		#endif

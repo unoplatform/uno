@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationSetting TileFlyoutUpdater.Setting is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NotificationSetting TileFlyoutUpdater.Setting is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NotificationSetting%20TileFlyoutUpdater.Setting");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeScannerReport BarcodeScannerDataReceivedEventArgs.Report is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BarcodeScannerReport BarcodeScannerDataReceivedEventArgs.Report is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BarcodeScannerReport%20BarcodeScannerDataReceivedEventArgs.Report");
 			}
 		}
 		#endif

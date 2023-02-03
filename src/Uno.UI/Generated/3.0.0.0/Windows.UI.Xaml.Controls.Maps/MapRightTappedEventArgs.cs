@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopoint MapRightTappedEventArgs.Location is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geopoint MapRightTappedEventArgs.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geopoint%20MapRightTappedEventArgs.Location");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MapRightTappedEventArgs.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point MapRightTappedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20MapRightTappedEventArgs.Position");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnectionStateChangedEventArgs.CurrentState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnectionStateChangedEventArgs.CurrentState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToConnectionState%20PlayToConnectionStateChangedEventArgs.CurrentState");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnectionStateChangedEventArgs.PreviousState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnectionStateChangedEventArgs.PreviousState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToConnectionState%20PlayToConnectionStateChangedEventArgs.PreviousState");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.NonRepudiation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.NonRepudiation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.NonRepudiation");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyEncipherment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyEncipherment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.KeyEncipherment");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyCertificateSign is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyCertificateSign is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.KeyCertificateSign");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyAgreement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyAgreement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.KeyAgreement");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.EncipherOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.EncipherOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.EncipherOnly");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.DigitalSignature is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.DigitalSignature is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.DigitalSignature");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.DataEncipherment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.DataEncipherment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.DataEncipherment");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.CrlSign is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.CrlSign is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateKeyUsages.CrlSign");
 			}
 			set
 			{

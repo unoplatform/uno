@@ -23,21 +23,21 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Spatial.SpatialInteractionSourceState> GetDetectedSourcesAtTimestamp( global::Windows.Perception.PerceptionTimestamp timeStamp)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<SpatialInteractionSourceState> SpatialInteractionManager.GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<SpatialInteractionSourceState> SpatialInteractionManager.GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSpatialInteractionSourceState%3E%20SpatialInteractionManager.GetDetectedSourcesAtTimestamp%28PerceptionTimestamp%20timeStamp%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSourceKindSupported( global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind kind)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialInteractionManager.IsSourceKindSupported(SpatialInteractionSourceKind kind) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool SpatialInteractionManager.IsSourceKindSupported(SpatialInteractionSourceKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialInteractionManager.IsSourceKindSupported%28SpatialInteractionSourceKind%20kind%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteractionManager%20SpatialInteractionManager.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

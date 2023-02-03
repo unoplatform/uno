@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError BluetoothLEAdvertisementPublisherTriggerDetails.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError BluetoothLEAdvertisementPublisherTriggerDetails.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20BluetoothLEAdvertisementPublisherTriggerDetails.Error");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherTriggerDetails.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherTriggerDetails.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisherTriggerDetails.Status");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=short%3F%20BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm");
 			}
 		}
 		#endif

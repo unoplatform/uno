@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandAntennaSar> MobileBroadbandSarManager.Antennas is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandAntennaSar> MobileBroadbandSarManager.Antennas is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandAntennaSar%3E%20MobileBroadbandSarManager.Antennas");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MobileBroadbandSarManager.HysteresisTimerPeriod is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MobileBroadbandSarManager.HysteresisTimerPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MobileBroadbandSarManager.HysteresisTimerPeriod");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandSarManager.IsBackoffEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandSarManager.IsBackoffEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandSarManager.IsBackoffEnabled");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandSarManager.IsSarControlledByHardware is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandSarManager.IsSarControlledByHardware is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandSarManager.IsSarControlledByHardware");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandSarManager.IsWiFiHardwareIntegrated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandSarManager.IsWiFiHardwareIntegrated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandSarManager.IsWiFiHardwareIntegrated");
 			}
 		}
 		#endif
@@ -68,42 +68,42 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction EnableBackoffAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.EnableBackoffAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.EnableBackoffAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandSarManager.EnableBackoffAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DisableBackoffAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.DisableBackoffAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.DisableBackoffAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandSarManager.DisableBackoffAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetConfigurationAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar> antennas)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.SetConfigurationAsync(IEnumerable<MobileBroadbandAntennaSar> antennas) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.SetConfigurationAsync(IEnumerable<MobileBroadbandAntennaSar> antennas) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandSarManager.SetConfigurationAsync%28IEnumerable%3CMobileBroadbandAntennaSar%3E%20antennas%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction RevertSarToHardwareControlAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.RevertSarToHardwareControlAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.RevertSarToHardwareControlAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandSarManager.RevertSarToHardwareControlAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetTransmissionStateChangedHysteresisAsync( global::System.TimeSpan timerPeriod)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.SetTransmissionStateChangedHysteresisAsync(TimeSpan timerPeriod) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.SetTransmissionStateChangedHysteresisAsync(TimeSpan timerPeriod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandSarManager.SetTransmissionStateChangedHysteresisAsync%28TimeSpan%20timerPeriod%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> GetIsTransmittingAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandSarManager.GetIsTransmittingAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandSarManager.GetIsTransmittingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20MobileBroadbandSarManager.GetIsTransmittingAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

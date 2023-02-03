@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationActionTriggerDetail.Argument is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationActionTriggerDetail.Argument is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationActionTriggerDetail.Argument");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet ToastNotificationActionTriggerDetail.UserInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet ToastNotificationActionTriggerDetail.UserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20ToastNotificationActionTriggerDetail.UserInput");
 			}
 		}
 		#endif

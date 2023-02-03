@@ -13,7 +13,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsFilterActionType SmsFilterRules.ActionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsFilterActionType SmsFilterRules.ActionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsFilterActionType%20SmsFilterRules.ActionType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SmsFilterRule> SmsFilterRules.Rules is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SmsFilterRule> SmsFilterRules.Rules is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSmsFilterRule%3E%20SmsFilterRules.Rules");
 			}
 		}
 		#endif

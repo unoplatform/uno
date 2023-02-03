@@ -13,7 +13,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileLoggingSession.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileLoggingSession.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileLoggingSession.Name");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CloseAndSaveToFileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileLoggingSession.CloseAndSaveToFileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileLoggingSession.CloseAndSaveToFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20FileLoggingSession.CloseAndSaveToFileAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.FileLoggingSession.LogFileGenerated.add

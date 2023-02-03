@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.BitmapAlphaMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.BitmapAlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoProfileProperties.BitmapAlphaMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.BitmapPixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.BitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoProfileProperties.BitmapPixelFormat");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.FrameDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.FrameDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoProfileProperties.FrameDuration");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoProfileProperties.Height");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoProfileProperties.Width");
 			}
 		}
 		#endif

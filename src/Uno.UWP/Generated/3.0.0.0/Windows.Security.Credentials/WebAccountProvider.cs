@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccountProvider.DisplayName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProvider.IconUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebAccountProvider.IconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebAccountProvider.IconUri");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccountProvider.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccountProvider.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.Authority is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccountProvider.Authority is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccountProvider.Authority");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayPurpose is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayPurpose is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccountProvider.DisplayPurpose");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebAccountProvider.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User WebAccountProvider.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20WebAccountProvider.User");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebAccountProvider.IsSystemProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebAccountProvider.IsSystemProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebAccountProvider.IsSystemProvider");
 			}
 		}
 		#endif

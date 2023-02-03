@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RichEditBox 
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ITextDocument RichEditBox.Document is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ITextDocument RichEditBox.Document is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ITextDocument%20RichEditBox.Document");
 			}
 		}
 		#endif
@@ -425,7 +425,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RichEditTextDocument RichEditBox.TextDocument is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RichEditTextDocument RichEditBox.TextDocument is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RichEditTextDocument%20RichEditBox.TextDocument");
 			}
 		}
 		#endif
@@ -661,13 +661,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RichEditBox() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.RichEditBox", "RichEditBox.RichEditBox()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.RichEditBox.RichEditBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBox.RichEditBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBox.IsReadOnly.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBox.IsReadOnly.set
@@ -722,7 +716,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetLinguisticAlternativesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> RichEditBox.GetLinguisticAlternativesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> RichEditBox.GetLinguisticAlternativesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3Cstring%3E%3E%20RichEditBox.GetLinguisticAlternativesAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBox.ClipboardCopyFormat.get

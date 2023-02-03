@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkToolbarStencilButton InkToolbarIsStencilButtonCheckedChangedEventArgs.StencilButton is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkToolbarStencilButton InkToolbarIsStencilButtonCheckedChangedEventArgs.StencilButton is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkToolbarStencilButton%20InkToolbarIsStencilButtonCheckedChangedEventArgs.StencilButton");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkToolbarStencilKind InkToolbarIsStencilButtonCheckedChangedEventArgs.StencilKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkToolbarStencilKind InkToolbarIsStencilButtonCheckedChangedEventArgs.StencilKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkToolbarStencilKind%20InkToolbarIsStencilButtonCheckedChangedEventArgs.StencilKind");
 			}
 		}
 		#endif

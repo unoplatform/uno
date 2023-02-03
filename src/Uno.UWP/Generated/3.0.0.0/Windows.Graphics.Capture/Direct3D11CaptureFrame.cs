@@ -13,7 +13,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 Direct3D11CaptureFrame.ContentSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 Direct3D11CaptureFrame.ContentSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20Direct3D11CaptureFrame.ContentSize");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface Direct3D11CaptureFrame.Surface is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDirect3DSurface Direct3D11CaptureFrame.Surface is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDirect3DSurface%20Direct3D11CaptureFrame.Surface");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan Direct3D11CaptureFrame.SystemRelativeTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan Direct3D11CaptureFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20Direct3D11CaptureFrame.SystemRelativeTime");
 			}
 		}
 		#endif

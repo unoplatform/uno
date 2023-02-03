@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScalarNaturalMotionAnimation.InitialVelocity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ScalarNaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ScalarNaturalMotionAnimation.InitialVelocity");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? ScalarNaturalMotionAnimation.InitialValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? ScalarNaturalMotionAnimation.InitialValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20ScalarNaturalMotionAnimation.InitialValue");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? ScalarNaturalMotionAnimation.FinalValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? ScalarNaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20ScalarNaturalMotionAnimation.FinalValue");
 			}
 			set
 			{

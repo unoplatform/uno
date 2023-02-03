@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty SpreadsheetItemPatternIdentifiers.FormulaProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty SpreadsheetItemPatternIdentifiers.FormulaProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20SpreadsheetItemPatternIdentifiers.FormulaProperty");
 			}
 		}
 		#endif

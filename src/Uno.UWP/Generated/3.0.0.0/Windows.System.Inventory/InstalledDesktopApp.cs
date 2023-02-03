@@ -13,7 +13,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InstalledDesktopApp.DisplayName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.DisplayVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.DisplayVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InstalledDesktopApp.DisplayVersion");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InstalledDesktopApp.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.Publisher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InstalledDesktopApp.Publisher");
 			}
 		}
 		#endif
@@ -55,14 +55,14 @@ namespace Windows.System.Inventory
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string InstalledDesktopApp.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string InstalledDesktopApp.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InstalledDesktopApp.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Inventory.InstalledDesktopApp>> GetInventoryAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InstalledDesktopApp>> InstalledDesktopApp.GetInventoryAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InstalledDesktopApp>> InstalledDesktopApp.GetInventoryAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CInstalledDesktopApp%3E%3E%20InstalledDesktopApp.GetInventoryAsync%28%29");
 		}
 		#endif
 	}

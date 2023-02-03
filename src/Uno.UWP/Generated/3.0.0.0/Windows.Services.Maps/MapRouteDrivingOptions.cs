@@ -13,7 +13,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteRestrictions MapRouteDrivingOptions.RouteRestrictions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapRouteRestrictions MapRouteDrivingOptions.RouteRestrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapRouteRestrictions%20MapRouteDrivingOptions.RouteRestrictions");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteOptimization MapRouteDrivingOptions.RouteOptimization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapRouteOptimization MapRouteDrivingOptions.RouteOptimization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapRouteOptimization%20MapRouteDrivingOptions.RouteOptimization");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MapRouteDrivingOptions.MaxAlternateRouteCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MapRouteDrivingOptions.MaxAlternateRouteCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MapRouteDrivingOptions.MaxAlternateRouteCount");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MapRouteDrivingOptions.InitialHeading is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MapRouteDrivingOptions.InitialHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MapRouteDrivingOptions.InitialHeading");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? MapRouteDrivingOptions.DepartureTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? MapRouteDrivingOptions.DepartureTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20MapRouteDrivingOptions.DepartureTime");
 			}
 			set
 			{

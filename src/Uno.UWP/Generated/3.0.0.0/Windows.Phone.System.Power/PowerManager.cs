@@ -13,7 +13,7 @@ namespace Windows.Phone.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PowerSavingMode PowerManager.PowerSavingMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PowerSavingMode PowerManager.PowerSavingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PowerSavingMode%20PowerManager.PowerSavingMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PowerManager.PowerSavingModeEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PowerManager.PowerSavingModeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PowerManager.PowerSavingModeEnabled");
 			}
 		}
 		#endif

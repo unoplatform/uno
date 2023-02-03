@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSource PlayToSource.Next is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlayToSource PlayToSource.Next is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToSource%20PlayToSource.Next");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnection PlayToSource.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlayToConnection PlayToSource.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToConnection%20PlayToSource.Connection");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayToSource.PreferredSourceUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri PlayToSource.PreferredSourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20PlayToSource.PreferredSourceUri");
 			}
 			set
 			{

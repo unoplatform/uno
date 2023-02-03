@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DropTargetPatternIdentifiers.DropTargetEffectProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DropTargetPatternIdentifiers.DropTargetEffectProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DropTargetPatternIdentifiers.DropTargetEffectProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DropTargetPatternIdentifiers.DropTargetEffectsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DropTargetPatternIdentifiers.DropTargetEffectsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DropTargetPatternIdentifiers.DropTargetEffectsProperty");
 			}
 		}
 		#endif

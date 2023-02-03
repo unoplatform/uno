@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayMarquee.ScrollWaitInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayMarquee.ScrollWaitInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LineDisplayMarquee.ScrollWaitInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayMarquee.RepeatWaitInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayMarquee.RepeatWaitInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LineDisplayMarquee.RepeatWaitInterval");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayMarqueeFormat LineDisplayMarquee.Format is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LineDisplayMarqueeFormat LineDisplayMarquee.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LineDisplayMarqueeFormat%20LineDisplayMarquee.Format");
 			}
 			set
 			{
@@ -59,14 +59,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryStartScrollingAsync( global::Windows.Devices.PointOfService.LineDisplayScrollDirection direction)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayMarquee.TryStartScrollingAsync(LineDisplayScrollDirection direction) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayMarquee.TryStartScrollingAsync(LineDisplayScrollDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20LineDisplayMarquee.TryStartScrollingAsync%28LineDisplayScrollDirection%20direction%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryStopScrollingAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayMarquee.TryStopScrollingAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayMarquee.TryStopScrollingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20LineDisplayMarquee.TryStopScrollingAsync%28%29");
 		}
 		#endif
 	}

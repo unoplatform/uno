@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TreeViewItemInvokedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TreeViewItemInvokedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TreeViewItemInvokedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object TreeViewItemInvokedEventArgs.InvokedItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object TreeViewItemInvokedEventArgs.InvokedItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20TreeViewItemInvokedEventArgs.InvokedItem");
 			}
 		}
 		#endif

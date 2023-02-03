@@ -13,7 +13,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DialAppStateDetails.FullXml is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DialAppStateDetails.FullXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DialAppStateDetails.FullXml");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DialAppState DialAppStateDetails.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DialAppState DialAppStateDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DialAppState%20DialAppStateDetails.State");
 			}
 		}
 		#endif

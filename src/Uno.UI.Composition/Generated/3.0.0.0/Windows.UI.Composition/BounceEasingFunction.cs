@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int BounceEasingFunction.Bounces is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int BounceEasingFunction.Bounces is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20BounceEasingFunction.Bounces");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float BounceEasingFunction.Bounciness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float BounceEasingFunction.Bounciness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20BounceEasingFunction.Bounciness");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode BounceEasingFunction.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode BounceEasingFunction.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionEasingFunctionMode%20BounceEasingFunction.Mode");
 			}
 		}
 		#endif

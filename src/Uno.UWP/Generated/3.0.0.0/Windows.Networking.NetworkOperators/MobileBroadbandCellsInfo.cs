@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.NeighboringCellsCdma is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.NeighboringCellsCdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellCdma%3E%20MobileBroadbandCellsInfo.NeighboringCellsCdma");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.NeighboringCellsGsm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.NeighboringCellsGsm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellGsm%3E%20MobileBroadbandCellsInfo.NeighboringCellsGsm");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.NeighboringCellsLte is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.NeighboringCellsLte is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellLte%3E%20MobileBroadbandCellsInfo.NeighboringCellsLte");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.NeighboringCellsTdscdma is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.NeighboringCellsTdscdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellTdscdma%3E%20MobileBroadbandCellsInfo.NeighboringCellsTdscdma");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.NeighboringCellsUmts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.NeighboringCellsUmts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellUmts%3E%20MobileBroadbandCellsInfo.NeighboringCellsUmts");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.ServingCellsCdma is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.ServingCellsCdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellCdma%3E%20MobileBroadbandCellsInfo.ServingCellsCdma");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.ServingCellsGsm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.ServingCellsGsm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellGsm%3E%20MobileBroadbandCellsInfo.ServingCellsGsm");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.ServingCellsLte is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.ServingCellsLte is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellLte%3E%20MobileBroadbandCellsInfo.ServingCellsLte");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.ServingCellsTdscdma is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.ServingCellsTdscdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellTdscdma%3E%20MobileBroadbandCellsInfo.ServingCellsTdscdma");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.ServingCellsUmts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.ServingCellsUmts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellUmts%3E%20MobileBroadbandCellsInfo.ServingCellsUmts");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.NeighboringCellsNR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.NeighboringCellsNR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellNR%3E%20MobileBroadbandCellsInfo.NeighboringCellsNR");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.ServingCellsNR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.ServingCellsNR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandCellNR%3E%20MobileBroadbandCellsInfo.ServingCellsNR");
 			}
 		}
 		#endif

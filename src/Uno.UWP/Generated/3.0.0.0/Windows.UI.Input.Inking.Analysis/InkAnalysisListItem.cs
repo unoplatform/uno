@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InkAnalysisListItem.RecognizedText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string InkAnalysisListItem.RecognizedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20InkAnalysisListItem.RecognizedText");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect InkAnalysisListItem.BoundingRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect InkAnalysisListItem.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20InkAnalysisListItem.BoundingRect");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IInkAnalysisNode> InkAnalysisListItem.Children is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<IInkAnalysisNode> InkAnalysisListItem.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CIInkAnalysisNode%3E%20InkAnalysisListItem.Children");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint InkAnalysisListItem.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint InkAnalysisListItem.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20InkAnalysisListItem.Id");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkAnalysisNodeKind InkAnalysisListItem.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkAnalysisNodeKind InkAnalysisListItem.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkAnalysisNodeKind%20InkAnalysisListItem.Kind");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInkAnalysisNode InkAnalysisListItem.Parent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IInkAnalysisNode InkAnalysisListItem.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IInkAnalysisNode%20InkAnalysisListItem.Parent");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Point> InkAnalysisListItem.RotatedBoundingRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Point> InkAnalysisListItem.RotatedBoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPoint%3E%20InkAnalysisListItem.RotatedBoundingRect");
 			}
 		}
 		#endif
@@ -88,7 +88,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisListItem.GetStrokeIds() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisListItem.GetStrokeIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20InkAnalysisListItem.GetStrokeIds%28%29");
 		}
 		#endif
 		// Processing: Windows.UI.Input.Inking.Analysis.IInkAnalysisNode

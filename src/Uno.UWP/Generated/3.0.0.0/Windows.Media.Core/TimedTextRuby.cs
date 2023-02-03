@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextRuby.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextRuby.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedTextRuby.Text");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextRubyReserve TimedTextRuby.Reserve is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextRubyReserve TimedTextRuby.Reserve is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextRubyReserve%20TimedTextRuby.Reserve");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextRubyPosition TimedTextRuby.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextRubyPosition TimedTextRuby.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextRubyPosition%20TimedTextRuby.Position");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextRubyAlign TimedTextRuby.Align is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextRubyAlign TimedTextRuby.Align is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextRubyAlign%20TimedTextRuby.Align");
 			}
 			set
 			{

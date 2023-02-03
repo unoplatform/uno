@@ -32,14 +32,14 @@ namespace Windows.Management.Deployment
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Management.Deployment.AppInstallerManager GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member AppInstallerManager AppInstallerManager.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppInstallerManager AppInstallerManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallerManager%20AppInstallerManager.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Management.Deployment.AppInstallerManager GetForSystem()
 		{
-			throw new global::System.NotImplementedException("The member AppInstallerManager AppInstallerManager.GetForSystem() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppInstallerManager AppInstallerManager.GetForSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallerManager%20AppInstallerManager.GetForSystem%28%29");
 		}
 		#endif
 	}

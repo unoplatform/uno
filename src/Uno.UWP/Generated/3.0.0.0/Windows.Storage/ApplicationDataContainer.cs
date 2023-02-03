@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ApplicationDataContainer> ApplicationDataContainer.Containers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ApplicationDataContainer> ApplicationDataContainer.Containers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20ApplicationDataContainer%3E%20ApplicationDataContainer.Containers");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.ApplicationDataContainer CreateContainer( string name,  global::Windows.Storage.ApplicationDataCreateDisposition disposition)
 		{
-			throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationDataContainer.CreateContainer(string name, ApplicationDataCreateDisposition disposition) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationDataContainer.CreateContainer(string name, ApplicationDataCreateDisposition disposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationDataContainer%20ApplicationDataContainer.CreateContainer%28string%20name%2C%20ApplicationDataCreateDisposition%20disposition%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

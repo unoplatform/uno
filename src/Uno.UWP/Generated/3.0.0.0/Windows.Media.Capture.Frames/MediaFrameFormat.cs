@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRatio MediaFrameFormat.FrameRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaRatio MediaFrameFormat.FrameRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaRatio%20MediaFrameFormat.FrameRate");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameFormat.MajorType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaFrameFormat.MajorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaFrameFormat.MajorType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameFormat.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameFormat.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaFrameFormat.Properties");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameFormat.Subtype is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaFrameFormat.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaFrameFormat.Subtype");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat MediaFrameFormat.VideoFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat MediaFrameFormat.VideoFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoMediaFrameFormat%20MediaFrameFormat.VideoFormat");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties MediaFrameFormat.AudioEncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties MediaFrameFormat.AudioEncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20MediaFrameFormat.AudioEncodingProperties");
 			}
 		}
 		#endif

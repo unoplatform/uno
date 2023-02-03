@@ -13,7 +13,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.Currency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyFormatter.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.Currency");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CurrencyFormatterMode CurrencyFormatter.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CurrencyFormatterMode CurrencyFormatter.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CurrencyFormatterMode%20CurrencyFormatter.Mode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.NumeralSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyFormatter.NumeralSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.NumeralSystem");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsGrouped is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsGrouped is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CurrencyFormatter.IsGrouped");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsDecimalPointAlwaysDisplayed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsDecimalPointAlwaysDisplayed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CurrencyFormatter.IsDecimalPointAlwaysDisplayed");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CurrencyFormatter.IntegerDigits is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int CurrencyFormatter.IntegerDigits is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CurrencyFormatter.IntegerDigits");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CurrencyFormatter.FractionDigits is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int CurrencyFormatter.FractionDigits is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CurrencyFormatter.FractionDigits");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.GeographicRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyFormatter.GeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.GeographicRegion");
 			}
 		}
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.ResolvedGeographicRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyFormatter.ResolvedGeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.ResolvedGeographicRegion");
 			}
 		}
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.ResolvedLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyFormatter.ResolvedLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.ResolvedLanguage");
 			}
 		}
 		#endif
@@ -141,7 +141,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CurrencyFormatter.Languages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CurrencyFormatter.Languages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20CurrencyFormatter.Languages");
 			}
 		}
 		#endif
@@ -151,7 +151,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member INumberRounder CurrencyFormatter.NumberRounder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member INumberRounder CurrencyFormatter.NumberRounder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=INumberRounder%20CurrencyFormatter.NumberRounder");
 			}
 			set
 			{
@@ -165,7 +165,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsZeroSigned is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsZeroSigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CurrencyFormatter.IsZeroSigned");
 			}
 			set
 			{
@@ -179,7 +179,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CurrencyFormatter.SignificantDigits is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int CurrencyFormatter.SignificantDigits is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CurrencyFormatter.SignificantDigits");
 			}
 			set
 			{
@@ -223,63 +223,63 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Format( long value)
 		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(long value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.Format%28long%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Format( ulong value)
 		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(ulong value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.Format%28ulong%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Format( double value)
 		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(double value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(double value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.Format%28double%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatInt( long value)
 		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatInt(long value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatInt(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.FormatInt%28long%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatUInt( ulong value)
 		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatUInt(ulong value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatUInt(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.FormatUInt%28ulong%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatDouble( double value)
 		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatDouble(double value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatDouble(double value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyFormatter.FormatDouble%28double%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long? ParseInt( string text)
 		{
-			throw new global::System.NotImplementedException("The member long? CurrencyFormatter.ParseInt(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long? CurrencyFormatter.ParseInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%3F%20CurrencyFormatter.ParseInt%28string%20text%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong? ParseUInt( string text)
 		{
-			throw new global::System.NotImplementedException("The member ulong? CurrencyFormatter.ParseUInt(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ulong? CurrencyFormatter.ParseUInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20CurrencyFormatter.ParseUInt%28string%20text%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double? ParseDouble( string text)
 		{
-			throw new global::System.NotImplementedException("The member double? CurrencyFormatter.ParseDouble(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member double? CurrencyFormatter.ParseDouble(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20CurrencyFormatter.ParseDouble%28string%20text%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Mode.get

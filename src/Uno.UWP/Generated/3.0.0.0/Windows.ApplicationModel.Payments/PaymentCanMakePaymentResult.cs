@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCanMakePaymentResultStatus PaymentCanMakePaymentResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentCanMakePaymentResultStatus PaymentCanMakePaymentResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentCanMakePaymentResultStatus%20PaymentCanMakePaymentResult.Status");
 			}
 		}
 		#endif

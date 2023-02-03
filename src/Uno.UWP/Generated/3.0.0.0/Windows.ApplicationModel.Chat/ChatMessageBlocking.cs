@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncAction MarkMessageAsBlockedAsync( string localChatMessageId,  bool blocked)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ChatMessageBlocking.MarkMessageAsBlockedAsync(string localChatMessageId, bool blocked) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ChatMessageBlocking.MarkMessageAsBlockedAsync(string localChatMessageId, bool blocked) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ChatMessageBlocking.MarkMessageAsBlockedAsync%28string%20localChatMessageId%2C%20bool%20blocked%29");
 		}
 		#endif
 	}

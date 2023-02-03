@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool KeyboardAcceleratorInvokedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool KeyboardAcceleratorInvokedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20KeyboardAcceleratorInvokedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DependencyObject KeyboardAcceleratorInvokedEventArgs.Element is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DependencyObject KeyboardAcceleratorInvokedEventArgs.Element is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DependencyObject%20KeyboardAcceleratorInvokedEventArgs.Element");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyboardAccelerator KeyboardAcceleratorInvokedEventArgs.KeyboardAccelerator is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyboardAccelerator KeyboardAcceleratorInvokedEventArgs.KeyboardAccelerator is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyboardAccelerator%20KeyboardAcceleratorInvokedEventArgs.KeyboardAccelerator");
 			}
 		}
 		#endif

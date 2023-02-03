@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialControllerMenu.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RadialControllerMenu.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RadialControllerMenu.IsEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<RadialControllerMenuItem> RadialControllerMenu.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<RadialControllerMenuItem> RadialControllerMenu.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CRadialControllerMenuItem%3E%20RadialControllerMenu.Items");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.RadialControllerMenuItem GetSelectedMenuItem()
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenu.GetSelectedMenuItem() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenu.GetSelectedMenuItem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialControllerMenuItem%20RadialControllerMenu.GetSelectedMenuItem%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -52,7 +52,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySelectPreviouslySelectedMenuItem()
 		{
-			throw new global::System.NotImplementedException("The member bool RadialControllerMenu.TrySelectPreviouslySelectedMenuItem() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool RadialControllerMenu.TrySelectPreviouslySelectedMenuItem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RadialControllerMenu.TrySelectPreviouslySelectedMenuItem%28%29");
 		}
 		#endif
 	}

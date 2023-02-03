@@ -13,7 +13,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.AutoRotationPreferences is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.AutoRotationPreferences is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20DisplayProperties.AutoRotationPreferences");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.CurrentOrientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.CurrentOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20DisplayProperties.CurrentOrientation");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayProperties.LogicalDpi is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float DisplayProperties.LogicalDpi is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20DisplayProperties.LogicalDpi");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.NativeOrientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.NativeOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20DisplayProperties.NativeOrientation");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResolutionScale DisplayProperties.ResolutionScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ResolutionScale DisplayProperties.ResolutionScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ResolutionScale%20DisplayProperties.ResolutionScale");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayProperties.StereoEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayProperties.StereoEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayProperties.StereoEnabled");
 			}
 		}
 		#endif
@@ -88,7 +88,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayProperties.GetColorProfileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayProperties.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayProperties.GetColorProfileAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayProperties.ColorProfileChanged.add

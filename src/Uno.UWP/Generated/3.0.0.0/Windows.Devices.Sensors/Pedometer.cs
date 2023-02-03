@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Pedometer.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Pedometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Pedometer.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Pedometer.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Pedometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Pedometer.DeviceId");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Pedometer.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Pedometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Pedometer.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double Pedometer.PowerInMilliwatts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double Pedometer.PowerInMilliwatts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20Pedometer.PowerInMilliwatts");
 			}
 		}
 		#endif
@@ -62,49 +62,49 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<global::Windows.Devices.Sensors.PedometerStepKind, global::Windows.Devices.Sensors.PedometerReading> GetCurrentReadings()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<PedometerStepKind, PedometerReading> Pedometer.GetCurrentReadings() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<PedometerStepKind, PedometerReading> Pedometer.GetCurrentReadings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CPedometerStepKind%2C%20PedometerReading%3E%20Pedometer.GetCurrentReadings%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.PedometerReading> GetReadingsFromTriggerDetails( global::Windows.Devices.Sensors.SensorDataThresholdTriggerDetails triggerDetails)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<PedometerReading> Pedometer.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<PedometerReading> Pedometer.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPedometerReading%3E%20Pedometer.GetReadingsFromTriggerDetails%28SensorDataThresholdTriggerDetails%20triggerDetails%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Pedometer> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPedometer%3E%20Pedometer.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Pedometer> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.GetDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPedometer%3E%20Pedometer.GetDefaultAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Pedometer.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Pedometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Pedometer.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.PedometerReading>> GetSystemHistoryAsync( global::System.DateTimeOffset fromTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CPedometerReading%3E%3E%20Pedometer.GetSystemHistoryAsync%28DateTimeOffset%20fromTime%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.PedometerReading>> GetSystemHistoryAsync( global::System.DateTimeOffset fromTime,  global::System.TimeSpan duration)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CPedometerReading%3E%3E%20Pedometer.GetSystemHistoryAsync%28DateTimeOffset%20fromTime%2C%20TimeSpan%20duration%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

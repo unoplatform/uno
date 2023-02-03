@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType PhoneNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType PhoneNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20PhoneNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PhoneNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PhoneNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PhoneNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallDetails PhoneNotificationTriggerDetails.CallDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallDetails PhoneNotificationTriggerDetails.CallDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallDetails%20PhoneNotificationTriggerDetails.CallDetails");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneNotificationTriggerDetails.PhoneLineChangedId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PhoneNotificationTriggerDetails.PhoneLineChangedId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PhoneNotificationTriggerDetails.PhoneLineChangedId");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneNotificationType PhoneNotificationTriggerDetails.PhoneNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneNotificationType PhoneNotificationTriggerDetails.PhoneNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneNotificationType%20PhoneNotificationTriggerDetails.PhoneNotificationType");
 			}
 		}
 		#endif

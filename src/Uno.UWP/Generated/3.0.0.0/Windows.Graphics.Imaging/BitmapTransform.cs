@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapTransform.ScaledWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BitmapTransform.ScaledWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BitmapTransform.ScaledWidth");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapTransform.ScaledHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BitmapTransform.ScaledHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BitmapTransform.ScaledHeight");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapRotation BitmapTransform.Rotation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapRotation BitmapTransform.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapRotation%20BitmapTransform.Rotation");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapInterpolationMode BitmapTransform.InterpolationMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapInterpolationMode BitmapTransform.InterpolationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapInterpolationMode%20BitmapTransform.InterpolationMode");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapFlip BitmapTransform.Flip is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapFlip BitmapTransform.Flip is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapFlip%20BitmapTransform.Flip");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapBounds BitmapTransform.Bounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapBounds BitmapTransform.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapBounds%20BitmapTransform.Bounds");
 			}
 			set
 			{

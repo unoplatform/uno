@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptorParameters.WriteProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptorParameters.WriteProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattProtectionLevel%20GattLocalDescriptorParameters.WriteProtectionLevel");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattLocalDescriptorParameters.StaticValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer GattLocalDescriptorParameters.StaticValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20GattLocalDescriptorParameters.StaticValue");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptorParameters.ReadProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptorParameters.ReadProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattProtectionLevel%20GattLocalDescriptorParameters.ReadProtectionLevel");
 			}
 			set
 			{

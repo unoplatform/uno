@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialInteractionController.HasThumbstick is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialInteractionController.HasThumbstick is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialInteractionController.HasThumbstick");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialInteractionController.HasTouchpad is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialInteractionController.HasTouchpad is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialInteractionController.HasTouchpad");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SpatialInteractionController.ProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort SpatialInteractionController.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20SpatialInteractionController.ProductId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SimpleHapticsController SpatialInteractionController.SimpleHapticsController is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SimpleHapticsController SpatialInteractionController.SimpleHapticsController is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SimpleHapticsController%20SpatialInteractionController.SimpleHapticsController");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SpatialInteractionController.VendorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort SpatialInteractionController.VendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20SpatialInteractionController.VendorId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SpatialInteractionController.Version is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort SpatialInteractionController.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20SpatialInteractionController.Version");
 			}
 		}
 		#endif
@@ -77,14 +77,14 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> TryGetRenderableModelAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> SpatialInteractionController.TryGetRenderableModelAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> SpatialInteractionController.TryGetRenderableModelAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20SpatialInteractionController.TryGetRenderableModelAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport SpatialInteractionController.TryGetBatteryReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BatteryReport SpatialInteractionController.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BatteryReport%20SpatialInteractionController.TryGetBatteryReport%28%29");
 		}
 		#endif
 	}

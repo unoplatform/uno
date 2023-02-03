@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowReceiver.ReceivingVisual is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowReceiver.ReceivingVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20CompositionProjectedShadowReceiver.ReceivingVisual");
 			}
 			set
 			{

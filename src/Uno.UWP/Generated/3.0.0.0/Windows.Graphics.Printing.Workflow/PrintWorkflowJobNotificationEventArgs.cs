@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowJobNotificationEventArgs.Configuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowJobNotificationEventArgs.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowConfiguration%20PrintWorkflowJobNotificationEventArgs.Configuration");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowPrinterJob PrintWorkflowJobNotificationEventArgs.PrinterJob is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowPrinterJob PrintWorkflowJobNotificationEventArgs.PrinterJob is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowPrinterJob%20PrintWorkflowJobNotificationEventArgs.PrinterJob");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowJobNotificationEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowJobNotificationEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20PrintWorkflowJobNotificationEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

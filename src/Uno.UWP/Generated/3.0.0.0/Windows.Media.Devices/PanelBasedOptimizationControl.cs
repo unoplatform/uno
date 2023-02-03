@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Panel PanelBasedOptimizationControl.Panel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Panel PanelBasedOptimizationControl.Panel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Panel%20PanelBasedOptimizationControl.Panel");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PanelBasedOptimizationControl.IsSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PanelBasedOptimizationControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PanelBasedOptimizationControl.IsSupported");
 			}
 		}
 		#endif

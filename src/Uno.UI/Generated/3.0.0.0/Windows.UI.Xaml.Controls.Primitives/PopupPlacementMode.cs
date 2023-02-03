@@ -2,48 +2,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	public   enum PopupPlacementMode 
 	{
-		#if false
-		Auto = 0,
-		#endif
-		#if false
-		Top = 1,
-		#endif
-		#if false
-		Bottom = 2,
-		#endif
-		#if false
-		Left = 3,
-		#endif
-		#if false
-		Right = 4,
-		#endif
-		#if false
-		TopEdgeAlignedLeft = 5,
-		#endif
-		#if false
-		TopEdgeAlignedRight = 6,
-		#endif
-		#if false
-		BottomEdgeAlignedLeft = 7,
-		#endif
-		#if false
-		BottomEdgeAlignedRight = 8,
-		#endif
-		#if false
-		LeftEdgeAlignedTop = 9,
-		#endif
-		#if false
-		LeftEdgeAlignedBottom = 10,
-		#endif
-		#if false
-		RightEdgeAlignedTop = 11,
-		#endif
-		#if false
-		RightEdgeAlignedBottom = 12,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Auto
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Top
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Bottom
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Left
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Right
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.TopEdgeAlignedLeft
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.TopEdgeAlignedRight
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.BottomEdgeAlignedLeft
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.BottomEdgeAlignedRight
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.LeftEdgeAlignedTop
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.LeftEdgeAlignedBottom
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.RightEdgeAlignedTop
+		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.RightEdgeAlignedBottom
 	}
 	#endif
 }

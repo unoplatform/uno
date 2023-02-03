@@ -13,7 +13,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double WebViewControl.Scale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double WebViewControl.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20WebViewControl.Scale");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControl.IsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControl.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControl.IsVisible");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect WebViewControl.Bounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect WebViewControl.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20WebViewControl.Bounds");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlProcess WebViewControl.Process is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewControlProcess WebViewControl.Process is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewControlProcess%20WebViewControl.Process");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControl.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewControl.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewControl.Source");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WebViewControl.DefaultBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color WebViewControl.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20WebViewControl.DefaultBackgroundColor");
 			}
 			set
 			{
@@ -93,7 +93,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControl.CanGoBack is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControl.CanGoBack is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControl.CanGoBack");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControl.CanGoForward is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControl.CanGoForward is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControl.CanGoForward");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControl.ContainsFullScreenElement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControl.ContainsFullScreenElement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControl.ContainsFullScreenElement");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WebViewControlDeferredPermissionRequest> WebViewControl.DeferredPermissionRequests is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<WebViewControlDeferredPermissionRequest> WebViewControl.DeferredPermissionRequests is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWebViewControlDeferredPermissionRequest%3E%20WebViewControl.DeferredPermissionRequests");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewControl.DocumentTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebViewControl.DocumentTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebViewControl.DocumentTitle");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlSettings WebViewControl.Settings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewControlSettings WebViewControl.Settings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewControlSettings%20WebViewControl.Settings");
 			}
 		}
 		#endif
@@ -217,35 +217,35 @@ namespace Windows.Web.UI.Interop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebViewControl.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebViewControl.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20WebViewControl.InvokeScriptAsync%28string%20scriptName%2C%20IEnumerable%3Cstring%3E%20arguments%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebViewControl.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WebViewControl.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebViewControl.CapturePreviewToStreamAsync%28IRandomAccessStream%20stream%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackage> WebViewControl.CaptureSelectedContentToDataPackageAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackage> WebViewControl.CaptureSelectedContentToDataPackageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDataPackage%3E%20WebViewControl.CaptureSelectedContentToDataPackageAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath)
 		{
-			throw new global::System.NotImplementedException("The member Uri WebViewControl.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Uri WebViewControl.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewControl.BuildLocalStreamUri%28string%20contentIdentifier%2C%20string%20relativePath%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetDeferredPermissionRequestById( uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result)
 		{
-			throw new global::System.NotImplementedException("The member void WebViewControl.GetDeferredPermissionRequestById(uint id, out WebViewControlDeferredPermissionRequest result) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void WebViewControl.GetDeferredPermissionRequestById(uint id, out WebViewControlDeferredPermissionRequest result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20WebViewControl.GetDeferredPermissionRequestById%28uint%20id%2C%20out%20WebViewControlDeferredPermissionRequest%20result%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.NavigationStarting.add

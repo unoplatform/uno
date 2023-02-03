@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEAdvertisementFilter%20BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MaxOutOfRangeTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MaxOutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcherTrigger.MaxOutOfRangeTimeout");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MaxSamplingInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MaxSamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcherTrigger.MaxSamplingInterval");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MinOutOfRangeTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MinOutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcherTrigger.MinOutOfRangeTimeout");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MinSamplingInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcherTrigger.MinSamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcherTrigger.MinSamplingInterval");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
 			}
 			set
 			{

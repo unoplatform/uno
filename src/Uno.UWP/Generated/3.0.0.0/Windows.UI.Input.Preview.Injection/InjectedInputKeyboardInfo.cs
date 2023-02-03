@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort InjectedInputKeyboardInfo.VirtualKey is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort InjectedInputKeyboardInfo.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20InjectedInputKeyboardInfo.VirtualKey");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort InjectedInputKeyboardInfo.ScanCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort InjectedInputKeyboardInfo.ScanCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20InjectedInputKeyboardInfo.ScanCode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InjectedInputKeyOptions%20InjectedInputKeyboardInfo.KeyOptions");
 			}
 			set
 			{

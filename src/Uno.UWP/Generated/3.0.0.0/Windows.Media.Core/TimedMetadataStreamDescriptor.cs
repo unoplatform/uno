@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataStreamDescriptor.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataStreamDescriptor.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataStreamDescriptor.Name");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataStreamDescriptor.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataStreamDescriptor.Language");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedMetadataStreamDescriptor.IsSelected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedMetadataStreamDescriptor.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TimedMetadataStreamDescriptor.IsSelected");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataStreamDescriptor.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataStreamDescriptor.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataStreamDescriptor.Label");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataStreamDescriptor.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataStreamDescriptor.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataEncodingProperties%20TimedMetadataStreamDescriptor.EncodingProperties");
 			}
 		}
 		#endif
@@ -82,7 +82,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.TimedMetadataStreamDescriptor Copy()
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataStreamDescriptor TimedMetadataStreamDescriptor.Copy() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataStreamDescriptor TimedMetadataStreamDescriptor.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataStreamDescriptor%20TimedMetadataStreamDescriptor.Copy%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataStreamDescriptor.Label.set

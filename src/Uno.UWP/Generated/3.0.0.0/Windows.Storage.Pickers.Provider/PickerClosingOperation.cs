@@ -13,7 +13,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PickerClosingOperation.Deadline is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PickerClosingOperation.Deadline is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PickerClosingOperation.Deadline");
 			}
 		}
 		#endif
@@ -21,7 +21,7 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Pickers.Provider.PickerClosingDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member PickerClosingDeferral PickerClosingOperation.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PickerClosingDeferral PickerClosingOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PickerClosingDeferral%20PickerClosingOperation.GetDeferral%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.Deadline.get

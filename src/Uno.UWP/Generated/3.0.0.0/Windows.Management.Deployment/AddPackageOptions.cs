@@ -13,7 +13,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume AddPackageOptions.TargetVolume is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PackageVolume AddPackageOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageVolume%20AddPackageOptions.TargetVolume");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StubPackageOption AddPackageOptions.StubPackageOption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StubPackageOption AddPackageOptions.StubPackageOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StubPackageOption%20AddPackageOptions.StubPackageOption");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.StageInPlace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.StageInPlace");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RetainFilesOnFailure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RetainFilesOnFailure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.RetainFilesOnFailure");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RequiredContentGroupOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RequiredContentGroupOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.RequiredContentGroupOnly");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.InstallAllResources is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.InstallAllResources");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceUpdateFromAnyVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.ForceUpdateFromAnyVersion");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceTargetAppShutdown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceTargetAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.ForceTargetAppShutdown");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceAppShutdown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.ForceAppShutdown");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AddPackageOptions.ExternalLocationUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri AddPackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20AddPackageOptions.ExternalLocationUri");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeveloperMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.DeveloperMode");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeferRegistrationWhenPackagesAreInUse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeferRegistrationWhenPackagesAreInUse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.DeferRegistrationWhenPackagesAreInUse");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.AllowUnsigned is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AddPackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AddPackageOptions.AllowUnsigned");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.DependencyPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AddPackageOptions.DependencyPackageUris");
 			}
 		}
 		#endif
@@ -205,7 +205,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> AddPackageOptions.OptionalPackageFamilyNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> AddPackageOptions.OptionalPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20AddPackageOptions.OptionalPackageFamilyNames");
 			}
 		}
 		#endif
@@ -215,7 +215,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.OptionalPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.OptionalPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AddPackageOptions.OptionalPackageUris");
 			}
 		}
 		#endif
@@ -225,7 +225,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.RelatedPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.RelatedPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20AddPackageOptions.RelatedPackageUris");
 			}
 		}
 		#endif

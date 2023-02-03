@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CodecCategory CodecInfo.Category is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CodecCategory CodecInfo.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CodecCategory%20CodecInfo.Category");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CodecInfo.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CodecInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CodecInfo.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CodecInfo.IsTrusted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CodecInfo.IsTrusted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CodecInfo.IsTrusted");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CodecKind CodecInfo.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CodecKind CodecInfo.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CodecKind%20CodecInfo.Kind");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CodecInfo.Subtypes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CodecInfo.Subtypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20CodecInfo.Subtypes");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothServiceCapabilities RfcommInboundConnectionInformation.ServiceCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothServiceCapabilities RfcommInboundConnectionInformation.ServiceCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothServiceCapabilities%20RfcommInboundConnectionInformation.ServiceCapabilities");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer RfcommInboundConnectionInformation.SdpRecord is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer RfcommInboundConnectionInformation.SdpRecord is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20RfcommInboundConnectionInformation.SdpRecord");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommInboundConnectionInformation.LocalServiceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommInboundConnectionInformation.LocalServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommInboundConnectionInformation.LocalServiceId");
 			}
 			set
 			{

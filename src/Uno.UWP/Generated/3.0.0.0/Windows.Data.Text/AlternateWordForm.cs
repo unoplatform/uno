@@ -13,7 +13,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AlternateWordForm.AlternateText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AlternateWordForm.AlternateText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AlternateWordForm.AlternateText");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AlternateNormalizationFormat AlternateWordForm.NormalizationFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AlternateNormalizationFormat AlternateWordForm.NormalizationFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AlternateNormalizationFormat%20AlternateWordForm.NormalizationFormat");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextSegment AlternateWordForm.SourceTextSegment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextSegment AlternateWordForm.SourceTextSegment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextSegment%20AlternateWordForm.SourceTextSegment");
 			}
 		}
 		#endif

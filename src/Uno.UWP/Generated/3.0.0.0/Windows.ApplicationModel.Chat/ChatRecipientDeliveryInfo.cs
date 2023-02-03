@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatRecipientDeliveryInfo.TransportAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatRecipientDeliveryInfo.TransportAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatRecipientDeliveryInfo.TransportAddress");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ChatRecipientDeliveryInfo.ReadTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ChatRecipientDeliveryInfo.ReadTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20ChatRecipientDeliveryInfo.ReadTime");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ChatRecipientDeliveryInfo.DeliveryTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ChatRecipientDeliveryInfo.DeliveryTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20ChatRecipientDeliveryInfo.DeliveryTime");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatRecipientDeliveryInfo.IsErrorPermanent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatRecipientDeliveryInfo.IsErrorPermanent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatRecipientDeliveryInfo.IsErrorPermanent");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessageStatus ChatRecipientDeliveryInfo.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatMessageStatus ChatRecipientDeliveryInfo.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatMessageStatus%20ChatRecipientDeliveryInfo.Status");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChatRecipientDeliveryInfo.TransportErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ChatRecipientDeliveryInfo.TransportErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ChatRecipientDeliveryInfo.TransportErrorCode");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatTransportErrorCodeCategory ChatRecipientDeliveryInfo.TransportErrorCodeCategory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatTransportErrorCodeCategory ChatRecipientDeliveryInfo.TransportErrorCodeCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatTransportErrorCodeCategory%20ChatRecipientDeliveryInfo.TransportErrorCodeCategory");
 			}
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatTransportInterpretedErrorCode ChatRecipientDeliveryInfo.TransportInterpretedErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatTransportInterpretedErrorCode ChatRecipientDeliveryInfo.TransportInterpretedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatTransportInterpretedErrorCode%20ChatRecipientDeliveryInfo.TransportInterpretedErrorCode");
 			}
 		}
 		#endif

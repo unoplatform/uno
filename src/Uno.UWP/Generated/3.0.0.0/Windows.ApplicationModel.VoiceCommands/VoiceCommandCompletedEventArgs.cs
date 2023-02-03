@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandCompletionReason VoiceCommandCompletedEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VoiceCommandCompletionReason VoiceCommandCompletedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VoiceCommandCompletionReason%20VoiceCommandCompletedEventArgs.Reason");
 			}
 		}
 		#endif

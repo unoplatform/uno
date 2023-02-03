@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SceneAnalysisEffect.DesiredAnalysisInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SceneAnalysisEffect.DesiredAnalysisInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SceneAnalysisEffect.DesiredAnalysisInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HighDynamicRangeControl SceneAnalysisEffect.HighDynamicRangeAnalyzer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HighDynamicRangeControl SceneAnalysisEffect.HighDynamicRangeAnalyzer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HighDynamicRangeControl%20SceneAnalysisEffect.HighDynamicRangeAnalyzer");
 			}
 		}
 		#endif

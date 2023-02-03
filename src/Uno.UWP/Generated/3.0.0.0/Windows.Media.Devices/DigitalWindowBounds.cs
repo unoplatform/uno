@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DigitalWindowBounds.Scale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DigitalWindowBounds.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DigitalWindowBounds.Scale");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DigitalWindowBounds.NormalizedOriginTop is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DigitalWindowBounds.NormalizedOriginTop is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DigitalWindowBounds.NormalizedOriginTop");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DigitalWindowBounds.NormalizedOriginLeft is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DigitalWindowBounds.NormalizedOriginLeft is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DigitalWindowBounds.NormalizedOriginLeft");
 			}
 			set
 			{

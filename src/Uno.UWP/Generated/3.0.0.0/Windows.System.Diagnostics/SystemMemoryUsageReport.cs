@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.AvailableSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.AvailableSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemMemoryUsageReport.AvailableSizeInBytes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.CommittedSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.CommittedSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemMemoryUsageReport.CommittedSizeInBytes");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.TotalPhysicalSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.TotalPhysicalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemMemoryUsageReport.TotalPhysicalSizeInBytes");
 			}
 		}
 		#endif
