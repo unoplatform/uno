@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.Foundation.Collections;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
@@ -48,10 +49,7 @@ namespace DirectUI
 		public ApplicationBarService? TryGetApplicationBarService() => null;
 
 		public string GetLocalizedResourceString(string key)
-		{
-			var loader = ResourceLoader.GetForCurrentView();
-			return loader.GetString(key);
-		}
+			=> ResourceAccessor.GetLocalizedStringResource(key);
 
 		public BuildTreeService GetBuildTreeService()
 			=> _buildTreeService ??= new BuildTreeService();

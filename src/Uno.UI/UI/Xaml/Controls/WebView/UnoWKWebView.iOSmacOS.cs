@@ -42,9 +42,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 		{
-			var resourceLoader = ResourceLoader.GetForCurrentView();
-			var ok = resourceLoader.GetString("OkResourceKey");
-			var cancel = resourceLoader.GetString("CancelResourceKey");
+			var ok = ResourceAccessor.GetLocalizedStringResource("OkResourceKey");
+			var cancel = ResourceAccessor.GetLocalizedStringResource("CancelResourceKey");
 
 			if (NSLocale.CurrentLocale.LanguageCode == "en")
 			{
