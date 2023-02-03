@@ -9132,6 +9132,7 @@
 			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.HResult" reason="Type is hidden in .NET and shouldn't be used" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
