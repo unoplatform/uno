@@ -24,7 +24,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XUidTests
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
-		} 
+		}
 
 		[TestMethod]
 		public void When_EmptyXUid()
