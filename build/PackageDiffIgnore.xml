@@ -9135,6 +9135,7 @@
 			<Member fullName="Windows.Foundation.IClosable" reason="Shouldn't be visible in .NET and shows as IDisposable instead." />
 			<Member fullName="Windows.Storage.Streams.InMemoryBuffer reason="Windows.Storage.Streams.Buffer should be used." />
 			<Member fullName="Windows.Foundation.HResult" reason="Type is hidden in .NET and shouldn't be used" />
+			<Member fullName="Windows.Storage.Streams.InMemoryBuffer" reason="Windows.Storage.Streams.Buffer should be used." />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
