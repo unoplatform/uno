@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+//TODO
 namespace Windows.Foundation.Collections;
 
 /// <summary>
@@ -38,7 +38,7 @@ public partial class PropertySet :
 	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Remove(string)
 	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Clear()
 	// Forced skipping of method Windows.Foundation.Collections.PropertySet.First()
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public event global::Windows.Foundation.Collections.MapChangedEventHandler<string, object> MapChanged
 	{
@@ -57,7 +57,7 @@ public partial class PropertySet :
 	// Processing: Windows.Foundation.Collections.IPropertySet
 	// Processing: Windows.Foundation.Collections.IObservableMap<string, object>
 	// Processing: System.Collections.Generic.IDictionary<string, object>
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void Add(string key, object value)
@@ -65,7 +65,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool ContainsKey(string key)
@@ -73,7 +73,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool Remove(string key)
@@ -81,7 +81,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool TryGetValue(string key, out object value)
@@ -89,7 +89,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public object this[string key]
 	{
@@ -103,7 +103,7 @@ public partial class PropertySet :
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public global::System.Collections.Generic.ICollection<string> Keys
 	{
@@ -113,7 +113,7 @@ public partial class PropertySet :
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public global::System.Collections.Generic.ICollection<object> Values
 	{
@@ -124,7 +124,7 @@ public partial class PropertySet :
 	}
 #endif
 	// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
@@ -132,7 +132,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void Clear()
@@ -140,7 +140,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
@@ -148,7 +148,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
@@ -156,7 +156,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool Remove(global::System.Collections.Generic.KeyValuePair<string, object> item)
@@ -164,7 +164,7 @@ public partial class PropertySet :
 		throw new global::System.NotSupportedException();
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public int Count
 	{
@@ -174,7 +174,7 @@ public partial class PropertySet :
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool IsReadOnly
 	{
@@ -185,7 +185,7 @@ public partial class PropertySet :
 	}
 #endif
 	// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
@@ -194,7 +194,7 @@ public partial class PropertySet :
 	}
 #endif
 	// Processing: System.Collections.IEnumerable
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	// DeclaringType: System.Collections.IEnumerable
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()

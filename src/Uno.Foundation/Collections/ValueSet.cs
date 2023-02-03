@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Windows.Foundation.Collections;
 
+//TODO
 public sealed partial class ValueSet : IPropertySet, IObservableMap<string, object?>, IDictionary<string, object?>, IEnumerable<KeyValuePair<string, object?>>
 {
 	private readonly Dictionary<string, object?> _dictionary = new();
