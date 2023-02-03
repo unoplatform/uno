@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 //TODO
 namespace Windows.Foundation.Collections;
 
@@ -15,7 +14,7 @@ public partial class PropertySet :
 	{
 		get
 		{
-			throw new global::System.NotImplementedException("The member uint PropertySet.Size is not implemented in Uno.");
+			throw new NotImplementedException("The member uint PropertySet.Size is not implemented in Uno.");
 		}
 	}
 
@@ -24,7 +23,7 @@ public partial class PropertySet :
 	/// </summary>
 	public PropertySet()
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.PropertySet", "PropertySet.PropertySet()");
+		Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.PropertySet", "PropertySet.PropertySet()");
 	}
 #endif
 	// Forced skipping of method Windows.Foundation.Collections.PropertySet.PropertySet()

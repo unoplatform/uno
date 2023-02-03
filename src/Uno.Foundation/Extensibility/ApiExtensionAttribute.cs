@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Uno.Foundation.Extensibility;
+﻿namespace Uno.Foundation.Extensibility;
 
 /// <summary>
 /// ApiExtension registration for the <see cref="ApiExtensibility"/> class.

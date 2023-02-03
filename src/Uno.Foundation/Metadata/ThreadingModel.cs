@@ -6,6 +6,11 @@ namespace Windows.Foundation.Metadata;
 public enum ThreadingModel
 {
 	/// <summary>
+	/// No valid threading model applies.
+	/// </summary>
+	InvalidThreading = 0,
+
+	/// <summary>
 	/// Single-threaded apartment.
 	/// </summary>
 	STA = 1,
@@ -19,9 +24,4 @@ public enum ThreadingModel
 	/// Both single-threaded and multithreaded apartments.
 	/// </summary>
 	Both = 3,
-
-	/// <summary>
-	/// No valid threading model applies.
-	/// </summary>
-	InvalidThreading = 0,
 }

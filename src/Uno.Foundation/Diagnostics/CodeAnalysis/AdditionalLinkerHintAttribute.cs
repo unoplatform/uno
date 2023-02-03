@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Uno.Foundation.Diagnostics.CodeAnalysis
+﻿namespace Uno.Foundation.Diagnostics.CodeAnalysis
 {
 	/// <summary>
 	/// Provide the ability to include an additional type to the linker hints generator.

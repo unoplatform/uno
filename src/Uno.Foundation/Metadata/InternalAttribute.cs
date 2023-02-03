@@ -5,7 +5,7 @@ namespace Windows.Foundation.Metadata
 	#if false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class InternalAttribute : global::System.Attribute
+	public  partial class InternalAttribute : Attribute
 	{
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

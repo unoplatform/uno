@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections;
 using Uno.Extensions.Specialized;
-using Windows.Foundation.Collections;
 
 namespace Windows.Foundation.Collections
 {

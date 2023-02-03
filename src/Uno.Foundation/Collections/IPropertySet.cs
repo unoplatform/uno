@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Windows.Foundation.Collections;
+﻿namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Represents a collection of key-value pairs, correlating several other collection interfaces.

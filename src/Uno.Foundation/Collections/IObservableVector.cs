@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Windows.Foundation.Collections;
+﻿namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Notifies listeners of changes to the vector.

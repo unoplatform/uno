@@ -6,7 +6,7 @@ namespace Windows.Foundation.Collections
 #if false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class StringMap : global::System.Collections.Generic.IDictionary<string, string>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>,global::Windows.Foundation.Collections.IObservableMap<string, string>
+	public  partial class StringMap : IDictionary<string, string>, IEnumerable<KeyValuePair<string, string>>, IObservableMap<string, string>
 	{
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

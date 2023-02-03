@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Windows.Foundation.Collections;
+﻿using System.Collections;
 
 namespace Windows.Foundation.Collections
 {

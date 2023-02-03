@@ -1,19 +1,15 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates that the interface contains protected methods.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public partial class ProtectedAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ProtectedAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	public ProtectedAttribute() : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ProtectedAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ProtectedAttribute", "ProtectedAttribute.ProtectedAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.ProtectedAttribute.ProtectedAttribute()
 	}
 }

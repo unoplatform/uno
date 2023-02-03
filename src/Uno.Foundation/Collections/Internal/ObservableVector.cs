@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Foundation.Collections;
+﻿using System.Collections;
 
 namespace Windows.Foundation.Collections
 {
@@ -127,7 +122,7 @@ namespace Windows.Foundation.Collections
 		{
 			for (int i = 0; i < Count; i++)
 			{
-				if (object.Equals(this[i], value))
+				if (Equals(this[i], value))
 				{
 					return i;
 				}

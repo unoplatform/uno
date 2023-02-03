@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Uno.Foundation.Extensibility;
+﻿namespace Uno.Foundation.Extensibility;
 
 /// <summary>
 /// Registry for API existensibility providers, used to provide optional

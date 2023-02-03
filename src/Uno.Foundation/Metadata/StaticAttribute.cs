@@ -1,35 +1,37 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates an interface that contains only static methods.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public partial class StaticAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class StaticAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="type">The type that contains the static methods for the runtime class.</param>
+	/// <param name="version">The version of the API Contract in which the static factory was added to the runtime class's activation factory.</param>
+	public StaticAttribute(Type type, uint version) : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StaticAttribute( global::System.Type type,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.StaticAttribute", "StaticAttribute.StaticAttribute(Type type, uint version)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.StaticAttribute.StaticAttribute(System.Type, uint)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StaticAttribute( global::System.Type type,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.StaticAttribute", "StaticAttribute.StaticAttribute(Type type, uint version, Platform platform)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.StaticAttribute.StaticAttribute(System.Type, uint, Windows.Foundation.Metadata.Platform)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StaticAttribute( global::System.Type type,  uint version,  string contractName) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.StaticAttribute", "StaticAttribute.StaticAttribute(Type type, uint version, string contractName)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.StaticAttribute.StaticAttribute(System.Type, uint, string)
+	}
+
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="type">The type that contains the static methods for the runtime class.</param>
+	/// <param name="version">The version of the API Contract in which the static factory was added to the runtime class's activation factory.</param>
+	/// <param name="platform">A value of the enumeration. The default is Windows.</param>
+	public StaticAttribute(Type type, uint version, Platform platform) : base()
+	{
+	}
+
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="type">The type that contains the static methods for the runtime class.</param>
+	/// <param name="version">The version of the API Contract in which the static factory was added to the runtime class's activation factory.</param>
+	/// <param name="contractName">A string representing the type of the API contract implementing the class.</param>
+	public StaticAttribute(Type type, uint version, string contractName) : base()
+	{
 	}
 }

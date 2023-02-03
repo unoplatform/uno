@@ -1,19 +1,24 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Expresses the state of the Windows Runtime feature associated with a Windows Runtime Type.
+/// </summary>
+[AttributeUsage(
+	AttributeTargets.Delegate |
+	AttributeTargets.Enum |
+	AttributeTargets.Field |
+	AttributeTargets.Interface |
+	AttributeTargets.Method |
+	AttributeTargets.Class |
+	AttributeTargets.Struct)]
+public partial class FeatureAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class FeatureAttribute : global::System.Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="featureStage">Specifies if the named feature is enabled or disabled.</param>
+	/// <param name="validInAllBranches">Boolean value that indicates if the named feature is valid in all branches.</param>
+	public FeatureAttribute(FeatureStage featureStage, bool validInAllBranches) : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FeatureAttribute( global::Windows.Foundation.Metadata.FeatureStage featureStage,  bool validInAllBranches) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.FeatureAttribute", "FeatureAttribute.FeatureAttribute(FeatureStage featureStage, bool validInAllBranches)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.FeatureAttribute.FeatureAttribute(Windows.Foundation.Metadata.FeatureStage, bool)
 	}
 }

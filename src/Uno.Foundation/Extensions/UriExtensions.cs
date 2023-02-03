@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Uno.Extensions;
+﻿namespace Uno.Extensions;
 
 public static class UriExtensions
 {

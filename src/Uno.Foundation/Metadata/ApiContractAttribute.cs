@@ -1,5 +1,3 @@
-using System;
-
 namespace Windows.Foundation.Metadata;
 
 /// <summary>
