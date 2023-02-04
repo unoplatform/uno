@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxResolveRecipientsRequest.EmailMailboxId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxResolveRecipientsRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxResolveRecipientsRequest.EmailMailboxId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> EmailMailboxResolveRecipientsRequest.Recipients is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> EmailMailboxResolveRecipientsRequest.Recipients is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20EmailMailboxResolveRecipientsRequest.Recipients");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Email.EmailRecipientResolutionResult> resolutionResults)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxResolveRecipientsRequest.ReportCompletedAsync(IEnumerable<EmailRecipientResolutionResult> resolutionResults) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxResolveRecipientsRequest.ReportCompletedAsync(IEnumerable<EmailRecipientResolutionResult> resolutionResults) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxResolveRecipientsRequest.ReportCompletedAsync%28IEnumerable%3CEmailRecipientResolutionResult%3E%20resolutionResults%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxResolveRecipientsRequest.ReportFailedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxResolveRecipientsRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxResolveRecipientsRequest.ReportFailedAsync%28%29");
 		}
 		#endif
 	}

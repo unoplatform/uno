@@ -13,7 +13,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeoboundingBox MapRoute.BoundingBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeoboundingBox MapRoute.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeoboundingBox%20MapRoute.BoundingBox");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.EstimatedDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.EstimatedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MapRoute.EstimatedDuration");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapRoute.IsTrafficBased is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapRoute.IsTrafficBased is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapRoute.IsTrafficBased");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRouteLeg> MapRoute.Legs is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRouteLeg> MapRoute.Legs is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMapRouteLeg%3E%20MapRoute.Legs");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapRoute.LengthInMeters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapRoute.LengthInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapRoute.LengthInMeters");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopath MapRoute.Path is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geopath MapRoute.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geopath%20MapRoute.Path");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapRoute.HasBlockedRoads is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapRoute.HasBlockedRoads is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapRoute.HasBlockedRoads");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteRestrictions MapRoute.ViolatedRestrictions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapRouteRestrictions MapRoute.ViolatedRestrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapRouteRestrictions%20MapRoute.ViolatedRestrictions");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.DurationWithoutTraffic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MapRoute.DurationWithoutTraffic");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TrafficCongestion MapRoute.TrafficCongestion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TrafficCongestion MapRoute.TrafficCongestion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TrafficCongestion%20MapRoute.TrafficCongestion");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapRoute.IsScenic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapRoute.IsScenic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapRoute.IsScenic");
 			}
 		}
 		#endif

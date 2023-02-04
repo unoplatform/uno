@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextLine.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextLine.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedTextLine.Text");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TimedTextSubformat> TimedTextLine.Subformats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TimedTextSubformat> TimedTextLine.Subformats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTimedTextSubformat%3E%20TimedTextLine.Subformats");
 			}
 		}
 		#endif

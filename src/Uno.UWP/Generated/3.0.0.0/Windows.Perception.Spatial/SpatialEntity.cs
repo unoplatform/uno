@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialAnchor SpatialEntity.Anchor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialAnchor SpatialEntity.Anchor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialAnchor%20SpatialEntity.Anchor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialEntity.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialEntity.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialEntity.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet SpatialEntity.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet SpatialEntity.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20SpatialEntity.Properties");
 			}
 		}
 		#endif

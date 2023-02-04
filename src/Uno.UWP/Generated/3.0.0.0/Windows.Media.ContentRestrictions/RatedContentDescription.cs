@@ -13,7 +13,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RatedContentDescription.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RatedContentDescription.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RatedContentDescription.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> RatedContentDescription.Ratings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> RatedContentDescription.Ratings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20RatedContentDescription.Ratings");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference RatedContentDescription.Image is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference RatedContentDescription.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20RatedContentDescription.Image");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RatedContentDescription.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RatedContentDescription.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RatedContentDescription.Id");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RatedContentCategory RatedContentDescription.Category is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RatedContentCategory RatedContentDescription.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RatedContentCategory%20RatedContentDescription.Category");
 			}
 			set
 			{

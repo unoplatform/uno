@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotPanel.AreHorizontalSnapPointsRegular is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PivotPanel.AreHorizontalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PivotPanel.AreHorizontalSnapPointsRegular");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotPanel.AreVerticalSnapPointsRegular is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PivotPanel.AreVerticalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PivotPanel.AreVerticalSnapPointsRegular");
 			}
 		}
 		#endif
@@ -39,14 +39,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<float> PivotPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<float> PivotPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cfloat%3E%20PivotPanel.GetIrregularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float GetRegularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
 		{
-			throw new global::System.NotImplementedException("The member float PivotPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member float PivotPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PivotPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage DevicePortalConnectionRequestReceivedEventArgs.RequestMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpRequestMessage DevicePortalConnectionRequestReceivedEventArgs.RequestMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestMessage%20DevicePortalConnectionRequestReceivedEventArgs.RequestMessage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage DevicePortalConnectionRequestReceivedEventArgs.ResponseMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseMessage DevicePortalConnectionRequestReceivedEventArgs.ResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessage%20DevicePortalConnectionRequestReceivedEventArgs.ResponseMessage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DevicePortalConnectionRequestReceivedEventArgs.IsWebSocketUpgradeRequest");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> DevicePortalConnectionRequestReceivedEventArgs.WebSocketProtocolsRequested is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> DevicePortalConnectionRequestReceivedEventArgs.WebSocketProtocolsRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20DevicePortalConnectionRequestReceivedEventArgs.WebSocketProtocolsRequested");
 			}
 		}
 		#endif
@@ -55,7 +55,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral DevicePortalConnectionRequestReceivedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral DevicePortalConnectionRequestReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20DevicePortalConnectionRequestReceivedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

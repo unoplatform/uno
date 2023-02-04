@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemCpuUsage SystemDiagnosticInfo.CpuUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SystemCpuUsage SystemDiagnosticInfo.CpuUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemCpuUsage%20SystemDiagnosticInfo.CpuUsage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMemoryUsage SystemDiagnosticInfo.MemoryUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SystemMemoryUsage SystemDiagnosticInfo.MemoryUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemMemoryUsage%20SystemDiagnosticInfo.MemoryUsage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessorArchitecture SystemDiagnosticInfo.PreferredArchitecture is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProcessorArchitecture SystemDiagnosticInfo.PreferredArchitecture is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessorArchitecture%20SystemDiagnosticInfo.PreferredArchitecture");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsArchitectureSupported( global::Windows.System.ProcessorArchitecture type)
 		{
-			throw new global::System.NotImplementedException("The member bool SystemDiagnosticInfo.IsArchitectureSupported(ProcessorArchitecture type) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool SystemDiagnosticInfo.IsArchitectureSupported(ProcessorArchitecture type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SystemDiagnosticInfo.IsArchitectureSupported%28ProcessorArchitecture%20type%29");
 		}
 		#endif
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.PreferredArchitecture.get
@@ -51,7 +51,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.Diagnostics.SystemDiagnosticInfo GetForCurrentSystem()
 		{
-			throw new global::System.NotImplementedException("The member SystemDiagnosticInfo SystemDiagnosticInfo.GetForCurrentSystem() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SystemDiagnosticInfo SystemDiagnosticInfo.GetForCurrentSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemDiagnosticInfo%20SystemDiagnosticInfo.GetForCurrentSystem%28%29");
 		}
 		#endif
 	}

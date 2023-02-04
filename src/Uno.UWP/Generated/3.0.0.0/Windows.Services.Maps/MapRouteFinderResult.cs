@@ -13,7 +13,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRoute MapRouteFinderResult.Route is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapRoute MapRouteFinderResult.Route is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapRoute%20MapRouteFinderResult.Route");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteFinderStatus MapRouteFinderResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapRouteFinderStatus MapRouteFinderResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapRouteFinderStatus%20MapRouteFinderResult.Status");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRoute> MapRouteFinderResult.AlternateRoutes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRoute> MapRouteFinderResult.AlternateRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMapRoute%3E%20MapRouteFinderResult.AlternateRoutes");
 			}
 		}
 		#endif

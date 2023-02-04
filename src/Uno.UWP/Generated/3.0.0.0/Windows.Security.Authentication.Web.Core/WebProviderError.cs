@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebProviderError.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WebProviderError.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WebProviderError.ErrorCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebProviderError.ErrorMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebProviderError.ErrorMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebProviderError.ErrorMessage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebProviderError.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebProviderError.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20WebProviderError.Properties");
 			}
 		}
 		#endif

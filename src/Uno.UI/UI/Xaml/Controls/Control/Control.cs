@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 						RegisterContentTemplateRoot();
 
 						if (
-#if NETSTANDARD
+#if __NETSTD__
 							!IsLoading &&
 #endif
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)

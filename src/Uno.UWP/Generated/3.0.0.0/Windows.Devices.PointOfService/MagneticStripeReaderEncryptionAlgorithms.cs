@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.ExtendedBase is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.ExtendedBase is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderEncryptionAlgorithms.ExtendedBase");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.None is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.None is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderEncryptionAlgorithms.None");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt");
 			}
 		}
 		#endif

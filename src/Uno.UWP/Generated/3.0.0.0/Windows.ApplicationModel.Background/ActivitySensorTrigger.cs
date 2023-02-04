@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ActivitySensorTrigger.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ActivitySensorTrigger.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ActivitySensorTrigger.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ActivitySensorTrigger.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ActivitySensorTrigger.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ActivitySensorTrigger.ReportInterval");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ActivityType> ActivitySensorTrigger.SubscribedActivities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ActivityType> ActivitySensorTrigger.SubscribedActivities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CActivityType%3E%20ActivitySensorTrigger.SubscribedActivities");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ActivityType> ActivitySensorTrigger.SupportedActivities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ActivityType> ActivitySensorTrigger.SupportedActivities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CActivityType%3E%20ActivitySensorTrigger.SupportedActivities");
 			}
 		}
 		#endif

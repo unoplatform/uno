@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CashDrawerCloseAlarm.BeepFrequency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CashDrawerCloseAlarm.BeepFrequency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CashDrawerCloseAlarm.BeepFrequency");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan CashDrawerCloseAlarm.BeepDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan CashDrawerCloseAlarm.BeepDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20CashDrawerCloseAlarm.BeepDuration");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan CashDrawerCloseAlarm.BeepDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan CashDrawerCloseAlarm.BeepDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20CashDrawerCloseAlarm.BeepDelay");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan CashDrawerCloseAlarm.AlarmTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan CashDrawerCloseAlarm.AlarmTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20CashDrawerCloseAlarm.AlarmTimeout");
 			}
 			set
 			{
@@ -77,7 +77,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CashDrawerCloseAlarm.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CashDrawerCloseAlarm.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20CashDrawerCloseAlarm.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

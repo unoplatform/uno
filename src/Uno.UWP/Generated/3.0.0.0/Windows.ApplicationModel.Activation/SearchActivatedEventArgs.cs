@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User SearchActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User SearchActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20SearchActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchPaneQueryLinguisticDetails SearchActivatedEventArgs.LinguisticDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SearchPaneQueryLinguisticDetails SearchActivatedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SearchPaneQueryLinguisticDetails%20SearchActivatedEventArgs.LinguisticDetails");
 			}
 		}
 		#endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationViewSwitcher SearchActivatedEventArgs.ViewSwitcher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationViewSwitcher SearchActivatedEventArgs.ViewSwitcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationViewSwitcher%20SearchActivatedEventArgs.ViewSwitcher");
 			}
 		}
 		#endif

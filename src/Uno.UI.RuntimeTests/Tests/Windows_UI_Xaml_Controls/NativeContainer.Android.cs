@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (newValue != null)
 			{
 				AddView(newValue);
-	}
+			}
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)

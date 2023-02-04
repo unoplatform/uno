@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageCatalogAddResourcePackageResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PackageCatalogAddResourcePackageResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PackageCatalogAddResourcePackageResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageCatalogAddResourcePackageResult.IsComplete is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PackageCatalogAddResourcePackageResult.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PackageCatalogAddResourcePackageResult.IsComplete");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageCatalogAddResourcePackageResult.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageCatalogAddResourcePackageResult.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageCatalogAddResourcePackageResult.Package");
 			}
 		}
 		#endif

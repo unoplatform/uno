@@ -13,7 +13,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LoggingSession.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LoggingSession.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LoggingSession.Name");
 			}
 		}
 		#endif
@@ -30,7 +30,7 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> SaveToFileAsync( global::Windows.Storage.IStorageFolder folder,  string fileName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> LoggingSession.SaveToFileAsync(IStorageFolder folder, string fileName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> LoggingSession.SaveToFileAsync(IStorageFolder folder, string fileName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20LoggingSession.SaveToFileAsync%28IStorageFolder%20folder%2C%20string%20fileName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

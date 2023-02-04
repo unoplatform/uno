@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter InkCanvas.InkPresenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkPresenter InkCanvas.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkPresenter%20InkCanvas.InkPresenter");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PrintPageRange.FirstPageNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PrintPageRange.FirstPageNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PrintPageRange.FirstPageNumber");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PrintPageRange.LastPageNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PrintPageRange.LastPageNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PrintPageRange.LastPageNumber");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterProtractor.Radius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double InkPresenterProtractor.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20InkPresenterProtractor.Radius");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsResizable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsResizable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterProtractor.IsResizable");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsCenterMarkerVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsCenterMarkerVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterProtractor.IsCenterMarkerVisible");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsAngleReadoutVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsAngleReadoutVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterProtractor.IsAngleReadoutVisible");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreTickMarksVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreTickMarksVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterProtractor.AreTickMarksVisible");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreRaysVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreRaysVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterProtractor.AreRaysVisible");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.AccentColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.AccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20InkPresenterProtractor.AccentColor");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterProtractor.Transform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterProtractor.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Matrix3x2%20InkPresenterProtractor.Transform");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterProtractor.IsVisible");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.ForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20InkPresenterProtractor.ForegroundColor");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20InkPresenterProtractor.BackgroundColor");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterProtractor.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterProtractor.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkPresenterStencilKind%20InkPresenterProtractor.Kind");
 			}
 		}
 		#endif

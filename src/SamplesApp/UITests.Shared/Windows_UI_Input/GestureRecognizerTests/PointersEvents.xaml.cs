@@ -227,7 +227,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				}
 
 				var expectedPointerId = _pointerId.Text;
-				if (expectedPointerId.HasValueTrimmed()
+				if (!expectedPointerId.IsNullOrWhiteSpace()
 					&& (!uint.TryParse(expectedPointerId, out var pointerId) || pointer.Pointer.PointerId != pointerId))
 				{
 					error += "pt_id ";

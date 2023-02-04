@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusSettings.WaitForFocus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FocusSettings.WaitForFocus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FocusSettings.WaitForFocus");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? FocusSettings.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? FocusSettings.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20FocusSettings.Value");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FocusMode FocusSettings.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FocusMode FocusSettings.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FocusMode%20FocusSettings.Mode");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ManualFocusDistance? FocusSettings.Distance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ManualFocusDistance? FocusSettings.Distance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ManualFocusDistance%3F%20FocusSettings.Distance");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusSettings.DisableDriverFallback is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FocusSettings.DisableDriverFallback is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FocusSettings.DisableDriverFallback");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutoFocusRange FocusSettings.AutoFocusRange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutoFocusRange FocusSettings.AutoFocusRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutoFocusRange%20FocusSettings.AutoFocusRange");
 			}
 			set
 			{

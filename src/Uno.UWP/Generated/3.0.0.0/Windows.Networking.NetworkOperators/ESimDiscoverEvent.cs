@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESimDiscoverEvent.MatchingId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ESimDiscoverEvent.MatchingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ESimDiscoverEvent.MatchingId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESimDiscoverEvent.RspServerAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ESimDiscoverEvent.RspServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ESimDiscoverEvent.RspServerAddress");
 			}
 		}
 		#endif

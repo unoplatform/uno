@@ -13,7 +13,7 @@ namespace Windows.Phone.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationProfileModes ApplicationProfile.Modes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationProfileModes ApplicationProfile.Modes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationProfileModes%20ApplicationProfile.Modes");
 			}
 		}
 		#endif

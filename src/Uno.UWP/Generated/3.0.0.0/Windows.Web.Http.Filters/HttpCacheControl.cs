@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCacheWriteBehavior HttpCacheControl.WriteBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCacheWriteBehavior HttpCacheControl.WriteBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCacheWriteBehavior%20HttpCacheControl.WriteBehavior");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCacheReadBehavior HttpCacheControl.ReadBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCacheReadBehavior HttpCacheControl.ReadBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCacheReadBehavior%20HttpCacheControl.ReadBehavior");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CompassReading.HeadingMagneticNorth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CompassReading.HeadingMagneticNorth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CompassReading.HeadingMagneticNorth");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? CompassReading.HeadingTrueNorth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? CompassReading.HeadingTrueNorth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20CompassReading.HeadingTrueNorth");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CompassReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset CompassReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20CompassReading.Timestamp");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? CompassReading.PerformanceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? CompassReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20CompassReading.PerformanceCount");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> CompassReading.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> CompassReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20CompassReading.Properties");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagnetometerAccuracy CompassReading.HeadingAccuracy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagnetometerAccuracy CompassReading.HeadingAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagnetometerAccuracy%20CompassReading.HeadingAccuracy");
 			}
 		}
 		#endif

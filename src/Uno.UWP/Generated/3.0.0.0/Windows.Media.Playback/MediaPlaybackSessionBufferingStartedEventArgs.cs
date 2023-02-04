@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSessionBufferingStartedEventArgs.IsPlaybackInterruption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackSessionBufferingStartedEventArgs.IsPlaybackInterruption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlaybackSessionBufferingStartedEventArgs.IsPlaybackInterruption");
 			}
 		}
 		#endif

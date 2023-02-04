@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Media
 			return IsSourceReady
 				|| Stream != null
 				|| AbsoluteUri != null
-				|| FilePath.HasValueTrimmed()
+				|| !FilePath.IsNullOrWhiteSpace()
 				|| _imageData.HasData
 				|| BitmapDrawable != null
 				|| ResourceId != null;
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Media
 					var emptyPadding = new Rect();
 					// Try to move position to beginning of the stream, if seekable.
 					Stream.Position = 0;
-					//Get the size of the image and validate 
+					//Get the size of the image and validate
 					await BitmapFactory.DecodeStreamAsync(Stream, emptyPadding, options);
 					Stream.Position = 0;
 					if (ValidateIfImageNeedsResize(options))
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Media
 				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(Stream));
 			}
 
-			if (FilePath.HasValue())
+			if (!FilePath.IsNullOrEmpty())
 			{
 				await BitmapFactory.DecodeFileAsync(FilePath, options);
 				if (ValidateIfImageNeedsResize(options))
@@ -455,7 +455,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			// Overrides the CanConvertFrom method of TypeConverter.
 			// The ITypeDescriptorContext interface provides the context for the
-			// conversion. Typically, this interface is used at design time to 
+			// conversion. Typically, this interface is used at design time to
 			// provide information about the design-time container.
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 			{

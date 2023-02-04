@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.Action is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.Action is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsChangedEventArgs.Action");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.ItemCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.ItemCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsChangedEventArgs.ItemCount");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.ItemUICount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.ItemUICount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsChangedEventArgs.ItemUICount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeneratorPosition ItemsChangedEventArgs.OldPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeneratorPosition ItemsChangedEventArgs.OldPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeneratorPosition%20ItemsChangedEventArgs.OldPosition");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeneratorPosition ItemsChangedEventArgs.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeneratorPosition ItemsChangedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeneratorPosition%20ItemsChangedEventArgs.Position");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderConnection GattServiceProviderTriggerDetails.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattServiceProviderConnection GattServiceProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattServiceProviderConnection%20GattServiceProviderTriggerDetails.Connection");
 			}
 		}
 		#endif

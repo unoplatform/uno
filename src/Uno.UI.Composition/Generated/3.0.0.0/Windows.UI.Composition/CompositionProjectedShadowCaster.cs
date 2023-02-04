@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowCaster.CastingVisual is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowCaster.CastingVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20CompositionProjectedShadowCaster.CastingVisual");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionProjectedShadowCaster.Brush is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBrush CompositionProjectedShadowCaster.Brush is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20CompositionProjectedShadowCaster.Brush");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayAdapter DisplayTarget.Adapter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayAdapter DisplayTarget.Adapter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayAdapter%20DisplayTarget.Adapter");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayTarget.AdapterRelativeId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplayTarget.AdapterRelativeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplayTarget.AdapterRelativeId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayTarget.DeviceInterfacePath is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DisplayTarget.DeviceInterfacePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DisplayTarget.DeviceInterfacePath");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsConnected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayTarget.IsConnected");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsStale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsStale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayTarget.IsStale");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsVirtualModeEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsVirtualModeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayTarget.IsVirtualModeEnabled");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsVirtualTopologyEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayTarget.IsVirtualTopologyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayTarget.IsVirtualTopologyEnabled");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayTargetPersistence DisplayTarget.MonitorPersistence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayTargetPersistence DisplayTarget.MonitorPersistence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayTargetPersistence%20DisplayTarget.MonitorPersistence");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> DisplayTarget.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> DisplayTarget.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20DisplayTarget.Properties");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayTarget.StableMonitorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DisplayTarget.StableMonitorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DisplayTarget.StableMonitorId");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayMonitorUsageKind DisplayTarget.UsageKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayMonitorUsageKind DisplayTarget.UsageKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayMonitorUsageKind%20DisplayTarget.UsageKind");
 			}
 		}
 		#endif
@@ -130,7 +130,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Display.DisplayMonitor TryGetMonitor()
 		{
-			throw new global::System.NotImplementedException("The member DisplayMonitor DisplayTarget.TryGetMonitor() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayMonitor DisplayTarget.TryGetMonitor() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayMonitor%20DisplayTarget.TryGetMonitor%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.Properties.get
@@ -139,14 +139,14 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsSame( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsSame(DisplayTarget otherTarget) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsSame(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayTarget.IsSame%28DisplayTarget%20otherTarget%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEqual( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsEqual(DisplayTarget otherTarget) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsEqual(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayTarget.IsEqual%28DisplayTarget%20otherTarget%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.TreatAsUntrusted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LauncherOptions.TreatAsUntrusted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LauncherOptions.TreatAsUntrusted");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.PreferredApplicationPackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LauncherOptions.PreferredApplicationPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LauncherOptions.PreferredApplicationPackageFamilyName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.PreferredApplicationDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LauncherOptions.PreferredApplicationDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LauncherOptions.PreferredApplicationDisplayName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri LauncherOptions.FallbackUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri LauncherOptions.FallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20LauncherOptions.FallbackUri");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.DisplayApplicationPicker is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LauncherOptions.DisplayApplicationPicker is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LauncherOptions.DisplayApplicationPicker");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.ContentType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LauncherOptions.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LauncherOptions.ContentType");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LauncherUIOptions LauncherOptions.UI is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LauncherUIOptions LauncherOptions.UI is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LauncherUIOptions%20LauncherOptions.UI");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.TargetApplicationPackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LauncherOptions.TargetApplicationPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LauncherOptions.TargetApplicationPackageFamilyName");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFileQueryResult LauncherOptions.NeighboringFilesQuery is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFileQueryResult LauncherOptions.NeighboringFilesQuery is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFileQueryResult%20LauncherOptions.NeighboringFilesQuery");
 			}
 			set
 			{
@@ -135,7 +135,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.IgnoreAppUriHandlers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LauncherOptions.IgnoreAppUriHandlers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LauncherOptions.IgnoreAppUriHandlers");
 			}
 			set
 			{
@@ -149,7 +149,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers");
 			}
 			set
 			{
@@ -163,7 +163,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ViewSizePreference LauncherOptions.DesiredRemainingView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ViewSizePreference LauncherOptions.DesiredRemainingView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ViewSizePreference%20LauncherOptions.DesiredRemainingView");
 			}
 			set
 			{

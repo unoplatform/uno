@@ -11,7 +11,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowId> FindAllTopLevelWindowIds()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<WindowId> WindowServices.FindAllTopLevelWindowIds() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<WindowId> WindowServices.FindAllTopLevelWindowIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWindowId%3E%20WindowServices.FindAllTopLevelWindowIds%28%29");
 		}
 		#endif
 	}

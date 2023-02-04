@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectDefinition.SynchronousDetectionEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectDefinition.SynchronousDetectionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FaceDetectionEffectDefinition.SynchronousDetectionEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FaceDetectionMode FaceDetectionEffectDefinition.DetectionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FaceDetectionMode FaceDetectionEffectDefinition.DetectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FaceDetectionMode%20FaceDetectionEffectDefinition.DetectionMode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FaceDetectionEffectDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FaceDetectionEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FaceDetectionEffectDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet FaceDetectionEffectDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet FaceDetectionEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20FaceDetectionEffectDefinition.Properties");
 			}
 		}
 		#endif

@@ -11,7 +11,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionBrush GetSourceParameter( string name)
 		{
-			throw new global::System.NotImplementedException("The member CompositionBrush CompositionEffectBrush.GetSourceParameter(string name) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionBrush CompositionEffectBrush.GetSourceParameter(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20CompositionEffectBrush.GetSourceParameter%28string%20name%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? FrameFocusControl.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? FrameFocusControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20FrameFocusControl.Value");
 			}
 			set
 			{

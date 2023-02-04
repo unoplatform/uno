@@ -13,7 +13,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.PredictionAmount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.PredictionAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PerceptionTimestamp.PredictionAmount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PerceptionTimestamp.TargetTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PerceptionTimestamp.TargetTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PerceptionTimestamp.TargetTime");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.SystemRelativeTargetTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.SystemRelativeTargetTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PerceptionTimestamp.SystemRelativeTargetTime");
 			}
 		}
 		#endif

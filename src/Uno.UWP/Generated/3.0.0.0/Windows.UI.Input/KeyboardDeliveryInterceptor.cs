@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.KeyboardDeliveryInterceptor GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyboardDeliveryInterceptor%20KeyboardDeliveryInterceptor.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

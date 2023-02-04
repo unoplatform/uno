@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFile AudioFileOutputNode.File is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IStorageFile AudioFileOutputNode.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IStorageFile%20AudioFileOutputNode.File");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaEncodingProfile AudioFileOutputNode.FileEncodingProfile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaEncodingProfile AudioFileOutputNode.FileEncodingProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaEncodingProfile%20AudioFileOutputNode.FileEncodingProfile");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioFileOutputNode.OutgoingGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioFileOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioFileOutputNode.OutgoingGain");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFileOutputNode.ConsumeInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AudioFileOutputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AudioFileOutputNode.ConsumeInput");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFileOutputNode.EffectDefinitions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFileOutputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CIAudioEffectDefinition%3E%20AudioFileOutputNode.EffectDefinitions");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFileOutputNode.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFileOutputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioFileOutputNode.EncodingProperties");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.TranscodeFailureReason> FinalizeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<TranscodeFailureReason> AudioFileOutputNode.FinalizeAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<TranscodeFailureReason> AudioFileOutputNode.FinalizeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CTranscodeFailureReason%3E%20AudioFileOutputNode.FinalizeAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.EffectDefinitions.get

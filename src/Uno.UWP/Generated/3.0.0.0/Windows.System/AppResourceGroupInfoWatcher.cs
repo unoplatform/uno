@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupInfoWatcherStatus AppResourceGroupInfoWatcher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppResourceGroupInfoWatcherStatus AppResourceGroupInfoWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppResourceGroupInfoWatcherStatus%20AppResourceGroupInfoWatcher.Status");
 			}
 		}
 		#endif

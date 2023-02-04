@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation WiFiDirectServiceSessionRequest.DeviceInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation WiFiDirectServiceSessionRequest.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20WiFiDirectServiceSessionRequest.DeviceInformation");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceProvisioningInfo WiFiDirectServiceSessionRequest.ProvisioningInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceProvisioningInfo WiFiDirectServiceSessionRequest.ProvisioningInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectServiceProvisioningInfo%20WiFiDirectServiceSessionRequest.ProvisioningInfo");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceSessionRequest.SessionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceSessionRequest.SessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20WiFiDirectServiceSessionRequest.SessionInfo");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidCollection.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidCollection.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidCollection.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidCollectionType HidCollection.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HidCollectionType HidCollection.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HidCollectionType%20HidCollection.Type");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidCollection.UsageId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidCollection.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidCollection.UsageId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidCollection.UsagePage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidCollection.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidCollection.UsagePage");
 			}
 		}
 		#endif

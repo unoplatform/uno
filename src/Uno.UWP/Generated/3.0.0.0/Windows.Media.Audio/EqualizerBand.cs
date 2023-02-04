@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Gain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EqualizerBand.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EqualizerBand.Gain");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.FrequencyCenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EqualizerBand.FrequencyCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EqualizerBand.FrequencyCenter");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Bandwidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EqualizerBand.Bandwidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EqualizerBand.Bandwidth");
 			}
 			set
 			{

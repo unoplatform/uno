@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentStoreChangeTracker.IsTracking is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentStoreChangeTracker.IsTracking is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentStoreChangeTracker.IsTracking");
 			}
 		}
 		#endif
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Appointments.AppointmentStoreChangeReader GetChangeReader()
 		{
-			throw new global::System.NotImplementedException("The member AppointmentStoreChangeReader AppointmentStoreChangeTracker.GetChangeReader() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppointmentStoreChangeReader AppointmentStoreChangeTracker.GetChangeReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentStoreChangeReader%20AppointmentStoreChangeTracker.GetChangeReader%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxGetAutoReplySettingsRequest.EmailMailboxId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxGetAutoReplySettingsRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxGetAutoReplySettingsRequest.EmailMailboxId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReplyMessageResponseKind EmailMailboxGetAutoReplySettingsRequest.RequestedFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxAutoReplyMessageResponseKind EmailMailboxGetAutoReplySettingsRequest.RequestedFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxAutoReplyMessageResponseKind%20EmailMailboxGetAutoReplySettingsRequest.RequestedFormat");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings autoReplySettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxGetAutoReplySettingsRequest.ReportCompletedAsync(EmailMailboxAutoReplySettings autoReplySettings) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxGetAutoReplySettingsRequest.ReportCompletedAsync(EmailMailboxAutoReplySettings autoReplySettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxGetAutoReplySettingsRequest.ReportCompletedAsync%28EmailMailboxAutoReplySettings%20autoReplySettings%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxGetAutoReplySettingsRequest.ReportFailedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxGetAutoReplySettingsRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxGetAutoReplySettingsRequest.ReportFailedAsync%28%29");
 		}
 		#endif
 	}

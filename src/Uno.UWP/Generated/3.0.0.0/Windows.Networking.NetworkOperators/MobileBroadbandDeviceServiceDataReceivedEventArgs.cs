@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData");
 			}
 		}
 		#endif

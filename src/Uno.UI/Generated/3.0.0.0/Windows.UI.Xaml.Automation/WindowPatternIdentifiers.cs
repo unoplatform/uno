@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.CanMaximizeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.CanMaximizeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20WindowPatternIdentifiers.CanMaximizeProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.CanMinimizeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.CanMinimizeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20WindowPatternIdentifiers.CanMinimizeProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.IsModalProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.IsModalProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20WindowPatternIdentifiers.IsModalProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.IsTopmostProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.IsTopmostProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20WindowPatternIdentifiers.IsTopmostProperty");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.WindowInteractionStateProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.WindowInteractionStateProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20WindowPatternIdentifiers.WindowInteractionStateProperty");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.WindowVisualStateProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty WindowPatternIdentifiers.WindowVisualStateProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20WindowPatternIdentifiers.WindowVisualStateProperty");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId");
 			}
 		}
 		#endif

@@ -12,7 +12,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input
 			var host = XamlRootMap.GetHostForRoot(xamlRoot);
 			host?.ReleasePointerCapture();
 		}
-		
+
 		public void SetPointerCapture(PointerIdentifier pointer, XamlRoot xamlRoot)
 		{
 			var host = XamlRootMap.GetHostForRoot(xamlRoot);

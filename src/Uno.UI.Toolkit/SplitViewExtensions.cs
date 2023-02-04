@@ -16,8 +16,8 @@ namespace Uno.UI.Toolkit
 #endif
 #endif
 	public static class SplitViewExtensions
-    {
-#region IsPaneEnabled
+	{
+		#region IsPaneEnabled
 
 		public static DependencyProperty IsPaneEnabledProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -37,6 +37,6 @@ namespace Uno.UI.Toolkit
 			return (bool)splitView.GetValue(IsPaneEnabledProperty);
 		}
 
-#endregion
+		#endregion
 	}
 }

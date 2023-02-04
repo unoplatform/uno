@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxChangeType EmailMailboxChange.ChangeType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxChangeType EmailMailboxChange.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxChangeType%20EmailMailboxChange.ChangeType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailFolder EmailMailboxChange.Folder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailFolder EmailMailboxChange.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailFolder%20EmailMailboxChange.Folder");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<EmailMailboxAction> EmailMailboxChange.MailboxActions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<EmailMailboxAction> EmailMailboxChange.MailboxActions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CEmailMailboxAction%3E%20EmailMailboxChange.MailboxActions");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMessage EmailMailboxChange.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMessage EmailMailboxChange.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMessage%20EmailMailboxChange.Message");
 			}
 		}
 		#endif

@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Uno
 {
-    internal delegate Task ActionAsync(CancellationToken ct);
+	internal delegate Task ActionAsync(CancellationToken ct);
 	internal delegate Task ActionAsync<in T1>(CancellationToken ct, T1 value);
 	internal delegate Task ActionAsync<in T1, in T2>(CancellationToken ct, T1 t1, T2 t2);
 	internal delegate Task ActionAsync<in T1, in T2, in T3>(CancellationToken ct, T1 t1, T2 t2, T3 t3);

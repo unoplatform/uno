@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Magnetometer.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Magnetometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Magnetometer.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Magnetometer.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Magnetometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Magnetometer.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Magnetometer.ReadingTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations Magnetometer.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20Magnetometer.ReadingTransform");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Magnetometer.ReportLatency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Magnetometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Magnetometer.ReportLatency");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Magnetometer.MaxBatchSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Magnetometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Magnetometer.MaxBatchSize");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagnetometerDataThreshold Magnetometer.ReportThreshold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagnetometerDataThreshold Magnetometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagnetometerDataThreshold%20Magnetometer.ReportThreshold");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Magnetometer.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Magnetometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Magnetometer.DeviceId");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Sensors.MagnetometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member MagnetometerReading Magnetometer.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MagnetometerReading Magnetometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagnetometerReading%20Magnetometer.GetCurrentReading%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.MinimumReportInterval.get
@@ -112,21 +112,21 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Magnetometer.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Magnetometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Magnetometer.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Magnetometer> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Magnetometer> Magnetometer.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Magnetometer> Magnetometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMagnetometer%3E%20Magnetometer.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.Magnetometer GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member Magnetometer Magnetometer.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Magnetometer Magnetometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Magnetometer%20Magnetometer.GetDefault%28%29");
 		}
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

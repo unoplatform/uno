@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.ExtendedPropertiesProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.ExtendedPropertiesProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.ExtendedPropertiesProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.FillColorProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.FillColorProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.FillColorProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.FillPatternColorProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.FillPatternColorProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.FillPatternColorProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.FillPatternStyleProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.FillPatternStyleProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.FillPatternStyleProperty");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.ShapeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.ShapeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.ShapeProperty");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.StyleIdProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.StyleIdProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.StyleIdProperty");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.StyleNameProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty StylesPatternIdentifiers.StyleNameProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20StylesPatternIdentifiers.StyleNameProperty");
 			}
 		}
 		#endif

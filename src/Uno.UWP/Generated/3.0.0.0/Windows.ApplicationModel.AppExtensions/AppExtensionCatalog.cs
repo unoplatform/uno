@@ -11,14 +11,14 @@ namespace Windows.ApplicationModel.AppExtensions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppExtensions.AppExtension>> FindAllAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppExtension>> AppExtensionCatalog.FindAllAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppExtension>> AppExtensionCatalog.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppExtension%3E%3E%20AppExtensionCatalog.FindAllAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> RequestRemovePackageAsync( string packageFullName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppExtensionCatalog.RequestRemovePackageAsync(string packageFullName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppExtensionCatalog.RequestRemovePackageAsync(string packageFullName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppExtensionCatalog.RequestRemovePackageAsync%28string%20packageFullName%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageInstalled.add
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open( string appExtensionName)
 		{
-			throw new global::System.NotImplementedException("The member AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppExtensionCatalog%20AppExtensionCatalog.Open%28string%20appExtensionName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

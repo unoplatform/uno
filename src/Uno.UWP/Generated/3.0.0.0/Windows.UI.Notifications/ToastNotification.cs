@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ToastNotification.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ToastNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20ToastNotification.ExpirationTime");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ToastNotification.SuppressPopup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ToastNotification.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ToastNotification.SuppressPopup");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotification.Group is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotification.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotification.Group");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotification.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotification.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotification.RemoteId");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationMirroring ToastNotification.NotificationMirroring is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NotificationMirroring ToastNotification.NotificationMirroring is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NotificationMirroring%20ToastNotification.NotificationMirroring");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastNotificationPriority ToastNotification.Priority is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ToastNotificationPriority ToastNotification.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToastNotificationPriority%20ToastNotification.Priority");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationData ToastNotification.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NotificationData ToastNotification.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NotificationData%20ToastNotification.Data");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ToastNotification.ExpiresOnReboot is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ToastNotification.ExpiresOnReboot is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ToastNotification.ExpiresOnReboot");
 			}
 			set
 			{

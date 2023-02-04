@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ClipboardHistoryItem> ClipboardHistoryItemsResult.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ClipboardHistoryItem> ClipboardHistoryItemsResult.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CClipboardHistoryItem%3E%20ClipboardHistoryItemsResult.Items");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClipboardHistoryItemsResultStatus ClipboardHistoryItemsResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClipboardHistoryItemsResultStatus ClipboardHistoryItemsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClipboardHistoryItemsResultStatus%20ClipboardHistoryItemsResult.Status");
 			}
 		}
 		#endif

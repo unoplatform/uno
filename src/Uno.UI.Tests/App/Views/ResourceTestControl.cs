@@ -33,7 +33,7 @@ namespace Uno.UI.Tests.App.Views
 			get { return (string)GetValue(MyStringDPProperty); }
 			set { SetValue(MyStringDPProperty, value); }
 		}
-		
+
 		public static readonly DependencyProperty MyStringDPProperty =
 			DependencyProperty.Register("MyStringDP", typeof(string), typeof(ResourceTestControl), new PropertyMetadata("DefaultValue"));
 
@@ -42,7 +42,7 @@ namespace Uno.UI.Tests.App.Views
 			get { return (MyDependencyObject)GetValue(DObjDPProperty); }
 			set { SetValue(DObjDPProperty, value); }
 		}
-		
+
 		public static readonly DependencyProperty DObjDPProperty =
 			DependencyProperty.Register("DObjDP", typeof(MyDependencyObject), typeof(ResourceTestControl), new PropertyMetadata(null));
 

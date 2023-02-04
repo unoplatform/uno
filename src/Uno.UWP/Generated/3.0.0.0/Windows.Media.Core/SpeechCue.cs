@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechCue.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SpeechCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SpeechCue.StartTime");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechCue.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechCue.Id");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechCue.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SpeechCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SpeechCue.Duration");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechCue.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechCue.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechCue.Text");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? SpeechCue.StartPositionInInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? SpeechCue.StartPositionInInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20SpeechCue.StartPositionInInput");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? SpeechCue.EndPositionInInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? SpeechCue.EndPositionInInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20SpeechCue.EndPositionInInput");
 			}
 			set
 			{

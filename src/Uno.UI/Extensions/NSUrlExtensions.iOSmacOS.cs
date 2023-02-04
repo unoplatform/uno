@@ -11,7 +11,7 @@ namespace Uno.UI.Extensions
 	{
 		public static Uri ToUri(this NSUrl nsUrl)
 		{
-			if (!nsUrl.AbsoluteString.HasValue())
+			if (nsUrl.AbsoluteString.IsNullOrEmpty())
 			{
 				return null;
 			}

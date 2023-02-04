@@ -8,7 +8,7 @@ using Windows.Foundation;
 namespace Uno.UI.Tests.Animations
 {
 	[TestClass]
-    public class Given_KeySpline
+	public class Given_KeySpline
 	{
 		[DataTestMethod]
 		[DataRow(0.0, 0.0, 1.0, 1.0)]

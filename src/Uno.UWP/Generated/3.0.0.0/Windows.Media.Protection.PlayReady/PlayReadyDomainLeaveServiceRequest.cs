@@ -13,7 +13,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.ProtectionSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainLeaveServiceRequest.ProtectionSystem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainLeaveServiceRequest.Type");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.DomainServiceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.DomainServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainLeaveServiceRequest.DomainServiceId");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.DomainAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainLeaveServiceRequest.DomainAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainLeaveServiceRequest.DomainAccountId");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyDomainLeaveServiceRequest.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri PlayReadyDomainLeaveServiceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20PlayReadyDomainLeaveServiceRequest.Uri");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyDomainLeaveServiceRequest.ChallengeCustomData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadyDomainLeaveServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadyDomainLeaveServiceRequest.ChallengeCustomData");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyDomainLeaveServiceRequest.ResponseCustomData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadyDomainLeaveServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadyDomainLeaveServiceRequest.ResponseCustomData");
 			}
 		}
 		#endif
@@ -114,28 +114,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadyDomainLeaveServiceRequest.BeginServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadyDomainLeaveServiceRequest.BeginServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PlayReadyDomainLeaveServiceRequest.BeginServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadyDomainLeaveServiceRequest.NextServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadyDomainLeaveServiceRequest.NextServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPlayReadyServiceRequest%20PlayReadyDomainLeaveServiceRequest.NextServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadyDomainLeaveServiceRequest.GenerateManualEnablingChallenge() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadyDomainLeaveServiceRequest.GenerateManualEnablingChallenge() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayReadySoapMessage%20PlayReadyDomainLeaveServiceRequest.GenerateManualEnablingChallenge%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes)
 		{
-			throw new global::System.NotImplementedException("The member Exception PlayReadyDomainLeaveServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Exception PlayReadyDomainLeaveServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PlayReadyDomainLeaveServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.ProtectionSystem.get

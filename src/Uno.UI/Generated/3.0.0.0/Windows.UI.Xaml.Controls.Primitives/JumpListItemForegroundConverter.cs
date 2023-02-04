@@ -67,14 +67,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object Convert( object value,  global::System.Type targetType,  object parameter,  string language)
 		{
-			throw new global::System.NotImplementedException("The member object JumpListItemForegroundConverter.Convert(object value, Type targetType, object parameter, string language) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member object JumpListItemForegroundConverter.Convert(object value, Type targetType, object parameter, string language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20JumpListItemForegroundConverter.Convert%28object%20value%2C%20Type%20targetType%2C%20object%20parameter%2C%20string%20language%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object ConvertBack( object value,  global::System.Type targetType,  object parameter,  string language)
 		{
-			throw new global::System.NotImplementedException("The member object JumpListItemForegroundConverter.ConvertBack(object value, Type targetType, object parameter, string language) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member object JumpListItemForegroundConverter.ConvertBack(object value, Type targetType, object parameter, string language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20JumpListItemForegroundConverter.ConvertBack%28object%20value%2C%20Type%20targetType%2C%20object%20parameter%2C%20string%20language%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.EnabledProperty.get

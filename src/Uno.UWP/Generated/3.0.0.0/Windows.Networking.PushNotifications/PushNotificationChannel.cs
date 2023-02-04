@@ -13,7 +13,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PushNotificationChannel.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PushNotificationChannel.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PushNotificationChannel.ExpirationTime");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PushNotificationChannel.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PushNotificationChannel.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PushNotificationChannel.Uri");
 			}
 		}
 		#endif

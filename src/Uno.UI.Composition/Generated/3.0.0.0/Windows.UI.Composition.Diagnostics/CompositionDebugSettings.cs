@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionDebugHeatMaps CompositionDebugSettings.HeatMaps is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionDebugHeatMaps CompositionDebugSettings.HeatMaps is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionDebugHeatMaps%20CompositionDebugSettings.HeatMaps");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.UI.Composition.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Diagnostics.CompositionDebugSettings TryGetSettings( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member CompositionDebugSettings CompositionDebugSettings.TryGetSettings(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionDebugSettings CompositionDebugSettings.TryGetSettings(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionDebugSettings%20CompositionDebugSettings.TryGetSettings%28Compositor%20compositor%29");
 		}
 		#endif
 	}

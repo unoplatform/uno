@@ -284,8 +284,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_ParseNotValidDouble()
 		{
 			var sut = new DecimalFormatter();
-			
-			var actual =  sut.ParseDouble("a12");
+
+			var actual = sut.ParseDouble("a12");
 			Assert.AreEqual(null, actual);
 		}
 	}

@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point ClosestInteractiveBoundsRequestedEventArgs.PointerPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point ClosestInteractiveBoundsRequestedEventArgs.PointerPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20ClosestInteractiveBoundsRequestedEventArgs.PointerPosition");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect ClosestInteractiveBoundsRequestedEventArgs.SearchBounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect ClosestInteractiveBoundsRequestedEventArgs.SearchBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20ClosestInteractiveBoundsRequestedEventArgs.SearchBounds");
 			}
 		}
 		#endif

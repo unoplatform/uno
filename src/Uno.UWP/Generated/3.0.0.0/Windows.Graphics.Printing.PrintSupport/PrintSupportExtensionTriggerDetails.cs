@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintSupportExtensionSession PrintSupportExtensionTriggerDetails.Session is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintSupportExtensionSession PrintSupportExtensionTriggerDetails.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintSupportExtensionSession%20PrintSupportExtensionTriggerDetails.Session");
 			}
 		}
 		#endif

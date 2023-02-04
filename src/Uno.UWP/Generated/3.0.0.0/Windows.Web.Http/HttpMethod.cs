@@ -13,7 +13,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpMethod.Method is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpMethod.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMethod.Method");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Delete is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Delete is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Delete");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Get is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Get is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Get");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Head is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Head is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Head");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Options is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Options");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Patch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Patch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Patch");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Post is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Post is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Post");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Put is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMethod HttpMethod.Put is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMethod%20HttpMethod.Put");
 			}
 		}
 		#endif
@@ -100,7 +100,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpMethod.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpMethod.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMethod.ToString%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMethod.Delete.get

@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PlatformKeyStorageProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PlatformKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyStorageProviderNames.PlatformKeyStorageProvider");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.SmartcardKeyStorageProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.SmartcardKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyStorageProviderNames.SmartcardKeyStorageProvider");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.SoftwareKeyStorageProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.SoftwareKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyStorageProviderNames.SoftwareKeyStorageProvider");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PassportKeyStorageProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PassportKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyStorageProviderNames.PassportKeyStorageProvider");
 			}
 		}
 		#endif

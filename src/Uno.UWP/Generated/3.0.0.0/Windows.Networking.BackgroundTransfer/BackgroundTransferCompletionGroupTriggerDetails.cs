@@ -13,7 +13,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DownloadOperation> BackgroundTransferCompletionGroupTriggerDetails.Downloads is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<DownloadOperation> BackgroundTransferCompletionGroupTriggerDetails.Downloads is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CDownloadOperation%3E%20BackgroundTransferCompletionGroupTriggerDetails.Downloads");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UploadOperation> BackgroundTransferCompletionGroupTriggerDetails.Uploads is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UploadOperation> BackgroundTransferCompletionGroupTriggerDetails.Uploads is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUploadOperation%3E%20BackgroundTransferCompletionGroupTriggerDetails.Uploads");
 			}
 		}
 		#endif

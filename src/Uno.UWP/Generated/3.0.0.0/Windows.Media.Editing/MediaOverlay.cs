@@ -13,7 +13,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect MediaOverlay.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect MediaOverlay.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20MediaOverlay.Position");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaOverlay.Opacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaOverlay.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaOverlay.Opacity");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaOverlay.Delay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaOverlay.Delay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaOverlay.Delay");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaOverlay.AudioEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaOverlay.AudioEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaOverlay.AudioEnabled");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaClip MediaOverlay.Clip is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaClip MediaOverlay.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaClip%20MediaOverlay.Clip");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Editing.MediaOverlay Clone()
 		{
-			throw new global::System.NotImplementedException("The member MediaOverlay MediaOverlay.Clone() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaOverlay MediaOverlay.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaOverlay%20MediaOverlay.Clone%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Clip.get

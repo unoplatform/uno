@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SelectorAutomationPeer.CanSelectMultiple is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SelectorAutomationPeer.CanSelectMultiple is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SelectorAutomationPeer.CanSelectMultiple");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SelectorAutomationPeer.IsSelectionRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SelectorAutomationPeer.IsSelectionRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SelectorAutomationPeer.IsSelectionRequired");
 			}
 		}
 		#endif
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
 		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] SelectorAutomationPeer.GetSelection() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] SelectorAutomationPeer.GetSelection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRawElementProviderSimple%5B%5D%20SelectorAutomationPeer.GetSelection%28%29");
 		}
 		#endif
 		// Processing: Windows.UI.Xaml.Automation.Provider.ISelectionProvider

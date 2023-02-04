@@ -11,7 +11,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.StorageLibraryChangeReader GetChangeReader()
 		{
-			throw new global::System.NotImplementedException("The member StorageLibraryChangeReader StorageLibraryChangeTracker.GetChangeReader() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member StorageLibraryChangeReader StorageLibraryChangeTracker.GetChangeReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageLibraryChangeReader%20StorageLibraryChangeTracker.GetChangeReader%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

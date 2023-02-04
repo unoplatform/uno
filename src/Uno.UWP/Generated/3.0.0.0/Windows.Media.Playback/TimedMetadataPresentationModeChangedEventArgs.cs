@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrackPresentationMode%20TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrackPresentationMode%20TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrack TimedMetadataPresentationModeChangedEventArgs.Track is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataTrack TimedMetadataPresentationModeChangedEventArgs.Track is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrack%20TimedMetadataPresentationModeChangedEventArgs.Track");
 			}
 		}
 		#endif

@@ -47,7 +47,7 @@ internal class Given_InputInjector
 		var injector = InputInjector.TryCreate();
 
 		injector.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
-		injector.InjectTouchInput(new []
+		injector.InjectTouchInput(new[]
 		{
 			new InjectedInputTouchInfo
 			{

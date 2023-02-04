@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AllJoynCredentials.Timeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan AllJoynCredentials.Timeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20AllJoynCredentials.Timeout");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential AllJoynCredentials.PasswordCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential AllJoynCredentials.PasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20AllJoynCredentials.PasswordCredential");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate AllJoynCredentials.Certificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate AllJoynCredentials.Certificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20AllJoynCredentials.Certificate");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynAuthenticationMechanism AllJoynCredentials.AuthenticationMechanism is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AllJoynAuthenticationMechanism AllJoynCredentials.AuthenticationMechanism is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynAuthenticationMechanism%20AllJoynCredentials.AuthenticationMechanism");
 			}
 		}
 		#endif

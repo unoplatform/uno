@@ -249,14 +249,14 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.InkToolbarToolButton GetToolButton( global::Windows.UI.Xaml.Controls.InkToolbarTool tool)
 		{
-			throw new global::System.NotImplementedException("The member InkToolbarToolButton InkToolbar.GetToolButton(InkToolbarTool tool) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InkToolbarToolButton InkToolbar.GetToolButton(InkToolbarTool tool) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkToolbarToolButton%20InkToolbar.GetToolButton%28InkToolbarTool%20tool%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.InkToolbarToggleButton GetToggleButton( global::Windows.UI.Xaml.Controls.InkToolbarToggle tool)
 		{
-			throw new global::System.NotImplementedException("The member InkToolbarToggleButton InkToolbar.GetToggleButton(InkToolbarToggle tool) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InkToolbarToggleButton InkToolbar.GetToggleButton(InkToolbarToggle tool) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkToolbarToggleButton%20InkToolbar.GetToggleButton%28InkToolbarToggle%20tool%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbar.IsStencilButtonChecked.get
@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.InkToolbarMenuButton GetMenuButton( global::Windows.UI.Xaml.Controls.InkToolbarMenuKind menu)
 		{
-			throw new global::System.NotImplementedException("The member InkToolbarMenuButton InkToolbar.GetMenuButton(InkToolbarMenuKind menu) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InkToolbarMenuButton InkToolbar.GetMenuButton(InkToolbarMenuKind menu) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkToolbarMenuButton%20InkToolbar.GetMenuButton%28InkToolbarMenuKind%20menu%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbar.TargetInkPresenter.get

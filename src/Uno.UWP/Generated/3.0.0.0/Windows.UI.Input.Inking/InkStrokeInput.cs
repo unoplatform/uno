@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter InkStrokeInput.InkPresenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkPresenter InkStrokeInput.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkPresenter%20InkStrokeInput.InkPresenter");
 			}
 		}
 		#endif

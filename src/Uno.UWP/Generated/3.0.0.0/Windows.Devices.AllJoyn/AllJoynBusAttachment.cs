@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynAboutData AllJoynBusAttachment.AboutData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AllJoynAboutData AllJoynBusAttachment.AboutData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynAboutData%20AllJoynBusAttachment.AboutData");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<AllJoynAuthenticationMechanism> AllJoynBusAttachment.AuthenticationMechanisms is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<AllJoynAuthenticationMechanism> AllJoynBusAttachment.AuthenticationMechanisms is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CAllJoynAuthenticationMechanism%3E%20AllJoynBusAttachment.AuthenticationMechanisms");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynBusAttachment.ConnectionSpecification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynBusAttachment.ConnectionSpecification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynBusAttachment.ConnectionSpecification");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynBusAttachmentState AllJoynBusAttachment.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AllJoynBusAttachmentState AllJoynBusAttachment.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynBusAttachmentState%20AllJoynBusAttachment.State");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynBusAttachment.UniqueName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynBusAttachment.UniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynBusAttachment.UniqueName");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<int> PingAsync( string uniqueName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynBusAttachment.PingAsync(string uniqueName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynBusAttachment.PingAsync(string uniqueName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cint%3E%20AllJoynBusAttachment.PingAsync%28string%20uniqueName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -111,14 +111,14 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync( global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynBusAttachment.GetAboutDataAsync(AllJoynServiceInfo serviceInfo) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynBusAttachment.GetAboutDataAsync(AllJoynServiceInfo serviceInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynBusAttachment.GetAboutDataAsync%28AllJoynServiceInfo%20serviceInfo%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync( global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo,  global::Windows.Globalization.Language language)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynBusAttachment.GetAboutDataAsync(AllJoynServiceInfo serviceInfo, Language language) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynBusAttachment.GetAboutDataAsync(AllJoynServiceInfo serviceInfo, Language language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynBusAttachment.GetAboutDataAsync%28AllJoynServiceInfo%20serviceInfo%2C%20Language%20language%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AcceptSessionJoinerRequested.add
@@ -129,14 +129,14 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.AllJoyn.AllJoynBusAttachment GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member AllJoynBusAttachment AllJoynBusAttachment.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AllJoynBusAttachment AllJoynBusAttachment.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynBusAttachment%20AllJoynBusAttachment.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher GetWatcher( global::System.Collections.Generic.IEnumerable<string> requiredInterfaces)
 		{
-			throw new global::System.NotImplementedException("The member DeviceWatcher AllJoynBusAttachment.GetWatcher(IEnumerable<string> requiredInterfaces) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DeviceWatcher AllJoynBusAttachment.GetWatcher(IEnumerable<string> requiredInterfaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceWatcher%20AllJoynBusAttachment.GetWatcher%28IEnumerable%3Cstring%3E%20requiredInterfaces%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

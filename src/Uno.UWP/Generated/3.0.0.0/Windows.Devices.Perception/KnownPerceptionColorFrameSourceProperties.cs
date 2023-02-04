@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionColorFrameSourceProperties.AutoExposureEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionColorFrameSourceProperties.AutoExposureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionColorFrameSourceProperties.AutoExposureEnabled");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionColorFrameSourceProperties.Exposure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionColorFrameSourceProperties.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionColorFrameSourceProperties.Exposure");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionColorFrameSourceProperties.ExposureCompensation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionColorFrameSourceProperties.ExposureCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionColorFrameSourceProperties.ExposureCompensation");
 			}
 		}
 		#endif

@@ -138,7 +138,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				result,
 				ExpectedPixels.At(sample.X + eighth, sample.Y + eighth).Named("top left corner").WithPixelTolerance(2, 2).Pixel(white),
 				ExpectedPixels.At(sample.Right - eighth, sample.Y + eighth).Named("top right corner").WithPixelTolerance(2, 2).Pixel(white),
-				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").WithPixelTolerance(2,2).Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").WithPixelTolerance(2, 2).Pixel(white),
 				ExpectedPixels.At(sample.X + eighth, sample.Bottom - eighth).Named("bottom left corner").WithPixelTolerance(2, 2).Pixel(white)
 			);
 
@@ -374,8 +374,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var firstBorderRect = SUT.GetRelativeCoords(SUT.FirstBorder);
 			var secondBorderRect = SUT.GetRelativeCoords(SUT.SecondBorder);
-			var rect = new Rectangle((int)firstBorderRect.X , (int)firstBorderRect.Y,
-				(int)firstBorderRect.Width + 1,(int)firstBorderRect.Height + 1);
+			var rect = new Rectangle((int)firstBorderRect.X, (int)firstBorderRect.Y,
+				(int)firstBorderRect.Width + 1, (int)firstBorderRect.Height + 1);
 
 			await WindowHelper.WaitForIdle();
 
@@ -384,7 +384,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					rect,
 					 Windows.UI.Color.FromArgb(255, 216, 216, 255),
 					 tolerance: 20
-					) ;
+					);
 
 			ImageAssert.HasPixels(
 					screenshot,

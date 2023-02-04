@@ -33,14 +33,14 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ApplyConfigurationAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandModemIsolation.ApplyConfigurationAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandModemIsolation.ApplyConfigurationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandModemIsolation.ApplyConfigurationAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ClearConfigurationAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandModemIsolation.ClearConfigurationAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandModemIsolation.ClearConfigurationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandModemIsolation.ClearConfigurationAsync%28%29");
 		}
 		#endif
 	}

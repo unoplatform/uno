@@ -11,7 +11,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.Diagnostics.ProcessDiskUsageReport GetReport()
 		{
-			throw new global::System.NotImplementedException("The member ProcessDiskUsageReport ProcessDiskUsage.GetReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProcessDiskUsageReport ProcessDiskUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessDiskUsageReport%20ProcessDiskUsage.GetReport%28%29");
 		}
 		#endif
 	}

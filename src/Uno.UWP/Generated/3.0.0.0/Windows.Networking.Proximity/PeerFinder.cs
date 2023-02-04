@@ -13,7 +13,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PeerFinder.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PeerFinder.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PeerFinder.DisplayName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowWiFiDirect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowWiFiDirect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PeerFinder.AllowWiFiDirect");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowInfrastructure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowInfrastructure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PeerFinder.AllowInfrastructure");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowBluetooth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowBluetooth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PeerFinder.AllowBluetooth");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> PeerFinder.AlternateIdentities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> PeerFinder.AlternateIdentities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20PeerFinder.AlternateIdentities");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeerDiscoveryTypes PeerFinder.SupportedDiscoveryTypes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PeerDiscoveryTypes PeerFinder.SupportedDiscoveryTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PeerDiscoveryTypes%20PeerFinder.SupportedDiscoveryTypes");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeerRole PeerFinder.Role is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PeerRole PeerFinder.Role is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PeerRole%20PeerFinder.Role");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer PeerFinder.DiscoveryData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer PeerFinder.DiscoveryData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20PeerFinder.DiscoveryData");
 			}
 			set
 			{
@@ -119,7 +119,7 @@ namespace Windows.Networking.Proximity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.Proximity.PeerWatcher CreateWatcher()
 		{
-			throw new global::System.NotImplementedException("The member PeerWatcher PeerFinder.CreateWatcher() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PeerWatcher PeerFinder.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PeerWatcher%20PeerFinder.CreateWatcher%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.AllowBluetooth.get
@@ -161,14 +161,14 @@ namespace Windows.Networking.Proximity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Proximity.PeerInformation>> FindAllPeersAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PeerInformation>> PeerFinder.FindAllPeersAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PeerInformation>> PeerFinder.FindAllPeersAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CPeerInformation%3E%3E%20PeerFinder.FindAllPeersAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Sockets.StreamSocket> ConnectAsync( global::Windows.Networking.Proximity.PeerInformation peerInformation)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StreamSocket> PeerFinder.ConnectAsync(PeerInformation peerInformation) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StreamSocket> PeerFinder.ConnectAsync(PeerInformation peerInformation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStreamSocket%3E%20PeerFinder.ConnectAsync%28PeerInformation%20peerInformation%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

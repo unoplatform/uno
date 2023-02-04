@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 SpatialAnchorRawCoordinateSystemAdjustedEventArgs.OldRawCoordinateSystemToNewRawCoordinateSystemTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Matrix4x4 SpatialAnchorRawCoordinateSystemAdjustedEventArgs.OldRawCoordinateSystemToNewRawCoordinateSystemTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Matrix4x4%20SpatialAnchorRawCoordinateSystemAdjustedEventArgs.OldRawCoordinateSystemToNewRawCoordinateSystemTransform");
 			}
 		}
 		#endif

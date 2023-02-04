@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri RemoteLauncherOptions.FallbackUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri RemoteLauncherOptions.FallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20RemoteLauncherOptions.FallbackUri");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> RemoteLauncherOptions.PreferredAppIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> RemoteLauncherOptions.PreferredAppIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20RemoteLauncherOptions.PreferredAppIds");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpMediaTypeWithQualityHeaderValueCollection.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HttpMediaTypeWithQualityHeaderValueCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HttpMediaTypeWithQualityHeaderValueCollection.Size");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryParseAdd( string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValueCollection.TryParseAdd(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpMediaTypeWithQualityHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.GetAt(uint)
@@ -48,7 +48,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValueCollection.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMediaTypeWithQualityHeaderValueCollection.ToString%28%29");
 		}
 		#endif
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>

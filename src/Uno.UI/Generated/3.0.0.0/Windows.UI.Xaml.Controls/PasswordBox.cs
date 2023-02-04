@@ -24,20 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Password
 		// Skipping already declared property MaxLength
 		// Skipping already declared property IsPasswordRevealButtonEnabled
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property SelectionHighlightColor
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool PreventKeyboardDisplayOnProgrammaticFocus
@@ -118,14 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
-		#endif
+		// Skipping already declared property SelectionHighlightColorProperty
 		// Skipping already declared property InputScopeProperty
 		// Skipping already declared property PasswordRevealModeProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -193,13 +173,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.SelectionFlyout.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Description.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.Description.set
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void PasteFromClipboard()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PasswordBox", "void PasswordBox.PasteFromClipboard()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.PasswordBox.PasteFromClipboard()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.CanPasteClipboardContentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.SelectionFlyoutProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PasswordBox.DescriptionProperty.get

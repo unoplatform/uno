@@ -13,7 +13,7 @@ namespace Uno.UI.Tests.Extensions
 		[TestMethod]
 		public void LayoutHelper_GetMinSize()
 		{
-			new Border( ).GetMinSize()
+			new Border().GetMinSize()
 				.Should().Be(new Size(0, 0));
 
 			new Border { MinWidth = 100 }.GetMinSize()

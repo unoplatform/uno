@@ -13,7 +13,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelDownEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelDownEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelDownEnabled");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsNextEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsNextEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsNextEnabled");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPauseEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPauseEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPauseEnabled");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayEnabled");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayPauseToggleEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayPauseToggleEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayPauseToggleEnabled");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackPositionEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackPositionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackPositionEnabled");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackRateEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackRateEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackRateEnabled");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPreviousEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPreviousEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPreviousEnabled");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRecordEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRecordEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRecordEnabled");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRepeatEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRepeatEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRepeatEnabled");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled");
 			}
 		}
 		#endif

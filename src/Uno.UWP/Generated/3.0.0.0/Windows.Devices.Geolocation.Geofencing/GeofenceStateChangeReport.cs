@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geofence GeofenceStateChangeReport.Geofence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geofence GeofenceStateChangeReport.Geofence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geofence%20GeofenceStateChangeReport.Geofence");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geoposition GeofenceStateChangeReport.Geoposition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geoposition GeofenceStateChangeReport.Geoposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geoposition%20GeofenceStateChangeReport.Geoposition");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeofenceState GeofenceStateChangeReport.NewState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeofenceState GeofenceStateChangeReport.NewState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeofenceState%20GeofenceStateChangeReport.NewState");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeofenceRemovalReason GeofenceStateChangeReport.RemovalReason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeofenceRemovalReason GeofenceStateChangeReport.RemovalReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeofenceRemovalReason%20GeofenceStateChangeReport.RemovalReason");
 			}
 		}
 		#endif

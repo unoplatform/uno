@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisement WiFiDirectAdvertisementPublisher.Advertisement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisement WiFiDirectAdvertisementPublisher.Advertisement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectAdvertisement%20WiFiDirectAdvertisementPublisher.Advertisement");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementPublisherStatus WiFiDirectAdvertisementPublisher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementPublisherStatus WiFiDirectAdvertisementPublisher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectAdvertisementPublisherStatus%20WiFiDirectAdvertisementPublisher.Status");
 			}
 		}
 		#endif

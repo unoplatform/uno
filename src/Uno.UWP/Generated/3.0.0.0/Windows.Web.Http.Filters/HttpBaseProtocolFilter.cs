@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.UseProxy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.UseProxy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpBaseProtocolFilter.UseProxy");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential HttpBaseProtocolFilter.ServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential HttpBaseProtocolFilter.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20HttpBaseProtocolFilter.ServerCredential");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential HttpBaseProtocolFilter.ProxyCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential HttpBaseProtocolFilter.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20HttpBaseProtocolFilter.ProxyCredential");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpBaseProtocolFilter.MaxConnectionsPerServer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HttpBaseProtocolFilter.MaxConnectionsPerServer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HttpBaseProtocolFilter.MaxConnectionsPerServer");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate HttpBaseProtocolFilter.ClientCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate HttpBaseProtocolFilter.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20HttpBaseProtocolFilter.ClientCertificate");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AutomaticDecompression is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AutomaticDecompression is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpBaseProtocolFilter.AutomaticDecompression");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AllowUI is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AllowUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpBaseProtocolFilter.AllowUI");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AllowAutoRedirect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AllowAutoRedirect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpBaseProtocolFilter.AllowAutoRedirect");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCacheControl HttpBaseProtocolFilter.CacheControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCacheControl HttpBaseProtocolFilter.CacheControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCacheControl%20HttpBaseProtocolFilter.CacheControl");
 			}
 		}
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookieManager HttpBaseProtocolFilter.CookieManager is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCookieManager HttpBaseProtocolFilter.CookieManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCookieManager%20HttpBaseProtocolFilter.CookieManager");
 			}
 		}
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> HttpBaseProtocolFilter.IgnorableServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> HttpBaseProtocolFilter.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CChainValidationResult%3E%20HttpBaseProtocolFilter.IgnorableServerCertificateErrors");
 			}
 		}
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpVersion HttpBaseProtocolFilter.MaxVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpVersion HttpBaseProtocolFilter.MaxVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpVersion%20HttpBaseProtocolFilter.MaxVersion");
 			}
 			set
 			{
@@ -169,7 +169,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookieUsageBehavior HttpBaseProtocolFilter.CookieUsageBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCookieUsageBehavior HttpBaseProtocolFilter.CookieUsageBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCookieUsageBehavior%20HttpBaseProtocolFilter.CookieUsageBehavior");
 			}
 			set
 			{
@@ -183,7 +183,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User HttpBaseProtocolFilter.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User HttpBaseProtocolFilter.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20HttpBaseProtocolFilter.User");
 			}
 		}
 		#endif
@@ -232,7 +232,7 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync( global::Windows.Web.Http.HttpRequestMessage request)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpBaseProtocolFilter.SendRequestAsync(HttpRequestMessage request) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpBaseProtocolFilter.SendRequestAsync(HttpRequestMessage request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3CHttpResponseMessage%2C%20HttpProgress%3E%20HttpBaseProtocolFilter.SendRequestAsync%28HttpRequestMessage%20request%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -246,7 +246,7 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpBaseProtocolFilter%20HttpBaseProtocolFilter.CreateForUser%28User%20user%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

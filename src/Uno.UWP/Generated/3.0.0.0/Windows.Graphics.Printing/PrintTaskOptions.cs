@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintBordering PrintTaskOptions.Bordering is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintBordering PrintTaskOptions.Bordering is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintBordering%20PrintTaskOptions.Bordering");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintPageRangeOptions PrintTaskOptions.PageRangeOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintPageRangeOptions PrintTaskOptions.PageRangeOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintPageRangeOptions%20PrintTaskOptions.PageRangeOptions");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<PrintPageRange> PrintTaskOptions.CustomPageRanges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<PrintPageRange> PrintTaskOptions.CustomPageRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CPrintPageRange%3E%20PrintTaskOptions.CustomPageRanges");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintMediaType PrintTaskOptions.MediaType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintMediaType PrintTaskOptions.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintMediaType%20PrintTaskOptions.MediaType");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintHolePunch PrintTaskOptions.HolePunch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintHolePunch PrintTaskOptions.HolePunch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintHolePunch%20PrintTaskOptions.HolePunch");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintBinding PrintTaskOptions.Binding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintBinding PrintTaskOptions.Binding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintBinding%20PrintTaskOptions.Binding");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintDuplex PrintTaskOptions.Duplex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintDuplex PrintTaskOptions.Duplex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintDuplex%20PrintTaskOptions.Duplex");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintColorMode PrintTaskOptions.ColorMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintColorMode PrintTaskOptions.ColorMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintColorMode%20PrintTaskOptions.ColorMode");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintCollation PrintTaskOptions.Collation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintCollation PrintTaskOptions.Collation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintCollation%20PrintTaskOptions.Collation");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintStaple PrintTaskOptions.Staple is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintStaple PrintTaskOptions.Staple is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintStaple%20PrintTaskOptions.Staple");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintQuality PrintTaskOptions.PrintQuality is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintQuality PrintTaskOptions.PrintQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintQuality%20PrintTaskOptions.PrintQuality");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOrientation PrintTaskOptions.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOrientation PrintTaskOptions.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOrientation%20PrintTaskOptions.Orientation");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintMediaSize PrintTaskOptions.MediaSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintMediaSize PrintTaskOptions.MediaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintMediaSize%20PrintTaskOptions.MediaSize");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.NumberOfCopies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.NumberOfCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PrintTaskOptions.NumberOfCopies");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.MaxCopies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.MaxCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PrintTaskOptions.MaxCopies");
 			}
 		}
 		#endif
@@ -211,7 +211,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.MinCopies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PrintTaskOptions.MinCopies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PrintTaskOptions.MinCopies");
 			}
 		}
 		#endif
@@ -221,7 +221,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PrintTaskOptions.DisplayedOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> PrintTaskOptions.DisplayedOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20PrintTaskOptions.DisplayedOptions");
 			}
 		}
 		#endif
@@ -229,7 +229,7 @@ namespace Windows.Graphics.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription( uint jobPageNumber)
 		{
-			throw new global::System.NotImplementedException("The member PrintPageDescription PrintTaskOptions.GetPageDescription(uint jobPageNumber) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintPageDescription PrintTaskOptions.GetPageDescription(uint jobPageNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintPageDescription%20PrintTaskOptions.GetPageDescription%28uint%20jobPageNumber%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.MediaSize.set
@@ -263,7 +263,7 @@ namespace Windows.Graphics.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IRandomAccessStream GetPagePrintTicket( global::Windows.Graphics.Printing.PrintPageInfo printPageInfo)
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream PrintTaskOptions.GetPagePrintTicket(PrintPageInfo printPageInfo) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRandomAccessStream PrintTaskOptions.GetPagePrintTicket(PrintPageInfo printPageInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20PrintTaskOptions.GetPagePrintTicket%28PrintPageInfo%20printPageInfo%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.PageRangeOptions.get

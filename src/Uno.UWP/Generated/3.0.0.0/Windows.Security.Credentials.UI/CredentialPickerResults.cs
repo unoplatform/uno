@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer CredentialPickerResults.Credential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer CredentialPickerResults.Credential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20CredentialPickerResults.Credential");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerResults.CredentialDomainName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CredentialPickerResults.CredentialDomainName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CredentialPickerResults.CredentialDomainName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerResults.CredentialPassword is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CredentialPickerResults.CredentialPassword is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CredentialPickerResults.CredentialPassword");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CredentialSaveOption CredentialPickerResults.CredentialSaveOption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CredentialSaveOption CredentialPickerResults.CredentialSaveOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CredentialSaveOption%20CredentialPickerResults.CredentialSaveOption");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CredentialPickerResults.CredentialSaved is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CredentialPickerResults.CredentialSaved is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CredentialPickerResults.CredentialSaved");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerResults.CredentialUserName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CredentialPickerResults.CredentialUserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CredentialPickerResults.CredentialUserName");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CredentialPickerResults.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CredentialPickerResults.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CredentialPickerResults.ErrorCode");
 			}
 		}
 		#endif

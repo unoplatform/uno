@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIUserDataAccountProviderActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind WebUIUserDataAccountProviderActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20WebUIUserDataAccountProviderActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIUserDataAccountProviderActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIUserDataAccountProviderActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20WebUIUserDataAccountProviderActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIUserDataAccountProviderActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen WebUIUserDataAccountProviderActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20WebUIUserDataAccountProviderActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IUserDataAccountProviderOperation WebUIUserDataAccountProviderActivatedEventArgs.Operation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IUserDataAccountProviderOperation WebUIUserDataAccountProviderActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IUserDataAccountProviderOperation%20WebUIUserDataAccountProviderActivatedEventArgs.Operation");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIUserDataAccountProviderActivatedEventArgs.ActivatedOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIUserDataAccountProviderActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivatedOperation%20WebUIUserDataAccountProviderActivatedEventArgs.ActivatedOperation");
 			}
 		}
 		#endif

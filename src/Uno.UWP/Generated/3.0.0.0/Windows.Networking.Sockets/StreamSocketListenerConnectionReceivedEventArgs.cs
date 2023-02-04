@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocket StreamSocketListenerConnectionReceivedEventArgs.Socket is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StreamSocket StreamSocketListenerConnectionReceivedEventArgs.Socket is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StreamSocket%20StreamSocketListenerConnectionReceivedEventArgs.Socket");
 			}
 		}
 		#endif

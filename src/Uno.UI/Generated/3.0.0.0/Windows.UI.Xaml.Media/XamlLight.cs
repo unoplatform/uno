@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionLight XamlLight.CompositionLight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionLight XamlLight.CompositionLight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionLight%20XamlLight.CompositionLight");
 			}
 			set
 			{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual string GetId()
 		{
-			throw new global::System.NotImplementedException("The member string XamlLight.GetId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string XamlLight.GetId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20XamlLight.GetId%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -18,21 +18,21 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode GetNamedItemNS( object namespaceUri,  string name)
 		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.GetNamedItemNS(object namespaceUri, string name) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.GetNamedItemNS(object namespaceUri, string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlNamedNodeMap.GetNamedItemNS%28object%20namespaceUri%2C%20string%20name%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode RemoveNamedItemNS( object namespaceUri,  string name)
 		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.RemoveNamedItemNS(object namespaceUri, string name) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.RemoveNamedItemNS(object namespaceUri, string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlNamedNodeMap.RemoveNamedItemNS%28object%20namespaceUri%2C%20string%20name%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SetNamedItemNS( global::Windows.Data.Xml.Dom.IXmlNode node)
 		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.SetNamedItemNS(IXmlNode node) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.SetNamedItemNS(IXmlNode node) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlNamedNodeMap.SetNamedItemNS%28IXmlNode%20node%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetAt(uint)

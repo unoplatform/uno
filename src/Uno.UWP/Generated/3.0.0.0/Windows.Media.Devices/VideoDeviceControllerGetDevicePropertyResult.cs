@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyStatus VideoDeviceControllerGetDevicePropertyResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyStatus VideoDeviceControllerGetDevicePropertyResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDeviceControllerGetDevicePropertyStatus%20VideoDeviceControllerGetDevicePropertyResult.Status");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VideoDeviceControllerGetDevicePropertyResult.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object VideoDeviceControllerGetDevicePropertyResult.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20VideoDeviceControllerGetDevicePropertyResult.Value");
 			}
 		}
 		#endif

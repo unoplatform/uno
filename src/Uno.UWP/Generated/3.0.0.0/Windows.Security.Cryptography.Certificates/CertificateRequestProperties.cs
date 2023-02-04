@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.Subject is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.Subject");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnrollKeyUsages CertificateRequestProperties.KeyUsages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EnrollKeyUsages CertificateRequestProperties.KeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EnrollKeyUsages%20CertificateRequestProperties.KeyUsages");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyStorageProviderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.KeyStorageProviderName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CertificateRequestProperties.KeySize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CertificateRequestProperties.KeySize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CertificateRequestProperties.KeySize");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExportOption CertificateRequestProperties.Exportable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExportOption CertificateRequestProperties.Exportable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExportOption%20CertificateRequestProperties.Exportable");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyProtectionLevel%20CertificateRequestProperties.KeyProtectionLevel");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyAlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.KeyAlgorithmName");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.HashAlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.HashAlgorithmName");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.FriendlyName");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CertificateRequestProperties.AttestationCredentialCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate CertificateRequestProperties.AttestationCredentialCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20CertificateRequestProperties.AttestationCredentialCertificate");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CertificateRequestProperties.SigningCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate CertificateRequestProperties.SigningCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20CertificateRequestProperties.SigningCertificate");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.SmartcardReaderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.SmartcardReaderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.SmartcardReaderName");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateRequestProperties.UseExistingKey is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateRequestProperties.UseExistingKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateRequestProperties.UseExistingKey");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] CertificateRequestProperties.CurveParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte[] CertificateRequestProperties.CurveParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20CertificateRequestProperties.CurveParameters");
 			}
 			set
 			{
@@ -209,7 +209,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.CurveName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.CurveName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.CurveName");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerNamePrefix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.ContainerNamePrefix");
 			}
 			set
 			{
@@ -237,7 +237,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateRequestProperties.ContainerName");
 			}
 			set
 			{
@@ -251,7 +251,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CertificateExtension> CertificateRequestProperties.Extensions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<CertificateExtension> CertificateRequestProperties.Extensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CCertificateExtension%3E%20CertificateRequestProperties.Extensions");
 			}
 		}
 		#endif
@@ -261,7 +261,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SubjectAlternativeNameInfo CertificateRequestProperties.SubjectAlternativeName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SubjectAlternativeNameInfo CertificateRequestProperties.SubjectAlternativeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SubjectAlternativeNameInfo%20CertificateRequestProperties.SubjectAlternativeName");
 			}
 		}
 		#endif
@@ -271,7 +271,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> CertificateRequestProperties.SuppressedDefaults is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> CertificateRequestProperties.SuppressedDefaults is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20CertificateRequestProperties.SuppressedDefaults");
 			}
 		}
 		#endif

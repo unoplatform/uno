@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConnectionProfile ConnectionSession.ConnectionProfile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ConnectionProfile ConnectionSession.ConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectionProfile%20ConnectionSession.ConnectionProfile");
 			}
 		}
 		#endif

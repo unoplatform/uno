@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterCartridgeSensors ReceiptPrinterCapabilities.CartridgeSensors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterCartridgeSensors ReceiptPrinterCapabilities.CartridgeSensors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterCartridgeSensors%20ReceiptPrinterCapabilities.CartridgeSensors");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterColorCapabilities ReceiptPrinterCapabilities.ColorCartridgeCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterColorCapabilities ReceiptPrinterCapabilities.ColorCartridgeCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterColorCapabilities%20ReceiptPrinterCapabilities.ColorCartridgeCapabilities");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBoldSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBoldSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsBoldSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDoubleHighPrintSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDoubleHighPrintSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsDoubleHighPrintSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDoubleWidePrintSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDoubleWidePrintSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsDoubleWidePrintSupported");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDualColorSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsDualColorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsDualColorSupported");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsItalicSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsItalicSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsItalicSupported");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPaperEmptySensorSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPaperEmptySensorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsPaperEmptySensorSupported");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPaperNearEndSensorSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPaperNearEndSensorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsPaperNearEndSensorSupported");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPrinterPresent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPrinterPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsPrinterPresent");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsUnderlineSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsUnderlineSupported");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> ReceiptPrinterCapabilities.SupportedCharactersPerLine is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> ReceiptPrinterCapabilities.SupportedCharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20ReceiptPrinterCapabilities.SupportedCharactersPerLine");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.Is180RotationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.Is180RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.Is180RotationSupported");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBarcodeSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBarcodeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsBarcodeSupported");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBitmapSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBitmapSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsBitmapSupported");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsLeft90RotationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsLeft90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsLeft90RotationSupported");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPrintAreaSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsPrintAreaSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsPrintAreaSupported");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsRight90RotationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsRight90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsRight90RotationSupported");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterRuledLineCapabilities ReceiptPrinterCapabilities.RuledLineCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterRuledLineCapabilities ReceiptPrinterCapabilities.RuledLineCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterRuledLineCapabilities%20ReceiptPrinterCapabilities.RuledLineCapabilities");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBarcodeRotations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBarcodeRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPosPrinterRotation%3E%20ReceiptPrinterCapabilities.SupportedBarcodeRotations");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBitmapRotations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBitmapRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPosPrinterRotation%3E%20ReceiptPrinterCapabilities.SupportedBitmapRotations");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.CanCutPaper is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.CanCutPaper is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.CanCutPaper");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsStampSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsStampSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsStampSupported");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterMarkFeedCapabilities ReceiptPrinterCapabilities.MarkFeedCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterMarkFeedCapabilities ReceiptPrinterCapabilities.MarkFeedCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterMarkFeedCapabilities%20ReceiptPrinterCapabilities.MarkFeedCapabilities");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReversePaperFeedByLineSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReversePaperFeedByLineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsReversePaperFeedByLineSupported");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReverseVideoSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReverseVideoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsReverseVideoSupported");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsStrikethroughSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsStrikethroughSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsStrikethroughSupported");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsSubscriptSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsSubscriptSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsSubscriptSupported");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsSuperscriptSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsSuperscriptSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ReceiptPrinterCapabilities.IsSuperscriptSupported");
 			}
 		}
 		#endif

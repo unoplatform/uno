@@ -504,37 +504,37 @@ namespace Uno.UI.Tests.GridTests
 
 			var c1 = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridPosition(0, 0)
 			);
 
 			var c2 = SUT.AddChild(
 				new View
-					{
-						Name = "Child02",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child02",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridPosition(0, 1)
 			);
 
 			var c3 = SUT.AddChild(
 				new View
-					{
-						Name = "Child03",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child03",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridPosition(1, 0)
 			);
 
 			var c4 = SUT.AddChild(
 				new View
-					{
-						Name = "Child04",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child04",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridPosition(1, 1)
 			);
 
@@ -571,49 +571,49 @@ namespace Uno.UI.Tests.GridTests
 
 			var c1 = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						MinWidth = 20,
-						MinHeight = 20,
-						HorizontalAlignment = HorizontalAlignment.Stretch,
-						VerticalAlignment = VerticalAlignment.Stretch
-					}
+				{
+					Name = "Child01",
+					MinWidth = 20,
+					MinHeight = 20,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					VerticalAlignment = VerticalAlignment.Stretch
+				}
 				.GridPosition(0, 0)
 			);
 
 			var c2 = SUT.AddChild(
 				new View
-					{
-						Name = "Child02",
-						MinWidth = 20,
-						MinHeight = 20,
-						HorizontalAlignment = HorizontalAlignment.Center,
-						VerticalAlignment = VerticalAlignment.Center
-					}
+				{
+					Name = "Child02",
+					MinWidth = 20,
+					MinHeight = 20,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center
+				}
 				.GridPosition(0, 1)
 			);
 
 			var c3 = SUT.AddChild(
 				new View
-					{
-						Name = "Child03",
-						MinWidth = 20,
-						MinHeight = 20,
-						HorizontalAlignment = HorizontalAlignment.Center,
-						VerticalAlignment = VerticalAlignment.Center
-					}
+				{
+					Name = "Child03",
+					MinWidth = 20,
+					MinHeight = 20,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center
+				}
 				.GridPosition(1, 0)
 			);
 
 			var c4 = SUT.AddChild(
 				new View
-					{
-						Name = "Child04",
-						MinWidth = 20,
-						MinHeight = 20,
-						HorizontalAlignment = HorizontalAlignment.Stretch,
-						VerticalAlignment = VerticalAlignment.Stretch
-					}
+				{
+					Name = "Child04",
+					MinWidth = 20,
+					MinHeight = 20,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					VerticalAlignment = VerticalAlignment.Stretch
+				}
 				.GridPosition(1, 1)
 			);
 
@@ -642,21 +642,21 @@ namespace Uno.UI.Tests.GridTests
 
 			var c1 = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						MinWidth = 10,
-						MinHeight = 10
-					}
+				{
+					Name = "Child01",
+					MinWidth = 10,
+					MinHeight = 10
+				}
 				.GridPosition(0, 0)
 			);
 
 			var c2 = SUT.AddChild(
 				new View
-					{
-						Name = "Child02",
-						MinWidth = 10,
-						MinHeight = 10
-					}
+				{
+					Name = "Child02",
+					MinWidth = 10,
+					MinHeight = 10
+				}
 				.GridPosition(0, 1)
 			);
 
@@ -683,21 +683,21 @@ namespace Uno.UI.Tests.GridTests
 
 			var c1 = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						Width = 10,
-						Height = 10
-					}
+				{
+					Name = "Child01",
+					Width = 10,
+					Height = 10
+				}
 				.GridPosition(0, 0)
 			);
 
 			var c2 = SUT.AddChild(
 				new View
-					{
-						Name = "Child02",
-						Width = 10,
-						Height = 10
-					}
+				{
+					Name = "Child02",
+					Width = 10,
+					Height = 10
+				}
 				.GridPosition(0, 1)
 			);
 
@@ -727,12 +727,12 @@ namespace Uno.UI.Tests.GridTests
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
 
 			var c1 = new View
-				{
-					Name = "Child01",
-					DesiredSizeSelector = s => s.Width > 10
-						? new Size(20, 5)
-						: new Size(10, 10)
-				}
+			{
+				Name = "Child01",
+				DesiredSizeSelector = s => s.Width > 10
+					? new Size(20, 5)
+					: new Size(10, 10)
+			}
 				.GridColumnSpan(2);
 
 			SUT.AddChild(c1);
@@ -772,10 +772,10 @@ namespace Uno.UI.Tests.GridTests
 				.GridColumnSpan(2);
 
 			var c2 = new View
-				{
-					Name = "Child02",
-					DesiredSizeSelector = s => new Size(5, 5)
-				}
+			{
+				Name = "Child02",
+				DesiredSizeSelector = s => new Size(5, 5)
+			}
 				.GridPosition(0, 1);
 
 			SUT.AddChild(c1);
@@ -810,10 +810,10 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridColumnSpan(2)
 			);
 
@@ -845,29 +845,29 @@ namespace Uno.UI.Tests.GridTests
 
 			var c1 = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridColumnSpan(2)
 			);
 
 			var c2 = SUT.AddChild(
 				new View
-					{
-						Name = "Child02",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child02",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridPosition(1, 1)
 				.GridColumnSpan(2)
 			);
 
 			var c3 = SUT.AddChild(
 				new View
-					{
-						Name = "Child03",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child03",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridPosition(2, 2)
 				.GridColumnSpan(2)
 			);
@@ -902,10 +902,10 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridColumnSpan(2)
 				.GridRowSpan(2)
 			);
@@ -938,10 +938,10 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridColumnSpan(2)
 				.GridRowSpan(2)
 				.GridPosition(1, 1)
@@ -978,10 +978,10 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridColumnSpan(4)
 			);
 
@@ -1004,10 +1004,10 @@ namespace Uno.UI.Tests.GridTests
 
 			var child = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridRow(1)
 			);
 
@@ -1044,10 +1044,10 @@ namespace Uno.UI.Tests.GridTests
 
 			var child = SUT.AddChild(
 				new View
-					{
-						Name = "Child01",
-						RequestedDesiredSize = new Size(10, 10)
-					}
+				{
+					Name = "Child01",
+					RequestedDesiredSize = new Size(10, 10)
+				}
 				.GridColumn(1)
 			);
 

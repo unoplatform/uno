@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIWebAuthenticationBrokerContinuationEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind WebUIWebAuthenticationBrokerContinuationEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20WebUIWebAuthenticationBrokerContinuationEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIWebAuthenticationBrokerContinuationEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIWebAuthenticationBrokerContinuationEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20WebUIWebAuthenticationBrokerContinuationEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIWebAuthenticationBrokerContinuationEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen WebUIWebAuthenticationBrokerContinuationEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20WebUIWebAuthenticationBrokerContinuationEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20WebUIWebAuthenticationBrokerContinuationEventArgs.ContinuationData");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAuthenticationResult WebUIWebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAuthenticationResult WebUIWebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAuthenticationResult%20WebUIWebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivatedOperation%20WebUIWebAuthenticationBrokerContinuationEventArgs.ActivatedOperation");
 			}
 		}
 		#endif

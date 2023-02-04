@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
-	#pragma warning disable UXAML0002
+#pragma warning disable UXAML0002
 	public sealed partial class xBind_NullableRecordStruct : UserControl
 #pragma warning restore UXAML0002
 	{

@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIShareTargetActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind WebUIShareTargetActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20WebUIShareTargetActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIShareTargetActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIShareTargetActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20WebUIShareTargetActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIShareTargetActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen WebUIShareTargetActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20WebUIShareTargetActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebUIShareTargetActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User WebUIShareTargetActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20WebUIShareTargetActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ShareOperation WebUIShareTargetActivatedEventArgs.ShareOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ShareOperation WebUIShareTargetActivatedEventArgs.ShareOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ShareOperation%20WebUIShareTargetActivatedEventArgs.ShareOperation");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIShareTargetActivatedEventArgs.ActivatedOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIShareTargetActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivatedOperation%20WebUIShareTargetActivatedEventArgs.ActivatedOperation");
 			}
 		}
 		#endif

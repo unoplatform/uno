@@ -23,77 +23,77 @@ using Uno.Extensions;
 
 namespace Uno.Conversion
 {
-    internal class TypeConverterConversionStrategy : IConversionStrategy
-    {
-        #region IConversionStrategy Members
+	internal class TypeConverterConversionStrategy : IConversionStrategy
+	{
+		#region IConversionStrategy Members
 
-        public bool CanConvert(object value, Type toType, CultureInfo culture = null)
-        {
-            if (value == null)
-            {
-                return true;
-            }
+		public bool CanConvert(object value, Type toType, CultureInfo culture = null)
+		{
+			if (value == null)
+			{
+				return true;
+			}
 
 #if HAS_NOTYPEDESCRIPTOR || WINDOWS_UWP
 			return false;
 #else
-            return TypeDescriptor.GetConverter(value.GetType()).CanConvertTo(toType) ||
-                   TypeDescriptor.GetConverter(toType).CanConvertFrom(value.GetType());
+			return TypeDescriptor.GetConverter(value.GetType()).CanConvertTo(toType) ||
+				   TypeDescriptor.GetConverter(toType).CanConvertFrom(value.GetType());
 #endif
-        }
+		}
 
-        public object Convert(object value, Type toType, CultureInfo culture = null)
-        {
-            if (value == null)
-            {
-                return null;
-            }
+		public object Convert(object value, Type toType, CultureInfo culture = null)
+		{
+			if (value == null)
+			{
+				return null;
+			}
 
 #if HAS_NOTYPEDESCRIPTOR || WINDOWS_UWP
 			throw new InvalidOperationException("TypeConverterConversionStrategy should never return true for CanConvert under WinRT.");
 #else
-            var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
+			var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
 
-            var canconvert = valueTypeConverter.CanConvertTo(toType);
-            if (canconvert)
-            {
-                return valueTypeConverter.ConvertTo(null, culture, value, toType);
-            }
-            else
-            {
-                if (toType == typeof(float))
-                {
-                    float fValue;
-                    if (float.TryParse(value.ToString(), NumberStyles.Float, culture, out fValue))
-                    {
-                        return fValue;
-                    }
+			var canconvert = valueTypeConverter.CanConvertTo(toType);
+			if (canconvert)
+			{
+				return valueTypeConverter.ConvertTo(null, culture, value, toType);
+			}
+			else
+			{
+				if (toType == typeof(float))
+				{
+					float fValue;
+					if (float.TryParse(value.ToString(), NumberStyles.Float, culture, out fValue))
+					{
+						return fValue;
+					}
 
-                    if (float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
-                    {
-                        return fValue;
-                    }
-                }
+					if (float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
+					{
+						return fValue;
+					}
+				}
 
-                if (toType == typeof(decimal))
-                {
-                    decimal dValue;
-                    if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, culture, out dValue))
-                    {
-                        return dValue;
-                    }
-                    if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
-                    {
-                        return dValue;
-                    }
-                }
+				if (toType == typeof(decimal))
+				{
+					decimal dValue;
+					if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, culture, out dValue))
+					{
+						return dValue;
+					}
+					if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
+					{
+						return dValue;
+					}
+				}
 
-                return TypeDescriptor.GetConverter(toType).ConvertFrom(null, culture, value);
-            }
+				return TypeDescriptor.GetConverter(toType).ConvertFrom(null, culture, value);
+			}
 #endif
 
-        }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

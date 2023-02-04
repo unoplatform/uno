@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Enabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ExposurePriorityVideoControl.Enabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ExposurePriorityVideoControl.Supported");
 			}
 		}
 		#endif

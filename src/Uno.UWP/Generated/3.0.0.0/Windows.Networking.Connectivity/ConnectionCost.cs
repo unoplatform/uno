@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionCost.ApproachingDataLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConnectionCost.ApproachingDataLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectionCost.ApproachingDataLimit");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkCostType ConnectionCost.NetworkCostType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NetworkCostType ConnectionCost.NetworkCostType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NetworkCostType%20ConnectionCost.NetworkCostType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionCost.OverDataLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConnectionCost.OverDataLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectionCost.OverDataLimit");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionCost.Roaming is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConnectionCost.Roaming is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectionCost.Roaming");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionCost.BackgroundDataUsageRestricted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConnectionCost.BackgroundDataUsageRestricted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectionCost.BackgroundDataUsageRestricted");
 			}
 		}
 		#endif

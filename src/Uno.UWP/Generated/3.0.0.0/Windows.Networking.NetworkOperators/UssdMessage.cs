@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UssdMessage.PayloadAsText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UssdMessage.PayloadAsText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UssdMessage.PayloadAsText");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UssdMessage.DataCodingScheme is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UssdMessage.DataCodingScheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UssdMessage.DataCodingScheme");
 			}
 			set
 			{
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  byte[] GetPayload()
 		{
-			throw new global::System.NotImplementedException("The member byte[] UssdMessage.GetPayload() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member byte[] UssdMessage.GetPayload() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20UssdMessage.GetPayload%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

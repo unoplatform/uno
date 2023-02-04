@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20FrameExposureCompensationCapabilities.Max");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20FrameExposureCompensationCapabilities.Min");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Step is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20FrameExposureCompensationCapabilities.Step");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameExposureCompensationCapabilities.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameExposureCompensationCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameExposureCompensationCapabilities.Supported");
 			}
 		}
 		#endif

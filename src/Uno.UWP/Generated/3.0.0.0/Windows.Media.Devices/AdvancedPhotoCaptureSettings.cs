@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedPhotoCaptureSettings.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedPhotoCaptureSettings.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdvancedPhotoMode%20AdvancedPhotoCaptureSettings.Mode");
 			}
 			set
 			{

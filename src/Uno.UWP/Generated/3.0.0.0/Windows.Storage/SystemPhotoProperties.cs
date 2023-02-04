@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.CameraManufacturer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.CameraManufacturer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemPhotoProperties.CameraManufacturer");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.CameraModel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.CameraModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemPhotoProperties.CameraModel");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.DateTaken is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.DateTaken is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemPhotoProperties.DateTaken");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemPhotoProperties.Orientation");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.PeopleNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.PeopleNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemPhotoProperties.PeopleNames");
 			}
 		}
 		#endif

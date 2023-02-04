@@ -83,7 +83,7 @@ partial class StorageFileHelper
 			}
 			return true;
 		}
-		catch(IOException)
+		catch (IOException)
 		{
 			return false;
 		}

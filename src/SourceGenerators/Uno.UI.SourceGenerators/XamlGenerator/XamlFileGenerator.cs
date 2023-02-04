@@ -264,7 +264,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_globalStaticResourcesMap = globalStaticResourcesMap;
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
-			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
+			_defaultLanguage = defaultLanguage.IsNullOrEmpty() ? "en-US" : defaultLanguage;
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
@@ -527,7 +527,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
-									
+
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
 								}
@@ -685,7 +685,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented($"#if __ANDROID__");
 #if NETSTANDARD
-			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.App.DrawableResourcesIdResolver.Resolve);");
+			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
 #else
 			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 #endif
@@ -2695,7 +2695,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										}
 										else if (
 											implicitContentChild.Value is string implicitValue
-											&& implicitValue.HasValueTrimmed()
+											&& !implicitValue.IsNullOrWhiteSpace()
 										)
 										{
 											writer.AppendLineIndented(setterPrefix + contentProperty.Name + " = " + SyntaxFactory.Literal(implicitValue).ToString());
@@ -3222,7 +3222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryExtractAutomationId(XamlMemberDefinition member, string[] targetMembers, ref string? uiAutomationId)
 		{
-			if (uiAutomationId.HasValue())
+			if (!uiAutomationId.IsNullOrEmpty())
 			{
 				return;
 			}
@@ -3296,7 +3296,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isFrameworkElement = IsType(objectDefinitionType, _frameworkElementSymbol);
 			var hasIsParsing = HasIsParsing(objectDefinitionType);
 
-			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || objectUid.HasValue())
+			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || !objectUid.IsNullOrEmpty())
 			{
 				string closureName;
 				if (!useGenericApply && objectDefinitionType is null)
@@ -3718,11 +3718,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var assignedUid = uidMember?.Value?.ToString();
 						var assignedName = nameMember?.Value?.ToString();
 
-						if (assignedUid.HasValue())
+						if (!assignedUid.IsNullOrEmpty())
 						{
 							uiAutomationId = assignedUid;
 						}
-						else if (assignedName.HasValue())
+						else if (!assignedName.IsNullOrEmpty())
 						{
 							uiAutomationId = assignedName;
 						}
@@ -3746,12 +3746,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Local function used to build a property/value for any custom MarkupExtensions
 			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? closure = null)
 			{
-				Func<string, string> formatLine = assignment => closure.HasValue()
+				Func<string, string> formatLine = assignment => !closure.IsNullOrEmpty()
 					? $"{closure}.{assignment};\r\n"
 					: assignment;
 
 				var propertyValue = GetCustomMarkupExtensionValue(member, closure);
-				if (propertyValue.HasValue())
+				if (!propertyValue.IsNullOrEmpty())
 				{
 					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
 
@@ -3816,7 +3816,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var parms = parmsNames.JoinBy(",");
 
-					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "__that";
+					var eventSource = !ownerPrefix.IsNullOrEmpty() ? ownerPrefix : "__that";
 
 					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
 					{
@@ -4201,8 +4201,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true, ComponentDefinition? componentDefinition = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
-			var postfix = prefix.HasValue() ? ";" : "";
+			Func<string, string> formatLine = format => prefix + format + (!prefix.IsNullOrEmpty() ? ";\r\n" : "");
+			var postfix = !prefix.IsNullOrEmpty() ? ";" : "";
 
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
@@ -4637,7 +4637,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					xamlString = Regex.Replace(
 						xamlString,
 						$@"(^|[^\w])({ns.Prefix}:)",
-						"$1global::" + ns.Namespace.TrimStart("using:", StringComparison.Ordinal) + ".");
+						"$1global::" + ns.Namespace.TrimStart("using:") + ".");
 				}
 				else if (ns.Namespace == XamlConstants.XamlXmlNamespace)
 				{
@@ -4705,7 +4705,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
 				.JoinBy(", ");
-			var markupInitializer = properties.HasValue() ? $" {{ {properties} }}" : "()";
+			var markupInitializer = !properties.IsNullOrEmpty() ? $" {{ {properties} }}" : "()";
 
 			// Build the parser context for ProvideValue(IXamlServiceProvider)
 			var providerDetails = new string[]
@@ -5443,7 +5443,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var knownType = FindType(converterObjectDefinition.Type);
 					if (knownType == null && converterObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 					{
-						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:", StringComparison.Ordinal) + "." + converterObjectDefinition.Type.Name;
+						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + converterObjectDefinition.Type.Name;
 					}
 					if (knownType != null)
 					{
@@ -5837,7 +5837,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsLocalizedString(INamedTypeSymbol? propertyType, string? objectUid)
 		{
-			return objectUid.HasValue() && IsLocalizablePropertyType(propertyType);
+			return !objectUid.IsNullOrEmpty() && IsLocalizablePropertyType(propertyType);
 		}
 
 		private bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
@@ -5925,7 +5925,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (knownType == null && xamlObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 			{
-				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:", StringComparison.Ordinal) + "." + xamlObjectDefinition.Type.Name;
+				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + xamlObjectDefinition.Type.Name;
 			}
 
 			if (knownType != null)

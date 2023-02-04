@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ItemIndexRange> ListViewBase.SelectedRanges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ItemIndexRange> ListViewBase.SelectedRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CItemIndexRange%3E%20ListViewBase.SelectedRanges");
 			}
 		}
 		#endif
@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Data.LoadMoreItemsResult> LoadMoreItemsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LoadMoreItemsResult> ListViewBase.LoadMoreItemsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LoadMoreItemsResult> ListViewBase.LoadMoreItemsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLoadMoreItemsResult%3E%20ListViewBase.LoadMoreItemsAsync%28%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -365,21 +365,21 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsDragSource()
 		{
-			throw new global::System.NotImplementedException("The member bool ListViewBase.IsDragSource() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ListViewBase.IsDragSource() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ListViewBase.IsDragSource%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryStartConnectedAnimationAsync( global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation animation,  object item,  string elementName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ListViewBase.TryStartConnectedAnimationAsync(ConnectedAnimation animation, object item, string elementName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ListViewBase.TryStartConnectedAnimationAsync(ConnectedAnimation animation, object item, string elementName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ListViewBase.TryStartConnectedAnimationAsync%28ConnectedAnimation%20animation%2C%20object%20item%2C%20string%20elementName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareConnectedAnimation( string key,  object item,  string elementName)
 		{
-			throw new global::System.NotImplementedException("The member ConnectedAnimation ListViewBase.PrepareConnectedAnimation(string key, object item, string elementName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConnectedAnimation ListViewBase.PrepareConnectedAnimation(string key, object item, string elementName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectedAnimation%20ListViewBase.PrepareConnectedAnimation%28string%20key%2C%20object%20item%2C%20string%20elementName%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.SemanticZoomOwner.get

@@ -11,7 +11,7 @@ namespace Windows.Security.DataProtection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral UserDataAvailabilityStateChangedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral UserDataAvailabilityStateChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20UserDataAvailabilityStateChangedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

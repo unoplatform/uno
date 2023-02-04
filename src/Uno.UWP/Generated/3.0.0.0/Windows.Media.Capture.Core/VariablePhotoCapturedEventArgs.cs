@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan VariablePhotoCapturedEventArgs.CaptureTimeOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan VariablePhotoCapturedEventArgs.CaptureTimeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20VariablePhotoCapturedEventArgs.CaptureTimeOffset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrameControlValues VariablePhotoCapturedEventArgs.CapturedFrameControlValues is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrameControlValues VariablePhotoCapturedEventArgs.CapturedFrameControlValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrameControlValues%20VariablePhotoCapturedEventArgs.CapturedFrameControlValues");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame VariablePhotoCapturedEventArgs.Frame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrame VariablePhotoCapturedEventArgs.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrame%20VariablePhotoCapturedEventArgs.Frame");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? VariablePhotoCapturedEventArgs.UsedFrameControllerIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? VariablePhotoCapturedEventArgs.UsedFrameControllerIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20VariablePhotoCapturedEventArgs.UsedFrameControllerIndex");
 			}
 		}
 		#endif

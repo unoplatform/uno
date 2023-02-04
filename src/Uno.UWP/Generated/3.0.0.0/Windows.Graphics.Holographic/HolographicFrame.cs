@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCamera> HolographicFrame.AddedCameras is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCamera> HolographicFrame.AddedCameras is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CHolographicCamera%3E%20HolographicFrame.AddedCameras");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicFramePrediction HolographicFrame.CurrentPrediction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicFramePrediction HolographicFrame.CurrentPrediction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicFramePrediction%20HolographicFrame.CurrentPrediction");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrame.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrame.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20HolographicFrame.Duration");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCamera> HolographicFrame.RemovedCameras is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCamera> HolographicFrame.RemovedCameras is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CHolographicCamera%3E%20HolographicFrame.RemovedCameras");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicFrameId HolographicFrame.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicFrameId HolographicFrame.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicFrameId%20HolographicFrame.Id");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Holographic.HolographicCameraRenderingParameters GetRenderingParameters( global::Windows.Graphics.Holographic.HolographicCameraPose cameraPose)
 		{
-			throw new global::System.NotImplementedException("The member HolographicCameraRenderingParameters HolographicFrame.GetRenderingParameters(HolographicCameraPose cameraPose) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HolographicCameraRenderingParameters HolographicFrame.GetRenderingParameters(HolographicCameraPose cameraPose) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicCameraRenderingParameters%20HolographicFrame.GetRenderingParameters%28HolographicCameraPose%20cameraPose%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Duration.get
@@ -79,14 +79,14 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Holographic.HolographicFramePresentResult PresentUsingCurrentPrediction()
 		{
-			throw new global::System.NotImplementedException("The member HolographicFramePresentResult HolographicFrame.PresentUsingCurrentPrediction() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HolographicFramePresentResult HolographicFrame.PresentUsingCurrentPrediction() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicFramePresentResult%20HolographicFrame.PresentUsingCurrentPrediction%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Holographic.HolographicFramePresentResult PresentUsingCurrentPrediction( global::Windows.Graphics.Holographic.HolographicFramePresentWaitBehavior waitBehavior)
 		{
-			throw new global::System.NotImplementedException("The member HolographicFramePresentResult HolographicFrame.PresentUsingCurrentPrediction(HolographicFramePresentWaitBehavior waitBehavior) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HolographicFramePresentResult HolographicFrame.PresentUsingCurrentPrediction(HolographicFramePresentWaitBehavior waitBehavior) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicFramePresentResult%20HolographicFrame.PresentUsingCurrentPrediction%28HolographicFramePresentWaitBehavior%20waitBehavior%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -100,7 +100,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters GetQuadLayerUpdateParameters( global::Windows.Graphics.Holographic.HolographicQuadLayer layer)
 		{
-			throw new global::System.NotImplementedException("The member HolographicQuadLayerUpdateParameters HolographicFrame.GetQuadLayerUpdateParameters(HolographicQuadLayer layer) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HolographicQuadLayerUpdateParameters HolographicFrame.GetQuadLayerUpdateParameters(HolographicQuadLayer layer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicQuadLayerUpdateParameters%20HolographicFrame.GetQuadLayerUpdateParameters%28HolographicQuadLayer%20layer%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Id.get

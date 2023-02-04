@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessCpuUsage ProcessDiagnosticInfo.CpuUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProcessCpuUsage ProcessDiagnosticInfo.CpuUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessCpuUsage%20ProcessDiagnosticInfo.CpuUsage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessDiskUsage ProcessDiagnosticInfo.DiskUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProcessDiskUsage ProcessDiagnosticInfo.DiskUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessDiskUsage%20ProcessDiagnosticInfo.DiskUsage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProcessDiagnosticInfo.ExecutableFileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProcessDiagnosticInfo.ExecutableFileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProcessDiagnosticInfo.ExecutableFileName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessMemoryUsage ProcessDiagnosticInfo.MemoryUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProcessMemoryUsage ProcessDiagnosticInfo.MemoryUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessMemoryUsage%20ProcessDiagnosticInfo.MemoryUsage");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.Parent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.Parent");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ProcessDiagnosticInfo.ProcessId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ProcessDiagnosticInfo.ProcessId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ProcessDiagnosticInfo.ProcessId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ProcessDiagnosticInfo.ProcessStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ProcessDiagnosticInfo.ProcessStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ProcessDiagnosticInfo.ProcessStartTime");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProcessDiagnosticInfo.IsPackaged is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ProcessDiagnosticInfo.IsPackaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProcessDiagnosticInfo.IsPackaged");
 			}
 		}
 		#endif
@@ -98,7 +98,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
 		{
-			throw new global::System.NotImplementedException("The member IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CAppDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetAppDiagnosticInfos%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.IsPackaged.get
@@ -106,21 +106,21 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId( uint processId)
 		{
-			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.TryGetForProcessId%28uint%20processId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetForProcesses()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CProcessDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetForProcesses%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo GetForCurrentProcess()
 		{
-			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.GetForCurrentProcess() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.GetForCurrentProcess() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.GetForCurrentProcess%28%29");
 		}
 		#endif
 	}

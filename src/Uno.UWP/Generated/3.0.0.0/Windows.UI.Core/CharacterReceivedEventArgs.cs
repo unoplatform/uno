@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CharacterReceivedEventArgs.KeyCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CharacterReceivedEventArgs.KeyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CharacterReceivedEventArgs.KeyCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus CharacterReceivedEventArgs.KeyStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus CharacterReceivedEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CorePhysicalKeyStatus%20CharacterReceivedEventArgs.KeyStatus");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CharacterReceivedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CharacterReceivedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CharacterReceivedEventArgs.Handled");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneDialOptions.Number is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneDialOptions.Number is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneDialOptions.Number");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallMedia PhoneDialOptions.Media is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallMedia PhoneDialOptions.Media is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallMedia%20PhoneDialOptions.Media");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneDialOptions.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneDialOptions.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneDialOptions.DisplayName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactPhone PhoneDialOptions.ContactPhone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactPhone PhoneDialOptions.ContactPhone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactPhone%20PhoneDialOptions.ContactPhone");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Contact PhoneDialOptions.Contact is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Contact PhoneDialOptions.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Contact%20PhoneDialOptions.Contact");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneAudioRoutingEndpoint PhoneDialOptions.AudioEndpoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneAudioRoutingEndpoint PhoneDialOptions.AudioEndpoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneAudioRoutingEndpoint%20PhoneDialOptions.AudioEndpoint");
 			}
 			set
 			{

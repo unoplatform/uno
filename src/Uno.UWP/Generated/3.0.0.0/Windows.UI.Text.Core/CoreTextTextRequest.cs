@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreTextTextRequest.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CoreTextTextRequest.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreTextTextRequest.Text");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextTextRequest.IsCanceled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreTextTextRequest.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreTextTextRequest.IsCanceled");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextTextRequest.Range is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextTextRequest.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextRange%20CoreTextTextRequest.Range");
 			}
 		}
 		#endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextTextRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral CoreTextTextRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20CoreTextTextRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

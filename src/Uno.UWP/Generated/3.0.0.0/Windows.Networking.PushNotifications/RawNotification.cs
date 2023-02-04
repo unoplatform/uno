@@ -13,7 +13,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RawNotification.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RawNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RawNotification.Content");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RawNotification.ChannelId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RawNotification.ChannelId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RawNotification.ChannelId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> RawNotification.Headers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> RawNotification.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20RawNotification.Headers");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer RawNotification.ContentBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer RawNotification.ContentBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20RawNotification.ContentBytes");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TargetApplicationChosenEventArgs.ApplicationName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TargetApplicationChosenEventArgs.ApplicationName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TargetApplicationChosenEventArgs.ApplicationName");
 			}
 		}
 		#endif

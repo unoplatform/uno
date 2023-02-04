@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.ProtectionCapabilityResult IsTypeSupported( string type,  string keySystem)
 		{
-			throw new global::System.NotImplementedException("The member ProtectionCapabilityResult ProtectionCapabilities.IsTypeSupported(string type, string keySystem) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProtectionCapabilityResult ProtectionCapabilities.IsTypeSupported(string type, string keySystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProtectionCapabilityResult%20ProtectionCapabilities.IsTypeSupported%28string%20type%2C%20string%20keySystem%29");
 		}
 		#endif
 	}

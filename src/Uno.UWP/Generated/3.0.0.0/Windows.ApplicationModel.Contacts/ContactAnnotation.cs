@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactAnnotation.SupportedOperations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactAnnotation.SupportedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactAnnotationOperations%20ContactAnnotation.SupportedOperations");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactAnnotation.RemoteId");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.ContactId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.ContactId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactAnnotation.ContactId");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.AnnotationListId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.AnnotationListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactAnnotation.AnnotationListId");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactAnnotation.Id");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactAnnotation.IsDisabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ContactAnnotation.IsDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContactAnnotation.IsDisabled");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet ContactAnnotation.ProviderProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet ContactAnnotation.ProviderProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20ContactAnnotation.ProviderProperties");
 			}
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.ContactListId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.ContactListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactAnnotation.ContactListId");
 			}
 			set
 			{

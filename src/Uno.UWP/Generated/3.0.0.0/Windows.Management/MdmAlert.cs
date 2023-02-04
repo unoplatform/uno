@@ -13,7 +13,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MdmAlert.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MdmAlert.Type");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Target is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MdmAlert.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MdmAlert.Target");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MdmAlert.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MdmAlert.Source");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MdmAlertMark MdmAlert.Mark is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MdmAlertMark MdmAlert.Mark is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MdmAlertMark%20MdmAlert.Mark");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MdmAlertDataType MdmAlert.Format is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MdmAlertDataType MdmAlert.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MdmAlertDataType%20MdmAlert.Format");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MdmAlert.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MdmAlert.Data");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MdmAlert.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MdmAlert.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MdmAlert.Status");
 			}
 		}
 		#endif

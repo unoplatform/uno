@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.HorizontalScrollPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.HorizontalScrollPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PivotAutomationPeer.HorizontalScrollPercent");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.HorizontalViewSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.HorizontalViewSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PivotAutomationPeer.HorizontalViewSize");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.HorizontallyScrollable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.HorizontallyScrollable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PivotAutomationPeer.HorizontallyScrollable");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.VerticalScrollPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.VerticalScrollPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PivotAutomationPeer.VerticalScrollPercent");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.VerticalViewSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PivotAutomationPeer.VerticalViewSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PivotAutomationPeer.VerticalViewSize");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.VerticallyScrollable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.VerticallyScrollable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PivotAutomationPeer.VerticallyScrollable");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.CanSelectMultiple is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.CanSelectMultiple is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PivotAutomationPeer.CanSelectMultiple");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.IsSelectionRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PivotAutomationPeer.IsSelectionRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PivotAutomationPeer.IsSelectionRequired");
 			}
 		}
 		#endif
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
 		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] PivotAutomationPeer.GetSelection() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRawElementProviderSimple[] PivotAutomationPeer.GetSelection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRawElementProviderSimple%5B%5D%20PivotAutomationPeer.GetSelection%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.PivotAutomationPeer.HorizontallyScrollable.get

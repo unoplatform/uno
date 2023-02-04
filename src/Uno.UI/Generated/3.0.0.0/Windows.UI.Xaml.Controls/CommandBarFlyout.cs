@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IObservableVector<ICommandBarElement> CommandBarFlyout.PrimaryCommands is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IObservableVector<ICommandBarElement> CommandBarFlyout.PrimaryCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IObservableVector%3CICommandBarElement%3E%20CommandBarFlyout.PrimaryCommands");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IObservableVector<ICommandBarElement> CommandBarFlyout.SecondaryCommands is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IObservableVector<ICommandBarElement> CommandBarFlyout.SecondaryCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IObservableVector%3CICommandBarElement%3E%20CommandBarFlyout.SecondaryCommands");
 			}
 		}
 		#endif

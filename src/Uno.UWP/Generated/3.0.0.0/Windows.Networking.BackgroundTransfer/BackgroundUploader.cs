@@ -13,7 +13,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential BackgroundUploader.ServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential BackgroundUploader.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20BackgroundUploader.ServerCredential");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential BackgroundUploader.ProxyCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential BackgroundUploader.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20BackgroundUploader.ProxyCredential");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundUploader.Method is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string BackgroundUploader.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BackgroundUploader.Method");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundUploader.Group is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string BackgroundUploader.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BackgroundUploader.Group");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferCostPolicy BackgroundUploader.CostPolicy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BackgroundTransferCostPolicy BackgroundUploader.CostPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTransferCostPolicy%20BackgroundUploader.CostPolicy");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileNotification BackgroundUploader.FailureTileNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TileNotification BackgroundUploader.FailureTileNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileNotification%20BackgroundUploader.FailureTileNotification");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferGroup BackgroundUploader.TransferGroup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BackgroundTransferGroup BackgroundUploader.TransferGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTransferGroup%20BackgroundUploader.TransferGroup");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastNotification BackgroundUploader.SuccessToastNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ToastNotification BackgroundUploader.SuccessToastNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToastNotification%20BackgroundUploader.SuccessToastNotification");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileNotification BackgroundUploader.SuccessTileNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TileNotification BackgroundUploader.SuccessTileNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileNotification%20BackgroundUploader.SuccessTileNotification");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastNotification BackgroundUploader.FailureToastNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ToastNotification BackgroundUploader.FailureToastNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToastNotification%20BackgroundUploader.FailureToastNotification");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferCompletionGroup BackgroundUploader.CompletionGroup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BackgroundTransferCompletionGroup BackgroundUploader.CompletionGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTransferCompletionGroup%20BackgroundUploader.CompletionGroup");
 			}
 		}
 		#endif
@@ -177,35 +177,35 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.BackgroundTransfer.UploadOperation CreateUpload( global::System.Uri uri,  global::Windows.Storage.IStorageFile sourceFile)
 		{
-			throw new global::System.NotImplementedException("The member UploadOperation BackgroundUploader.CreateUpload(Uri uri, IStorageFile sourceFile) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UploadOperation BackgroundUploader.CreateUpload(Uri uri, IStorageFile sourceFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UploadOperation%20BackgroundUploader.CreateUpload%28Uri%20uri%2C%20IStorageFile%20sourceFile%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadFromStreamAsync( global::System.Uri uri,  global::Windows.Storage.Streams.IInputStream sourceStream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadFromStreamAsync(Uri uri, IInputStream sourceStream) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadFromStreamAsync(Uri uri, IInputStream sourceStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadFromStreamAsync%28Uri%20uri%2C%20IInputStream%20sourceStream%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadAsync%28Uri%20uri%2C%20IEnumerable%3CBackgroundTransferContentPart%3E%20parts%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts,  string subType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadAsync%28Uri%20uri%2C%20IEnumerable%3CBackgroundTransferContentPart%3E%20parts%2C%20string%20subType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts,  string subType,  string boundary)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType, string boundary) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType, string boundary) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadAsync%28Uri%20uri%2C%20IEnumerable%3CBackgroundTransferContentPart%3E%20parts%2C%20string%20subType%2C%20string%20boundary%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -240,28 +240,28 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.UploadOperation>> GetCurrentUploadsForTransferGroupAsync( global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup group)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsForTransferGroupAsync(BackgroundTransferGroup group) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsForTransferGroupAsync(BackgroundTransferGroup group) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CUploadOperation%3E%3E%20BackgroundUploader.GetCurrentUploadsForTransferGroupAsync%28BackgroundTransferGroup%20group%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult> RequestUnconstrainedUploadsAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.UploadOperation> operations)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundUploader.RequestUnconstrainedUploadsAsync(IEnumerable<UploadOperation> operations) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundUploader.RequestUnconstrainedUploadsAsync(IEnumerable<UploadOperation> operations) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUnconstrainedTransferRequestResult%3E%20BackgroundUploader.RequestUnconstrainedUploadsAsync%28IEnumerable%3CUploadOperation%3E%20operations%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.UploadOperation>> GetCurrentUploadsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CUploadOperation%3E%3E%20BackgroundUploader.GetCurrentUploadsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.UploadOperation>> GetCurrentUploadsAsync( string group)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsAsync(string group) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsAsync(string group) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CUploadOperation%3E%3E%20BackgroundUploader.GetCurrentUploadsAsync%28string%20group%29");
 		}
 		#endif
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferBase

@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Album is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Album is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SourceChangeRequestedEventArgs.Album");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Author is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Author is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SourceChangeRequestedEventArgs.Author");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? SourceChangeRequestedEventArgs.Date is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? SourceChangeRequestedEventArgs.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20SourceChangeRequestedEventArgs.Date");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SourceChangeRequestedEventArgs.Description");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Genre is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Genre is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SourceChangeRequestedEventArgs.Genre");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> SourceChangeRequestedEventArgs.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> SourceChangeRequestedEventArgs.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20SourceChangeRequestedEventArgs.Properties");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? SourceChangeRequestedEventArgs.Rating is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? SourceChangeRequestedEventArgs.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20SourceChangeRequestedEventArgs.Rating");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType SourceChangeRequestedEventArgs.Stream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType SourceChangeRequestedEventArgs.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamWithContentType%20SourceChangeRequestedEventArgs.Stream");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference SourceChangeRequestedEventArgs.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference SourceChangeRequestedEventArgs.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20SourceChangeRequestedEventArgs.Thumbnail");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SourceChangeRequestedEventArgs.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SourceChangeRequestedEventArgs.Title");
 			}
 		}
 		#endif

@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TreeViewNode.HasUnrealizedChildren is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TreeViewNode.HasUnrealizedChildren is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TreeViewNode.HasUnrealizedChildren");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TreeViewNode> TreeViewNode.Children is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TreeViewNode> TreeViewNode.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTreeViewNode%3E%20TreeViewNode.Children");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TreeViewNode TreeViewNode.Parent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TreeViewNode TreeViewNode.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TreeViewNode%20TreeViewNode.Parent");
 			}
 		}
 		#endif

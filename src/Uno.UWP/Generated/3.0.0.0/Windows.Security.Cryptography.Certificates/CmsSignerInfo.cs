@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CmsSignerInfo.HashAlgorithmName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CmsSignerInfo.Certificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate CmsSignerInfo.Certificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20CmsSignerInfo.Certificate");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CmsTimestampInfo CmsSignerInfo.TimestampInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CmsTimestampInfo CmsSignerInfo.TimestampInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CmsTimestampInfo%20CmsSignerInfo.TimestampInfo");
 			}
 		}
 		#endif

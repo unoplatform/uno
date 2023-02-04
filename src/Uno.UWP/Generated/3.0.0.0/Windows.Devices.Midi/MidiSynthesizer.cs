@@ -13,7 +13,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MidiSynthesizer.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MidiSynthesizer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MidiSynthesizer.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MidiSynthesizer.Volume is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MidiSynthesizer.Volume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MidiSynthesizer.Volume");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation MidiSynthesizer.AudioDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation MidiSynthesizer.AudioDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20MidiSynthesizer.AudioDevice");
 			}
 		}
 		#endif
@@ -70,21 +70,21 @@ namespace Windows.Devices.Midi
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMidiSynthesizer%3E%20MidiSynthesizer.CreateAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync( global::Windows.Devices.Enumeration.DeviceInformation audioDevice)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync(DeviceInformation audioDevice) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync(DeviceInformation audioDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMidiSynthesizer%3E%20MidiSynthesizer.CreateAsync%28DeviceInformation%20audioDevice%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSynthesizer( global::Windows.Devices.Enumeration.DeviceInformation midiDevice)
 		{
-			throw new global::System.NotImplementedException("The member bool MidiSynthesizer.IsSynthesizer(DeviceInformation midiDevice) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool MidiSynthesizer.IsSynthesizer(DeviceInformation midiDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MidiSynthesizer.IsSynthesizer%28DeviceInformation%20midiDevice%29");
 		}
 		#endif
 		// Processing: Windows.Devices.Midi.IMidiOutPort

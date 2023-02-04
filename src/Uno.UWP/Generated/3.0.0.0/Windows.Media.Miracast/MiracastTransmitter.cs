@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastTransmitter.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MiracastTransmitter.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MiracastTransmitter.Name");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastTransmitterAuthorizationStatus MiracastTransmitter.AuthorizationStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastTransmitterAuthorizationStatus MiracastTransmitter.AuthorizationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastTransmitterAuthorizationStatus%20MiracastTransmitter.AuthorizationStatus");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset MiracastTransmitter.LastConnectionTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset MiracastTransmitter.LastConnectionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20MiracastTransmitter.LastConnectionTime");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastTransmitter.MacAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MiracastTransmitter.MacAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MiracastTransmitter.MacAddress");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Miracast.MiracastReceiverConnection> GetConnections()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MiracastReceiverConnection> MiracastTransmitter.GetConnections() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<MiracastReceiverConnection> MiracastTransmitter.GetConnections() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMiracastReceiverConnection%3E%20MiracastTransmitter.GetConnections%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.MacAddress.get

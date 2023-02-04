@@ -46,9 +46,9 @@ namespace Private.Infrastructure
 		internal static bool CompareColor(Color lhs, Color rhs)
 		{
 			return lhs.A == rhs.A
-			       && lhs.R == rhs.R
-			       && lhs.G == rhs.G
-			       && lhs.B == rhs.B;
+				   && lhs.R == rhs.R
+				   && lhs.G == rhs.G
+				   && lhs.B == rhs.B;
 		}
 
 		internal class DateCollection : List<DateTimeOffset>
@@ -106,7 +106,7 @@ namespace Private.Infrastructure
 		internal static async Task<Grid> CreateTestResources()
 		{
 			Grid rootPanel = default;
-			await TestServices.RunOnUIThread(()=>
+			await TestServices.RunOnUIThread(() =>
 			{
 				rootPanel = XamlReader.Load(
 						"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
@@ -417,7 +417,7 @@ namespace Private.Infrastructure
 
 		internal static string[] GetAllSupportedCalendarIdentifiers()
 		{
-			return new [] 
+			return new[]
 				{
 					"PersianCalendar",
 					"GregorianCalendar",

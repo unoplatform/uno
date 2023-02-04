@@ -18,7 +18,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetKeyIdentifier(out byte[] value)
 		{
-			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetKeyIdentifier(out byte[] value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetKeyIdentifier(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20MediaStreamSampleProtectionProperties.GetKeyIdentifier%28out%20byte%5B%5D%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -32,7 +32,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetInitializationVector(out byte[] value)
 		{
-			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetInitializationVector(out byte[] value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetInitializationVector(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20MediaStreamSampleProtectionProperties.GetInitializationVector%28out%20byte%5B%5D%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -46,7 +46,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetSubSampleMapping(out byte[] value)
 		{
-			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetSubSampleMapping(out byte[] value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetSubSampleMapping(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20MediaStreamSampleProtectionProperties.GetSubSampleMapping%28out%20byte%5B%5D%20value%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.Director is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemVideoProperties.Director is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemVideoProperties.Director");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.FrameHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemVideoProperties.FrameHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemVideoProperties.FrameHeight");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.FrameWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemVideoProperties.FrameWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemVideoProperties.FrameWidth");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemVideoProperties.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemVideoProperties.Orientation");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.TotalBitrate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemVideoProperties.TotalBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemVideoProperties.TotalBitrate");
 			}
 		}
 		#endif

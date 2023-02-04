@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind BarcodeScannerPreviewActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind BarcodeScannerPreviewActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20BarcodeScannerPreviewActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState BarcodeScannerPreviewActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState BarcodeScannerPreviewActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20BarcodeScannerPreviewActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen BarcodeScannerPreviewActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen BarcodeScannerPreviewActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20BarcodeScannerPreviewActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User BarcodeScannerPreviewActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User BarcodeScannerPreviewActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20BarcodeScannerPreviewActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BarcodeScannerPreviewActivatedEventArgs.ConnectionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string BarcodeScannerPreviewActivatedEventArgs.ConnectionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BarcodeScannerPreviewActivatedEventArgs.ConnectionId");
 			}
 		}
 		#endif

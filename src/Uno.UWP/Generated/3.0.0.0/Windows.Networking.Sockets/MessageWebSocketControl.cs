@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketMessageType MessageWebSocketControl.MessageType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketMessageType MessageWebSocketControl.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketMessageType%20MessageWebSocketControl.MessageType");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MessageWebSocketControl.MaxMessageSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MessageWebSocketControl.MaxMessageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MessageWebSocketControl.MaxMessageSize");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MessageWebSocketReceiveMode MessageWebSocketControl.ReceiveMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MessageWebSocketReceiveMode MessageWebSocketControl.ReceiveMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MessageWebSocketReceiveMode%20MessageWebSocketControl.ReceiveMode");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MessageWebSocketControl.DesiredUnsolicitedPongInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MessageWebSocketControl.DesiredUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MessageWebSocketControl.DesiredUnsolicitedPongInterval");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate MessageWebSocketControl.ClientCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate MessageWebSocketControl.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20MessageWebSocketControl.ClientCertificate");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MessageWebSocketControl.ActualUnsolicitedPongInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MessageWebSocketControl.ActualUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MessageWebSocketControl.ActualUnsolicitedPongInterval");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential MessageWebSocketControl.ServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential MessageWebSocketControl.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20MessageWebSocketControl.ServerCredential");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential MessageWebSocketControl.ProxyCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential MessageWebSocketControl.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20MessageWebSocketControl.ProxyCredential");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MessageWebSocketControl.OutboundBufferSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MessageWebSocketControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MessageWebSocketControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -135,7 +135,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MessageWebSocketControl.SupportedProtocols is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MessageWebSocketControl.SupportedProtocols is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MessageWebSocketControl.SupportedProtocols");
 			}
 		}
 		#endif
@@ -145,7 +145,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> MessageWebSocketControl.IgnorableServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> MessageWebSocketControl.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CChainValidationResult%3E%20MessageWebSocketControl.IgnorableServerCertificateErrors");
 			}
 		}
 		#endif

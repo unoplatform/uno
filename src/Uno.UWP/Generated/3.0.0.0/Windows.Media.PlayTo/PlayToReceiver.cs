@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsVideo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlayToReceiver.SupportsVideo");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsImage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlayToReceiver.SupportsImage");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsAudio is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlayToReceiver.SupportsAudio");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayToReceiver.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayToReceiver.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayToReceiver.FriendlyName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet PlayToReceiver.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet PlayToReceiver.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20PlayToReceiver.Properties");
 			}
 		}
 		#endif
@@ -196,14 +196,14 @@ namespace Windows.Media.PlayTo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayToReceiver.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PlayToReceiver.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PlayToReceiver.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayToReceiver.StopAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PlayToReceiver.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PlayToReceiver.StopAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

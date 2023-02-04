@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.AesCmac is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.AesCmac is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmNames.AesCmac");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacMd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacMd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmNames.HmacMd5");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmNames.HmacSha1");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmNames.HmacSha256");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmNames.HmacSha384");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha512 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmNames.HmacSha512");
 			}
 		}
 		#endif

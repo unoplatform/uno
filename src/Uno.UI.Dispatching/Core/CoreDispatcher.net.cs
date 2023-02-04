@@ -9,7 +9,7 @@ namespace Uno.UI.Dispatching
 	internal sealed partial class CoreDispatcher
 	{
 		public static bool HasThreadAccessOverride { get; set; } = true;
-		 
+
 		private bool GetHasThreadAccess() => HasThreadAccessOverride;
 
 		internal bool IsQueueEmpty => _queues.All(q => q.Count == 0);

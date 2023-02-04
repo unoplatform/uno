@@ -13,7 +13,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string IndexableContent.StreamContentType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string IndexableContent.StreamContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20IndexableContent.StreamContentType");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream IndexableContent.Stream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream IndexableContent.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20IndexableContent.Stream");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string IndexableContent.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string IndexableContent.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20IndexableContent.Id");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, object> IndexableContent.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, object> IndexableContent.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20object%3E%20IndexableContent.Properties");
 			}
 		}
 		#endif

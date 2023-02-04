@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DetectionConfigurationAvailabilityChangeKind DetectionConfigurationAvailabilityChangedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DetectionConfigurationAvailabilityChangeKind DetectionConfigurationAvailabilityChangedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DetectionConfigurationAvailabilityChangeKind%20DetectionConfigurationAvailabilityChangedEventArgs.Kind");
 			}
 		}
 		#endif

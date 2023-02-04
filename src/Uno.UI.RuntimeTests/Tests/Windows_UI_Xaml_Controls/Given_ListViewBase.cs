@@ -806,16 +806,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
 		{
 			var materialized = 0;
-			var container = new Grid { Height = 100, Width=100 };
+			var container = new Grid { Height = 100, Width = 100 };
 
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
-					var border = new Border() {
+					var border = new Border()
+					{
 						Height = 100,
 						Child = tb
 					};
@@ -853,7 +855,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -897,7 +900,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -956,7 +960,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1013,7 +1018,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -2523,7 +2529,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-#region Helper classes
+		#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -2550,23 +2556,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-#region SelectedItem
+			#region SelectedItem
 			private object _selectedItem;
 			public object SelectedItem
 			{
 				get => _selectedItem;
 				set => RaiseAndSetIfChanged(ref _selectedItem, value);
 			}
-#endregion
-#region SelectedValue
+			#endregion
+			#region SelectedValue
 			private object _selectedValue;
 			public object SelectedValue
 			{
 				get => _selectedValue;
 				set => RaiseAndSetIfChanged(ref _selectedValue, value);
 			}
-#endregion
-#region SelectedIndex
+			#endregion
+			#region SelectedIndex
 			private int _selectedIndex;
 
 			public int SelectedIndex
@@ -2574,7 +2580,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				get => _selectedIndex;
 				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
 			}
-#endregion
+			#endregion
 
 			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
 			{
@@ -2605,10 +2611,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
-#endregion
+		#endregion
 	}
 
-#region Helper classes
+	#region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
 		public Action ItemsChangedAction;
@@ -2804,5 +2810,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public int LastIndex => _start;
 	}
-#endregion
+	#endregion
 }

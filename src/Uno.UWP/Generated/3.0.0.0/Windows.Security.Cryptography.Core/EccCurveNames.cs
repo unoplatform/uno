@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> EccCurveNames.AllEccCurveNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> EccCurveNames.AllEccCurveNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20EccCurveNames.AllEccCurveNames");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP160r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP160r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP160r1");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP160t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP160t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP160t1");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP192r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP192r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP192r1");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP192t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP192t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP192t1");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP224r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP224r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP224r1");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP224t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP224t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP224t1");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP256r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP256r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP256r1");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP256t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP256t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP256t1");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP320r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP320r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP320r1");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP320t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP320t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP320t1");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP384r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP384r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP384r1");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP384t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP384t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP384t1");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP512r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP512r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP512r1");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP512t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.BrainpoolP512t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.BrainpoolP512t1");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.Curve25519 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.Curve25519 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.Curve25519");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.Ec192wapi is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.Ec192wapi is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.Ec192wapi");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP192 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP192 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NistP192");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP224 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP224 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NistP224");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NistP256");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NistP384");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP521 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NistP521 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NistP521");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NumsP256t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NumsP256t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NumsP256t1");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NumsP384t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NumsP384t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NumsP384t1");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.NumsP512t1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.NumsP512t1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.NumsP512t1");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP160k1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP160k1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP160k1");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP160r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP160r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP160r1");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP160r2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP160r2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP160r2");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP192k1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP192k1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP192k1");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP192r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP192r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP192r1");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP224k1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP224k1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP224k1");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP224r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP224r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP224r1");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP256k1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP256k1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP256k1");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP256r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP256r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP256r1");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP384r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP384r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP384r1");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP521r1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.SecP521r1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.SecP521r1");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.Wtls12 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.Wtls12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.Wtls12");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.Wtls7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.Wtls7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.Wtls7");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.Wtls9 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.Wtls9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.Wtls9");
 			}
 		}
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P192v1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P192v1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P192v1");
 			}
 		}
 		#endif
@@ -413,7 +413,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P192v2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P192v2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P192v2");
 			}
 		}
 		#endif
@@ -423,7 +423,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P192v3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P192v3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P192v3");
 			}
 		}
 		#endif
@@ -433,7 +433,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P239v1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P239v1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P239v1");
 			}
 		}
 		#endif
@@ -443,7 +443,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P239v2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P239v2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P239v2");
 			}
 		}
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P239v3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P239v3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P239v3");
 			}
 		}
 		#endif
@@ -463,7 +463,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P256v1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EccCurveNames.X962P256v1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EccCurveNames.X962P256v1");
 			}
 		}
 		#endif

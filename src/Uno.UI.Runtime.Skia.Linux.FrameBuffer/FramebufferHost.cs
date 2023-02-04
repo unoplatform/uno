@@ -19,7 +19,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private readonly EventLoop _eventLoop;
 		private readonly CoreApplicationExtension? _coreApplicationExtension;
-		
+
 		private Func<Application> _appBuilder;
 		private Renderer? _renderer;
 		private DisplayInformationExtension? _displayInformationExtension;
@@ -94,7 +94,7 @@ namespace Uno.UI.Runtime.Skia
 		private void Initialize()
 		{
 			_isDispatcherThread = true;
-			
+
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension);
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));

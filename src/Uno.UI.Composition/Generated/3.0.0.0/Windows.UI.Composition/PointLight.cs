@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.QuadraticAttenuation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointLight.QuadraticAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointLight.QuadraticAttenuation");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 PointLight.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 PointLight.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20PointLight.Offset");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.LinearAttenuation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointLight.LinearAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointLight.LinearAttenuation");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual PointLight.CoordinateSpace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Visual PointLight.CoordinateSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20PointLight.CoordinateSpace");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.ConstantAttenuation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointLight.ConstantAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointLight.ConstantAttenuation");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PointLight.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color PointLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20PointLight.Color");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.Intensity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointLight.Intensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointLight.Intensity");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.MinAttenuationCutoff is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointLight.MinAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointLight.MinAttenuationCutoff");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.MaxAttenuationCutoff is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointLight.MaxAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointLight.MaxAttenuationCutoff");
 			}
 			set
 			{

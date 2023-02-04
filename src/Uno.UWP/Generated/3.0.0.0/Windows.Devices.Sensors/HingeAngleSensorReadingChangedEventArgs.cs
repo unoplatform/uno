@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HingeAngleReading HingeAngleSensorReadingChangedEventArgs.Reading is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HingeAngleReading HingeAngleSensorReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HingeAngleReading%20HingeAngleSensorReadingChangedEventArgs.Reading");
 			}
 		}
 		#endif

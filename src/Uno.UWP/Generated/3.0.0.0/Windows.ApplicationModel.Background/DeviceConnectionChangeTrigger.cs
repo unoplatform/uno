@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceConnectionChangeTrigger.MaintainConnection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceConnectionChangeTrigger.MaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceConnectionChangeTrigger.MaintainConnection");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceConnectionChangeTrigger.CanMaintainConnection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeviceConnectionChangeTrigger.CanMaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeviceConnectionChangeTrigger.CanMaintainConnection");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceConnectionChangeTrigger.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceConnectionChangeTrigger.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceConnectionChangeTrigger.DeviceId");
 			}
 		}
 		#endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceConnectionChangeTrigger> DeviceConnectionChangeTrigger.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceConnectionChangeTrigger> DeviceConnectionChangeTrigger.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDeviceConnectionChangeTrigger%3E%20DeviceConnectionChangeTrigger.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger

@@ -13,7 +13,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTransferCompletionGroup.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BackgroundTransferCompletionGroup.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BackgroundTransferCompletionGroup.IsEnabled");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTrigger BackgroundTransferCompletionGroup.Trigger is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBackgroundTrigger BackgroundTransferCompletionGroup.Trigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBackgroundTrigger%20BackgroundTransferCompletionGroup.Trigger");
 			}
 		}
 		#endif

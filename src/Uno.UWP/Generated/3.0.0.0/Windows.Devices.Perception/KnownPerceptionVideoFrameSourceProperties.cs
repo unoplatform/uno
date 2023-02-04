@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.IsMirrored is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.IsMirrored is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoFrameSourceProperties.IsMirrored");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.VideoProfile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.VideoProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionVideoFrameSourceProperties.VideoProfile");
 			}
 		}
 		#endif

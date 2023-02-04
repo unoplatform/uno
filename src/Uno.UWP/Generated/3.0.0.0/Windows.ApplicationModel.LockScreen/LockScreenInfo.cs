@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.AlarmIcon is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.AlarmIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20LockScreenInfo.AlarmIcon");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<LockScreenBadge> LockScreenInfo.Badges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<LockScreenBadge> LockScreenInfo.Badges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CLockScreenBadge%3E%20LockScreenInfo.Badges");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> LockScreenInfo.DetailText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> LockScreenInfo.DetailText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20LockScreenInfo.DetailText");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.LockScreenImage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.LockScreenImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20LockScreenInfo.LockScreenImage");
 			}
 		}
 		#endif

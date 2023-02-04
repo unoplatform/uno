@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessage ChatMessageNotificationTriggerDetails.ChatMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatMessage ChatMessageNotificationTriggerDetails.ChatMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatMessage%20ChatMessageNotificationTriggerDetails.ChatMessage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldDisplayToast is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldDisplayToast is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessageNotificationTriggerDetails.ShouldDisplayToast");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateBadge is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateBadge is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessageNotificationTriggerDetails.ShouldUpdateBadge");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText");
 			}
 		}
 		#endif

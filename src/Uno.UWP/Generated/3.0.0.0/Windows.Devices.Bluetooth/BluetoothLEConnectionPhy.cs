@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEConnectionPhyInfo BluetoothLEConnectionPhy.ReceiveInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEConnectionPhyInfo BluetoothLEConnectionPhy.ReceiveInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEConnectionPhyInfo%20BluetoothLEConnectionPhy.ReceiveInfo");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEConnectionPhyInfo BluetoothLEConnectionPhy.TransmitInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEConnectionPhyInfo BluetoothLEConnectionPhy.TransmitInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEConnectionPhyInfo%20BluetoothLEConnectionPhy.TransmitInfo");
 			}
 		}
 		#endif

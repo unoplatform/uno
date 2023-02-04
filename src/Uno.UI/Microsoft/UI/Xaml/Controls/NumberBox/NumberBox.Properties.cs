@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty AcceptsExpressionProperty { get; } =
-			DependencyProperty.Register(nameof(AcceptsExpression), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false /* ,UNO TODO (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)*/));
+			DependencyProperty.Register(nameof(AcceptsExpression), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)));
 
 		public INumberFormatter2 NumberFormatter
 		{

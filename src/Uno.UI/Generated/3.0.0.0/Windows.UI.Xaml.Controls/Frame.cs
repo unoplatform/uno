@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool NavigateToType( global::System.Type sourcePageType,  object parameter,  global::Windows.UI.Xaml.Navigation.FrameNavigationOptions navigationOptions)
 		{
-			throw new global::System.NotImplementedException("The member bool Frame.NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool Frame.NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Frame.NavigateToType%28Type%20sourcePageType%2C%20object%20parameter%2C%20FrameNavigationOptions%20navigationOptions%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.Navigate(System.Type)

@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPrimitiveTopology SceneMesh.PrimitiveTopology is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPrimitiveTopology SceneMesh.PrimitiveTopology is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPrimitiveTopology%20SceneMesh.PrimitiveTopology");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneBoundingBox SceneMesh.Bounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneBoundingBox SceneMesh.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneBoundingBox%20SceneMesh.Bounds");
 			}
 		}
 		#endif
@@ -45,7 +45,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Scenes.SceneMesh Create( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneMesh SceneMesh.Create(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SceneMesh SceneMesh.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMesh%20SceneMesh.Create%28Compositor%20compositor%29");
 		}
 		#endif
 	}

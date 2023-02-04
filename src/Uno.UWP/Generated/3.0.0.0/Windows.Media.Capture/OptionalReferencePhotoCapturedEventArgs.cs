@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object OptionalReferencePhotoCapturedEventArgs.Context is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object OptionalReferencePhotoCapturedEventArgs.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20OptionalReferencePhotoCapturedEventArgs.Context");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame OptionalReferencePhotoCapturedEventArgs.Frame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrame OptionalReferencePhotoCapturedEventArgs.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrame%20OptionalReferencePhotoCapturedEventArgs.Frame");
 			}
 		}
 		#endif

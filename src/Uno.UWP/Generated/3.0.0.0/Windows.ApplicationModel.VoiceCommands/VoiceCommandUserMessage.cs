@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.SpokenMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.SpokenMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandUserMessage.SpokenMessage");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.DisplayMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandUserMessage.DisplayMessage");
 			}
 			set
 			{

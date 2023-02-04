@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsForwardingDisabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsForwardingDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessage.IsForwardingDisabled");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.TransportId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatMessage.TransportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatMessage.TransportId");
 			}
 			set
 			{
@@ -46,7 +46,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.Subject is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatMessage.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatMessage.Subject");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ChatMessageStatus> ChatMessage.RecipientSendStatuses is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ChatMessageStatus> ChatMessage.RecipientSendStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20ChatMessageStatus%3E%20ChatMessage.RecipientSendStatuses");
 			}
 		}
 		#endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.TransportFriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatMessage.TransportFriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatMessage.TransportFriendlyName");
 			}
 		}
 		#endif
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChatMessageAttachment> ChatMessage.Attachments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ChatMessageAttachment> ChatMessage.Attachments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CChatMessageAttachment%3E%20ChatMessage.Attachments");
 			}
 		}
 		#endif
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatMessage.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatMessage.Id");
 			}
 		}
 		#endif
@@ -106,7 +106,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReceivedDuringQuietHours is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReceivedDuringQuietHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessage.IsReceivedDuringQuietHours");
 			}
 			set
 			{
@@ -120,7 +120,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsAutoReply is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsAutoReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessage.IsAutoReply");
 			}
 			set
 			{
@@ -134,7 +134,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ChatMessage.EstimatedDownloadSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ChatMessage.EstimatedDownloadSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ChatMessage.EstimatedDownloadSize");
 			}
 			set
 			{
@@ -148,7 +148,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatConversationThreadingInfo ChatMessage.ThreadingInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatConversationThreadingInfo ChatMessage.ThreadingInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatConversationThreadingInfo%20ChatMessage.ThreadingInfo");
 			}
 			set
 			{
@@ -162,7 +162,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.ShouldSuppressNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.ShouldSuppressNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessage.ShouldSuppressNotification");
 			}
 			set
 			{
@@ -176,7 +176,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatMessage.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatMessage.RemoteId");
 			}
 			set
 			{
@@ -191,7 +191,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReplyDisabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsReplyDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessage.IsReplyDisabled");
 			}
 		}
 		#endif
@@ -201,7 +201,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessage.IsSimMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatMessage.IsSimMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatMessage.IsSimMessage");
 			}
 		}
 		#endif
@@ -211,7 +211,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChatRecipientDeliveryInfo> ChatMessage.RecipientsDeliveryInfos is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ChatRecipientDeliveryInfo> ChatMessage.RecipientsDeliveryInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CChatRecipientDeliveryInfo%3E%20ChatMessage.RecipientsDeliveryInfos");
 			}
 		}
 		#endif
@@ -221,7 +221,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessage.SyncId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatMessage.SyncId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatMessage.SyncId");
 			}
 			set
 			{

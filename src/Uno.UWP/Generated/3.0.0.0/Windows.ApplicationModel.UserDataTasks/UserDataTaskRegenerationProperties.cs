@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTaskRegenerationProperties.Until is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTaskRegenerationProperties.Until is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20UserDataTaskRegenerationProperties.Until");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskRegenerationUnit%20UserDataTaskRegenerationProperties.Unit");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? UserDataTaskRegenerationProperties.Occurrences is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? UserDataTaskRegenerationProperties.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20UserDataTaskRegenerationProperties.Occurrences");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int UserDataTaskRegenerationProperties.Interval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int UserDataTaskRegenerationProperties.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20UserDataTaskRegenerationProperties.Interval");
 			}
 			set
 			{

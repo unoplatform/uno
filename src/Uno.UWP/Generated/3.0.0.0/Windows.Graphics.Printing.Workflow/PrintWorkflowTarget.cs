@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowStreamTarget PrintWorkflowTarget.TargetAsStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowStreamTarget PrintWorkflowTarget.TargetAsStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowStreamTarget%20PrintWorkflowTarget.TargetAsStream");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowObjectModelTargetPackage PrintWorkflowTarget.TargetAsXpsObjectModelPackage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowObjectModelTargetPackage PrintWorkflowTarget.TargetAsXpsObjectModelPackage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowObjectModelTargetPackage%20PrintWorkflowTarget.TargetAsXpsObjectModelPackage");
 			}
 		}
 		#endif

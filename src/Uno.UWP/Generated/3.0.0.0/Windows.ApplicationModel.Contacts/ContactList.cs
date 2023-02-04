@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactList.SupportsServerSearch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ContactList.SupportsServerSearch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContactList.SupportsServerSearch");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactList.IsHidden is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ContactList.IsHidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContactList.IsHidden");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListOtherAppWriteAccess ContactList.OtherAppWriteAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactListOtherAppWriteAccess ContactList.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactListOtherAppWriteAccess%20ContactList.OtherAppWriteAccess");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactList.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactList.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactList.DisplayName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListOtherAppReadAccess ContactList.OtherAppReadAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactListOtherAppReadAccess ContactList.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactListOtherAppReadAccess%20ContactList.OtherAppReadAccess");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactChangeTracker ContactList.ChangeTracker is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactChangeTracker ContactList.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactChangeTracker%20ContactList.ChangeTracker");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactList.SourceDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactList.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactList.SourceDisplayName");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactList.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactList.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactList.Id");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListSyncManager ContactList.SyncManager is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactListSyncManager ContactList.SyncManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactListSyncManager%20ContactList.SyncManager");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactList.UserDataAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactList.UserDataAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactList.UserDataAccountId");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListSyncConstraints ContactList.SyncConstraints is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactListSyncConstraints ContactList.SyncConstraints is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactListSyncConstraints%20ContactList.SyncConstraints");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListLimitedWriteOperations ContactList.LimitedWriteOperations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactListLimitedWriteOperations ContactList.LimitedWriteOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactListLimitedWriteOperations%20ContactList.LimitedWriteOperations");
 			}
 		}
 		#endif
@@ -167,70 +167,70 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.SaveAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactList.SaveAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.DeleteAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.DeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactList.DeleteAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetContactFromRemoteIdAsync( string remoteId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetContactFromRemoteIdAsync(string remoteId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetContactFromRemoteIdAsync(string remoteId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CContact%3E%20ContactList.GetContactFromRemoteIdAsync%28string%20remoteId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetMeContactAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetMeContactAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetMeContactAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CContact%3E%20ContactList.GetMeContactAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.ContactReader GetContactReader()
 		{
-			throw new global::System.NotImplementedException("The member ContactReader ContactList.GetContactReader() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ContactReader ContactList.GetContactReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactReader%20ContactList.GetContactReader%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.ContactReader GetContactReader( global::Windows.ApplicationModel.Contacts.ContactQueryOptions options)
 		{
-			throw new global::System.NotImplementedException("The member ContactReader ContactList.GetContactReader(ContactQueryOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ContactReader ContactList.GetContactReader(ContactQueryOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactReader%20ContactList.GetContactReader%28ContactQueryOptions%20options%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SaveContactAsync( global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.SaveContactAsync(Contact contact) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.SaveContactAsync(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactList.SaveContactAsync%28Contact%20contact%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeleteContactAsync( global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.DeleteContactAsync(Contact contact) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.DeleteContactAsync(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactList.DeleteContactAsync%28Contact%20contact%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetContactAsync( string contactId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetContactAsync(string contactId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetContactAsync(string contactId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CContact%3E%20ContactList.GetContactAsync%28string%20contactId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.RegisterSyncManagerAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.RegisterSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ContactList.RegisterSyncManagerAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactList.SupportsServerSearch.set
@@ -240,7 +240,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Contacts.ContactChangeTracker GetChangeTracker( string identity)
 		{
-			throw new global::System.NotImplementedException("The member ContactChangeTracker ContactList.GetChangeTracker(string identity) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ContactChangeTracker ContactList.GetChangeTracker(string identity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactChangeTracker%20ContactList.GetChangeTracker%28string%20identity%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

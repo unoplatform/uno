@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManagerRateReceivedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManagerRateReceivedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlaybackCommandManagerRateReceivedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlaybackCommandManagerRateReceivedEventArgs.PlaybackRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaPlaybackCommandManagerRateReceivedEventArgs.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaPlaybackCommandManagerRateReceivedEventArgs.PlaybackRate");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral MediaPlaybackCommandManagerRateReceivedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral MediaPlaybackCommandManagerRateReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20MediaPlaybackCommandManagerRateReceivedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

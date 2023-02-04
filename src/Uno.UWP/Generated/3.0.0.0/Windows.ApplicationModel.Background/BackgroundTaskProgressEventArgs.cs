@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid BackgroundTaskProgressEventArgs.InstanceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid BackgroundTaskProgressEventArgs.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20BackgroundTaskProgressEventArgs.InstanceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundTaskProgressEventArgs.Progress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BackgroundTaskProgressEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BackgroundTaskProgressEventArgs.Progress");
 			}
 		}
 		#endif

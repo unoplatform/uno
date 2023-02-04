@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReplaceAppointmentOperation.AppointmentId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReplaceAppointmentOperation.AppointmentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReplaceAppointmentOperation.AppointmentId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Appointment ReplaceAppointmentOperation.AppointmentInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Appointment ReplaceAppointmentOperation.AppointmentInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Appointment%20ReplaceAppointmentOperation.AppointmentInformation");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ReplaceAppointmentOperation.InstanceStartDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ReplaceAppointmentOperation.InstanceStartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20ReplaceAppointmentOperation.InstanceStartDate");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReplaceAppointmentOperation.SourcePackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ReplaceAppointmentOperation.SourcePackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ReplaceAppointmentOperation.SourcePackageFamilyName");
 			}
 		}
 		#endif

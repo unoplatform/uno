@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.SustainDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.SustainDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBlinkEffect.SustainDuration");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.StartDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBlinkEffect.StartDelay");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LampArrayRepetitionMode%20LampArrayBlinkEffect.RepetitionMode");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.RepetitionDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.RepetitionDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBlinkEffect.RepetitionDelay");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.Occurrences is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArrayBlinkEffect.Occurrences");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.DecayDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.DecayDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBlinkEffect.DecayDuration");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArrayBlinkEffect.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color LampArrayBlinkEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20LampArrayBlinkEffect.Color");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.AttackDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.AttackDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBlinkEffect.AttackDuration");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.ZIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArrayBlinkEffect.ZIndex");
 			}
 			set
 			{

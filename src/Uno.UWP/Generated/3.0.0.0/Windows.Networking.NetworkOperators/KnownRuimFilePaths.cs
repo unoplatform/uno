@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownRuimFilePaths.EFSpn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownRuimFilePaths.EFSpn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownRuimFilePaths.EFSpn");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownRuimFilePaths.Gid1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownRuimFilePaths.Gid1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownRuimFilePaths.Gid1");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownRuimFilePaths.Gid2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownRuimFilePaths.Gid2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownRuimFilePaths.Gid2");
 			}
 		}
 		#endif

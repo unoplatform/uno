@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXAlphaMode CompositionDrawingSurface.AlphaMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXAlphaMode CompositionDrawingSurface.AlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXAlphaMode%20CompositionDrawingSurface.AlphaMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat CompositionDrawingSurface.PixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat CompositionDrawingSurface.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20CompositionDrawingSurface.PixelFormat");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size CompositionDrawingSurface.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size CompositionDrawingSurface.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20CompositionDrawingSurface.Size");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 CompositionDrawingSurface.SizeInt32 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 CompositionDrawingSurface.SizeInt32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20CompositionDrawingSurface.SizeInt32");
 			}
 		}
 		#endif

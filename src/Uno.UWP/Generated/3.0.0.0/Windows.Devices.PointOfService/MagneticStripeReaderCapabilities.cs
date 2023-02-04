@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderAuthenticationLevel MagneticStripeReaderCapabilities.AuthenticationLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderAuthenticationLevel MagneticStripeReaderCapabilities.AuthenticationLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderAuthenticationLevel%20MagneticStripeReaderCapabilities.AuthenticationLevel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderCapabilities.CardAuthentication is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderCapabilities.CardAuthentication is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderCapabilities.CardAuthentication");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsIsoSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsIsoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsIsoSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsJisOneSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsJisOneSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsJisOneSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsJisTwoSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsJisTwoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsJisTwoSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsStatisticsReportingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsStatisticsReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsStatisticsReportingSupported");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsStatisticsUpdatingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsStatisticsUpdatingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsStatisticsUpdatingSupported");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsTrackDataMaskingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsTrackDataMaskingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsTrackDataMaskingSupported");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsTransmitSentinelsSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsTransmitSentinelsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MagneticStripeReaderCapabilities.IsTransmitSentinelsSupported");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType MagneticStripeReaderCapabilities.PowerReportingType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType MagneticStripeReaderCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnifiedPosPowerReportingType%20MagneticStripeReaderCapabilities.PowerReportingType");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCapabilities.SupportedEncryptionAlgorithms is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCapabilities.SupportedEncryptionAlgorithms is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderCapabilities.SupportedEncryptionAlgorithms");
 			}
 		}
 		#endif

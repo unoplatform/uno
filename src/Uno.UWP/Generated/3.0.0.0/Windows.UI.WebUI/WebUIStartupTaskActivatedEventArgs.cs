@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIStartupTaskActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind WebUIStartupTaskActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20WebUIStartupTaskActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIStartupTaskActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIStartupTaskActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20WebUIStartupTaskActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIStartupTaskActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen WebUIStartupTaskActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20WebUIStartupTaskActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebUIStartupTaskActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User WebUIStartupTaskActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20WebUIStartupTaskActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIStartupTaskActivatedEventArgs.TaskId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebUIStartupTaskActivatedEventArgs.TaskId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebUIStartupTaskActivatedEventArgs.TaskId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIStartupTaskActivatedEventArgs.ActivatedOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIStartupTaskActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivatedOperation%20WebUIStartupTaskActivatedEventArgs.ActivatedOperation");
 			}
 		}
 		#endif

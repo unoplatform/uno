@@ -30,7 +30,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 	}
 
 	public partial class Binding_DefaultBindMode_DataTemplate_Model : DependencyObject
-	{ 
+	{
 		public string Default_undefined_Property
 		{
 			get { return (string)GetValue(Default_undefined_PropertyProperty); }
@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		public static readonly DependencyProperty Default_undefined_TwoWay_PropertyProperty =
 			DependencyProperty.Register("Default_undefined_TwoWay_Property", typeof(string), typeof(Binding_DefaultBindMode_DataTemplate_Model), new FrameworkPropertyMetadata(null));
-			
+
 		public string Default_OneWay_Property
 		{
 			get { return (string)GetValue(Default_OneWay_PropertyProperty); }

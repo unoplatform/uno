@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LowLightFusion.MaxSupportedFrameCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LowLightFusion.MaxSupportedFrameCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LowLightFusion.MaxSupportedFrameCount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<BitmapPixelFormat> LowLightFusion.SupportedBitmapPixelFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<BitmapPixelFormat> LowLightFusion.SupportedBitmapPixelFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CBitmapPixelFormat%3E%20LowLightFusion.SupportedBitmapPixelFormats");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Core.LowLightFusionResult, double> FuseAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Graphics.Imaging.SoftwareBitmap> frameSet)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<LowLightFusionResult, double> LowLightFusion.FuseAsync(IEnumerable<SoftwareBitmap> frameSet) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<LowLightFusionResult, double> LowLightFusion.FuseAsync(IEnumerable<SoftwareBitmap> frameSet) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3CLowLightFusionResult%2C%20double%3E%20LowLightFusion.FuseAsync%28IEnumerable%3CSoftwareBitmap%3E%20frameSet%29");
 		}
 		#endif
 	}

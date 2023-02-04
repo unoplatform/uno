@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 DistantLight.Direction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 DistantLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20DistantLight.Direction");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual DistantLight.CoordinateSpace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Visual DistantLight.CoordinateSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20DistantLight.CoordinateSpace");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DistantLight.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color DistantLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20DistantLight.Color");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DistantLight.Intensity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float DistantLight.Intensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20DistantLight.Intensity");
 			}
 			set
 			{

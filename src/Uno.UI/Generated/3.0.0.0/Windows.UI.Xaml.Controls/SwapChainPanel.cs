@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Core.CoreIndependentInputSource CreateCoreIndependentInputSource( global::Windows.UI.Core.CoreInputDeviceTypes deviceTypes)
 		{
-			throw new global::System.NotImplementedException("The member CoreIndependentInputSource SwapChainPanel.CreateCoreIndependentInputSource(CoreInputDeviceTypes deviceTypes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreIndependentInputSource SwapChainPanel.CreateCoreIndependentInputSource(CoreInputDeviceTypes deviceTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreIndependentInputSource%20SwapChainPanel.CreateCoreIndependentInputSource%28CoreInputDeviceTypes%20deviceTypes%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwapChainPanel.CompositionScaleXProperty.get

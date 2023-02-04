@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Core.IFrameworkView CreateView()
 		{
-			throw new global::System.NotImplementedException("The member IFrameworkView FrameworkViewSource.CreateView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IFrameworkView FrameworkViewSource.CreateView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IFrameworkView%20FrameworkViewSource.CreateView%28%29");
 		}
 		#endif
 		// Processing: Windows.ApplicationModel.Core.IFrameworkViewSource

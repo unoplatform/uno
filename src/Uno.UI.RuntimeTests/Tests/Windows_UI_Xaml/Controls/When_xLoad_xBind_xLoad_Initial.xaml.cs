@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 
 		public bool IsLoad() => true;
 
-		public When_xLoad_xBind_xLoad_Initial_ViewModel Model {  get; set; }
+		public When_xLoad_xBind_xLoad_Initial_ViewModel Model { get; set; }
 	}
 
 	public class When_xLoad_xBind_xLoad_Initial_ViewModel : System.ComponentModel.INotifyPropertyChanged

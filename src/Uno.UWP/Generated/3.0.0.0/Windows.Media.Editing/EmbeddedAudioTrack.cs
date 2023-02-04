@@ -11,7 +11,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.AudioEncodingProperties GetAudioEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member AudioEncodingProperties EmbeddedAudioTrack.GetAudioEncodingProperties() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioEncodingProperties EmbeddedAudioTrack.GetAudioEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20EmbeddedAudioTrack.GetAudioEncodingProperties%28%29");
 		}
 		#endif
 	}

@@ -11,7 +11,7 @@ namespace Windows.Gaming.Input.Custom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Gaming.Input.IGameController TryGetFactoryControllerFromGameController( global::Windows.Gaming.Input.Custom.ICustomGameControllerFactory factory,  global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw new global::System.NotImplementedException("The member IGameController GameControllerFactoryManager.TryGetFactoryControllerFromGameController(ICustomGameControllerFactory factory, IGameController gameController) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IGameController GameControllerFactoryManager.TryGetFactoryControllerFromGameController(ICustomGameControllerFactory factory, IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IGameController%20GameControllerFactoryManager.TryGetFactoryControllerFromGameController%28ICustomGameControllerFactory%20factory%2C%20IGameController%20gameController%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

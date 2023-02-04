@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.CustomFields is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.CustomFields is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContactField%3E%20ContactInformation.CustomFields");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.Emails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.Emails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContactField%3E%20ContactInformation.Emails");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactInstantMessageField> ContactInformation.InstantMessages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactInstantMessageField> ContactInformation.InstantMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContactInstantMessageField%3E%20ContactInformation.InstantMessages");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactLocationField> ContactInformation.Locations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactLocationField> ContactInformation.Locations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContactLocationField%3E%20ContactInformation.Locations");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInformation.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactInformation.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactInformation.Name");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.PhoneNumbers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.PhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContactField%3E%20ContactInformation.PhoneNumbers");
 			}
 		}
 		#endif
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetThumbnailAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> ContactInformation.GetThumbnailAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> ContactInformation.GetThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20ContactInformation.GetThumbnailAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Emails.get
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactField> QueryCustomFields( string customName)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.QueryCustomFields(string customName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.QueryCustomFields(string customName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CContactField%3E%20ContactInformation.QueryCustomFields%28string%20customName%29");
 		}
 		#endif
 	}

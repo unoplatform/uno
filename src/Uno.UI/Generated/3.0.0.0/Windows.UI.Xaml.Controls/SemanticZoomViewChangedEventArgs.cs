@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SemanticZoomLocation SemanticZoomViewChangedEventArgs.SourceItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SemanticZoomLocation SemanticZoomViewChangedEventArgs.SourceItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SemanticZoomLocation%20SemanticZoomViewChangedEventArgs.SourceItem");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SemanticZoomViewChangedEventArgs.IsSourceZoomedInView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SemanticZoomViewChangedEventArgs.IsSourceZoomedInView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SemanticZoomViewChangedEventArgs.IsSourceZoomedInView");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SemanticZoomLocation SemanticZoomViewChangedEventArgs.DestinationItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SemanticZoomLocation SemanticZoomViewChangedEventArgs.DestinationItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SemanticZoomLocation%20SemanticZoomViewChangedEventArgs.DestinationItem");
 			}
 			set
 			{

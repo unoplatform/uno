@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TextResponse.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TextResponse.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TextResponse.Content");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint TextResponse.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint TextResponse.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20TextResponse.Id");
 			}
 		}
 		#endif

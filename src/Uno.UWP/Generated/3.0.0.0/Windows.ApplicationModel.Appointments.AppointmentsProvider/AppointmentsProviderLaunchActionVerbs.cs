@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.AddAppointment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.AddAppointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderLaunchActionVerbs.AddAppointment");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.RemoveAppointment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.RemoveAppointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderLaunchActionVerbs.RemoveAppointment");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ReplaceAppointment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ReplaceAppointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderLaunchActionVerbs.ReplaceAppointment");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ShowTimeFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ShowTimeFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderLaunchActionVerbs.ShowTimeFrame");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.EFOns is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.EFOns is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownSimFilePaths.EFOns");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.EFSpn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.EFSpn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownSimFilePaths.EFSpn");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.Gid1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.Gid1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownSimFilePaths.Gid1");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.Gid2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownSimFilePaths.Gid2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20KnownSimFilePaths.Gid2");
 			}
 		}
 		#endif

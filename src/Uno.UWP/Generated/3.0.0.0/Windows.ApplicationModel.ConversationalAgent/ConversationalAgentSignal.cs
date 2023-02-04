@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConversationalAgentSignal.SignalStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ConversationalAgentSignal.SignalStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ConversationalAgentSignal.SignalStart");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.SignalName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.SignalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ConversationalAgentSignal.SignalName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.SignalId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.SignalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ConversationalAgentSignal.SignalId");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConversationalAgentSignal.SignalEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ConversationalAgentSignal.SignalEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ConversationalAgentSignal.SignalEnd");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ConversationalAgentSignal.SignalContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object ConversationalAgentSignal.SignalContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ConversationalAgentSignal.SignalContext");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSignal.IsSignalVerificationRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSignal.IsSignalVerificationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSignal.IsSignalVerificationRequired");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.DetectorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.DetectorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ConversationalAgentSignal.DetectorId");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationSignalDetectorKind ConversationalAgentSignal.DetectorKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationSignalDetectorKind ConversationalAgentSignal.DetectorKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationSignalDetectorKind%20ConversationalAgentSignal.DetectorKind");
 			}
 		}
 		#endif

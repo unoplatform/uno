@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size LineDisplayAttributes.ScreenSizeInCharacters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size LineDisplayAttributes.ScreenSizeInCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20LineDisplayAttributes.ScreenSizeInCharacters");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsPowerNotifyEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsPowerNotifyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayAttributes.IsPowerNotifyEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsCharacterSetMappingEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsCharacterSetMappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayAttributes.IsCharacterSetMappingEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayWindow LineDisplayAttributes.CurrentWindow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LineDisplayWindow LineDisplayAttributes.CurrentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LineDisplayWindow%20LineDisplayAttributes.CurrentWindow");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.CharacterSet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.CharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LineDisplayAttributes.CharacterSet");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.Brightness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.Brightness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LineDisplayAttributes.Brightness");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayAttributes.BlinkRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayAttributes.BlinkRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LineDisplayAttributes.BlinkRate");
 			}
 			set
 			{

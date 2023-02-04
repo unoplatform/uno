@@ -13,7 +13,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlAcceleratorKeyPressedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlAcceleratorKeyPressedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlAcceleratorKeyPressedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType WebViewControlAcceleratorKeyPressedEventArgs.EventType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType WebViewControlAcceleratorKeyPressedEventArgs.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreAcceleratorKeyEventType%20WebViewControlAcceleratorKeyPressedEventArgs.EventType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CorePhysicalKeyStatus%20WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlAcceleratorKeyRoutingStage WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewControlAcceleratorKeyRoutingStage WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewControlAcceleratorKeyRoutingStage%20WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VirtualKey WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VirtualKey%20WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey");
 			}
 		}
 		#endif

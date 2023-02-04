@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object AdvancedCapturedPhoto.Context is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object AdvancedCapturedPhoto.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20AdvancedCapturedPhoto.Context");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame AdvancedCapturedPhoto.Frame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrame AdvancedCapturedPhoto.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrame%20AdvancedCapturedPhoto.Frame");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedCapturedPhoto.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedCapturedPhoto.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdvancedPhotoMode%20AdvancedCapturedPhoto.Mode");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? AdvancedCapturedPhoto.FrameBoundsRelativeToReferencePhoto is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect? AdvancedCapturedPhoto.FrameBoundsRelativeToReferencePhoto is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%3F%20AdvancedCapturedPhoto.FrameBoundsRelativeToReferencePhoto");
 			}
 		}
 		#endif

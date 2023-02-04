@@ -11,14 +11,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AreEffectsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool CompositionCapabilities.AreEffectsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CompositionCapabilities.AreEffectsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionCapabilities.AreEffectsSupported%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AreEffectsFast()
 		{
-			throw new global::System.NotImplementedException("The member bool CompositionCapabilities.AreEffectsFast() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CompositionCapabilities.AreEffectsFast() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionCapabilities.AreEffectsFast%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionCapabilities.Changed.add
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.CompositionCapabilities GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member CompositionCapabilities CompositionCapabilities.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionCapabilities CompositionCapabilities.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionCapabilities%20CompositionCapabilities.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

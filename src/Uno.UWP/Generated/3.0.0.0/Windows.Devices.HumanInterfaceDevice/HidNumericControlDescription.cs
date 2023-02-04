@@ -13,7 +13,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidNumericControlDescription.HasNull is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HidNumericControlDescription.HasNull is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HidNumericControlDescription.HasNull");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidNumericControlDescription.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidNumericControlDescription.IsAbsolute is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HidNumericControlDescription.IsAbsolute is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HidNumericControlDescription.IsAbsolute");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.LogicalMaximum is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.LogicalMaximum is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20HidNumericControlDescription.LogicalMaximum");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.LogicalMinimum is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.LogicalMinimum is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20HidNumericControlDescription.LogicalMinimum");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HidCollection> HidNumericControlDescription.ParentCollections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<HidCollection> HidNumericControlDescription.ParentCollections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CHidCollection%3E%20HidNumericControlDescription.ParentCollections");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.PhysicalMaximum is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.PhysicalMaximum is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20HidNumericControlDescription.PhysicalMaximum");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.PhysicalMinimum is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int HidNumericControlDescription.PhysicalMinimum is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20HidNumericControlDescription.PhysicalMinimum");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.ReportCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.ReportCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidNumericControlDescription.ReportCount");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControlDescription.ReportId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort HidNumericControlDescription.ReportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20HidNumericControlDescription.ReportId");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.ReportSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.ReportSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidNumericControlDescription.ReportSize");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidReportType HidNumericControlDescription.ReportType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HidReportType HidNumericControlDescription.ReportType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HidReportType%20HidNumericControlDescription.ReportType");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.Unit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidNumericControlDescription.Unit");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.UnitExponent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidNumericControlDescription.UnitExponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidNumericControlDescription.UnitExponent");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControlDescription.UsageId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort HidNumericControlDescription.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20HidNumericControlDescription.UsageId");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControlDescription.UsagePage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort HidNumericControlDescription.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20HidNumericControlDescription.UsagePage");
 			}
 		}
 		#endif

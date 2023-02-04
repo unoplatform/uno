@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string OnlineIdSystemIdentity.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string OnlineIdSystemIdentity.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20OnlineIdSystemIdentity.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OnlineIdServiceTicket OnlineIdSystemIdentity.Ticket is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member OnlineIdServiceTicket OnlineIdSystemIdentity.Ticket is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OnlineIdServiceTicket%20OnlineIdSystemIdentity.Ticket");
 			}
 		}
 		#endif

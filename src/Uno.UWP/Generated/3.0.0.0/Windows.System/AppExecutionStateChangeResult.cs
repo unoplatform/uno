@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AppExecutionStateChangeResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception AppExecutionStateChangeResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20AppExecutionStateChangeResult.ExtendedError");
 			}
 		}
 		#endif

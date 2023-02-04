@@ -13,7 +13,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MdmAlert> MdmSession.Alerts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MdmAlert> MdmSession.Alerts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMdmAlert%3E%20MdmSession.Alerts");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception MdmSession.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception MdmSession.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20MdmSession.ExtendedError");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmSession.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MdmSession.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MdmSession.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MdmSessionState MdmSession.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MdmSessionState MdmSession.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MdmSessionState%20MdmSession.State");
 			}
 		}
 		#endif
@@ -55,7 +55,7 @@ namespace Windows.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction AttachAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.AttachAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.AttachAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MdmSession.AttachAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -69,14 +69,14 @@ namespace Windows.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MdmSession.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Management.MdmAlert> alerts)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync(IEnumerable<MdmAlert> alerts) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync(IEnumerable<MdmAlert> alerts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MdmSession.StartAsync%28IEnumerable%3CMdmAlert%3E%20alerts%29");
 		}
 		#endif
 	}

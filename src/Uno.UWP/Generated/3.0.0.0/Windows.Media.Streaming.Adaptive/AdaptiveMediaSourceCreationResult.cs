@@ -13,7 +13,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage AdaptiveMediaSourceCreationResult.HttpResponseMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseMessage AdaptiveMediaSourceCreationResult.HttpResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessage%20AdaptiveMediaSourceCreationResult.HttpResponseMessage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSource AdaptiveMediaSourceCreationResult.MediaSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdaptiveMediaSource AdaptiveMediaSourceCreationResult.MediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdaptiveMediaSource%20AdaptiveMediaSourceCreationResult.MediaSource");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceCreationStatus AdaptiveMediaSourceCreationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceCreationStatus AdaptiveMediaSourceCreationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdaptiveMediaSourceCreationStatus%20AdaptiveMediaSourceCreationResult.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceCreationResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceCreationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20AdaptiveMediaSourceCreationResult.ExtendedError");
 			}
 		}
 		#endif

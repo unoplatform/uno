@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 						}
 						newArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, movedItems, newStartingIndex, oldStartingIndex);
 					}
-				  break;
+					break;
 				case NotifyCollectionChangedAction.Reset:
 					newArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 					break;

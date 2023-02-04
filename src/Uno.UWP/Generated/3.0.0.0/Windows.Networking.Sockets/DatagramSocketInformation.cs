@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName DatagramSocketInformation.LocalAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName DatagramSocketInformation.LocalAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20DatagramSocketInformation.LocalAddress");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DatagramSocketInformation.LocalPort is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DatagramSocketInformation.LocalPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DatagramSocketInformation.LocalPort");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName DatagramSocketInformation.RemoteAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName DatagramSocketInformation.RemoteAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20DatagramSocketInformation.RemoteAddress");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DatagramSocketInformation.RemotePort is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DatagramSocketInformation.RemotePort is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DatagramSocketInformation.RemotePort");
 			}
 		}
 		#endif

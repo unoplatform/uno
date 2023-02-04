@@ -55,7 +55,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 						return (WUX.Markup.IXamlMetadataProvider)application;
 					}
-					
+
 					return null;
 				};
 			}

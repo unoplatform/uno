@@ -87,7 +87,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Focus(FocusState.Programmatic);
 				FocusManager.GettingFocus += GettingFocus;
 				SUT.Text = "a";
-				await WindowHelper.WaitForIdle();				
+				await WindowHelper.WaitForIdle();
 			}
 			finally
 			{
@@ -112,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Button button = null;
 			try
 			{
-				
+
 
 				button = new Button();
 				var stack = new StackPanel()
@@ -128,17 +128,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
 				WindowHelper.WindowContent = stack;
 				await WindowHelper.WaitForIdle();
-				
 
-				SUT.Focus(FocusState.Programmatic);				
+
+				SUT.Focus(FocusState.Programmatic);
 				SUT.Text = "ab";
 				await WindowHelper.WaitForIdle();
 			}
 			finally
-			{	
+			{
 				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
 				await WindowHelper.WaitForIdle();
 			}
-		}		
+		}
 	}
 }

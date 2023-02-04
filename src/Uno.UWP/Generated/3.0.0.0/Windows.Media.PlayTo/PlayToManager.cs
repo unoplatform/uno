@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToManager.DefaultSourceSelection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlayToManager.DefaultSourceSelection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlayToManager.DefaultSourceSelection");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.Media.PlayTo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.PlayTo.PlayToManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member PlayToManager PlayToManager.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PlayToManager PlayToManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToManager%20PlayToManager.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

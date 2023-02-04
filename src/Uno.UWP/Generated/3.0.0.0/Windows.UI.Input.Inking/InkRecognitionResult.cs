@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect InkRecognitionResult.BoundingRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect InkRecognitionResult.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20InkRecognitionResult.BoundingRect");
 			}
 		}
 		#endif
@@ -22,14 +22,14 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<string> GetTextCandidates()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<string> InkRecognitionResult.GetTextCandidates() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<string> InkRecognitionResult.GetTextCandidates() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20InkRecognitionResult.GetTextCandidates%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkStroke> GetStrokes()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkRecognitionResult.GetStrokes() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkRecognitionResult.GetStrokes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CInkStroke%3E%20InkRecognitionResult.GetStrokes%28%29");
 		}
 		#endif
 	}

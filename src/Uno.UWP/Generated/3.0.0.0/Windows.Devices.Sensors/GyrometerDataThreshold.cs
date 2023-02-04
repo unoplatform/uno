@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.ZAxisInDegreesPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.ZAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20GyrometerDataThreshold.ZAxisInDegreesPerSecond");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.YAxisInDegreesPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.YAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20GyrometerDataThreshold.YAxisInDegreesPerSecond");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.XAxisInDegreesPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.XAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20GyrometerDataThreshold.XAxisInDegreesPerSecond");
 			}
 			set
 			{

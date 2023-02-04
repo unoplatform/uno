@@ -75,7 +75,7 @@ namespace Uno.UI.Wasm
 
 				var headers = response.headers
 					.Split('\n')
-					.Select(h => h.Split(new [] {':'}, 2))
+					.Select(h => h.Split(new[] { ':' }, 2))
 					.Where(h => h.Length == 2)
 					.GroupBy(h => h[0], h => h[1]);
 

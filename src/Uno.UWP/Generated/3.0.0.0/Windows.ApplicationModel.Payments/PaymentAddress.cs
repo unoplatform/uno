@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.SortingCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.SortingCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.SortingCode");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Region is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.Region is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.Region");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Recipient is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.Recipient is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.Recipient");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.PostalCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.PostalCode");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.PhoneNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.PhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.PhoneNumber");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Organization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.Organization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.Organization");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.LanguageCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.LanguageCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.LanguageCode");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.DependentLocality is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.DependentLocality is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.DependentLocality");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Country is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.Country");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.City is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentAddress.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentAddress.City");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentAddress.AddressLines is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentAddress.AddressLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20PaymentAddress.AddressLines");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet PaymentAddress.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet PaymentAddress.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20PaymentAddress.Properties");
 			}
 		}
 		#endif

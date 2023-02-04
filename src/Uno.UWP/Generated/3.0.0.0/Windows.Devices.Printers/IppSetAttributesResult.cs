@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, IppAttributeError> IppSetAttributesResult.AttributeErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, IppAttributeError> IppSetAttributesResult.AttributeErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20IppAttributeError%3E%20IppSetAttributesResult.AttributeErrors");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool IppSetAttributesResult.Succeeded is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool IppSetAttributesResult.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20IppSetAttributesResult.Succeeded");
 			}
 		}
 		#endif

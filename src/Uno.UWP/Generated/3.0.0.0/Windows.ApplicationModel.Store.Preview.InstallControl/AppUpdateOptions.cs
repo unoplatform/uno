@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppUpdateOptions.CatalogId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppUpdateOptions.CatalogId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppUpdateOptions.CatalogId");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppUpdateOptions.AllowForcedAppRestart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppUpdateOptions.AllowForcedAppRestart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppUpdateOptions.AllowForcedAppRestart");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound");
 			}
 			set
 			{

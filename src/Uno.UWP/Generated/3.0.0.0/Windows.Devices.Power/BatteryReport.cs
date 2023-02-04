@@ -13,7 +13,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.ChargeRateInMilliwatts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? BatteryReport.ChargeRateInMilliwatts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20BatteryReport.ChargeRateInMilliwatts");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.DesignCapacityInMilliwattHours is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? BatteryReport.DesignCapacityInMilliwattHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20BatteryReport.DesignCapacityInMilliwattHours");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.FullChargeCapacityInMilliwattHours is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? BatteryReport.FullChargeCapacityInMilliwattHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20BatteryReport.FullChargeCapacityInMilliwattHours");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.RemainingCapacityInMilliwattHours is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? BatteryReport.RemainingCapacityInMilliwattHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20BatteryReport.RemainingCapacityInMilliwattHours");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BatteryStatus BatteryReport.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BatteryStatus BatteryReport.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BatteryStatus%20BatteryReport.Status");
 			}
 		}
 		#endif

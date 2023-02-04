@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessoryManager.PhoneMute is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AccessoryManager.PhoneMute is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.PhoneMute");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallAudioEndpoint AccessoryManager.PhoneCallAudioEndpoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallAudioEndpoint AccessoryManager.PhoneCallAudioEndpoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallAudioEndpoint%20AccessoryManager.PhoneCallAudioEndpoint");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessoryManager.BatterySaverState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AccessoryManager.BatterySaverState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.BatterySaverState");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessoryManager.DoNotDisturbEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AccessoryManager.DoNotDisturbEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.DoNotDisturbEnabled");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessoryManager.DrivingModeEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AccessoryManager.DrivingModeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.DrivingModeEnabled");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlaybackCapability AccessoryManager.MediaPlaybackCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlaybackCapability AccessoryManager.MediaPlaybackCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlaybackCapability%20AccessoryManager.MediaPlaybackCapabilities");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlaybackStatus AccessoryManager.MediaPlaybackStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlaybackStatus AccessoryManager.MediaPlaybackStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlaybackStatus%20AccessoryManager.MediaPlaybackStatus");
 			}
 		}
 		#endif
@@ -91,7 +91,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhoneLineDetails> AccessoryManager.PhoneLineDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PhoneLineDetails> AccessoryManager.PhoneLineDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPhoneLineDetails%3E%20AccessoryManager.PhoneLineDetails");
 			}
 		}
 		#endif
@@ -101,7 +101,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessoryManager.IsPhonePinLocked is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AccessoryManager.IsPhonePinLocked is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.IsPhonePinLocked");
 			}
 		}
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SpeedDialEntry> AccessoryManager.SpeedDialList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SpeedDialEntry> AccessoryManager.SpeedDialList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSpeedDialEntry%3E%20AccessoryManager.SpeedDialList");
 			}
 		}
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VolumeInfo AccessoryManager.VolumeInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VolumeInfo AccessoryManager.VolumeInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VolumeInfo%20AccessoryManager.VolumeInfo");
 			}
 		}
 		#endif
@@ -202,14 +202,14 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Phone.Notification.Management.EmailAccountInfo> GetAllEmailAccounts()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<EmailAccountInfo> AccessoryManager.GetAllEmailAccounts() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<EmailAccountInfo> AccessoryManager.GetAllEmailAccounts() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEmailAccountInfo%3E%20AccessoryManager.GetAllEmailAccounts%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Phone.Notification.Management.EmailFolderInfo> GetFolders( string emailAccount)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<EmailFolderInfo> AccessoryManager.GetFolders(string emailAccount) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<EmailFolderInfo> AccessoryManager.GetFolders(string emailAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEmailFolderInfo%3E%20AccessoryManager.GetFolders%28string%20emailAccount%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -244,14 +244,14 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string RegisterAccessoryApp()
 		{
-			throw new global::System.NotImplementedException("The member string AccessoryManager.RegisterAccessoryApp() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string AccessoryManager.RegisterAccessoryApp() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AccessoryManager.RegisterAccessoryApp%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Phone.Notification.Management.IAccessoryNotificationTriggerDetails GetNextTriggerDetails()
 		{
-			throw new global::System.NotImplementedException("The member IAccessoryNotificationTriggerDetails AccessoryManager.GetNextTriggerDetails() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAccessoryNotificationTriggerDetails AccessoryManager.GetNextTriggerDetails() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAccessoryNotificationTriggerDetails%20AccessoryManager.GetNextTriggerDetails%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -266,7 +266,7 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Phone.Notification.Management.PhoneLineDetails GetPhoneLineDetails( global::System.Guid phoneLine)
 		{
-			throw new global::System.NotImplementedException("The member PhoneLineDetails AccessoryManager.GetPhoneLineDetails(Guid phoneLine) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PhoneLineDetails AccessoryManager.GetPhoneLineDetails(Guid phoneLine) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineDetails%20AccessoryManager.GetPhoneLineDetails%28Guid%20phoneLine%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -410,7 +410,7 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Phone.Notification.Management.MediaMetadata GetMediaMetadata()
 		{
-			throw new global::System.NotImplementedException("The member MediaMetadata AccessoryManager.GetMediaMetadata() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaMetadata AccessoryManager.GetMediaMetadata() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaMetadata%20AccessoryManager.GetMediaMetadata%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Phone.Notification.Management.AccessoryManager.MediaPlaybackCapabilities.get
@@ -429,7 +429,7 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Phone.Notification.Management.AppNotificationInfo> GetApps()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, AppNotificationInfo> AccessoryManager.GetApps() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, AppNotificationInfo> AccessoryManager.GetApps() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20AppNotificationInfo%3E%20AccessoryManager.GetApps%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -450,14 +450,14 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsNotificationEnabledForApplication( string appId)
 		{
-			throw new global::System.NotImplementedException("The member bool AccessoryManager.IsNotificationEnabledForApplication(string appId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool AccessoryManager.IsNotificationEnabledForApplication(string appId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.IsNotificationEnabledForApplication%28string%20appId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static int GetEnabledAccessoryNotificationTypes()
 		{
-			throw new global::System.NotImplementedException("The member int AccessoryManager.GetEnabledAccessoryNotificationTypes() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int AccessoryManager.GetEnabledAccessoryNotificationTypes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AccessoryManager.GetEnabledAccessoryNotificationTypes%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -478,14 +478,14 @@ namespace Windows.Phone.Notification.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool GetUserConsent()
 		{
-			throw new global::System.NotImplementedException("The member bool AccessoryManager.GetUserConsent() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool AccessoryManager.GetUserConsent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AccessoryManager.GetUserConsent%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.Streams.IRandomAccessStreamReference GetAppIcon( string appId)
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStreamReference AccessoryManager.GetAppIcon(string appId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRandomAccessStreamReference AccessoryManager.GetAppIcon(string appId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20AccessoryManager.GetAppIcon%28string%20appId%29");
 		}
 		#endif
 	}

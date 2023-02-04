@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlatformDiagnosticTraceInfo.IsAutoLogger is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlatformDiagnosticTraceInfo.IsAutoLogger is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlatformDiagnosticTraceInfo.IsAutoLogger");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlatformDiagnosticTraceInfo.IsExclusive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlatformDiagnosticTraceInfo.IsExclusive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlatformDiagnosticTraceInfo.IsExclusive");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlatformDiagnosticTracePriority PlatformDiagnosticTraceInfo.Priority is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlatformDiagnosticTracePriority PlatformDiagnosticTraceInfo.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlatformDiagnosticTracePriority%20PlatformDiagnosticTraceInfo.Priority");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PlatformDiagnosticTraceInfo.ProfileHash is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong PlatformDiagnosticTraceInfo.ProfileHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20PlatformDiagnosticTraceInfo.ProfileHash");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlatformDiagnosticTraceInfo.ScenarioId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlatformDiagnosticTraceInfo.ScenarioId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlatformDiagnosticTraceInfo.ScenarioId");
 			}
 		}
 		#endif

@@ -18,11 +18,11 @@ using System;
 
 namespace Uno.Reflection
 {
-    [Flags]
-    internal enum BindingBehavior
-    {
-        Inherited = 1,
-        Interface = 2,
-        All = Inherited | Interface
-    }
+	[Flags]
+	internal enum BindingBehavior
+	{
+		Inherited = 1,
+		Interface = 2,
+		All = Inherited | Interface
+	}
 }

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElementWeakCollection ThemeShadow.Receivers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIElementWeakCollection ThemeShadow.Receivers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElementWeakCollection%20ThemeShadow.Receivers");
 			}
 		}
 		#endif

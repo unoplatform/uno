@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation CompositionConditionalValue.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExpressionAnimation CompositionConditionalValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExpressionAnimation%20CompositionConditionalValue.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation CompositionConditionalValue.Condition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExpressionAnimation CompositionConditionalValue.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExpressionAnimation%20CompositionConditionalValue.Condition");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Interactions.CompositionConditionalValue Create( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member CompositionConditionalValue CompositionConditionalValue.Create(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionConditionalValue CompositionConditionalValue.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionConditionalValue%20CompositionConditionalValue.Create%28Compositor%20compositor%29");
 		}
 		#endif
 	}

@@ -64,7 +64,7 @@ namespace Uno.UI.Tests.CustomPanelTests
 			{
 				double width = 0, height = 0;
 
-				foreach(var child in Children)
+				foreach (var child in Children)
 				{
 					child.Measure(availableSize);
 

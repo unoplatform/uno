@@ -219,7 +219,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(ContentWidth - PresenterActualWidth, SUT.ScrollableWidth);
 			;
 		}
-		
+
 		[TestMethod]
 #if __WASM__
 		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing

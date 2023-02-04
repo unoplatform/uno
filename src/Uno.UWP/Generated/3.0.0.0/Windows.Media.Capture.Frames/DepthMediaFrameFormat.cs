@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DepthMediaFrameFormat.DepthScaleInMeters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DepthMediaFrameFormat.DepthScaleInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DepthMediaFrameFormat.DepthScaleInMeters");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat DepthMediaFrameFormat.VideoFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat DepthMediaFrameFormat.VideoFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoMediaFrameFormat%20DepthMediaFrameFormat.VideoFormat");
 			}
 		}
 		#endif

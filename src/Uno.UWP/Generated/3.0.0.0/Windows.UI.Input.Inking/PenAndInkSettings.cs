@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PenAndInkSettings.FontFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PenAndInkSettings.FontFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PenAndInkSettings.FontFamilyName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HandwritingLineHeight PenAndInkSettings.HandwritingLineHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HandwritingLineHeight PenAndInkSettings.HandwritingLineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HandwritingLineHeight%20PenAndInkSettings.HandwritingLineHeight");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PenAndInkSettings.IsHandwritingDirectlyIntoTextFieldEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PenAndInkSettings.IsHandwritingDirectlyIntoTextFieldEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PenAndInkSettings.IsHandwritingDirectlyIntoTextFieldEnabled");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PenAndInkSettings.IsTouchHandwritingEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PenAndInkSettings.IsTouchHandwritingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PenAndInkSettings.IsTouchHandwritingEnabled");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PenHandedness PenAndInkSettings.PenHandedness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PenHandedness PenAndInkSettings.PenHandedness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PenHandedness%20PenAndInkSettings.PenHandedness");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PenAndInkSettings.UserConsentsToHandwritingTelemetryCollection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PenAndInkSettings.UserConsentsToHandwritingTelemetryCollection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PenAndInkSettings.UserConsentsToHandwritingTelemetryCollection");
 			}
 		}
 		#endif
@@ -84,7 +84,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Inking.PenAndInkSettings GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member PenAndInkSettings PenAndInkSettings.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PenAndInkSettings PenAndInkSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PenAndInkSettings%20PenAndInkSettings.GetDefault%28%29");
 		}
 		#endif
 	}

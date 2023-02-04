@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SceneAnalysisEffectDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SceneAnalysisEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SceneAnalysisEffectDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet SceneAnalysisEffectDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet SceneAnalysisEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20SceneAnalysisEffectDefinition.Properties");
 			}
 		}
 		#endif

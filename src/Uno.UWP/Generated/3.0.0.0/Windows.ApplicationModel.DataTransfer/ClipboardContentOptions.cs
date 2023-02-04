@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsRoamable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsRoamable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClipboardContentOptions.IsRoamable");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsAllowedInHistory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsAllowedInHistory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClipboardContentOptions.IsAllowedInHistory");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.HistoryFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.HistoryFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ClipboardContentOptions.HistoryFormats");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.RoamingFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.RoamingFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ClipboardContentOptions.RoamingFormats");
 			}
 		}
 		#endif

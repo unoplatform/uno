@@ -9,11 +9,11 @@ namespace Windows.UI.Composition;
 partial class RectangleClip
 {
 	private static readonly SKPoint[] _radiiStore = new SKPoint[4];
-	
+
 	private SKRoundRect? _skRoundRect;
 
 	internal SKRoundRect SKRoundRect => GetRect();
-	
+
 	private SKRoundRect GetRect()
 	{
 		_skRoundRect ??= new SKRoundRect();

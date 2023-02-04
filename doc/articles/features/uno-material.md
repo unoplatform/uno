@@ -37,9 +37,9 @@ For complete instructions on using Uno Material in your projects, check out this
 > Certain controls require [additional setup steps](uno-material-controls-extra-setup.md).
 
 ## Migrating From Previous Resource Initialization Method
-Prior to the `1.0` release, the initialization of Material resources was required to be done through code-behind within the `App.xaml.cs` file. Resource initialization has now been moved to XAML-only. Follow the steps below to migrate from the old method of initialization to the new one:
+Prior to the `1.0` release, the initialization of Material resources was required to be done through code-behind within the `App.cs` or `App.xaml.cs` file. Resource initialization has now been moved to XAML-only. Follow the steps below to migrate from the old method of initialization to the new one:
 
-1. Remove the following code from `App.xaml.cs`
+1. Remove the following code from `App.cs` or `App.xaml.cs`
     ```diff
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
@@ -49,7 +49,7 @@ Prior to the `1.0` release, the initialization of Material resources was require
     }
 
     ```
-1. Add `MaterialColors` and `MaterialResources` to `App.xaml`:
+1. Add `MaterialColors` and `MaterialResources` to `AppResources.xaml` or `App.xaml`:
     ```diff
     <Application.Resources>
         <ResourceDictionary>

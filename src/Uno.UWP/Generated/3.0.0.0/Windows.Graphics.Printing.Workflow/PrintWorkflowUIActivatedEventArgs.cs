@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind PrintWorkflowUIActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind PrintWorkflowUIActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20PrintWorkflowUIActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState PrintWorkflowUIActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState PrintWorkflowUIActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20PrintWorkflowUIActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen PrintWorkflowUIActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen PrintWorkflowUIActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20PrintWorkflowUIActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User PrintWorkflowUIActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User PrintWorkflowUIActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20PrintWorkflowUIActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowForegroundSession PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowForegroundSession PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowForegroundSession%20PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession");
 			}
 		}
 		#endif

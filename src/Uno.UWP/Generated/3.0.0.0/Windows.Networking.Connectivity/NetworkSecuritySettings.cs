@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkAuthenticationType NetworkSecuritySettings.NetworkAuthenticationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NetworkAuthenticationType NetworkSecuritySettings.NetworkAuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NetworkAuthenticationType%20NetworkSecuritySettings.NetworkAuthenticationType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkEncryptionType NetworkSecuritySettings.NetworkEncryptionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NetworkEncryptionType NetworkSecuritySettings.NetworkEncryptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NetworkEncryptionType%20NetworkSecuritySettings.NetworkEncryptionType");
 			}
 		}
 		#endif

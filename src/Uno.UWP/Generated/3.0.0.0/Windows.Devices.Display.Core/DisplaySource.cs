@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayAdapterId DisplaySource.AdapterId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayAdapterId DisplaySource.AdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayAdapterId%20DisplaySource.AdapterId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplaySource.SourceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplaySource.SourceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplaySource.SourceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplaySourceStatus DisplaySource.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplaySourceStatus DisplaySource.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplaySourceStatus%20DisplaySource.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IBuffer GetMetadata( global::System.Guid Key)
 		{
-			throw new global::System.NotImplementedException("The member IBuffer DisplaySource.GetMetadata(Guid Key) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IBuffer DisplaySource.GetMetadata(Guid Key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20DisplaySource.GetMetadata%28Guid%20Key%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.Status.get
