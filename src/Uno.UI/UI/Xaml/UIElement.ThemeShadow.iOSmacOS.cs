@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml;
+﻿using Uno.Disposables;
+
+namespace Windows.UI.Xaml;
 
 public partial class UIElement
 {

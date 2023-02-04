@@ -1,28 +1,24 @@
-﻿using Uno.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-
-namespace Windows.UI.Xaml;
+﻿namespace Windows.UI.Xaml;
 
 public partial class UIElement
 {
-	partial void UnsetShadow(UIElement uiElement)
+	partial void UnsetShadow()
 	{
-		uiElement.SetStyle("box-shadow", "unset");
+		this.SetStyle("box-shadow", "unset");
 	}
 
-	partial void SetShadow(UIElement uiElement)
+	partial void SetShadow()
 	{
-		var translation = uiElement.Translation;
+		var translation = Translation;
 		var boxShadowValue = CreateBoxShadow(translation.Z);
-		uiElement.SetStyle("box-shadow", boxShadowValue);
+		this.SetStyle("box-shadow", boxShadowValue);
 	}
 
 	private static string CreateBoxShadow(float translationZ)
 	{
-		var z = (int)translationZ;
+		var z = (int)translationZ / 2;
 		var halfZ = z / 2;
 		var quarterZ = z / 4;
-		return $"{quarterZ}px {quarterZ}px {halfZ}px 0px rgba(0,0,0,0.3)";
+		return $"{quarterZ}px {quarterZ}px {halfZ}px 0px rgba(0,0,0,0.1)";
 	}
 }
