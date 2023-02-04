@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using System;
 
 namespace Windows.Foundation;
 

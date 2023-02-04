@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Windows.Foundation;
+﻿namespace Windows.Foundation;
 
 /// <summary>
 /// Represents a value in a property store.
