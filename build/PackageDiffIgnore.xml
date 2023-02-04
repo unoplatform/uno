@@ -9402,6 +9402,7 @@
 			<Member fullName="Windows.UI.Xaml.CornerRadius Uno.UI.Toolkit.ElevatedView.get_CornerRadius()" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="System.Void Uno.UI.Toolkit.ElevatedView.set_CornerRadius(Windows.UI.Xaml.CornerRadius value)" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Toolkit.ElevatedView.get_CornerRadiusProperty()" reason="Already exists in Control and ElevatedView should not shadow it" />
+			<Member fullName="System.Void Windows.ApplicationModel.SuspendingDeferral..ctor(System.Action deferralDone)" reason="This constructor does not exist in Windows" />
 		</Methods>
 	</IgnoreSet>
 
