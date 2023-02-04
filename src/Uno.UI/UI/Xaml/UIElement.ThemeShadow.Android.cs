@@ -17,13 +17,11 @@ public partial class UIElement
 
 	partial void SetShadow()
 	{
-		var translation = uiElement.Translation;
-
-		AndroidX.Core.View.ViewCompat.SetElevation(this, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(translation.Z));
+		AndroidX.Core.View.ViewCompat.SetElevation(this, Uno.UI.ViewHelper.LogicalToPhysicalPixels(Translation.Z) / 1.8f);
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
 		{
-			this.SetOutlineAmbientShadowColor(Color.Black);
-			this.SetOutlineSpotShadowColor(Color.Black);
+			this.SetOutlineSpotShadowColor(Colors.Black.WithOpacity(0.5));
+			this.SetOutlineAmbientShadowColor(Colors.Transparent);
 		}
 	}
 }
