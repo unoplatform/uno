@@ -5,7 +5,7 @@ namespace Uno.Helpers
 {
 	internal static class DeviceHelper
 	{
-#if NET_6_0
+#if NET6_0_OR_GREATER
 		public static Version OperatingSystemVersion => Environment.OSVersion.Version;
 #else
 		private static Version _version;
