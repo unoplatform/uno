@@ -15,12 +15,12 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
         ADDITIONAL_FLAGS: ''
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
         ADDITIONAL_FLAGS: ''
 
       # Keep for future previews
@@ -127,7 +127,7 @@ jobs:
   - task: DownloadBuildArtifacts@0
     displayName: Download build artifact
     inputs:
-      artifactName: 'NugetPackages-Artifacts-reference'
+      artifactName: 'NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)'
       downloadPath: '$(Agent.WorkFolder)'
 
   - task: ExtractFiles@1
