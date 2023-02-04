@@ -87,7 +87,7 @@ namespace Windows.UI
 				len -= offset;
 			}
 
-			// deal with optional alpha value
+			// deal with an optional alpha value
 			if (len == 4)
 			{
 				a = ToByte(colorCode[offset++]);
