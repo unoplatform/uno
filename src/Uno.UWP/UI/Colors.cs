@@ -129,7 +129,7 @@ namespace Windows.UI
 			return new Color(a, r, g, b);
 		}
 
-		static private byte ToByte(char c)
+		private static byte ToByte(char c)
 		{
 			if (c >= '0' && c <= '9')
 			{
