@@ -42,9 +42,6 @@ namespace Uno.UI.Controls
 		internal delegate void DraggingStage2Handler(NSDraggingInfo draggingInfo);
 		internal delegate bool PerformDragOperationHandler(NSDraggingInfo draggingInfo);
 
-		private static readonly WeakAttachedDictionary<NSView, string> _attachedProperties = new WeakAttachedDictionary<NSView, string>();
-		private const string NeedsKeyboardAttachedPropertyKey = "NeedsKeyboard";
-
 		private readonly InputPane _inputPane;
 		private WeakReference<NSScrollView> _scrollViewModifiedForKeyboard;
 		private static PointerEventArgs _previous;
@@ -521,16 +518,6 @@ namespace Uno.UI.Controls
 			{
 				return false;
 			};
-		#endregion
-
-		#region Keyboard
-		public static void SetNeedsKeyboard(NSView view, bool needsKeyboard)
-		{
-			if (view != null)
-			{
-				_attachedProperties.SetValue(view, NeedsKeyboardAttachedPropertyKey, (bool?)needsKeyboard);
-			}
-		}
 		#endregion
 
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
