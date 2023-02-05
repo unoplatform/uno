@@ -9,7 +9,7 @@ namespace Uno.UI.Xaml.Media;
 /// <summary>
 /// WebAssembly specific <see cref="FontFamily"/> helper
 /// </summary>
-public partial class FontFamilyHelper
+public static class FontFamilyHelper
 {
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
