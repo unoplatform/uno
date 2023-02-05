@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-
 using System.Windows.Input;
 using Uno.Extensions;
 
 namespace Uno.Client
 {
-	public static class ICommandExtensions
-	{
+    internal static class ICommandExtensions
+    {
 		/// <summary>
 		/// Executes the command if CanExecute returns true.
 		/// </summary>
