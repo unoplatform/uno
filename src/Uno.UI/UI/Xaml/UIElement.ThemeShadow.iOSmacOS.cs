@@ -31,7 +31,7 @@ public partial class UIElement
 		view.Shadow ??= new AppKit.NSShadow();
 #endif
 		view.Layer.MasksToBounds = false;
-		view.Layer.ShadowOpacity = 1;
+		view.Layer.ShadowOpacity = 0.1f;
 
 #if __MACOS__
 		view.Layer.ShadowColor = AppKit.NSColor.Black.CGColor;
@@ -40,8 +40,8 @@ public partial class UIElement
 #endif
 
 		view.Layer.ShadowRadius = blur * translation.Z;
-		view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * translation.Z, y * translation.Z);
-		if (view is Border border)
+		view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * translation.Z / 4, y * translation.Z / 4);
+		if (view is Windows.UI.Xaml.Controls.Border border)
 		{
 			_boundsPathSubscription.Disposable = null;
 			border.BoundsPathUpdated += Border_BoundsPathUpdated;

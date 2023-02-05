@@ -8,15 +8,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Grid.Resources>
-            <ThemeShadow x:Name="SharedShadow" />
-        </Grid.Resources>
-        <Grid
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Grid.Resources>
+			<ThemeShadow x:Name="SharedShadow" />
+		</Grid.Resources>
+		<Grid
             x:Name="BackgroundGrid"
             Width="360"
             Height="360" />
-        <Rectangle
+		<Rectangle
             x:Name="Rectangle1"
             Width="200"
             Height="200"
@@ -24,7 +24,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Fill="Turquoise" />
-        <Rectangle
+		<Rectangle
             x:Name="Rectangle2"
             Width="200"
             Height="200"
@@ -33,5 +33,5 @@
             VerticalAlignment="Bottom"
             Fill="Turquoise"
             Shadow="{StaticResource SharedShadow}" />
-    </Grid>
+	</Grid>
 </Page>

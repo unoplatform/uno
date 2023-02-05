@@ -9,31 +9,31 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <Grid x:Name="RootGrid">
-        <Grid.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontSize" Value="60" />
-            </Style>
-            <ThemeShadow x:Name="SharedShadow" />
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+	<Grid x:Name="RootGrid">
+		<Grid.Resources>
+			<Style TargetType="TextBlock">
+				<Setter Property="HorizontalAlignment" Value="Center" />
+				<Setter Property="VerticalAlignment" Value="Center" />
+				<Setter Property="FontSize" Value="60" />
+			</Style>
+			<ThemeShadow x:Name="SharedShadow" />
+		</Grid.Resources>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
 
-        <Grid
+		<Grid
             x:Name="BackgroundGrid"
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 
-        <Rectangle
+		<Rectangle
             Margin="40"
             RadiusX="10"
             RadiusY="10"
@@ -43,9 +43,9 @@
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,16" />
 
-        <TextBlock Text="0" />
+		<TextBlock Text="0" />
 
-        <Rectangle
+		<Rectangle
             Grid.Column="1"
             Margin="40"
             RadiusX="20"
@@ -56,9 +56,9 @@
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,16" />
 
-        <TextBlock Grid.Column="1" Text="8" />
+		<TextBlock Grid.Column="1" Text="8" />
 
-        <Border
+		<Border
             Grid.Row="1"
             Grid.Column="0"
             Margin="40"
@@ -69,12 +69,12 @@
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,16" />
 
-        <TextBlock
+		<TextBlock
             Grid.Row="1"
             Grid.Column="0"
             Text="16" />
 
-        <Border
+		<Border
             Grid.Row="1"
             Grid.Column="1"
             CornerRadius="10,20,0,40"
@@ -85,10 +85,10 @@
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,32" />
 
-        <TextBlock
+		<TextBlock
             Grid.Row="1"
             Grid.Column="1"
             Text="32" />
 
-    </Grid>
+	</Grid>
 </Page>
