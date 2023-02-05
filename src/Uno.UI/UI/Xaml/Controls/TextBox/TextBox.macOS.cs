@@ -188,17 +188,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public override NSView HitTest(CGPoint point)
-		{
-			var view = base.HitTest(point);
-			if (view != null)
-			{
-				Uno.UI.Controls.Window.SetNeedsKeyboard(view, true);
-			}
-
-			return view;
-		}
-
 		partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
 			if (_textBoxView != null)
