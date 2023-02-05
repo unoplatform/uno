@@ -2,9 +2,15 @@
 
 public partial class UIElement
 {
+	private bool _isShadowSet = false;
+
 	partial void UnsetShadow()
 	{
-		this.SetStyle("box-shadow", "unset");
+		if (_isShadowSet)
+		{
+			this.SetStyle("box-shadow", "unset");
+			_isShadowSet = false;
+		}
 	}
 
 	partial void SetShadow()
@@ -12,6 +18,7 @@ public partial class UIElement
 		var translation = Translation;
 		var boxShadowValue = CreateBoxShadow(translation.Z);
 		this.SetStyle("box-shadow", boxShadowValue);
+		_isShadowSet = true;
 	}
 
 	private static string CreateBoxShadow(float translationZ)
