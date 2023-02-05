@@ -226,7 +226,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-
 		private void UpdateShadow()
 		{
 			if (Shadow == null || Translation.Z <= 0)

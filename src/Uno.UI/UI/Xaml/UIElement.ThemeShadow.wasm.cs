@@ -2,7 +2,7 @@
 
 public partial class UIElement
 {
-	private bool _isShadowSet = false;
+	private bool _isShadowSet;
 
 	partial void UnsetShadow()
 	{
