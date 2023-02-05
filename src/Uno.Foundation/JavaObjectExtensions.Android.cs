@@ -7,7 +7,7 @@ using Uno.Foundation.Logging;
 
 namespace Uno.Extensions
 {
-	public static class JavaObjectExtensions
+	internal static class JavaObjectExtensions
 	{
 		/// <summary>
 		/// Runs the specified action if the native Java instance of the <paramref name="instance"/> is still available.
