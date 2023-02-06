@@ -9,7 +9,7 @@
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
       "name": "Debug (Chrome, WebAssembly)",
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "url": "http://localhost:5000",
       "webRoot": "${workspaceFolder}/UnoWinUIQuickStart.Wasm",
@@ -32,7 +32,7 @@
       "request": "launch",
       "preLaunchTask": "build-skia-gtk",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk/bin/Debug/net6.0/UnoWinUIQuickStart.Skia.Gtk.dll",
+      "program": "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk/bin/Debug/net7.0/UnoWinUIQuickStart.Skia.Gtk.dll",
       "args": [],
       "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug"
