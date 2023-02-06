@@ -309,7 +309,8 @@
 						var s = File.ReadAllText(file);
 						var fileExtension = Path.GetExtension(file).ToLower();
 
-						if (fileExtension == ".cs")
+						if (fileExtension == ".cs"
+							&& !file.EndsWith("Server\\Program.cs"))
 						{
 							// Disable conditionals for all imported files
 							s = "//-:cnd:noEmit\r\n" + s;
