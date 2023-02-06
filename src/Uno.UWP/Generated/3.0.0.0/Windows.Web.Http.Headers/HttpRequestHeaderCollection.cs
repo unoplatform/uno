@@ -9,30 +9,6 @@ namespace Windows.Web.Http.Headers
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint HttpRequestHeaderCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HttpRequestHeaderCollection.Size");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri Referer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri HttpRequestHeaderCollection.Referer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20HttpRequestHeaderCollection.Referer");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Uri HttpRequestHeaderCollection.Referer");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
 		{
 			get
@@ -47,48 +23,6 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint? MaxForwards
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? HttpRequestHeaderCollection.MaxForwards is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20HttpRequestHeaderCollection.MaxForwards");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "uint? HttpRequestHeaderCollection.MaxForwards");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? IfUnmodifiedSince
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfUnmodifiedSince is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20HttpRequestHeaderCollection.IfUnmodifiedSince");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.IfUnmodifiedSince");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? IfModifiedSince
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20HttpRequestHeaderCollection.IfModifiedSince");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.HostName Host
 		{
 			get
@@ -98,34 +32,6 @@ namespace Windows.Web.Http.Headers
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HostName HttpRequestHeaderCollection.Host");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string From
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestHeaderCollection.From");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "string HttpRequestHeaderCollection.From");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? Date
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20HttpRequestHeaderCollection.Date");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.Date");
 			}
 		}
 		#endif
@@ -299,44 +205,6 @@ namespace Windows.Web.Http.Headers
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out string value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Collections.Generic.ICollection<string> Keys
 		{
@@ -368,14 +236,6 @@ namespace Windows.Web.Http.Headers
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
 			throw new global::System.NotSupportedException();
@@ -387,34 +247,6 @@ namespace Windows.Web.Http.Headers
 		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, string>[] array,  int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, string> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>

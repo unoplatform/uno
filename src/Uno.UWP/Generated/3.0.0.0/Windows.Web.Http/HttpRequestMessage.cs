@@ -2,25 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpRequestMessage : global::System.IDisposable,global::Windows.Foundation.IStringable
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri RequestUri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri HttpRequestMessage.RequestUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20HttpRequestMessage.RequestUri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "Uri HttpRequestMessage.RequestUri");
-			}
-		}
-		#endif
+		// Skipping already declared property RequestUri
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.HttpMethod Method
@@ -49,16 +36,7 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpRequestHeaderCollection Headers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpRequestHeaderCollection HttpRequestMessage.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestHeaderCollection%20HttpRequestMessage.Headers");
-			}
-		}
-		#endif
+		// Skipping already declared property Headers
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IDictionary<string, object> Properties
@@ -79,21 +57,8 @@ namespace Windows.Web.Http
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpRequestMessage( global::Windows.Web.Http.HttpMethod method,  global::System.Uri uri) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "HttpRequestMessage.HttpRequestMessage(HttpMethod method, Uri uri)");
-		}
-		#endif
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpRequestMessage() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "HttpRequestMessage.HttpRequestMessage()");
-		}
-		#endif
+		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
+		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Content.get
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Content.set
