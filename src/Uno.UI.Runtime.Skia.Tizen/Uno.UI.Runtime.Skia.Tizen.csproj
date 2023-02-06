@@ -22,8 +22,6 @@
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />

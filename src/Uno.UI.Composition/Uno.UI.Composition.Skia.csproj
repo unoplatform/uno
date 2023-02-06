@@ -28,8 +28,6 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 	  <None Remove="AssemblyInfo.skia.cs" />
 	</ItemGroup>

@@ -84,8 +84,6 @@
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml</PageExclusions>
 	</PropertyGroup>

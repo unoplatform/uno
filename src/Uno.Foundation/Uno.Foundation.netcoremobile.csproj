@@ -44,7 +44,6 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 	<ItemGroup>
