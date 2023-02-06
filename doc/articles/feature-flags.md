@@ -35,6 +35,16 @@ By default, Android has a limit of 200% for the text scaling which is not the ca
 
 Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this. 
 
+## ComboBox
+
+### Default preferred placement
+
+By default, `ComboBox` popup is placed in such a way that the currently selected item is centered abocve the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `DefaultDropDownPreferredPlacement` property.
+
+### Allow popup under translucent status bar
+
+By default, the `ComboBox` popup will not extend under the status bar even if it is set as translucent. If you want to change this behavior, set the `AllowPopupUnderTranslucentStatusBar` property to `true`.
+
 ## Popups
 
 ### Native Popups
