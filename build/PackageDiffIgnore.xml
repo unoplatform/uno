@@ -9135,6 +9135,9 @@
 			<Member fullName="Windows.Foundation.IClosable" reason="Shouldn't be visible in .NET and shows as IDisposable instead." />
 			<Member fullName="Windows.Storage.Streams.InMemoryBuffer" reason="Windows.Storage.Streams.Buffer should be used." />
 			<Member fullName="Windows.Foundation.HResult" reason="Type is hidden in .NET and shouldn't be used" />
+			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
+			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
+			<Member fullName="Uno.Client.ICommandExtensions" reason="Only needed internally" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -9391,6 +9394,7 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Toolkit.ElevatedView.get_CornerRadiusProperty()" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.add__dateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)" reason="Not in Windows" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.remove__dateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)" reason="Not in Windows" />
+			<Member fullName="System.Void Uno.UI.Controls.Window.SetNeedsKeyboard(AppKit.NSView view, System.Boolean needsKeyboard)" reason="Not needed and doesn't do something useful" />
 			<Member fullName="System.Void Windows.ApplicationModel.SuspendingDeferral..ctor(System.Action deferralDone)" reason="This constructor does not exist in Windows" />
 		</Methods>
 	</IgnoreSet>
