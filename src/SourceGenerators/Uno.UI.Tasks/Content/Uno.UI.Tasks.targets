@@ -52,9 +52,13 @@
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
 
-		<!-- String resources -->
 		<PropertyGroup>
+			<!-- String resources -->
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
+
+			<!-- Determine UnoHead (with xamarin heads detection) -->
+			<_IsUnoHead>false</_IsUnoHead>
+			<_IsUnoHead Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''">true</_IsUnoHead>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -85,7 +89,7 @@
 									 TargetPlatform="$(XamarinProjectType)"
 									 IntermediateOutputPath="$(IntermediateOutputPath)"
 									 DefaultLanguage="$(DefaultLanguage)"
-									 IsUnoHead="$(IsUnoHead)"
+									 IsUnoHead="$(_IsUnoHead)"
 									 ProjectName="$(AssemblyName)"
 									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
 			<Output TaskParameter="GeneratedFiles"
