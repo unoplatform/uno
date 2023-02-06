@@ -39,11 +39,11 @@ Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
 ### Default preferred placement
 
-By default, `ComboBox` popup is placed in such a way that the currently selected item is centered abocve the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `DefaultDropDownPreferredPlacement` property.
+By default, `ComboBox` popup is placed in such a way that the currently selected item is centered above the `ComboBox`. If you want to adjust this behavior on non-Windows targets, set the `Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement` property.
 
 ### Allow popup under translucent status bar
 
-By default, the `ComboBox` popup will not extend under the status bar even if it is set as translucent. If you want to change this behavior, set the `AllowPopupUnderTranslucentStatusBar` property to `true`.
+By default, the `ComboBox` popup will not extend under the status bar even if it is set as translucent. If you want to change this behavior, set the `Uno.UI.FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar` property to `true`. This property is Android-specific.
 
 ## Popups
 
