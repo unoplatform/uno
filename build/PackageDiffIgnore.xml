@@ -9397,6 +9397,8 @@
 			<Member fullName="System.Void Windows.ApplicationModel.SuspendingDeferral..ctor(System.Action deferralDone)" reason="This constructor does not exist in Windows" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.add__dateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)" reason="Not in Windows" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.remove__dateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)" reason="Not in Windows" />
+			<Member fullName="System.Threading.Tasks.Task`1&lgt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime)" reason="Not in Windows and not implemented properly" />
+			<Member fullName="System.Threading.Tasks.Task`1&lgt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime, System.TimeSpan duration)" reason="Not in Windows and not implemented properly" />
 		</Methods>
 	</IgnoreSet>
 
