@@ -3,9 +3,6 @@
 	<Import Project="PlatformItemGroups.props" />
 
 	<PropertyGroup>
-		<Product>$(AssemblyName) ($(TargetFramework))</Product>
-
-		<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>

@@ -3,8 +3,8 @@
   <Import Project="Uno.CrossTargetting.targets" />
 
   <PropertyGroup>
-	<!-- Override the product attribute to include the UnoRuntimeIdentifier that is defined by projects -->
-	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
+	<Product>$(AssemblyName) $(TargetFramework)</Product>
+	<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
   </PropertyGroup>
 
   <ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
