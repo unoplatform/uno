@@ -28,9 +28,6 @@
 
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-
 		<!-- Force the generation of upri files for Uno.UI self localization -->
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 

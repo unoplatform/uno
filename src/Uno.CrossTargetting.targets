@@ -2,15 +2,6 @@
 
 	<Import Project="PlatformItemGroups.props" />
 
-	<PropertyGroup>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-		<Copyright>nventive</Copyright>
-		<Author>nventive</Author>
-
-	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
 		<NoWarn>$(NoWarn);0105</NoWarn>
@@ -82,9 +73,6 @@
 		<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
 		<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
-
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
