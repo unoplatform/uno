@@ -35,7 +35,6 @@
 		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 </Project>

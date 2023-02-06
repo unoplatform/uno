@@ -25,8 +25,6 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 	    <LogicalName>$(AssemblyName).xml</LogicalName>
