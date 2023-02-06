@@ -4,6 +4,11 @@ parameters:
 
 steps:
 
+  - script: |
+      cp global.json global-net7.json
+      cp global-net6.json global.json
+    displayName: Replace global.json with .NET 6
+
   - template: dotnet-install.yml
 
   - template: jdk-setup.yml
