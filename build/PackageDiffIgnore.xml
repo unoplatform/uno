@@ -9386,6 +9386,7 @@
 			<Member fullName="Windows.UI.Xaml.CornerRadius Uno.UI.Toolkit.ElevatedView.get_CornerRadius()" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="System.Void Uno.UI.Toolkit.ElevatedView.set_CornerRadius(Windows.UI.Xaml.CornerRadius value)" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Toolkit.ElevatedView.get_CornerRadiusProperty()" reason="Already exists in Control and ElevatedView should not shadow it" />
+			<Member fullName="System.Void Uno.UI.Controls.Window.SetNeedsKeyboard(AppKit.NSView view, System.Boolean needsKeyboard)" reason="Not needed and doesn't do something useful" />
 		</Methods>
 	</IgnoreSet>
 
