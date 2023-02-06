@@ -200,9 +200,6 @@ internal partial class PopupPanel : Panel
 				finalSize,
 				visibleBounds,
 				_lastMeasuredSize
-#if __ANDROID__
-				, visibleBounds.Location
-#endif
 			);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
