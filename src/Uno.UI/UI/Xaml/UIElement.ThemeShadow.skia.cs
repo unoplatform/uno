@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml;
+﻿using Color = global::Windows.UI.Color;
+
+namespace Windows.UI.Xaml;
 
 public partial class UIElement
 {

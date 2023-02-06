@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
-		
+
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void InitializeKeyboard();
