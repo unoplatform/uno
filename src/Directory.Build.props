@@ -60,6 +60,10 @@
 
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
+
+	<ExtrasEnableDefaultPageItems>false</ExtrasEnableDefaultPageItems>
+	<EnableDefaultPageItems>false</EnableDefaultPageItems>
+	<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
 
   <PropertyGroup>

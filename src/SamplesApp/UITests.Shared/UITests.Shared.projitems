@@ -4,6 +4,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>beb0ab3a-16a7-49cf-ad5e-f4a53b985afe</SharedGUID>
+    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>UITests</Import_RootNamespace>

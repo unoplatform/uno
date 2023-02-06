@@ -63,11 +63,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.net6.0.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

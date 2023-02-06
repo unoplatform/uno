@@ -90,8 +90,11 @@
 
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
 		<!-- Maps are not yet supported by WinUI 3.0 -->
-		<Page Remove="**\*.xaml" />
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+		<!-- Maps are not yet supported by WinUI 3.0 -->
+		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+	</PropertyGroup>
 
 </Project>

@@ -89,12 +89,6 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" ($(IsAndroid) or $(IsIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
-		<!-- remove files included by msbuild extras -->
-		<Page Remove="@(Page)" />
-		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
-
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
