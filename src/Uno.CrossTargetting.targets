@@ -7,8 +7,6 @@
 		<NoWarn>$(NoWarn);0105</NoWarn>
 	</PropertyGroup>
 
-	<Import Project="uno.mobile-cross-targeting-disable.props" />
-
 	<!--
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
