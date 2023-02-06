@@ -9135,6 +9135,7 @@
 			<Member fullName="Windows.Foundation.IClosable" reason="Shouldn't be visible in .NET and shows as IDisposable instead." />
 			<Member fullName="Windows.Storage.Streams.InMemoryBuffer" reason="Windows.Storage.Streams.Buffer should be used." />
 			<Member fullName="Windows.Foundation.HResult" reason="Type is hidden in .NET and shouldn't be used" />
+			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
 			<Member fullName="Uno.Client.ICommandExtensions" reason="Only needed internally" />
 		</Types>
