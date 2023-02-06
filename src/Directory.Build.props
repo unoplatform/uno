@@ -258,5 +258,4 @@
     </When>
   </Choose>
 
-  <Import Project="uno.mobile-cross-targeting-disable.props" />
 </Project>
