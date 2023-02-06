@@ -37,8 +37,6 @@
 		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
 		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 
-		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
-
 		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
 	</PropertyGroup>
 
