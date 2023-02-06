@@ -4,7 +4,7 @@ namespace Windows.Foundation
 {
 	public delegate void DeferralCompletedHandler();
 
-	public sealed partial class Deferral : IClosable
+	public sealed partial class Deferral
 	{
 		private readonly DeferralCompletedHandler _handler;
 
@@ -23,8 +23,6 @@ namespace Windows.Foundation
 		/// this will call it and drop the reference to the delegate.
 		/// </summary>
 		public void Complete() => _handler?.Invoke();
-
-		public void Close() => Complete();
 
 		/// <summary>
 		/// Completes the deferral (calls <see cref="Complete" />).
