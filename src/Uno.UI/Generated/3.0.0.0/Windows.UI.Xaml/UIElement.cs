@@ -130,20 +130,7 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared property XamlRoot
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Shadow Shadow
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Shadow)this.GetValue(ShadowProperty);
-			}
-			set
-			{
-				this.SetValue(ShadowProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Shadow
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector3 ActualOffset
@@ -478,7 +465,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector3 Translation
 		{
@@ -603,14 +590,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property DragLeaveEvent
 		// Skipping already declared property DragOverEvent
 		// Skipping already declared property DropEvent
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ShadowProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Shadow), typeof(global::Windows.UI.Xaml.Media.Shadow), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Shadow)));
-		#endif
+		// Skipping already declared property ShadowProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CompositeModeProperty { get; } = 
