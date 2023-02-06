@@ -9399,6 +9399,7 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.remove__dateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)" reason="Not in Windows" />
 			<Member fullName="System.Threading.Tasks.Task`1&lgt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime)" reason="Not in Windows and not implemented properly" />
 			<Member fullName="System.Threading.Tasks.Task`1&lgt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime, System.TimeSpan duration)" reason="Not in Windows and not implemented properly" />
+			<Member fullName="System.Void Uno.UI.Controls.Window.SetNeedsKeyboard(AppKit.NSView view, System.Boolean needsKeyboard)" reason="Not needed and doesn't do something useful" />
 		</Methods>
 	</IgnoreSet>
 
