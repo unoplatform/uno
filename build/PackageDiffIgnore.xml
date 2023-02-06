@@ -9137,6 +9137,7 @@
 			<Member fullName="Windows.UI.Xaml.Media.TransformExtensions" reason="Moved to RuntimeTests project as it is only used there." />
 			<Member fullName="Windows.Foundation.HResult" reason="Type is hidden in .NET and shouldn't be used" />
 			<Member fullName="Windows.Storage.Streams.InMemoryBuffer" reason="Windows.Storage.Streams.Buffer should be used." />
+			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
