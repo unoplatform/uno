@@ -18,6 +18,8 @@ using Uno.UI.Services;
 using Windows.ApplicationModel.Resources;
 using Uno.UI;
 using System.Globalization;
+using Uno.UI.Helpers.WinUI;
+
 #if __IOS__
 using UIKit;
 #else
