@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.UI;
@@ -152,6 +154,46 @@ public class Given_ContentPresenter
 		Assert.AreEqual(configuration.ExpectedSize, new Size(border.ActualWidth, border.ActualHeight));
 	}
 
+	[TestMethod]
+	public async Task When_Content_Unset_Release()
+	{
+		var SUT = new ContentPresenter();
+
+		TestServices.WindowHelper.WindowContent = SUT;
+
+		var wref = SetContent();
+		Assert.AreEqual(wref.Target, SUT.DataContext);
+
+		SUT.Content = null;
+
+		await AssertCollectedReference(wref);
+
+		WeakReference SetContent()
+		{
+			var o = new object();
+			SUT.Content = o;
+			return new(o);
+		}
+	}
+
+	private async Task AssertCollectedReference(WeakReference reference)
+	{
+		var sw = Stopwatch.StartNew();
+		while (sw.Elapsed < TimeSpan.FromSeconds(3))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+
+			if (!reference.IsAlive)
+			{
+				return;
+			}
+
+			await Task.Delay(100);
+		}
+
+		Assert.IsFalse(reference.IsAlive);
+	}
 	public class AlignmentTestConfiguration
 	{
 		public AlignmentTestConfiguration(HorizontalAlignment outerHorizontal, VerticalAlignment outerVertical, HorizontalAlignment innerHorizontal, VerticalAlignment innerVertical, Point expectedPosition, Size expectedSize)
