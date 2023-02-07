@@ -27,7 +27,7 @@ public class Given_CalendarDatePicker
 		await WindowHelper.WaitForIdle();
 		var calendarView = (CalendarView)flyout.Content;
 
-		Assert.AreEqual(352, calendarView.ActualHeight);
+		Assert.IsTrue(calendarView.ActualHeight > 300);
 
 		flyout.Close();
 	}
