@@ -278,14 +278,19 @@
 				{
 					"condition": "(!WebAssembly)",
 					"exclude": [
-						"UnoWinUIQuickStart.Server/**",
-						"UnoWinUIQuickStart.Wasm/**",
+						"UnoWinUIQuickStart.Wasm/**"
+					]
+				},
+				{
+					"condition": "(!hosted)",
+					"exclude": [
+						"UnoWinUIQuickStart.Server/**"
 					]
 				},
 				{
 					"condition": "(!skia-gtk)",
 					"exclude": [
-						"UnoWinUIQuickStart.Skia.Gtk/**",
+						"UnoWinUIQuickStart.Skia.Gtk/**"
 					]
 				},
 				{

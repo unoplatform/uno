@@ -309,13 +309,6 @@
 						var s = File.ReadAllText(file);
 						var fileExtension = Path.GetExtension(file).ToLower();
 
-						if (fileExtension == ".cs"
-							&& !file.EndsWith("Server\\Program.cs"))
-						{
-							// Disable conditionals for all imported files
-							s = "//-:cnd:noEmit\r\n" + s;
-						}
-
 						s = s
 							.Replace("$ext_safeprojectname$", SafeProjectName)
 							.Replace("$safeprojectname$", SafeProjectName)
@@ -330,6 +323,13 @@
 							.Replace("$basetargetframework$", "net7.0")
 							;
 
+						if (fileExtension == ".cs")
+						{
+							// Disable conditionals for all imported files
+							s = "//-:cnd:noEmit\r\n" + s;
+
+							s = Regex.Replace(s, "\\$if\\$\\(\\$" + "(.+?)" + "\\$ == True\\)", "//+:cnd:noEmit\r\n#if ($1)").Replace("$endif$", "#endif\r\n//-:cnd:noEmit\r\n");
+						}
 
 						if (fileExtension == ".csproj")
 						{

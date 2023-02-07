@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+$if$($UseWebAssembly$ == True)
 using Uno.Wasm.Bootstrap.Server;
+$endif$
 
 namespace UnoQuickStart
 {
@@ -20,11 +22,10 @@ namespace UnoQuickStart
 
 			app.UseAuthorization();
 
-//+:cnd:noEmit
-#if (WebAssembly)
+$if$($UseWebAssembly$ == True)
 			app.UseUnoFrameworkFiles();
 			app.MapFallbackToFile("index.html");
-#endif
+$endif$
 
 			app.MapControllers();
 			app.UseStaticFiles();
