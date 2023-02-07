@@ -20,7 +20,6 @@
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
-      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
