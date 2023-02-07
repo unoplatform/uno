@@ -22,7 +22,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		{
 			// Debugger.Launch();
 			// No initialization required for this one
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
@@ -605,7 +604,7 @@ public void ApplyCompiledBindings()
 }}
 
 private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
-global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference 
+global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference
 {{
 	get
 	{{
@@ -613,7 +612,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 		{{
 			_selfWeakReference = global::Uno.UI.DataBinding.WeakReferencePool.RentSelfWeakReference(this);
 		}}
-		
+
 		return _selfWeakReference;
 	}}
 }}
@@ -808,10 +807,10 @@ partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs 
 public global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	=>  __Store.GetBindingExpression(dependencyProperty);
 
-public void ResumeBindings() 
+public void ResumeBindings()
 	=>__Store.ResumeBindings();
 
-public void SuspendBindings() => 
+public void SuspendBindings() =>
 	__Store.SuspendBindings();
 				");
 			}
@@ -830,7 +829,7 @@ public override int GetHashCode()
 {{
 	// For the the current kind of type, we do not need to call back
 	// to android for the GetHashCode implementation. The .NET proxy hash is
-	// enough. This way, we do not get to pay the price of the interop to get 
+	// enough. This way, we do not get to pay the price of the interop to get
 	// this value.
 	return RuntimeHelpers.GetHashCode(this);
 }}
@@ -838,8 +837,8 @@ public override int GetHashCode()
 public override bool Equals(object other)
 {{
 	// For the the current kind of type, we do not need to call back
-	// to android for the Equals implementation. We assume that proxies are 
-	// one-to-one mapping with native instances, making the reference comparison 
+	// to android for the Equals implementation. We assume that proxies are
+	// one-to-one mapping with native instances, making the reference comparison
 	// of proxies enough to do the job.
 	return RuntimeHelpers.ReferenceEquals(this, other);
 }}

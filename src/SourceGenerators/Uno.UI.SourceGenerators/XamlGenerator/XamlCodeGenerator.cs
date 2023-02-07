@@ -27,7 +27,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
