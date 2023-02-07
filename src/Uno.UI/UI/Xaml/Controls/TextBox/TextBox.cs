@@ -66,6 +66,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInvokingTextChanged;
 		/// <summary>
+		/// Set when <see cref="TextChanging"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
+		/// </summary>
+		private bool _isInvokingTextChanging;
+		/// <summary>
 		/// Set when the <see cref="Text"/> property is being modified by user input.
 		/// </summary>
 		private bool _isInputModifyingText;
@@ -239,22 +243,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_hasTextChangedThisFocusSession = true;
 
-			if (!_isInvokingTextChanged)
-			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-				try
-#endif
-				{
-					_isInvokingTextChanged = true;
-					TextChanging?.Invoke(this, new TextBoxTextChangingEventArgs());
-				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-				finally
-#endif
-				{
-					_isInvokingTextChanged = false;
-				}
-			}
+			RaiseTextChanging();
 
 			if (!_isInputModifyingText)
 			{
@@ -269,6 +258,26 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isTextChangedPending = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
+			}
+		}
+
+		private void RaiseTextChanging()
+		{
+			if (!_isInvokingTextChanging)
+			{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				try
+#endif
+				{
+					_isInvokingTextChanging = true;
+					TextChanging?.Invoke(this, new TextBoxTextChangingEventArgs());
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				finally
+#endif
+				{
+					_isInvokingTextChanging = false;
+				}
 			}
 		}
 
@@ -290,6 +299,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			{
 				_isInvokingTextChanged = true;
+				_isTextChangedPending = false;
 				TextChanged?.Invoke(this, new TextChangedEventArgs(this));
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
@@ -297,7 +307,6 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			{
 				_isInvokingTextChanged = false;
-				_isTextChangedPending = false;
 			}
 		}
 

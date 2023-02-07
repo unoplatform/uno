@@ -510,11 +510,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 
+			int textChangedInvokeCount = 0;
+			int textChangingInvokeCount = 0;
+
 			bool failedCheck = false;
 			bool finished = false;
 
 			void OnTextChanged(object sender, TextChangedEventArgs e)
 			{
+				textChangedInvokeCount++;
 				if (GetCurrentText() != textBox.Text)
 				{
 					failedCheck = true;
@@ -530,7 +534,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
+			void OnTextChanging(object sender, TextBoxTextChangingEventArgs e) =>
+				textChangingInvokeCount++;
+
 			textBox.TextChanged += OnTextChanged;
+			textBox.TextChanging += OnTextChanging;
 
 			textBox.Text = GetNewText();
 
@@ -541,6 +549,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Fail("Text changed to incorrect value. Expected: " + GetCurrentText() + ", Actual: " + textBox.Text);
 			}
 
+			Assert.AreEqual(5, textChangedInvokeCount);
+			Assert.AreEqual(5, textChangingInvokeCount);
 			Assert.AreEqual(initialText + "5", textBox.Text);
 		}
 	}
