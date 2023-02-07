@@ -272,30 +272,34 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// This is called asynchronously after the UI changes in line with WinUI.
+		/// Note that no further native text box view text modification should
+		/// be performed in this method to avoid potential race conditions
+		/// (see #)
+		/// </summary>
 		private void RaiseTextChanged()
 		{
-			if (!_isInvokingTextChanged)
+			if (_isInvokingTextChanged)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-				try
-#endif
-				{
-					_isInvokingTextChanged = true;
-					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
-				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-				finally
-#endif
-				{
-					_isInvokingTextChanged = false;
-					_isTextChangedPending = false;
-				}
+				return;
 			}
 
-			_textBoxView?.SetTextNative(Text);
-
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			try
+#endif
+			{
+				_isInvokingTextChanged = true;
+				TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			finally
+#endif
+			{
+				_isInvokingTextChanged = false;
+				_isTextChangedPending = false;
+			}
 		}
-
 
 		private void UpdatePlaceholderVisibility()
 		{
