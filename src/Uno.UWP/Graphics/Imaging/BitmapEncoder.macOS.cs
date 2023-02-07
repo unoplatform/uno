@@ -11,14 +11,6 @@ namespace Windows.Graphics.Imaging
 	partial class BitmapEncoder
 	{
 		private readonly Func<NSImage, NSData> _encoder;
-		private static readonly Dictionary<Guid, Func<NSImage, NSData>> _encoderMap =
-			new()
-			{
-				{JpegEncoderId, AsJPEG},
-				{PngEncoderId, AsPNG},
-				{GifEncoderId, AsGIF},
-				{TiffEncoderId, AsTIFF},
-			};
 		private readonly global::Windows.Storage.Streams.IRandomAccessStream _stream;
 		private global::Windows.Graphics.Imaging.SoftwareBitmap _softwareBitmap;
 
