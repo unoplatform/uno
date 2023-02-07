@@ -1,5 +1,6 @@
 parameters:
   - name: UseNet6SDK
+    default: 'false'
 
 steps:
 
