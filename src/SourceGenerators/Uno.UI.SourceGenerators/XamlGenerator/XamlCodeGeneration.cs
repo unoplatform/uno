@@ -656,14 +656,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var doc = new XmlDocument();
 						doc.LoadXml(sourceText.ToString());
 
-						var rewriterBuilder = new StringBuilder();
 
 						//extract all localization keys from Win10 resource file
 						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions
 						// Per this documentation, /root/data should be more performant than //data
 						var keys = doc.SelectNodes("/root/data")
 							?.Cast<XmlElement>()
-							.Select(node => RewriteResourceKeyName(rewriterBuilder, node.GetAttribute("name"), resourceFileName))
+							.Select(node => new ResourceDetails(_metadataHelper.AssemblyName, resourceFileName, node.GetAttribute("name")))
 							.ToArray() ?? Array.Empty<ResourceDetails>();
 						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
 						return keys;
@@ -693,27 +692,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
-		}
-
-		private ResourceDetails RewriteResourceKeyName(StringBuilder builder, string keyName, string resourceFileName)
-		{
-			//var firstDotIndex = keyName.IndexOf('.');
-			//if (firstDotIndex != -1)
-			//{
-			//	builder.Clear();
-			//	builder.Append(keyName);
-
-			//	builder[firstDotIndex] = '/';
-
-			//	keyName = builder.ToString();
-			//}
-
-#if true // false
-			// Uncomment for debugging
-			Console.WriteLine($"Build key {keyName} ({resourceFileName} / {_isUnoHead})");
-#endif
-
-			return new(_metadataHelper.AssemblyName, resourceFileName, keyName);
 		}
 
 		private DateTime GetLastBinaryUpdateTime()
