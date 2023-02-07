@@ -9140,6 +9140,7 @@
 			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Client.ICommandExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
+			<Member fullName="Windows.UI.Xaml.FontFamilyHelper" reason="Only needed internally. The public facing type is Uno.UI.Xaml.Media.FontFamilyHelper" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
