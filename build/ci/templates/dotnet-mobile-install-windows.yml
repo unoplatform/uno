@@ -4,11 +4,12 @@ parameters:
 
 steps:
 
-  - script: |
-      cp global.json global-net7.json
-      cp global-net6.json global.json
-    displayName: Replace global.json with .NET 6
-    condition: eq(parameters['UseNet6SDK'], 'true')
+  - ${{ if eq(parameters['UseNet6SDK'], 'true') }}:
+    - script: |
+        cp global.json global-net7.json
+        cp global-net6.json global.json
+      displayName: Replace global.json with .NET 6
+      condition: eq(parameters['UseNet6SDK'], 'true')
 
   - template: dotnet-install.yml
 
