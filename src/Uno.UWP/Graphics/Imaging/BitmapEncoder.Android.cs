@@ -10,13 +10,6 @@ namespace Windows.Graphics.Imaging
 {
 	partial class BitmapEncoder
 	{
-		private static readonly IDictionary<Guid, Bitmap.CompressFormat> _encoderMap =
-			new Dictionary<Guid, Bitmap.CompressFormat>()
-			{
-				{JpegEncoderId, Bitmap.CompressFormat.Jpeg},
-				{PngEncoderId, Bitmap.CompressFormat.Png},
-			};
-
 		private readonly Bitmap.CompressFormat _imageFormat;
 		private readonly Storage.Streams.IRandomAccessStream _stream;
 		private SoftwareBitmap _softwareBitmap;
