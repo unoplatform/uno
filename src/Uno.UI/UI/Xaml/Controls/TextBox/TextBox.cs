@@ -276,7 +276,7 @@ namespace Windows.UI.Xaml.Controls
 		/// This is called asynchronously after the UI changes in line with WinUI.
 		/// Note that no further native text box view text modification should
 		/// be performed in this method to avoid potential race conditions
-		/// (see #)
+		/// (see #6289)
 		/// </summary>
 		private void RaiseTextChanged()
 		{
