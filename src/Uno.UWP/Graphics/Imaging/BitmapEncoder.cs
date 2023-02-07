@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 #if __ANDROID__
-using Android.Graphics
+using Android.Graphics;
 #elif __IOS__
 using Foundation;
 using UIKit;
