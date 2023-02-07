@@ -127,15 +127,7 @@
 	<PackageReference Update="Xamarin.Build.Download" Version="0.11.4" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
-	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android' or '$(TargetFramework)' == 'net7.0-android'">
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
 	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
 	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
