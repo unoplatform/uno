@@ -81,6 +81,14 @@ namespace Uno.UI
 			/// referencing the ** type ** ComboBox in any way.
 			/// </remarks>
 			public static Uno.UI.Xaml.Controls.DropDownPlacement DefaultDropDownPreferredPlacement { get; set; } = Uno.UI.Xaml.Controls.DropDownPlacement.Auto;
+
+#if __ANDROID__
+			/// <summary>
+			/// Gets or sets a value indicating whether the ComboBox popup should be allowed
+			/// to be displayed under translucent status bar on Android. Defaults to false.
+			/// </summary>
+			public static bool AllowPopupUnderTranslucentStatusBar { get; set; }
+#endif
 		}
 
 		public static class CompositionTarget
