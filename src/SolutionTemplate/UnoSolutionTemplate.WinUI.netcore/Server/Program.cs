@@ -20,7 +20,8 @@ namespace UnoQuickStart
 
 			app.UseAuthorization();
 
-#if (UseWebAssembly)
+//+:cnd:noEmit
+#if (WebAssembly)
 			app.UseUnoFrameworkFiles();
 			app.MapFallbackToFile("index.html");
 #endif
