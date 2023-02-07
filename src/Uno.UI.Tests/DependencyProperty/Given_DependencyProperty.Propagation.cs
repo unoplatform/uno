@@ -475,6 +475,104 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 			Assert.IsNotNull(anim);
 		}
+
+		[TestMethod]
+		public async Task When_PrecedenceChanged_Then_Released()
+		{
+			var SUT = new ContentControl();
+
+			WeakReference Build()
+			{
+				var dc = new object();
+				SUT.DataContext = dc;
+				SUT.SetValue(ContentControl.ForegroundProperty, new SolidColorBrush(Windows.UI.Colors.Red));
+
+				SUT.DataContext = null;
+
+				return new(dc);
+			}
+
+			await AssertCollectedReference(Build());
+		}
+
+
+		[TestMethod]
+		public async Task When_PrecedenceChanged_And_Back_Then_Restored()
+		{
+			var SUT = new ContentControl();
+
+			WeakReference Build()
+			{
+				var dc = new object();
+				SUT.DataContext = dc;
+
+				var originalBrush = SUT.Foreground as Brush;
+				var newBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+
+				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);
+
+				Assert.IsNull(originalBrush.DataContext);
+				Assert.IsNotNull(newBrush.DataContext);
+
+				SUT.ClearValue(ContentControl.ForegroundProperty);
+
+				Assert.AreEqual(dc, originalBrush.DataContext);
+				Assert.IsNull(newBrush.DataContext);
+
+				SUT.DataContext = null;
+
+				return new(dc);
+			}
+
+			await AssertCollectedReference(Build());
+		}
+
+		[TestMethod]
+		public async Task When_PrecedenceChanged_To_Null_And_Back_Then_Restored()
+		{
+			var SUT = new ContentControl();
+
+			WeakReference Build()
+			{
+				var dc = new object();
+				SUT.DataContext = dc;
+
+				var originalBrush = SUT.Foreground as Brush;
+
+				SUT.SetValue(ContentControl.ForegroundProperty, null);
+
+				Assert.IsNull(originalBrush.DataContext);
+
+				SUT.ClearValue(ContentControl.ForegroundProperty);
+
+				Assert.AreEqual(dc, originalBrush.DataContext);
+
+				SUT.DataContext = null;
+
+				return new(dc);
+			}
+
+			await AssertCollectedReference(Build());
+		}
+
+		private async Task AssertCollectedReference(WeakReference reference)
+		{
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(2))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (!reference.IsAlive)
+				{
+					return;
+				}
+
+				await Task.Delay(100);
+			}
+
+			Assert.IsFalse(reference.IsAlive);
+		}
 	}
 
 	public partial class MyObject : DependencyObject
