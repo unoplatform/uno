@@ -9,7 +9,7 @@
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:xamarin="http://uno.ui/xamarin"
 					xmlns:ios="http://uno.ui/ios"
-					xmlns:android="http://uno.ui/android"
+					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
@@ -176,7 +176,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">
-					<BindableSwitchCompat Checked="{TemplateBinding IsOn, Mode=TwoWay}"
+					<android:BindableSwitchCompat Checked="{TemplateBinding IsOn, Mode=TwoWay}"
 										  Enabled="{TemplateBinding IsEnabled}"
 										  Text="{TemplateBinding Header}" />
 				</ControlTemplate>
@@ -225,7 +225,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Slider">
 					<!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
-					<BindableSeekBar Maximum="{TemplateBinding Maximum}"
+					<android:BindableSeekBar Maximum="{TemplateBinding Maximum}"
 									 Minimum="{TemplateBinding Minimum}"
 									 Value="{TemplateBinding Value, Mode=TwoWay}" />
 				</ControlTemplate>
@@ -282,7 +282,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ProgressBar">
 					<Grid>
-						<BindableProgressBar Indeterminate="{TemplateBinding IsIndeterminate}"
+						<android:BindableProgressBar Indeterminate="{TemplateBinding IsIndeterminate}"
 											 Progress="{TemplateBinding ActualValue}"
 											 Max="{TemplateBinding Max}"
 											 Foreground="{TemplateBinding Foreground}" />
@@ -418,7 +418,7 @@
 				<ControlTemplate TargetType="CommandBar">
 					<Border BorderThickness="{TemplateBinding Padding}">
 						<!-- TODO: 1px line -->
-						<NativeCommandBarPresenter Height="44" />
+						<ios:NativeCommandBarPresenter Height="44" />
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
@@ -440,7 +440,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="CommandBar">
-					<NativeCommandBarPresenter />
+					<android:NativeCommandBarPresenter />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -508,7 +508,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Frame">
-					<NativeFramePresenter Background="{TemplateBinding Background}" />
+					<ios:NativeFramePresenter Background="{TemplateBinding Background}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -521,7 +521,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Frame">
-					<NativeFramePresenter Background="{TemplateBinding Background}" />
+					<android:NativeFramePresenter Background="{TemplateBinding Background}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -575,7 +575,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="SplitView">
-					<BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
+					<android:BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
 										  LeftPane="{TemplateBinding Pane}"
 										  LeftPaneBackground="{TemplateBinding PaneBackground}"
 										  IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
@@ -595,7 +595,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="SplitView">
-					<BindableDrawerLayout RightPaneOpenLength="{TemplateBinding OpenPaneLength}"
+					<android:BindableDrawerLayout RightPaneOpenLength="{TemplateBinding OpenPaneLength}"
 										  RightPane="{TemplateBinding Pane}"
 										  RightPaneBackground="{TemplateBinding PaneBackground}"
 										  IsRightPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"

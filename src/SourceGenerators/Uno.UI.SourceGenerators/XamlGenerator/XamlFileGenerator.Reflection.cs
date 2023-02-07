@@ -1,11 +1,12 @@
 ﻿#nullable enable
 
-using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
@@ -807,20 +808,42 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (name.Contains(":"))
 			{
+				// We are passed a `namespace:type_name`
 				var fields = name.Split(':');
 
 				var ns = _fileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
 				if (ns is null)
 				{
+					// The given namespace is not found. We can't resolve a symbol.
+					return null;
+				}
+				else if (ns.Namespace.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
+				{
+					return SearchClrNamespaces(fields[1]);
+				}
+				else if (ns.Namespace.StartsWith("#using:", StringComparison.Ordinal))
+				{
+					// We are dealing with a namespace on the form `xmlns:android="http://platform.uno/android#using:TestNS;TestNS2"`
+					// In this case, we search both the default namespaces and the user-specified namespaces.
+					var firstResult = SearchClrNamespaces(fields[1]);
+					if (firstResult is not null)
+					{
+						return firstResult;
+					}
+
+					var userSpecifiedNamespaces = ns.Namespace.Substring("#using:".Length).Split(';');
+					foreach (var userSpecifiedNamespace in userSpecifiedNamespaces)
+					{
+						if (_metadataHelper.FindTypeByFullName(userSpecifiedNamespace + "." + fields[1]) is INamedTypeSymbol symbolFromUserSpecifiedNamespaces)
+						{
+							return symbolFromUserSpecifiedNamespaces;
+						}
+					}
+
 					return null;
 				}
 
 				var nsName = GetTrimmedNamespace(ns.Namespace);
-				if (nsName.StartsWith("http://", StringComparison.Ordinal))
-				{
-					return SearchClrNamespaces(fields[1]);
-				}
-
 				name = nsName + "." + fields[1];
 
 				if (_metadataHelper.FindTypeByFullName(name) is INamedTypeSymbol namedTypeSymbol1)
@@ -846,8 +869,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// We fallback to the corresponding non-legacy for this case
 					return namedTypeSymbol3;
 				}
+
+				return null;
 			}
 
+			// In this path, we are dealing with a simple name (not containing colon :)
 			if (SearchClrNamespaces(name) is INamedTypeSymbol namedTypeSymbol4)
 			{
 				return namedTypeSymbol4;

@@ -55,11 +55,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Text,
 				Automation,
 				"System",
-				"Uno.UI.Controls", // BindableCheckBox
-				"Uno.UI.Controls.Legacy", // HorizontalListView
-				"Uno.UI.Views.Controls", // BindableUISwitch
-				"UIKit", // UITabBar
-				"Android.Widget", // TextView
 			};
 
 			public static readonly string[] All =
