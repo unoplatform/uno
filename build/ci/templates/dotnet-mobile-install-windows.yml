@@ -1,5 +1,10 @@
 parameters:
-  UseNet6SDK: ''
+  - name: UseNet6SDK
+    type: string
+    default: 'false'
+    values:
+    - true
+    - false
 
 variables:
   - name: UnoCheck_Version
