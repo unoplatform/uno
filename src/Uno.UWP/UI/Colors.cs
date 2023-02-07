@@ -104,7 +104,7 @@ namespace Windows.UI
 				a = 0xFF;
 			}
 
-			// the process the required R G and B values
+			// then process the required R G and B values
 			if (len == 3)
 			{
 				r = ToByte(colorCode[offset++]);
