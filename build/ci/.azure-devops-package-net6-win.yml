@@ -17,32 +17,24 @@ jobs:
         XAML_FLAVOR_BUILD: UWP
         UnoDisableNet7Mobile: true
         ZipFileTargetFramework: net6
-        UnoCheck_Version: '1.5.4'
-        UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
 
       WinUI_NET6:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
         UnoDisableNet7Mobile: true
         ZipFileTargetFramework: net6
-        UnoCheck_Version: '1.5.4'
-        UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
 
       UWP_NET7:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
         UnoDisableNet6Mobile: true
         ZipFileTargetFramework: net7
-        UnoCheck_Version: '1.11.0-dev.2'
-        UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
 
       WinUI_NET7:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
         UnoDisableNet6Mobile: true
         ZipFileTargetFramework: net7
-        UnoCheck_Version: '1.11.0-dev.2'
-        UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -76,8 +68,6 @@ jobs:
   - template: templates/dotnet-mobile-install-windows.yml
     parameters:
       UseNet6SDK: $(UnoDisableNet7Mobile)
-      UnoCheck_Version: $(UnoCheck_Version)
-      UnoCheck_Manifest: $(UnoCheck_Manifest)
 
   - template: templates/install-windows-sdk.yml
 

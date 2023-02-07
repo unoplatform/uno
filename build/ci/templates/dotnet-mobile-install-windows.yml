@@ -1,10 +1,17 @@
 parameters:
-- name: UnoCheck_Version
-  default: ''
-- name: UnoCheck_Manifest
-  default: ''
-- name: UseNet6SDK
-  default: ''
+- UseNet6SDK: ''
+
+variables:
+  - name: UnoCheck_Version
+    ${{ if ne( parameters['UseNet6SDK'], 'true') }}:
+      value: "1.11.0-dev.2"
+    ${{ if eq( parameters['UseNet6SDK'], 'true' ) }}:
+      value: "1.5.4"
+  - name: UnoCheck_Manifest
+    ${{ if nq( parameters['UseNet6SDK'], 'true') }}:
+      value: "https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json"
+    ${{ if eq( parameters['UseNet6SDK'], 'true' ) }}:
+      value: "https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json"
 
 steps:
 
@@ -18,9 +25,11 @@ steps:
 
   - template: jdk-setup.yml
 
+  - ${{ if eq(parameters.UseNet6SDK, 'true') }}:
+
   - powershell: |
-      & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
+      & dotnet tool update --global uno.check --version ${{ variables.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest ${{ variables.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
