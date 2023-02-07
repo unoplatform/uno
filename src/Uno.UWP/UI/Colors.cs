@@ -145,7 +145,7 @@ namespace Windows.UI
 			}
 			else
 			{
-				throw new FormatException();
+				throw new FormatException($"The character {c} is not valid for a Color string");
 			}
 		}
 
