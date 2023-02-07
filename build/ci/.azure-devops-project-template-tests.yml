@@ -52,11 +52,7 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  # required to get the WinAppSdk build running, as it depends on
-  # msbuild (and not `dotnet`), and VS 17.3 only supports building for .NET 6.
-  - template: templates/dotnet-install.yml
-
-  - template: templates/dotnet7-mobile-install-windows.yml
+  - template: templates/dotnet-mobile-install-windows.yml
 
   - template: templates/install-windows-sdk.yml
     parameters:
