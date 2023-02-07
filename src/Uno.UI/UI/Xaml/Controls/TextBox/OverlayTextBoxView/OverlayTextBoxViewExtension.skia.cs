@@ -1,13 +1,12 @@
 ﻿#nullable enable
 
 using System;
-using System.Linq;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
@@ -52,7 +51,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		UpdateNativeView();
 		SetNativeText(textBox.Text);
 
-		_textBoxView!.AddToTextInputLayer(xamlRoot);	
+		_textBoxView!.AddToTextInputLayer(xamlRoot);
 		InvalidateLayout();
 		_textBoxView.SetFocus(true);
 

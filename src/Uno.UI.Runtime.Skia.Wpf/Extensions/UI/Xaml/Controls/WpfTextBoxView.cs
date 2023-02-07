@@ -3,12 +3,10 @@
 using System;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Windows.UI.Text;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using WpfElement = System.Windows.FrameworkElement;
-using WpfControl = System.Windows.Controls.Control;
 using WpfCanvas = System.Windows.Controls.Canvas;
+using WpfControl = System.Windows.Controls.Control;
+using WpfElement = System.Windows.FrameworkElement;
 using WpfFontWeight = System.Windows.FontWeight;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
@@ -16,7 +14,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 internal abstract class WpfTextBoxView : ITextBoxView
 {
 	public WpfTextBoxView()
-	{		
+	{
 	}
 
 	/// <summary>
@@ -56,27 +54,27 @@ internal abstract class WpfTextBoxView : ITextBoxView
 	public abstract IDisposable ObserveTextChanges(EventHandler onChanged);
 
 	public abstract void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox);
-		//SetFont(textBox.FontWeight, textBox.FontSize);
-		//SetForeground(textBox.Foreground);
-		//SetSelectionHighlightColor(textBox.SelectionHighlightColor);
+	//SetFont(textBox.FontWeight, textBox.FontSize);
+	//SetForeground(textBox.Foreground);
+	//SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 
-		//if (_currentTextBoxInputWidget is not null)
-		//{
-		//	_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
-		//	_currentTextBoxInputWidget.TextWrapping = textBox.TextWrapping switch
-		//	{
-		//		Windows.UI.Xaml.TextWrapping.Wrap => TextWrapping.WrapWithOverflow,
-		//		Windows.UI.Xaml.TextWrapping.WrapWholeWords => TextWrapping.Wrap,
-		//		_ => TextWrapping.NoWrap,
-		//	};
-		//	_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
-		//	_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
-		//}
+	//if (_currentTextBoxInputWidget is not null)
+	//{
+	//	_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
+	//	_currentTextBoxInputWidget.TextWrapping = textBox.TextWrapping switch
+	//	{
+	//		Windows.UI.Xaml.TextWrapping.Wrap => TextWrapping.WrapWithOverflow,
+	//		Windows.UI.Xaml.TextWrapping.WrapWholeWords => TextWrapping.Wrap,
+	//		_ => TextWrapping.NoWrap,
+	//	};
+	//	_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
+	//	_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
+	//}
 
-		//if (_currentPasswordBoxInputWidget is not null)
-		//{
-		//	_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
-		//}
+	//if (_currentPasswordBoxInputWidget is not null)
+	//{
+	//	_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
+	//}
 
 	public abstract void SetFocus(bool isFocused);
 
