@@ -23,7 +23,6 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
