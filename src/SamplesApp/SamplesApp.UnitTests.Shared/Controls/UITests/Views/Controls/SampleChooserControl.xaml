@@ -31,7 +31,7 @@
 			<x:Double x:Key="TitleContainerHeight">45</x:Double>
 
 			<uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
-			
+
 			<!-- Converters -->
 			<uc:FromNullableBoolToDefaultValueConverter x:Key="FavoritesPathConverter"
 														NullOrFalseValue="{StaticResource Icon_Favorite_Empty}"
@@ -272,7 +272,7 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					
+
 					<!-- Runtime tests button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
@@ -289,14 +289,14 @@
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center"
 						Text="Library" />
-					
+
 					<!-- Record All Tests Button -->
 					<Button
 						Grid.Column="2"
 						Style="{StaticResource IconButtonStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
-						Command="{Binding RecordAllTestsCommandCommand}">
+						Command="{Binding RecordAllTestsCommand}">
 						<u:PathControl Style="{StaticResource Icon_RunAll}"
 									   Margin="5,0" />
 					</Button>
@@ -362,7 +362,7 @@
 
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-						
+
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
 						Height="50"
@@ -370,7 +370,7 @@
 					<u:StarStackPanel VerticalAlignment="Stretch"
 									  Sizes="*,*,*,*"
 									  Orientation="Horizontal">
-						<!--Button foreground has to be set by converter instead of Button's visual state 
+						<!--Button foreground has to be set by converter instead of Button's visual state
 							because path foreground doesn't change through visual states.-->
 						<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
@@ -466,7 +466,7 @@
 					<!-- Back Button -->
 					<ToggleButton Style="{StaticResource BurgerButtonStyle}"
 								  IsChecked="{Binding IsPaneOpen, ElementName=SplitView, Mode=TwoWay}"
-								  IsEnabled="{Binding RecordAllTestsCommand.IsExecuting, Converter={StaticResource reverseBoolConverter}}"
+								  IsEnabled="{Binding IsRecordAllTests, Converter={StaticResource reverseBoolConverter}}"
 								  HorizontalAlignment="Left"
 								  VerticalAlignment="Center" />
 
