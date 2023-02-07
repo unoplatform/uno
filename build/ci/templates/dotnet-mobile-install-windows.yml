@@ -1,5 +1,5 @@
 parameters:
-- UseNet6SDK: ''
+  UseNet6SDK: ''
 
 variables:
   - name: UnoCheck_Version
