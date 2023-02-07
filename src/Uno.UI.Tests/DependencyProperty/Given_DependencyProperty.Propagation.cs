@@ -20,6 +20,8 @@ using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media;
+using System.Diagnostics;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
 {
