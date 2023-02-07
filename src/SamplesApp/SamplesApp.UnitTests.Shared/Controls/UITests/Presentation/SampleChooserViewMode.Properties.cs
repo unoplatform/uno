@@ -423,14 +423,13 @@ namespace SampleControl.Presentation
 		}
 
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-		private bool _isRecordAllTests = false;
 
 		public bool IsRecordAllTests
 		{
 			get => _isRecordAllTests;
 			set
 			{
-				if(value != _isRecordAllTests)
+				if (value != _isRecordAllTests)
 				{
 					_isRecordAllTests = value;
 					RaisePropertyChanged();
