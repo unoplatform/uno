@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarDatePicker
 {
+#if !WINDOWS_UWP
 	[TestMethod]
 	public async Task TestCalendarPanelSize()
 	{
@@ -31,4 +32,5 @@ public class Given_CalendarDatePicker
 
 		flyout.Close();
 	}
+#endif
 }
