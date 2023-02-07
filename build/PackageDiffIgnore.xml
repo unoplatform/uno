@@ -8813,7 +8813,7 @@
 			<Member
 				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet.get_Size()"
 				reason="Not part of UWP API" />
-			
+
 			<!-- BEGIN .NET 6 ios updated native ctors -->
 			<Member fullName="System.Void Windows.UI.Xaml.Application..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
 			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
@@ -8953,7 +8953,7 @@
 		<Properties>
 			<Member
 				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValue()"
-				reason="Not part of public API" />		
+				reason="Not part of public API" />
 			<Member
 				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValueProperty()"
 				reason="Not part of public API" />
@@ -8970,7 +8970,7 @@
 			<!-- END iOS 16 workaround -->
 		</Properties>
 	</IgnoreSet>
-	  
+
 	<IgnoreSet baseVersion="4.5">
 	  <Types>
 		  <!-- BEGIN Android Resources ignore -->
@@ -9011,7 +9011,7 @@
 	  </Types>
 	  <Methods>
 	  	<Member fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryStore..ctor()" reason="Not present in WinUI" />
-		  
+
 		<!-- BEGIN Android 13 breaking change -->
 		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.add_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
 		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.remove_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
@@ -9043,9 +9043,9 @@
 		</Properties>
 
 		<Methods>
-			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)" 
+			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)"
 					reason="Externally unused API for android layouting" />
-		<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()" 
+		<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()"
 				reason="Window constructor does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
@@ -9138,6 +9138,7 @@
 			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
 			<Member fullName="Uno.Client.ICommandExtensions" reason="Only needed internally" />
+			<Member fullName="Windows.UI.Xaml.FontFamilyHelper" reason="Only needed internally. The public facing type is Uno.UI.Xaml.Media.FontFamilyHelper" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -9157,7 +9158,7 @@
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowPresenter::DoNotActivateWindow()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowTitleBar::IsVisible()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.FullScreenPresenter::IsExclusive()" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow::OpacityFalloff()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow::MinOpacity()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow::MaxOpacity()" reason="Not present in WinAppSDK 1.2" />
@@ -9174,7 +9175,7 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.ComboBox::ValidationContext()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.ComboBox::InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
@@ -9193,7 +9194,7 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ElementFactory::DataContextProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.ElementFactory::TemplatedParent()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ElementFactory::TemplatedParentProperty()" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.PagerControl::PagerInputCommand()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PagerControl::PagerInputCommandProperty()" reason="Not present in WinAppSDK 1.2" />
 
@@ -9206,7 +9207,7 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.TextBox::ValidationContext()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.TextBox::InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.TextBox::ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
@@ -9216,7 +9217,7 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="Microsoft.UI.Xaml.ApplicationTheme Microsoft.UI.Xaml.Media.RevealBrush::TargetTheme()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallback()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallbackProperty()" reason="Not present in WinAppSDK 1.2" />
@@ -9240,7 +9241,7 @@
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowPresenter.get_DoNotActivateWindow()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowPresenter.set_DoNotActivateWindow(System.Boolean value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowTitleBar.get_IsVisible()" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.add_Added(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.remove_Added(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.add_Removed(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
@@ -9250,7 +9251,7 @@
 
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.FullScreenPresenter.get_IsExclusive()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Windowing.FullScreenPresenter.set_IsExclusive(System.Boolean value)" reason="Not present in WinAppSDK 1.2" />
-			
+
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow.get_OpacityFalloff()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadow.set_OpacityFalloff(System.Single value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow.get_MinOpacity()" reason="Not present in WinAppSDK 1.2" />
