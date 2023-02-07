@@ -8,7 +8,7 @@ steps:
       cp global.json global-net7.json
       cp global-net6.json global.json
     displayName: Replace global.json with .NET 6
-    condition: eq(variables['UseNet6SDK'], 'true')
+    condition: eq(parameters['UseNet6SDK'], 'true')
 
   - template: dotnet-install.yml
 
