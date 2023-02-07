@@ -1,4 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+
+#if __ANDROID__
+using Android.Graphics
+#elif __IOS__
+using Foundation;
+using UIKit;
+#elif __MACOS__
+using Foundation;
+using AppKit;
+#elif __SKIA__
+using SkiaSharp;
+#endif
 
 namespace Windows.Graphics.Imaging;
 
