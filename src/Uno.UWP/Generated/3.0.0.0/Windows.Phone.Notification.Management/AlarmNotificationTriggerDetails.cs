@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AlarmNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AlarmNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AlarmNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType AlarmNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType AlarmNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20AlarmNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AlarmNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AlarmNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AlarmNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset AlarmNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20AlarmNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid AlarmNotificationTriggerDetails.AlarmId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid AlarmNotificationTriggerDetails.AlarmId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20AlarmNotificationTriggerDetails.AlarmId");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ReminderState AlarmNotificationTriggerDetails.ReminderState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ReminderState AlarmNotificationTriggerDetails.ReminderState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ReminderState%20AlarmNotificationTriggerDetails.ReminderState");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AlarmNotificationTriggerDetails.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset AlarmNotificationTriggerDetails.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20AlarmNotificationTriggerDetails.Timestamp");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AlarmNotificationTriggerDetails.Title");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.InstanceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AlarmNotificationTriggerDetails.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AlarmNotificationTriggerDetails.InstanceId");
 			}
 		}
 		#endif

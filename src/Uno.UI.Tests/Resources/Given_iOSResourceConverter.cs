@@ -5,8 +5,8 @@ using Windows.ApplicationModel.Resources.Core;
 namespace Uno.UI.Tests.Resources
 {
 	[TestClass]
-    public class Given_iOSResourceConverter
-    {
+	public class Given_iOSResourceConverter
+	{
 		private const string DefaultLanguage = "en";
 
 		[DataRow(@"logo.png", @"logo.png", null, null, null)]
@@ -40,5 +40,5 @@ namespace Uno.UI.Tests.Resources
 			var actualPath = iOSResourceConverter.Convert(resourceCandidate, DefaultLanguage);
 			Assert.AreEqual(expectedPath, actualPath);
 		}
-    }
+	}
 }

@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.NewItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.NewItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20CurrentMediaPlaybackItemChangedEventArgs.NewItem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.OldItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.OldItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20CurrentMediaPlaybackItemChangedEventArgs.OldItem");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItemChangedReason CurrentMediaPlaybackItemChangedEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItemChangedReason CurrentMediaPlaybackItemChangedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItemChangedReason%20CurrentMediaPlaybackItemChangedEventArgs.Reason");
 			}
 		}
 		#endif

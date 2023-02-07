@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbBulkInEndpointDescriptor UsbEndpointDescriptor.AsBulkInEndpointDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbBulkInEndpointDescriptor UsbEndpointDescriptor.AsBulkInEndpointDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbBulkInEndpointDescriptor%20UsbEndpointDescriptor.AsBulkInEndpointDescriptor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbBulkOutEndpointDescriptor UsbEndpointDescriptor.AsBulkOutEndpointDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbBulkOutEndpointDescriptor UsbEndpointDescriptor.AsBulkOutEndpointDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbBulkOutEndpointDescriptor%20UsbEndpointDescriptor.AsBulkOutEndpointDescriptor");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbInterruptInEndpointDescriptor UsbEndpointDescriptor.AsInterruptInEndpointDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbInterruptInEndpointDescriptor UsbEndpointDescriptor.AsInterruptInEndpointDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbInterruptInEndpointDescriptor%20UsbEndpointDescriptor.AsInterruptInEndpointDescriptor");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbInterruptOutEndpointDescriptor UsbEndpointDescriptor.AsInterruptOutEndpointDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbInterruptOutEndpointDescriptor UsbEndpointDescriptor.AsInterruptOutEndpointDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbInterruptOutEndpointDescriptor%20UsbEndpointDescriptor.AsInterruptOutEndpointDescriptor");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbEndpointDescriptor.Direction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbEndpointDescriptor.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbTransferDirection%20UsbEndpointDescriptor.Direction");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbEndpointDescriptor.EndpointNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbEndpointDescriptor.EndpointNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbEndpointDescriptor.EndpointNumber");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbEndpointType UsbEndpointDescriptor.EndpointType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbEndpointType UsbEndpointDescriptor.EndpointType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbEndpointType%20UsbEndpointDescriptor.EndpointType");
 			}
 		}
 		#endif
@@ -88,14 +88,14 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbEndpointDescriptor parsed)
 		{
-			throw new global::System.NotImplementedException("The member bool UsbEndpointDescriptor.TryParse(UsbDescriptor descriptor, out UsbEndpointDescriptor parsed) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool UsbEndpointDescriptor.TryParse(UsbDescriptor descriptor, out UsbEndpointDescriptor parsed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UsbEndpointDescriptor.TryParse%28UsbDescriptor%20descriptor%2C%20out%20UsbEndpointDescriptor%20parsed%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Usb.UsbEndpointDescriptor Parse( global::Windows.Devices.Usb.UsbDescriptor descriptor)
 		{
-			throw new global::System.NotImplementedException("The member UsbEndpointDescriptor UsbEndpointDescriptor.Parse(UsbDescriptor descriptor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UsbEndpointDescriptor UsbEndpointDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbEndpointDescriptor%20UsbEndpointDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}
 		#endif
 	}

@@ -11,7 +11,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.Diagnostics.ProcessCpuUsageReport GetReport()
 		{
-			throw new global::System.NotImplementedException("The member ProcessCpuUsageReport ProcessCpuUsage.GetReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProcessCpuUsageReport ProcessCpuUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProcessCpuUsageReport%20ProcessCpuUsage.GetReport%28%29");
 		}
 		#endif
 	}

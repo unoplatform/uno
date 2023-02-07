@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderReport.AdditionalSecurityInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderReport.AdditionalSecurityInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20MagneticStripeReaderReport.AdditionalSecurityInformation");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderReport.CardAuthenticationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderReport.CardAuthenticationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20MagneticStripeReaderReport.CardAuthenticationData");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderReport.CardAuthenticationDataLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderReport.CardAuthenticationDataLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderReport.CardAuthenticationDataLength");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderReport.CardType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderReport.CardType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderReport.CardType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> MagneticStripeReaderReport.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> MagneticStripeReaderReport.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20MagneticStripeReaderReport.Properties");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderTrackData%20MagneticStripeReaderReport.Track1");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderTrackData%20MagneticStripeReaderReport.Track2");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderTrackData%20MagneticStripeReaderReport.Track3");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackData MagneticStripeReaderReport.Track4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderTrackData%20MagneticStripeReaderReport.Track4");
 			}
 		}
 		#endif

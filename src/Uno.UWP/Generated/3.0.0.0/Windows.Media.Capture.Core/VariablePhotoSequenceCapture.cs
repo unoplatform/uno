@@ -11,21 +11,21 @@ namespace Windows.Media.Capture.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VariablePhotoSequenceCapture.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.StopAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VariablePhotoSequenceCapture.StopAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction FinishAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.FinishAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.FinishAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VariablePhotoSequenceCapture.FinishAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.PhotoCaptured.add
@@ -36,7 +36,7 @@ namespace Windows.Media.Capture.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction UpdateSettingsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.UpdateSettingsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VariablePhotoSequenceCapture.UpdateSettingsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VariablePhotoSequenceCapture.UpdateSettingsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User PhoneCallHistoryManagerForUser.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User PhoneCallHistoryManagerForUser.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20PhoneCallHistoryManagerForUser.User");
 			}
 		}
 		#endif
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryStore> RequestStoreAsync( global::Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType accessType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallHistoryStore> PhoneCallHistoryManagerForUser.RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallHistoryStore> PhoneCallHistoryManagerForUser.RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPhoneCallHistoryStore%3E%20PhoneCallHistoryManagerForUser.RequestStoreAsync%28PhoneCallHistoryStoreAccessType%20accessType%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.User.get

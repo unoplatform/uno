@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int IppResolution.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int IppResolution.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20IppResolution.Height");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IppResolutionUnit IppResolution.Unit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IppResolutionUnit IppResolution.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IppResolutionUnit%20IppResolution.Unit");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int IppResolution.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int IppResolution.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20IppResolution.Width");
 			}
 		}
 		#endif

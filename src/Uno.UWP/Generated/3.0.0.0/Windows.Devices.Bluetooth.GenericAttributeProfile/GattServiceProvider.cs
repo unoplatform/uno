@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisementStatus GattServiceProvider.AdvertisementStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisementStatus GattServiceProvider.AdvertisementStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattServiceProviderAdvertisementStatus%20GattServiceProvider.AdvertisementStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProvider.Service is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProvider.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattLocalService%20GattServiceProvider.Service");
 			}
 		}
 		#endif
@@ -56,7 +56,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderResult> CreateAsync( global::System.Guid serviceUuid)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderResult> GattServiceProvider.CreateAsync(Guid serviceUuid) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderResult> GattServiceProvider.CreateAsync(Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattServiceProviderResult%3E%20GattServiceProvider.CreateAsync%28Guid%20serviceUuid%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

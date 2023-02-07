@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectedAnimation.IsScaleAnimationEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConnectedAnimation.IsScaleAnimationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectedAnimation.IsScaleAnimationEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConnectedAnimationConfiguration ConnectedAnimation.Configuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ConnectedAnimationConfiguration ConnectedAnimation.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConnectedAnimationConfiguration%20ConnectedAnimation.Configuration");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryStart( global::Windows.UI.Xaml.UIElement destination)
 		{
-			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectedAnimation.TryStart%28UIElement%20destination%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryStart( global::Windows.UI.Xaml.UIElement destination,  global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.UIElement> coordinatedElements)
 		{
-			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination, IEnumerable<UIElement> coordinatedElements) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination, IEnumerable<UIElement> coordinatedElements) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConnectedAnimation.TryStart%28UIElement%20destination%2C%20IEnumerable%3CUIElement%3E%20coordinatedElements%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

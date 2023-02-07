@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.CanCustomize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.CanCustomize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.CanCustomize");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsBlinkSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsBlinkSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.IsBlinkSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsBlockSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsBlockSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.IsBlockSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsHalfBlockSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsHalfBlockSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.IsHalfBlockSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsOtherSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsOtherSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.IsOtherSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsReverseSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsReverseSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.IsReverseSupported");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsUnderlineSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursor.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursor.IsUnderlineSupported");
 			}
 		}
 		#endif
@@ -88,14 +88,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.PointOfService.LineDisplayCursorAttributes GetAttributes()
 		{
-			throw new global::System.NotImplementedException("The member LineDisplayCursorAttributes LineDisplayCursor.GetAttributes() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member LineDisplayCursorAttributes LineDisplayCursor.GetAttributes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LineDisplayCursorAttributes%20LineDisplayCursor.GetAttributes%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryUpdateAttributesAsync( global::Windows.Devices.PointOfService.LineDisplayCursorAttributes attributes)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayCursor.TryUpdateAttributesAsync(LineDisplayCursorAttributes attributes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayCursor.TryUpdateAttributesAsync(LineDisplayCursorAttributes attributes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20LineDisplayCursor.TryUpdateAttributesAsync%28LineDisplayCursorAttributes%20attributes%29");
 		}
 		#endif
 	}

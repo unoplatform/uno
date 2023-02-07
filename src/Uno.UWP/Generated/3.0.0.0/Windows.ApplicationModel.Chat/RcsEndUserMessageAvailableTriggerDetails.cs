@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RcsEndUserMessageAvailableTriggerDetails.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RcsEndUserMessageAvailableTriggerDetails.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RcsEndUserMessageAvailableTriggerDetails.Text");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RcsEndUserMessageAvailableTriggerDetails.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RcsEndUserMessageAvailableTriggerDetails.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RcsEndUserMessageAvailableTriggerDetails.Title");
 			}
 		}
 		#endif

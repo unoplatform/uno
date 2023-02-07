@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoveAppointmentOperation.AppointmentId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoveAppointmentOperation.AppointmentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoveAppointmentOperation.AppointmentId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? RemoveAppointmentOperation.InstanceStartDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? RemoveAppointmentOperation.InstanceStartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20RemoveAppointmentOperation.InstanceStartDate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoveAppointmentOperation.SourcePackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoveAppointmentOperation.SourcePackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoveAppointmentOperation.SourcePackageFamilyName");
 			}
 		}
 		#endif

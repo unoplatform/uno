@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaMetadata.Album is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaMetadata.Album is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaMetadata.Album");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaMetadata.Artist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaMetadata.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaMetadata.Artist");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaMetadata.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaMetadata.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaMetadata.Duration");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaMetadata.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaMetadata.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaMetadata.Subtitle");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaMetadata.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaMetadata.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20MediaMetadata.Thumbnail");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaMetadata.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaMetadata.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaMetadata.Title");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaMetadata.Track is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MediaMetadata.Track is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MediaMetadata.Track");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomErrorBox.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomErrorBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomErrorBox.Label");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomErrorBox.Compulsory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomErrorBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomErrorBox.Compulsory");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomErrorBox.Bordered is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomErrorBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomErrorBox.Bordered");
 			}
 			set
 			{

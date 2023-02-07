@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation TreeViewDragItemsCompletedEventArgs.DropResult is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DataPackageOperation TreeViewDragItemsCompletedEventArgs.DropResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPackageOperation%20TreeViewDragItemsCompletedEventArgs.DropResult");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> TreeViewDragItemsCompletedEventArgs.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> TreeViewDragItemsCompletedEventArgs.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cobject%3E%20TreeViewDragItemsCompletedEventArgs.Items");
 			}
 		}
 		#endif

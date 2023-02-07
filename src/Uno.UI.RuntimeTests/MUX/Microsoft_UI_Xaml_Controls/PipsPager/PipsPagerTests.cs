@@ -26,7 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-    [RequiresFullWindow]
+	[RequiresFullWindow]
 	public class PipsPagerTests : MUXApiTestBase
 	{
 		[TestMethod]

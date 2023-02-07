@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopoint MapElementsLayerPointerExitedEventArgs.Location is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geopoint MapElementsLayerPointerExitedEventArgs.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geopoint%20MapElementsLayerPointerExitedEventArgs.Location");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapElement MapElementsLayerPointerExitedEventArgs.MapElement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapElement MapElementsLayerPointerExitedEventArgs.MapElement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapElement%20MapElementsLayerPointerExitedEventArgs.MapElement");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MapElementsLayerPointerExitedEventArgs.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point MapElementsLayerPointerExitedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20MapElementsLayerPointerExitedEventArgs.Position");
 			}
 		}
 		#endif

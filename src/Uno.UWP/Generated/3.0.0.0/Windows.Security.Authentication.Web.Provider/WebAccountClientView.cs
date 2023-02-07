@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountClientView.AccountPairwiseId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccountClientView.AccountPairwiseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccountClientView.AccountPairwiseId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountClientView.ApplicationCallbackUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebAccountClientView.ApplicationCallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebAccountClientView.ApplicationCallbackUri");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountClientViewType WebAccountClientView.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountClientViewType WebAccountClientView.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountClientViewType%20WebAccountClientView.Type");
 			}
 		}
 		#endif

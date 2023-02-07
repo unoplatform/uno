@@ -13,7 +13,7 @@ namespace Windows.Phone.System.UserProfile.GameServices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri GameService.ServiceUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri GameService.ServiceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20GameService.ServiceUri");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Phone.System.UserProfile.GameServices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static uint GetAuthenticationStatus()
 		{
-			throw new global::System.NotImplementedException("The member uint GameService.GetAuthenticationStatus() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member uint GameService.GetAuthenticationStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GameService.GetAuthenticationStatus%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Phone.System.UserProfile.GameServices.Core.GameService.ServiceUri.get
@@ -36,28 +36,28 @@ namespace Windows.Phone.System.UserProfile.GameServices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.System.UserProfile.GameServices.Core.GameServicePropertyCollection> GetGamerProfileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GameServicePropertyCollection> GameService.GetGamerProfileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GameServicePropertyCollection> GameService.GetGamerProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGameServicePropertyCollection%3E%20GameService.GetGamerProfileAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.System.UserProfile.GameServices.Core.GameServicePropertyCollection> GetInstalledGameItemsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GameServicePropertyCollection> GameService.GetInstalledGameItemsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GameServicePropertyCollection> GameService.GetInstalledGameItemsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGameServicePropertyCollection%3E%20GameService.GetInstalledGameItemsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetPartnerTokenAsync( global::System.Uri audienceUri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> GameService.GetPartnerTokenAsync(Uri audienceUri) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> GameService.GetPartnerTokenAsync(Uri audienceUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20GameService.GetPartnerTokenAsync%28Uri%20audienceUri%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetPrivilegesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> GameService.GetPrivilegesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> GameService.GetPrivilegesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20GameService.GetPrivilegesAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ItemsPickedEventArgs.AddedItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<object> ItemsPickedEventArgs.AddedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cobject%3E%20ItemsPickedEventArgs.AddedItems");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ItemsPickedEventArgs.RemovedItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<object> ItemsPickedEventArgs.RemovedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cobject%3E%20ItemsPickedEventArgs.RemovedItems");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Desktop is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Desktop is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Desktop");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Holographic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Holographic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Holographic");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Hub is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Hub is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Hub");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Phone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Phone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Phone");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Xbox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Xbox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Xbox");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Iot is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Iot is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Iot");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Laptop is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Laptop is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Laptop");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Tablet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Tablet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemKinds.Tablet");
 			}
 		}
 		#endif

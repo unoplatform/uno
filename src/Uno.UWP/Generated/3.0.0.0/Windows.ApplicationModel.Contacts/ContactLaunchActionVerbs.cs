@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Call is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Call is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLaunchActionVerbs.Call");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Map is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Map is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLaunchActionVerbs.Map");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLaunchActionVerbs.Message");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Post is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.Post is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLaunchActionVerbs.Post");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.VideoCall is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactLaunchActionVerbs.VideoCall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactLaunchActionVerbs.VideoCall");
 			}
 		}
 		#endif

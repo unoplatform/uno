@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceError MediaSourceOpenOperationCompletedEventArgs.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaSourceError MediaSourceOpenOperationCompletedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSourceError%20MediaSourceOpenOperationCompletedEventArgs.Error");
 			}
 		}
 		#endif

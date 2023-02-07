@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CachedFileUpdaterTriggerDetails.CanRequestUserInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CachedFileUpdaterTriggerDetails.CanRequestUserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CachedFileUpdaterTriggerDetails.CanRequestUserInput");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateRequest CachedFileUpdaterTriggerDetails.UpdateRequest is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FileUpdateRequest CachedFileUpdaterTriggerDetails.UpdateRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileUpdateRequest%20CachedFileUpdaterTriggerDetails.UpdateRequest");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterTriggerDetails.UpdateTarget is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterTriggerDetails.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CachedFileTarget%20CachedFileUpdaterTriggerDetails.UpdateTarget");
 			}
 		}
 		#endif

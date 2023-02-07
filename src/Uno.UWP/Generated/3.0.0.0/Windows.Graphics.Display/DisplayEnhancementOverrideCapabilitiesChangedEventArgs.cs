@@ -13,7 +13,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayEnhancementOverrideCapabilities DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Capabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayEnhancementOverrideCapabilities DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayEnhancementOverrideCapabilities%20DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Capabilities");
 			}
 		}
 		#endif

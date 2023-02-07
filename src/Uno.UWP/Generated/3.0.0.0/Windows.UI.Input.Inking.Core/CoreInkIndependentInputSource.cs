@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter CoreInkIndependentInputSource.InkPresenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkPresenter CoreInkIndependentInputSource.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkPresenter%20CoreInkIndependentInputSource.InkPresenter");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreInkIndependentInputSource.PointerCursor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreCursor CoreInkIndependentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreCursor%20CoreInkIndependentInputSource.PointerCursor");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.UI.Input.Inking.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource Create( global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			throw new global::System.NotImplementedException("The member CoreInkIndependentInputSource CoreInkIndependentInputSource.Create(InkPresenter inkPresenter) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreInkIndependentInputSource CoreInkIndependentInputSource.Create(InkPresenter inkPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreInkIndependentInputSource%20CoreInkIndependentInputSource.Create%28InkPresenter%20inkPresenter%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

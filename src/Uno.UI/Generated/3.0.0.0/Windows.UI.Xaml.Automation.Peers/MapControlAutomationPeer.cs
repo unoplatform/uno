@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.HorizontalScrollPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.HorizontalScrollPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.HorizontalScrollPercent");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.HorizontalViewSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.HorizontalViewSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.HorizontalViewSize");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.HorizontallyScrollable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.HorizontallyScrollable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapControlAutomationPeer.HorizontallyScrollable");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.VerticalScrollPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.VerticalScrollPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.VerticalScrollPercent");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.VerticalViewSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.VerticalViewSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.VerticalViewSize");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.VerticallyScrollable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.VerticallyScrollable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapControlAutomationPeer.VerticallyScrollable");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanMove is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanMove is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapControlAutomationPeer.CanMove");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanResize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanResize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapControlAutomationPeer.CanResize");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanRotate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanRotate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapControlAutomationPeer.CanRotate");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanZoom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MapControlAutomationPeer.CanZoom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MapControlAutomationPeer.CanZoom");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.MaxZoom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.MaxZoom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.MaxZoom");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.MinZoom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.MinZoom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.MinZoom");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.ZoomLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapControlAutomationPeer.ZoomLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapControlAutomationPeer.ZoomLevel");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty MultipleViewPatternIdentifiers.CurrentViewProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty MultipleViewPatternIdentifiers.CurrentViewProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20MultipleViewPatternIdentifiers.CurrentViewProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty MultipleViewPatternIdentifiers.SupportedViewsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty MultipleViewPatternIdentifiers.SupportedViewsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20MultipleViewPatternIdentifiers.SupportedViewsProperty");
 			}
 		}
 		#endif

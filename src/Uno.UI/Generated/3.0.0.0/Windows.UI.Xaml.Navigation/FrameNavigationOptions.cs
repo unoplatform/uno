@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Navigation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NavigationTransitionInfo FrameNavigationOptions.TransitionInfoOverride is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NavigationTransitionInfo FrameNavigationOptions.TransitionInfoOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NavigationTransitionInfo%20FrameNavigationOptions.TransitionInfoOverride");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Navigation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameNavigationOptions.IsNavigationStackEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameNavigationOptions.IsNavigationStackEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameNavigationOptions.IsNavigationStackEnabled");
 			}
 			set
 			{

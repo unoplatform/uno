@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CompositionAnimation.Target is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CompositionAnimation.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CompositionAnimation.Target");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InitialValueExpressionCollection CompositionAnimation.InitialValueExpressions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InitialValueExpressionCollection CompositionAnimation.InitialValueExpressions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InitialValueExpressionCollection%20CompositionAnimation.InitialValueExpressions");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketQualityOfService StreamSocketControl.QualityOfService is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketQualityOfService StreamSocketControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketQualityOfService%20StreamSocketControl.QualityOfService");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte StreamSocketControl.OutboundUnicastHopLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte StreamSocketControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20StreamSocketControl.OutboundUnicastHopLimit");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StreamSocketControl.OutboundBufferSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint StreamSocketControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20StreamSocketControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamSocketControl.NoDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreamSocketControl.NoDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreamSocketControl.NoDelay");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamSocketControl.KeepAlive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreamSocketControl.KeepAlive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreamSocketControl.KeepAlive");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> StreamSocketControl.IgnorableServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> StreamSocketControl.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CChainValidationResult%3E%20StreamSocketControl.IgnorableServerCertificateErrors");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamSocketControl.SerializeConnectionAttempts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreamSocketControl.SerializeConnectionAttempts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreamSocketControl.SerializeConnectionAttempts");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate StreamSocketControl.ClientCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate StreamSocketControl.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20StreamSocketControl.ClientCertificate");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketProtectionLevel StreamSocketControl.MinProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketProtectionLevel StreamSocketControl.MinProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketProtectionLevel%20StreamSocketControl.MinProtectionLevel");
 			}
 			set
 			{

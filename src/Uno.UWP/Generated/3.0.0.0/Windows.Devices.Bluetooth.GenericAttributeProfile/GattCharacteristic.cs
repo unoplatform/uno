@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattCharacteristic.ProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattProtectionLevel GattCharacteristic.ProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattProtectionLevel%20GattCharacteristic.ProtectionLevel");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattCharacteristic.AttributeHandle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort GattCharacteristic.AttributeHandle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20GattCharacteristic.AttributeHandle");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattPresentationFormat> GattCharacteristic.PresentationFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<GattPresentationFormat> GattCharacteristic.PresentationFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CGattPresentationFormat%3E%20GattCharacteristic.PresentationFormats");
 			}
 		}
 		#endif
@@ -48,7 +48,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattCharacteristic.UserDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GattCharacteristic.UserDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GattCharacteristic.UserDescription");
 			}
 		}
 		#endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattDeviceService GattCharacteristic.Service is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattDeviceService GattCharacteristic.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattDeviceService%20GattCharacteristic.Service");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor> GetDescriptors( global::System.Guid descriptorUuid)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDescriptor> GattCharacteristic.GetDescriptors(Guid descriptorUuid) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDescriptor> GattCharacteristic.GetDescriptors(Guid descriptorUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CGattDescriptor%3E%20GattCharacteristic.GetDescriptors%28Guid%20descriptorUuid%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.CharacteristicProperties.get
@@ -81,42 +81,42 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult> ReadValueAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadResult> GattCharacteristic.ReadValueAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadResult> GattCharacteristic.ReadValueAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattReadResult%3E%20GattCharacteristic.ReadValueAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult> ReadValueAsync( global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadResult> GattCharacteristic.ReadValueAsync(BluetoothCacheMode cacheMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadResult> GattCharacteristic.ReadValueAsync(BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattReadResult%3E%20GattCharacteristic.ReadValueAsync%28BluetoothCacheMode%20cacheMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> WriteValueAsync( global::Windows.Storage.Streams.IBuffer value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteValueAsync(IBuffer value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteValueAsync(IBuffer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattCommunicationStatus%3E%20GattCharacteristic.WriteValueAsync%28IBuffer%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> WriteValueAsync( global::Windows.Storage.Streams.IBuffer value,  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption writeOption)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteValueAsync(IBuffer value, GattWriteOption writeOption) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteValueAsync(IBuffer value, GattWriteOption writeOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattCommunicationStatus%3E%20GattCharacteristic.WriteValueAsync%28IBuffer%20value%2C%20GattWriteOption%20writeOption%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadClientCharacteristicConfigurationDescriptorResult> ReadClientCharacteristicConfigurationDescriptorAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadClientCharacteristicConfigurationDescriptorResult> GattCharacteristic.ReadClientCharacteristicConfigurationDescriptorAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattReadClientCharacteristicConfigurationDescriptorResult> GattCharacteristic.ReadClientCharacteristicConfigurationDescriptorAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattReadClientCharacteristicConfigurationDescriptorResult%3E%20GattCharacteristic.ReadClientCharacteristicConfigurationDescriptorAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> WriteClientCharacteristicConfigurationDescriptorAsync( global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattCommunicationStatus%3E%20GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync%28GattClientCharacteristicConfigurationDescriptorValue%20clientCharacteristicConfigurationDescriptorValue%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ValueChanged.add
@@ -126,63 +126,63 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor> GetAllDescriptors()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDescriptor> GattCharacteristic.GetAllDescriptors() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<GattDescriptor> GattCharacteristic.GetAllDescriptors() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CGattDescriptor%3E%20GattCharacteristic.GetAllDescriptors%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattDescriptorsResult%3E%20GattCharacteristic.GetDescriptorsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsAsync( global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsAsync(BluetoothCacheMode cacheMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsAsync(BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattDescriptorsResult%3E%20GattCharacteristic.GetDescriptorsAsync%28BluetoothCacheMode%20cacheMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsForUuidAsync( global::System.Guid descriptorUuid)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsForUuidAsync(Guid descriptorUuid) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsForUuidAsync(Guid descriptorUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattDescriptorsResult%3E%20GattCharacteristic.GetDescriptorsForUuidAsync%28Guid%20descriptorUuid%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsForUuidAsync( global::System.Guid descriptorUuid,  global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsForUuidAsync(Guid descriptorUuid, BluetoothCacheMode cacheMode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsForUuidAsync(Guid descriptorUuid, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattDescriptorsResult%3E%20GattCharacteristic.GetDescriptorsForUuidAsync%28Guid%20descriptorUuid%2C%20BluetoothCacheMode%20cacheMode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> WriteValueWithResultAsync( global::Windows.Storage.Streams.IBuffer value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteValueWithResultAsync(IBuffer value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteValueWithResultAsync(IBuffer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattWriteResult%3E%20GattCharacteristic.WriteValueWithResultAsync%28IBuffer%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> WriteValueWithResultAsync( global::Windows.Storage.Streams.IBuffer value,  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption writeOption)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteValueWithResultAsync(IBuffer value, GattWriteOption writeOption) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteValueWithResultAsync(IBuffer value, GattWriteOption writeOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattWriteResult%3E%20GattCharacteristic.WriteValueWithResultAsync%28IBuffer%20value%2C%20GattWriteOption%20writeOption%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> WriteClientCharacteristicConfigurationDescriptorWithResultAsync( global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorWithResultAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorWithResultAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattWriteResult%3E%20GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorWithResultAsync%28GattClientCharacteristicConfigurationDescriptorValue%20clientCharacteristicConfigurationDescriptorValue%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Guid ConvertShortIdToUuid( ushort shortId)
 		{
-			throw new global::System.NotImplementedException("The member Guid GattCharacteristic.ConvertShortIdToUuid(ushort shortId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Guid GattCharacteristic.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattCharacteristic.ConvertShortIdToUuid%28ushort%20shortId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

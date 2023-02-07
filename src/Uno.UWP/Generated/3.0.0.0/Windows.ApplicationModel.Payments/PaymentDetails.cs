@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetails.Total is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetails.Total is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentItem%20PaymentDetails.Total");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentShippingOption> PaymentDetails.ShippingOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentShippingOption> PaymentDetails.ShippingOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPaymentShippingOption%3E%20PaymentDetails.ShippingOptions");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentDetailsModifier> PaymentDetails.Modifiers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentDetailsModifier> PaymentDetails.Modifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPaymentDetailsModifier%3E%20PaymentDetails.Modifiers");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetails.DisplayItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetails.DisplayItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPaymentItem%3E%20PaymentDetails.DisplayItems");
 			}
 			set
 			{

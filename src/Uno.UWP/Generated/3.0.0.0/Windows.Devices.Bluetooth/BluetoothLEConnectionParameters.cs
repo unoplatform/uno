@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEConnectionParameters.ConnectionInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort BluetoothLEConnectionParameters.ConnectionInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20BluetoothLEConnectionParameters.ConnectionInterval");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEConnectionParameters.ConnectionLatency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort BluetoothLEConnectionParameters.ConnectionLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20BluetoothLEConnectionParameters.ConnectionLatency");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEConnectionParameters.LinkTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort BluetoothLEConnectionParameters.LinkTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20BluetoothLEConnectionParameters.LinkTimeout");
 			}
 		}
 		#endif

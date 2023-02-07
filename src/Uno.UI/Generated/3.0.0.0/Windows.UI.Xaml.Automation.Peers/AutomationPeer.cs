@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.EventsSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.EventsSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationPeer%20AutomationPeer.EventsSource");
 			}
 			set
 			{
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int GetCulture()
 		{
-			throw new global::System.NotImplementedException("The member int AutomationPeer.GetCulture() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int AutomationPeer.GetCulture() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AutomationPeer.GetCulture%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer PeerFromProvider( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple provider)
 		{
-			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.PeerFromProvider(IRawElementProviderSimple provider) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.PeerFromProvider(IRawElementProviderSimple provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationPeer%20AutomationPeer.PeerFromProvider%28IRawElementProviderSimple%20provider%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.ProviderFromPeer(Windows.UI.Xaml.Automation.Peers.AutomationPeer)
@@ -167,21 +167,21 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Automation.Peers.AutomationPeer> GetFlowsToCore()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetFlowsToCore() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetFlowsToCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IEnumerable%3CAutomationPeer%3E%20AutomationPeer.GetFlowsToCore%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Automation.Peers.AutomationPeer> GetFlowsFromCore()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetFlowsFromCore() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetFlowsFromCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IEnumerable%3CAutomationPeer%3E%20AutomationPeer.GetFlowsFromCore%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual int GetCultureCore()
 		{
-			throw new global::System.NotImplementedException("The member int AutomationPeer.GetCultureCore() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int AutomationPeer.GetCultureCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AutomationPeer.GetCultureCore%28%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.GetHeadingLevelCore()
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId GenerateRawElementProviderRuntimeId()
 		{
-			throw new global::System.NotImplementedException("The member RawElementProviderRuntimeId AutomationPeer.GenerateRawElementProviderRuntimeId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RawElementProviderRuntimeId AutomationPeer.GenerateRawElementProviderRuntimeId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RawElementProviderRuntimeId%20AutomationPeer.GenerateRawElementProviderRuntimeId%28%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.ListenerExists(Windows.UI.Xaml.Automation.Peers.AutomationEvents)

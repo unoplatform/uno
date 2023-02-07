@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ToolTipTemplateSettings.FromHorizontalOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ToolTipTemplateSettings.FromHorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ToolTipTemplateSettings.FromHorizontalOffset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ToolTipTemplateSettings.FromVerticalOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ToolTipTemplateSettings.FromVerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ToolTipTemplateSettings.FromVerticalOffset");
 			}
 		}
 		#endif

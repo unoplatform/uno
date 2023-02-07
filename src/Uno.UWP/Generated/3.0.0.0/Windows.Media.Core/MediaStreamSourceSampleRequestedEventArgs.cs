@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequest MediaStreamSourceSampleRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequest MediaStreamSourceSampleRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSourceSampleRequest%20MediaStreamSourceSampleRequestedEventArgs.Request");
 			}
 		}
 		#endif

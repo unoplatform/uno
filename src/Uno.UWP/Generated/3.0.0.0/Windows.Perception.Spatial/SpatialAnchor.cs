@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialAnchor.CoordinateSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialAnchor.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialCoordinateSystem%20SpatialAnchor.CoordinateSystem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialAnchor.RawCoordinateSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialAnchor.RawCoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialCoordinateSystem%20SpatialAnchor.RawCoordinateSystem");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialAnchor.RemovedByUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialAnchor.RemovedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialAnchor.RemovedByUser");
 			}
 		}
 		#endif
@@ -46,21 +46,21 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialAnchor%20SpatialAnchor.TryCreateRelativeTo%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 position)
 		{
-			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialAnchor%20SpatialAnchor.TryCreateRelativeTo%28SpatialCoordinateSystem%20coordinateSystem%2C%20Vector3%20position%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 position,  global::System.Numerics.Quaternion orientation)
 		{
-			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position, Quaternion orientation) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position, Quaternion orientation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialAnchor%20SpatialAnchor.TryCreateRelativeTo%28SpatialCoordinateSystem%20coordinateSystem%2C%20Vector3%20position%2C%20Quaternion%20orientation%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

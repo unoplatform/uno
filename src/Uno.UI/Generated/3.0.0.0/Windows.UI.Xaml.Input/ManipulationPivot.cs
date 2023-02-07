@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ManipulationPivot.Radius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ManipulationPivot.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ManipulationPivot.Radius");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point ManipulationPivot.Center is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point ManipulationPivot.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20ManipulationPivot.Center");
 			}
 			set
 			{

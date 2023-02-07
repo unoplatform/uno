@@ -12,8 +12,8 @@ using Refit;
 
 namespace Uno.UI.TestComparer
 {
-    public class AppCenterTestsDownloader
-    {
+	public class AppCenterTestsDownloader
+	{
 		private string _secret;
 
 		public AppCenterTestsDownloader(string secret)
@@ -21,54 +21,54 @@ namespace Uno.UI.TestComparer
 			_secret = secret;
 		}
 
-        public async Task Download(string testCloudApiKey, string basePath, int runLimit)
-        {
-            System.Net.ServicePointManager.DefaultConnectionLimit = 40;
+		public async Task Download(string testCloudApiKey, string basePath, int runLimit)
+		{
+			System.Net.ServicePointManager.DefaultConnectionLimit = 40;
 
-            Console.WriteLine($"Downloading {runLimit} test results from testcloud to [{basePath}]");
+			Console.WriteLine($"Downloading {runLimit} test results from testcloud to [{basePath}]");
 
-            var appCenterApi = RestService.For<IAppCenterApi>(
-                hostUrl: "https://api.appcenter.ms",
-                settings: new RefitSettings
-                {
-                    HttpMessageHandlerFactory = () => new AuthenticatedHttpClientHandler(_secret)
-                }
-            );
+			var appCenterApi = RestService.For<IAppCenterApi>(
+				hostUrl: "https://api.appcenter.ms",
+				settings: new RefitSettings
+				{
+					HttpMessageHandlerFactory = () => new AuthenticatedHttpClientHandler(_secret)
+				}
+			);
 
-            Console.WriteLine($"Getting apps...");
-            var apps = await appCenterApi.GetApps("nventive");
-            var unoApps = apps.Where(a => a.DisplayName == "Uno.UI Samples");
+			Console.WriteLine($"Getting apps...");
+			var apps = await appCenterApi.GetApps("nventive");
+			var unoApps = apps.Where(a => a.DisplayName == "Uno.UI Samples");
 
-            foreach (var app in unoApps)
-            {
-                Console.WriteLine($"Getting runs for {app.DisplayName}...");
-                var runs = await appCenterApi.GetTestRuns(app.Owner.Name, app.Name);
+			foreach (var app in unoApps)
+			{
+				Console.WriteLine($"Getting runs for {app.DisplayName}...");
+				var runs = await appCenterApi.GetTestRuns(app.Owner.Name, app.Name);
 
-                var validRuns = runs
-                    .OrderByDescending(r => r.Date)
-                    .Where(r => !r.State.Equals("running", StringComparison.OrdinalIgnoreCase))
-                    .Take(runLimit)
-                    .ToArray()
-                    ;
+				var validRuns = runs
+					.OrderByDescending(r => r.Date)
+					.Where(r => !r.State.Equals("running", StringComparison.OrdinalIgnoreCase))
+					.Take(runLimit)
+					.ToArray()
+					;
 
-                foreach (var run in validRuns.Select((v, i) => new { Index = i, Value = v }))
-                {
-                    Console.WriteLine($"Getting run {run.Index + 1} of {validRuns.Length} for {run.Value.Platform} at {run.Value.Date}...");
+				foreach (var run in validRuns.Select((v, i) => new { Index = i, Value = v }))
+				{
+					Console.WriteLine($"Getting run {run.Index + 1} of {validRuns.Length} for {run.Value.Platform} at {run.Value.Date}...");
 
-                    var runName = $"{run.Value.Date:yyyyMMdd-hhmmss}-{run.Value.Id}";
-                    var fullPath = Path.Combine(basePath, run.Value.Platform, runName);
+					var runName = $"{run.Value.Date:yyyyMMdd-hhmmss}-{run.Value.Id}";
+					var fullPath = Path.Combine(basePath, run.Value.Platform, runName);
 
-                    if (!Directory.Exists(fullPath))
-                    {
-                        Directory.CreateDirectory(fullPath);
+					if (!Directory.Exists(fullPath))
+					{
+						Directory.CreateDirectory(fullPath);
 
-                        await DownloadRun(appCenterApi, app.Owner.Name, app.Name, run.Value.Id, fullPath);
-                    }
-                }
-            }
-        }
+						await DownloadRun(appCenterApi, app.Owner.Name, app.Name, run.Value.Id, fullPath);
+					}
+				}
+			}
+		}
 
-        private async Task DownloadRun(IAppCenterApi appCenterApi, string ownerName, string appName, string runId, string outputPath)
+		private async Task DownloadRun(IAppCenterApi appCenterApi, string ownerName, string appName, string runId, string outputPath)
 		{
 			try
 			{
@@ -108,35 +108,35 @@ namespace Uno.UI.TestComparer
 								{
 									try
 									{
-                                        string fileName = outputPath + "\\" + name.Replace(" ", "_") + ".png";
-                                        if (!File.Exists(fileName))
-                                        {
-                                            Console.WriteLine($"Downloading ({tries} try) for {name}");
-                                            new WebClient().DownloadFile(shot, fileName);
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine($"Skipping existing {name}");
-                                        }
-                                        return;
+										string fileName = outputPath + "\\" + name.Replace(" ", "_") + ".png";
+										if (!File.Exists(fileName))
+										{
+											Console.WriteLine($"Downloading ({tries} try) for {name}");
+											new WebClient().DownloadFile(shot, fileName);
+										}
+										else
+										{
+											Console.WriteLine($"Skipping existing {name}");
+										}
+										return;
 									}
 									catch (Exception e)
 									{
-                                        Console.WriteLine($"Retrying in 1s... {e.Message}");
-                                        Thread.Sleep(1000);
+										Console.WriteLine($"Retrying in 1s... {e.Message}");
+										Thread.Sleep(1000);
 									}
 								}
 							}
 							else
 							{
-                                Console.WriteLine($"Skipping missing screenshot for {name}");
+								Console.WriteLine($"Skipping missing screenshot for {name}");
 							}
 						});
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-                Console.WriteLine($"Run download failed ({e.Message})");
+				Console.WriteLine($"Run download failed ({e.Message})");
 			}
 		}
 

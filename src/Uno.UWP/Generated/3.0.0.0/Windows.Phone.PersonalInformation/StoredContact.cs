@@ -13,7 +13,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.HonorificSuffix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.HonorificSuffix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.HonorificSuffix");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.HonorificPrefix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.HonorificPrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.HonorificPrefix");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.GivenName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.GivenName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.GivenName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.FamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.FamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.FamilyName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.DisplayName");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference StoredContact.DisplayPicture is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference StoredContact.DisplayPicture is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20StoredContact.DisplayPicture");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoredContact.DisplayPictureDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset StoredContact.DisplayPictureDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20StoredContact.DisplayPictureDate");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.RemoteId");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoredContact.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoredContact.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoredContact.Id");
 			}
 		}
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactStore StoredContact.Store is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactStore StoredContact.Store is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactStore%20StoredContact.Store");
 			}
 		}
 		#endif
@@ -159,21 +159,21 @@ namespace Windows.Phone.PersonalInformation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> GetExtendedPropertiesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> StoredContact.GetExtendedPropertiesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> StoredContact.GetExtendedPropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIDictionary%3Cstring%2C%20object%3E%3E%20StoredContact.GetExtendedPropertiesAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.SaveAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StoredContact.SaveAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReplaceExistingContactAsync( string id)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.ReplaceExistingContactAsync(string id) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.ReplaceExistingContactAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StoredContact.ReplaceExistingContactAsync%28string%20id%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Phone.PersonalInformation.StoredContact.DisplayName.get
@@ -190,14 +190,14 @@ namespace Windows.Phone.PersonalInformation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetDisplayPictureAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.GetDisplayPictureAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.GetDisplayPictureAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20StoredContact.GetDisplayPictureAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetDisplayPictureAsync( global::Windows.Storage.Streams.IInputStream stream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.SetDisplayPictureAsync(IInputStream stream) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.SetDisplayPictureAsync(IInputStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20StoredContact.SetDisplayPictureAsync%28IInputStream%20stream%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Phone.PersonalInformation.StoredContact.DisplayPicture.get
@@ -205,21 +205,21 @@ namespace Windows.Phone.PersonalInformation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> GetPropertiesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> StoredContact.GetPropertiesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> StoredContact.GetPropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIDictionary%3Cstring%2C%20object%3E%3E%20StoredContact.GetPropertiesAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> ToVcardAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.ToVcardAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.ToVcardAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20StoredContact.ToVcardAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> ToVcardAsync( global::Windows.Phone.PersonalInformation.VCardFormat format)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.ToVcardAsync(VCardFormat format) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.ToVcardAsync(VCardFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20StoredContact.ToVcardAsync%28VCardFormat%20format%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Phone.PersonalInformation.StoredContact.DisplayPictureDate.get

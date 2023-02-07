@@ -79,6 +79,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 		#endif
 		// Skipping already declared property IsOpen
+		// Skipping already declared property XamlRoot
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ShouldConstrainToRootBounds
@@ -99,18 +100,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlyoutBase.IsConstrainedToRootBounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FlyoutBase.IsConstrainedToRootBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FlyoutBase.IsConstrainedToRootBounds");
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AttachedFlyoutProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"AttachedFlyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
-		#endif
+		// Skipping already declared property AttachedFlyoutProperty
 		// Skipping already declared property PlacementProperty
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		// Skipping already declared property AllowFocusWhenDisabledProperty

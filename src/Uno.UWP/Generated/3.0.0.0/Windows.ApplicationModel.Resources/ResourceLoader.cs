@@ -17,14 +17,14 @@ namespace Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDefaultPriPath( string packageFullName)
 		{
-			throw new global::System.NotImplementedException("The member string ResourceLoader.GetDefaultPriPath(string packageFullName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string ResourceLoader.GetDefaultPriPath(string packageFullName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ResourceLoader.GetDefaultPriPath%28string%20packageFullName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.Resources.ResourceLoader GetForUIContext( global::Windows.UI.UIContext context)
 		{
-			throw new global::System.NotImplementedException("The member ResourceLoader ResourceLoader.GetForUIContext(UIContext context) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ResourceLoader ResourceLoader.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ResourceLoader%20ResourceLoader.GetForUIContext%28UIContext%20context%29");
 		}
 		#endif
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()

@@ -13,7 +13,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SyndicationClient.Timeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SyndicationClient.Timeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SyndicationClient.Timeout");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential SyndicationClient.ServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential SyndicationClient.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20SyndicationClient.ServerCredential");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential SyndicationClient.ProxyCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential SyndicationClient.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20SyndicationClient.ProxyCredential");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SyndicationClient.MaxResponseBufferSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SyndicationClient.MaxResponseBufferSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SyndicationClient.MaxResponseBufferSize");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SyndicationClient.BypassCacheOnRetrieve is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SyndicationClient.BypassCacheOnRetrieve is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SyndicationClient.BypassCacheOnRetrieve");
 			}
 			set
 			{
@@ -114,7 +114,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync( global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> SyndicationClient.RetrieveFeedAsync(Uri uri) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> SyndicationClient.RetrieveFeedAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3CSyndicationFeed%2C%20RetrievalProgress%3E%20SyndicationClient.RetrieveFeedAsync%28Uri%20uri%29");
 		}
 		#endif
 		// Processing: Windows.Web.Syndication.ISyndicationClient

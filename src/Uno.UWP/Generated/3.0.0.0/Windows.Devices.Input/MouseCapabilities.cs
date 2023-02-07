@@ -13,7 +13,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MouseCapabilities.HorizontalWheelPresent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MouseCapabilities.HorizontalWheelPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MouseCapabilities.HorizontalWheelPresent");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MouseCapabilities.MousePresent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MouseCapabilities.MousePresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MouseCapabilities.MousePresent");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MouseCapabilities.NumberOfButtons is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MouseCapabilities.NumberOfButtons is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MouseCapabilities.NumberOfButtons");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MouseCapabilities.SwapButtons is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MouseCapabilities.SwapButtons is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MouseCapabilities.SwapButtons");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MouseCapabilities.VerticalWheelPresent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MouseCapabilities.VerticalWheelPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MouseCapabilities.VerticalWheelPresent");
 			}
 		}
 		#endif

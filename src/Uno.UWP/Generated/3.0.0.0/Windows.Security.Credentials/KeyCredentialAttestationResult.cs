@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialAttestationResult.AttestationBuffer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialAttestationResult.AttestationBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20KeyCredentialAttestationResult.AttestationBuffer");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialAttestationResult.CertificateChainBuffer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialAttestationResult.CertificateChainBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20KeyCredentialAttestationResult.CertificateChainBuffer");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyCredentialAttestationStatus KeyCredentialAttestationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyCredentialAttestationStatus KeyCredentialAttestationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyCredentialAttestationStatus%20KeyCredentialAttestationResult.Status");
 			}
 		}
 		#endif

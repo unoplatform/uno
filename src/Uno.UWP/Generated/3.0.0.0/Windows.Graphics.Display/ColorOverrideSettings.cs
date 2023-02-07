@@ -13,7 +13,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayColorOverrideScenario ColorOverrideSettings.DesiredDisplayColorOverrideScenario is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayColorOverrideScenario ColorOverrideSettings.DesiredDisplayColorOverrideScenario is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayColorOverrideScenario%20ColorOverrideSettings.DesiredDisplayColorOverrideScenario");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Graphics.Display.ColorOverrideSettings CreateFromDisplayColorOverrideScenario( global::Windows.Graphics.Display.DisplayColorOverrideScenario overrideScenario)
 		{
-			throw new global::System.NotImplementedException("The member ColorOverrideSettings ColorOverrideSettings.CreateFromDisplayColorOverrideScenario(DisplayColorOverrideScenario overrideScenario) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ColorOverrideSettings ColorOverrideSettings.CreateFromDisplayColorOverrideScenario(DisplayColorOverrideScenario overrideScenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ColorOverrideSettings%20ColorOverrideSettings.CreateFromDisplayColorOverrideScenario%28DisplayColorOverrideScenario%20overrideScenario%29");
 		}
 		#endif
 	}

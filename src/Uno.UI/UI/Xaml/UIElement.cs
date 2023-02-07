@@ -19,15 +19,15 @@ using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
-
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 
@@ -47,7 +47,9 @@ namespace Windows.UI.Xaml
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
-		//private protected virtual void PrepareState()
+		private Vector3 _translation = Vector3.Zero;
+
+		//private protected virtual void PrepareState() 
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
 		//	// but to avoid invoking a virtual method in ctor ** THIS IS NOT INVOKED BY DEFAULT IN UNO **.
@@ -182,6 +184,63 @@ namespace Windows.UI.Xaml
 		}
 
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		/// <summary>
+		/// Gets or sets the x, y, and z rendering position of the element.
+		/// </summary>
+		public Vector3 Translation
+		{
+			get => _translation;
+			set
+			{
+				if (_translation != value)
+				{
+					_translation = value;
+					UpdateShadow();
+				}
+			}
+		}
+
+		public
+#if __MACOS__
+			new
+#endif
+			Shadow Shadow
+		{
+			get => (Shadow)GetValue(ShadowProperty);
+			set => SetValue(ShadowProperty, value);
+		}
+
+		public static DependencyProperty ShadowProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Shadow),
+				typeof(Shadow),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(Shadow), OnShadowChanged));
+
+		private static void OnShadowChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is UIElement uiElement)
+			{
+				uiElement.UpdateShadow();
+			}
+		}
+
+		private void UpdateShadow()
+		{
+			if (Shadow == null || Translation.Z <= 0)
+			{
+				UnsetShadow();
+			}
+			else
+			{
+				SetShadow();
+			}
+		}
+
+		partial void SetShadow();
+
+		partial void UnsetShadow();
 
 		internal Size AssignedActualSize { get; set; }
 

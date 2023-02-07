@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebTokenRequest.ClientId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebTokenRequest.ClientId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebTokenRequest.ClientId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebTokenRequestPromptType WebTokenRequest.PromptType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebTokenRequestPromptType WebTokenRequest.PromptType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebTokenRequestPromptType%20WebTokenRequest.PromptType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenRequest.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenRequest.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20WebTokenRequest.Properties");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebTokenRequest.Scope is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebTokenRequest.Scope is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebTokenRequest.Scope");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProvider WebTokenRequest.WebAccountProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountProvider WebTokenRequest.WebAccountProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountProvider%20WebTokenRequest.WebAccountProvider");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenRequest.AppProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenRequest.AppProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20WebTokenRequest.AppProperties");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebTokenRequest.CorrelationId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebTokenRequest.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebTokenRequest.CorrelationId");
 			}
 			set
 			{

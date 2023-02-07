@@ -19,7 +19,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<string> GetFileURLs( global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member IList<string> NDStorageFileHelper.GetFileURLs(IStorageFile file) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IList<string> NDStorageFileHelper.GetFileURLs(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20NDStorageFileHelper.GetFileURLs%28IStorageFile%20file%29");
 		}
 		#endif
 		// Processing: Windows.Media.Protection.PlayReady.INDStorageFileHelper

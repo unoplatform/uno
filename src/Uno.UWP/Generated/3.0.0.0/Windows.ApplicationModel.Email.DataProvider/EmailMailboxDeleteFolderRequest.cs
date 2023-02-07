@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxDeleteFolderRequest.EmailFolderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxDeleteFolderRequest.EmailFolderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxDeleteFolderRequest.EmailFolderId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxDeleteFolderRequest.EmailMailboxId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxDeleteFolderRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxDeleteFolderRequest.EmailMailboxId");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxDeleteFolderRequest.ReportCompletedAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxDeleteFolderRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxDeleteFolderRequest.ReportCompletedAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync( global::Windows.ApplicationModel.Email.EmailMailboxDeleteFolderStatus status)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxDeleteFolderRequest.ReportFailedAsync(EmailMailboxDeleteFolderStatus status) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxDeleteFolderRequest.ReportFailedAsync(EmailMailboxDeleteFolderStatus status) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EmailMailboxDeleteFolderRequest.ReportFailedAsync%28EmailMailboxDeleteFolderStatus%20status%29");
 		}
 		#endif
 	}

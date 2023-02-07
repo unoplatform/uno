@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code11 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code11 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code11");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.AusPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.AusPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.AusPost");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Aztec is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Aztec is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Aztec");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CanPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CanPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.CanPost");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccab is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccab is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ccab");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ccc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ccc");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ChinaPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ChinaPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.ChinaPost");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codabar is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codabar is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Codabar");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codablock128 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Codablock128 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Codablock128");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockA is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockA is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.CodablockA");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.CodablockF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.CodablockF");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DutchKix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DutchKix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.DutchKix");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code128 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code128 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code128");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code16k is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code16k is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code16k");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code32 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code32");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code39");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39Ex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code39Ex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code39Ex");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code49 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code49 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code49");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code93");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93Ex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code93Ex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Code93Ex");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.DataCode");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataMatrix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DataMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.DataMatrix");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPostNet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPostNet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UsPostNet");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean13");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean13Add2");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean13Add5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean13Add5");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean8");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean8Add2");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean8Add5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean8Add5");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean99");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean99Add2");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ean99Add5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ean99Add5");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Eanv is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Eanv is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Eanv");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.EanvAdd2");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.EanvAdd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.EanvAdd5");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ExtendedBase is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ExtendedBase is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.ExtendedBase");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Gs1128");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128Coupon is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1128Coupon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Gs1128Coupon");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Gs1DatabarType1");
 			}
 		}
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Gs1DatabarType2");
 			}
 		}
 		#endif
@@ -413,7 +413,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DatabarType3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Gs1DatabarType3");
 			}
 		}
 		#endif
@@ -423,7 +423,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.HanXin is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.HanXin is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.HanXin");
 			}
 		}
 		#endif
@@ -433,7 +433,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.InfoMail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.InfoMail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.InfoMail");
 			}
 		}
 		#endif
@@ -443,7 +443,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Isbn");
 			}
 		}
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsbnAdd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsbnAdd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.IsbnAdd5");
 			}
 		}
 		#endif
@@ -463,7 +463,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Isbt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Isbt");
 			}
 		}
 		#endif
@@ -473,7 +473,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ismn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Ismn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Ismn");
 			}
 		}
 		#endif
@@ -483,7 +483,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.IsmnAdd2");
 			}
 		}
 		#endif
@@ -493,7 +493,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IsmnAdd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.IsmnAdd5");
 			}
 		}
 		#endif
@@ -503,7 +503,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Issn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Issn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Issn");
 			}
 		}
 		#endif
@@ -513,7 +513,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.IssnAdd2");
 			}
 		}
 		#endif
@@ -523,7 +523,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.IssnAdd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.IssnAdd5");
 			}
 		}
 		#endif
@@ -533,7 +533,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost25 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost25 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.ItalianPost25");
 			}
 		}
 		#endif
@@ -543,7 +543,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost39 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ItalianPost39 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.ItalianPost39");
 			}
 		}
 		#endif
@@ -553,7 +553,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.JapanPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.JapanPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.JapanPost");
 			}
 		}
 		#endif
@@ -563,7 +563,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.KoreanPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.KoreanPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.KoreanPost");
 			}
 		}
 		#endif
@@ -573,7 +573,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Maxicode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Maxicode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Maxicode");
 			}
 		}
 		#endif
@@ -583,7 +583,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Micr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Micr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Micr");
 			}
 		}
 		#endif
@@ -593,7 +593,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroPdf417 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroPdf417 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.MicroPdf417");
 			}
 		}
 		#endif
@@ -603,7 +603,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroQr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MicroQr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.MicroQr");
 			}
 		}
 		#endif
@@ -613,7 +613,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MsTag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.MsTag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.MsTag");
 			}
 		}
 		#endif
@@ -623,7 +623,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Msi is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Msi is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Msi");
 			}
 		}
 		#endif
@@ -633,7 +633,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrA is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrA is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.OcrA");
 			}
 		}
 		#endif
@@ -643,7 +643,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.OcrB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.OcrB");
 			}
 		}
 		#endif
@@ -653,7 +653,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pdf417 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pdf417 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Pdf417");
 			}
 		}
 		#endif
@@ -663,7 +663,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Plessey is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Plessey is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Plessey");
 			}
 		}
 		#endif
@@ -673,7 +673,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pzn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Pzn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Pzn");
 			}
 		}
 		#endif
@@ -683,7 +683,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Qr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Qr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Qr");
 			}
 		}
 		#endif
@@ -693,7 +693,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Sisac is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Sisac is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Sisac");
 			}
 		}
 		#endif
@@ -703,7 +703,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.SwedenPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.SwedenPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.SwedenPost");
 			}
 		}
 		#endif
@@ -713,7 +713,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Telepen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Telepen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Telepen");
 			}
 		}
 		#endif
@@ -723,7 +723,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfDis is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfDis is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.TfDis");
 			}
 		}
 		#endif
@@ -733,7 +733,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfIata is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfIata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.TfIata");
 			}
 		}
 		#endif
@@ -743,7 +743,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.TfInd");
 			}
 		}
 		#endif
@@ -753,7 +753,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfInt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.TfInt");
 			}
 		}
 		#endif
@@ -763,7 +763,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfMat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfMat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.TfMat");
 			}
 		}
 		#endif
@@ -773,7 +773,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfStd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.TfStd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.TfStd");
 			}
 		}
 		#endif
@@ -783,7 +783,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Tlc39 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Tlc39 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Tlc39");
 			}
 		}
 		#endif
@@ -793,7 +793,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Trioptic39 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Trioptic39 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Trioptic39");
 			}
 		}
 		#endif
@@ -803,7 +803,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UccEan128 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UccEan128 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UccEan128");
 			}
 		}
 		#endif
@@ -813,7 +813,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UkPost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UkPost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UkPost");
 			}
 		}
 		#endif
@@ -823,7 +823,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Unknown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Unknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Unknown");
 			}
 		}
 		#endif
@@ -833,7 +833,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcCoupon is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcCoupon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UpcCoupon");
 			}
 		}
 		#endif
@@ -843,7 +843,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upca is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upca is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Upca");
 			}
 		}
 		#endif
@@ -853,7 +853,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UpcaAdd2");
 			}
 		}
 		#endif
@@ -863,7 +863,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpcaAdd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UpcaAdd5");
 			}
 		}
 		#endif
@@ -873,7 +873,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upce is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Upce is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Upce");
 			}
 		}
 		#endif
@@ -883,7 +883,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UpceAdd2");
 			}
 		}
 		#endif
@@ -893,7 +893,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UpceAdd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UpceAdd5");
 			}
 		}
 		#endif
@@ -903,7 +903,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Us4StateFics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Us4StateFics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Us4StateFics");
 			}
 		}
 		#endif
@@ -913,7 +913,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UsIntelligent");
 			}
 		}
 		#endif
@@ -923,7 +923,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligentPkg is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsIntelligentPkg is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UsIntelligentPkg");
 			}
 		}
 		#endif
@@ -933,7 +933,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPlanet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPlanet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.UsPlanet");
 			}
 		}
 		#endif
@@ -943,7 +943,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DWCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Gs1DWCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologies.Gs1DWCode");
 			}
 		}
 		#endif
@@ -1045,7 +1045,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetName( uint scanDataType)
 		{
-			throw new global::System.NotImplementedException("The member string BarcodeSymbologies.GetName(uint scanDataType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string BarcodeSymbologies.GetName(uint scanDataType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BarcodeSymbologies.GetName%28uint%20scanDataType%29");
 		}
 		#endif
 	}

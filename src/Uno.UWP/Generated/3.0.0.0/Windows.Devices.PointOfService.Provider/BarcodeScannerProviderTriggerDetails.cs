@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeScannerProviderConnection BarcodeScannerProviderTriggerDetails.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BarcodeScannerProviderConnection BarcodeScannerProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BarcodeScannerProviderConnection%20BarcodeScannerProviderTriggerDetails.Connection");
 			}
 		}
 		#endif

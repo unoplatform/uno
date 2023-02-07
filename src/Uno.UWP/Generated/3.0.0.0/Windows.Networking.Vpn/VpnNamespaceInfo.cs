@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnNamespaceInfo.WebProxyServers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HostName> VpnNamespaceInfo.WebProxyServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHostName%3E%20VpnNamespaceInfo.WebProxyServers");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnNamespaceInfo.Namespace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnNamespaceInfo.Namespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnNamespaceInfo.Namespace");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnNamespaceInfo.DnsServers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HostName> VpnNamespaceInfo.DnsServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHostName%3E%20VpnNamespaceInfo.DnsServers");
 			}
 			set
 			{

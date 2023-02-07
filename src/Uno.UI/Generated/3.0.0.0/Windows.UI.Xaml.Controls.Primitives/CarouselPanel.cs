@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object CarouselPanel.ScrollOwner is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object CarouselPanel.ScrollOwner is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20CarouselPanel.ScrollOwner");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.CanVerticallyScroll is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CarouselPanel.CanVerticallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CarouselPanel.CanVerticallyScroll");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.CanHorizontallyScroll is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CarouselPanel.CanHorizontallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CarouselPanel.CanHorizontallyScroll");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ExtentHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CarouselPanel.ExtentHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CarouselPanel.ExtentHeight");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ExtentWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CarouselPanel.ExtentWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CarouselPanel.ExtentWidth");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.HorizontalOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CarouselPanel.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CarouselPanel.HorizontalOffset");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.VerticalOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CarouselPanel.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CarouselPanel.VerticalOffset");
 			}
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ViewportHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CarouselPanel.ViewportHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CarouselPanel.ViewportHeight");
 			}
 		}
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ViewportWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double CarouselPanel.ViewportWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CarouselPanel.ViewportWidth");
 			}
 		}
 		#endif
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.AreHorizontalSnapPointsRegular is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CarouselPanel.AreHorizontalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CarouselPanel.AreHorizontalSnapPointsRegular");
 			}
 		}
 		#endif
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.AreVerticalSnapPointsRegular is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CarouselPanel.AreVerticalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CarouselPanel.AreVerticalSnapPointsRegular");
 			}
 		}
 		#endif
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect MakeVisible( global::Windows.UI.Xaml.UIElement visual,  global::Windows.Foundation.Rect rectangle)
 		{
-			throw new global::System.NotImplementedException("The member Rect CarouselPanel.MakeVisible(UIElement visual, Rect rectangle) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Rect CarouselPanel.MakeVisible(UIElement visual, Rect rectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CarouselPanel.MakeVisible%28UIElement%20visual%2C%20Rect%20rectangle%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.CarouselPanel.AreHorizontalSnapPointsRegular.get
@@ -258,14 +258,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<float> CarouselPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<float> CarouselPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cfloat%3E%20CarouselPanel.GetIrregularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%29");
 		}
 		#endif
 		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  float GetRegularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
 		{
-			throw new global::System.NotImplementedException("The member float CarouselPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member float CarouselPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CarouselPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
 		}
 		#endif
 		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false

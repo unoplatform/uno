@@ -7,7 +7,7 @@ jobs:
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
-  
+
   dependsOn: winui_convert_tree
 
   strategy:
@@ -20,7 +20,7 @@ jobs:
 
       WinUI_NET6:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
         UnoDisableNet7Mobile: true
         ZipFileTargetFramework: net6
 
@@ -32,7 +32,7 @@ jobs:
 
       WinUI_NET7:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
         UnoDisableNet6Mobile: true
         ZipFileTargetFramework: net7
 
@@ -79,12 +79,12 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-prepare-$(UNO_UWP_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-prepare-$(XAML_FLAVOR_BUILD).binlog
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(UNO_UWP_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
 
   - template: templates/copy-package-assets.yml
 
@@ -100,5 +100,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-netcoremobile
+      ArtifactName: NugetPackages-Artifacts-netcoremobile-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container

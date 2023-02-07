@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreIndependentInputSource.IsInputEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreIndependentInputSource.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreIndependentInputSource.IsInputEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreIndependentInputSource.Dispatcher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreDispatcher CoreIndependentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreDispatcher%20CoreIndependentInputSource.Dispatcher");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreIndependentInputSource.PointerCursor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreCursor CoreIndependentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreCursor%20CoreIndependentInputSource.PointerCursor");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreIndependentInputSource.HasCapture is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreIndependentInputSource.HasCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreIndependentInputSource.HasCapture");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreIndependentInputSource.PointerPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point CoreIndependentInputSource.PointerPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CoreIndependentInputSource.PointerPosition");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CoreIndependentInputSource.DispatcherQueue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DispatcherQueue CoreIndependentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DispatcherQueue%20CoreIndependentInputSource.DispatcherQueue");
 			}
 		}
 		#endif

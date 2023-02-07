@@ -18,11 +18,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.App.Xaml
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Test_Control : UserControl
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class Test_Control : UserControl
+	{
 		public Grid TopGrid => topGrid;
 		public CheckBox TestCheckBox => testCheckBox;
 		public TextBlock TestTextBlock => testTextBlock;
@@ -46,8 +46,8 @@ namespace Uno.UI.Tests.App.Xaml
 		public CommandBar TestCommandBar2 => testCommandBar2;
 
 		public Test_Control()
-        {
-            this.InitializeComponent();
-        }
-    }
+		{
+			this.InitializeComponent();
+		}
+	}
 }

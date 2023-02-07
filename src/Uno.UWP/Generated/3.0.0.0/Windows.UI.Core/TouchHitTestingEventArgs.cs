@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TouchHitTestingEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TouchHitTestingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TouchHitTestingEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.ProximityEvaluation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.ProximityEvaluation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreProximityEvaluation%20TouchHitTestingEventArgs.ProximityEvaluation");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect TouchHitTestingEventArgs.BoundingBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect TouchHitTestingEventArgs.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20TouchHitTestingEventArgs.BoundingBox");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point TouchHitTestingEventArgs.Point is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point TouchHitTestingEventArgs.Point is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20TouchHitTestingEventArgs.Point");
 			}
 		}
 		#endif
@@ -63,14 +63,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Rect controlBoundingBox)
 		{
-			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Rect controlBoundingBox) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Rect controlBoundingBox) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreProximityEvaluation%20TouchHitTestingEventArgs.EvaluateProximity%28Rect%20controlBoundingBox%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Point[] controlVertices)
 		{
-			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Point[] controlVertices) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Point[] controlVertices) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreProximityEvaluation%20TouchHitTestingEventArgs.EvaluateProximity%28Point%5B%5D%20controlVertices%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.Handled.get

@@ -13,7 +13,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayRegion.DisplayMonitorDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DisplayRegion.DisplayMonitorDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DisplayRegion.DisplayMonitorDeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayRegion.IsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayRegion.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayRegion.IsVisible");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowingEnvironment DisplayRegion.WindowingEnvironment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WindowingEnvironment DisplayRegion.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WindowingEnvironment%20DisplayRegion.WindowingEnvironment");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DisplayRegion.WorkAreaOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point DisplayRegion.WorkAreaOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20DisplayRegion.WorkAreaOffset");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size DisplayRegion.WorkAreaSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size DisplayRegion.WorkAreaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20DisplayRegion.WorkAreaSize");
 			}
 		}
 		#endif

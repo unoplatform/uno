@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.HasFocus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.HasFocus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreComponentInputSource.HasFocus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.IsInputEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreComponentInputSource.IsInputEnabled");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreComponentInputSource.Dispatcher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreDispatcher CoreComponentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreDispatcher%20CoreComponentInputSource.Dispatcher");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreComponentInputSource.PointerCursor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreCursor CoreComponentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreCursor%20CoreComponentInputSource.PointerCursor");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.HasCapture is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreComponentInputSource.HasCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreComponentInputSource.HasCapture");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreComponentInputSource.PointerPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point CoreComponentInputSource.PointerPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CoreComponentInputSource.PointerPosition");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CoreComponentInputSource.DispatcherQueue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DispatcherQueue CoreComponentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DispatcherQueue%20CoreComponentInputSource.DispatcherQueue");
 			}
 		}
 		#endif
@@ -126,7 +126,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Core.CoreVirtualKeyStates GetCurrentKeyState( global::Windows.System.VirtualKey virtualKey)
 		{
-			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreComponentInputSource.GetCurrentKeyState(VirtualKey virtualKey) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreComponentInputSource.GetCurrentKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreVirtualKeyStates%20CoreComponentInputSource.GetCurrentKeyState%28VirtualKey%20virtualKey%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.CharacterReceived.add
@@ -148,7 +148,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetCurrentKeyEventDeviceId()
 		{
-			throw new global::System.NotImplementedException("The member string CoreComponentInputSource.GetCurrentKeyEventDeviceId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CoreComponentInputSource.GetCurrentKeyEventDeviceId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreComponentInputSource.GetCurrentKeyEventDeviceId%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.DispatcherQueue.get

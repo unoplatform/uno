@@ -11,14 +11,14 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CToastNotification%3E%20ToastNotificationHistory.GetHistory%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory( string applicationId)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory(string applicationId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ToastNotification> ToastNotificationHistory.GetHistory(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CToastNotification%3E%20ToastNotificationHistory.GetHistory%28string%20applicationId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

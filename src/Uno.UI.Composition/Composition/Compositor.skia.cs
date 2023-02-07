@@ -1,9 +1,9 @@
 #nullable enable
 
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using SkiaSharp;
 using Windows.UI.Core;
 
 namespace Windows.UI.Composition

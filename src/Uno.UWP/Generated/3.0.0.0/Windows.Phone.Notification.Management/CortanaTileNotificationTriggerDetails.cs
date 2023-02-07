@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CortanaTileNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CortanaTileNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CortanaTileNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType CortanaTileNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType CortanaTileNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20CortanaTileNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CortanaTileNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset CortanaTileNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20CortanaTileNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.Content");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.EmphasizedText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.EmphasizedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.EmphasizedText");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.LargeContent1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.LargeContent1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.LargeContent1");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.LargeContent2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.LargeContent2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.LargeContent2");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.NonWrappedSmallContent1");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.NonWrappedSmallContent2");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.NonWrappedSmallContent3");
 			}
 		}
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.NonWrappedSmallContent4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.NonWrappedSmallContent4");
 			}
 		}
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.Source");
 			}
 		}
 		#endif
@@ -157,7 +157,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.TileId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CortanaTileNotificationTriggerDetails.TileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CortanaTileNotificationTriggerDetails.TileId");
 			}
 		}
 		#endif

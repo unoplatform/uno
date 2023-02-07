@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
 			}
 		}
 		#endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect EffectiveViewportChangedEventArgs.MaxViewport is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect EffectiveViewportChangedEventArgs.MaxViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20EffectiveViewportChangedEventArgs.MaxViewport");
 			}
 		}
 		#endif

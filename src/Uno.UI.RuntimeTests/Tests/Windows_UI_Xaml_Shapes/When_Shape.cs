@@ -36,7 +36,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 			var g = new PathGeometry();
 			var fig = new PathFigure() { StartPoint = new Point(50, 50) };
-			var arc = new ArcSegment() {
+			var arc = new ArcSegment()
+			{
 				Size = new Size(50, 50),
 				RotationAngle = 45,
 				IsLargeArc = false,

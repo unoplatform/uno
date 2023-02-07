@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptTextInput.Emphasized is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptTextInput.Emphasized is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptTextInput.Emphasized");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptTextInput.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomPromptTextInput.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomPromptTextInput.DisplayName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptTextInput.Compulsory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptTextInput.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptTextInput.Compulsory");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptTextInput.PlaceholderText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomPromptTextInput.PlaceholderText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomPromptTextInput.PlaceholderText");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptTextInput.IsTextHidden is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptTextInput.IsTextHidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptTextInput.IsTextHidden");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptTextInput.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomPromptTextInput.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomPromptTextInput.Text");
 			}
 		}
 		#endif

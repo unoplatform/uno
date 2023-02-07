@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer ModuleCommandResult.Result is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer ModuleCommandResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20ModuleCommandResult.Result");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SendCommandStatus ModuleCommandResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SendCommandStatus ModuleCommandResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SendCommandStatus%20ModuleCommandResult.Status");
 			}
 		}
 		#endif

@@ -29,21 +29,21 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDStartResult> StartAsync( global::System.Uri contentUrl,  uint startAsyncOptions,  global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData,  global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<INDStartResult> NDClient.StartAsync(Uri contentUrl, uint startAsyncOptions, INDCustomData registrationCustomData, INDLicenseFetchDescriptor licenseFetchDescriptor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<INDStartResult> NDClient.StartAsync(Uri contentUrl, uint startAsyncOptions, INDCustomData registrationCustomData, INDLicenseFetchDescriptor licenseFetchDescriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CINDStartResult%3E%20NDClient.StartAsync%28Uri%20contentUrl%2C%20uint%20startAsyncOptions%2C%20INDCustomData%20registrationCustomData%2C%20INDLicenseFetchDescriptor%20licenseFetchDescriptor%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDLicenseFetchResult> LicenseFetchAsync( global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<INDLicenseFetchResult> NDClient.LicenseFetchAsync(INDLicenseFetchDescriptor licenseFetchDescriptor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<INDLicenseFetchResult> NDClient.LicenseFetchAsync(INDLicenseFetchDescriptor licenseFetchDescriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CINDLicenseFetchResult%3E%20NDClient.LicenseFetchAsync%28INDLicenseFetchDescriptor%20licenseFetchDescriptor%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ReRegistrationAsync( global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction NDClient.ReRegistrationAsync(INDCustomData registrationCustomData) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction NDClient.ReRegistrationAsync(INDCustomData registrationCustomData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20NDClient.ReRegistrationAsync%28INDCustomData%20registrationCustomData%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

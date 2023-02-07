@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsActive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionCommitBatch.IsActive");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsEnded is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsEnded is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionCommitBatch.IsEnded");
 			}
 		}
 		#endif

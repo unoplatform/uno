@@ -13,7 +13,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame ProcessVideoFrameContext.InputFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoFrame ProcessVideoFrameContext.InputFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoFrame%20ProcessVideoFrameContext.InputFrame");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame ProcessVideoFrameContext.OutputFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoFrame ProcessVideoFrameContext.OutputFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoFrame%20ProcessVideoFrameContext.OutputFrame");
 			}
 		}
 		#endif

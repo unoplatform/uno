@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequest.Details is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequest.Details is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentDetails%20PaymentRequest.Details");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentMerchantInfo PaymentRequest.MerchantInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentMerchantInfo PaymentRequest.MerchantInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentMerchantInfo%20PaymentRequest.MerchantInfo");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentMethodData> PaymentRequest.MethodData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentMethodData> PaymentRequest.MethodData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPaymentMethodData%3E%20PaymentRequest.MethodData");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptions PaymentRequest.Options is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentOptions PaymentRequest.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentOptions%20PaymentRequest.Options");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentRequest.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentRequest.Id");
 			}
 		}
 		#endif

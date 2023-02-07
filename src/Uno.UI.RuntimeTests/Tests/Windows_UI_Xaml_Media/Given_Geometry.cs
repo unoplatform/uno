@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry = new RectangleGeometry
 			{
 				Rect = new Rect(0, 0, 100, 100),
-				Transform = new TranslateTransform { X=20, Y=40 }
+				Transform = new TranslateTransform { X = 20, Y = 40 }
 			};
 
 			geometry.Bounds.Should().Be(new Rect(20, 40, 100, 100));
@@ -106,7 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry2 = new RectangleGeometry
 			{
 				Rect = new Rect(200, 200, 100, 100),
-				Transform = new CompositeTransform { CenterX = 350, CenterY = 350, ScaleX=2, ScaleY = 0.5 }
+				Transform = new CompositeTransform { CenterX = 350, CenterY = 350, ScaleX = 2, ScaleY = 0.5 }
 			};
 
 			var geometry = new GeometryGroup();

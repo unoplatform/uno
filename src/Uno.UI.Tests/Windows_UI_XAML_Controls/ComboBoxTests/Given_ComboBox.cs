@@ -13,7 +13,7 @@ using System.Windows.Data;
 namespace Uno.UI.Tests.ComboBoxTests
 {
 	[TestClass]
-    public class Given_ComboBox
+	public class Given_ComboBox
 	{
 		[TestInitialize]
 		public void Init()

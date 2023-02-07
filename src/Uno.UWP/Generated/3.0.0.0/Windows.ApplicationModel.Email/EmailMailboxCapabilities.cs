@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanSmartSend is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanSmartSend is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanSmartSend");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanUpdateMeetingResponses is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanUpdateMeetingResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanUpdateMeetingResponses");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanServerSearchMailbox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanServerSearchMailbox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanServerSearchMailbox");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanServerSearchFolders is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanServerSearchFolders is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanServerSearchFolders");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanForwardMeetings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanForwardMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanForwardMeetings");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanProposeNewTimeForMeetings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanProposeNewTimeForMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanProposeNewTimeForMeetings");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanGetAndSetInternalAutoReplies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanGetAndSetInternalAutoReplies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanGetAndSetInternalAutoReplies");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanGetAndSetExternalAutoReplies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanGetAndSetExternalAutoReplies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanGetAndSetExternalAutoReplies");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanValidateCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanValidateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanValidateCertificates");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanResolveRecipients is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanResolveRecipients is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanResolveRecipients");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanMoveFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanMoveFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanMoveFolder");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanEmptyFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanEmptyFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanEmptyFolder");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanDeleteFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanDeleteFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanDeleteFolder");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanCreateFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanCreateFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxCapabilities.CanCreateFolder");
 			}
 			set
 			{

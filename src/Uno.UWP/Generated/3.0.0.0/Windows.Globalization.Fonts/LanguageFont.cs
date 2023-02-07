@@ -13,7 +13,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LanguageFont.FontFamily is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LanguageFont.FontFamily is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LanguageFont.FontFamily");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStretch LanguageFont.FontStretch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FontStretch LanguageFont.FontStretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FontStretch%20LanguageFont.FontStretch");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStyle LanguageFont.FontStyle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FontStyle LanguageFont.FontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FontStyle%20LanguageFont.FontStyle");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontWeight LanguageFont.FontWeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FontWeight LanguageFont.FontWeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FontWeight%20LanguageFont.FontWeight");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double LanguageFont.ScaleFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double LanguageFont.ScaleFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20LanguageFont.ScaleFactor");
 			}
 		}
 		#endif

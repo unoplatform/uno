@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet MediaProcessingTriggerDetails.Arguments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet MediaProcessingTriggerDetails.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20MediaProcessingTriggerDetails.Arguments");
 			}
 		}
 		#endif

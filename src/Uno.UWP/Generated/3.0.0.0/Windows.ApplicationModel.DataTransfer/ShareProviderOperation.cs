@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageView ShareProviderOperation.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DataPackageView ShareProviderOperation.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPackageView%20ShareProviderOperation.Data");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ShareProvider ShareProviderOperation.Provider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ShareProvider ShareProviderOperation.Provider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ShareProvider%20ShareProviderOperation.Provider");
 			}
 		}
 		#endif

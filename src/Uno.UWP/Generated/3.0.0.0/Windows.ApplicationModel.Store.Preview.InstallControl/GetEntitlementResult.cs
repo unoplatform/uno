@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GetEntitlementStatus GetEntitlementResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GetEntitlementStatus GetEntitlementResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GetEntitlementStatus%20GetEntitlementResult.Status");
 			}
 		}
 		#endif

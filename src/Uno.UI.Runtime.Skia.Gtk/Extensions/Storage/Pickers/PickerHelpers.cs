@@ -6,7 +6,7 @@ using static System.Environment;
 namespace Uno.Extensions.Storage.Pickers
 {
 	internal static class PickerHelpers
-    {
+	{
 		public static string GetInitialDirectory(PickerLocationId location)
 		{
 			switch (location)
@@ -27,5 +27,5 @@ namespace Uno.Extensions.Storage.Pickers
 					return string.Empty;
 			}
 		}
-    }
+	}
 }

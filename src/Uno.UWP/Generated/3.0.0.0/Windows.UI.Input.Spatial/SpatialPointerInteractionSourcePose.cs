@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.ForwardDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.ForwardDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpatialPointerInteractionSourcePose.ForwardDirection");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpatialPointerInteractionSourcePose.Position");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.UpDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpatialPointerInteractionSourcePose.UpDirection");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialPointerInteractionSourcePose.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Quaternion SpatialPointerInteractionSourcePose.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Quaternion%20SpatialPointerInteractionSourcePose.Orientation");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourcePositionAccuracy SpatialPointerInteractionSourcePose.PositionAccuracy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourcePositionAccuracy SpatialPointerInteractionSourcePose.PositionAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteractionSourcePositionAccuracy%20SpatialPointerInteractionSourcePose.PositionAccuracy");
 			}
 		}
 		#endif

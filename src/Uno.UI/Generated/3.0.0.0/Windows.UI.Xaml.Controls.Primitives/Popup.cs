@@ -47,48 +47,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Popup.IsConstrainedToRootBounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Popup.IsConstrainedToRootBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Popup.IsConstrainedToRootBounds");
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FrameworkElement PlacementTarget
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.FrameworkElement)this.GetValue(PlacementTargetProperty);
-			}
-			set
-			{
-				this.SetValue(PlacementTargetProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode DesiredPlacement
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode)this.GetValue(DesiredPlacementProperty);
-			}
-			set
-			{
-				this.SetValue(DesiredPlacementProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode ActualPlacement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PopupPlacementMode Popup.ActualPlacement is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property PlacementTarget
+		// Skipping already declared property DesiredPlacement
+		// Skipping already declared property ActualPlacement
 		// Skipping already declared property ChildProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -111,22 +76,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DesiredPlacementProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DesiredPlacement), typeof(global::Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FrameworkElement)));
-		#endif
+		// Skipping already declared property DesiredPlacementProperty
+		// Skipping already declared property PlacementTargetProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.Popup.Popup()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Popup.Popup()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Popup.Child.get
@@ -169,21 +120,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabledProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.Popup.Closed
 		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.Popup.Opened
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<object> ActualPlacementChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.Popup", "event EventHandler<object> Popup.ActualPlacementChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.Popup", "event EventHandler<object> Popup.ActualPlacementChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.Popup.ActualPlacementChanged
 	}
 }

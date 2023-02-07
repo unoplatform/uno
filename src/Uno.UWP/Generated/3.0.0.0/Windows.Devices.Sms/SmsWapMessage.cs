@@ -13,7 +13,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsWapMessage.CellularClass is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CellularClass SmsWapMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CellularClass%20SmsWapMessage.CellularClass");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsWapMessage.DeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsWapMessage.MessageClass is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsMessageClass SmsWapMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsMessageClass%20SmsWapMessage.MessageClass");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsWapMessage.MessageType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsMessageType SmsWapMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsMessageType%20SmsWapMessage.MessageType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.SimIccId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsWapMessage.SimIccId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsWapMessage.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset SmsWapMessage.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20SmsWapMessage.Timestamp");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.ApplicationId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.ApplicationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsWapMessage.ApplicationId");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmsWapMessage.BinaryBody is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer SmsWapMessage.BinaryBody is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20SmsWapMessage.BinaryBody");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.ContentType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsWapMessage.ContentType");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.From is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsWapMessage.From");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> SmsWapMessage.Headers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> SmsWapMessage.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20SmsWapMessage.Headers");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsWapMessage.To is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsWapMessage.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsWapMessage.To");
 			}
 		}
 		#endif

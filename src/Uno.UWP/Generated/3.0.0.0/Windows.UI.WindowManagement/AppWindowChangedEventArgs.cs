@@ -13,7 +13,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidDisplayRegionsChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidDisplayRegionsChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidDisplayRegionsChange");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidFrameChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidFrameChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidFrameChange");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidSizeChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidSizeChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidSizeChange");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidTitleBarChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidTitleBarChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidTitleBarChange");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidVisibilityChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidVisibilityChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidVisibilityChange");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidWindowPresentationChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidWindowPresentationChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidWindowPresentationChange");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidWindowingEnvironmentChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidWindowingEnvironmentChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowChangedEventArgs.DidWindowingEnvironmentChange");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationProperties UserDataTask.RegenerationProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationProperties UserDataTask.RegenerationProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskRegenerationProperties%20UserDataTask.RegenerationProperties");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskPriority UserDataTask.Priority is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskPriority UserDataTask.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskPriority%20UserDataTask.Priority");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.CompletedDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.CompletedDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20UserDataTask.CompletedDate");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.DueDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.DueDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20UserDataTask.DueDate");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskDetailsKind UserDataTask.DetailsKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskDetailsKind UserDataTask.DetailsKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskDetailsKind%20UserDataTask.DetailsKind");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.StartDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.StartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20UserDataTask.StartDate");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.Details is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataTask.Details is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataTask.Details");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.Subject is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataTask.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataTask.Subject");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskSensitivity UserDataTask.Sensitivity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskSensitivity UserDataTask.Sensitivity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskSensitivity%20UserDataTask.Sensitivity");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataTask.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataTask.RemoteId");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.Reminder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.Reminder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20UserDataTask.Reminder");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRecurrenceProperties UserDataTask.RecurrenceProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskRecurrenceProperties UserDataTask.RecurrenceProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskRecurrenceProperties%20UserDataTask.RecurrenceProperties");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataTask.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataTask.Id");
 			}
 		}
 		#endif
@@ -191,7 +191,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskKind UserDataTask.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskKind UserDataTask.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskKind%20UserDataTask.Kind");
 			}
 		}
 		#endif
@@ -201,7 +201,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.ListId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataTask.ListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataTask.ListId");
 			}
 		}
 		#endif

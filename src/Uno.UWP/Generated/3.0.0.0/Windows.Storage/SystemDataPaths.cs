@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.Fonts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.Fonts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.Fonts");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.ProgramData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.ProgramData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.ProgramData");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.Public is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.Public is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.Public");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDesktop is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDesktop is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.PublicDesktop");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDocuments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDocuments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.PublicDocuments");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDownloads is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDownloads is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.PublicDownloads");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicMusic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicMusic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.PublicMusic");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicPictures is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.PublicPictures");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicVideos is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicVideos is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.PublicVideos");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.System is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.System is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.System");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemArm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemArm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.SystemArm");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemHost is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemHost is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.SystemHost");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemX64 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemX64 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.SystemX64");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemX86 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemX86 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.SystemX86");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.UserProfiles is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.UserProfiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.UserProfiles");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.Windows is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemDataPaths.Windows is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemDataPaths.Windows");
 			}
 		}
 		#endif
@@ -187,7 +187,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.SystemDataPaths GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
 		}
 		#endif
 	}

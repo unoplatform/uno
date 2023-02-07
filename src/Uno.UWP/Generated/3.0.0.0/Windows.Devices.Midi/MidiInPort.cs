@@ -13,7 +13,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MidiInPort.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MidiInPort.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MidiInPort.DeviceId");
 			}
 		}
 		#endif
@@ -31,14 +31,14 @@ namespace Windows.Devices.Midi
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiInPort> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiInPort> MidiInPort.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiInPort> MidiInPort.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMidiInPort%3E%20MidiInPort.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MidiInPort.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MidiInPort.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MidiInPort.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false

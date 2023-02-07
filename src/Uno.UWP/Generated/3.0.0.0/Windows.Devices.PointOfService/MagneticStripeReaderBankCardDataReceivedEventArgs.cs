@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.AccountNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.AccountNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.AccountNumber");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.ExpirationDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.ExpirationDate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.FirstName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.FirstName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.FirstName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.MiddleInitial is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.MiddleInitial is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.MiddleInitial");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderReport MagneticStripeReaderBankCardDataReceivedEventArgs.Report is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderReport MagneticStripeReaderBankCardDataReceivedEventArgs.Report is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderReport%20MagneticStripeReaderBankCardDataReceivedEventArgs.Report");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.Suffix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.Suffix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.Suffix");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.Surname is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.Surname is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.Surname");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MagneticStripeReaderBankCardDataReceivedEventArgs.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MagneticStripeReaderBankCardDataReceivedEventArgs.Title");
 			}
 		}
 		#endif

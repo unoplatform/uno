@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PerceptionFrameSourcePropertyChangeResult.NewValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object PerceptionFrameSourcePropertyChangeResult.NewValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20PerceptionFrameSourcePropertyChangeResult.NewValue");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionFrameSourcePropertyChangeStatus PerceptionFrameSourcePropertyChangeResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PerceptionFrameSourcePropertyChangeStatus PerceptionFrameSourcePropertyChangeResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionFrameSourcePropertyChangeStatus%20PerceptionFrameSourcePropertyChangeResult.Status");
 			}
 		}
 		#endif

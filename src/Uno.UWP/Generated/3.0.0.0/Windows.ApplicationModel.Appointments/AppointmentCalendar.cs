@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentSummaryCardView AppointmentCalendar.SummaryCardView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentSummaryCardView AppointmentCalendar.SummaryCardView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentSummaryCardView%20AppointmentCalendar.SummaryCardView");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentCalendarOtherAppWriteAccess%20AppointmentCalendar.OtherAppWriteAccess");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color AppointmentCalendar.DisplayColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color AppointmentCalendar.DisplayColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20AppointmentCalendar.DisplayColor");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.IsHidden is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.IsHidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.IsHidden");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendar.DisplayName");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentCalendarOtherAppReadAccess%20AppointmentCalendar.OtherAppReadAccess");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.LocalId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.LocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendar.LocalId");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.SourceDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendar.SourceDisplayName");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanCancelMeetings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanCancelMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.CanCancelMeetings");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanNotifyInvitees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanNotifyInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.CanNotifyInvitees");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendar.RemoteId");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.MustNofityInvitees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.MustNofityInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.MustNofityInvitees");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanUpdateMeetingResponses is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanUpdateMeetingResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.CanUpdateMeetingResponses");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanProposeNewTimeForMeetings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanProposeNewTimeForMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.CanProposeNewTimeForMeetings");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanCreateOrUpdateAppointments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanCreateOrUpdateAppointments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.CanCreateOrUpdateAppointments");
 			}
 			set
 			{
@@ -215,7 +215,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanForwardMeetings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanForwardMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentCalendar.CanForwardMeetings");
 			}
 			set
 			{
@@ -229,7 +229,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarSyncManager AppointmentCalendar.SyncManager is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentCalendarSyncManager AppointmentCalendar.SyncManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentCalendarSyncManager%20AppointmentCalendar.SyncManager");
 			}
 		}
 		#endif
@@ -239,7 +239,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.UserDataAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentCalendar.UserDataAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentCalendar.UserDataAccountId");
 			}
 		}
 		#endif
@@ -259,98 +259,98 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync( global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAppointmentsAsync%28DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync( global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength,  global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAppointmentsAsync%28DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%2C%20FindAppointmentsOptions%20options%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.AppointmentException>> FindExceptionsFromMasterAsync( string masterLocalId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppointmentException>> AppointmentCalendar.FindExceptionsFromMasterAsync(string masterLocalId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppointmentException>> AppointmentCalendar.FindExceptionsFromMasterAsync(string masterLocalId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointmentException%3E%3E%20AppointmentCalendar.FindExceptionsFromMasterAsync%28string%20masterLocalId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAllInstancesAsync( string masterLocalId,  global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAllInstancesAsync%28string%20masterLocalId%2C%20DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAllInstancesAsync( string masterLocalId,  global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength,  global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions pOptions)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions pOptions) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions pOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAllInstancesAsync%28string%20masterLocalId%2C%20DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%2C%20FindAppointmentsOptions%20pOptions%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.Appointment> GetAppointmentAsync( string localId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentAsync(string localId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentAsync(string localId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAppointment%3E%20AppointmentCalendar.GetAppointmentAsync%28string%20localId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.Appointment> GetAppointmentInstanceAsync( string localId,  global::System.DateTimeOffset instanceStartTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAppointment%3E%20AppointmentCalendar.GetAppointmentInstanceAsync%28string%20localId%2C%20DateTimeOffset%20instanceStartTime%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindUnexpandedAppointmentsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindUnexpandedAppointmentsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindUnexpandedAppointmentsAsync( global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync(FindAppointmentsOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync(FindAppointmentsOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindUnexpandedAppointmentsAsync%28FindAppointmentsOptions%20options%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendar.DeleteAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendar.SaveAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeleteAppointmentAsync( string localId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAppointmentAsync(string localId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAppointmentAsync(string localId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendar.DeleteAppointmentAsync%28string%20localId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeleteAppointmentInstanceAsync( string localId,  global::System.DateTimeOffset instanceStartTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendar.DeleteAppointmentInstanceAsync%28string%20localId%2C%20DateTimeOffset%20instanceStartTime%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SaveAppointmentAsync( global::Windows.ApplicationModel.Appointments.Appointment pAppointment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAppointmentAsync(Appointment pAppointment) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAppointmentAsync(Appointment pAppointment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendar.SaveAppointmentAsync%28Appointment%20pAppointment%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.SyncManager.get
@@ -377,42 +377,42 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryCreateOrUpdateAppointmentAsync( global::Windows.ApplicationModel.Appointments.Appointment appointment,  bool notifyInvitees)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryCreateOrUpdateAppointmentAsync(Appointment appointment, bool notifyInvitees) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryCreateOrUpdateAppointmentAsync(Appointment appointment, bool notifyInvitees) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryCreateOrUpdateAppointmentAsync%28Appointment%20appointment%2C%20bool%20notifyInvitees%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryCancelMeetingAsync( global::Windows.ApplicationModel.Appointments.Appointment meeting,  string subject,  string comment,  bool notifyInvitees)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryCancelMeetingAsync(Appointment meeting, string subject, string comment, bool notifyInvitees) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryCancelMeetingAsync(Appointment meeting, string subject, string comment, bool notifyInvitees) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryCancelMeetingAsync%28Appointment%20meeting%2C%20string%20subject%2C%20string%20comment%2C%20bool%20notifyInvitees%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryForwardMeetingAsync( global::Windows.ApplicationModel.Appointments.Appointment meeting,  global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Appointments.AppointmentInvitee> invitees,  string subject,  string forwardHeader,  string comment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryForwardMeetingAsync(Appointment meeting, IEnumerable<AppointmentInvitee> invitees, string subject, string forwardHeader, string comment) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryForwardMeetingAsync(Appointment meeting, IEnumerable<AppointmentInvitee> invitees, string subject, string forwardHeader, string comment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryForwardMeetingAsync%28Appointment%20meeting%2C%20IEnumerable%3CAppointmentInvitee%3E%20invitees%2C%20string%20subject%2C%20string%20forwardHeader%2C%20string%20comment%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryProposeNewTimeForMeetingAsync( global::Windows.ApplicationModel.Appointments.Appointment meeting,  global::System.DateTimeOffset newStartTime,  global::System.TimeSpan newDuration,  string subject,  string comment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryProposeNewTimeForMeetingAsync(Appointment meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryProposeNewTimeForMeetingAsync(Appointment meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryProposeNewTimeForMeetingAsync%28Appointment%20meeting%2C%20DateTimeOffset%20newStartTime%2C%20TimeSpan%20newDuration%2C%20string%20subject%2C%20string%20comment%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryUpdateMeetingResponseAsync( global::Windows.ApplicationModel.Appointments.Appointment meeting,  global::Windows.ApplicationModel.Appointments.AppointmentParticipantResponse response,  string subject,  string comment,  bool sendUpdate)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryUpdateMeetingResponseAsync(Appointment meeting, AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryUpdateMeetingResponseAsync(Appointment meeting, AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryUpdateMeetingResponseAsync%28Appointment%20meeting%2C%20AppointmentParticipantResponse%20response%2C%20string%20subject%2C%20string%20comment%2C%20bool%20sendUpdate%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.RegisterSyncManagerAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.RegisterSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AppointmentCalendar.RegisterSyncManagerAsync%28%29");
 		}
 		#endif
 	}

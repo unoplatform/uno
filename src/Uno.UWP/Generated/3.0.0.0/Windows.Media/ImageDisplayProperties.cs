@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageDisplayProperties.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageDisplayProperties.Subtitle");
 			}
 			set
 			{

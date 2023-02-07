@@ -13,7 +13,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ResourceCollection> Workspace.Collections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ResourceCollection> Workspace.Collections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CResourceCollection%3E%20Workspace.Collections");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISyndicationText Workspace.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ISyndicationText Workspace.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ISyndicationText%20Workspace.Title");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.NodeValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Workspace.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Workspace.NodeValue");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.NodeNamespace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Workspace.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Workspace.NodeNamespace");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.NodeName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Workspace.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Workspace.NodeName");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Workspace.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Workspace.Language");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri Workspace.BaseUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri Workspace.BaseUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20Workspace.BaseUri");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> Workspace.AttributeExtensions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> Workspace.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CSyndicationAttribute%3E%20Workspace.AttributeExtensions");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> Workspace.ElementExtensions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> Workspace.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CISyndicationNode%3E%20Workspace.ElementExtensions");
 			}
 		}
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument( global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument Workspace.GetXmlDocument(SyndicationFormat format) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlDocument Workspace.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20Workspace.GetXmlDocument%28SyndicationFormat%20format%29");
 		}
 		#endif
 		// Processing: Windows.Web.Syndication.ISyndicationNode

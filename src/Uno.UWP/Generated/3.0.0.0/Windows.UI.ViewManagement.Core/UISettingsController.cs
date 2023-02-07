@@ -46,7 +46,7 @@ namespace Windows.UI.ViewManagement.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.ViewManagement.Core.UISettingsController> RequestDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UISettingsController> UISettingsController.RequestDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UISettingsController> UISettingsController.RequestDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUISettingsController%3E%20UISettingsController.RequestDefaultAsync%28%29");
 		}
 		#endif
 	}

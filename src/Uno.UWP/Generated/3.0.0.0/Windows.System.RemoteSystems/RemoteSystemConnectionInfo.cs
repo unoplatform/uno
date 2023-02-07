@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RemoteSystemConnectionInfo.IsProximal is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RemoteSystemConnectionInfo.IsProximal is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RemoteSystemConnectionInfo.IsProximal");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionInfo TryCreateFromAppServiceConnection( global::Windows.ApplicationModel.AppService.AppServiceConnection connection)
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemConnectionInfo RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection(AppServiceConnection connection) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RemoteSystemConnectionInfo RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection(AppServiceConnection connection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemConnectionInfo%20RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection%28AppServiceConnection%20connection%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.UI.Accessibility
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScreenReaderPositionChangedEventArgs.IsReadingText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ScreenReaderPositionChangedEventArgs.IsReadingText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ScreenReaderPositionChangedEventArgs.IsReadingText");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Accessibility
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect ScreenReaderPositionChangedEventArgs.ScreenPositionInRawPixels is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect ScreenReaderPositionChangedEventArgs.ScreenPositionInRawPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20ScreenReaderPositionChangedEventArgs.ScreenPositionInRawPixels");
 			}
 		}
 		#endif

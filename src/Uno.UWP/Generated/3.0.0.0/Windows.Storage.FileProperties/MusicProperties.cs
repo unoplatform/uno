@@ -13,7 +13,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MusicProperties.Year is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MusicProperties.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MusicProperties.Year");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MusicProperties.TrackNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MusicProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MusicProperties.TrackNumber");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicProperties.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicProperties.Title");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicProperties.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicProperties.Subtitle");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MusicProperties.Rating is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MusicProperties.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MusicProperties.Rating");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicProperties.Publisher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicProperties.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicProperties.Publisher");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicProperties.Artist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicProperties.Artist");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicProperties.AlbumArtist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicProperties.AlbumArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicProperties.AlbumArtist");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicProperties.Album is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicProperties.Album is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicProperties.Album");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MusicProperties.Bitrate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MusicProperties.Bitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MusicProperties.Bitrate");
 			}
 		}
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Composers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Composers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MusicProperties.Composers");
 			}
 		}
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Conductors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Conductors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MusicProperties.Conductors");
 			}
 		}
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MusicProperties.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MusicProperties.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MusicProperties.Duration");
 			}
 		}
 		#endif
@@ -179,7 +179,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Genre is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Genre is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MusicProperties.Genre");
 			}
 		}
 		#endif
@@ -189,7 +189,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Producers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Producers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MusicProperties.Producers");
 			}
 		}
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Writers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MusicProperties.Writers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MusicProperties.Writers");
 			}
 		}
 		#endif
@@ -232,21 +232,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync( global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> MusicProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> MusicProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIDictionary%3Cstring%2C%20object%3E%3E%20MusicProperties.RetrievePropertiesAsync%28IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MusicProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MusicProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MusicProperties.SavePropertiesAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20propertiesToSave%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MusicProperties.SavePropertiesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MusicProperties.SavePropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MusicProperties.SavePropertiesAsync%28%29");
 		}
 		#endif
 		// Processing: Windows.Storage.FileProperties.IStorageItemExtraProperties

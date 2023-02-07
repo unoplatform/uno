@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationStatus ESimOperationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimOperationStatus ESimOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimOperationStatus%20ESimOperationResult.Status");
 			}
 		}
 		#endif

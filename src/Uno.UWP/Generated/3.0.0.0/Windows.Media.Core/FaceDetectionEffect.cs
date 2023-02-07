@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffect.Enabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FaceDetectionEffect.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FaceDetectionEffect.Enabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan FaceDetectionEffect.DesiredDetectionInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan FaceDetectionEffect.DesiredDetectionInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20FaceDetectionEffect.DesiredDetectionInterval");
 			}
 			set
 			{

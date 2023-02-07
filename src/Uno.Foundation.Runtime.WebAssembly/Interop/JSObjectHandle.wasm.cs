@@ -54,7 +54,7 @@ namespace Uno.Foundation.Interop
 		/// </summary>
 		public IJSObjectMetadata Metadata => _metadata;
 
-		internal string GetNativeInstance() 
+		internal string GetNativeInstance()
 			=> _metadata.GetNativeInstance(_managedHandle, _jsHandle);
 
 		internal bool TryGetManaged(out object target)

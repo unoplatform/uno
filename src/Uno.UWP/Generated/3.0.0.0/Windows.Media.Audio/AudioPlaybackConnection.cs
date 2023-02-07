@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioPlaybackConnection.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AudioPlaybackConnection.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AudioPlaybackConnection.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioPlaybackConnectionState AudioPlaybackConnection.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioPlaybackConnectionState AudioPlaybackConnection.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioPlaybackConnectionState%20AudioPlaybackConnection.State");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AudioPlaybackConnection.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AudioPlaybackConnection.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AudioPlaybackConnection.StartAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.DeviceId.get
@@ -47,14 +47,14 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioPlaybackConnectionOpenResult Open()
 		{
-			throw new global::System.NotImplementedException("The member AudioPlaybackConnectionOpenResult AudioPlaybackConnection.Open() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioPlaybackConnectionOpenResult AudioPlaybackConnection.Open() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioPlaybackConnectionOpenResult%20AudioPlaybackConnection.Open%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.AudioPlaybackConnectionOpenResult> OpenAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AudioPlaybackConnectionOpenResult> AudioPlaybackConnection.OpenAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AudioPlaybackConnectionOpenResult> AudioPlaybackConnection.OpenAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAudioPlaybackConnectionOpenResult%3E%20AudioPlaybackConnection.OpenAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.StateChanged.add
@@ -70,14 +70,14 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string AudioPlaybackConnection.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string AudioPlaybackConnection.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AudioPlaybackConnection.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Audio.AudioPlaybackConnection TryCreateFromId( string id)
 		{
-			throw new global::System.NotImplementedException("The member AudioPlaybackConnection AudioPlaybackConnection.TryCreateFromId(string id) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioPlaybackConnection AudioPlaybackConnection.TryCreateFromId(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioPlaybackConnection%20AudioPlaybackConnection.TryCreateFromId%28string%20id%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

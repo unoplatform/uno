@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentCurrencyAmount.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.CurrencySystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.CurrencySystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentCurrencyAmount.CurrencySystem");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Currency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentCurrencyAmount.Currency");
 			}
 			set
 			{

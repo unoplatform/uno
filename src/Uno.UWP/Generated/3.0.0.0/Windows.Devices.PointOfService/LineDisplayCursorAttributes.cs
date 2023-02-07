@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point LineDisplayCursorAttributes.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point LineDisplayCursorAttributes.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20LineDisplayCursorAttributes.Position");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsBlinkEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsBlinkEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursorAttributes.IsBlinkEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsAutoAdvanceEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsAutoAdvanceEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LineDisplayCursorAttributes.IsAutoAdvanceEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayCursorType LineDisplayCursorAttributes.CursorType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LineDisplayCursorType LineDisplayCursorAttributes.CursorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LineDisplayCursorType%20LineDisplayCursorAttributes.CursorType");
 			}
 			set
 			{

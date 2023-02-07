@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo XusbGameControllerProvider.FirmwareVersionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GameControllerVersionInfo XusbGameControllerProvider.FirmwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GameControllerVersionInfo%20XusbGameControllerProvider.FirmwareVersionInfo");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort XusbGameControllerProvider.HardwareProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort XusbGameControllerProvider.HardwareProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20XusbGameControllerProvider.HardwareProductId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort XusbGameControllerProvider.HardwareVendorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort XusbGameControllerProvider.HardwareVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20XusbGameControllerProvider.HardwareVendorId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo XusbGameControllerProvider.HardwareVersionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GameControllerVersionInfo XusbGameControllerProvider.HardwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GameControllerVersionInfo%20XusbGameControllerProvider.HardwareVersionInfo");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XusbGameControllerProvider.IsConnected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool XusbGameControllerProvider.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20XusbGameControllerProvider.IsConnected");
 			}
 		}
 		#endif

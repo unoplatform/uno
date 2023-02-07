@@ -21,7 +21,7 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		static int OpenRestricted(IntPtr path, int flags, IntPtr userData)
 		{
-			if(!(Marshal.PtrToStringAnsi(path) is { } pathAsString))
+			if (!(Marshal.PtrToStringAnsi(path) is { } pathAsString))
 			{
 				return -1;
 			}
@@ -45,7 +45,7 @@ namespace Uno.UI.Runtime.Skia.Native
 		{
 			s_Interface = (IntPtr*)Marshal.AllocHGlobal(IntPtr.Size * 2);
 
-			static IntPtr Convert<TDelegate>(TDelegate del) where TDelegate:notnull
+			static IntPtr Convert<TDelegate>(TDelegate del) where TDelegate : notnull
 			{
 				GCHandle.Alloc(del);
 				return Marshal.GetFunctionPointerForDelegate(del);
@@ -128,7 +128,7 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		[DllImport(LibInputName)]
 		public extern static double libinput_event_pointer_get_axis_value_discrete(IntPtr ev, libinput_pointer_axis axis);
-		
+
 		[DllImport(LibInputName)]
 		public extern static IntPtr libinput_event_get_keyboard_event(IntPtr ev);
 

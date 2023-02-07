@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderDeleteAccountOperation.WebAccount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderDeleteAccountOperation.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccount%20WebAccountProviderDeleteAccountOperation.WebAccount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderDeleteAccountOperation.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderDeleteAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountProviderOperationKind%20WebAccountProviderDeleteAccountOperation.Kind");
 			}
 		}
 		#endif

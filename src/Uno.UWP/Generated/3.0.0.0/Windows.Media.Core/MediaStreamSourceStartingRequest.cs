@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaStreamSourceStartingRequest.StartPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? MediaStreamSourceStartingRequest.StartPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20MediaStreamSourceStartingRequest.StartPosition");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.MediaStreamSourceStartingRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSourceStartingRequestDeferral MediaStreamSourceStartingRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaStreamSourceStartingRequestDeferral MediaStreamSourceStartingRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSourceStartingRequestDeferral%20MediaStreamSourceStartingRequest.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

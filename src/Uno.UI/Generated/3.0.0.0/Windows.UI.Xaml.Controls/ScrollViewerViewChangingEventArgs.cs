@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.FinalView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.FinalView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ScrollViewerView%20ScrollViewerViewChangingEventArgs.FinalView");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScrollViewerViewChangingEventArgs.IsInertial is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ScrollViewerViewChangingEventArgs.IsInertial is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ScrollViewerViewChangingEventArgs.IsInertial");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.NextView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.NextView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ScrollViewerView%20ScrollViewerViewChangingEventArgs.NextView");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionTopicConstraint.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechRecognitionTopicConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechRecognitionTopicConstraint.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionTopicConstraint.Probability is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionTopicConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConstraintProbability%20SpeechRecognitionTopicConstraint.Probability");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionTopicConstraint.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpeechRecognitionTopicConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpeechRecognitionTopicConstraint.IsEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionTopicConstraint.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionTopicConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConstraintType%20SpeechRecognitionTopicConstraint.Type");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionScenario SpeechRecognitionTopicConstraint.Scenario is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionScenario SpeechRecognitionTopicConstraint.Scenario is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionScenario%20SpeechRecognitionTopicConstraint.Scenario");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionTopicConstraint.TopicHint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechRecognitionTopicConstraint.TopicHint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechRecognitionTopicConstraint.TopicHint");
 			}
 		}
 		#endif

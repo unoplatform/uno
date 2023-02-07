@@ -13,7 +13,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation DevicePairingRequestedEventArgs.DeviceInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation DevicePairingRequestedEventArgs.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20DevicePairingRequestedEventArgs.DeviceInformation");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePairingKinds DevicePairingRequestedEventArgs.PairingKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DevicePairingKinds DevicePairingRequestedEventArgs.PairingKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DevicePairingKinds%20DevicePairingRequestedEventArgs.PairingKind");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DevicePairingRequestedEventArgs.Pin is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DevicePairingRequestedEventArgs.Pin is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DevicePairingRequestedEventArgs.Pin");
 			}
 		}
 		#endif
@@ -58,7 +58,7 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral DevicePairingRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral DevicePairingRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20DevicePairingRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

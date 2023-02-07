@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Dispatching
 {
-    internal sealed partial class CoreDispatcher
-    {
-        private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
+	internal sealed partial class CoreDispatcher
+	{
+		private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
 
-        partial void EnqueueNative()
-        {
-            _mainQueue.DispatchAsync(DispatchItems);
+		partial void EnqueueNative()
+		{
+			_mainQueue.DispatchAsync(DispatchItems);
 		}
 
 		private bool GetHasThreadAccess() => NSThread.IsMain;
-    }
+	}
 }
 #endif

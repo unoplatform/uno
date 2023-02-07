@@ -144,7 +144,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				ItemContainerStyle = BuildBasicContainerStyle(),
 			};
 			list.ItemsSource = Enumerable.Range(0, 20);
-            var callbackCount = 0;
+			var callbackCount = 0;
 
 			list.SelectionChanged += OnSelectionChanged;
 			list.SelectedItem = 7;
@@ -182,11 +182,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			list.SelectionChanged += OnSelectionChanged;
 			list.SelectedItem = 7;
 
-            using (new AssertionScope())
-            {
-                list.SelectedItem.Should().Be(14);
-                list.SelectedIndex.Should().Be(14);
-                callbackCount.Should().Be(8); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+			using (new AssertionScope())
+			{
+				list.SelectedItem.Should().Be(14);
+				list.SelectedIndex.Should().Be(14);
+				callbackCount.Should().Be(8); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
 			}
 
 			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -295,7 +295,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -366,7 +367,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -437,7 +439,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -479,7 +482,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 
@@ -588,7 +592,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var selectionChanged = new List<SelectionChangedEventArgs>();
 
-			SUT.SelectionChanged += (s, e) => {
+			SUT.SelectionChanged += (s, e) =>
+			{
 				selectionChanged.Add(e);
 			};
 

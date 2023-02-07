@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? BadgeNotification.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? BadgeNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20BadgeNotification.ExpirationTime");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument BadgeNotification.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member XmlDocument BadgeNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20BadgeNotification.Content");
 			}
 		}
 		#endif

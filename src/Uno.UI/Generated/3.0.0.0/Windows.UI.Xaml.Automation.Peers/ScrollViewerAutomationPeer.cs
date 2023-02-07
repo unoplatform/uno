@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.HorizontalScrollPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.HorizontalScrollPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ScrollViewerAutomationPeer.HorizontalScrollPercent");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.HorizontalViewSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.HorizontalViewSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ScrollViewerAutomationPeer.HorizontalViewSize");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScrollViewerAutomationPeer.HorizontallyScrollable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ScrollViewerAutomationPeer.HorizontallyScrollable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ScrollViewerAutomationPeer.HorizontallyScrollable");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.VerticalScrollPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.VerticalScrollPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ScrollViewerAutomationPeer.VerticalScrollPercent");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.VerticalViewSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ScrollViewerAutomationPeer.VerticalViewSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ScrollViewerAutomationPeer.VerticalViewSize");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScrollViewerAutomationPeer.VerticallyScrollable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ScrollViewerAutomationPeer.VerticallyScrollable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ScrollViewerAutomationPeer.VerticallyScrollable");
 			}
 		}
 		#endif

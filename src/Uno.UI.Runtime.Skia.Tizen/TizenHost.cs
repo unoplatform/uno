@@ -57,7 +57,7 @@ namespace Uno.UI.Runtime.Skia
 		public TizenHost(Func<WinUI.Application> appBuilder, string[]? args = null) : this(appBuilder)
 		{
 		}
-		
+
 		public TizenHost(Func<WinUI.Application> appBuilder)
 		{
 			Elementary.Initialize();

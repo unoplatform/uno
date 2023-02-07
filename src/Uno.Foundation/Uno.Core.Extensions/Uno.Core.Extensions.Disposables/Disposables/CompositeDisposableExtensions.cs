@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Disposables
 {
-    internal static class CompositeDisposableExtensions
+	internal static class CompositeDisposableExtensions
 	{
 		/// <summary>
 		/// Adds an action to be executed when the CompositeDisposable is disposed.

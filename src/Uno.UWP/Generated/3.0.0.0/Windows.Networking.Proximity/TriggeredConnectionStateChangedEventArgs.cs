@@ -13,7 +13,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint TriggeredConnectionStateChangedEventArgs.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint TriggeredConnectionStateChangedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20TriggeredConnectionStateChangedEventArgs.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocket TriggeredConnectionStateChangedEventArgs.Socket is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StreamSocket TriggeredConnectionStateChangedEventArgs.Socket is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StreamSocket%20TriggeredConnectionStateChangedEventArgs.Socket");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TriggeredConnectState TriggeredConnectionStateChangedEventArgs.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TriggeredConnectState TriggeredConnectionStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TriggeredConnectState%20TriggeredConnectionStateChangedEventArgs.State");
 			}
 		}
 		#endif

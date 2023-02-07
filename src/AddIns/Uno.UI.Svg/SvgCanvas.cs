@@ -39,7 +39,7 @@ internal partial class SvgCanvas : SkiaCanvas
 	private readonly SvgImageSource _svgImageSource;
 	private readonly SvgProvider _svgProvider;
 	private readonly CompositeDisposable _disposables = new();
-	
+
 	private Size _lastArrangeSize;
 
 	public SvgCanvas(SvgImageSource svgImageSource, SvgProvider svgProvider)
@@ -50,7 +50,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		SizeChanged += SvgCanvas_SizeChanged;
 
 		_svgProvider.SourceUpdated += SvgProviderSourceOpened;
-		_disposables.Add(() => _svgProvider.SourceUpdated -= SvgProviderSourceOpened);;
+		_disposables.Add(() => _svgProvider.SourceUpdated -= SvgProviderSourceOpened); ;
 
 		Loaded += SvgCanvas_Loaded;
 		Unloaded += SvgCanvas_Unloaded;

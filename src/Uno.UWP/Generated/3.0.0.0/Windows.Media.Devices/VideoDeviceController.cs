@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraOcclusionInfo VideoDeviceController.CameraOcclusionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CameraOcclusionInfo VideoDeviceController.CameraOcclusionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CameraOcclusionInfo%20VideoDeviceController.CameraOcclusionInfo");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CaptureUse VideoDeviceController.PrimaryUse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CaptureUse VideoDeviceController.PrimaryUse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CaptureUse%20VideoDeviceController.PrimaryUse");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FocusControl VideoDeviceController.FocusControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FocusControl VideoDeviceController.FocusControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FocusControl%20VideoDeviceController.FocusControl");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IsoSpeedControl VideoDeviceController.IsoSpeedControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IsoSpeedControl VideoDeviceController.IsoSpeedControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IsoSpeedControl%20VideoDeviceController.IsoSpeedControl");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LowLagPhotoControl%20VideoDeviceController.LowLagPhoto");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WhiteBalanceControl VideoDeviceController.WhiteBalanceControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WhiteBalanceControl VideoDeviceController.WhiteBalanceControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WhiteBalanceControl%20VideoDeviceController.WhiteBalanceControl");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TorchControl VideoDeviceController.TorchControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TorchControl VideoDeviceController.TorchControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TorchControl%20VideoDeviceController.TorchControl");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneModeControl VideoDeviceController.SceneModeControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneModeControl VideoDeviceController.SceneModeControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneModeControl%20VideoDeviceController.SceneModeControl");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RegionsOfInterestControl VideoDeviceController.RegionsOfInterestControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RegionsOfInterestControl VideoDeviceController.RegionsOfInterestControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RegionsOfInterestControl%20VideoDeviceController.RegionsOfInterestControl");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FlashControl VideoDeviceController.FlashControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FlashControl VideoDeviceController.FlashControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FlashControl%20VideoDeviceController.FlashControl");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LowLagPhotoSequenceControl VideoDeviceController.LowLagPhotoSequence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LowLagPhotoSequenceControl VideoDeviceController.LowLagPhotoSequence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LowLagPhotoSequenceControl%20VideoDeviceController.LowLagPhotoSequence");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExposureCompensationControl VideoDeviceController.ExposureCompensationControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExposureCompensationControl VideoDeviceController.ExposureCompensationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExposureCompensationControl%20VideoDeviceController.ExposureCompensationControl");
 			}
 		}
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExposureControl VideoDeviceController.ExposureControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExposureControl VideoDeviceController.ExposureControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExposureControl%20VideoDeviceController.ExposureControl");
 			}
 		}
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ZoomControl VideoDeviceController.ZoomControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ZoomControl VideoDeviceController.ZoomControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ZoomControl%20VideoDeviceController.ZoomControl");
 			}
 		}
 		#endif
@@ -157,7 +157,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoConfirmationControl VideoDeviceController.PhotoConfirmationControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoConfirmationControl VideoDeviceController.PhotoConfirmationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoConfirmationControl%20VideoDeviceController.PhotoConfirmationControl");
 			}
 		}
 		#endif
@@ -167,7 +167,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VariablePhotoSequenceController VideoDeviceController.VariablePhotoSequenceController is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VariablePhotoSequenceController VideoDeviceController.VariablePhotoSequenceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VariablePhotoSequenceController%20VideoDeviceController.VariablePhotoSequenceController");
 			}
 		}
 		#endif
@@ -177,7 +177,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureOptimization VideoDeviceController.DesiredOptimization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureOptimization VideoDeviceController.DesiredOptimization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureOptimization%20VideoDeviceController.DesiredOptimization");
 			}
 			set
 			{
@@ -191,7 +191,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoControl VideoDeviceController.AdvancedPhotoControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdvancedPhotoControl VideoDeviceController.AdvancedPhotoControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdvancedPhotoControl%20VideoDeviceController.AdvancedPhotoControl");
 			}
 		}
 		#endif
@@ -201,7 +201,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExposurePriorityVideoControl VideoDeviceController.ExposurePriorityVideoControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExposurePriorityVideoControl VideoDeviceController.ExposurePriorityVideoControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExposurePriorityVideoControl%20VideoDeviceController.ExposurePriorityVideoControl");
 			}
 		}
 		#endif
@@ -211,7 +211,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdrVideoControl VideoDeviceController.HdrVideoControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HdrVideoControl VideoDeviceController.HdrVideoControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HdrVideoControl%20VideoDeviceController.HdrVideoControl");
 			}
 		}
 		#endif
@@ -221,7 +221,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OpticalImageStabilizationControl VideoDeviceController.OpticalImageStabilizationControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member OpticalImageStabilizationControl VideoDeviceController.OpticalImageStabilizationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OpticalImageStabilizationControl%20VideoDeviceController.OpticalImageStabilizationControl");
 			}
 		}
 		#endif
@@ -231,7 +231,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoDeviceController.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoDeviceController.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoDeviceController.Id");
 			}
 		}
 		#endif
@@ -241,7 +241,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTemporalDenoisingControl VideoDeviceController.VideoTemporalDenoisingControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoTemporalDenoisingControl VideoDeviceController.VideoTemporalDenoisingControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoTemporalDenoisingControl%20VideoDeviceController.VideoTemporalDenoisingControl");
 			}
 		}
 		#endif
@@ -251,7 +251,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InfraredTorchControl VideoDeviceController.InfraredTorchControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InfraredTorchControl VideoDeviceController.InfraredTorchControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InfraredTorchControl%20VideoDeviceController.InfraredTorchControl");
 			}
 		}
 		#endif
@@ -261,7 +261,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelBasedOptimizationControl VideoDeviceController.PanelBasedOptimizationControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PanelBasedOptimizationControl VideoDeviceController.PanelBasedOptimizationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PanelBasedOptimizationControl%20VideoDeviceController.PanelBasedOptimizationControl");
 			}
 		}
 		#endif
@@ -271,7 +271,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DigitalWindowControl VideoDeviceController.DigitalWindowControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DigitalWindowControl VideoDeviceController.DigitalWindowControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DigitalWindowControl%20VideoDeviceController.DigitalWindowControl");
 			}
 		}
 		#endif
@@ -281,7 +281,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Hue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Hue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Hue");
 			}
 		}
 		#endif
@@ -291,7 +291,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Zoom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Zoom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Zoom");
 			}
 		}
 		#endif
@@ -301,7 +301,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Contrast is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Contrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Contrast");
 			}
 		}
 		#endif
@@ -311,7 +311,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.WhiteBalance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.WhiteBalance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.WhiteBalance");
 			}
 		}
 		#endif
@@ -321,7 +321,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.BacklightCompensation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.BacklightCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.BacklightCompensation");
 			}
 		}
 		#endif
@@ -331,7 +331,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Brightness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Brightness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Brightness");
 			}
 		}
 		#endif
@@ -341,7 +341,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Exposure");
 			}
 		}
 		#endif
@@ -351,7 +351,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Tilt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Tilt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Tilt");
 			}
 		}
 		#endif
@@ -361,7 +361,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Roll is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Roll is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Roll");
 			}
 		}
 		#endif
@@ -371,7 +371,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Pan is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Pan is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Pan");
 			}
 		}
 		#endif
@@ -381,7 +381,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDeviceControl%20VideoDeviceController.Focus");
 			}
 		}
 		#endif
@@ -400,35 +400,35 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySetPowerlineFrequency( global::Windows.Media.Capture.PowerlineFrequency value)
 		{
-			throw new global::System.NotImplementedException("The member bool VideoDeviceController.TrySetPowerlineFrequency(PowerlineFrequency value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool VideoDeviceController.TrySetPowerlineFrequency(PowerlineFrequency value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VideoDeviceController.TrySetPowerlineFrequency%28PowerlineFrequency%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryGetPowerlineFrequency(out global::Windows.Media.Capture.PowerlineFrequency value)
 		{
-			throw new global::System.NotImplementedException("The member bool VideoDeviceController.TryGetPowerlineFrequency(out PowerlineFrequency value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool VideoDeviceController.TryGetPowerlineFrequency(out PowerlineFrequency value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VideoDeviceController.TryGetPowerlineFrequency%28out%20PowerlineFrequency%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaProperties.IMediaEncodingProperties> GetAvailableMediaStreamProperties( global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaEncodingProperties> VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaEncodingProperties> VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CIMediaEncodingProperties%3E%20VideoDeviceController.GetAvailableMediaStreamProperties%28MediaStreamType%20mediaStreamType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.IMediaEncodingProperties GetMediaStreamProperties( global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw new global::System.NotImplementedException("The member IMediaEncodingProperties VideoDeviceController.GetMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IMediaEncodingProperties VideoDeviceController.GetMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaEncodingProperties%20VideoDeviceController.GetMediaStreamProperties%28MediaStreamType%20mediaStreamType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetMediaStreamPropertiesAsync( global::Windows.Media.Capture.MediaStreamType mediaStreamType,  global::Windows.Media.MediaProperties.IMediaEncodingProperties mediaEncodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VideoDeviceController.SetMediaStreamPropertiesAsync%28MediaStreamType%20mediaStreamType%2C%20IMediaEncodingProperties%20mediaEncodingProperties%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -442,7 +442,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object GetDeviceProperty( string propertyId)
 		{
-			throw new global::System.NotImplementedException("The member object VideoDeviceController.GetDeviceProperty(string propertyId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member object VideoDeviceController.GetDeviceProperty(string propertyId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20VideoDeviceController.GetDeviceProperty%28string%20propertyId%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.LowLagPhotoSequence.get
@@ -472,28 +472,28 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult GetDevicePropertyById( string propertyId,  uint? maxPropertyValueSize)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyResult VideoDeviceController.GetDevicePropertyById(string propertyId, uint? maxPropertyValueSize) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyResult VideoDeviceController.GetDevicePropertyById(string propertyId, uint? maxPropertyValueSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDeviceControllerGetDevicePropertyResult%20VideoDeviceController.GetDevicePropertyById%28string%20propertyId%2C%20uint%3F%20maxPropertyValueSize%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.VideoDeviceControllerSetDevicePropertyStatus SetDevicePropertyById( string propertyId,  object propertyValue)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerSetDevicePropertyStatus VideoDeviceController.SetDevicePropertyById(string propertyId, object propertyValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoDeviceControllerSetDevicePropertyStatus VideoDeviceController.SetDevicePropertyById(string propertyId, object propertyValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDeviceControllerSetDevicePropertyStatus%20VideoDeviceController.SetDevicePropertyById%28string%20propertyId%2C%20object%20propertyValue%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult GetDevicePropertyByExtendedId( byte[] extendedPropertyId,  uint? maxPropertyValueSize)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyResult VideoDeviceController.GetDevicePropertyByExtendedId(byte[] extendedPropertyId, uint? maxPropertyValueSize) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyResult VideoDeviceController.GetDevicePropertyByExtendedId(byte[] extendedPropertyId, uint? maxPropertyValueSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDeviceControllerGetDevicePropertyResult%20VideoDeviceController.GetDevicePropertyByExtendedId%28byte%5B%5D%20extendedPropertyId%2C%20uint%3F%20maxPropertyValueSize%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.VideoDeviceControllerSetDevicePropertyStatus SetDevicePropertyByExtendedId( byte[] extendedPropertyId,  byte[] propertyValue)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerSetDevicePropertyStatus VideoDeviceController.SetDevicePropertyByExtendedId(byte[] extendedPropertyId, byte[] propertyValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoDeviceControllerSetDevicePropertyStatus VideoDeviceController.SetDevicePropertyByExtendedId(byte[] extendedPropertyId, byte[] propertyValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDeviceControllerSetDevicePropertyStatus%20VideoDeviceController.SetDevicePropertyByExtendedId%28byte%5B%5D%20extendedPropertyId%2C%20byte%5B%5D%20propertyValue%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.VideoTemporalDenoisingControl.get

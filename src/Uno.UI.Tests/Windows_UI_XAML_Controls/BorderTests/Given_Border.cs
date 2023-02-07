@@ -40,24 +40,24 @@ namespace Uno.UI.Tests.BorderTests
 			Assert.AreEqual(fixedSize, measuredSize);
 		}
 
-        [TestMethod]
-        public void When_Border_Has_Margin()
-        {
-            var fixedSize = new Windows.Foundation.Size(100, 120);
-            var margin = new Thickness(10,20,30,40);
-            var totalSize = new Windows.Foundation.Size(fixedSize.Width + margin.Left + margin.Right, fixedSize.Height + margin.Top + margin.Bottom);
+		[TestMethod]
+		public void When_Border_Has_Margin()
+		{
+			var fixedSize = new Windows.Foundation.Size(100, 120);
+			var margin = new Thickness(10, 20, 30, 40);
+			var totalSize = new Windows.Foundation.Size(fixedSize.Width + margin.Left + margin.Right, fixedSize.Height + margin.Top + margin.Bottom);
 
-            var SUT = new Border()
-            {
-                Width = fixedSize.Width,
-                Height = fixedSize.Height,
-                Margin = margin,
-            };
+			var SUT = new Border()
+			{
+				Width = fixedSize.Width,
+				Height = fixedSize.Height,
+				Margin = margin,
+			};
 
-            SUT.Measure(new Windows.Foundation.Size(500, 500));
-            var measuredSize = SUT.DesiredSize;
-            Assert.AreEqual(totalSize, measuredSize);
-        }
+			SUT.Measure(new Windows.Foundation.Size(500, 500));
+			var measuredSize = SUT.DesiredSize;
+			Assert.AreEqual(totalSize, measuredSize);
+		}
 
 		[TestMethod]
 #if __IOS__
@@ -84,7 +84,7 @@ namespace Uno.UI.Tests.BorderTests
 
 			SUT.Measure(new Windows.Foundation.Size(100, 100));
 			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,100, 100));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 100, 100));
 
 			Assert.AreEqual(parentSize, measuredSize, $"(parentSize:{parentSize}) != (measuredSize:{measuredSize})");
 			var expectedArrange = new Windows.Foundation.Rect(0, 0, parentSize.Width, parentSize.Height);
@@ -112,7 +112,7 @@ namespace Uno.UI.Tests.BorderTests
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
 			Assert.AreEqual(new Windows.Foundation.Rect(0, 0, parentSize.Width, parentSize.Height), LayoutInformation.GetLayoutSlot(child));
@@ -127,7 +127,7 @@ namespace Uno.UI.Tests.BorderTests
 			var border1 = new Border()
 			{
 				Height = 34,
-				Name="border1"
+				Name = "border1"
 			};
 
 			var border2 = new Border()
@@ -213,7 +213,7 @@ namespace Uno.UI.Tests.BorderTests
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
 			Assert.AreEqual(new Windows.Foundation.Rect((SUT.Width - maxSize.Width) / 2, (SUT.Height - maxSize.Height) / 2, maxSize.Width, maxSize.Height), child.LayoutSlotWithMarginsAndAlignments);
@@ -246,7 +246,7 @@ namespace Uno.UI.Tests.BorderTests
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 500, 500));
 
 			Assert.AreEqual(parentSize, measuredSize);
 			Assert.AreEqual(minSize, new Size(child.LayoutSlotWithMarginsAndAlignments.Width, child.LayoutSlotWithMarginsAndAlignments.Height));
@@ -277,7 +277,7 @@ namespace Uno.UI.Tests.BorderTests
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize1 = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 500, 500));
 
 			child.LayoutSlotWithMarginsAndAlignments.Should().Be(new Rect((SUT.Width - maxSize.Width) / 2, (SUT.Height - maxSize.Height) / 2, maxSize.Width, maxSize.Height), 0.5);
 
@@ -286,7 +286,7 @@ namespace Uno.UI.Tests.BorderTests
 
 			SUT.Measure(new Windows.Foundation.Size(500, 500));
 			var measuredSize2 = SUT.DesiredSize;
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0,500, 500));
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 500, 500));
 
 			using (new AssertionScope())
 			{

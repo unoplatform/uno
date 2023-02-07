@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GattReadRequest.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GattReadRequest.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GattReadRequest.Length");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GattReadRequest.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GattReadRequest.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GattReadRequest.Offset");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattRequestState GattReadRequest.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattRequestState GattReadRequest.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattRequestState%20GattReadRequest.State");
 			}
 		}
 		#endif

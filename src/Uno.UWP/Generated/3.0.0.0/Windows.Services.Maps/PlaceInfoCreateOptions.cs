@@ -13,7 +13,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlaceInfoCreateOptions.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlaceInfoCreateOptions.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlaceInfoCreateOptions.DisplayName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlaceInfoCreateOptions.DisplayAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlaceInfoCreateOptions.DisplayAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlaceInfoCreateOptions.DisplayAddress");
 			}
 			set
 			{

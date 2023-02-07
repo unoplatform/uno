@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint NotificationData.SequenceNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint NotificationData.SequenceNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20NotificationData.SequenceNumber");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationData.Values is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationData.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20NotificationData.Values");
 			}
 		}
 		#endif

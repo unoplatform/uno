@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreetsideExperience.ZoomButtonsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreetsideExperience.ZoomButtonsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreetsideExperience.ZoomButtonsVisible");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreetsideExperience.StreetLabelsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreetsideExperience.StreetLabelsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreetsideExperience.StreetLabelsVisible");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreetsideExperience.OverviewMapVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreetsideExperience.OverviewMapVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreetsideExperience.OverviewMapVisible");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreetsideExperience.ExitButtonVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreetsideExperience.ExitButtonVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreetsideExperience.ExitButtonVisible");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreetsideExperience.CursorVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreetsideExperience.CursorVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreetsideExperience.CursorVisible");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreetsideExperience.AddressTextVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreetsideExperience.AddressTextVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreetsideExperience.AddressTextVisible");
 			}
 			set
 			{

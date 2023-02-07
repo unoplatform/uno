@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynProducerStoppedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynProducerStoppedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynProducerStoppedEventArgs.Status");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind FolderPickerContinuationEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind FolderPickerContinuationEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20FolderPickerContinuationEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState FolderPickerContinuationEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState FolderPickerContinuationEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20FolderPickerContinuationEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen FolderPickerContinuationEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen FolderPickerContinuationEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20FolderPickerContinuationEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FolderPickerContinuationEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User FolderPickerContinuationEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20FolderPickerContinuationEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet FolderPickerContinuationEventArgs.ContinuationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet FolderPickerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20FolderPickerContinuationEventArgs.ContinuationData");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder FolderPickerContinuationEventArgs.Folder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder FolderPickerContinuationEventArgs.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20FolderPickerContinuationEventArgs.Folder");
 			}
 		}
 		#endif

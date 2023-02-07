@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HandwritingViewCandidatesChangedEventArgs.CandidatesSessionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HandwritingViewCandidatesChangedEventArgs.CandidatesSessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HandwritingViewCandidatesChangedEventArgs.CandidatesSessionId");
 			}
 		}
 		#endif

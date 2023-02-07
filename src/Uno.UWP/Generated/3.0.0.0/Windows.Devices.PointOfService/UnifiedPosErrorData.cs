@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UnifiedPosErrorData.ExtendedReason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UnifiedPosErrorData.ExtendedReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UnifiedPosErrorData.ExtendedReason");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UnifiedPosErrorData.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UnifiedPosErrorData.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UnifiedPosErrorData.Message");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosErrorReason UnifiedPosErrorData.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnifiedPosErrorReason UnifiedPosErrorData.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnifiedPosErrorReason%20UnifiedPosErrorData.Reason");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosErrorSeverity UnifiedPosErrorData.Severity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnifiedPosErrorSeverity UnifiedPosErrorData.Severity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnifiedPosErrorSeverity%20UnifiedPosErrorData.Severity");
 			}
 		}
 		#endif

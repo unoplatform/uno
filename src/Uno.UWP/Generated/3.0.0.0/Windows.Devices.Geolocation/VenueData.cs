@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VenueData.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VenueData.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VenueData.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VenueData.Level is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VenueData.Level is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VenueData.Level");
 			}
 		}
 		#endif

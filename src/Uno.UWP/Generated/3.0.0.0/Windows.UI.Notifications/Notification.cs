@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NotificationVisual%20Notification.Visual");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? Notification.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? Notification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20Notification.ExpirationTime");
 			}
 			set
 			{

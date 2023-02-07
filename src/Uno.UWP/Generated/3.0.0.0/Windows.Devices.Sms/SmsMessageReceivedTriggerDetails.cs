@@ -13,7 +13,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsAppMessage SmsMessageReceivedTriggerDetails.AppMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsAppMessage SmsMessageReceivedTriggerDetails.AppMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsAppMessage%20SmsMessageReceivedTriggerDetails.AppMessage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsBroadcastMessage SmsMessageReceivedTriggerDetails.BroadcastMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsBroadcastMessage SmsMessageReceivedTriggerDetails.BroadcastMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsBroadcastMessage%20SmsMessageReceivedTriggerDetails.BroadcastMessage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsMessageReceivedTriggerDetails.MessageType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsMessageType SmsMessageReceivedTriggerDetails.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsMessageType%20SmsMessageReceivedTriggerDetails.MessageType");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsStatusMessage SmsMessageReceivedTriggerDetails.StatusMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsStatusMessage SmsMessageReceivedTriggerDetails.StatusMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsStatusMessage%20SmsMessageReceivedTriggerDetails.StatusMessage");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsTextMessage2 SmsMessageReceivedTriggerDetails.TextMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsTextMessage2 SmsMessageReceivedTriggerDetails.TextMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsTextMessage2%20SmsMessageReceivedTriggerDetails.TextMessage");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsVoicemailMessage SmsMessageReceivedTriggerDetails.VoicemailMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsVoicemailMessage SmsMessageReceivedTriggerDetails.VoicemailMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsVoicemailMessage%20SmsMessageReceivedTriggerDetails.VoicemailMessage");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsWapMessage SmsMessageReceivedTriggerDetails.WapMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsWapMessage SmsMessageReceivedTriggerDetails.WapMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsWapMessage%20SmsMessageReceivedTriggerDetails.WapMessage");
 			}
 		}
 		#endif

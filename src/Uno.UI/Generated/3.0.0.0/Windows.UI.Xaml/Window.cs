@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Compositor Window.Compositor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Compositor Window.Compositor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Compositor%20Window.Compositor");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext Window.UIContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIContext Window.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIContext%20Window.UIContext");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CommandBarFlyoutCommandBarTemplateSettings CommandBarFlyoutCommandBar.FlyoutTemplateSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CommandBarFlyoutCommandBarTemplateSettings CommandBarFlyoutCommandBar.FlyoutTemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CommandBarFlyoutCommandBarTemplateSettings%20CommandBarFlyoutCommandBar.FlyoutTemplateSettings");
 			}
 		}
 		#endif

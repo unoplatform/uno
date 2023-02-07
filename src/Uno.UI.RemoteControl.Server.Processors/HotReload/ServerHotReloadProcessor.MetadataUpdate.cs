@@ -60,7 +60,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					return result;
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Console.WriteLine($"Failed to initialize compilation workspace: {e}");
 					throw;

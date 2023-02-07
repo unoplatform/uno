@@ -13,7 +13,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsVideo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CastingDevicePickerFilter.SupportsVideo");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsPictures is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CastingDevicePickerFilter.SupportsPictures");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsAudio is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CastingDevicePickerFilter.SupportsAudio");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CCastingSource%3E%20CastingDevicePickerFilter.SupportedCastingSources");
 			}
 		}
 		#endif

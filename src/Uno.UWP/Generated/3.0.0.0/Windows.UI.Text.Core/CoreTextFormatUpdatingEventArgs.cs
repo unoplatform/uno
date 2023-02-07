@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextFormatUpdatingResult%20CoreTextFormatUpdatingEventArgs.Result");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElementType? CoreTextFormatUpdatingEventArgs.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIElementType? CoreTextFormatUpdatingEventArgs.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElementType%3F%20CoreTextFormatUpdatingEventArgs.BackgroundColor");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextFormatUpdatingEventArgs.IsCanceled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreTextFormatUpdatingEventArgs.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreTextFormatUpdatingEventArgs.IsCanceled");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextFormatUpdatingEventArgs.Range is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextFormatUpdatingEventArgs.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextRange%20CoreTextFormatUpdatingEventArgs.Range");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextFormatUpdatingReason CoreTextFormatUpdatingEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextFormatUpdatingReason CoreTextFormatUpdatingEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextFormatUpdatingReason%20CoreTextFormatUpdatingEventArgs.Reason");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElementType? CoreTextFormatUpdatingEventArgs.TextColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIElementType? CoreTextFormatUpdatingEventArgs.TextColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElementType%3F%20CoreTextFormatUpdatingEventArgs.TextColor");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElementType? CoreTextFormatUpdatingEventArgs.UnderlineColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIElementType? CoreTextFormatUpdatingEventArgs.UnderlineColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElementType%3F%20CoreTextFormatUpdatingEventArgs.UnderlineColor");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnderlineType? CoreTextFormatUpdatingEventArgs.UnderlineType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnderlineType? CoreTextFormatUpdatingEventArgs.UnderlineType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnderlineType%3F%20CoreTextFormatUpdatingEventArgs.UnderlineType");
 			}
 		}
 		#endif
@@ -104,7 +104,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextFormatUpdatingEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral CoreTextFormatUpdatingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20CoreTextFormatUpdatingEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

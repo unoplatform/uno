@@ -13,7 +13,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? AdaptiveMediaSourceAdvancedSettings.BitrateDowngradeTriggerRatio is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? AdaptiveMediaSourceAdvancedSettings.BitrateDowngradeTriggerRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20AdaptiveMediaSourceAdvancedSettings.BitrateDowngradeTriggerRatio");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent");
 			}
 			set
 			{

@@ -87,7 +87,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Sets the default value of the InputScope property.
 			// Note that InputScope is a class that cannot be set to a default value within the IDL.
-			var inputScopeName = new InputScopeName(InputScopeNameValue.Number);
+
+			// Uno specific: Use InputScopeNameValue.Default if AcceptsExpression is true.
+			var inputScopeName = new InputScopeName(AcceptsExpression ? InputScopeNameValue.Default : InputScopeNameValue.Number);
 			var inputScope = new InputScope();
 			inputScope.Names.Add(inputScopeName);
 			InputScope = inputScope;
@@ -356,6 +358,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Update text with new formatting
 			UpdateTextToValue();
+		}
+
+		// Uno specific
+		private void OnAcceptsExpressionPropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			SetDefaultInputScope();
 		}
 
 		private void ValidateNumberFormatter(INumberFormatter2 value)

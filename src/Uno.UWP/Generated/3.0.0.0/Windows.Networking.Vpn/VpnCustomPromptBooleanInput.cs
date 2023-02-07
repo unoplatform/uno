@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.InitialValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.InitialValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptBooleanInput.InitialValue");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptBooleanInput.Value");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Emphasized is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Emphasized is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptBooleanInput.Emphasized");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptBooleanInput.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomPromptBooleanInput.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomPromptBooleanInput.DisplayName");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Compulsory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptBooleanInput.Compulsory");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ChainBuildingParameters.ValidationTimestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ChainBuildingParameters.ValidationTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ChainBuildingParameters.ValidationTimestamp");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.RevocationCheckEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.RevocationCheckEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChainBuildingParameters.RevocationCheckEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.NetworkRetrievalEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.NetworkRetrievalEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChainBuildingParameters.NetworkRetrievalEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.CurrentTimeValidationEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.CurrentTimeValidationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChainBuildingParameters.CurrentTimeValidationEnabled");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.AuthorityInformationAccessEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChainBuildingParameters.AuthorityInformationAccessEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChainBuildingParameters.AuthorityInformationAccessEnabled");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ChainBuildingParameters.EnhancedKeyUsages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ChainBuildingParameters.EnhancedKeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ChainBuildingParameters.EnhancedKeyUsages");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Certificate> ChainBuildingParameters.ExclusiveTrustRoots is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Certificate> ChainBuildingParameters.ExclusiveTrustRoots is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CCertificate%3E%20ChainBuildingParameters.ExclusiveTrustRoots");
 			}
 		}
 		#endif

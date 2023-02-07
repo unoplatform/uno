@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ListViewBaseHeaderItem ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ListViewBaseHeaderItem ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ListViewBaseHeaderItem%20ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ChoosingGroupHeaderContainerEventArgs.Group is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object ChoosingGroupHeaderContainerEventArgs.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ChoosingGroupHeaderContainerEventArgs.Group");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChoosingGroupHeaderContainerEventArgs.GroupIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ChoosingGroupHeaderContainerEventArgs.GroupIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ChoosingGroupHeaderContainerEventArgs.GroupIndex");
 			}
 		}
 		#endif

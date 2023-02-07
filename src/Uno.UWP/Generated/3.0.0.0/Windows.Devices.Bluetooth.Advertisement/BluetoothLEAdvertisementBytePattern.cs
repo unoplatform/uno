@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short BluetoothLEAdvertisementBytePattern.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member short BluetoothLEAdvertisementBytePattern.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=short%20BluetoothLEAdvertisementBytePattern.Offset");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementBytePattern.DataType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementBytePattern.DataType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20BluetoothLEAdvertisementBytePattern.DataType");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BluetoothLEAdvertisementBytePattern.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer BluetoothLEAdvertisementBytePattern.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20BluetoothLEAdvertisementBytePattern.Data");
 			}
 			set
 			{

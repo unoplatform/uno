@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisitMonitoringScope GeovisitMonitor.MonitoringScope is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VisitMonitoringScope GeovisitMonitor.MonitoringScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VisitMonitoringScope%20GeovisitMonitor.MonitoringScope");
 			}
 		}
 		#endif
@@ -46,7 +46,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGeovisit%3E%20GeovisitMonitor.GetLastReportAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionFrameSourcePropertyChangeStatus PerceptionPropertyChangeRequest.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PerceptionFrameSourcePropertyChangeStatus PerceptionPropertyChangeRequest.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionFrameSourcePropertyChangeStatus%20PerceptionPropertyChangeRequest.Status");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionPropertyChangeRequest.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PerceptionPropertyChangeRequest.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PerceptionPropertyChangeRequest.Name");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PerceptionPropertyChangeRequest.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object PerceptionPropertyChangeRequest.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20PerceptionPropertyChangeRequest.Value");
 			}
 		}
 		#endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral PerceptionPropertyChangeRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral PerceptionPropertyChangeRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20PerceptionPropertyChangeRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

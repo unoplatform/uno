@@ -13,7 +13,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume StagePackageOptions.TargetVolume is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PackageVolume StagePackageOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageVolume%20StagePackageOptions.TargetVolume");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StubPackageOption StagePackageOptions.StubPackageOption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StubPackageOption StagePackageOptions.StubPackageOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StubPackageOption%20StagePackageOptions.StubPackageOption");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.StageInPlace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StagePackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StagePackageOptions.StageInPlace");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.RequiredContentGroupOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StagePackageOptions.RequiredContentGroupOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StagePackageOptions.RequiredContentGroupOnly");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.InstallAllResources is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StagePackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StagePackageOptions.InstallAllResources");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.ForceUpdateFromAnyVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StagePackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StagePackageOptions.ForceUpdateFromAnyVersion");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri StagePackageOptions.ExternalLocationUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri StagePackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20StagePackageOptions.ExternalLocationUri");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.DeveloperMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StagePackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StagePackageOptions.DeveloperMode");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.AllowUnsigned is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StagePackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StagePackageOptions.AllowUnsigned");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.DependencyPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20StagePackageOptions.DependencyPackageUris");
 			}
 		}
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> StagePackageOptions.OptionalPackageFamilyNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> StagePackageOptions.OptionalPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20StagePackageOptions.OptionalPackageFamilyNames");
 			}
 		}
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.OptionalPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.OptionalPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20StagePackageOptions.OptionalPackageUris");
 			}
 		}
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.RelatedPackageUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.RelatedPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20StagePackageOptions.RelatedPackageUris");
 			}
 		}
 		#endif

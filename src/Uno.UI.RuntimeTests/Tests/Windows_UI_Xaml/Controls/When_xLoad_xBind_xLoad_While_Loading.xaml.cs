@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 
 		public bool IsLoad(bool load) => load;
 
-		public When_xLoad_xBind_xLoad_While_Loading_ViewModel Model {  get; set; }
+		public When_xLoad_xBind_xLoad_While_Loading_ViewModel Model { get; set; }
 
 		public bool MyIsLoaded
 		{

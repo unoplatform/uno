@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WebTokenResponse> WebTokenRequestResult.ResponseData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<WebTokenResponse> WebTokenRequestResult.ResponseData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWebTokenResponse%3E%20WebTokenRequestResult.ResponseData");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderError WebTokenRequestResult.ResponseError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebProviderError WebTokenRequestResult.ResponseError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebProviderError%20WebTokenRequestResult.ResponseError");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebTokenRequestStatus WebTokenRequestResult.ResponseStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebTokenRequestStatus WebTokenRequestResult.ResponseStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebTokenRequestStatus%20WebTokenRequestResult.ResponseStatus");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction InvalidateCacheAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebTokenRequestResult.InvalidateCacheAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WebTokenRequestResult.InvalidateCacheAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebTokenRequestResult.InvalidateCacheAsync%28%29");
 		}
 		#endif
 	}

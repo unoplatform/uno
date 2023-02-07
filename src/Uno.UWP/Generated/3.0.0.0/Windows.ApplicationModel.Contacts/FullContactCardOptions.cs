@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ViewSizePreference FullContactCardOptions.DesiredRemainingView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ViewSizePreference FullContactCardOptions.DesiredRemainingView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ViewSizePreference%20FullContactCardOptions.DesiredRemainingView");
 			}
 			set
 			{

@@ -11,7 +11,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkStroke> BeginDry()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkSynchronizer.BeginDry() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkSynchronizer.BeginDry() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CInkStroke%3E%20InkSynchronizer.BeginDry%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

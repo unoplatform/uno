@@ -13,7 +13,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEffectType AudioEffect.AudioEffectType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEffectType AudioEffect.AudioEffectType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEffectType%20AudioEffect.AudioEffectType");
 			}
 		}
 		#endif

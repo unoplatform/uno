@@ -13,7 +13,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlSettings.IsScriptNotifyAllowed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlSettings.IsScriptNotifyAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlSettings.IsScriptNotifyAllowed");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlSettings.IsJavaScriptEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlSettings.IsJavaScriptEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlSettings.IsJavaScriptEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlSettings.IsIndexedDBEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlSettings.IsIndexedDBEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlSettings.IsIndexedDBEnabled");
 			}
 			set
 			{

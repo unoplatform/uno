@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 
 			surface.Canvas.Save();
 
-			if(Compositor.CurrentOpacity != 1.0f)
+			if (Compositor.CurrentOpacity != 1.0f)
 			{
 				_paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
 			}

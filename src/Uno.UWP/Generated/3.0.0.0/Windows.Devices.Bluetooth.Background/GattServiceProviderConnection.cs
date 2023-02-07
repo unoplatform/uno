@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProviderConnection.Service is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProviderConnection.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattLocalService%20GattServiceProviderConnection.Service");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattServiceProviderConnection.TriggerId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GattServiceProviderConnection.TriggerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GattServiceProviderConnection.TriggerId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, GattServiceProviderConnection> GattServiceProviderConnection.AllServices is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, GattServiceProviderConnection> GattServiceProviderConnection.AllServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20GattServiceProviderConnection%3E%20GattServiceProviderConnection.AllServices");
 			}
 		}
 		#endif

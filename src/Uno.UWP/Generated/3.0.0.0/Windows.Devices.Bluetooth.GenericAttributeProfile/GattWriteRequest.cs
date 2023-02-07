@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GattWriteRequest.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GattWriteRequest.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GattWriteRequest.Offset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattWriteOption GattWriteRequest.Option is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattWriteOption GattWriteRequest.Option is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattWriteOption%20GattWriteRequest.Option");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattRequestState GattWriteRequest.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattRequestState GattWriteRequest.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattRequestState%20GattWriteRequest.State");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattWriteRequest.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer GattWriteRequest.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20GattWriteRequest.Value");
 			}
 		}
 		#endif

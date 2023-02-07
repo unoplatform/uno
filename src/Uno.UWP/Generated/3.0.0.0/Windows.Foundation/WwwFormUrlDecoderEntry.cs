@@ -13,7 +13,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WwwFormUrlDecoderEntry.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WwwFormUrlDecoderEntry.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WwwFormUrlDecoderEntry.Name");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WwwFormUrlDecoderEntry.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WwwFormUrlDecoderEntry.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WwwFormUrlDecoderEntry.Value");
 			}
 		}
 		#endif

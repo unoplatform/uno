@@ -21,22 +21,22 @@ using System.Text;
 
 namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 {
-    internal class DisposableAction : IDisposable
-    {
-        public DisposableAction(Action action)
-        {
-            Action = action;
-        }
+	internal class DisposableAction : IDisposable
+	{
+		public DisposableAction(Action action)
+		{
+			Action = action;
+		}
 
-        public Action Action { get; private set; }
+		public Action Action { get; private set; }
 
-        #region IDisposable Members
+		#region IDisposable Members
 
-        public void Dispose()
-        {
-            Action();
-        }
+		public void Dispose()
+		{
+			Action();
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

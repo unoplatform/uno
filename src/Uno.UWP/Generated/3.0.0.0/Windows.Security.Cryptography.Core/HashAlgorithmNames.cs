@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Md5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Md5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HashAlgorithmNames.Md5");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HashAlgorithmNames.Sha1");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HashAlgorithmNames.Sha256");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HashAlgorithmNames.Sha384");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha512 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HashAlgorithmNames.Sha512");
 			}
 		}
 		#endif

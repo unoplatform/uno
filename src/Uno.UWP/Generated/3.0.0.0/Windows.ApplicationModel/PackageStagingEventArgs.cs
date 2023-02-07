@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PackageStagingEventArgs.ActivityId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PackageStagingEventArgs.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PackageStagingEventArgs.ActivityId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageStagingEventArgs.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PackageStagingEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PackageStagingEventArgs.ErrorCode");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageStagingEventArgs.IsComplete is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PackageStagingEventArgs.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PackageStagingEventArgs.IsComplete");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageStagingEventArgs.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageStagingEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageStagingEventArgs.Package");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PackageStagingEventArgs.Progress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PackageStagingEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PackageStagingEventArgs.Progress");
 			}
 		}
 		#endif

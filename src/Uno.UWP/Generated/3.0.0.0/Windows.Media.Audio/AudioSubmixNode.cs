@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioSubmixNode.OutgoingConnections is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> AudioSubmixNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAudioGraphConnection%3E%20AudioSubmixNode.OutgoingConnections");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioSubmixNode.Emitter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitter AudioSubmixNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitter%20AudioSubmixNode.Emitter");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioSubmixNode.OutgoingGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioSubmixNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioSubmixNode.OutgoingGain");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioSubmixNode.ConsumeInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AudioSubmixNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AudioSubmixNode.ConsumeInput");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioSubmixNode.EffectDefinitions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioSubmixNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CIAudioEffectDefinition%3E%20AudioSubmixNode.EffectDefinitions");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioSubmixNode.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioSubmixNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioSubmixNode.EncodingProperties");
 			}
 		}
 		#endif

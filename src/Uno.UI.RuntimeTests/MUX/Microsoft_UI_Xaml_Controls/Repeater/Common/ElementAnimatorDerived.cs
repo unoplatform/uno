@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 		public Action<UIElement, AnimationContext> StartShowAnimationFunc { get; set; }
 		public Action<UIElement, AnimationContext> StartHideAnimationFunc { get; set; }
 		public Action<UIElement, AnimationContext, Rect, Rect> StartBoundsChangeAnimationFunc { get; set; }
-	 
+
 		protected override bool HasShowAnimationCore(UIElement element, AnimationContext context)
 		{
 			return HasShowAnimationValue;

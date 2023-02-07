@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewUnviewableContentIdentifiedEventArgs.Referrer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewUnviewableContentIdentifiedEventArgs.Referrer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewUnviewableContentIdentifiedEventArgs.Referrer");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewUnviewableContentIdentifiedEventArgs.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewUnviewableContentIdentifiedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewUnviewableContentIdentifiedEventArgs.Uri");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewUnviewableContentIdentifiedEventArgs.MediaType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebViewUnviewableContentIdentifiedEventArgs.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebViewUnviewableContentIdentifiedEventArgs.MediaType");
 			}
 		}
 		#endif

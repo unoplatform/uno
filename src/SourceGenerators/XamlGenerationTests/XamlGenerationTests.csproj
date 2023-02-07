@@ -38,10 +38,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <PRIResource Include="Resources.resw" />
 	</ItemGroup>
 

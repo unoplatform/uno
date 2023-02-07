@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsDefault is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceQualifier.IsDefault");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsMatch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsMatch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceQualifier.IsMatch");
 			}
 		}
 		#endif
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ResourceQualifier.Score is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ResourceQualifier.Score is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ResourceQualifier.Score");
 			}
 		}
 		#endif

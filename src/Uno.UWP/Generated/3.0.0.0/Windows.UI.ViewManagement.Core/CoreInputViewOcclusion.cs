@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreInputViewOcclusion.OccludingRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect CoreInputViewOcclusion.OccludingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreInputViewOcclusion.OccludingRect");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreInputViewOcclusionKind CoreInputViewOcclusion.OcclusionKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreInputViewOcclusionKind CoreInputViewOcclusion.OcclusionKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreInputViewOcclusionKind%20CoreInputViewOcclusion.OcclusionKind");
 			}
 		}
 		#endif

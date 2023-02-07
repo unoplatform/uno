@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackSessionVideoConstrictionReason MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackSessionVideoConstrictionReason MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackSessionVideoConstrictionReason%20MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason");
 			}
 		}
 		#endif

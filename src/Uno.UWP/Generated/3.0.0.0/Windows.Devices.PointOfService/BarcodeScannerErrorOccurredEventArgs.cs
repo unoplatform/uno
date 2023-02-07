@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosErrorData BarcodeScannerErrorOccurredEventArgs.ErrorData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnifiedPosErrorData BarcodeScannerErrorOccurredEventArgs.ErrorData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnifiedPosErrorData%20BarcodeScannerErrorOccurredEventArgs.ErrorData");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeScannerErrorOccurredEventArgs.IsRetriable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeScannerErrorOccurredEventArgs.IsRetriable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeScannerErrorOccurredEventArgs.IsRetriable");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeScannerReport BarcodeScannerErrorOccurredEventArgs.PartialInputData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BarcodeScannerReport BarcodeScannerErrorOccurredEventArgs.PartialInputData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BarcodeScannerReport%20BarcodeScannerErrorOccurredEventArgs.PartialInputData");
 			}
 		}
 		#endif

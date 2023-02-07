@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> CustomSensorReading.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> CustomSensorReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20CustomSensorReading.Properties");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CustomSensorReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset CustomSensorReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20CustomSensorReading.Timestamp");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? CustomSensorReading.PerformanceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? CustomSensorReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20CustomSensorReading.PerformanceCount");
 			}
 		}
 		#endif

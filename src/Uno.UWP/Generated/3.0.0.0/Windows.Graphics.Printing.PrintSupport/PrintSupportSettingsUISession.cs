@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintSupportSettingsUISession.DocumentTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintSupportSettingsUISession.DocumentTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintSupportSettingsUISession.DocumentTitle");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SettingsLaunchKind PrintSupportSettingsUISession.LaunchKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SettingsLaunchKind PrintSupportSettingsUISession.LaunchKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SettingsLaunchKind%20PrintSupportSettingsUISession.LaunchKind");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintSupportSessionInfo PrintSupportSettingsUISession.SessionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintSupportSessionInfo PrintSupportSettingsUISession.SessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintSupportSessionInfo%20PrintSupportSettingsUISession.SessionInfo");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WorkflowPrintTicket PrintSupportSettingsUISession.SessionPrintTicket is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WorkflowPrintTicket PrintSupportSettingsUISession.SessionPrintTicket is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WorkflowPrintTicket%20PrintSupportSettingsUISession.SessionPrintTicket");
 			}
 		}
 		#endif

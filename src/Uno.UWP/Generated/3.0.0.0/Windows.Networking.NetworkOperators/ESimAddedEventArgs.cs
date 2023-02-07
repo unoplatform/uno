@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESim ESimAddedEventArgs.ESim is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESim ESimAddedEventArgs.ESim is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESim%20ESimAddedEventArgs.ESim");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpServerCustomValidationRequestedEventArgs.RequestMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpServerCustomValidationRequestedEventArgs.RequestMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestMessage%20HttpServerCustomValidationRequestedEventArgs.RequestMessage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate HttpServerCustomValidationRequestedEventArgs.ServerCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate HttpServerCustomValidationRequestedEventArgs.ServerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20HttpServerCustomValidationRequestedEventArgs.ServerCertificate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketSslErrorSeverity%20HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CChainValidationResult%3E%20HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrors");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> HttpServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> HttpServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20HttpServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral HttpServerCustomValidationRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral HttpServerCustomValidationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20HttpServerCustomValidationRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

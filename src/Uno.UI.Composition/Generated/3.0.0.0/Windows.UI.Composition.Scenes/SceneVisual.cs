@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneNode SceneVisual.Root is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneNode SceneVisual.Root is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneNode%20SceneVisual.Root");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Scenes.SceneVisual Create( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneVisual SceneVisual.Create(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SceneVisual SceneVisual.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneVisual%20SceneVisual.Create%28Compositor%20compositor%29");
 		}
 		#endif
 	}

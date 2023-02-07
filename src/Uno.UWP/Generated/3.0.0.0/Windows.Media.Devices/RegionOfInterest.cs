@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect RegionOfInterest.Bounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect RegionOfInterest.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20RegionOfInterest.Bounds");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoWhiteBalanceEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoWhiteBalanceEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RegionOfInterest.AutoWhiteBalanceEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoFocusEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoFocusEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RegionOfInterest.AutoFocusEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoExposureEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoExposureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RegionOfInterest.AutoExposureEnabled");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint RegionOfInterest.Weight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint RegionOfInterest.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20RegionOfInterest.Weight");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RegionOfInterestType RegionOfInterest.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RegionOfInterestType RegionOfInterest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RegionOfInterestType%20RegionOfInterest.Type");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.BoundsNormalized is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RegionOfInterest.BoundsNormalized is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RegionOfInterest.BoundsNormalized");
 			}
 			set
 			{

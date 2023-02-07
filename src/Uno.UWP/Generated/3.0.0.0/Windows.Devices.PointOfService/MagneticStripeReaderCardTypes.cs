@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.Aamva is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.Aamva is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderCardTypes.Aamva");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.Bank is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.Bank is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderCardTypes.Bank");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.ExtendedBase is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.ExtendedBase is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderCardTypes.ExtendedBase");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.Unknown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCardTypes.Unknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MagneticStripeReaderCardTypes.Unknown");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkPoint.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point InkPoint.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkPoint.Position");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkPoint.Pressure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkPoint.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkPoint.Pressure");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkPoint.TiltX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkPoint.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkPoint.TiltX");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkPoint.TiltY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkPoint.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkPoint.TiltY");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong InkPoint.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong InkPoint.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20InkPoint.Timestamp");
 			}
 		}
 		#endif

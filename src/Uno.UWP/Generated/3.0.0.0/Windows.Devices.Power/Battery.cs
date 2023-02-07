@@ -13,7 +13,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Battery.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Battery Battery.AggregateBattery is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Battery Battery.AggregateBattery is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Battery%20Battery.AggregateBattery");
 			}
 		}
 		#endif
@@ -32,7 +32,7 @@ namespace Windows.Devices.Power
 		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Power.BatteryReport GetReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BatteryReport%20Battery.GetReport%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add
@@ -42,14 +42,14 @@ namespace Windows.Devices.Power
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Battery> Battery.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Battery> Battery.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CBattery%3E%20Battery.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Battery.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Battery.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Battery.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

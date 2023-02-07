@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionDepthFrameSourceProperties.MaxDepth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionDepthFrameSourceProperties.MaxDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionDepthFrameSourceProperties.MaxDepth");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionDepthFrameSourceProperties.MinDepth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionDepthFrameSourceProperties.MinDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionDepthFrameSourceProperties.MinDepth");
 			}
 		}
 		#endif

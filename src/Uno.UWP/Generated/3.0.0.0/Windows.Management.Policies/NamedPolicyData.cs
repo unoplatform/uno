@@ -13,7 +13,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NamedPolicyData.Area is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NamedPolicyData.Area is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NamedPolicyData.Area");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NamedPolicyData.IsManaged is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool NamedPolicyData.IsManaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20NamedPolicyData.IsManaged");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NamedPolicyData.IsUserPolicy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool NamedPolicyData.IsUserPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20NamedPolicyData.IsUserPolicy");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NamedPolicyKind NamedPolicyData.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NamedPolicyKind NamedPolicyData.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NamedPolicyKind%20NamedPolicyData.Kind");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NamedPolicyData.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NamedPolicyData.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NamedPolicyData.Name");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User NamedPolicyData.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User NamedPolicyData.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20NamedPolicyData.User");
 			}
 		}
 		#endif
@@ -77,35 +77,35 @@ namespace Windows.Management.Policies
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool GetBoolean()
 		{
-			throw new global::System.NotImplementedException("The member bool NamedPolicyData.GetBoolean() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool NamedPolicyData.GetBoolean() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20NamedPolicyData.GetBoolean%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IBuffer GetBinary()
 		{
-			throw new global::System.NotImplementedException("The member IBuffer NamedPolicyData.GetBinary() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IBuffer NamedPolicyData.GetBinary() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20NamedPolicyData.GetBinary%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int GetInt32()
 		{
-			throw new global::System.NotImplementedException("The member int NamedPolicyData.GetInt32() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int NamedPolicyData.GetInt32() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20NamedPolicyData.GetInt32%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long GetInt64()
 		{
-			throw new global::System.NotImplementedException("The member long NamedPolicyData.GetInt64() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long NamedPolicyData.GetInt64() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20NamedPolicyData.GetInt64%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetString()
 		{
-			throw new global::System.NotImplementedException("The member string NamedPolicyData.GetString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string NamedPolicyData.GetString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NamedPolicyData.GetString%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Changed.add

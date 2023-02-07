@@ -11,7 +11,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.Diagnostics.SystemMemoryUsageReport GetReport()
 		{
-			throw new global::System.NotImplementedException("The member SystemMemoryUsageReport SystemMemoryUsage.GetReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SystemMemoryUsageReport SystemMemoryUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SystemMemoryUsageReport%20SystemMemoryUsage.GetReport%28%29");
 		}
 		#endif
 	}

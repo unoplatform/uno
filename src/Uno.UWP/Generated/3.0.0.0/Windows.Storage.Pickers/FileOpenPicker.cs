@@ -18,7 +18,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet FileOpenPicker.ContinuationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet FileOpenPicker.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20FileOpenPicker.ContinuationData");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FileOpenPicker.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User FileOpenPicker.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20FileOpenPicker.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync( string pickerOperationId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.PickSingleFileAsync%28string%20pickerOperationId%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.get
@@ -69,14 +69,14 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.PickSingleFileAsync%28%29");
 		}
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> PickMultipleFilesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFile>> FileOpenPicker.PickMultipleFilesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFile>> FileOpenPicker.PickMultipleFilesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CStorageFile%3E%3E%20FileOpenPicker.PickMultipleFilesAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.User.get
@@ -84,14 +84,14 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileOpenPicker%20FileOpenPicker.CreateForUser%28User%20user%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ResumePickSingleFileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.ResumePickSingleFileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.ResumePickSingleFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.ResumePickSingleFileAsync%28%29");
 		}
 		#endif
 	}

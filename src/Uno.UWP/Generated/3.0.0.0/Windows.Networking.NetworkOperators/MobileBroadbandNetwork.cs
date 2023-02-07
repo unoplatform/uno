@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.AccessPointName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandNetwork.AccessPointName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.ActivationNetworkError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.ActivationNetworkError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MobileBroadbandNetwork.ActivationNetworkError");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkAdapter MobileBroadbandNetwork.NetworkAdapter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NetworkAdapter MobileBroadbandNetwork.NetworkAdapter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NetworkAdapter%20MobileBroadbandNetwork.NetworkAdapter");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkRegistrationState MobileBroadbandNetwork.NetworkRegistrationState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NetworkRegistrationState MobileBroadbandNetwork.NetworkRegistrationState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NetworkRegistrationState%20MobileBroadbandNetwork.NetworkRegistrationState");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.PacketAttachNetworkError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.PacketAttachNetworkError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MobileBroadbandNetwork.PacketAttachNetworkError");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataClasses MobileBroadbandNetwork.RegisteredDataClass is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DataClasses MobileBroadbandNetwork.RegisteredDataClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataClasses%20MobileBroadbandNetwork.RegisteredDataClass");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.RegisteredProviderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.RegisteredProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandNetwork.RegisteredProviderId");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.RegisteredProviderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.RegisteredProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandNetwork.RegisteredProviderName");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.RegistrationNetworkError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.RegistrationNetworkError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MobileBroadbandNetwork.RegistrationNetworkError");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandUiccApp> MobileBroadbandNetwork.RegistrationUiccApps is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandUiccApp> MobileBroadbandNetwork.RegistrationUiccApps is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandUiccApp%3E%20MobileBroadbandNetwork.RegistrationUiccApps");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> GetVoiceCallSupportAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandNetwork.GetVoiceCallSupportAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandNetwork.GetVoiceCallSupportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20MobileBroadbandNetwork.GetVoiceCallSupportAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationUiccApps.get
@@ -135,7 +135,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo> GetCellsInfoAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandCellsInfo> MobileBroadbandNetwork.GetCellsInfoAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandCellsInfo> MobileBroadbandNetwork.GetCellsInfoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMobileBroadbandCellsInfo%3E%20MobileBroadbandNetwork.GetCellsInfoAsync%28%29");
 		}
 		#endif
 	}

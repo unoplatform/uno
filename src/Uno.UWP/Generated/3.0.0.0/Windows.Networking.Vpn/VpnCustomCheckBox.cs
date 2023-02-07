@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.InitialCheckState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.InitialCheckState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomCheckBox.InitialCheckState");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Checked is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Checked is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomCheckBox.Checked");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomCheckBox.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomCheckBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomCheckBox.Label");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Compulsory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomCheckBox.Compulsory");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Bordered is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomCheckBox.Bordered");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri TileMixedRealityModel.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri TileMixedRealityModel.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20TileMixedRealityModel.Uri");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialBoundingBox? TileMixedRealityModel.BoundingBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialBoundingBox? TileMixedRealityModel.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialBoundingBox%3F%20TileMixedRealityModel.BoundingBox");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileMixedRealityModelActivationBehavior%20TileMixedRealityModel.ActivationBehavior");
 			}
 			set
 			{

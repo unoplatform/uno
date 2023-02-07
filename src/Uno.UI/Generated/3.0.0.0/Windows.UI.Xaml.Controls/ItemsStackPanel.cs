@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ItemsUpdatingScrollMode%20ItemsStackPanel.ItemsUpdatingScrollMode");
 			}
 			set
 			{
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.FirstCacheIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsStackPanel.FirstCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsStackPanel.FirstCacheIndex");
 			}
 		}
 		#endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.FirstVisibleIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsStackPanel.FirstVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsStackPanel.FirstVisibleIndex");
 			}
 		}
 		#endif
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.LastCacheIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsStackPanel.LastCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsStackPanel.LastCacheIndex");
 			}
 		}
 		#endif
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.LastVisibleIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ItemsStackPanel.LastVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ItemsStackPanel.LastVisibleIndex");
 			}
 		}
 		#endif
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsStackPanel.ScrollingDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsStackPanel.ScrollingDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PanelScrollingDirection%20ItemsStackPanel.ScrollingDirection");
 			}
 		}
 		#endif

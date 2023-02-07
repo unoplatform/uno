@@ -51,7 +51,7 @@ namespace Uno.Threading
 		/// <summary>
 		/// Current state of the object
 		/// </summary>
-		public TerminationType Termination => (TerminationType) _terminationType;
+		public TerminationType Termination => (TerminationType)_terminationType;
 
 		/// <summary>
 		/// If any termination has been set

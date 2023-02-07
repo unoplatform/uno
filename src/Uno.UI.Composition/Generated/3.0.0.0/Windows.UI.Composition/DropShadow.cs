@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DropShadow.Opacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float DropShadow.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20DropShadow.Opacity");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 DropShadow.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 DropShadow.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20DropShadow.Offset");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush DropShadow.Mask is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBrush DropShadow.Mask is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20DropShadow.Mask");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DropShadow.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color DropShadow.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20DropShadow.Color");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DropShadow.BlurRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float DropShadow.BlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20DropShadow.BlurRadius");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionDropShadowSourcePolicy DropShadow.SourcePolicy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionDropShadowSourcePolicy DropShadow.SourcePolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionDropShadowSourcePolicy%20DropShadow.SourcePolicy");
 			}
 			set
 			{

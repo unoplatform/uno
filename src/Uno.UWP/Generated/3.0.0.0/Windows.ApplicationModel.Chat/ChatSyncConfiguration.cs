@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatRestoreHistorySpan%20ChatSyncConfiguration.RestoreHistorySpan");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatSyncConfiguration.IsSyncEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ChatSyncConfiguration.IsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ChatSyncConfiguration.IsSyncEnabled");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbWriteOptions UsbInterruptOutPipe.WriteOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbWriteOptions UsbInterruptOutPipe.WriteOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbWriteOptions%20UsbInterruptOutPipe.WriteOptions");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbInterruptOutEndpointDescriptor UsbInterruptOutPipe.EndpointDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbInterruptOutEndpointDescriptor UsbInterruptOutPipe.EndpointDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbInterruptOutEndpointDescriptor%20UsbInterruptOutPipe.EndpointDescriptor");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream UsbInterruptOutPipe.OutputStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IOutputStream UsbInterruptOutPipe.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IOutputStream%20UsbInterruptOutPipe.OutputStream");
 			}
 		}
 		#endif
@@ -46,7 +46,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ClearStallAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterruptOutPipe.ClearStallAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterruptOutPipe.ClearStallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20UsbInterruptOutPipe.ClearStallAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.WriteOptions.set

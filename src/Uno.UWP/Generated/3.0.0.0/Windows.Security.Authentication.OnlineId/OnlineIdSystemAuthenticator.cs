@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OnlineIdSystemAuthenticatorForUser OnlineIdSystemAuthenticator.Default is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member OnlineIdSystemAuthenticatorForUser OnlineIdSystemAuthenticator.Default is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OnlineIdSystemAuthenticatorForUser%20OnlineIdSystemAuthenticator.Default");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.Security.Authentication.OnlineId
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser GetForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member OnlineIdSystemAuthenticatorForUser OnlineIdSystemAuthenticator.GetForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member OnlineIdSystemAuthenticatorForUser OnlineIdSystemAuthenticator.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OnlineIdSystemAuthenticatorForUser%20OnlineIdSystemAuthenticator.GetForUser%28User%20user%29");
 		}
 		#endif
 	}

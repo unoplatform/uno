@@ -7,118 +7,14 @@ namespace Windows.UI.Composition
 	#endif
 	public  partial class RectangleClip : global::Windows.UI.Composition.CompositionClip
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 TopRightRadius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 RectangleClip.TopRightRadius is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "Vector2 RectangleClip.TopRightRadius");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 TopLeftRadius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 RectangleClip.TopLeftRadius is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "Vector2 RectangleClip.TopLeftRadius");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Top
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float RectangleClip.Top is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "float RectangleClip.Top");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Right
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float RectangleClip.Right is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "float RectangleClip.Right");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Left
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float RectangleClip.Left is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "float RectangleClip.Left");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 BottomRightRadius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 RectangleClip.BottomRightRadius is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "Vector2 RectangleClip.BottomRightRadius");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 BottomLeftRadius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 RectangleClip.BottomLeftRadius is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "Vector2 RectangleClip.BottomLeftRadius");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Bottom
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float RectangleClip.Bottom is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RectangleClip", "float RectangleClip.Bottom");
-			}
-		}
-		#endif
+		// Skipping already declared property TopRightRadius
+		// Skipping already declared property TopLeftRadius
+		// Skipping already declared property Top
+		// Skipping already declared property Right
+		// Skipping already declared property Left
+		// Skipping already declared property BottomRightRadius
+		// Skipping already declared property BottomLeftRadius
+		// Skipping already declared property Bottom
 		// Forced skipping of method Windows.UI.Composition.RectangleClip.Bottom.get
 		// Forced skipping of method Windows.UI.Composition.RectangleClip.Bottom.set
 		// Forced skipping of method Windows.UI.Composition.RectangleClip.BottomLeftRadius.get

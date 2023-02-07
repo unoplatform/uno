@@ -21,7 +21,6 @@
       "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
       "Uno.Foundation\\Uno.Foundation.Wasm.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
-      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Wasm.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Wasm.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Wasm.csproj",

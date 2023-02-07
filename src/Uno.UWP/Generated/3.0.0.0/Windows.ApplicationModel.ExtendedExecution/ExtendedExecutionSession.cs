@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionReason ExtendedExecutionSession.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExtendedExecutionReason ExtendedExecutionSession.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExtendedExecutionReason%20ExtendedExecutionSession.Reason");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ExtendedExecutionSession.PercentProgress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ExtendedExecutionSession.PercentProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ExtendedExecutionSession.PercentProgress");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ExtendedExecutionSession.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ExtendedExecutionSession.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ExtendedExecutionSession.Description");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionResult> RequestExtensionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionResult> ExtendedExecutionSession.RequestExtensionAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionResult> ExtendedExecutionSession.RequestExtensionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CExtendedExecutionResult%3E%20ExtendedExecutionSession.RequestExtensionAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionColorFrameReader.IsPaused is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PerceptionColorFrameReader.IsPaused is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PerceptionColorFrameReader.IsPaused");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionColorFrameSource PerceptionColorFrameReader.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PerceptionColorFrameSource PerceptionColorFrameReader.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionColorFrameSource%20PerceptionColorFrameReader.Source");
 			}
 		}
 		#endif
@@ -40,7 +40,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Perception.PerceptionColorFrame TryReadLatestFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameReader.TryReadLatestFrame() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionColorFrame%20PerceptionColorFrameReader.TryReadLatestFrame%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

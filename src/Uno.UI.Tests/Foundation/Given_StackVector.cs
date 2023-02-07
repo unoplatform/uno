@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Foundation
 
 			sut.Select(i => i.A)
 				.Should()
-				.BeEquivalentTo(new[] {1, 2});
+				.BeEquivalentTo(new[] { 1, 2 });
 
 			var ptr1 = Unsafe.AsPointer(ref item1);
 			var ptr2 = Unsafe.AsPointer(ref item2);

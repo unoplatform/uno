@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionDepthFrameArrivedEventArgs.RelativeTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PerceptionDepthFrameArrivedEventArgs.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PerceptionDepthFrameArrivedEventArgs.RelativeTime");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Perception.PerceptionDepthFrame TryOpenFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameArrivedEventArgs.TryOpenFrame() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionDepthFrame%20PerceptionDepthFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}
 		#endif
 	}

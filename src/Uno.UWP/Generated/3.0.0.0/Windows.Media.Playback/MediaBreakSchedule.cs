@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSchedule.PrerollBreak is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSchedule.PrerollBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaBreak%20MediaBreakSchedule.PrerollBreak");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSchedule.PostrollBreak is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSchedule.PostrollBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaBreak%20MediaBreakSchedule.PostrollBreak");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaBreak> MediaBreakSchedule.MidrollBreaks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaBreak> MediaBreakSchedule.MidrollBreaks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMediaBreak%3E%20MediaBreakSchedule.MidrollBreaks");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaBreakSchedule.PlaybackItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaBreakSchedule.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20MediaBreakSchedule.PlaybackItem");
 			}
 		}
 		#endif

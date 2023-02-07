@@ -98,6 +98,8 @@ namespace Windows.UI.Composition
 
 		public ContainerVisual? Parent { get; set; }
 
+		internal bool HasThemeShadow { get; set; }
+
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			// TODO: Determine whether to invalidate renderer based on the fact whether we are attached to a CompositionTarget.

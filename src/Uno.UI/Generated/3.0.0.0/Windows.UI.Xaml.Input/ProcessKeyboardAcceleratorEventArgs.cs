@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProcessKeyboardAcceleratorEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ProcessKeyboardAcceleratorEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProcessKeyboardAcceleratorEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey ProcessKeyboardAcceleratorEventArgs.Key is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VirtualKey ProcessKeyboardAcceleratorEventArgs.Key is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VirtualKey%20ProcessKeyboardAcceleratorEventArgs.Key");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers ProcessKeyboardAcceleratorEventArgs.Modifiers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VirtualKeyModifiers ProcessKeyboardAcceleratorEventArgs.Modifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VirtualKeyModifiers%20ProcessKeyboardAcceleratorEventArgs.Modifiers");
 			}
 		}
 		#endif

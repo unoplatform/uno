@@ -45,7 +45,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer
 
 			var uri = await DataTransferManager.GetSharedUriAsync(dataPackageView);
 			if (uri != null)
-			{				
+			{
 				appControl.ExtraData.Add(AppControlData.Url, uri.OriginalString);
 			}
 

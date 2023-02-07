@@ -38,7 +38,7 @@ namespace Uno.UI.Runtime.Skia
 			_displayInformation = (DisplayInformation)owner;
 			_scaleOverride = scaleOverride;
 
-			if(float.TryParse(
+			if (float.TryParse(
 				Environment.GetEnvironmentVariable(EnvironmentUnoDisplayScaleOverride),
 				NumberStyles.Any,
 				CultureInfo.InvariantCulture,

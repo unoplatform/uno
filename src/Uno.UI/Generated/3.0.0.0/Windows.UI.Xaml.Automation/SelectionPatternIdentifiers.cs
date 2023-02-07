@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty SelectionPatternIdentifiers.CanSelectMultipleProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty SelectionPatternIdentifiers.CanSelectMultipleProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20SelectionPatternIdentifiers.CanSelectMultipleProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty SelectionPatternIdentifiers.IsSelectionRequiredProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty SelectionPatternIdentifiers.IsSelectionRequiredProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20SelectionPatternIdentifiers.IsSelectionRequiredProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty SelectionPatternIdentifiers.SelectionProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty SelectionPatternIdentifiers.SelectionProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20SelectionPatternIdentifiers.SelectionProperty");
 			}
 		}
 		#endif

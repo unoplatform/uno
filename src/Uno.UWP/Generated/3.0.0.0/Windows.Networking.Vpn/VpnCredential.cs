@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCredential.AdditionalPin is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCredential.AdditionalPin is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCredential.AdditionalPin");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate VpnCredential.CertificateCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate VpnCredential.CertificateCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20VpnCredential.CertificateCredential");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential VpnCredential.OldPasswordCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential VpnCredential.OldPasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20VpnCredential.OldPasswordCredential");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential VpnCredential.PasskeyCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential VpnCredential.PasskeyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20VpnCredential.PasskeyCredential");
 			}
 		}
 		#endif

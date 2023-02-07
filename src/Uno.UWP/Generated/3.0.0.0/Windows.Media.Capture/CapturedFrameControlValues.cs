@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? CapturedFrameControlValues.Exposure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? CapturedFrameControlValues.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20CapturedFrameControlValues.Exposure");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.ExposureCompensation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.ExposureCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20CapturedFrameControlValues.ExposureCompensation");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.FlashPowerPercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.FlashPowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20CapturedFrameControlValues.FlashPowerPercent");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? CapturedFrameControlValues.Flashed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool? CapturedFrameControlValues.Flashed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%3F%20CapturedFrameControlValues.Flashed");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.Focus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.Focus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20CapturedFrameControlValues.Focus");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.IsoSpeed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.IsoSpeed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20CapturedFrameControlValues.IsoSpeed");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CaptureSceneMode? CapturedFrameControlValues.SceneMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CaptureSceneMode? CapturedFrameControlValues.SceneMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CaptureSceneMode%3F%20CapturedFrameControlValues.SceneMode");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.WhiteBalance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.WhiteBalance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20CapturedFrameControlValues.WhiteBalance");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.ZoomFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20CapturedFrameControlValues.ZoomFactor");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureFocusState? CapturedFrameControlValues.FocusState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureFocusState? CapturedFrameControlValues.FocusState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureFocusState%3F%20CapturedFrameControlValues.FocusState");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? CapturedFrameControlValues.IsoAnalogGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? CapturedFrameControlValues.IsoAnalogGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20CapturedFrameControlValues.IsoAnalogGain");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? CapturedFrameControlValues.IsoDigitalGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? CapturedFrameControlValues.IsoDigitalGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20CapturedFrameControlValues.IsoDigitalGain");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRatio CapturedFrameControlValues.SensorFrameRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaRatio CapturedFrameControlValues.SensorFrameRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaRatio%20CapturedFrameControlValues.SensorFrameRate");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WhiteBalanceGain? CapturedFrameControlValues.WhiteBalanceGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WhiteBalanceGain? CapturedFrameControlValues.WhiteBalanceGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WhiteBalanceGain%3F%20CapturedFrameControlValues.WhiteBalanceGain");
 			}
 		}
 		#endif

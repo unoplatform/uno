@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LogicalDirection TextPointer.LogicalDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LogicalDirection TextPointer.LogicalDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LogicalDirection%20TextPointer.LogicalDirection");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextPointer.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextPointer.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextPointer.Offset");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DependencyObject TextPointer.Parent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DependencyObject TextPointer.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DependencyObject%20TextPointer.Parent");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameworkElement TextPointer.VisualParent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FrameworkElement TextPointer.VisualParent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FrameworkElement%20TextPointer.VisualParent");
 			}
 		}
 		#endif
@@ -55,14 +55,14 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect GetCharacterRect( global::Windows.UI.Xaml.Documents.LogicalDirection direction)
 		{
-			throw new global::System.NotImplementedException("The member Rect TextPointer.GetCharacterRect(LogicalDirection direction) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Rect TextPointer.GetCharacterRect(LogicalDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20TextPointer.GetCharacterRect%28LogicalDirection%20direction%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Documents.TextPointer GetPositionAtOffset( int offset,  global::Windows.UI.Xaml.Documents.LogicalDirection direction)
 		{
-			throw new global::System.NotImplementedException("The member TextPointer TextPointer.GetPositionAtOffset(int offset, LogicalDirection direction) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TextPointer TextPointer.GetPositionAtOffset(int offset, LogicalDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextPointer.GetPositionAtOffset%28int%20offset%2C%20LogicalDirection%20direction%29");
 		}
 		#endif
 	}

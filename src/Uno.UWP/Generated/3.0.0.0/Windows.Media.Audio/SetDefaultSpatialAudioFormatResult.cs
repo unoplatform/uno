@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SetDefaultSpatialAudioFormatStatus SetDefaultSpatialAudioFormatResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SetDefaultSpatialAudioFormatStatus SetDefaultSpatialAudioFormatResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SetDefaultSpatialAudioFormatStatus%20SetDefaultSpatialAudioFormatResult.Status");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTimelineController.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaTimelineController.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaTimelineController.Position");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaTimelineController.ClockRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaTimelineController.ClockRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaTimelineController.ClockRate");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTimelineControllerState MediaTimelineController.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaTimelineControllerState MediaTimelineController.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaTimelineControllerState%20MediaTimelineController.State");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaTimelineController.IsLoopingEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaTimelineController.IsLoopingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaTimelineController.IsLoopingEnabled");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaTimelineController.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? MediaTimelineController.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20MediaTimelineController.Duration");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkStrokeContainer InkPresenter.StrokeContainer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkStrokeContainer InkPresenter.StrokeContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkStrokeContainer%20InkPresenter.StrokeContainer");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenter.IsInputEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenter.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenter.IsInputEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreInputDeviceTypes InkPresenter.InputDeviceTypes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreInputDeviceTypes InkPresenter.InputDeviceTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreInputDeviceTypes%20InkPresenter.InputDeviceTypes");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkInputProcessingConfiguration InkPresenter.InputProcessingConfiguration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkInputProcessingConfiguration InkPresenter.InputProcessingConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkInputProcessingConfiguration%20InkPresenter.InputProcessingConfiguration");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkStrokeInput InkPresenter.StrokeInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkStrokeInput InkPresenter.StrokeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkStrokeInput%20InkPresenter.StrokeInput");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkUnprocessedInput InkPresenter.UnprocessedInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkUnprocessedInput InkPresenter.UnprocessedInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkUnprocessedInput%20InkPresenter.UnprocessedInput");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkHighContrastAdjustment InkPresenter.HighContrastAdjustment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkHighContrastAdjustment InkPresenter.HighContrastAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkHighContrastAdjustment%20InkPresenter.HighContrastAdjustment");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkInputConfiguration InkPresenter.InputConfiguration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkInputConfiguration InkPresenter.InputConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkInputConfiguration%20InkPresenter.InputConfiguration");
 			}
 		}
 		#endif
@@ -116,7 +116,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.Inking.InkDrawingAttributes CopyDefaultDrawingAttributes()
 		{
-			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkPresenter.CopyDefaultDrawingAttributes() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkPresenter.CopyDefaultDrawingAttributes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkDrawingAttributes%20InkPresenter.CopyDefaultDrawingAttributes%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -130,7 +130,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.Inking.InkSynchronizer ActivateCustomDrying()
 		{
-			throw new global::System.NotImplementedException("The member InkSynchronizer InkPresenter.ActivateCustomDrying() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InkSynchronizer InkPresenter.ActivateCustomDrying() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkSynchronizer%20InkPresenter.ActivateCustomDrying%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

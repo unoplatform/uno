@@ -77,7 +77,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			};
 
 			var flyoutOwner = new Button()
-			{				
+			{
 				Flyout = flyout
 			};
 

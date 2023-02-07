@@ -13,7 +13,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.High is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.High is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20Mpeg2ProfileIds.High");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.Main is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.Main is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20Mpeg2ProfileIds.Main");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.SignalNoiseRatioScalable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.SignalNoiseRatioScalable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20Mpeg2ProfileIds.SignalNoiseRatioScalable");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.Simple is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.Simple is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20Mpeg2ProfileIds.Simple");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.SpatiallyScalable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int Mpeg2ProfileIds.SpatiallyScalable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20Mpeg2ProfileIds.SpatiallyScalable");
 			}
 		}
 		#endif
