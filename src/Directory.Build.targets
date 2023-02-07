@@ -148,14 +148,6 @@
 		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
   </Target>
 
-  <PropertyGroup>
-	<!--
-	    Disable shared compilation for the override to take place
-	    https://github.com/dotnet/roslyn/blob/315c2e149ba7889b0937d872274c33fcbfe9af5f/src/NuGet/Microsoft.Net.Compilers/build/Microsoft.Net.Compilers.props#L36
-	-->
-    <UseSharedCompilation>false</UseSharedCompilation>
-  </PropertyGroup>
-
   <Target Name="WorkaroundMissingWinAppSDKDLL"
 				  BeforeTargets="BinPlaceBootstrapDll">
 
