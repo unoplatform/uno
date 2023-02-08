@@ -8,7 +8,7 @@
     mc:Ignorable="d ios android xamarin"
 	xmlns:ios="http://uno.ui/ios#using:UIKit"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:android="http://uno.ui/android"
+    xmlns:android="http://uno.ui/android#using:Android.Widget"
 	xmlns:xamarin="http://uno.ui/xamarin"
     d:DesignHeight="300"
     d:DesignWidth="400">
