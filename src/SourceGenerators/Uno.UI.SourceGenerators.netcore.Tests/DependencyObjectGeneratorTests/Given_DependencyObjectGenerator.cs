@@ -193,7 +193,7 @@ public class Given_DependencyObjectGenerator
 	 				{
 	 					_selfWeakReference = global::Uno.UI.DataBinding.WeakReferencePool.RentSelfWeakReference(this);
 	 				}
-
+	 		
 	 				return _selfWeakReference;
 	 			}
 	 		}
