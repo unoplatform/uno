@@ -151,6 +151,13 @@ namespace Uno.UI.Xaml.Input
 			_manifolds.Horizontal = manifolds.Horizontal;
 		}
 
+#if false
+		private void ClearCache()
+		{
+			_exploredList.Clear();
+		}
+#endif
+
 		internal DependencyObject? GetNextFocusableElement(
 			FocusNavigationDirection direction,
 			DependencyObject? element,
@@ -486,6 +493,16 @@ namespace Uno.UI.Xaml.Input
 		{
 			return (direction == FocusNavigationDirection.Up || direction == FocusNavigationDirection.Down);
 		}
+
+#if false
+		private void SetPrimaryAxisDistanceWeight(int primaryAxisDistanceWeight) => _heuristic.SetPrimaryAxisDistanceWeight(primaryAxisDistanceWeight);
+
+		private void SetSecondaryAxisDistanceWeight(int secondaryAxisDistanceWeight) => _heuristic.SetSecondaryAxisDistanceWeight(secondaryAxisDistanceWeight);
+
+		private void SetPercentInManifoldShadowWeight(int percentInManifoldShadowWeight) => _heuristic.SetPercentInManifoldShadowWeight(percentInManifoldShadowWeight);
+
+		private void SetPercentInShadowWeight(int percentInShadowWeight) => _heuristic.SetPercentInShadowWeight(percentInShadowWeight);
+#endif
 
 		private int ExploredListHash(
 			FocusNavigationDirection direction,

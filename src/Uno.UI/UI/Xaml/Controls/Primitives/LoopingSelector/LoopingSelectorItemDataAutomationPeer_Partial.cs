@@ -120,6 +120,20 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
+		void
+			RealizeImpl()
+		{
+			LoopingSelectorAutomationPeer spParent = default;
+			//_wrParent.As(spParent);
+			//if (spParent && _tpItem)
+			if (_wrParent?.TryGetTarget(out spParent) ?? false)
+			{
+				spParent.RealizeItemAtIndex(_itemIndex);
+			}
+		}
+#endif
+
 		#region Method forwarders
 
 		protected override object GetPatternCore(PatternInterface patternInterface)

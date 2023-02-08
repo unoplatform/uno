@@ -1309,5 +1309,35 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				if (m_tpElementVerticalPanningThumbVisibility.HasValue) m_tpElementVerticalPanningThumb.Visibility = m_tpElementVerticalPanningThumbVisibility.Value;
 			}
 		}
+
+#if false
+		// during a SemanticZoomOperation we want to be able to block the scrollbar
+		// without stomping over the user value
+		void BlockIndicatorFromShowing()
+		{
+			if (!m_blockIndicators)
+			{
+				m_blockIndicators = true;
+				ChangeVisualState(false);
+			}
+		}
+
+		void ResetBlockIndicatorFromShowing()
+		{
+			m_blockIndicators = false;
+
+			// Don't change state; stay in NoIndicator. The next ScrollViewer.ShowIndicators()
+			// call will drive our next GoToState() call, with transitions.
+		}
+
+		void AdjustDragValue(double delta)
+		{
+
+			// If somebody is calling this when not dragging, are they confused?
+			var dragging = IsDragging;
+
+			m_dragValue += delta;
+		}
+#endif
 	}
 }

@@ -300,6 +300,15 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return spReturnValue;
 		}
 
+#if false
+		void GetClassNameCoreImpl(out string returnValue)
+		{
+			//if (returnValue == null) throw new ArgumentNullException();
+			//wrl_wrappers.Hstring("LoopingSelector").CopyTo(returnValue);
+			returnValue = "LoopingSelector";
+		}
+#endif
+
 		#endregion
 
 		#region ISelectionProvider
@@ -526,6 +535,16 @@ namespace Windows.UI.Xaml.Automation.Peers
 				{
 					pIndex = index;
 				}
+			}
+		}
+
+		void TryScrollItemIntoView(DependencyObject pItem)
+		{
+			LoopingSelector pOwnerNoRef = null;
+			GetOwnerAsInternalPtrNoRef(out pOwnerNoRef);
+			if (pOwnerNoRef is { })
+			{
+				pOwnerNoRef.AutomationTryScrollItemIntoView(pItem);
 			}
 		}
 #endif
