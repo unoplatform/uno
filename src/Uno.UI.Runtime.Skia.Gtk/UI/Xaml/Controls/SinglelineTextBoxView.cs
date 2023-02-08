@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using Gtk;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
@@ -23,7 +24,11 @@ internal class SinglelineTextBoxView : GtkTextBoxView
 
 	public override string Text
 	{
-		get => _entry.Text;
+		get
+		{
+			return _entry.Text;
+		}
+
 		set => _entry.Text = value;
 	}
 
@@ -58,5 +63,10 @@ internal class SinglelineTextBoxView : GtkTextBoxView
 	{
 		_entry.Changed += onChanged;
 		return Disposable.Create(() => _entry.Changed -= onChanged);
+	}
+
+	public override void SetPasswordRevealState(PasswordRevealState passwordRevealState)
+	{
+		_entry.Visibility = passwordRevealState == PasswordRevealState.Revealed;
 	}
 }

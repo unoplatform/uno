@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Globalization;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
@@ -9,15 +10,14 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
-
 internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
-	private readonly Func<TextBox, ITextBoxView> _textBoxViewFactory;
+	private readonly Func<TextBox, IOverlayTextBoxView> _textBoxViewFactory;
 	private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 
 	private ContentControl? _contentElement;
-	private ITextBoxView? _textBoxView;
+	private IOverlayTextBoxView? _textBoxView;
 	private bool _processingTextChanged;
 	private Point _lastPosition = new(-1, -1);
 	private Size _lastSize = new(-1, -1);
@@ -25,7 +25,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	private int? _selectionStartCache;
 	private int? _selectionLengthCache;
 
-	public OverlayTextBoxViewExtension(TextBoxView owner, Func<TextBox, ITextBoxView> textBoxViewFactory)
+	public OverlayTextBoxViewExtension(TextBoxView owner, Func<TextBox, IOverlayTextBoxView> textBoxViewFactory)
 	{
 		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		_textBoxViewFactory = textBoxViewFactory ?? throw new ArgumentNullException(nameof(textBoxViewFactory));
@@ -132,8 +132,8 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			return;
 		}
 
-		var width = (int)(_contentElement.ActualWidth - _contentElement.Padding.Horizontal());
-		var height = (int)(_contentElement.ActualHeight - _contentElement.Padding.Vertical());
+		var width = Math.Max(0, (int)(_contentElement.ActualWidth - _contentElement.Padding.Horizontal()));
+		var height = Math.Max(0, (int)(_contentElement.ActualHeight - _contentElement.Padding.Vertical()));
 
 		if (_lastSize.Width != width || _lastSize.Height != height)
 		{
@@ -163,14 +163,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		}
 	}
 
-	public void SetIsPassword(bool isPassword)
-	{
-		//TODO:MZ:
-		//if (_textBoxView is Entry entry)
-		//{
-		//	entry.Visibility = !isPassword;
-		//}
-	}
+	public void SetPasswordRevealState(PasswordRevealState revealState) => _textBoxView?.SetPasswordRevealState(revealState);
 
 	public void Select(int start, int length)
 	{

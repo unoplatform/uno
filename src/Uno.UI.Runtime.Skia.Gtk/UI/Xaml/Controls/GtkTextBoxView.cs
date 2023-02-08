@@ -18,7 +18,7 @@ using GtkWindow = Gtk.Window;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
-internal abstract class GtkTextBoxView : ITextBoxView
+internal abstract class GtkTextBoxView : IOverlayTextBoxView
 {
 	private const string TextBoxViewCssClass = "textboxview";
 
@@ -47,7 +47,7 @@ internal abstract class GtkTextBoxView : ITextBoxView
 
 	public bool IsDisplayed => RootWidget.Parent is not null;
 
-	public static ITextBoxView Create(TextBox textBox) =>
+	public static IOverlayTextBoxView Create(TextBox textBox) =>
 		textBox is PasswordBox || !textBox.AcceptsReturn ?
 			new SinglelineTextBoxView(textBox is PasswordBox) :
 			new MultilineTextBoxView();
@@ -167,4 +167,6 @@ internal abstract class GtkTextBoxView : ITextBoxView
 			}
 		}
 	}
+
+	public virtual void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 }

@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
-{
-	public partial class PasswordBox
-	{
-		partial void SetPasswordScope(bool shouldHideText)
-		{
-			SetIsPassword(shouldHideText);
-		}
+namespace Windows.UI.Xaml.Controls;
 
-		partial void EndRevealPartial() => base.FocusTextView();
-	}
+public partial class PasswordBox
+{
+	partial void SetPasswordRevealState(PasswordRevealState state) => _textBoxView?.SetPasswordRevealState(state);
+
+	partial void EndRevealPartial() => base.FocusTextView();
 }

@@ -11,7 +11,7 @@ using WpfFontWeight = System.Windows.FontWeight;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
-internal abstract class WpfTextBoxView : ITextBoxView
+internal abstract class WpfTextBoxView : IOverlayTextBoxView
 {
 	public WpfTextBoxView()
 	{
@@ -28,7 +28,7 @@ internal abstract class WpfTextBoxView : ITextBoxView
 
 	public abstract (int start, int length) Selection { get; set; }
 
-	public static ITextBoxView Create(Windows.UI.Xaml.Controls.TextBox textBox) =>
+	public static IOverlayTextBoxView Create(Windows.UI.Xaml.Controls.TextBox textBox) =>
 		textBox is not Windows.UI.Xaml.Controls.PasswordBox ?
 			new TextTextBoxView() :
 			new PasswordTextBoxView();

@@ -110,10 +110,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetIsPassword(bool isPassword)
+		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
-			_isPasswordRevealed = !isPassword;
-			_textBoxExtension?.SetIsPassword(isPassword);
+			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
+			_textBoxExtension?.SetPasswordRevealState(revealState);
 		}
 
 		internal void UpdateTextFromNative(string newText)

@@ -62,14 +62,6 @@ namespace Windows.UI.Xaml.Controls
 			FocusTextView();
 		}
 
-		protected void SetIsPassword(bool isPassword)
-		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.SetIsPassword(isPassword);
-			}
-		}
-
 		partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
 			_textBoxView?.SetForeground(newValue);

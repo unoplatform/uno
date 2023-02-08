@@ -1,4 +1,5 @@
 ﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
@@ -20,7 +21,7 @@ internal interface IOverlayTextBoxViewExtension
 
 	void SetText(string text);
 
-	void SetIsPassword(bool isPassword);
+	void SetPasswordRevealState(PasswordRevealState passwordRevealState);
 
 	void Select(int start, int length);
 
