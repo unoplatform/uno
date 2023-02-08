@@ -16,23 +16,23 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    
-    - name: Setup .NET Core v6
-      uses: actions/setup-dotnet@v1
+
+    - name: Setup .NET 6 SDK
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.300'
 
     - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.9
+      uses: gittools/actions/gitversion/setup@v0.9.15
       with:
         versionSpec: '5.x'
 
     - name: GitVersion
       id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.9
+      uses: gittools/actions/gitversion/execute@v0.9.15
       with:
         useConfigFile: true
         configFilePath: gitversion.yml
