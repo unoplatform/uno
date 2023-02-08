@@ -1,30 +1,23 @@
-parameters:
-  - name: UseNet6SDK
-    default: 'false'
-
 steps:
-
-  - ${{ if eq(parameters['UseNet6SDK'], 'true') }}:
-    - script: |
-        cp global.json global-net7.json
-        cp global-net6.json global.json
-      displayName: Replace global.json with .NET 6
 
   - template: dotnet-install.yml
 
   - template: jdk-setup.yml
 
   - powershell: |
-      & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
-      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
+      & dotnet tool update --global uno.check --version 1.5.4 --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3
-    env:
-      ${{ if eq(parameters['UseNet6SDK'], 'true') }}:
-        UnoCheck_Version: '1.5.4'
-        UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
-      ${{ else }}:
-        UnoCheck_Version: '1.11.0-dev.2'
-        UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
+    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
+
+  - powershell: |
+      & dotnet tool update --global uno.check --version 1.11.0-dev.2 --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json
+    displayName: Install .NET Workloads
+    errorActionPreference: continue
+    ignoreLASTEXITCODE: true
+    retryCountOnTaskFailure: 3
+    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))

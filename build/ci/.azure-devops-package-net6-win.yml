@@ -65,9 +65,13 @@ jobs:
 
   - template: templates/gitversion.yml
 
+  - script: |
+      cp global.json global-net7.json
+      cp global-net6.json global.json
+    displayName: Replace global.json with .NET 6
+    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
+
   - template: templates/dotnet-mobile-install-windows.yml
-    parameters:
-      UseNet6SDK: $(UnoDisableNet7Mobile)
 
   - template: templates/install-windows-sdk.yml
 
