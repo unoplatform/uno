@@ -8,7 +8,7 @@
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:xamarin="http://uno.ui/xamarin"
-					xmlns:ios="http://uno.ui/ios"
+					xmlns:ios="http://uno.ui/ios#using:Uno.UI.Views.Controls;Uno.UI.Controls;UIKit"
 					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
@@ -37,7 +37,7 @@
 		    <Setter Property="Template">
 			    <Setter.Value>
 				    <ControlTemplate TargetType="Button">
-					    <BindableUIButton Text="{TemplateBinding Content}"
+					    <ios:BindableUIButton Text="{TemplateBinding Content}"
 									      IsEnabled="{TemplateBinding IsEnabled}"
 									      Foreground="{TemplateBinding Foreground}" />
 				    </ControlTemplate>
@@ -68,7 +68,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <toto Orientation="Horizontal">
-                        <BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
+                        <ios:BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
 									    Enabled="{TemplateBinding IsEnabled}"
 									    Background="{TemplateBinding Background}"
 									    Foreground="{TemplateBinding Foreground}"  />
@@ -138,7 +138,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
                     <!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
-                    <BindableUISlider MinValue="{TemplateBinding Minimum}"
+                    <ios:BindableUISlider MinValue="{TemplateBinding Minimum}"
                                       MaxValue="{TemplateBinding Maximum}"
                                       Value="{TemplateBinding Value, Mode=TwoWay}"
                                       />
@@ -174,7 +174,7 @@
                         <ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
                                   Foreground="{TemplateBinding Foreground}"
                                   Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}"/>
-                        <BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
+                        <ios:BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
                                   Progress="{TemplateBinding ActualValue}"
                                   Foreground="{TemplateBinding Foreground}"/>
                     </Grid>
@@ -243,7 +243,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid x:Name="PART_Content" Grid.Row="0" />
-                        <UITabBar Grid.Row="1" />
+                        <ios:UITabBar Grid.Row="1" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
