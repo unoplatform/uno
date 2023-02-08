@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Shapes
 				_ => throw new ArgumentOutOfRangeException(),
 			};
 
-			return new (x, y);
+			return new(x, y);
 		}
 
 		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state, out CGPath updatedBoundsPath)
