@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <PropertyGroup>
-	  <_Uno_XamlMerge_Task_Version>1.0.0</_Uno_XamlMerge_Task_Version>
+	  <_Uno_XamlMerge_Task_Version>1.23.0-dev.24</_Uno_XamlMerge_Task_Version>
   </PropertyGroup>
-  
+
   <ItemGroup>
 	  <PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" />
   </ItemGroup>
@@ -11,7 +11,7 @@
   <PropertyGroup>
 	<XamlMergeOutputFile>$(MSBuildProjectDirectory)\UI\Xaml\Style\mergedstyles.xaml</XamlMergeOutputFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
 	  <!--
 		Exclude SystemResources.xaml from the merged dictionary to avoid
@@ -24,14 +24,14 @@
 	  <XamlMergeInput Include="@(Page)"
 					Exclude="@(_NonMergedXamlResources)" />
   </ItemGroup>
-  
+
   <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
 				  Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
-  
+
   <Target Name="_GenerateMergedXaml"
 				  DependsOnTargets="GenerateMergedXaml"
 				  BeforeTargets="DispatchToInnerBuilds"
 				  Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')">
   </Target>
-  
+
 </Project>
