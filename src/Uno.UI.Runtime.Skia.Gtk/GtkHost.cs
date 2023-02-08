@@ -130,7 +130,7 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.DeleteEvent += WindowClosing;
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNative;
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNativeSingle;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_window.WindowStateEvent += OnWindowStateChanged;
@@ -156,16 +156,6 @@ namespace Uno.UI.Runtime.Skia
 				}
 				return false;
 			}
-		}
-
-		void DispatchNative(System.Action d)
-		{
-			if (Gtk.Application.EventsPending())
-			{
-				Gtk.Application.RunIteration(false);
-			}
-
-			DispatchNativeSingle(d);
 		}
 
 		private void DispatchNativeSingle(System.Action d)
