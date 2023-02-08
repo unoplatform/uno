@@ -70,8 +70,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			if (DownloadProgress is { } evt)
 			{
-				evt?.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
-
+				evt?.Invoke(this, new DownloadProgressEventArgs { Progress = progress });
 			}
 		}
 
