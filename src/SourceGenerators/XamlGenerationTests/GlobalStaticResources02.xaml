@@ -75,7 +75,7 @@
 	<x:String x:Key="testTimeSpanString">00:00:42</x:String>
 	<System:String x:Key="shortDateFormatString">{0:d}</System:String>
 
-	<x:DoubleAnimation x:Key="testDoubleAnination"
+	<DoubleAnimation x:Key="testDoubleAnination"
 					   Duration="{StaticResource testTimeSpanString}" />
 
 	<GradientStop x:Key="GradientStop-with-dash" Color="Yellow" />
