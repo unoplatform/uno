@@ -566,24 +566,19 @@ namespace Windows.UI.Xaml
 		{
 			SetBindingValue(propertyDetails, args.NewValue);
 
-			GetPropertyInheritanceConfiguration(
-				propertyDetails: propertyDetails,
-				args: args,
-				hasValueInherits: out var hasValueInherits,
-				hasValueDoesNotInherit: out var hasValueDoesNotInherits
-			);
-
-			if (!hasValueDoesNotInherits)
+			if (!propertyDetails.HasValueDoesNotInherit)
 			{
 				var newValueAsProvider = args.NewValue as IDependencyObjectStoreProvider;
 
-				if (hasValueInherits)
+				if (propertyDetails.HasValueInherits)
 				{
-					if (newValueAsProvider != null)
+					if (newValueAsProvider is not null)
 					{
 						SetChildrenBindableValue(
 							propertyDetails,
-							newValueAsProvider.Store.Parent != ActualInstance ? args.NewValue : null);
+
+							// Ensure DataContext propagation loops cannot happen
+							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : args.NewValue);
 					}
 					else
 					{
@@ -592,8 +587,8 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (newValueAsProvider is { }
-						&& !(newValueAsProvider is UIElement))
+					if (newValueAsProvider is not null
+						&& newValueAsProvider is not UIElement)
 					{
 						SetChildrenBindableValue(propertyDetails, newValueAsProvider);
 					}
@@ -603,32 +598,6 @@ namespace Windows.UI.Xaml
 
 		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
 			=> _childrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
-
-		private void GetPropertyInheritanceConfiguration(
-			DependencyPropertyDetails propertyDetails,
-			DependencyPropertyChangedEventArgs args,
-			out bool hasValueInherits,
-			out bool hasValueDoesNotInherit)
-		{
-			if (propertyDetails.Property == _templatedParentProperty
-				|| propertyDetails.Property == _dataContextProperty)
-			{
-				// TemplatedParent is a DependencyObject but does not propagate datacontext
-				hasValueInherits = false;
-				hasValueDoesNotInherit = true;
-				return;
-			}
-
-			if (propertyDetails.Metadata is FrameworkPropertyMetadata propertyMetadata)
-			{
-				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
-				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
-				return;
-			}
-
-			hasValueInherits = false;
-			hasValueDoesNotInherit = false;
-		}
 
 		/// <summary>
 		/// Gets or create an index in the <see cref="_childrenBindable"/> list, to avoid enumerating <see cref="_childrenBindableMap"/>.
