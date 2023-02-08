@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+$if$($UseWebAssembly$ == True)
 using Uno.Wasm.Bootstrap.Server;
+$endif$
 
 namespace UnoQuickStart
 {
