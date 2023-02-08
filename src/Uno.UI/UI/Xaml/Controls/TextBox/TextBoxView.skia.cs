@@ -122,6 +122,7 @@ namespace Windows.UI.Xaml.Controls
 			if (textBox != null)
 			{
 				var text = textBox.ProcessTextInput(newText);
+				DisplayBlock.Text = text;
 				if (text != newText)
 				{
 					SetTextNative(text);
