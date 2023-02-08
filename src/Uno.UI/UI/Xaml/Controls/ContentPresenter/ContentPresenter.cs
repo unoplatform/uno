@@ -625,7 +625,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				// Restore the inherited data context as it may have been overriden by TrySetDataContextFromContent
+				// Restore the inherited data context as it may have been overridden by TrySetDataContextFromContent
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
