@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: generic_win_build
-  displayName: 'Build Generic Binaries'
+  displayName: 'Build Generic Package Binaries'
   timeoutInMinutes: 90
 
   dependsOn: winui_convert_tree

@@ -9,7 +9,9 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: winui_convert_tree
+  dependsOn:
+    - winui_convert_tree
+    - reference_package_build
 
   strategy:
     matrix:
@@ -90,7 +92,7 @@ jobs:
 
 
 - job: Unit_Tests_netcore
-  displayName: 'Unit Tests - netcore'
+  displayName: 'Unit Tests UWP(netcore)'
   timeoutInMinutes: 90
 
   pool:
