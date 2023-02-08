@@ -46,6 +46,11 @@
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
 		<Content Include="Assets\**" />
+		<EmbeddedResource Include="Assets\UnoA4.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Crop.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
 	</ItemGroup>
 
 	<ItemGroup>

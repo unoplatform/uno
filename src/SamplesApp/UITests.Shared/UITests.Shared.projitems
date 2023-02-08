@@ -9183,5 +9183,14 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\avatar.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\libre-camera-panorama.svg" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Data\Pdf\PdfDocumentRenderTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Data\Pdf\PdfDocumentRenderTest.xaml.cs">
+      <DependentUpon>PdfDocumentRenderTest.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>  
   <Import Project="ItemExclusions.props" />
 </Project>
