@@ -452,7 +452,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				if (_generationRunFileInfo.RunInfo.Index == 0 || !_useXamlReaderHotReload)
+				if (_generationRunFileInfo.RunInfo.Manager.AllRuns.None() || !_useXamlReaderHotReload)
 				{
 					// On the first run, or if XamlReader hot reload is disabled, generate the full code.
 
@@ -475,7 +475,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					// if XamlReader hot reload is enabled, generate partial code
-					if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+					if (_generationRunFileInfo.RunInfo.Manager.AllRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
 					{
 						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
@@ -505,7 +505,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
-							if (_generationRunFileInfo.RunInfo.Index == 0 || !_useXamlReaderHotReload)
+							if (_generationRunFileInfo.RunInfo.Manager.AllRuns.None() || !_useXamlReaderHotReload)
 							{
 								var componentBuilder = new IndentedStringBuilder();
 
@@ -530,15 +530,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									BuildCompiledBindings(componentBuilder);
 
-									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+									if (_useXamlReaderHotReload)
+									{
+										_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+										_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+									}
 								}
 
 								writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
 							}
 							else
 							{
-								if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+								if (_generationRunFileInfo.RunInfo.Manager.AllRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
 								{
 									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
@@ -581,17 +584,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
-				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.Index}();");
+				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}();");
 			}
 
-			for (int i = _generationRunFileInfo.RunInfo.Index - 1; i >= 0; i--)
+			foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.PreviousRuns)
 			{
-				using (writer.BlockInvariant($"private void InitializeComponent_{i}()"))
+				using (writer.BlockInvariant($"private void InitializeComponent_{previousRun.ToRunIdentifierString()}()"))
 				{
 					if (!IsApplication(topLevelControl.Type))
 					{
-						// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.	CSHRTest01.Skia.Gtk C:\temp\net6 - test\CSHRTest01\CSHRTest01\CSHRTest01.Shared\CodeFile1.cs  53  Active
-						// Error   ENC0050 Deleting captured variable 'nameScope' requires restarting the application.	CSHRTest01.Skia.Gtk C:\temp\net6 - test\CSHRTest01\CSHRTest01\CSHRTest01.Shared\CodeFile1.cs  54  Active
+						// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.
+						// Error ENC0050 Deleting captured variable 'nameScope' requires restarting the application.
 
 						writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
 						writer.AppendLineIndented("var __that = this;");
@@ -599,7 +602,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			using (writer.BlockInvariant($"private void InitializeComponent_{_generationRunFileInfo.RunInfo.Index}()"))
+			using (writer.BlockInvariant($"private void InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}()"))
 			{
 				if (IsApplication(topLevelControl.Type))
 				{
