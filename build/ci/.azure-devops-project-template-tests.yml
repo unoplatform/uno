@@ -4,7 +4,7 @@ parameters:
 
 jobs:
 - job: Dotnet_Template_Tests
-  displayName: 'dotnet new Templates Tests'
+  displayName: 'Run dotnet new Templates Tests'
 
   pool: ${{ parameters.poolName }}
 
@@ -38,7 +38,7 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
 
 - job: Dotnet_Template_Tests_NetCoreMobile
-  displayName: '.NET Mobile Templates Tests'
+  displayName: 'Run .NET Mobile Templates Tests'
 
   pool: ${{ parameters.poolName }}
 
@@ -73,7 +73,7 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
 
 - job: Dotnet_Template_Tests_Linux
-  displayName: 'dotnet new Templates Tests - Linux'
+  displayName: 'Run dotnet new Templates Tests - Linux'
 
   pool:
     vmImage: ${{ parameters.vmImageLinux }}
@@ -104,7 +104,7 @@ jobs:
     displayName: Run Project Templates Tests
 
 - job: Dotnet_Template_Tests_net7_Linux
-  displayName: 'dotnet new Templates Tests - Linux (net7)'
+  displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
   pool:
     vmImage: ${{ parameters.vmImageLinux }}

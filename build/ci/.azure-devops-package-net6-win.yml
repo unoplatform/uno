@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: netcoremobile_win_build
-  displayName: 'Build .NET Mobile Binaries'
+  displayName: 'Build .NET Mobile Package Binaries'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}

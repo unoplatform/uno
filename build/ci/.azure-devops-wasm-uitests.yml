@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'Build WebAssembly UI Tests'
+  displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
   dependsOn: winui_convert_tree
@@ -65,7 +65,7 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
-  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  displayName: 'Run WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
   - SamplesApp_UITests_Build
@@ -138,7 +138,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'WebAssembly UI Tests (Automated Run)'
+  displayName: 'Run WebAssembly Automated Test'
   dependsOn:
   - Wasm_UITests_Build
   - SamplesApp_UITests_Build

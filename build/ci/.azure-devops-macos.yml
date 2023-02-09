@@ -6,7 +6,7 @@ parameters:
 jobs:
 
 - job: macOS
-  displayName: 'macOS Samples App Build'
+  displayName: 'Build macOS Samples App UI Tests'
 
   variables:
     CI_Build: true
@@ -73,7 +73,7 @@ jobs:
 
 - job: macOS_Runtime_Tests
   timeoutInMinutes: 90
-  displayName: macOS SamplesApp Runtime Tests
+  displayName: Run macOS Runtime Tests
 
   variables:
     CI_Build: true
@@ -126,7 +126,7 @@ jobs:
 
 - job: macOS_Screenshot_Tests
   timeoutInMinutes: 100
-  displayName: macOS SamplesApp Screenshot Test
+  displayName: Run macOS Snapshot Test
 
   variables:
     CI_Build: true
