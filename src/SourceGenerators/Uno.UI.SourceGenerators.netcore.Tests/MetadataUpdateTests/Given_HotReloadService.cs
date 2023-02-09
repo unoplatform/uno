@@ -62,7 +62,7 @@ public class Given_HotReloadService
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
-			//if (scenarioName != "When_Two_Projects_Single_Code_File_With_Code_Update")
+			//if (scenarioName != "When_Simple_Xaml_With_Three_Changes_And_Same_Hash")
 			//{
 			//	continue;
 			//}
