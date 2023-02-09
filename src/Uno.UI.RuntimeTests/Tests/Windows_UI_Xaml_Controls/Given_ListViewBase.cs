@@ -32,6 +32,7 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -2042,6 +2043,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_ItemTemplate_Selector_And_Clear_Then_Released()
+		{
+			var selector = new KeyedTemplateSelector<ItemColor>(o => (o as ItemColorViewModel)?.ItemType ?? ItemColor.None)
+			{
+				Templates =
+				{
+					{ItemColor.Red, RedSelectableTemplate },
+					{ItemColor.Green, GreenSelectableTemplate},
+					{ItemColor.Beige, BeigeSelectableTemplate}
+				}
+			};
+
+			var source = new ObservableCollection<ItemColorViewModel>();
+			var refSource = new ObservableCollection<WeakReference>();
+			int itemNo = 0;
+			void AddItem(ItemColor itemType)
+			{
+				itemNo++;
+				var item = new ItemColorViewModel { ItemType = itemType, ItemIndex = itemNo };
+				source.Add(item);
+				refSource.Add(new(item));
+			}
+
+			AddItem(ItemColor.Red);
+			AddItem(ItemColor.Green);
+
+			for (int i = 0; i < 10; i++)
+			{
+				AddItem(ItemColor.Beige);
+			}
+
+			AddItem(ItemColor.Green);
+
+			var SUT = new ListView
+			{
+				Width = 180,
+				Height = 320,
+				ItemsSource = source,
+				ItemTemplateSelector = selector,
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemContainerStyle = NoSpaceContainerStyle
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			source.RemoveAt(0);
+
+			await WindowHelper.WaitForIdle();
+
+			await AssertCollectedReference(refSource[0]);
+
+			source.Clear();
+
+			await WindowHelper.WaitForIdle();
+
+			foreach (var itemRef in refSource)
+			{
+				await AssertCollectedReference(itemRef);
+			}
+		}
+
+		[TestMethod]
 #if __WASM__
 		[Ignore] // https://github.com/unoplatform/uno/issues/7323
 #endif
@@ -2274,6 +2338,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 
 				Assert.AreEqual(initialReuseCount, ReuseCountGrid.GlobalReuseCount);
+			}
+		}
+
+		private record TestReleaseObject()
+		{
+			public byte[] test { get; set; } = new byte[1024 * 1024 * 2];
+		}
+
+		[TestMethod]
+		public async Task When_Item_Removed_Then_DataContext_Released()
+		{
+			using (FeatureConfigurationHelper.UseTemplatePooling())
+			{
+				var collection = new ObservableCollection<TestReleaseObject>();
+
+				var SUT = new ListView
+				{
+					Width = 200,
+					Height = 300,
+					ItemsSource = collection
+				};
+
+				var itemRef = AddItem(collection);
+
+				WindowHelper.WindowContent = SUT;
+
+				await WindowHelper.WaitForLoaded(SUT);
+
+				Assert.AreEqual(1, SUT.Items.Count);
+
+				var container = SUT.ContainerFromIndex(0) as ContentControl;
+
+				Assert.AreEqual(itemRef.Target, container.Content);
+
+				collection.Clear();
+
+				// Ensure the container has properly been cleaned
+				// up after being removed.
+				Assert.IsNull(container.Content);
+
+				Assert.AreEqual(0, SUT.Items.Count);
+
+				await WindowHelper.WaitForIdle();
+
+				await AssertCollectedReference(itemRef);
+
+				static WeakReference AddItem(ObservableCollection<TestReleaseObject> collection)
+				{
+					var item = new TestReleaseObject();
+					collection.Add(item);
+
+					return new(item);
+				}
 			}
 		}
 
@@ -2528,6 +2645,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
+
+		private async Task AssertCollectedReference(WeakReference reference)
+		{
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(3))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (!reference.IsAlive)
+				{
+					return;
+				}
+
+				await Task.Delay(100);
+			}
+
+			Assert.IsFalse(reference.IsAlive);
+		}
 
 		#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
