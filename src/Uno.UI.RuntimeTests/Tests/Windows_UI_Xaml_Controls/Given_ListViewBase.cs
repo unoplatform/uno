@@ -684,7 +684,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static ContentControl[] GetPanelChildren(ListViewBase list)
 		{
 #if __ANDROID__ || __IOS__
-			return list.GetItemsPanelChildren().OfType<ContentControl>().ToArray();
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				.Where(c => c.Content is not null)
+				.ToArray();
 #else
 			return list.ItemsPanelRoot
 				.Children
