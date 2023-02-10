@@ -765,11 +765,6 @@ namespace Windows.UI.Xaml.Controls
 			get => base.Frame;
 			set
 			{
-<<<<<<< HEAD
-				base.Frame = value;
-				UpdateContentViewFrame();
-				UpdateContentLayoutSlots(value);
-=======
 				try
 				{
 					base.Frame = value;
@@ -781,7 +776,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					Console.WriteLine("ListViewBaseInternalContainer set failed");
 				}
->>>>>>> 3dbf53131e (fix(iOS): ListView empty items when scrolling)
 			}
 		}
 
