@@ -404,13 +404,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryGenerateUnoResourcesKeyAttribute(ResourceDetailsCollection resourceDetailsCollection)
 		{
-<<<<<<< HEAD
-			var hasResources = !resourceKeys.IsEmpty;
-			
-=======
 			var hasResources = resourceDetailsCollection.HasLocalResources;
 
->>>>>>> 2f7d09c7b3 (fix(resources): Resources loading from separate assemblies)
 			_generatorContext.AddSource(
 				"LocalizationResources",
 				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
@@ -683,11 +678,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							_generatorContext.ReportDiagnostic(diagnostic);
 
-<<<<<<< HEAD
-							return Array.Empty<string>();
-=======
-						return Array.Empty<ResourceDetails>();
->>>>>>> 2f7d09c7b3 (fix(resources): Resources loading from separate assemblies)
+							return Array.Empty<ResourceDetails>();
 #else
 						throw new InvalidOperationException(message, e);
 #endif
