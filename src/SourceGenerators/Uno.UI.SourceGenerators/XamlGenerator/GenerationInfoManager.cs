@@ -42,7 +42,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal GenerationRunInfo CreateRun(GeneratorExecutionContext context)
 		{
-			bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload);
+			ReadProjectConfiguration(
+				context,
+				out var useXamlReaderHotReload,
+				out var useHotReload);
 
 			var hash = context
 				.AdditionalFiles
@@ -52,6 +55,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// This ensures that each run produces the same output for a given input.
 			if (
 				!useXamlReaderHotReload
+				&& useHotReload
 				&& _runs.FirstOrDefault(r => r.AdditionalFilesHash == hash) is { } run)
 			{
 				return run;
@@ -65,6 +69,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_knownAdditionalFilesHashes.TryAdd(hash, null);
 
 				return runInfo;
+			}
+		}
+
+		private static void ReadProjectConfiguration(GeneratorExecutionContext context, out bool useXamlReaderHotReload, out bool useHotReload)
+		{
+			bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out useXamlReaderHotReload);
+
+			var configuration = context.GetMSBuildPropertyValue("Configuration")
+				?? throw new InvalidOperationException("The configuration property must be provided");
+
+			var isDebug = string.Equals(configuration, "Debug", StringComparison.OrdinalIgnoreCase);
+
+			useHotReload = true;
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var forceHotReloadCodeGen))
+			{
+				useHotReload = forceHotReloadCodeGen;
+			}
+			else
+			{
+				useHotReload = isDebug;
 			}
 		}
 	}

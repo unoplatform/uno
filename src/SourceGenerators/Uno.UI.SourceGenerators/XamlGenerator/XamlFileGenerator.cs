@@ -587,17 +587,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}();");
 			}
 
-			foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.AllRuns.Except(_generationRunFileInfo.RunInfo))
+			if (_isHotReloadEnabled)
 			{
-				using (writer.BlockInvariant($"private void InitializeComponent_{previousRun.ToRunIdentifierString()}()"))
+				foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.AllRuns.Except(_generationRunFileInfo.RunInfo))
 				{
-					if (!IsApplication(topLevelControl.Type))
+					using (writer.BlockInvariant($"private void InitializeComponent_{previousRun.ToRunIdentifierString()}()"))
 					{
-						// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.
-						// Error ENC0050 Deleting captured variable 'nameScope' requires restarting the application.
+						if (!IsApplication(topLevelControl.Type))
+						{
+							// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.
+							// Error ENC0050 Deleting captured variable 'nameScope' requires restarting the application.
 
-						writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
-						writer.AppendLineIndented("var __that = this;");
+							writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
+							writer.AppendLineIndented("var __that = this;");
+						}
 					}
 				}
 			}
