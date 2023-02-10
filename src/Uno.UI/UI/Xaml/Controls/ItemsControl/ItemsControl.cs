@@ -1121,6 +1121,9 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 			}
+
+			var isOwnContainer = ReferenceEquals(element, item);
+
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
 
@@ -1141,6 +1144,12 @@ namespace Windows.UI.Xaml.Controls
 			else if (element is ContentControl contentControl)
 			{
 				contentControl.ClearValue(DataContextProperty);
+
+				if (!isOwnContainer)
+				{
+					// Clears value set in PrepareContainerForItemOverride
+					element.ClearValue(ContentControl.ContentProperty);
+				}
 
 				if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 				{
