@@ -25,7 +25,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
