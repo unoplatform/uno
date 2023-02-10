@@ -90,7 +90,7 @@ If that's your case, here are some examples of code:
 </TextBlock>
 ```
 
-## Custom fonts in Uno Platform in Uno Platform 4.6 or below
+## Custom fonts in Uno Platform 4.6 or below
 
 Uno Platform 4.7 introduces a unified way to include fonts in applications, but if you are still using a previous version of Uno Platform, you can use these directions.
 
