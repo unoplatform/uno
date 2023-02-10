@@ -587,7 +587,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}();");
 			}
 
-			foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.PreviousRuns)
+			foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.AllRuns.Except(_generationRunFileInfo.RunInfo))
 			{
 				using (writer.BlockInvariant($"private void InitializeComponent_{previousRun.ToRunIdentifierString()}()"))
 				{

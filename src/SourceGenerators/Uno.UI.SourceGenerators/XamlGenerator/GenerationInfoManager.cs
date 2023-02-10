@@ -40,11 +40,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public IEnumerable<GenerationRunInfo> AllRuns
 			=> _runs.AsEnumerable();
 
-		public IEnumerable<GenerationRunInfo> PreviousRuns
-			=> _runs.Count > 1
-				? _runs.Except(_runs.Last()).AsEnumerable()
-				: Array.Empty<GenerationRunInfo>();
-
 		internal GenerationRunInfo CreateRun(GeneratorExecutionContext context)
 		{
 			bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload);
