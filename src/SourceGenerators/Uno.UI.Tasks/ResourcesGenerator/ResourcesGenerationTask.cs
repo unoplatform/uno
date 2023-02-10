@@ -27,6 +27,11 @@ public class ResourcesGenerationTask_v0 : Task
 
 	public bool EnableTraceLogging { get; set; }
 
+	public bool IsUnoHead { get; set; }
+
+	[Required]
+	public string ProjectName { get; set; }
+
 	[Required]
 	public string TargetProjectDirectory { get; set; }
 
@@ -144,9 +149,12 @@ public class ResourcesGenerationTask_v0 : Task
 
 		if (sourceLastWriteTime > targetLastWriteTime)
 		{
-			TraceLog($"Writing resources to {actualTargetPath}");
+			var libraryName = IsUnoHead ? "" : ProjectName + "/";
+			var qualifiedResourceMapName = libraryName + resourceMapName;
 
-			UnoPRIResourcesWriter.Write(resourceMapName, language, resources, actualTargetPath, comment);
+			TraceLog($"Writing resources to {actualTargetPath} ({qualifiedResourceMapName})");
+
+			UnoPRIResourcesWriter.Write(qualifiedResourceMapName, language, resources, actualTargetPath, comment);
 		}
 		else
 		{
