@@ -10,6 +10,7 @@ using System.Reflection;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Server.Processors.Helpers;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -71,6 +72,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			MSBuildBasePath = BuildMSBuildPath();
 
+			var version = GetDotnetVersion();
+			if (version.Major != typeof(object).Assembly.GetName().Version?.Major)
+			{
+				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Change the TargetFramework version to match net{version.Major}.0 in your project file.");
+				}
+
+				throw new InvalidOperationException($"Project TargetFramework version mismatch");
+			}
+
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));
 
 			var MSBuildExists = File.Exists(Path.Combine(MSBuildBasePath, "Microsoft.Build.dll"));
@@ -79,6 +91,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			{
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
+		}
+
+		private static Version GetDotnetVersion()
+		{
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--version");
+
+			if (result.exitCode == 0)
+			{
+				var reader = new StringReader(result.output);
+
+				if (Version.TryParse(reader.ReadLine()?.Split('-').FirstOrDefault(), out var version))
+				{
+					return version;
+				}
+			}
+
+			throw new InvalidOperationException("Failed to read dotnet version");
 		}
 
 		private static string BuildMSBuildPath()
