@@ -159,8 +159,12 @@ public partial class SvgProvider : ISvgProvider
 				using var memoryStream = new MemoryStream(svgBytes);
 				skSvg.Load(memoryStream);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Failed to load SVG image.", ex);
+				}
 				skSvg.Dispose();
 				skSvg = null;
 			}
