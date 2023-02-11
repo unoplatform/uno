@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpMapTileDataSource.UriFormatString is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpMapTileDataSource.UriFormatString is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpMapTileDataSource.UriFormatString");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpMapTileDataSource.AllowCaching is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpMapTileDataSource.AllowCaching is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpMapTileDataSource.AllowCaching");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> HttpMapTileDataSource.AdditionalRequestHeaders is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> HttpMapTileDataSource.AdditionalRequestHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20HttpMapTileDataSource.AdditionalRequestHeaders");
 			}
 		}
 		#endif

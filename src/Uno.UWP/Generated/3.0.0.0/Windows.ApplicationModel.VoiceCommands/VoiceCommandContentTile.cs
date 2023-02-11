@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandContentTile.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandContentTile.TextLine3");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandContentTile.TextLine2");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandContentTile.TextLine1");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFile VoiceCommandContentTile.Image is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IStorageFile VoiceCommandContentTile.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IStorageFile%20VoiceCommandContentTile.Image");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VoiceCommandContentTileType%20VoiceCommandContentTile.ContentTileType");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.AppLaunchArgument is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.AppLaunchArgument is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandContentTile.AppLaunchArgument");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VoiceCommandContentTile.AppContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object VoiceCommandContentTile.AppContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20VoiceCommandContentTile.AppContext");
 			}
 			set
 			{

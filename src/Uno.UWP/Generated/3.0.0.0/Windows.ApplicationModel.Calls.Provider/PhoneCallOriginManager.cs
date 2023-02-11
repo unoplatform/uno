@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallOriginManager.IsCurrentAppActiveCallOriginApp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallOriginManager.IsCurrentAppActiveCallOriginApp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallOriginManager.IsCurrentAppActiveCallOriginApp");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallOriginManager.IsSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneCallOriginManager.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneCallOriginManager.IsSupported");
 			}
 		}
 		#endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Calls.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> RequestSetAsActiveCallOriginAppAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.IsCurrentAppActiveCallOriginApp.get

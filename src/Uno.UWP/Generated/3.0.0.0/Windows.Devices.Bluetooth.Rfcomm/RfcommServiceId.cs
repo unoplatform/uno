@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid RfcommServiceId.Uuid is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid RfcommServiceId.Uuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20RfcommServiceId.Uuid");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.GenericFileTransfer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.GenericFileTransfer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.GenericFileTransfer");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.ObexFileTransfer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.ObexFileTransfer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.ObexFileTransfer");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.ObexObjectPush is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.ObexObjectPush is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.ObexObjectPush");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.PhoneBookAccessPce is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.PhoneBookAccessPce is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.PhoneBookAccessPce");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.PhoneBookAccessPse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.PhoneBookAccessPse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.PhoneBookAccessPse");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.SerialPort is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.SerialPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.SerialPort");
 			}
 		}
 		#endif
@@ -82,28 +82,28 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint AsShortId()
 		{
-			throw new global::System.NotImplementedException("The member uint RfcommServiceId.AsShortId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member uint RfcommServiceId.AsShortId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20RfcommServiceId.AsShortId%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string AsString()
 		{
-			throw new global::System.NotImplementedException("The member string RfcommServiceId.AsString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string RfcommServiceId.AsString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RfcommServiceId.AsString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromUuid( global::System.Guid uuid)
 		{
-			throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.FromUuid(Guid uuid) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.FromUuid(Guid uuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.FromUuid%28Guid%20uuid%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromShortId( uint shortId)
 		{
-			throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.FromShortId(uint shortId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceId.FromShortId(uint shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommServiceId.FromShortId%28uint%20shortId%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.SerialPort.get

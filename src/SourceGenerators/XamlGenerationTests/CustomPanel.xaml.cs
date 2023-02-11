@@ -19,9 +19,9 @@ namespace XamlGenerationTests.Shared
 	{
 #if NETFX_CORE
 		public CustomPanel()
-        {
-            this.InitializeComponent();
-        }
+		{
+			this.InitializeComponent();
+		}
 #endif
 	}
 }

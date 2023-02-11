@@ -3,7 +3,7 @@
 
 jobs:
 - job: VS2022_VSIX
-  displayName: 'VS 2022 VSIX build'
+  displayName: 'Build VS 2022 VSIX'
 
   pool:
     vmImage: ${{ parameters.vmImage }}

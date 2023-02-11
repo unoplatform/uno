@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Geolocator.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Geolocator.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Geolocator.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double Geolocator.MovementThreshold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double Geolocator.MovementThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20Geolocator.MovementThreshold");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PositionAccuracy Geolocator.DesiredAccuracy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PositionAccuracy Geolocator.DesiredAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PositionAccuracy%20Geolocator.DesiredAccuracy");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PositionStatus Geolocator.LocationStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PositionStatus Geolocator.LocationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PositionStatus%20Geolocator.LocationStatus");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? Geolocator.DesiredAccuracyInMeters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? Geolocator.DesiredAccuracyInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20Geolocator.DesiredAccuracyInMeters");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BasicGeoposition? Geolocator.DefaultGeoposition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BasicGeoposition? Geolocator.DefaultGeoposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BasicGeoposition%3F%20Geolocator.DefaultGeoposition");
 			}
 			set
 			{
@@ -93,7 +93,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Geolocator.IsDefaultGeopositionRecommended is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Geolocator.IsDefaultGeopositionRecommended is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Geolocator.IsDefaultGeopositionRecommended");
 			}
 		}
 		#endif
@@ -116,14 +116,14 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28%29");
 		}
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync( global::System.TimeSpan maximumAge,  global::System.TimeSpan timeout)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28TimeSpan%20maximumAge%2C%20TimeSpan%20timeout%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.PositionChanged.add
@@ -146,21 +146,21 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.GeolocationAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GeolocationAccessStatus> Geolocator.RequestAccessAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GeolocationAccessStatus> Geolocator.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGeolocationAccessStatus%3E%20Geolocator.RequestAccessAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync( global::System.DateTimeOffset startTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CGeoposition%3E%3E%20Geolocator.GetGeopositionHistoryAsync%28DateTimeOffset%20startTime%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync( global::System.DateTimeOffset startTime,  global::System.TimeSpan duration)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CGeoposition%3E%3E%20Geolocator.GetGeopositionHistoryAsync%28DateTimeOffset%20startTime%2C%20TimeSpan%20duration%29");
 		}
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false

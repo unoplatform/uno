@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem MediaFrameSourceInfo.CoordinateSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem MediaFrameSourceInfo.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialCoordinateSystem%20MediaFrameSourceInfo.CoordinateSystem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation MediaFrameSourceInfo.DeviceInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation MediaFrameSourceInfo.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20MediaFrameSourceInfo.DeviceInformation");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaFrameSourceInfo.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamType MediaFrameSourceInfo.MediaStreamType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaStreamType MediaFrameSourceInfo.MediaStreamType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamType%20MediaFrameSourceInfo.MediaStreamType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameSourceInfo.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameSourceInfo.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaFrameSourceInfo.Properties");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceGroup MediaFrameSourceInfo.SourceGroup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameSourceGroup MediaFrameSourceInfo.SourceGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameSourceGroup%20MediaFrameSourceInfo.SourceGroup");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceKind MediaFrameSourceInfo.SourceKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameSourceKind MediaFrameSourceInfo.SourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameSourceKind%20MediaFrameSourceInfo.SourceKind");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.ProfileId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.ProfileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaFrameSourceInfo.ProfileId");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaFrameSourceInfo.VideoProfileMediaDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaFrameSourceInfo.VideoProfileMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMediaCaptureVideoProfileMediaDescription%3E%20MediaFrameSourceInfo.VideoProfileMediaDescription");
 			}
 		}
 		#endif
@@ -110,7 +110,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Enumeration.Panel GetRelativePanel( global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
 		{
-			throw new global::System.NotImplementedException("The member Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Panel%20MediaFrameSourceInfo.GetRelativePanel%28DisplayRegion%20displayRegion%29");
 		}
 		#endif
 	}

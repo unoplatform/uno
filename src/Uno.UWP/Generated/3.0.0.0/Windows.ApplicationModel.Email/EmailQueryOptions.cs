@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySortProperty EmailQueryOptions.SortProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailQuerySortProperty EmailQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailQuerySortProperty%20EmailQueryOptions.SortProperty");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySortDirection EmailQueryOptions.SortDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailQuerySortDirection EmailQueryOptions.SortDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailQuerySortDirection%20EmailQueryOptions.SortDirection");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQueryKind EmailQueryOptions.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailQueryKind EmailQueryOptions.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailQueryKind%20EmailQueryOptions.Kind");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> EmailQueryOptions.FolderIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> EmailQueryOptions.FolderIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20EmailQueryOptions.FolderIds");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQueryTextSearch EmailQueryOptions.TextSearch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailQueryTextSearch EmailQueryOptions.TextSearch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailQueryTextSearch%20EmailQueryOptions.TextSearch");
 			}
 		}
 		#endif

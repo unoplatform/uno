@@ -23,6 +23,8 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Text;
+
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -69,7 +71,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _fileUniqueId;
 		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
-		private readonly ImmutableHashSet<string> _resourceKeys;
+		private readonly ResourceDetailsCollection _resourceDetailsCollection;
 		private int _applyIndex;
 		private int _collectionIndex;
 		private int _subclassIndex;
@@ -231,7 +233,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string fileUniqueId,
 			DateTime lastReferenceUpdateTime,
 			string[] analyzerSuppressions,
-			ImmutableHashSet<string> resourceKeys,
+			ResourceDetailsCollection resourceDetailsCollection,
 			XamlGlobalStaticResourcesMap globalStaticResourcesMap,
 			bool isUiAutomationMappingEnabled,
 			Dictionary<string, string[]> uiAutomationMappings,
@@ -260,11 +262,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_fileUniqueId = fileUniqueId;
 			_lastReferenceUpdateTime = lastReferenceUpdateTime;
 			_analyzerSuppressions = analyzerSuppressions;
-			_resourceKeys = resourceKeys;
+			_resourceDetailsCollection = resourceDetailsCollection;
 			_globalStaticResourcesMap = globalStaticResourcesMap;
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
-			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
+			_defaultLanguage = defaultLanguage.IsNullOrEmpty() ? "en-US" : defaultLanguage;
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
@@ -283,7 +285,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			_stringSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_String);
 			_objectSymbol = _metadataHelper.Compilation.GetSpecialType(SpecialType.System_Object);
-            _assemblyMetadataSymbol = (INamedTypeSymbol)_metadataHelper.FindTypeByFullName("System.Reflection.AssemblyMetadataAttribute");
+			_assemblyMetadataSymbol = (INamedTypeSymbol)_metadataHelper.FindTypeByFullName("System.Reflection.AssemblyMetadataAttribute");
 			_elementStubSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ElementStub);
 			_setterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Setter);
 			_contentPresenterSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.ContentPresenter);
@@ -527,7 +529,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
-									
+
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
 								}
@@ -685,7 +687,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented($"#if __ANDROID__");
 #if NETSTANDARD
-			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.App.DrawableResourcesIdResolver.Resolve);");
+			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
 #else
 			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 #endif
@@ -826,19 +828,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var reference in _metadataHelper.Compilation.References)
 			{
-                if(_metadataHelper.Compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
-                {
+				if (_metadataHelper.Compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
+				{
 					BuildResourceLoaderFromAssembly(writer, assembly);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"Unsupported resource type for {reference.Display} ({reference.GetType()})");
-                }
-            }
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unsupported resource type for {reference.Display} ({reference.GetType()})");
+				}
+			}
 		}
 
-        private void BuildResourceLoaderFromAssembly(IndentedStringBuilder writer, IAssemblySymbol assembly)
-        {
+		private void BuildResourceLoaderFromAssembly(IndentedStringBuilder writer, IAssemblySymbol assembly)
+		{
 			var unoHasLocalizationResourcesAttribute = assembly.GetAttributes().FirstOrDefault(a =>
 				SymbolEqualityComparer.Default.Equals(a.AttributeClass, _assemblyMetadataSymbol)
 				&& a.ConstructorArguments.Length == 2
@@ -850,7 +852,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Value
 				?.ToString()
 				.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
-			
+
 			// Legacy behavior relying on the fact that GlobalStaticResources is generated using the default namespace.
 			var globalStaticResourcesSymbol = assembly.GetTypeByMetadataName(assembly.Name + ".GlobalStaticResources");
 
@@ -902,7 +904,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"/* Assembly {assembly} does not contain UnoHasLocalizationResources */");
 #endif
 			}
-        }
+		}
 
 		/// <summary>
 		/// Processes a top-level control definition.
@@ -2695,7 +2697,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										}
 										else if (
 											implicitContentChild.Value is string implicitValue
-											&& implicitValue.HasValueTrimmed()
+											&& !implicitValue.IsNullOrWhiteSpace()
 										)
 										{
 											writer.AppendLineIndented(setterPrefix + contentProperty.Name + " = " + SyntaxFactory.Literal(implicitValue).ToString());
@@ -3222,7 +3224,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryExtractAutomationId(XamlMemberDefinition member, string[] targetMembers, ref string? uiAutomationId)
 		{
-			if (uiAutomationId.HasValue())
+			if (!uiAutomationId.IsNullOrEmpty())
 			{
 				return;
 			}
@@ -3296,7 +3298,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isFrameworkElement = IsType(objectDefinitionType, _frameworkElementSymbol);
 			var hasIsParsing = HasIsParsing(objectDefinitionType);
 
-			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || objectUid.HasValue())
+			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || !objectUid.IsNullOrEmpty())
 			{
 				string closureName;
 				if (!useGenericApply && objectDefinitionType is null)
@@ -3718,11 +3720,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var assignedUid = uidMember?.Value?.ToString();
 						var assignedName = nameMember?.Value?.ToString();
 
-						if (assignedUid.HasValue())
+						if (!assignedUid.IsNullOrEmpty())
 						{
 							uiAutomationId = assignedUid;
 						}
-						else if (assignedName.HasValue())
+						else if (!assignedName.IsNullOrEmpty())
 						{
 							uiAutomationId = assignedName;
 						}
@@ -3746,12 +3748,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Local function used to build a property/value for any custom MarkupExtensions
 			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? closure = null)
 			{
-				Func<string, string> formatLine = assignment => closure.HasValue()
+				Func<string, string> formatLine = assignment => !closure.IsNullOrEmpty()
 					? $"{closure}.{assignment};\r\n"
 					: assignment;
 
 				var propertyValue = GetCustomMarkupExtensionValue(member, closure);
-				if (propertyValue.HasValue())
+				if (!propertyValue.IsNullOrEmpty())
 				{
 					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
 
@@ -3816,7 +3818,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var parms = parmsNames.JoinBy(",");
 
-					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "__that";
+					var eventSource = !ownerPrefix.IsNullOrEmpty() ? ownerPrefix : "__that";
 
 					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
 					{
@@ -4201,8 +4203,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true, ComponentDefinition? componentDefinition = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
-			var postfix = prefix.HasValue() ? ";" : "";
+			Func<string, string> formatLine = format => prefix + format + (!prefix.IsNullOrEmpty() ? ";\r\n" : "");
+			var postfix = !prefix.IsNullOrEmpty() ? ";" : "";
 
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
@@ -4637,7 +4639,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					xamlString = Regex.Replace(
 						xamlString,
 						$@"(^|[^\w])({ns.Prefix}:)",
-						"$1global::" + ns.Namespace.TrimStart("using:", StringComparison.Ordinal) + ".");
+						"$1global::" + ns.Namespace.TrimStart("using:") + ".");
 				}
 				else if (ns.Namespace == XamlConstants.XamlXmlNamespace)
 				{
@@ -4705,7 +4707,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
 				.JoinBy(", ");
-			var markupInitializer = properties.HasValue() ? $" {{ {properties} }}" : "()";
+			var markupInitializer = !properties.IsNullOrEmpty() ? $" {{ {properties} }}" : "()";
 
 			// Build the parser context for ProvideValue(IXamlServiceProvider)
 			var providerDetails = new string[]
@@ -5133,7 +5135,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
 						}
 					}
-					
+
 					return $"\"{rawValue}\"";
 				}
 			}
@@ -5152,60 +5154,56 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				objectDefinition = objectDefinition.Owner;
-			} 
+			}
 
 			return null;
 		}
 
 		private string? BuildLocalizedResourceValue(INamedTypeSymbol? owner, string memberName, string objectUid)
 		{
-			// see: https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest
-			// Valid formats:
-			// - MyUid
-			// - MyPrefix/MyUid
-			// - /ResourceFileName/MyUid
-			// - /ResourceFileName/MyPrefix/MyUid
-			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyUid
-			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyPrefix3/MyUid
-
-			(string? resourceFileName, string uidName) parseXUid()
-			{
-				if (objectUid.StartsWith("/", StringComparison.Ordinal))
-				{
-					var separator = objectUid.IndexOf('/', 1);
-
-					return (
-						objectUid.Substring(1, separator - 1),
-						objectUid.Substring(separator + 1)
-					);
-				}
-				else
-				{
-					return (null, objectUid);
-				}
-			}
-
-			var (resourceFileName, uidName) = parseXUid();
-
 			//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
-			var fullKey = uidName + "/" + memberName;
+			string fullKey;
 
 			if (owner != null && IsAttachedProperty(owner, memberName))
 			{
 				var declaringType = owner;
 				var nsRaw = declaringType.ContainingNamespace.GetFullName();
 				var type = declaringType.Name;
-				fullKey = $"{uidName}/[using:{nsRaw}]{type}.{memberName}";
-			}
 
-			if (_resourceKeys.Contains(fullKey))
+				fullKey = $"{objectUid}.[using:{nsRaw}]{type}.{memberName}";
+			}
+			else
 			{
-				var resourceNameString = resourceFileName == null ? "null" : $"\"{resourceFileName}\"";
-
-				return $"global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid({resourceNameString}, \"{fullKey}\")";
+				fullKey = objectUid + "." + memberName;
 			}
 
-			return null;
+			if (_resourceDetailsCollection.FindByKey(fullKey) is { } resourceDetail)
+			{
+				var viewName = _isInsideMainAssembly
+					? resourceDetail.FileName
+					: resourceDetail.Assembly + "/" + resourceDetail.FileName;
+
+				return $"global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid(\"{viewName}\", \"{RewriteResourceKeyName(resourceDetail.Key)}\")";
+			}
+
+			return null; // $"null /*{fullKeyWithLibrary}*/";
+		}
+
+		private StringBuilder _keyRewriteBuilder = new();
+		private string RewriteResourceKeyName(string keyName)
+		{
+			var firstDotIndex = keyName.IndexOf('.');
+			if (firstDotIndex != -1)
+			{
+				_keyRewriteBuilder.Clear();
+				_keyRewriteBuilder.Append(keyName);
+
+				_keyRewriteBuilder[firstDotIndex] = '/';
+
+				return _keyRewriteBuilder.ToString();
+			}
+
+			return keyName;
 		}
 
 		private bool IsPropertyLocalized(XamlObjectDefinition obj, string propertyName)
@@ -5443,7 +5441,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var knownType = FindType(converterObjectDefinition.Type);
 					if (knownType == null && converterObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 					{
-						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:", StringComparison.Ordinal) + "." + converterObjectDefinition.Type.Name;
+						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + converterObjectDefinition.Type.Name;
 					}
 					if (knownType != null)
 					{
@@ -5837,7 +5835,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsLocalizedString(INamedTypeSymbol? propertyType, string? objectUid)
 		{
-			return objectUid.HasValue() && IsLocalizablePropertyType(propertyType);
+			return !objectUid.IsNullOrEmpty() && IsLocalizablePropertyType(propertyType);
 		}
 
 		private bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
@@ -5925,7 +5923,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (knownType == null && xamlObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 			{
-				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:", StringComparison.Ordinal) + "." + xamlObjectDefinition.Type.Name;
+				fullTypeName = xamlObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + xamlObjectDefinition.Type.Name;
 			}
 
 			if (knownType != null)
@@ -6479,10 +6477,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
 										{
-										    if (_isHotReloadEnabled)
-										    {
-											    writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
-										    }
+											if (_isHotReloadEnabled)
+											{
+												writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
+											}
 
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
 											// ElementStub will be unloaded **after** the stubbed control has been created
@@ -6861,7 +6859,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
 		{
-			if(componentDefinition is null)
+			if (componentDefinition is null)
 			{
 				throw new InvalidOperationException("The component definition cannot be null.");
 			}

@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CubicBezierEasingFunction.ControlPoint1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 CubicBezierEasingFunction.ControlPoint1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20CubicBezierEasingFunction.ControlPoint1");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CubicBezierEasingFunction.ControlPoint2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 CubicBezierEasingFunction.ControlPoint2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20CubicBezierEasingFunction.ControlPoint2");
 			}
 		}
 		#endif

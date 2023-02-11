@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LimiterEffectDefinition.Release is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LimiterEffectDefinition.Release is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LimiterEffectDefinition.Release");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LimiterEffectDefinition.Loudness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LimiterEffectDefinition.Loudness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LimiterEffectDefinition.Loudness");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LimiterEffectDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LimiterEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LimiterEffectDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet LimiterEffectDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet LimiterEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20LimiterEffectDefinition.Properties");
 			}
 		}
 		#endif

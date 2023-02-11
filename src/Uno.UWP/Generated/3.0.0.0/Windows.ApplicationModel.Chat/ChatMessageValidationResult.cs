@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.MaxPartCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.MaxPartCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20ChatMessageValidationResult.MaxPartCount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.PartCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.PartCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20ChatMessageValidationResult.PartCount");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.RemainingCharacterCountInPart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.RemainingCharacterCountInPart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20ChatMessageValidationResult.RemainingCharacterCountInPart");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessageValidationStatus ChatMessageValidationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatMessageValidationStatus ChatMessageValidationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatMessageValidationStatus%20ChatMessageValidationResult.Status");
 			}
 		}
 		#endif

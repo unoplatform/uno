@@ -136,7 +136,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 					"Item1"
 				}
 			};
-			
+
 			Assert.AreEqual(1, count);
 		}
 

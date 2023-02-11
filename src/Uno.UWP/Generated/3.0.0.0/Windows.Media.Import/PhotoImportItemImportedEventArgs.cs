@@ -13,7 +13,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportItem PhotoImportItemImportedEventArgs.ImportedItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoImportItem PhotoImportItemImportedEventArgs.ImportedItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoImportItem%20PhotoImportItemImportedEventArgs.ImportedItem");
 			}
 		}
 		#endif

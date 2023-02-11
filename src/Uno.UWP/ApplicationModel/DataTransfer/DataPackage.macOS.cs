@@ -130,7 +130,7 @@ namespace Windows.ApplicationModel.DataTransfer
 							image = NSImage.FromStream(ms);
 						}
 					}
-				}	
+				}
 
 				if (image != null)
 				{
@@ -326,7 +326,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				pasteboard.SetStringForType(text ?? string.Empty, NSPasteboard.NSPasteboardTypeString);
 			}
 
-			if(string.IsNullOrEmpty(uri) == false)
+			if (string.IsNullOrEmpty(uri) == false)
 			{
 				pasteboard.SetStringForType(uri!.ToString(), NSPasteboard.NSPasteboardTypeUrl);
 			}

@@ -124,13 +124,13 @@ public class Given_HotReloadService
 		, bool useXamlReaderReload
 		, [CallerMemberName] string? name = null)
 	{
-		if(name is null)
+		if (name is null)
 		{
 			throw new InvalidOperationException($"A test scenario name must be provided.");
 		}
 
 		var scenarioFolder = Path.Combine(ScenariosFolder, name);
-		
+
 		HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
 		List<HotReloadWorkspace.UpdateResult> results = new();
 
@@ -154,13 +154,13 @@ public class Given_HotReloadService
 		{
 			foreach (var file in step)
 			{
-				if(file == Path.Combine(scenarioFolder, "Scenario.json"))
+				if (file == Path.Combine(scenarioFolder, "Scenario.json"))
 				{
 					continue;
 				}
 
 				var pathParts = Path.GetRelativePath(scenarioFolder, file).Split(Path.DirectorySeparatorChar);
-				
+
 				var fileContent = File.ReadAllText(file);
 
 				if (Path.GetExtension(file) == ".cs")
@@ -173,7 +173,7 @@ public class Given_HotReloadService
 				}
 			}
 
-			if(index++ == 0)
+			if (index++ == 0)
 			{
 				await SUT.Initialize(CancellationToken.None);
 			}
@@ -182,7 +182,7 @@ public class Given_HotReloadService
 				results.Add(await SUT.Update());
 			}
 		}
-		
+
 		return results.ToArray();
 	}
 }

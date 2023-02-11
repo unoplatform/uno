@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Windows.UI.Core
 {
-    public partial class IdleDispatchedHandlerArgs
-    {
+	public partial class IdleDispatchedHandlerArgs
+	{
 		private Uno.UI.Dispatching.IdleDispatchedHandlerArgs _originHandler;
 
 		internal IdleDispatchedHandlerArgs(Uno.UI.Dispatching.IdleDispatchedHandlerArgs c)
@@ -17,5 +17,5 @@ namespace Windows.UI.Core
 		/// Determines if the dispatcher is currently idle
 		/// </summary>
 		public bool IsDispatcherIdle => _originHandler.IsDispatcherIdle;
-    }
+	}
 }

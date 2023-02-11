@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayAdapter.DeviceInterfacePath is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DisplayAdapter.DeviceInterfacePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DisplayAdapter.DeviceInterfacePath");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayAdapterId DisplayAdapter.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayAdapterId DisplayAdapter.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayAdapterId%20DisplayAdapter.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplayAdapter.PciDeviceId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciRevision is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciRevision is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplayAdapter.PciRevision");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciSubSystemId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciSubSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplayAdapter.PciSubSystemId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciVendorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplayAdapter.PciVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplayAdapter.PciVendorId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> DisplayAdapter.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> DisplayAdapter.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20DisplayAdapter.Properties");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayAdapter.SourceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DisplayAdapter.SourceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DisplayAdapter.SourceCount");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Display.Core.DisplayAdapter FromId( global::Windows.Graphics.DisplayAdapterId id)
 		{
-			throw new global::System.NotImplementedException("The member DisplayAdapter DisplayAdapter.FromId(DisplayAdapterId id) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayAdapter DisplayAdapter.FromId(DisplayAdapterId id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayAdapter%20DisplayAdapter.FromId%28DisplayAdapterId%20id%29");
 		}
 		#endif
 	}

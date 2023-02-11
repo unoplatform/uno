@@ -13,7 +13,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageRenderOptions.SourceRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PdfPageRenderOptions.SourceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PdfPageRenderOptions.SourceRect");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PdfPageRenderOptions.IsIgnoringHighContrast is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PdfPageRenderOptions.IsIgnoringHighContrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PdfPageRenderOptions.IsIgnoringHighContrast");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PdfPageRenderOptions.DestinationWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PdfPageRenderOptions.DestinationWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PdfPageRenderOptions.DestinationWidth");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PdfPageRenderOptions.DestinationHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PdfPageRenderOptions.DestinationHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PdfPageRenderOptions.DestinationHeight");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PdfPageRenderOptions.BitmapEncoderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PdfPageRenderOptions.BitmapEncoderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PdfPageRenderOptions.BitmapEncoderId");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PdfPageRenderOptions.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color PdfPageRenderOptions.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20PdfPageRenderOptions.BackgroundColor");
 			}
 			set
 			{

@@ -11,7 +11,7 @@ namespace Windows.UI.ViewManagement.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryCancel()
 		{
-			throw new global::System.NotImplementedException("The member bool CoreInputViewHidingEventArgs.TryCancel() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CoreInputViewHidingEventArgs.TryCancel() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreInputViewHidingEventArgs.TryCancel%28%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentShippingOption.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentShippingOption.Label");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentShippingOption.IsSelected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PaymentShippingOption.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PaymentShippingOption.IsSelected");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentShippingOption.Amount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentShippingOption.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentCurrencyAmount%20PaymentShippingOption.Amount");
 			}
 			set
 			{

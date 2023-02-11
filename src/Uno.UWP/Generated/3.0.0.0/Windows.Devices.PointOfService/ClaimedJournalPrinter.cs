@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineSpacing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineSpacing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedJournalPrinter.LineSpacing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedJournalPrinter.LineHeight");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsLetterQuality is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsLetterQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsLetterQuality");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterColorCartridge ClaimedJournalPrinter.ColorCartridge is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterColorCartridge ClaimedJournalPrinter.ColorCartridge is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterColorCartridge%20ClaimedJournalPrinter.ColorCartridge");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.CharactersPerLine is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.CharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedJournalPrinter.CharactersPerLine");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsCartridgeEmpty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsCartridgeEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsCartridgeEmpty");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsCartridgeRemoved is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsCartridgeRemoved is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsCartridgeRemoved");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsCoverOpen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsCoverOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsCoverOpen");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsHeadCleaning is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsHeadCleaning is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsHeadCleaning");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsPaperEmpty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsPaperEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsPaperEmpty");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsPaperNearEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsPaperNearEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsPaperNearEnd");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsReadyToPrint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.IsReadyToPrint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.IsReadyToPrint");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedJournalPrinter.LineWidth");
 			}
 		}
 		#endif
@@ -161,7 +161,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.PointOfService.JournalPrintJob CreateJob()
 		{
-			throw new global::System.NotImplementedException("The member JournalPrintJob ClaimedJournalPrinter.CreateJob() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member JournalPrintJob ClaimedJournalPrinter.CreateJob() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=JournalPrintJob%20ClaimedJournalPrinter.CreateJob%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedJournalPrinter.CharactersPerLine.set
@@ -186,7 +186,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ValidateData( string data)
 		{
-			throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.ValidateData(string data) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ClaimedJournalPrinter.ValidateData(string data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedJournalPrinter.ValidateData%28string%20data%29");
 		}
 		#endif
 		// Processing: Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation

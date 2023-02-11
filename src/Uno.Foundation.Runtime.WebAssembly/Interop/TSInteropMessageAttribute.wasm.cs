@@ -9,7 +9,7 @@ namespace Uno.Foundation.Interop
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Struct, AllowMultiple = false)]
 	public class TSInteropMessageAttribute : Attribute
-	{	
+	{
 		public CodeGeneration Marshaller { get; set; }
 
 		public CodeGeneration UnMarshaller { get; set; }

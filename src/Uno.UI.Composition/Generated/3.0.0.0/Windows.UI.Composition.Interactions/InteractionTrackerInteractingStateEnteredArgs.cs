@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerInteractingStateEnteredArgs.RequestId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InteractionTrackerInteractingStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InteractionTrackerInteractingStateEnteredArgs.RequestId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInteractingStateEnteredArgs.IsFromBinding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InteractionTrackerInteractingStateEnteredArgs.IsFromBinding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InteractionTrackerInteractingStateEnteredArgs.IsFromBinding");
 			}
 		}
 		#endif

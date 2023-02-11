@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpandCollapseState ToggleSplitButtonAutomationPeer.ExpandCollapseState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExpandCollapseState ToggleSplitButtonAutomationPeer.ExpandCollapseState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExpandCollapseState%20ToggleSplitButtonAutomationPeer.ExpandCollapseState");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToggleState ToggleSplitButtonAutomationPeer.ToggleState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ToggleState ToggleSplitButtonAutomationPeer.ToggleState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToggleState%20ToggleSplitButtonAutomationPeer.ToggleState");
 			}
 		}
 		#endif

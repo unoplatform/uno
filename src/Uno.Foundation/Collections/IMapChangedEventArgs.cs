@@ -6,6 +6,6 @@ namespace Windows.Foundation.Collections
 {
 	public partial interface IMapChangedEventArgs<K>
 	{
-		
+
 	}
 }

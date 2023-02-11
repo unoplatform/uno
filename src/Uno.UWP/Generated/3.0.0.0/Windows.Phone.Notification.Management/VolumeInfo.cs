@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VolumeInfo.CallVolume is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VolumeInfo.CallVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VolumeInfo.CallVolume");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VolumeInfo.IsMuted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VolumeInfo.IsMuted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VolumeInfo.IsMuted");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VibrateState VolumeInfo.IsVibrateEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VibrateState VolumeInfo.IsVibrateEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VibrateState%20VolumeInfo.IsVibrateEnabled");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VolumeInfo.MediaVolume is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VolumeInfo.MediaVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VolumeInfo.MediaVolume");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VolumeInfo.SystemVolume is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VolumeInfo.SystemVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VolumeInfo.SystemVolume");
 			}
 		}
 		#endif

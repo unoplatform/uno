@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HolographicCameraPose.FarPlaneDistance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double HolographicCameraPose.FarPlaneDistance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20HolographicCameraPose.FarPlaneDistance");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicCamera HolographicCameraPose.HolographicCamera is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicCamera HolographicCameraPose.HolographicCamera is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicCamera%20HolographicCameraPose.HolographicCamera");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HolographicCameraPose.NearPlaneDistance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double HolographicCameraPose.NearPlaneDistance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20HolographicCameraPose.NearPlaneDistance");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicStereoTransform HolographicCameraPose.ProjectionTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicStereoTransform HolographicCameraPose.ProjectionTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicStereoTransform%20HolographicCameraPose.ProjectionTransform");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect HolographicCameraPose.Viewport is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect HolographicCameraPose.Viewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20HolographicCameraPose.Viewport");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Holographic.HolographicStereoTransform? TryGetViewTransform( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member HolographicStereoTransform? HolographicCameraPose.TryGetViewTransform(SpatialCoordinateSystem coordinateSystem) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HolographicStereoTransform? HolographicCameraPose.TryGetViewTransform(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicStereoTransform%3F%20HolographicCameraPose.TryGetViewTransform%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.ProjectionTransform.get
@@ -71,14 +71,14 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Perception.Spatial.SpatialBoundingFrustum? TryGetCullingFrustum( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member SpatialBoundingFrustum? HolographicCameraPose.TryGetCullingFrustum(SpatialCoordinateSystem coordinateSystem) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialBoundingFrustum? HolographicCameraPose.TryGetCullingFrustum(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialBoundingFrustum%3F%20HolographicCameraPose.TryGetCullingFrustum%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Perception.Spatial.SpatialBoundingFrustum? TryGetVisibleFrustum( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member SpatialBoundingFrustum? HolographicCameraPose.TryGetVisibleFrustum(SpatialCoordinateSystem coordinateSystem) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SpatialBoundingFrustum? HolographicCameraPose.TryGetVisibleFrustum(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialBoundingFrustum%3F%20HolographicCameraPose.TryGetVisibleFrustum%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.NearPlaneDistance.get

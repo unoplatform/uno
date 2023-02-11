@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentResponse PaymentRequestSubmitResult.Response is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentResponse PaymentRequestSubmitResult.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentResponse%20PaymentRequestSubmitResult.Response");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentRequestStatus PaymentRequestSubmitResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentRequestStatus PaymentRequestSubmitResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentRequestStatus%20PaymentRequestSubmitResult.Status");
 			}
 		}
 		#endif

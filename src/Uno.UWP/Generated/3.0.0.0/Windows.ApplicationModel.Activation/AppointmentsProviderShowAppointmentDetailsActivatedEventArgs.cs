@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Verb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Verb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Verb");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId");
 			}
 		}
 		#endif

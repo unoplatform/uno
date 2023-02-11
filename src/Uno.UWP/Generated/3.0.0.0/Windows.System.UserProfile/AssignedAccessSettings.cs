@@ -13,7 +13,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AssignedAccessSettings.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AssignedAccessSettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AssignedAccessSettings.IsEnabled");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AssignedAccessSettings.IsSingleAppKioskMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AssignedAccessSettings.IsSingleAppKioskMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AssignedAccessSettings.IsSingleAppKioskMode");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AssignedAccessSettings.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User AssignedAccessSettings.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20AssignedAccessSettings.User");
 			}
 		}
 		#endif
@@ -44,14 +44,14 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.UserProfile.AssignedAccessSettings GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member AssignedAccessSettings AssignedAccessSettings.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AssignedAccessSettings AssignedAccessSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AssignedAccessSettings%20AssignedAccessSettings.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.UserProfile.AssignedAccessSettings GetForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member AssignedAccessSettings AssignedAccessSettings.GetForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AssignedAccessSettings AssignedAccessSettings.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AssignedAccessSettings%20AssignedAccessSettings.GetForUser%28User%20user%29");
 		}
 		#endif
 	}

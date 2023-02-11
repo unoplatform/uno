@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame CapturedPhoto.Frame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrame CapturedPhoto.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrame%20CapturedPhoto.Frame");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame CapturedPhoto.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CapturedFrame CapturedPhoto.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CapturedFrame%20CapturedPhoto.Thumbnail");
 			}
 		}
 		#endif

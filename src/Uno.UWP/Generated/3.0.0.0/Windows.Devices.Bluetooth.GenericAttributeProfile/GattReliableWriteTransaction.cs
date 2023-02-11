@@ -26,14 +26,14 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> CommitAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattReliableWriteTransaction.CommitAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattCommunicationStatus> GattReliableWriteTransaction.CommitAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattCommunicationStatus%3E%20GattReliableWriteTransaction.CommitAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> CommitWithResultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattReliableWriteTransaction.CommitWithResultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattReliableWriteTransaction.CommitWithResultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGattWriteResult%3E%20GattReliableWriteTransaction.CommitWithResultAsync%28%29");
 		}
 		#endif
 	}

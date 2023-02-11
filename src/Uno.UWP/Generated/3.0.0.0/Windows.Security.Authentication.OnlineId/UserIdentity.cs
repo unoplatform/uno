@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.FirstName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserIdentity.FirstName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserIdentity.FirstName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserIdentity.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserIdentity.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserIdentity.IsBetaAccount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool UserIdentity.IsBetaAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UserIdentity.IsBetaAccount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserIdentity.IsConfirmedPC is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool UserIdentity.IsConfirmedPC is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UserIdentity.IsConfirmedPC");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.LastName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserIdentity.LastName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserIdentity.LastName");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.SafeCustomerId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserIdentity.SafeCustomerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserIdentity.SafeCustomerId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.SignInName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserIdentity.SignInName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserIdentity.SignInName");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OnlineIdServiceTicket> UserIdentity.Tickets is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<OnlineIdServiceTicket> UserIdentity.Tickets is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3COnlineIdServiceTicket%3E%20UserIdentity.Tickets");
 			}
 		}
 		#endif

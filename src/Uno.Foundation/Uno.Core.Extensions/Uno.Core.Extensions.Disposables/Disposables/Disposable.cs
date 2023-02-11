@@ -26,7 +26,7 @@ namespace Uno.Disposables
 		/// <summary>
 		/// Gets the disposable that does nothing when disposed.
 		/// </summary>
-		public static IDisposable Empty 
+		public static IDisposable Empty
 			=> DefaultDisposable.Instance;
 
 		/// <summary>
@@ -35,7 +35,7 @@ namespace Uno.Disposables
 		/// <param name="dispose">Action to run during the first call to <see cref="IDisposable.Dispose"/>. The action is guaranteed to be run at most once.</param>
 		/// <returns>The disposable object that runs the given action upon disposal.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="dispose"/> is null.</exception>
-		public static IDisposable Create(Action dispose) 
+		public static IDisposable Create(Action dispose)
 			=> new AnonymousDisposable(dispose ?? throw new ArgumentNullException(nameof(dispose)));
 	}
 }

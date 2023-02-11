@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MinBlurRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MinBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionProjectedShadow.MinBlurRadius");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MaxBlurRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MaxBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionProjectedShadow.MaxBlurRadius");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionLight CompositionProjectedShadow.LightSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionLight CompositionProjectedShadow.LightSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionLight%20CompositionProjectedShadow.LightSource");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.BlurRadiusMultiplier is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.BlurRadiusMultiplier is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionProjectedShadow.BlurRadiusMultiplier");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionProjectedShadowCasterCollection CompositionProjectedShadow.Casters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionProjectedShadowCasterCollection CompositionProjectedShadow.Casters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionProjectedShadowCasterCollection%20CompositionProjectedShadow.Casters");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiverUnorderedCollection CompositionProjectedShadow.Receivers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiverUnorderedCollection CompositionProjectedShadow.Receivers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionProjectedShadowReceiverUnorderedCollection%20CompositionProjectedShadow.Receivers");
 			}
 		}
 		#endif

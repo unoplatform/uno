@@ -14,7 +14,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> DeviceInformationUpdate.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> DeviceInformationUpdate.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20DeviceInformationUpdate.Properties");
 			}
 		}
 		#endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformationKind DeviceInformationUpdate.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformationKind DeviceInformationUpdate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformationKind%20DeviceInformationUpdate.Kind");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattClientCharacteristicConfigurationDescriptorValue GattReadClientCharacteristicConfigurationDescriptorResult.ClientCharacteristicConfigurationDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattClientCharacteristicConfigurationDescriptorValue GattReadClientCharacteristicConfigurationDescriptorResult.ClientCharacteristicConfigurationDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattClientCharacteristicConfigurationDescriptorValue%20GattReadClientCharacteristicConfigurationDescriptorResult.ClientCharacteristicConfigurationDescriptor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattReadClientCharacteristicConfigurationDescriptorResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattReadClientCharacteristicConfigurationDescriptorResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattCommunicationStatus%20GattReadClientCharacteristicConfigurationDescriptorResult.Status");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattReadClientCharacteristicConfigurationDescriptorResult.ProtocolError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte? GattReadClientCharacteristicConfigurationDescriptorResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%3F%20GattReadClientCharacteristicConfigurationDescriptorResult.ProtocolError");
 			}
 		}
 		#endif

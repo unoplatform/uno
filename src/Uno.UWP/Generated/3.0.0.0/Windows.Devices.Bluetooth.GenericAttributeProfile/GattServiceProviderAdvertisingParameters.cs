@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsDiscoverable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsDiscoverable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GattServiceProviderAdvertisingParameters.IsDiscoverable");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsConnectable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsConnectable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GattServiceProviderAdvertisingParameters.IsConnectable");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattServiceProviderAdvertisingParameters.ServiceData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer GattServiceProviderAdvertisingParameters.ServiceData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20GattServiceProviderAdvertisingParameters.ServiceData");
 			}
 			set
 			{

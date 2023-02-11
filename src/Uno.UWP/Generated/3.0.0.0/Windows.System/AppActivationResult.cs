@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupInfo AppActivationResult.AppResourceGroupInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppResourceGroupInfo AppActivationResult.AppResourceGroupInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppResourceGroupInfo%20AppActivationResult.AppResourceGroupInfo");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AppActivationResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception AppActivationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20AppActivationResult.ExtendedError");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapAlphaMode PerceptionVideoProfile.BitmapAlphaMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapAlphaMode PerceptionVideoProfile.BitmapAlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapAlphaMode%20PerceptionVideoProfile.BitmapAlphaMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPixelFormat PerceptionVideoProfile.BitmapPixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapPixelFormat PerceptionVideoProfile.BitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapPixelFormat%20PerceptionVideoProfile.BitmapPixelFormat");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionVideoProfile.FrameDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PerceptionVideoProfile.FrameDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PerceptionVideoProfile.FrameDuration");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PerceptionVideoProfile.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PerceptionVideoProfile.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PerceptionVideoProfile.Height");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PerceptionVideoProfile.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PerceptionVideoProfile.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PerceptionVideoProfile.Width");
 			}
 		}
 		#endif
@@ -66,7 +66,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEqual( global::Windows.Devices.Perception.PerceptionVideoProfile other)
 		{
-			throw new global::System.NotImplementedException("The member bool PerceptionVideoProfile.IsEqual(PerceptionVideoProfile other) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PerceptionVideoProfile.IsEqual(PerceptionVideoProfile other) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PerceptionVideoProfile.IsEqual%28PerceptionVideoProfile%20other%29");
 		}
 		#endif
 	}

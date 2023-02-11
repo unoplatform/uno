@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDeviceAssociationChangedEventArgs.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDeviceAssociationChangedEventArgs.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDeviceAssociationChangedEventArgs.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserDeviceAssociationChangedEventArgs.NewUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User UserDeviceAssociationChangedEventArgs.NewUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20UserDeviceAssociationChangedEventArgs.NewUser");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserDeviceAssociationChangedEventArgs.OldUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User UserDeviceAssociationChangedEventArgs.OldUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20UserDeviceAssociationChangedEventArgs.OldUser");
 			}
 		}
 		#endif

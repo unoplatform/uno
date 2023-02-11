@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpringVector2NaturalMotionAnimation.Period is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SpringVector2NaturalMotionAnimation.Period is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SpringVector2NaturalMotionAnimation.Period");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpringVector2NaturalMotionAnimation.DampingRatio is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpringVector2NaturalMotionAnimation.DampingRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpringVector2NaturalMotionAnimation.DampingRatio");
 			}
 			set
 			{

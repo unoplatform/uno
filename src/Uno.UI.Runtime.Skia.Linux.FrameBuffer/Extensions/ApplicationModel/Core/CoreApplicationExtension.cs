@@ -20,7 +20,7 @@ internal class CoreApplicationExtension : ICoreApplicationExtension
 	public void Exit()
 	{
 		ExitRequested = true;
-		
+
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"Application has requested an exit");

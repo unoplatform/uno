@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionProjectedShadowCasterCollection.Count is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int CompositionProjectedShadowCasterCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CompositionProjectedShadowCasterCollection.Count");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionProjectedShadowCasterCollection.MaxRespectedCasters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int CompositionProjectedShadowCasterCollection.MaxRespectedCasters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CompositionProjectedShadowCasterCollection.MaxRespectedCasters");
 			}
 		}
 		#endif

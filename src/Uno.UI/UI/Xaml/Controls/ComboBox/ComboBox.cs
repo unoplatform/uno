@@ -741,7 +741,7 @@ namespace Windows.UI.Xaml.Controls
 			private const int _itemsToShow = 9;
 
 			/// <inheritdoc />
-			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftLocation)
+			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize)
 			{
 				var popup = Popup;
 				var combo = Combo;
@@ -852,13 +852,18 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
 				}
 
-				if (upperLeftLocation is Point offset)
+#if __ANDROID__
+				// Check whether the status bar is translucent
+				// If so, we may need to compensate for the origin location
+				var isTranslucent = Window.Current.IsStatusBarTranslucent();
+				var allowUnderStatusBar = FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar;
+				if (isTranslucent && allowUnderStatusBar)
 				{
-					// Compensate for origin location is some popup providers (Android
-					// is one, particularly when the status bar is translucent)
+					var offset = visibleBounds.Location;
 					frame.X -= offset.X;
 					frame.Y -= offset.Y;
 				}
+#endif
 
 				child.Arrange(frame);
 			}

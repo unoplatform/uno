@@ -9,6 +9,7 @@
 		Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401
 		<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>
 		-->$endif$
+
   	</PropertyGroup>
 
   	<PropertyGroup>
@@ -25,13 +26,6 @@
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-
-		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
-		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == '$basetargetframework$-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
-
-		<!-- Required for C# Hot Reload, except for macOS which uses CoreCLR (not Mono) -->
-		<!-- Disabled because of https://github.com/dotnet/runtime/issues/68808 -->
-		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != '$basetargetframework$-maccatalyst' and '$(TargetFramework)' != '$basetargetframework$-macos'">True</UseInterpreter>-->
 
 		<IsUnoHead>true</IsUnoHead>
 
@@ -59,6 +53,11 @@
 	<Choose>
 
 		<When Condition="'$(TargetFramework)'=='$basetargetframework$-android'">
+			<PropertyGroup Condition="'$(Configuration)'=='Release'">
+				<!-- Workaround for .NET Android issue https://github.com/xamarin/xamarin-android/issues/7736 -->
+				<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+			</PropertyGroup>
+
 			<ItemGroup>
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
@@ -103,11 +102,11 @@
 			</ItemGroup>
 		</When>
 
-		<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
+		$if$($UseAppKit$ == True)<When Condition="'$(TargetFramework)'=='$basetargetframework$-macos'">
 			<PropertyGroup>
 				<TrimMode Condition="'$(Configuration)'=='Release'">link</TrimMode>
 			</PropertyGroup>
-		</When>
+		</When>$endif$
 	</Choose>
 	
 	<ItemGroup>

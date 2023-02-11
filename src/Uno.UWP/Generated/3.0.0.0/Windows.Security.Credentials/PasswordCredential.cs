@@ -16,7 +16,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet PasswordCredential.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet PasswordCredential.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20PasswordCredential.Properties");
 			}
 		}
 		#endif

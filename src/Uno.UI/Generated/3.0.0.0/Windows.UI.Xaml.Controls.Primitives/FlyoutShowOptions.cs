@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FlyoutShowMode FlyoutShowOptions.ShowMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FlyoutShowMode FlyoutShowOptions.ShowMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FlyoutShowMode%20FlyoutShowOptions.ShowMode");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? FlyoutShowOptions.ExclusionRect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect? FlyoutShowOptions.ExclusionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%3F%20FlyoutShowOptions.ExclusionRect");
 			}
 			set
 			{

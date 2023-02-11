@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAccountProviderPartnerAccountKind UserDataAccountPartnerAccountInfo.AccountKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataAccountProviderPartnerAccountKind UserDataAccountPartnerAccountInfo.AccountKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataAccountProviderPartnerAccountKind%20UserDataAccountPartnerAccountInfo.AccountKind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataAccountPartnerAccountInfo.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserDataAccountPartnerAccountInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserDataAccountPartnerAccountInfo.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UserDataAccountPartnerAccountInfo.Priority is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UserDataAccountPartnerAccountInfo.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UserDataAccountPartnerAccountInfo.Priority");
 			}
 		}
 		#endif

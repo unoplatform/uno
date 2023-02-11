@@ -158,7 +158,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> ExecuteAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SlipPrintJob.ExecuteAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SlipPrintJob.ExecuteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20SlipPrintJob.ExecuteAsync%28%29");
 		}
 		#endif
 		// Processing: Windows.Devices.PointOfService.IReceiptOrSlipJob

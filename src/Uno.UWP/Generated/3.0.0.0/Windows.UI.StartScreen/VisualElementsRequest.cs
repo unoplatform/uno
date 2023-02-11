@@ -13,7 +13,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SecondaryTileVisualElements> VisualElementsRequest.AlternateVisualElements is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SecondaryTileVisualElements> VisualElementsRequest.AlternateVisualElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSecondaryTileVisualElements%3E%20VisualElementsRequest.AlternateVisualElements");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset VisualElementsRequest.Deadline is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset VisualElementsRequest.Deadline is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20VisualElementsRequest.Deadline");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryTileVisualElements VisualElementsRequest.VisualElements is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SecondaryTileVisualElements VisualElementsRequest.VisualElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryTileVisualElements%20VisualElementsRequest.VisualElements");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.UI.StartScreen
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.StartScreen.VisualElementsRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member VisualElementsRequestDeferral VisualElementsRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VisualElementsRequestDeferral VisualElementsRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VisualElementsRequestDeferral%20VisualElementsRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

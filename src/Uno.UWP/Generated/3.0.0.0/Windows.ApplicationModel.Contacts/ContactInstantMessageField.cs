@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactInstantMessageField.Category is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactInstantMessageField.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactFieldCategory%20ContactInstantMessageField.Category");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactInstantMessageField.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactInstantMessageField.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactFieldType ContactInstantMessageField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactFieldType%20ContactInstantMessageField.Type");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactInstantMessageField.Value");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.DisplayText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactInstantMessageField.DisplayText");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContactInstantMessageField.LaunchUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri ContactInstantMessageField.LaunchUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20ContactInstantMessageField.LaunchUri");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Service is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactInstantMessageField.Service");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.UserName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactInstantMessageField.UserName");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception IppAttributeError.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception IppAttributeError.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20IppAttributeError.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IppAttributeErrorReason IppAttributeError.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IppAttributeErrorReason IppAttributeError.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IppAttributeErrorReason%20IppAttributeError.Reason");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Printers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Printers.IppAttributeValue> GetUnsupportedValues()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<IppAttributeValue> IppAttributeError.GetUnsupportedValues() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<IppAttributeValue> IppAttributeError.GetUnsupportedValues() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CIppAttributeValue%3E%20IppAttributeError.GetUnsupportedValues%28%29");
 		}
 		#endif
 	}

@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geovisit GeovisitStateChangedEventArgs.Visit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geovisit GeovisitStateChangedEventArgs.Visit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geovisit%20GeovisitStateChangedEventArgs.Visit");
 			}
 		}
 		#endif

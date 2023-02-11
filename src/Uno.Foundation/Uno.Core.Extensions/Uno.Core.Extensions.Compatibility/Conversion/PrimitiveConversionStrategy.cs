@@ -27,34 +27,34 @@ using ObjCRuntime;
 
 namespace Uno.Conversion
 {
-    internal class PrimitiveConversionStrategy : IConversionStrategy
-    {
-        public bool CanConvert(object value, Type toType, CultureInfo culture = null)
-        {
-            var targetNullableType = Nullable.GetUnderlyingType(toType);
-            if (targetNullableType != null)
-            {
-                return CanConvert(value, targetNullableType, culture);
-            }
+	internal class PrimitiveConversionStrategy : IConversionStrategy
+	{
+		public bool CanConvert(object value, Type toType, CultureInfo culture = null)
+		{
+			var targetNullableType = Nullable.GetUnderlyingType(toType);
+			if (targetNullableType != null)
+			{
+				return CanConvert(value, targetNullableType, culture);
+			}
 
-            var isTargetPrimitive = toType
+			var isTargetPrimitive = toType
 #if WINDOWS_UWP
 				.GetTypeInfo()
 #endif
-                .IsPrimitive || toType == typeof(string);
-            bool isSourcePrimitive = IsPrimitive(value);
+				.IsPrimitive || toType == typeof(string);
+			bool isSourcePrimitive = IsPrimitive(value);
 
-            return isTargetPrimitive && isSourcePrimitive;
-        }
+			return isTargetPrimitive && isSourcePrimitive;
+		}
 
-        private static bool IsPrimitive(object value)
-        {
-            var isSourcePrimitive = value.GetType()
+		private static bool IsPrimitive(object value)
+		{
+			var isSourcePrimitive = value.GetType()
 #if WINDOWS_UWP
 										.GetTypeInfo()
 #endif
-                                        .IsPrimitive
-                                    || value is string
+										.IsPrimitive
+									|| value is string
 #if XAMARIN_IOS
 									// Those are platform primitives provided for 64 bits compatibility
 									// with iOS 8.0 and later
@@ -62,19 +62,19 @@ namespace Uno.Conversion
 									|| value is nint
 									|| value is nuint
 #endif
-                                    ;
-            return isSourcePrimitive;
-        }
+									;
+			return isSourcePrimitive;
+		}
 
-        public object Convert(object value, Type toType, CultureInfo culture = null)
-        {
-            var targetNullableType = Nullable.GetUnderlyingType(toType);
-            if (targetNullableType != null)
-            {
-                return Convert(value, targetNullableType, culture);
-            }
+		public object Convert(object value, Type toType, CultureInfo culture = null)
+		{
+			var targetNullableType = Nullable.GetUnderlyingType(toType);
+			if (targetNullableType != null)
+			{
+				return Convert(value, targetNullableType, culture);
+			}
 
-            return System.Convert.ChangeType(value, toType, culture ?? CultureInfo.InvariantCulture);
-        }
-    }
+			return System.Convert.ChangeType(value, toType, culture ?? CultureInfo.InvariantCulture);
+		}
+	}
 }

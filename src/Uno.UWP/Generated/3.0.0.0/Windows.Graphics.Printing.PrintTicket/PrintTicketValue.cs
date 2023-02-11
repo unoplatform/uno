@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketValueType PrintTicketValue.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketValueType PrintTicketValue.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketValueType%20PrintTicketValue.Type");
 			}
 		}
 		#endif
@@ -22,14 +22,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int GetValueAsInteger()
 		{
-			throw new global::System.NotImplementedException("The member int PrintTicketValue.GetValueAsInteger() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int PrintTicketValue.GetValueAsInteger() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PrintTicketValue.GetValueAsInteger%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetValueAsString()
 		{
-			throw new global::System.NotImplementedException("The member string PrintTicketValue.GetValueAsString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PrintTicketValue.GetValueAsString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketValue.GetValueAsString%28%29");
 		}
 		#endif
 	}

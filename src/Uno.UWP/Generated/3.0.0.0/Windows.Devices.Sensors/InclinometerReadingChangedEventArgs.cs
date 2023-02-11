@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InclinometerReading InclinometerReadingChangedEventArgs.Reading is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InclinometerReading InclinometerReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InclinometerReading%20InclinometerReadingChangedEventArgs.Reading");
 			}
 		}
 		#endif

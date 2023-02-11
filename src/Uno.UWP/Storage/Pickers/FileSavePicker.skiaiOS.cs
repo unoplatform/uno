@@ -10,7 +10,7 @@ using Uno.Foundation.Extensibility;
 namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
-    {
+	{
 		private IFileSavePickerExtension? _fileSavePickerExtension;
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _fileSavePickerExtension);

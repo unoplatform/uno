@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialController.UseAutomaticHapticFeedback is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RadialController.UseAutomaticHapticFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RadialController.UseAutomaticHapticFeedback");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RadialController.RotationResolutionInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double RadialController.RotationResolutionInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20RadialController.RotationResolutionInDegrees");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerMenu RadialController.Menu is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RadialControllerMenu RadialController.Menu is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialControllerMenu%20RadialController.Menu");
 			}
 		}
 		#endif
@@ -74,14 +74,14 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool RadialController.IsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool RadialController.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RadialController.IsSupported%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.RadialController CreateForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member RadialController RadialController.CreateForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RadialController RadialController.CreateForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialController%20RadialController.CreateForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

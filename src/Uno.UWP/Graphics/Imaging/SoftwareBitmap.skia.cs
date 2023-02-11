@@ -52,7 +52,7 @@ namespace Windows.Graphics.Imaging
 			};
 	}
 
-	partial class SoftwareBitmap: IDisposable
+	partial class SoftwareBitmap : IDisposable
 	{
 		private readonly SKBitmap bitmap;
 
@@ -129,11 +129,11 @@ namespace Windows.Graphics.Imaging
 				InstallPixels(info
 				, gcHandle.AddrOfPinnedObject()
 				, info.RowBytes
-				, (address, context) => ((GCHandle)context).Free() , gcHandle);
+				, (address, context) => ((GCHandle)context).Free(), gcHandle);
 
 			if (!success)
 			{
-				throw new ArgumentException($"The pixel format of {nameof(source)} is not {format}." ,nameof(source));
+				throw new ArgumentException($"The pixel format of {nameof(source)} is not {format}.", nameof(source));
 			}
 
 			return new SoftwareBitmap(destination);

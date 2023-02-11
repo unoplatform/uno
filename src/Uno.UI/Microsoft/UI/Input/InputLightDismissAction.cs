@@ -4,7 +4,7 @@ using Uno;
 
 namespace Microsoft.UI.Input
 {
-	public sealed class InputLightDismissAction : InputObject
+	public sealed partial class InputLightDismissAction : InputObject
 	{
 #pragma warning disable 67
 		public event Windows.Foundation.TypedEventHandler<InputLightDismissAction, InputLightDismissEventArgs> Dismissed;

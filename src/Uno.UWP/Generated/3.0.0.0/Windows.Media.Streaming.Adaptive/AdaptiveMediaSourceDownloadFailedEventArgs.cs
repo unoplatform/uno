@@ -13,7 +13,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage AdaptiveMediaSourceDownloadFailedEventArgs.HttpResponseMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseMessage AdaptiveMediaSourceDownloadFailedEventArgs.HttpResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessage%20AdaptiveMediaSourceDownloadFailedEventArgs.HttpResponseMessage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadFailedEventArgs.ResourceByteRangeLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadFailedEventArgs.ResourceByteRangeLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20AdaptiveMediaSourceDownloadFailedEventArgs.ResourceByteRangeLength");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadFailedEventArgs.ResourceByteRangeOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadFailedEventArgs.ResourceByteRangeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20AdaptiveMediaSourceDownloadFailedEventArgs.ResourceByteRangeOffset");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceResourceType AdaptiveMediaSourceDownloadFailedEventArgs.ResourceType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceResourceType AdaptiveMediaSourceDownloadFailedEventArgs.ResourceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdaptiveMediaSourceResourceType%20AdaptiveMediaSourceDownloadFailedEventArgs.ResourceType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AdaptiveMediaSourceDownloadFailedEventArgs.ResourceUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri AdaptiveMediaSourceDownloadFailedEventArgs.ResourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20AdaptiveMediaSourceDownloadFailedEventArgs.ResourceUri");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceDownloadFailedEventArgs.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceDownloadFailedEventArgs.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20AdaptiveMediaSourceDownloadFailedEventArgs.ExtendedError");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadFailedEventArgs.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadFailedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AdaptiveMediaSourceDownloadFailedEventArgs.Position");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AdaptiveMediaSourceDownloadFailedEventArgs.RequestId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AdaptiveMediaSourceDownloadFailedEventArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AdaptiveMediaSourceDownloadFailedEventArgs.RequestId");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceDownloadStatistics AdaptiveMediaSourceDownloadFailedEventArgs.Statistics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceDownloadStatistics AdaptiveMediaSourceDownloadFailedEventArgs.Statistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AdaptiveMediaSourceDownloadStatistics%20AdaptiveMediaSourceDownloadFailedEventArgs.Statistics");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdaptiveMediaSourceDownloadFailedEventArgs.ResourceContentType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AdaptiveMediaSourceDownloadFailedEventArgs.ResourceContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AdaptiveMediaSourceDownloadFailedEventArgs.ResourceContentType");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadFailedEventArgs.ResourceDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceDownloadFailedEventArgs.ResourceDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AdaptiveMediaSourceDownloadFailedEventArgs.ResourceDuration");
 			}
 		}
 		#endif

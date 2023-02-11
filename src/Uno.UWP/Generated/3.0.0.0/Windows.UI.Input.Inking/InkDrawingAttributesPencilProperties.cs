@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkDrawingAttributesPencilProperties.Opacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double InkDrawingAttributesPencilProperties.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20InkDrawingAttributesPencilProperties.Opacity");
 			}
 			set
 			{

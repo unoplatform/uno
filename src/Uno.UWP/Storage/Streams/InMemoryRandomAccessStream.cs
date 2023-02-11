@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace Windows.Storage.Streams;
 
-public partial class InMemoryRandomAccessStream: IStreamWrapper
+public partial class InMemoryRandomAccessStream : IStreamWrapper
 {
 	private readonly MemoryStream _stream;
 	public InMemoryRandomAccessStream() =>

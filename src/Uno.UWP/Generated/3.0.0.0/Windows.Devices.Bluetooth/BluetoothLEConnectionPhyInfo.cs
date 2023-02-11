@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEConnectionPhyInfo.IsCodedPhy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothLEConnectionPhyInfo.IsCodedPhy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothLEConnectionPhyInfo.IsCodedPhy");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEConnectionPhyInfo.IsUncoded1MPhy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothLEConnectionPhyInfo.IsUncoded1MPhy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothLEConnectionPhyInfo.IsUncoded1MPhy");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEConnectionPhyInfo.IsUncoded2MPhy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothLEConnectionPhyInfo.IsUncoded2MPhy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothLEConnectionPhyInfo.IsUncoded2MPhy");
 			}
 		}
 		#endif

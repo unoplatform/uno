@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument HotspotCredentialsAuthenticationResult.AuthenticationReplyXml is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member XmlDocument HotspotCredentialsAuthenticationResult.AuthenticationReplyXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlDocument%20HotspotCredentialsAuthenticationResult.AuthenticationReplyXml");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri HotspotCredentialsAuthenticationResult.LogoffUrl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri HotspotCredentialsAuthenticationResult.LogoffUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20HotspotCredentialsAuthenticationResult.LogoffUrl");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HotspotAuthenticationResponseCode HotspotCredentialsAuthenticationResult.ResponseCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HotspotAuthenticationResponseCode HotspotCredentialsAuthenticationResult.ResponseCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HotspotAuthenticationResponseCode%20HotspotCredentialsAuthenticationResult.ResponseCode");
 			}
 		}
 		#endif

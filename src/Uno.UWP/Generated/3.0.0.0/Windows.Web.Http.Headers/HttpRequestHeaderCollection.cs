@@ -9,35 +9,11 @@ namespace Windows.Web.Http.Headers
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint HttpRequestHeaderCollection.Size is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri Referer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri HttpRequestHeaderCollection.Referer is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Uri HttpRequestHeaderCollection.Referer");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.ProxyAuthorization");
 			}
 			set
 			{
@@ -47,53 +23,11 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint? MaxForwards
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? HttpRequestHeaderCollection.MaxForwards is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "uint? HttpRequestHeaderCollection.MaxForwards");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? IfUnmodifiedSince
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfUnmodifiedSince is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.IfUnmodifiedSince");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? IfModifiedSince
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.HostName Host
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName HttpRequestHeaderCollection.Host is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HostName HttpRequestHeaderCollection.Host is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HostName%20HttpRequestHeaderCollection.Host");
 			}
 			set
 			{
@@ -103,39 +37,11 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string From
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.From is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "string HttpRequestHeaderCollection.From");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? Date
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.Date is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.Date");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.Authorization");
 			}
 			set
 			{
@@ -149,7 +55,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValueCollection HttpRequestHeaderCollection.Accept is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValueCollection HttpRequestHeaderCollection.Accept is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpMediaTypeWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.Accept");
 			}
 		}
 		#endif
@@ -159,7 +65,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentCodingWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptEncoding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpContentCodingWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpContentCodingWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.AcceptEncoding");
 			}
 		}
 		#endif
@@ -169,7 +75,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpLanguageRangeWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.AcceptLanguage");
 			}
 		}
 		#endif
@@ -179,7 +85,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCacheDirectiveHeaderValueCollection HttpRequestHeaderCollection.CacheControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCacheDirectiveHeaderValueCollection HttpRequestHeaderCollection.CacheControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCacheDirectiveHeaderValueCollection%20HttpRequestHeaderCollection.CacheControl");
 			}
 		}
 		#endif
@@ -189,7 +95,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpConnectionOptionHeaderValueCollection HttpRequestHeaderCollection.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpConnectionOptionHeaderValueCollection HttpRequestHeaderCollection.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpConnectionOptionHeaderValueCollection%20HttpRequestHeaderCollection.Connection");
 			}
 		}
 		#endif
@@ -199,7 +105,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCookiePairHeaderValueCollection%20HttpRequestHeaderCollection.Cookie");
 			}
 		}
 		#endif
@@ -209,7 +115,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpExpectationHeaderValueCollection%20HttpRequestHeaderCollection.Expect");
 			}
 		}
 		#endif
@@ -219,7 +125,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpTransferCodingHeaderValueCollection HttpRequestHeaderCollection.TransferEncoding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpTransferCodingHeaderValueCollection HttpRequestHeaderCollection.TransferEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpTransferCodingHeaderValueCollection%20HttpRequestHeaderCollection.TransferEncoding");
 			}
 		}
 		#endif
@@ -229,7 +135,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValueCollection HttpRequestHeaderCollection.UserAgent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValueCollection HttpRequestHeaderCollection.UserAgent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpProductInfoHeaderValueCollection%20HttpRequestHeaderCollection.UserAgent");
 			}
 		}
 		#endif
@@ -271,7 +177,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryAppendWithoutValidation( string name,  string value)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpRequestHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Lookup(string)
@@ -286,7 +192,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestHeaderCollection.ToString%28%29");
 		}
 		#endif
 		// Processing: System.Collections.Generic.IDictionary<string, string>
@@ -296,44 +202,6 @@ namespace Windows.Web.Http.Headers
 		public void Add( string key,  string value)
 		{
 			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out string value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -368,14 +236,6 @@ namespace Windows.Web.Http.Headers
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
 			throw new global::System.NotSupportedException();
@@ -387,34 +247,6 @@ namespace Windows.Web.Http.Headers
 		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, string>[] array,  int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, string> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>

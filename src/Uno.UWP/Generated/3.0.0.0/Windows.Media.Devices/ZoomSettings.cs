@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ZoomSettings.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ZoomSettings.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ZoomSettings.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ZoomTransitionMode ZoomSettings.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ZoomTransitionMode ZoomSettings.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ZoomTransitionMode%20ZoomSettings.Mode");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattSubscribedClient.MaxNotificationSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort GattSubscribedClient.MaxNotificationSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20GattSubscribedClient.MaxNotificationSize");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattSession GattSubscribedClient.Session is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattSession GattSubscribedClient.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattSession%20GattSubscribedClient.Session");
 			}
 		}
 		#endif

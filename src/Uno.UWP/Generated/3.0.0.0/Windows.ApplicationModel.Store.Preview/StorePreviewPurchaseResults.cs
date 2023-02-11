@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorePreviewProductPurchaseStatus StorePreviewPurchaseResults.ProductPurchaseStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorePreviewProductPurchaseStatus StorePreviewPurchaseResults.ProductPurchaseStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorePreviewProductPurchaseStatus%20StorePreviewPurchaseResults.ProductPurchaseStatus");
 			}
 		}
 		#endif

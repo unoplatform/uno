@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiDirectLegacySettings.Ssid is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WiFiDirectLegacySettings.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WiFiDirectLegacySettings.Ssid");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential WiFiDirectLegacySettings.Passphrase is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential WiFiDirectLegacySettings.Passphrase is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20WiFiDirectLegacySettings.Passphrase");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectLegacySettings.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WiFiDirectLegacySettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WiFiDirectLegacySettings.IsEnabled");
 			}
 			set
 			{

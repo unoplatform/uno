@@ -76,7 +76,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				HasProperty = propertySymbol is not null;
 				PropertyTypeFullyQualifiedName = propertySymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-				
+
 				PropertyHasGetter = propertySymbol?.GetMethod is not null;
 				PropertyHasSetter = propertySymbol?.SetMethod is not null;
 			}
@@ -121,7 +121,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public GenerationCandidateData(ISymbol dpSymbol, AttributeData attribute)
 			{
-				PropertyName = dpSymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
+				PropertyName = dpSymbol.Name.TrimEnd("Property");
 				HasPropertySuffix = dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal);
 
 				MetadataOptions = GetAttributeValue(attribute, "Options")?.Value.Value?.ToString() ?? "0";
@@ -139,7 +139,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				ContainingTypeIsCandidate = dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
 					(dpSymbol.ContainingType.IsStatic || isDependencyObject);
-				
+
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
 				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;

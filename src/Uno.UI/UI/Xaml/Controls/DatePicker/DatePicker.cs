@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Globalization;
@@ -1625,7 +1626,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					m_tpYearTextBlock.Text = ResourceLoader.GetForCurrentView().GetString("TEXT_DATEPICKER_YEAR_PLACEHOLDER");
+					m_tpYearTextBlock.Text = ResourceAccessor.GetLocalizedStringResource("TEXT_DATEPICKER_YEAR_PLACEHOLDER");
 				}
 			}
 			if (m_tpMonthTextBlock != null)
@@ -1639,7 +1640,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					m_tpMonthTextBlock.Text = ResourceLoader.GetForCurrentView().GetString("TEXT_DATEPICKER_MONTH_PLACEHOLDER");
+					m_tpMonthTextBlock.Text = ResourceAccessor.GetLocalizedStringResource("TEXT_DATEPICKER_MONTH_PLACEHOLDER");
 				}
 			}
 			if (m_tpDayTextBlock != null)
@@ -1654,7 +1655,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					m_tpDayTextBlock.Text = ResourceLoader.GetForCurrentView().GetString("TEXT_DATEPICKER_DAY_PLACEHOLDER");
+					m_tpDayTextBlock.Text = ResourceAccessor.GetLocalizedStringResource("TEXT_DATEPICKER_DAY_PLACEHOLDER");
 				}
 			}
 

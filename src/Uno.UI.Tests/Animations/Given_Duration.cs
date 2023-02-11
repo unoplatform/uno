@@ -58,7 +58,7 @@ namespace Uno.UI.Tests.Animations
 			Assert.AreEqual(duration, duration.Add(new Duration(TimeSpan.FromSeconds(24))));
 			Assert.AreEqual(duration, duration.Subtract(new Duration(TimeSpan.FromSeconds(24))));
 		}
-		
+
 		[TestMethod]
 		public void When_Duration_Is_TimeSpan()
 		{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEScanningMode%20BluetoothLEAdvertisementWatcher.ScanningMode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEAdvertisementFilter%20BluetoothLEAdvertisementWatcher.AdvertisementFilter");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MaxSamplingInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MaxSamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcher.MaxSamplingInterval");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MinSamplingInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MinSamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20BluetoothLEAdvertisementWatcher.MinSamplingInterval");
 			}
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEAdvertisementWatcherStatus%20BluetoothLEAdvertisementWatcher.Status");
 			}
 		}
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
 			}
 			set
 			{

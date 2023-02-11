@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception OnlineIdSystemTicketResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception OnlineIdSystemTicketResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20OnlineIdSystemTicketResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OnlineIdSystemIdentity OnlineIdSystemTicketResult.Identity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member OnlineIdSystemIdentity OnlineIdSystemTicketResult.Identity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OnlineIdSystemIdentity%20OnlineIdSystemTicketResult.Identity");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OnlineIdSystemTicketStatus OnlineIdSystemTicketResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member OnlineIdSystemTicketStatus OnlineIdSystemTicketResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=OnlineIdSystemTicketStatus%20OnlineIdSystemTicketResult.Status");
 			}
 		}
 		#endif

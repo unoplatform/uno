@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Media
 			return IsSourceReady
 				|| Stream != null
 				|| AbsoluteUri != null
-				|| FilePath.HasValueTrimmed()
+				|| !FilePath.IsNullOrWhiteSpace()
 				|| _imageData.HasData
 				|| BitmapDrawable != null
 				|| ResourceId != null;
@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Media
 				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(Stream));
 			}
 
-			if (FilePath.HasValue())
+			if (!FilePath.IsNullOrEmpty())
 			{
 				await BitmapFactory.DecodeFileAsync(FilePath, options);
 				if (ValidateIfImageNeedsResize(options))

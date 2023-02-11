@@ -36,25 +36,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			this._isAttachable = isAttachable;
 		}
 
-		public string Name 
-			=> (_name?.HasValue() ?? false) ? _name : _unoMember?.Name!;
+		public string Name
+			=> !_name.IsNullOrEmpty() ? _name : _unoMember?.Name!;
 
-		public XamlType DeclaringType 
+		public XamlType DeclaringType
 			=> _declaringType != null ? _declaringType : XamlType.FromType(_unoMember?.DeclaringType);
 
 		public XamlType Type
 			=> XamlType.FromType(_unoMember?.Type);
 
-		public string? PreferredXamlNamespace 
+		public string? PreferredXamlNamespace
 			=> _unoMember?.PreferredXamlNamespace;
 
-		public bool IsAttachable 
+		public bool IsAttachable
 			=> _declaringType != null ? _isAttachable : _unoMember?.IsAttachable ?? false;
 
 		public override string ToString() => _unoMember?.ToString() ?? "";
 
 		public bool Equals(XamlMember? other)
-			=> _name.HasValue()
+			=> !_name.IsNullOrEmpty()
 			? (
 				other != null
 				&& _name == other._name
@@ -67,7 +67,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> other is XamlMember otherMember ? Equals(otherMember) : false;
 
 		public override int GetHashCode()
-			=> _name.HasValue()
+			=> !_name.IsNullOrEmpty()
 			? _name?.GetHashCode() ?? 0
 			: _unoMember?.GetHashCode() ?? 0;
 	}

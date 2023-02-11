@@ -67,7 +67,7 @@ namespace Windows.Storage.Streams
 		/// <inheritdoc />
 		public IRandomAccessStream CloneStream()
 		{
-			if(_stream is MemoryStream memStream)
+			if (_stream is MemoryStream memStream)
 			{
 				var bytes = memStream.ToArray();
 				return new MemoryStream(bytes).AsRandomAccessStream();

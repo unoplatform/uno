@@ -53,7 +53,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		[TestMethod]
 		public void When_Array_CopyTo_With_Index()
 		{
-			var originalList = new object[]{ 1, 2, 3 };
+			var originalList = new object[] { 1, 2, 3 };
 			var SUT = new CollectionView(originalList, false, null);
 
 			var array = new object[4];

@@ -53,9 +53,9 @@ internal partial class XamlCodeGeneration
 	private struct CachedResource : IEquatable<CachedResource>
 	{
 		public DateTimeOffset LastTimeUsed { get; }
-		public string[] ResourceKeys { get; }
+		public ResourceDetails[] ResourceKeys { get; }
 
-		public CachedResource(DateTimeOffset lastTimeUsed, string[] resourceKeys)
+		public CachedResource(DateTimeOffset lastTimeUsed, ResourceDetails[] resourceKeys)
 		{
 			LastTimeUsed = lastTimeUsed;
 			ResourceKeys = resourceKeys;
@@ -67,13 +67,13 @@ internal partial class XamlCodeGeneration
 		}
 
 		public override bool Equals(object? obj) => obj is CachedResource resource && Equals(resource);
-		public bool Equals(CachedResource other) => LastTimeUsed.Equals(other.LastTimeUsed) && EqualityComparer<string[]>.Default.Equals(ResourceKeys, other.ResourceKeys);
+		public bool Equals(CachedResource other) => LastTimeUsed.Equals(other.LastTimeUsed) && EqualityComparer<ResourceDetails[]>.Default.Equals(ResourceKeys, other.ResourceKeys);
 
 		public override int GetHashCode()
 		{
 			var hashCode = 1975215354;
 			hashCode = hashCode * -1521134295 + LastTimeUsed.GetHashCode();
-			hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(ResourceKeys);
+			hashCode = hashCode * -1521134295 + EqualityComparer<ResourceDetails[]>.Default.GetHashCode(ResourceKeys);
 			return hashCode;
 		}
 

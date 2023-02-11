@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowSessionStatus PrintWorkflowJobBackgroundSession.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintWorkflowSessionStatus PrintWorkflowJobBackgroundSession.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintWorkflowSessionStatus%20PrintWorkflowJobBackgroundSession.Status");
 			}
 		}
 		#endif

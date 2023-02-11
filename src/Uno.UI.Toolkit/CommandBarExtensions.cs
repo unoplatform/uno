@@ -16,7 +16,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class CommandBarExtensions
 	{
-#region Subtitle
+		#region Subtitle
 
 		public static DependencyProperty SubtitleProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -36,9 +36,9 @@ namespace Uno.UI.Toolkit
 			return (string)commandBar.GetValue(SubtitleProperty);
 		}
 
-#endregion
+		#endregion
 
-#region NavigationCommand
+		#region NavigationCommand
 
 		public static DependencyProperty NavigationCommandProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -62,9 +62,9 @@ namespace Uno.UI.Toolkit
 			return (AppBarButton)commandBar.GetValue(NavigationCommandProperty);
 		}
 
-#endregion
+		#endregion
 
-#region BackButtonTitle
+		#region BackButtonTitle
 
 		public static DependencyProperty BackButtonTitleProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -84,9 +84,9 @@ namespace Uno.UI.Toolkit
 			return (string)commandBar.GetValue(BackButtonTitleProperty);
 		}
 
-#endregion
+		#endregion
 
-#region BackButtonVisibility
+		#region BackButtonVisibility
 
 		public static DependencyProperty BackButtonVisibilityProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -106,9 +106,9 @@ namespace Uno.UI.Toolkit
 			return (Visibility)commandBar.GetValue(BackButtonVisibilityProperty);
 		}
 
-#endregion
+		#endregion
 
-#region BackButtonForeground
+		#region BackButtonForeground
 
 		public static DependencyProperty BackButtonForegroundProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -132,9 +132,9 @@ namespace Uno.UI.Toolkit
 			return (Brush)commandBar.GetValue(BackButtonForegroundProperty);
 		}
 
-#endregion
+		#endregion
 
-#region BackButtonIcon
+		#region BackButtonIcon
 
 		public static DependencyProperty BackButtonIconProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -154,6 +154,6 @@ namespace Uno.UI.Toolkit
 			return (IconElement)commandBar.GetValue(BackButtonIconProperty);
 		}
 
-#endregion
+		#endregion
 	}
 }

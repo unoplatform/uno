@@ -8813,7 +8813,7 @@
 			<Member
 				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet.get_Size()"
 				reason="Not part of UWP API" />
-			
+
 			<!-- BEGIN .NET 6 ios updated native ctors -->
 			<Member fullName="System.Void Windows.UI.Xaml.Application..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
 			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
@@ -8953,7 +8953,7 @@
 		<Properties>
 			<Member
 				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValue()"
-				reason="Not part of public API" />		
+				reason="Not part of public API" />
 			<Member
 				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValueProperty()"
 				reason="Not part of public API" />
@@ -8970,7 +8970,7 @@
 			<!-- END iOS 16 workaround -->
 		</Properties>
 	</IgnoreSet>
-	  
+
 	<IgnoreSet baseVersion="4.5">
 	  <Types>
 		  <!-- BEGIN Android Resources ignore -->
@@ -9011,7 +9011,7 @@
 	  </Types>
 	  <Methods>
 	  	<Member fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryStore..ctor()" reason="Not present in WinUI" />
-		  
+
 		<!-- BEGIN Android 13 breaking change -->
 		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.add_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
 		<Member fullName="System.Void Uno.UI.ViewManagement.IBaseActivityEvents.remove_PrepareOptionsPanel(Uno.UI.ViewManagement.ActivityPrepareOptionsPanelHandler value)" reason="Not present in WinUI" />
@@ -9043,13 +9043,344 @@
 		</Properties>
 
 		<Methods>
-			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)" 
+			<Member fullName="System.Void Uno.UI.UnoViewGroup.OnLayoutCore(System.Boolean p0, System.Int32 p1, System.Int32 p2, System.Int32 p3, System.Int32 p4)"
 					reason="Externally unused API for android layouting" />
-		<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()" 
+		<Member fullName="System.Void Windows.UI.Xaml.Window..ctor()"
 				reason="Window constructor does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 
+	<IgnoreSet baseVersion="4.7">
+		<Types>
+			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.Foundation.LiftedContract" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.Foundation.LiftedExperimentalContract" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionNotificationDeferral" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionProjectedShadowDrawOrder" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpCompositionContent" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpCompositionContentAutomationProviderRequestedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpCompositionContentEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpCompositionContentSite" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpCompositionContentSiteEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpCompositionVisualSurface" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpDisplayOrientations" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.ExpExpressionNotificationProperty" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.IExpCompositionPropertyChanged" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.IExpCompositionPropertyChangedListener" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.IExpCompositor" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.IExpContentTopLevelHost" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Experimental.IExpVisual" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.KnownResourceQualifierName" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.MrtContract" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceCandidate" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceCandidateKind" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceContext" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceLoader" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceManager" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceMap" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Input.KeyboardInput" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Hosting.WindowsXamlManager" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.CustomAttributes.MUXContractPropertyAttribute" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.IXamlDirectObject" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirect" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlEventIndex" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlPropertyIndex" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlTypeIndex" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.IApplicationViewSpanningRects" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.IInputValidationControl" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationError" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationErrorEventAction" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ISelfPlayingAnimatedVisual" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingAnimationMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingChainMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingContentOrientation" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingInputKinds" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingInteractionState" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingRailMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingScrollMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingScrollOptions" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingZoomMode" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollingZoomOptions" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ScrollView" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.UniformGridLayoutState" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.IScrollController" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.RepeatedZoomSnapPoint" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerInteractionRequestedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointBase" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState" reason="Not present in WinAppSDK 1.2" />
+		</Types>
+		<Events>
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::ValidationError" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.ComboBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; Microsoft.UI.Xaml.Controls.ComboBox::ValidationError" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.PasswordBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; Microsoft.UI.Xaml.Controls.PasswordBox::ValidationError" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.TextBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; Microsoft.UI.Xaml.Controls.TextBox::ValidationError" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.ElementFactory::DataContextChanged" reason="Not present in WinAppSDK 1.2" />
+		</Events>
+		<Fields />
+		<Properties>
+			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow::Configuration()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowPresenter::DoNotActivateWindow()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowTitleBar::IsVisible()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.FullScreenPresenter::IsExclusive()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow::OpacityFalloff()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow::MinOpacity()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow::MaxOpacity()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionBrush Microsoft.UI.Composition.CompositionProjectedShadowCaster::Mask()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Visual Microsoft.UI.Composition.CompositionProjectedShadowCaster::AncestorClip()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionBrush Microsoft.UI.Composition.CompositionProjectedShadowReceiver::Mask()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionProjectedShadowDrawOrder Microsoft.UI.Composition.CompositionProjectedShadowReceiver::DrawOrder()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.AutoSuggestBox::ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.AutoSuggestBox::InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.AutoSuggestBox::InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.AutoSuggestBox::ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.ComboBox::ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.ComboBox::InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.ComboBox::InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.ComboBox::ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.ComboBox::HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.ComboBox::ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ComboBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ComboBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ComboBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Windows.UI.Core.CoreDispatcher Microsoft.UI.Xaml.Controls.ElementFactory::Dispatcher()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueue Microsoft.UI.Xaml.Controls.ElementFactory::DispatcherQueue()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.ElementFactory::IsStoreInitialized()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Object Microsoft.UI.Xaml.Controls.ElementFactory::DataContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ElementFactory::DataContextProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.ElementFactory::TemplatedParent()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ElementFactory::TemplatedParentProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.PagerControl::PagerInputCommand()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PagerControl::PagerInputCommandProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.PasswordBox::ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.PasswordBox::InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.PasswordBox::InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.PasswordBox::ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.PasswordBox::HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.PasswordBox::ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.TextBox::ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.TextBox::InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.TextBox::ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.TextBox::InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.TextBox::ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.TextBox::HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.ApplicationTheme Microsoft.UI.Xaml.Media.RevealBrush::TargetTheme()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallback()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallbackProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::StateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::TargetThemeProperty()" reason="Not present in WinAppSDK 1.2" />
+		</Properties>
+		<Methods>
+			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindow.ApplyConfiguration(Microsoft.UI.Windowing.AppWindowConfiguration appWindowConfiguration)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.Destroy()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.Move(Windows.Graphics.PointInt32 position)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.MoveAndResize(Windows.Graphics.RectInt32 rect)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.MoveAndResize(Windows.Graphics.RectInt32 rect, Microsoft.UI.Windowing.DisplayArea displayarea)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.Resize(Windows.Graphics.SizeInt32 size)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindow.Show(System.Boolean activatewindow)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.TrySetPresenter(Microsoft.UI.Windowing.AppWindowPresenter appWindowPresenter)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.TrySetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind appWindowPresenterKind)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Windowing.AppWindow Microsoft.UI.Windowing.AppWindow.Create(Microsoft.UI.Windowing.AppWindowConfiguration appWindowConfiguration)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowPresenter.get_DoNotActivateWindow()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindowPresenter.set_DoNotActivateWindow(System.Boolean value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowTitleBar.get_IsVisible()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.add_Added(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.remove_Added(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.add_Removed(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.remove_Removed(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.add_Updated(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.DisplayAreaWatcher.remove_Updated(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Windowing.DisplayAreaWatcher,System.Object&gt; value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Boolean Microsoft.UI.Windowing.FullScreenPresenter.get_IsExclusive()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Windowing.FullScreenPresenter.set_IsExclusive(System.Boolean value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow.get_OpacityFalloff()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadow.set_OpacityFalloff(System.Single value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow.get_MinOpacity()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadow.set_MinOpacity(System.Single value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Single Microsoft.UI.Composition.CompositionProjectedShadow.get_MaxOpacity()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadow.set_MaxOpacity(System.Single value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionBrush Microsoft.UI.Composition.CompositionProjectedShadowCaster.get_Mask()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadowCaster.set_Mask(Microsoft.UI.Composition.CompositionBrush value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.Visual Microsoft.UI.Composition.CompositionProjectedShadowCaster.get_AncestorClip()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadowCaster.set_AncestorClip(Microsoft.UI.Composition.Visual value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionBrush Microsoft.UI.Composition.CompositionProjectedShadowReceiver.get_Mask()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadowReceiver.set_Mask(Microsoft.UI.Composition.CompositionBrush value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Composition.CompositionProjectedShadowDrawOrder Microsoft.UI.Composition.CompositionProjectedShadowReceiver.get_DrawOrder()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Composition.CompositionProjectedShadowReceiver.set_DrawOrder(Microsoft.UI.Composition.CompositionProjectedShadowDrawOrder value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnFileActivated(Windows.ApplicationModel.Activation.FileActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnSearchActivated(Windows.ApplicationModel.Activation.SearchActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnShareTargetActivated(Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnFileOpenPickerActivated(Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnFileSavePickerActivated(Windows.ApplicationModel.Activation.FileSavePickerActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnCachedFileUpdaterActivated(Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnBackgroundActivated(Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs args)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.set_ValidationContext(Microsoft.UI.Xaml.Controls.InputValidationContext value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.set_InputValidationMode(Microsoft.UI.Xaml.Controls.InputValidationMode value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.set_InputValidationKind(Microsoft.UI.Xaml.Controls.InputValidationKind value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.set_ErrorTemplate(Microsoft.UI.Xaml.DataTemplate value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AutoSuggestBox.get_InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.add_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.remove_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.add_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AutoSuggestBox.remove_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.ComboBox.get_ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.set_ValidationContext(Microsoft.UI.Xaml.Controls.InputValidationContext value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.ComboBox.get_InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.set_InputValidationMode(Microsoft.UI.Xaml.Controls.InputValidationMode value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.ComboBox.get_InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.set_InputValidationKind(Microsoft.UI.Xaml.Controls.InputValidationKind value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.ComboBox.get_ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.set_ErrorTemplate(Microsoft.UI.Xaml.DataTemplate value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.ComboBox.get_HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.ComboBox.get_ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ComboBox.get_ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ComboBox.get_InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ComboBox.get_InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.add_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.remove_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.add_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.remove_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Windows.UI.Core.CoreDispatcher Microsoft.UI.Xaml.Controls.ElementFactory.get_Dispatcher()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueue Microsoft.UI.Xaml.Controls.ElementFactory.get_DispatcherQueue()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.ElementFactory.get_IsStoreInitialized()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Object Microsoft.UI.Xaml.Controls.ElementFactory.GetValue(Microsoft.UI.Xaml.DependencyProperty dp)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.SetValue(Microsoft.UI.Xaml.DependencyProperty dp, System.Object value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ClearValue(Microsoft.UI.Xaml.DependencyProperty dp)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Object Microsoft.UI.Xaml.Controls.ElementFactory.ReadLocalValue(Microsoft.UI.Xaml.DependencyProperty dp)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Object Microsoft.UI.Xaml.Controls.ElementFactory.GetAnimationBaseValue(Microsoft.UI.Xaml.DependencyProperty dp)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Int64 Microsoft.UI.Xaml.Controls.ElementFactory.RegisterPropertyChangedCallback(Microsoft.UI.Xaml.DependencyProperty dp, Microsoft.UI.Xaml.DependencyPropertyChangedCallback callback)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.UnregisterPropertyChangedCallback(Microsoft.UI.Xaml.DependencyProperty dp, System.Int64 token)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.add_DataContextChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.remove_DataContextChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ClearBindings()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.RestoreBindings()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ApplyCompiledBindings()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Object Microsoft.UI.Xaml.Controls.ElementFactory.get_DataContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.set_DataContext(System.Object value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ElementFactory.get_DataContextProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.ElementFactory.get_TemplatedParent()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.set_TemplatedParent(Microsoft.UI.Xaml.DependencyObject value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ElementFactory.get_TemplatedParentProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.SetBinding(System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.SetBinding(Microsoft.UI.Xaml.DependencyProperty dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.SetBindingValue(System.Object value, System.String propertyName)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Data.BindingExpression Microsoft.UI.Xaml.Controls.ElementFactory.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty dependencyProperty)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.ResumeBindings()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ElementFactory.SuspendBindings()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="System.Windows.Input.ICommand Microsoft.UI.Xaml.Controls.PagerControl.get_PagerInputCommand()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PagerControl.set_PagerInputCommand(System.Windows.Input.ICommand value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PagerControl.get_PagerInputCommandProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.PasswordBox.get_ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.set_ValidationContext(Microsoft.UI.Xaml.Controls.InputValidationContext value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.PasswordBox.get_InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.set_InputValidationMode(Microsoft.UI.Xaml.Controls.InputValidationMode value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.PasswordBox.get_InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.set_InputValidationKind(Microsoft.UI.Xaml.Controls.InputValidationKind value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.PasswordBox.get_ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.set_ErrorTemplate(Microsoft.UI.Xaml.DataTemplate value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.PasswordBox.get_HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.PasswordBox.get_ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox.get_ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox.get_InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.PasswordBox.get_InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.add_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.remove_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.add_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.PasswordBox.remove_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationContext Microsoft.UI.Xaml.Controls.TextBox.get_ValidationContext()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.set_ValidationContext(Microsoft.UI.Xaml.Controls.InputValidationContext value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationMode Microsoft.UI.Xaml.Controls.TextBox.get_InputValidationMode()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.set_InputValidationMode(Microsoft.UI.Xaml.Controls.InputValidationMode value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DataTemplate Microsoft.UI.Xaml.Controls.TextBox.get_ErrorTemplate()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.set_ErrorTemplate(Microsoft.UI.Xaml.DataTemplate value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.InputValidationKind Microsoft.UI.Xaml.Controls.TextBox.get_InputValidationKind()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.set_InputValidationKind(Microsoft.UI.Xaml.Controls.InputValidationKind value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.Foundation.Collections.IObservableVector`1&lt;Microsoft.UI.Xaml.Controls.InputValidationError&gt; Microsoft.UI.Xaml.Controls.TextBox.get_ValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.TextBox.get_HasValidationErrors()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox.get_ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox.get_InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox.get_InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.add_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.remove_HasValidationErrorsChanged(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.add_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.remove_ValidationError(Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; value)" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Microsoft.UI.Xaml.ApplicationTheme Microsoft.UI.Xaml.Media.RevealBrush.get_TargetTheme()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Media.RevealBrush.set_TargetTheme(Microsoft.UI.Xaml.ApplicationTheme value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Media.RevealBrush.get_AlwaysUseFallback()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Media.RevealBrush.set_AlwaysUseFallback(System.Boolean value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush.get_AlwaysUseFallbackProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush.get_StateProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush.get_TargetThemeProperty()" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Media.RevealBrush.SetState(Microsoft.UI.Xaml.UIElement element, Microsoft.UI.Xaml.Media.RevealBrushState value)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState Microsoft.UI.Xaml.Media.RevealBrush.GetState(Microsoft.UI.Xaml.UIElement element)" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection..ctor()" reason="Not in Windows and must not be instantiated by user." />
+		</Methods>
+	</IgnoreSet>
 
 	  <!--
 	Supported nodes (please keep at the bottom of this file):

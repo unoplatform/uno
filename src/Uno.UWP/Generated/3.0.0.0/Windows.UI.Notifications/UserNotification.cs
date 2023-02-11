@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInfo UserNotification.AppInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInfo UserNotification.AppInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInfo%20UserNotification.AppInfo");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset UserNotification.CreationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset UserNotification.CreationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20UserNotification.CreationTime");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UserNotification.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UserNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UserNotification.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Notification UserNotification.Notification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Notification UserNotification.Notification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Notification%20UserNotification.Notification");
 			}
 		}
 		#endif

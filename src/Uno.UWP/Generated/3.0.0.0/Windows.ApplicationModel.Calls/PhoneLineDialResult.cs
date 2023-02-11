@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallOperationStatus PhoneLineDialResult.DialCallStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCallOperationStatus PhoneLineDialResult.DialCallStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallOperationStatus%20PhoneLineDialResult.DialCallStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCall PhoneLineDialResult.DialedCall is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneCall PhoneLineDialResult.DialedCall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCall%20PhoneLineDialResult.DialedCall");
 			}
 		}
 		#endif

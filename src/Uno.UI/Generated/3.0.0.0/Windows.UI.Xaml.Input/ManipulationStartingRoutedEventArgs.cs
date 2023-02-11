@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ManipulationPivot%20ManipulationStartingRoutedEventArgs.Pivot");
 			}
 			set
 			{

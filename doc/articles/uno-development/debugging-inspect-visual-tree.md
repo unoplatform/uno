@@ -37,7 +37,7 @@ For an Uno.WASM app you can simply use the layout inspection tools built into wh
 
 ![DOM tree in Chrome](assets/debugging-inspect-visual-tree/WASM-DOM-Elements.jpg)
 
-You can configure Uno to annotate the DOM with the values of common XAML properties. Just add the following somewhere in your app's entry point (eg the constructor of `App.xaml.cs`):
+You can configure Uno to annotate the DOM with the values of common XAML properties. Just add the following somewhere in your app's entry point (eg the constructor of `App.cs` or `App.xaml.cs`):
 
 ```csharp
 #if DEBUG && __WASM__

@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.App.Xaml
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Test_MarkupExtension : UserControl
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class Test_MarkupExtension : UserControl
+	{
 		public TextBlock TestText1 => Text1;
 		public TextBlock TestText2 => Text2;
 		public TextBlock TestText3 => Text3;
@@ -37,8 +37,8 @@ namespace Uno.UI.Tests.App.Xaml
 		public TextBlock TestText13 => Text13;
 
 		public Test_MarkupExtension()
-        {
-            this.InitializeComponent();
-        }
-    }
+		{
+			this.InitializeComponent();
+		}
+	}
 }

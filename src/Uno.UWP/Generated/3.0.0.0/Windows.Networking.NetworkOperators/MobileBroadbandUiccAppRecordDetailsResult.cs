@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UiccAppRecordKind MobileBroadbandUiccAppRecordDetailsResult.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UiccAppRecordKind MobileBroadbandUiccAppRecordDetailsResult.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UiccAppRecordKind%20MobileBroadbandUiccAppRecordDetailsResult.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UiccAccessCondition MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UiccAccessCondition MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UiccAccessCondition%20MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandUiccAppRecordDetailsResult.RecordCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MobileBroadbandUiccAppRecordDetailsResult.RecordCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MobileBroadbandUiccAppRecordDetailsResult.RecordCount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandUiccAppRecordDetailsResult.RecordSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MobileBroadbandUiccAppRecordDetailsResult.RecordSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MobileBroadbandUiccAppRecordDetailsResult.RecordSize");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppRecordDetailsResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppRecordDetailsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandUiccAppOperationStatus%20MobileBroadbandUiccAppRecordDetailsResult.Status");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UiccAccessCondition MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UiccAccessCondition MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UiccAccessCondition%20MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition");
 			}
 		}
 		#endif

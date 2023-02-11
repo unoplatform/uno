@@ -132,7 +132,7 @@ namespace Uno.UI.Runtime.Skia
 				// The Ungrab mode event is triggered after click even when the pointer does not leave the window.
 				// This may need to be removed when we implement native pointer capture support properly.
 				if (args.Event.Mode != CrossingMode.Ungrab)
-				{	
+				{
 					if (AsPointerArgs(args.Event) is { } ptArgs)
 					{
 						RaisePointerExited(ptArgs);

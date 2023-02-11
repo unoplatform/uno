@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string IppTextWithLanguage.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string IppTextWithLanguage.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20IppTextWithLanguage.Language");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string IppTextWithLanguage.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string IppTextWithLanguage.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20IppTextWithLanguage.Value");
 			}
 		}
 		#endif

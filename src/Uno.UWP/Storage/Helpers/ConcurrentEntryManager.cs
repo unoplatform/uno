@@ -40,7 +40,7 @@ namespace Windows.Storage.Helpers
 				{
 					disposable.Dispose();
 
-					if(--entry.ReferenceCount == 0)
+					if (--entry.ReferenceCount == 0)
 					{
 						_assetsGate.Remove(updatedPath);
 					}

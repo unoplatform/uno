@@ -30,7 +30,7 @@ namespace Uno.UI.Runtime.Skia.Native
 		public static extern int ioctl(int fd, FbIoCtl code, void* arg);
 
 		[DllImport("libc", SetLastError = true)]
-		public static extern IntPtr mmap(IntPtr addr, IntPtr length, int prot, int flags,int fd, IntPtr offset);
+		public static extern IntPtr mmap(IntPtr addr, IntPtr length, int prot, int flags, int fd, IntPtr offset);
 
 		[DllImport("libc", SetLastError = true)]
 		public static extern int munmap(IntPtr addr, IntPtr length);

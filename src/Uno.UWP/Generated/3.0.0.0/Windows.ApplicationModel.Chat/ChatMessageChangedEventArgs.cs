@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Chat.ChatMessageChangedDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member ChatMessageChangedDeferral ChatMessageChangedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ChatMessageChangedDeferral ChatMessageChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatMessageChangedDeferral%20ChatMessageChangedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

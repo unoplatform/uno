@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLineCellularDetails.IsModemOn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneLineCellularDetails.IsModemOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneLineCellularDetails.IsModemOn");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PhoneLineCellularDetails.RegistrationRejectCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PhoneLineCellularDetails.RegistrationRejectCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PhoneLineCellularDetails.RegistrationRejectCode");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PhoneLineCellularDetails.SimSlotIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PhoneLineCellularDetails.SimSlotIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PhoneLineCellularDetails.SimSlotIndex");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneSimState PhoneLineCellularDetails.SimState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneSimState PhoneLineCellularDetails.SimState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneSimState%20PhoneLineCellularDetails.SimState");
 			}
 		}
 		#endif
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetNetworkOperatorDisplayText( global::Windows.ApplicationModel.Calls.PhoneLineNetworkOperatorDisplayTextLocation location)
 		{
-			throw new global::System.NotImplementedException("The member string PhoneLineCellularDetails.GetNetworkOperatorDisplayText(PhoneLineNetworkOperatorDisplayTextLocation location) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PhoneLineCellularDetails.GetNetworkOperatorDisplayText(PhoneLineNetworkOperatorDisplayTextLocation location) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneLineCellularDetails.GetNetworkOperatorDisplayText%28PhoneLineNetworkOperatorDisplayTextLocation%20location%29");
 		}
 		#endif
 	}

@@ -11,7 +11,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  byte[] DetachPixelData()
 		{
-			throw new global::System.NotImplementedException("The member byte[] PixelDataProvider.DetachPixelData() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member byte[] PixelDataProvider.DetachPixelData() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20PixelDataProvider.DetachPixelData%28%29");
 		}
 		#endif
 	}

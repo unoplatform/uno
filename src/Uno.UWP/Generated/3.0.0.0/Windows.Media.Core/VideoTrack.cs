@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoTrack.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoTrack.Label");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoTrack.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoTrack.Id");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoTrack.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoTrack.Language");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTrackKind VideoTrack.TrackKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaTrackKind VideoTrack.TrackKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaTrackKind%20VideoTrack.TrackKind");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoTrack.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoTrack.Name");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem VideoTrack.PlaybackItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem VideoTrack.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20VideoTrack.PlaybackItem");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTrackSupportInfo VideoTrack.SupportInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoTrackSupportInfo VideoTrack.SupportInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoTrackSupportInfo%20VideoTrack.SupportInfo");
 			}
 		}
 		#endif
@@ -92,7 +92,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.VideoEncodingProperties GetEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoTrack.GetEncodingProperties() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoTrack.GetEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoEncodingProperties%20VideoTrack.GetEncodingProperties%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Core.VideoTrack.PlaybackItem.get

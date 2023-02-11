@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long? MobileBroadbandCellNR.CellId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long? MobileBroadbandCellNR.CellId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%3F%20MobileBroadbandCellNR.CellId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.ChannelNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.ChannelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellNR.ChannelNumber");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.PhysicalCellId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.PhysicalCellId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellNR.PhysicalCellId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandCellNR.ProviderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandCellNR.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandCellNR.ProviderId");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellNR.ReferenceSignalReceivedPowerInDBm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellNR.ReferenceSignalReceivedPowerInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MobileBroadbandCellNR.ReferenceSignalReceivedPowerInDBm");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellNR.ReferenceSignalReceivedQualityInDBm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellNR.ReferenceSignalReceivedQualityInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MobileBroadbandCellNR.ReferenceSignalReceivedQualityInDBm");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellNR.SignalToNoiseRatioInDB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MobileBroadbandCellNR.SignalToNoiseRatioInDB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MobileBroadbandCellNR.SignalToNoiseRatioInDB");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.TimingAdvanceInNanoseconds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.TimingAdvanceInNanoseconds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellNR.TimingAdvanceInNanoseconds");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.TrackingAreaCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? MobileBroadbandCellNR.TrackingAreaCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20MobileBroadbandCellNR.TrackingAreaCode");
 			}
 		}
 		#endif

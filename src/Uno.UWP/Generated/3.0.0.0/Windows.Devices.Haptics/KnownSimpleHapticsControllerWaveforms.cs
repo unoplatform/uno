@@ -18,7 +18,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.BrushContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.BrushContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.BrushContinuous");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.ChiselMarkerContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.ChiselMarkerContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.ChiselMarkerContinuous");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.EraserContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.EraserContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.EraserContinuous");
 			}
 		}
 		#endif
@@ -48,7 +48,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.Error");
 			}
 		}
 		#endif
@@ -58,7 +58,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.GalaxyPenContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.GalaxyPenContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.GalaxyPenContinuous");
 			}
 		}
 		#endif
@@ -68,7 +68,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Hover is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Hover is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.Hover");
 			}
 		}
 		#endif
@@ -78,7 +78,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.InkContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.InkContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.InkContinuous");
 			}
 		}
 		#endif
@@ -88,7 +88,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.MarkerContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.MarkerContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.MarkerContinuous");
 			}
 		}
 		#endif
@@ -98,7 +98,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.PencilContinuous is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.PencilContinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.PencilContinuous");
 			}
 		}
 		#endif
@@ -108,7 +108,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Success is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Success is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20KnownSimpleHapticsControllerWaveforms.Success");
 			}
 		}
 		#endif

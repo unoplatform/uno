@@ -105,7 +105,7 @@ public static partial class AnalyticsInfo
 		var screenWidth = displayMetrics.WidthPixels / displayMetrics.Xdpi;
 		var screenHeight = displayMetrics.HeightPixels / displayMetrics.Ydpi;
 		var size = Math.Sqrt(Math.Pow(screenWidth, 2) +
-			                    Math.Pow(screenHeight, 2));
+								Math.Pow(screenHeight, 2));
 		//assume tablets have at least 6-inch diagonal
 		return size >= 6;
 	}

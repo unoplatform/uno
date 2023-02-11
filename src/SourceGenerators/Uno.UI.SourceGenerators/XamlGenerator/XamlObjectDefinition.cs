@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 	[DebuggerDisplay("Type: {_type.Name}")]
 #endif
-    internal class XamlObjectDefinition
+	internal class XamlObjectDefinition
 	{
 		private XamlType _type;
 

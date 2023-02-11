@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HolographicCamera.ViewportScaleFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double HolographicCamera.ViewportScaleFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20HolographicCamera.ViewportScaleFactor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicCamera.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HolographicCamera.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HolographicCamera.Id");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsStereo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsStereo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HolographicCamera.IsStereo");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size HolographicCamera.RenderTargetSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size HolographicCamera.RenderTargetSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20HolographicCamera.RenderTargetSize");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicDisplay HolographicCamera.Display is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicDisplay HolographicCamera.Display is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicDisplay%20HolographicCamera.Display");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicCameraViewportParameters HolographicCamera.LeftViewportParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicCameraViewportParameters HolographicCamera.LeftViewportParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicCameraViewportParameters%20HolographicCamera.LeftViewportParameters");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicCameraViewportParameters HolographicCamera.RightViewportParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicCameraViewportParameters HolographicCamera.RightViewportParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicCameraViewportParameters%20HolographicCamera.RightViewportParameters");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsPrimaryLayerEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsPrimaryLayerEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HolographicCamera.IsPrimaryLayerEnabled");
 			}
 			set
 			{
@@ -101,7 +101,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicCamera.MaxQuadLayerCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HolographicCamera.MaxQuadLayerCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HolographicCamera.MaxQuadLayerCount");
 			}
 		}
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HolographicQuadLayer> HolographicCamera.QuadLayers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HolographicQuadLayer> HolographicCamera.QuadLayers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHolographicQuadLayer%3E%20HolographicCamera.QuadLayers");
 			}
 		}
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.CanOverrideViewport is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.CanOverrideViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HolographicCamera.CanOverrideViewport");
 			}
 		}
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HolographicCamera.IsHardwareContentProtectionEnabled");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HolographicCamera.IsHardwareContentProtectionSupported");
 			}
 		}
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicCamera.ViewConfiguration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicCamera.ViewConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicViewConfiguration%20HolographicCamera.ViewConfiguration");
 			}
 		}
 		#endif

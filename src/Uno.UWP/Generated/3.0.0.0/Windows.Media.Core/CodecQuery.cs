@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.CodecInfo>> FindAllAsync( global::Windows.Media.Core.CodecKind kind,  global::Windows.Media.Core.CodecCategory category,  string subType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<CodecInfo>> CodecQuery.FindAllAsync(CodecKind kind, CodecCategory category, string subType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<CodecInfo>> CodecQuery.FindAllAsync(CodecKind kind, CodecCategory category, string subType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CCodecInfo%3E%3E%20CodecQuery.FindAllAsync%28CodecKind%20kind%2C%20CodecCategory%20category%2C%20string%20subType%29");
 		}
 		#endif
 	}

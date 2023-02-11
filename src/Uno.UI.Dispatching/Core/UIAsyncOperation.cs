@@ -153,16 +153,16 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
-		void IAsyncAction.GetResults() 
+		void IAsyncAction.GetResults()
 			=> CompletionSource.Task.Wait();
 
-		void IAsyncInfo.Cancel() 
+		void IAsyncInfo.Cancel()
 			=> Cancel();
 
-		void IAsyncInfo.Close() 
+		void IAsyncInfo.Close()
 			=> Cancel();
 
-		internal string GetDiagnosticsName() 
+		internal string GetDiagnosticsName()
 			=> Action.Method.DeclaringType.FullName + "." + Action.Method.Name;
 	}
 }

@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.PageTranslation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.PageTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20MouseWheelParameters.PageTranslation");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20MouseWheelParameters.DeltaScale");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaRotationAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaRotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20MouseWheelParameters.DeltaRotationAngle");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.CharTranslation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.CharTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20MouseWheelParameters.CharTranslation");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.AllStatistics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.AllStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplayStatisticsCategorySelector.AllStatistics");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.ManufacturerStatistics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.ManufacturerStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplayStatisticsCategorySelector.ManufacturerStatistics");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.UnifiedPosStatistics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.UnifiedPosStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplayStatisticsCategorySelector.UnifiedPosStatistics");
 			}
 		}
 		#endif

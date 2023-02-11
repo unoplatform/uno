@@ -13,7 +13,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextSegment SelectableWordSegment.SourceTextSegment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextSegment SelectableWordSegment.SourceTextSegment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextSegment%20SelectableWordSegment.SourceTextSegment");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SelectableWordSegment.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SelectableWordSegment.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SelectableWordSegment.Text");
 			}
 		}
 		#endif

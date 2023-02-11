@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlRecipient UsbControlRequestType.Recipient is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbControlRecipient UsbControlRequestType.Recipient is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbControlRecipient%20UsbControlRequestType.Recipient");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbControlRequestType.Direction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbControlRequestType.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbTransferDirection%20UsbControlRequestType.Direction");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlTransferType UsbControlRequestType.ControlTransferType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbControlTransferType UsbControlRequestType.ControlTransferType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbControlTransferType%20UsbControlRequestType.ControlTransferType");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbControlRequestType.AsByte is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbControlRequestType.AsByte is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbControlRequestType.AsByte");
 			}
 			set
 			{

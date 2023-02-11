@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectAdvertisementListenStateDiscoverability%20WiFiDirectAdvertisement.ListenStateDiscoverability");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectAdvertisement.InformationElements");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectLegacySettings WiFiDirectAdvertisement.LegacySettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectLegacySettings WiFiDirectAdvertisement.LegacySettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectLegacySettings%20WiFiDirectAdvertisement.LegacySettings");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectAdvertisement.SupportedConfigurationMethods is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectAdvertisement.SupportedConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CWiFiDirectConfigurationMethod%3E%20WiFiDirectAdvertisement.SupportedConfigurationMethods");
 			}
 		}
 		#endif

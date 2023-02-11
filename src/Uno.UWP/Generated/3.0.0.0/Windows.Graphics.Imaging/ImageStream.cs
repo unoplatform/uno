@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageStream.ContentType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageStream.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageStream.ContentType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ImageStream.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ImageStream.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ImageStream.Size");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ImageStream.CanRead is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ImageStream.CanRead is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ImageStream.CanRead");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ImageStream.CanWrite is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ImageStream.CanWrite is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ImageStream.CanWrite");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ImageStream.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ImageStream.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ImageStream.Position");
 			}
 		}
 		#endif
@@ -67,14 +67,14 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IInputStream GetInputStreamAt( ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IInputStream ImageStream.GetInputStreamAt(ulong position) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IInputStream ImageStream.GetInputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IInputStream%20ImageStream.GetInputStreamAt%28ulong%20position%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt( ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IOutputStream ImageStream.GetOutputStreamAt(ulong position) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IOutputStream ImageStream.GetOutputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IOutputStream%20ImageStream.GetOutputStreamAt%28ulong%20position%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Position.get
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream ImageStream.CloneStream() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IRandomAccessStream ImageStream.CloneStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20ImageStream.CloneStream%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.CanRead.get
@@ -105,21 +105,21 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync( global::Windows.Storage.Streams.IBuffer buffer,  uint count,  global::Windows.Storage.Streams.InputStreamOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> ImageStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> ImageStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20ImageStream.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync( global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> ImageStream.WriteAsync(IBuffer buffer) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> ImageStream.WriteAsync(IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20ImageStream.WriteAsync%28IBuffer%20buffer%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ImageStream.FlushAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ImageStream.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ImageStream.FlushAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.ContentType.get

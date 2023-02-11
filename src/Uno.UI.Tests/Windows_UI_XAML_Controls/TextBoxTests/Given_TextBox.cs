@@ -39,11 +39,19 @@ namespace Uno.UI.Tests.TextBoxTests
 			textBox.Text = "Rhubarb";
 			Assert.AreEqual("Rhubarb", textBox.Text);
 			Assert.AreEqual(1, callbackCount);
-			
+
+#if !HAS_UNO_WINUI
+			// Setting TextBox.Text to null throws an exception in UWP but not WinUI.
 			Assert.ThrowsException<ArgumentNullException>(() => textBox.Text = null);
+#endif
 
 			Assert.AreEqual("Rhubarb", textBox.Text);
 			Assert.AreEqual(1, callbackCount);
+
+#if HAS_UNO_WINUI
+			textBox.Text = null;
+			Assert.AreEqual("", textBox.Text);
+#endif
 		}
 
 		[TestMethod]
@@ -206,7 +214,7 @@ namespace Uno.UI.Tests.TextBoxTests
 					if (_sourceText != value)
 					{
 						_sourceText = value;
-						OnPropertyChanged(); 
+						OnPropertyChanged();
 					}
 				}
 			}

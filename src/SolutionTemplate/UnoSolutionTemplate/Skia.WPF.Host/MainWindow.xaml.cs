@@ -23,7 +23,7 @@ namespace $ext_safeprojectname$.WPF.Host
 		public MainWindow()
 		{
 			InitializeComponent();
-	
+
 			root.Content = new global::Uno.UI.Skia.Platform.WpfHost(Dispatcher, () => new $ext_safeprojectname$.App());
 		}
 	}

@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptText.Emphasized is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptText.Emphasized is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptText.Emphasized");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptText.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomPromptText.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomPromptText.DisplayName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptText.Compulsory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomPromptText.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomPromptText.Compulsory");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptText.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomPromptText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomPromptText.Text");
 			}
 			set
 			{

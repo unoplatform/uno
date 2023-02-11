@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						Execute(ct => SetSourceUriOrStreamAsync(imageSource, ct));
 					}
-					else if (imageSource.FilePath.HasValue() || imageSource.AbsoluteUri != null || imageSource.Stream != null)
+					else if (!imageSource.FilePath.IsNullOrEmpty() || imageSource.AbsoluteUri != null || imageSource.Stream != null)
 					{
 						// We can't open the image until we have the proper target size, which is
 						// being computed after the layout has been completed.

@@ -32,6 +32,7 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -375,7 +376,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(SUT).Length == 2);
 			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
 			Assert.AreSame(si, source[0]);
@@ -608,22 +609,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.ItemsSource = source;
 
-			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
+			await WindowHelper.WaitFor(() => GetAllPanelChildren(SUT).Length == 2);
 
 			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
 
 			source.RemoveAt(1);
 
-			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 1);
+			await WindowHelper.WaitFor(() => GetAllPanelChildren(SUT).Length == 1);
 
 			var newTwo = new ListViewItem { Content = "item 2" };
 			Assert.AreNotEqual(oldTwo, newTwo);
 
 			source.Add(newTwo);
 
-			await WindowHelper.WaitFor(() => GetPanelChildren(SUT).Length == 2);
-			Assert.AreEqual(newTwo, GetPanelChildren(SUT).Last());
+			await WindowHelper.WaitFor(() => GetAllPanelChildren(SUT).Length == 2);
+			Assert.AreEqual(newTwo, GetAllPanelChildren(SUT).Last());
 		}
 
 		[TestMethod]
@@ -680,10 +681,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
 		}
 
-		private static ContentControl[] GetPanelChildren(ListViewBase list)
+		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
 		{
 #if __ANDROID__ || __IOS__
-			return list.GetItemsPanelChildren().OfType<ContentControl>().ToArray();
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				.ToArray();
+#else
+			return list.ItemsPanelRoot
+				.Children
+				.OfType<ContentControl>()
+				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
+				.ToArray();
+#endif
+		}
+
+		private static ContentControl[] GetAllPanelChildren(ListViewBase list)
+		{
+#if __ANDROID__
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				.ToArray();
+#elif __IOS__
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				.Where(c => c.Content is not null)
+				.ToArray();
 #else
 			return list.ItemsPanelRoot
 				.Children
@@ -806,16 +832,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
 		{
 			var materialized = 0;
-			var container = new Grid { Height = 100, Width=100 };
+			var container = new Grid { Height = 100, Width = 100 };
 
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
-					var border = new Border() {
+					var border = new Border()
+					{
 						Height = 100,
 						Child = tb
 					};
@@ -853,7 +881,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -897,7 +926,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -956,7 +986,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1013,7 +1044,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() => {
+				ItemTemplate = new DataTemplate(() =>
+				{
 
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1099,7 +1131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			using var _ = new AssertionScope();
 
@@ -1125,7 +1157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 1);
 
 			var container = list.ContainerFromItem(item);
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
@@ -1145,7 +1177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 1);
 
 			var container = list.ContainerFromIndex(0);
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
@@ -1165,7 +1197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 1);
 
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(item));
 		}
@@ -1183,7 +1215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 1);
 
 			var container = list.ContainerFromItem(items[0]);
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
@@ -1202,7 +1234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 1);
 
 			var container = list.ContainerFromIndex(0);
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
@@ -1225,7 +1257,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item removal
 
@@ -1280,7 +1312,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item removal
 
@@ -1339,7 +1371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item change
 			var oldItem = items[1];
@@ -1398,7 +1430,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item change
 			var newItems = new ObservableCollection<ListViewItem>()
@@ -1450,7 +1482,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			using var _ = new AssertionScope();
 
@@ -1479,7 +1511,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item removal
 
@@ -1535,7 +1567,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item removal
 
@@ -1598,7 +1630,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item change
 			var oldItem = items[1];
@@ -1668,7 +1700,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			list.ItemsSource = items;
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			// Item change
 			var newItems = new ObservableCollection<int>()
@@ -1841,7 +1873,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
-			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 4);
+			await WindowHelper.WaitFor(() => GetPanelVisibleChildren(list).Length == 4);
 
 			list.SelectionChanged += (s, e) =>
 			{
@@ -2033,6 +2065,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(redCount1, redCount2); // Red template should not have been rebound
 			Assert.AreEqual(greenCount1 + 1, greenCount2); // Green template should be reused once for final item
+		}
+
+		[TestMethod]
+		public async Task When_ItemTemplate_Selector_And_Clear_Then_Released()
+		{
+			var selector = new KeyedTemplateSelector<ItemColor>(o => (o as ItemColorViewModel)?.ItemType ?? ItemColor.None)
+			{
+				Templates =
+				{
+					{ItemColor.Red, RedSelectableTemplate },
+					{ItemColor.Green, GreenSelectableTemplate},
+					{ItemColor.Beige, BeigeSelectableTemplate}
+				}
+			};
+
+			var source = new ObservableCollection<ItemColorViewModel>();
+			var refSource = new ObservableCollection<WeakReference>();
+			int itemNo = 0;
+			void AddItem(ItemColor itemType)
+			{
+				itemNo++;
+				var item = new ItemColorViewModel { ItemType = itemType, ItemIndex = itemNo };
+				source.Add(item);
+				refSource.Add(new(item));
+			}
+
+			AddItem(ItemColor.Red);
+			AddItem(ItemColor.Green);
+
+			for (int i = 0; i < 10; i++)
+			{
+				AddItem(ItemColor.Beige);
+			}
+
+			AddItem(ItemColor.Green);
+
+			var SUT = new ListView
+			{
+				Width = 180,
+				Height = 320,
+				ItemsSource = source,
+				ItemTemplateSelector = selector,
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemContainerStyle = NoSpaceContainerStyle
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			source.RemoveAt(0);
+
+			await WindowHelper.WaitForIdle();
+
+			await AssertCollectedReference(refSource[0]);
+
+			source.Clear();
+
+			await WindowHelper.WaitForIdle();
+
+			foreach (var itemRef in refSource)
+			{
+				await AssertCollectedReference(itemRef);
+			}
 		}
 
 		[TestMethod]
@@ -2268,6 +2363,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 
 				Assert.AreEqual(initialReuseCount, ReuseCountGrid.GlobalReuseCount);
+			}
+		}
+
+		private record TestReleaseObject()
+		{
+			public byte[] test { get; set; } = new byte[1024 * 1024 * 2];
+		}
+
+		[TestMethod]
+		public async Task When_Item_Removed_Then_DataContext_Released()
+		{
+			using (FeatureConfigurationHelper.UseTemplatePooling())
+			{
+				var collection = new ObservableCollection<TestReleaseObject>();
+
+				var SUT = new ListView
+				{
+					Width = 200,
+					Height = 300,
+					ItemsSource = collection
+				};
+
+				var itemRef = AddItem(collection);
+
+				WindowHelper.WindowContent = SUT;
+
+				await WindowHelper.WaitForLoaded(SUT);
+
+				Assert.AreEqual(1, SUT.Items.Count);
+
+				var container = SUT.ContainerFromIndex(0) as ContentControl;
+
+				Assert.AreEqual(itemRef.Target, container.Content);
+
+				collection.Clear();
+
+				// Ensure the container has properly been cleaned
+				// up after being removed.
+				Assert.IsNull(container.Content);
+
+				Assert.AreEqual(0, SUT.Items.Count);
+
+				await WindowHelper.WaitForIdle();
+
+				await AssertCollectedReference(itemRef);
+
+				static WeakReference AddItem(ObservableCollection<TestReleaseObject> collection)
+				{
+					var item = new TestReleaseObject();
+					collection.Add(item);
+
+					return new(item);
+				}
 			}
 		}
 
@@ -2523,7 +2671,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-#region Helper classes
+		private async Task AssertCollectedReference(WeakReference reference)
+		{
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(3))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (!reference.IsAlive)
+				{
+					return;
+				}
+
+				await Task.Delay(100);
+			}
+
+			Assert.IsFalse(reference.IsAlive);
+		}
+
+		#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -2550,23 +2717,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-#region SelectedItem
+			#region SelectedItem
 			private object _selectedItem;
 			public object SelectedItem
 			{
 				get => _selectedItem;
 				set => RaiseAndSetIfChanged(ref _selectedItem, value);
 			}
-#endregion
-#region SelectedValue
+			#endregion
+			#region SelectedValue
 			private object _selectedValue;
 			public object SelectedValue
 			{
 				get => _selectedValue;
 				set => RaiseAndSetIfChanged(ref _selectedValue, value);
 			}
-#endregion
-#region SelectedIndex
+			#endregion
+			#region SelectedIndex
 			private int _selectedIndex;
 
 			public int SelectedIndex
@@ -2574,7 +2741,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				get => _selectedIndex;
 				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
 			}
-#endregion
+			#endregion
 
 			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
 			{
@@ -2605,10 +2772,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
-#endregion
+		#endregion
 	}
 
-#region Helper classes
+	#region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
 		public Action ItemsChangedAction;
@@ -2804,5 +2971,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public int LastIndex => _start;
 	}
-#endregion
+	#endregion
 }

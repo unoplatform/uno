@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxSuggestionsRequestedEventArgs.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxSuggestionsRequestedEventArgs.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxSuggestionsRequestedEventArgs.Language");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchQueryLinguisticDetails SearchBoxSuggestionsRequestedEventArgs.LinguisticDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SearchQueryLinguisticDetails SearchBoxSuggestionsRequestedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SearchQueryLinguisticDetails%20SearchBoxSuggestionsRequestedEventArgs.LinguisticDetails");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxSuggestionsRequestedEventArgs.QueryText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxSuggestionsRequestedEventArgs.QueryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxSuggestionsRequestedEventArgs.QueryText");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchSuggestionsRequest SearchBoxSuggestionsRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SearchSuggestionsRequest SearchBoxSuggestionsRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SearchSuggestionsRequest%20SearchBoxSuggestionsRequestedEventArgs.Request");
 			}
 		}
 		#endif

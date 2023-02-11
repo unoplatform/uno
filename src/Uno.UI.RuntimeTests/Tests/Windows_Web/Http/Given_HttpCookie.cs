@@ -6,8 +6,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Web.Http
 {
 	[TestClass]
 	public class Given_HttpCookie
-    {
-        [TestMethod]
+	{
+		[TestMethod]
 		public void When_Basic_Cookie_Serialized()
 		{
 			var cookie = new HttpCookie("test", "a.com", "/");

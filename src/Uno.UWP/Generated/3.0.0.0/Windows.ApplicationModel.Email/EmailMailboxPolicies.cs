@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxSmimeSigningAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxSmimeEncryptionAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation%20EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.AllowSmimeSoftCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.AllowSmimeSoftCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxPolicies.AllowSmimeSoftCertificates");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustSignSmimeMessages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustSignSmimeMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxPolicies.MustSignSmimeMessages");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustEncryptSmimeMessages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustEncryptSmimeMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxPolicies.MustEncryptSmimeMessages");
 			}
 			set
 			{

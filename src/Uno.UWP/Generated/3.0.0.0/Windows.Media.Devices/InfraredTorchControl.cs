@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.Power is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InfraredTorchControl.Power is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InfraredTorchControl.Power");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InfraredTorchMode InfraredTorchControl.CurrentMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InfraredTorchMode InfraredTorchControl.CurrentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InfraredTorchMode%20InfraredTorchControl.CurrentMode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InfraredTorchControl.IsSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InfraredTorchControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InfraredTorchControl.IsSupported");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.MaxPower is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InfraredTorchControl.MaxPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InfraredTorchControl.MaxPower");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.MinPower is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InfraredTorchControl.MinPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InfraredTorchControl.MinPower");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.PowerStep is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InfraredTorchControl.PowerStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InfraredTorchControl.PowerStep");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<InfraredTorchMode> InfraredTorchControl.SupportedModes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<InfraredTorchMode> InfraredTorchControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CInfraredTorchMode%3E%20InfraredTorchControl.SupportedModes");
 			}
 		}
 		#endif

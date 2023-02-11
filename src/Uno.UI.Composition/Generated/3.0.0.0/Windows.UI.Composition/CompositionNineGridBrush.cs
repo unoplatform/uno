@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInsetScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.TopInsetScale");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.TopInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.TopInset");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionNineGridBrush.Source is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBrush CompositionNineGridBrush.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20CompositionNineGridBrush.Source");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInsetScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.RightInsetScale");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.RightInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.RightInset");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInsetScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.LeftInsetScale");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.LeftInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.LeftInset");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionNineGridBrush.IsCenterHollow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CompositionNineGridBrush.IsCenterHollow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionNineGridBrush.IsCenterHollow");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.BottomInsetScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.BottomInsetScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.BottomInsetScale");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.BottomInset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float CompositionNineGridBrush.BottomInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20CompositionNineGridBrush.BottomInset");
 			}
 			set
 			{

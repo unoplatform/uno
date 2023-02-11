@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType MiracastReceiverCursorImageChannel.ImageStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType MiracastReceiverCursorImageChannel.ImageStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamWithContentType%20MiracastReceiverCursorImageChannel.ImageStream");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverCursorImageChannel.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverCursorImageChannel.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverCursorImageChannel.IsEnabled");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannel.MaxImageSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannel.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20MiracastReceiverCursorImageChannel.MaxImageSize");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointInt32 MiracastReceiverCursorImageChannel.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PointInt32 MiracastReceiverCursorImageChannel.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PointInt32%20MiracastReceiverCursorImageChannel.Position");
 			}
 		}
 		#endif

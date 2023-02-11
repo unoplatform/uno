@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionListConstraint.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechRecognitionListConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechRecognitionListConstraint.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConstraintProbability%20SpeechRecognitionListConstraint.Probability");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionListConstraint.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpeechRecognitionListConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpeechRecognitionListConstraint.IsEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConstraintType%20SpeechRecognitionListConstraint.Type");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SpeechRecognitionListConstraint.Commands is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> SpeechRecognitionListConstraint.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20SpeechRecognitionListConstraint.Commands");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20MiracastReceiverCursorImageChannelSettings.MaxImageSize");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverCursorImageChannelSettings.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverCursorImageChannelSettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverCursorImageChannelSettings.IsEnabled");
 			}
 			set
 			{

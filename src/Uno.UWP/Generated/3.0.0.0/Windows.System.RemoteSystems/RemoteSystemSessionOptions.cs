@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RemoteSystemSessionOptions.IsInviteOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RemoteSystemSessionOptions.IsInviteOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RemoteSystemSessionOptions.IsInviteOnly");
 			}
 			set
 			{

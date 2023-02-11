@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketMessageType ServerMessageWebSocketControl.MessageType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketMessageType ServerMessageWebSocketControl.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketMessageType%20ServerMessageWebSocketControl.MessageType");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicDisplayProperties.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Artist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicDisplayProperties.Artist");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.AlbumArtist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.AlbumArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicDisplayProperties.AlbumArtist");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MusicDisplayProperties.TrackNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MusicDisplayProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MusicDisplayProperties.TrackNumber");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.AlbumTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MusicDisplayProperties.AlbumTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MusicDisplayProperties.AlbumTitle");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MusicDisplayProperties.Genres is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> MusicDisplayProperties.Genres is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20MusicDisplayProperties.Genres");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MusicDisplayProperties.AlbumTrackCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MusicDisplayProperties.AlbumTrackCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MusicDisplayProperties.AlbumTrackCount");
 			}
 			set
 			{

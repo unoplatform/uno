@@ -13,7 +13,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet MediaProtectionPMPServer.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet MediaProtectionPMPServer.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20MediaProtectionPMPServer.Properties");
 			}
 		}
 		#endif

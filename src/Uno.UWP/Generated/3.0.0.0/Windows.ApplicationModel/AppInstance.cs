@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstance.IsCurrentInstance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstance.IsCurrentInstance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstance.IsCurrentInstance");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInstance.Key is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppInstance.Key is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppInstance.Key");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstance AppInstance.RecommendedInstance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInstance AppInstance.RecommendedInstance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstance%20AppInstance.RecommendedInstance");
 			}
 		}
 		#endif
@@ -51,14 +51,14 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.Activation.IActivatedEventArgs GetActivatedEventArgs()
 		{
-			throw new global::System.NotImplementedException("The member IActivatedEventArgs AppInstance.GetActivatedEventArgs() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IActivatedEventArgs AppInstance.GetActivatedEventArgs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IActivatedEventArgs%20AppInstance.GetActivatedEventArgs%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.AppInstance FindOrRegisterInstanceForKey( string key)
 		{
-			throw new global::System.NotImplementedException("The member AppInstance AppInstance.FindOrRegisterInstanceForKey(string key) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppInstance AppInstance.FindOrRegisterInstanceForKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstance%20AppInstance.FindOrRegisterInstanceForKey%28string%20key%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IList<global::Windows.ApplicationModel.AppInstance> GetInstances()
 		{
-			throw new global::System.NotImplementedException("The member IList<AppInstance> AppInstance.GetInstances() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IList<AppInstance> AppInstance.GetInstances() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CAppInstance%3E%20AppInstance.GetInstances%28%29");
 		}
 		#endif
 	}

@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var tokens = input
 				.Split(',', ' ')
-				.Where(t => t.HasValue())
+				.Where(t => !t.IsNullOrEmpty())
 				.ToList();
 
 			if (tokens.Count != 4)

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetailsModifier.AdditionalDisplayItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetailsModifier.AdditionalDisplayItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPaymentItem%3E%20PaymentDetailsModifier.AdditionalDisplayItems");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentDetailsModifier.JsonData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentDetailsModifier.JsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentDetailsModifier.JsonData");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentDetailsModifier.SupportedMethodIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentDetailsModifier.SupportedMethodIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20PaymentDetailsModifier.SupportedMethodIds");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetailsModifier.Total is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetailsModifier.Total is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentItem%20PaymentDetailsModifier.Total");
 			}
 		}
 		#endif

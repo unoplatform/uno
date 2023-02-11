@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				// with a non virtualizing layout, repeater will just
 				// run layout once. 
-				repeater.Layout = new MockNonVirtualizingLayout() 
+				repeater.Layout = new MockNonVirtualizingLayout()
 				{
 					MeasureLayoutFunc = (size, context) =>
 					{
@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						 <Button Content='{Binding}' Height='100' />
 					</DataTemplate>");
 
-				Content = new ScrollViewer() 
+				Content = new ScrollViewer()
 				{
 					Content = repeater
 				};
@@ -174,7 +174,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				// Once we switch to a virtualizing layout we should 
 				// get at least two passes to update the viewport.
-				repeater.Layout = new MockVirtualizingLayout() {
+				repeater.Layout = new MockVirtualizingLayout()
+				{
 					MeasureLayoutFunc = (size, context) =>
 					{
 						measureCount++;
@@ -200,12 +201,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				var repeater = new ItemsRepeater() 
+				var repeater = new ItemsRepeater()
 				{
 					ItemsSource = Enumerable.Range(0, 1)
 				};
 
-				Content = new ScrollViewer() 
+				Content = new ScrollViewer()
 				{
 					Content = repeater,
 					Width = 400,
@@ -247,7 +248,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						 <Button Content='{Binding}' Height='100' />
 					</DataTemplate>");
 
-				var scrollViewer = new ScrollViewer() {
+				var scrollViewer = new ScrollViewer()
+				{
 					Content = repeater
 				};
 				scrollViewer.Height = 100;
@@ -278,7 +280,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				VerticalCacheLength = 0,
 			};
 
-			scrollViewer = new ScrollViewer() 
+			scrollViewer = new ScrollViewer()
 			{
 				Content = repeater
 			};

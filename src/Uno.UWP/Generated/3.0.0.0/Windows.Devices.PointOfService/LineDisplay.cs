@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayCapabilities LineDisplay.Capabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LineDisplayCapabilities LineDisplay.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LineDisplayCapabilities%20LineDisplay.Capabilities");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceControlDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceControlDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.DeviceControlDescription");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceControlVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceControlVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.DeviceControlVersion");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.DeviceId");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceServiceVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplay.DeviceServiceVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.DeviceServiceVersion");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplay.PhysicalDeviceDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplay.PhysicalDeviceDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.PhysicalDeviceDescription");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplay.PhysicalDeviceName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LineDisplay.PhysicalDeviceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.PhysicalDeviceName");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayStatisticsCategorySelector LineDisplay.StatisticsCategorySelector is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LineDisplayStatisticsCategorySelector LineDisplay.StatisticsCategorySelector is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LineDisplayStatisticsCategorySelector%20LineDisplay.StatisticsCategorySelector");
 			}
 		}
 		#endif
@@ -98,14 +98,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> ClaimAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> LineDisplay.ClaimAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> LineDisplay.ClaimAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CClaimedLineDisplay%3E%20LineDisplay.ClaimAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplayPowerStatus> CheckPowerStatusAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> LineDisplay.CheckPowerStatusAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> LineDisplay.CheckPowerStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLineDisplayPowerStatus%3E%20LineDisplay.CheckPowerStatusAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -120,28 +120,28 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplay> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplay> LineDisplay.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplay> LineDisplay.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLineDisplay%3E%20LineDisplay.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplay> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplay> LineDisplay.GetDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplay> LineDisplay.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLineDisplay%3E%20LineDisplay.GetDefaultAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string LineDisplay.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string LineDisplay.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector( global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
 		{
-			throw new global::System.NotImplementedException("The member string LineDisplay.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string LineDisplay.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LineDisplay.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 		#endif
 		// Processing: System.IDisposable

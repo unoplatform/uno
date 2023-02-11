@@ -66,12 +66,12 @@ namespace UnoSolutionTemplate
 		/// <summary>
 		/// A function provider to be called when the remote control plugin as setting global properties.
 		/// </summary>
-        internal static Func<Task<Dictionary<string, string>>> GlobalFunctionProvider { get; set; }
+		internal static Func<Task<Dictionary<string, string>>> GlobalFunctionProvider { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnoPlatformPackage"/> class.
-        /// </summary>
-        public UnoPlatformPackage()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UnoPlatformPackage"/> class.
+		/// </summary>
+		public UnoPlatformPackage()
 		{
 			// Inside this method you can place any initialization code that does not require
 			// any Visual Studio service because at this point the package object is created but
@@ -145,11 +145,11 @@ namespace UnoSolutionTemplate
 				{
 #pragma warning disable VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 					OutputWindow ow = _dte.ToolWindows.OutputWindow;
-						// Add a new pane to the Output window.
-						owP = ow
-						.OutputWindowPanes
-						.OfType<OutputWindowPane>()
-						.FirstOrDefault(p => p.Name == "Uno Platform");
+					// Add a new pane to the Output window.
+					owP = ow
+					.OutputWindowPanes
+					.OfType<OutputWindowPane>()
+					.FirstOrDefault(p => p.Name == "Uno Platform");
 
 					if (owP == null)
 					{
@@ -180,7 +180,7 @@ namespace UnoSolutionTemplate
 			};
 #pragma warning restore VSTHRD010 // Accessing "[Project|ItemOperations|SolutionContext]" should only be done on the main thread. Call Microsoft.VisualStudio.ProjectSystem.IProjectThreadingService.VerifyOnUIThread() first.
 		}
-		
+
 
 		#endregion
 
@@ -239,7 +239,7 @@ namespace UnoSolutionTemplate
 
 							string GetRemoteControlVSPath()
 							{
-								if(!Environment.Is64BitProcess)
+								if (!Environment.Is64BitProcess)
 								{
 									var files = new[] {
 										"Uno.UI.RemoteControl.VS.dll",
@@ -292,7 +292,7 @@ namespace UnoSolutionTemplate
 						return;
 					}
 
-					if(sw.Elapsed > TimeSpan.FromMinutes(5))
+					if (sw.Elapsed > TimeSpan.FromMinutes(5))
 					{
 						// If we spent more than 5 minutes trying to enumerate loaded packages and could not
 						// bail out. In some cases, the Nuget package manager may never return the full list

@@ -32,7 +32,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
 #pragma warning restore CS0067
 
-		public bool CanWatch => true;		
+		public bool CanWatch => true;
 
 		public async Task<DeviceInformation[]> FindAllAsync()
 		{
@@ -94,7 +94,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		internal void OnDeviceRemoved(string id)
 		{
 			var deviceInformationUpdate = CreateDeviceInformationUpdate(id);
-			WatchRemoved?.Invoke(this, deviceInformationUpdate);		
+			WatchRemoved?.Invoke(this, deviceInformationUpdate);
 		}
 
 		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)

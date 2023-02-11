@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsHosted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsHosted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreApplicationView.IsHosted");
 			}
 		}
 		#endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsMain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsMain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreApplicationView.IsMain");
 			}
 		}
 		#endif
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsComponent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsComponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreApplicationView.IsComponent");
 			}
 		}
 		#endif
@@ -46,7 +46,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet CoreApplicationView.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet CoreApplicationView.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20CoreApplicationView.Properties");
 			}
 		}
 		#endif

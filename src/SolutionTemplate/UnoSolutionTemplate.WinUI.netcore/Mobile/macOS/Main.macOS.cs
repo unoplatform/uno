@@ -8,8 +8,8 @@ namespace $ext_safeprojectname$
 		static void Main(string[] args)
 		{
 			NSApplication.Init();
-			NSApplication.SharedApplication.Delegate = new App();
-			NSApplication.Main(args);  
+			NSApplication.SharedApplication.Delegate = new AppHead();
+			NSApplication.Main(args);
 		}
 	}
 }

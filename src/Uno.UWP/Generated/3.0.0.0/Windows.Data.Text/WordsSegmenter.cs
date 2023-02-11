@@ -13,7 +13,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WordsSegmenter.ResolvedLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WordsSegmenter.ResolvedLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WordsSegmenter.ResolvedLanguage");
 			}
 		}
 		#endif
@@ -30,14 +30,14 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Text.WordSegment GetTokenAt( string text,  uint startIndex)
 		{
-			throw new global::System.NotImplementedException("The member WordSegment WordsSegmenter.GetTokenAt(string text, uint startIndex) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member WordSegment WordsSegmenter.GetTokenAt(string text, uint startIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WordSegment%20WordsSegmenter.GetTokenAt%28string%20text%2C%20uint%20startIndex%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.WordSegment> GetTokens( string text)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<WordSegment> WordsSegmenter.GetTokens(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<WordSegment> WordsSegmenter.GetTokens(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWordSegment%3E%20WordsSegmenter.GetTokens%28string%20text%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

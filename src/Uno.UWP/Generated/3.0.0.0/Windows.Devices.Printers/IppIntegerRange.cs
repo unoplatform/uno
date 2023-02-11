@@ -13,7 +13,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int IppIntegerRange.End is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int IppIntegerRange.End is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20IppIntegerRange.End");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int IppIntegerRange.Start is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int IppIntegerRange.Start is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20IppIntegerRange.Start");
 			}
 		}
 		#endif

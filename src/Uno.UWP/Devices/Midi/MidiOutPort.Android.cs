@@ -82,7 +82,7 @@ namespace Windows.Devices.Midi
 		}
 
 		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
-		{			
+		{
 			var provider = new MidiOutDeviceClassProvider();
 			var nativeDeviceInfo = provider.GetNativeDeviceInfo(identifier.Id);
 			if (nativeDeviceInfo == (null, null))

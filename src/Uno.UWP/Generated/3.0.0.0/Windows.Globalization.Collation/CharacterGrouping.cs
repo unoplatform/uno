@@ -13,7 +13,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CharacterGrouping.First is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CharacterGrouping.First is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CharacterGrouping.First");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CharacterGrouping.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CharacterGrouping.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CharacterGrouping.Label");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentRequest PaymentAppCanMakePaymentTriggerDetails.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentRequest PaymentAppCanMakePaymentTriggerDetails.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentRequest%20PaymentAppCanMakePaymentTriggerDetails.Request");
 			}
 		}
 		#endif

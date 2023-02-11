@@ -82,11 +82,11 @@ namespace Uno.Extensions
 				.Select(group => new BindableGroup<TKey, TItem>(group.Key, group.ToArray()));
 
 			var result = from descriptor in descriptors
-			             join gItem in groupedItems on descriptor.Key equals gItem.Key into descrWithItems
-			             from descrIncludingEmptyItems in descrWithItems.DefaultIfEmpty()
-			             let groupItemsNoNull = descrIncludingEmptyItems ?? new BindableGroup<TKey, TItem>(descriptor.Key, Array.Empty<TItem>())
-			             where descriptor.Required || groupItemsNoNull.Any()
-			             select new BindableGroup<TKey, TItem>(descriptor.Key, groupItemsNoNull.ToArray());
+						 join gItem in groupedItems on descriptor.Key equals gItem.Key into descrWithItems
+						 from descrIncludingEmptyItems in descrWithItems.DefaultIfEmpty()
+						 let groupItemsNoNull = descrIncludingEmptyItems ?? new BindableGroup<TKey, TItem>(descriptor.Key, Array.Empty<TItem>())
+						 where descriptor.Required || groupItemsNoNull.Any()
+						 select new BindableGroup<TKey, TItem>(descriptor.Key, groupItemsNoNull.ToArray());
 
 			return result
 				.OrderBy(group => group.Key, new GroupDescriptorComparer<TKey>(descriptors.Select(descriptor => descriptor.Key)))

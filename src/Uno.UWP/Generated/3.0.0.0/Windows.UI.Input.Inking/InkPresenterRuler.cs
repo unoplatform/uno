@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20InkPresenterRuler.Width");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20InkPresenterRuler.Length");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsCompassVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsCompassVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterRuler.IsCompassVisible");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.AreTickMarksVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.AreTickMarksVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterRuler.AreTickMarksVisible");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterRuler.Transform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterRuler.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Matrix3x2%20InkPresenterRuler.Transform");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkPresenterRuler.IsVisible");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.ForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20InkPresenterRuler.ForegroundColor");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20InkPresenterRuler.BackgroundColor");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterRuler.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterRuler.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkPresenterStencilKind%20InkPresenterRuler.Kind");
 			}
 		}
 		#endif

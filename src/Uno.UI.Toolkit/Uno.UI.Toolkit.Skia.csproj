@@ -52,11 +52,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
-	</ItemGroup>
-
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 

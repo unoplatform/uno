@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebViewDeferredPermissionRequest.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WebViewDeferredPermissionRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WebViewDeferredPermissionRequest.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewPermissionType WebViewDeferredPermissionRequest.PermissionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewPermissionType WebViewDeferredPermissionRequest.PermissionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewPermissionType%20WebViewDeferredPermissionRequest.PermissionType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewDeferredPermissionRequest.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewDeferredPermissionRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewDeferredPermissionRequest.Uri");
 			}
 		}
 		#endif

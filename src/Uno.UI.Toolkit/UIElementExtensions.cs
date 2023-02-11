@@ -42,7 +42,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class UIElementExtensions
 	{
-#region Elevation
+		#region Elevation
 
 		public static void SetElevation(this UIElement element, double elevation)
 		{
@@ -85,7 +85,7 @@ namespace Uno.UI.Toolkit
 			if (element is Android.Views.View view)
 			{
 				AndroidX.Core.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
-				if(Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
+				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
 				{
 					view.SetOutlineAmbientShadowColor(shadowColor);
 					view.SetOutlineSpotShadowColor(shadowColor);
@@ -119,7 +119,7 @@ namespace Uno.UI.Toolkit
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;
 				}
-				else if(view.Layer != null)
+				else if (view.Layer != null)
 				{
 					view.Layer.ShadowOpacity = 0;
 				}
@@ -183,7 +183,7 @@ namespace Uno.UI.Toolkit
 					const float blur = 0.5f;
 
 					var shadow = compositor.CreateDropShadow();
-					shadow.Offset = new Vector3((float)elevation*x, (float)elevation*y, -(float)elevation);
+					shadow.Offset = new Vector3((float)elevation * x, (float)elevation * y, -(float)elevation);
 					shadow.BlurRadius = (float)(blur * elevation);
 
 					shadow.Mask = uiElement switch

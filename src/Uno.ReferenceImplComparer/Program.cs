@@ -52,17 +52,17 @@ namespace Uno.ReferenceImplComparer
 			var referenceTypes = referenceAssemby.MainModule.GetTypes();
 			var runtimeTypes = runtimeAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
-			foreach(var referenceType in referenceTypes.Where(t => t.IsPublic))
+			foreach (var referenceType in referenceTypes.Where(t => t.IsPublic))
 			{
-				if(referenceType.FullName == "Windows.UI.Xaml.Documents.TextElement")
+				if (referenceType.FullName == "Windows.UI.Xaml.Documents.TextElement")
 				{
 					Console.WriteLine("Skipping Windows.UI.Xaml.Documents.TextElement comparison");
 					continue;
 				}
 
-				if(runtimeTypes.TryGetValue(referenceType.FullName, out var runtimeType))
+				if (runtimeTypes.TryGetValue(referenceType.FullName, out var runtimeType))
 				{
-					if(
+					if (
 						referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName
 
 						// Ignored because ArbitraryShapeBase only contains non-public members
@@ -93,7 +93,7 @@ namespace Uno.ReferenceImplComparer
 			var hasError = false;
 			var runtimeMembersLookup = runtimeMembers.ToDictionary(m => m.ToString());
 
-			foreach(var referenceMember in referenceMembers)
+			foreach (var referenceMember in referenceMembers)
 			{
 				if (!runtimeMembersLookup.ContainsKey(referenceMember.ToString()))
 				{

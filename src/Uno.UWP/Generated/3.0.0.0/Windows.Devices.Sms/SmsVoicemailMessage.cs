@@ -13,7 +13,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsVoicemailMessage.CellularClass is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CellularClass SmsVoicemailMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CellularClass%20SmsVoicemailMessage.CellularClass");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsVoicemailMessage.DeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsVoicemailMessage.MessageClass is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsMessageClass SmsVoicemailMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsMessageClass%20SmsVoicemailMessage.MessageClass");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsVoicemailMessage.MessageType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmsMessageType SmsVoicemailMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmsMessageType%20SmsVoicemailMessage.MessageType");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.SimIccId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsVoicemailMessage.SimIccId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.Body is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsVoicemailMessage.Body");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? SmsVoicemailMessage.MessageCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? SmsVoicemailMessage.MessageCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20SmsVoicemailMessage.MessageCount");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsVoicemailMessage.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset SmsVoicemailMessage.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20SmsVoicemailMessage.Timestamp");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.To is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SmsVoicemailMessage.To");
 			}
 		}
 		#endif

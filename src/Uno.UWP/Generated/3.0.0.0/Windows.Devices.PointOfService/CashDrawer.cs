@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerCapabilities CashDrawer.Capabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CashDrawerCapabilities CashDrawer.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CashDrawerCapabilities%20CashDrawer.Capabilities");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CashDrawer.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CashDrawer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CashDrawer.DeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerEventSource CashDrawer.DrawerEventSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CashDrawerEventSource CashDrawer.DrawerEventSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CashDrawerEventSource%20CashDrawer.DrawerEventSource");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CashDrawer.IsDrawerOpen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CashDrawer.IsDrawerOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CashDrawer.IsDrawerOpen");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerStatus CashDrawer.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CashDrawerStatus CashDrawer.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CashDrawerStatus%20CashDrawer.Status");
 			}
 		}
 		#endif
@@ -66,21 +66,21 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedCashDrawer> ClaimDrawerAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedCashDrawer> CashDrawer.ClaimDrawerAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedCashDrawer> CashDrawer.ClaimDrawerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CClaimedCashDrawer%3E%20CashDrawer.ClaimDrawerAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync( global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CashDrawer.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CashDrawer.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20CashDrawer.CheckHealthAsync%28UnifiedPosHealthCheckLevel%20level%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CashDrawer.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CashDrawer.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20CashDrawer.GetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.StatusUpdated.add
@@ -96,28 +96,28 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector( global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
 		{
-			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CashDrawer.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.GetDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCashDrawer%3E%20CashDrawer.GetDefaultAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CCashDrawer%3E%20CashDrawer.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CashDrawer.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

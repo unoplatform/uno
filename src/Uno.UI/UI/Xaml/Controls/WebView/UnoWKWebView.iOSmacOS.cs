@@ -18,6 +18,8 @@ using Uno.UI.Services;
 using Windows.ApplicationModel.Resources;
 using Uno.UI;
 using System.Globalization;
+using Uno.UI.Helpers.WinUI;
+
 #if __IOS__
 using UIKit;
 #else
@@ -42,9 +44,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 		{
-			var resourceLoader = ResourceLoader.GetForCurrentView();
-			var ok = resourceLoader.GetString("OkResourceKey");
-			var cancel = resourceLoader.GetString("CancelResourceKey");
+			var ok = ResourceAccessor.GetLocalizedStringResource("OkResourceKey");
+			var cancel = ResourceAccessor.GetLocalizedStringResource("CancelResourceKey");
 
 			if (NSLocale.CurrentLocale.LanguageCode == "en")
 			{

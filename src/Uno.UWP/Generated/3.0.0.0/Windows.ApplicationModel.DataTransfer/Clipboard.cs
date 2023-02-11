@@ -11,49 +11,49 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult> GetHistoryItemsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClipboardHistoryItemsResult> Clipboard.GetHistoryItemsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClipboardHistoryItemsResult> Clipboard.GetHistoryItemsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CClipboardHistoryItemsResult%3E%20Clipboard.GetHistoryItemsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool ClearHistory()
 		{
-			throw new global::System.NotImplementedException("The member bool Clipboard.ClearHistory() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool Clipboard.ClearHistory() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Clipboard.ClearHistory%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool DeleteItemFromHistory( global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem item)
 		{
-			throw new global::System.NotImplementedException("The member bool Clipboard.DeleteItemFromHistory(ClipboardHistoryItem item) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool Clipboard.DeleteItemFromHistory(ClipboardHistoryItem item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Clipboard.DeleteItemFromHistory%28ClipboardHistoryItem%20item%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.DataTransfer.SetHistoryItemAsContentStatus SetHistoryItemAsContent( global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem item)
 		{
-			throw new global::System.NotImplementedException("The member SetHistoryItemAsContentStatus Clipboard.SetHistoryItemAsContent(ClipboardHistoryItem item) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SetHistoryItemAsContentStatus Clipboard.SetHistoryItemAsContent(ClipboardHistoryItem item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SetHistoryItemAsContentStatus%20Clipboard.SetHistoryItemAsContent%28ClipboardHistoryItem%20item%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsHistoryEnabled()
 		{
-			throw new global::System.NotImplementedException("The member bool Clipboard.IsHistoryEnabled() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool Clipboard.IsHistoryEnabled() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Clipboard.IsHistoryEnabled%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsRoamingEnabled()
 		{
-			throw new global::System.NotImplementedException("The member bool Clipboard.IsRoamingEnabled() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool Clipboard.IsRoamingEnabled() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Clipboard.IsRoamingEnabled%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool SetContentWithOptions( global::Windows.ApplicationModel.DataTransfer.DataPackage content,  global::Windows.ApplicationModel.DataTransfer.ClipboardContentOptions options)
 		{
-			throw new global::System.NotImplementedException("The member bool Clipboard.SetContentWithOptions(DataPackage content, ClipboardContentOptions options) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool Clipboard.SetContentWithOptions(DataPackage content, ClipboardContentOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Clipboard.SetContentWithOptions%28DataPackage%20content%2C%20ClipboardContentOptions%20options%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryChanged.add
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.DataTransfer.DataPackageView GetContent()
 		{
-			throw new global::System.NotImplementedException("The member DataPackageView Clipboard.GetContent() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DataPackageView Clipboard.GetContent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPackageView%20Clipboard.GetContent%28%29");
 		}
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false

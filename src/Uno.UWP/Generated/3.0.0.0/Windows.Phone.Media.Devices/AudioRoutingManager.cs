@@ -13,7 +13,7 @@ namespace Windows.Phone.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AvailableAudioRoutingEndpoints AudioRoutingManager.AvailableAudioEndpoints is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AvailableAudioRoutingEndpoints AudioRoutingManager.AvailableAudioEndpoints is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AvailableAudioRoutingEndpoints%20AudioRoutingManager.AvailableAudioEndpoints");
 			}
 		}
 		#endif
@@ -21,7 +21,7 @@ namespace Windows.Phone.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Phone.Media.Devices.AudioRoutingEndpoint GetAudioEndpoint()
 		{
-			throw new global::System.NotImplementedException("The member AudioRoutingEndpoint AudioRoutingManager.GetAudioEndpoint() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioRoutingEndpoint AudioRoutingManager.GetAudioEndpoint() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioRoutingEndpoint%20AudioRoutingManager.GetAudioEndpoint%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -38,7 +38,7 @@ namespace Windows.Phone.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Phone.Media.Devices.AudioRoutingManager GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member AudioRoutingManager AudioRoutingManager.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioRoutingManager AudioRoutingManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioRoutingManager%20AudioRoutingManager.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

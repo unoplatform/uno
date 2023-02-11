@@ -9,7 +9,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
-    partial class ApplicationView
+	partial class ApplicationView
 	{
 		internal IDisposable SetTemporaryVisibleBounds(Rect newVisibleBounds)
 		{

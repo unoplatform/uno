@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpCacheDirectiveHeaderValueCollection.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HttpCacheDirectiveHeaderValueCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HttpCacheDirectiveHeaderValueCollection.Size");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.SharedMaxAge is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.SharedMaxAge is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.SharedMaxAge");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MinFresh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MinFresh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.MinFresh");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxStale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxStale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.MaxStale");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxAge is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxAge is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.MaxAge");
 			}
 			set
 			{
@@ -92,7 +92,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TryParseAdd( string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.TryParseAdd(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpCacheDirectiveHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.GetAt(uint)
@@ -112,7 +112,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpCacheDirectiveHeaderValueCollection.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpCacheDirectiveHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCacheDirectiveHeaderValueCollection.ToString%28%29");
 		}
 		#endif
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpNameValueHeaderValue>

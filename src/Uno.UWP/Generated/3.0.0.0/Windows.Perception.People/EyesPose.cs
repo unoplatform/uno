@@ -13,7 +13,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialRay? EyesPose.Gaze is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialRay? EyesPose.Gaze is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialRay%3F%20EyesPose.Gaze");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EyesPose.IsCalibrationValid is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EyesPose.IsCalibrationValid is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EyesPose.IsCalibrationValid");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionTimestamp EyesPose.UpdateTimestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PerceptionTimestamp EyesPose.UpdateTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionTimestamp%20EyesPose.UpdateTimestamp");
 			}
 		}
 		#endif
@@ -44,14 +44,14 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool EyesPose.IsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool EyesPose.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EyesPose.IsSupported%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Input.GazeInputAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GazeInputAccessStatus> EyesPose.RequestAccessAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GazeInputAccessStatus> EyesPose.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CGazeInputAccessStatus%3E%20EyesPose.RequestAccessAsync%28%29");
 		}
 		#endif
 	}

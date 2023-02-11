@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandSlotInfo.Index is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MobileBroadbandSlotInfo.Index is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MobileBroadbandSlotInfo.Index");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandSlotState MobileBroadbandSlotInfo.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandSlotState MobileBroadbandSlotInfo.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandSlotState%20MobileBroadbandSlotInfo.State");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageCatalogAddOptionalPackageResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PackageCatalogAddOptionalPackageResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PackageCatalogAddOptionalPackageResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageCatalogAddOptionalPackageResult.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageCatalogAddOptionalPackageResult.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageCatalogAddOptionalPackageResult.Package");
 			}
 		}
 		#endif

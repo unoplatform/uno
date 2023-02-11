@@ -31,7 +31,8 @@ namespace Uno.UI.RemoteControl.Host
 		{
 			_configuration = configuration;
 			_loadContext = new AssemblyLoadContext(null, isCollectible: true);
-			_loadContext.Unloading += (e) => {
+			_loadContext.Unloading += (e) =>
+			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().LogDebug("Unloading assembly context");
@@ -97,7 +98,7 @@ namespace Uno.UI.RemoteControl.Host
 
 		private void ProcessDiscoveryFrame(Frame frame)
 		{
-			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content);
+			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
 			var serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name;
 
 			var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
@@ -127,7 +128,7 @@ namespace Uno.UI.RemoteControl.Host
 				assemblies.Add(_loadContext.LoadFromAssemblyPath(file));
 			}
 
-			foreach(var asm in assemblies)
+			foreach (var asm in assemblies)
 			{
 				var attributes = asm.GetCustomAttributes(typeof(ServerProcessorAttribute), false);
 
@@ -181,7 +182,7 @@ namespace Uno.UI.RemoteControl.Host
 
 		public void Dispose()
 		{
-			foreach(var processor in _processors)
+			foreach (var processor in _processors)
 			{
 				processor.Value.Dispose();
 			}

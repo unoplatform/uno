@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbInterruptInEndpointDescriptor UsbInterruptInPipe.EndpointDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbInterruptInEndpointDescriptor UsbInterruptInPipe.EndpointDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbInterruptInEndpointDescriptor%20UsbInterruptInPipe.EndpointDescriptor");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ClearStallAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterruptInPipe.ClearStallAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterruptInPipe.ClearStallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20UsbInterruptInPipe.ClearStallAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.DataReceived.add

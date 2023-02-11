@@ -282,7 +282,7 @@ namespace Uno.Extensions
 
 		public static int IndexOf<T>(this IReadOnlyList<T> list, T value) =>
 			list.IndexOf(value, EqualityComparer<T>.Default);
-			
+
 		public static int IndexOf<T>(this IReadOnlyList<T> list, T value, IEqualityComparer comparer)
 		{
 			if (comparer == null)

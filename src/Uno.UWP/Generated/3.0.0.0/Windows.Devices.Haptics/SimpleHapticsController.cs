@@ -13,7 +13,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SimpleHapticsController.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SimpleHapticsController.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SimpleHapticsController.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsIntensitySupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsIntensitySupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SimpleHapticsController.IsIntensitySupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsPlayCountSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsPlayCountSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SimpleHapticsController.IsPlayCountSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsPlayDurationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsPlayDurationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SimpleHapticsController.IsPlayDurationSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsReplayPauseIntervalSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SimpleHapticsController.IsReplayPauseIntervalSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SimpleHapticsController.IsReplayPauseIntervalSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SimpleHapticsControllerFeedback> SimpleHapticsController.SupportedFeedback is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SimpleHapticsControllerFeedback> SimpleHapticsController.SupportedFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSimpleHapticsControllerFeedback%3E%20SimpleHapticsController.SupportedFeedback");
 			}
 		}
 		#endif

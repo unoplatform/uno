@@ -31,7 +31,7 @@ Instead of trying to replicate UWP's behavior on iOS (which *might* be doable us
 Here's how to enable it:
 
 ```csharp
-// App's constructor (App.xaml.cs)
+// App's constructor (`App.cs` or `App.xaml.cs`)
 #if __IOS__ || __ANDROID__ || __MACOS__ || __WASM__
 FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
 #endif
@@ -46,8 +46,8 @@ You have the option to disable accessibility text scaling of iOS and Android dev
 Here's how to disable it
 
 ```csharp
-// App's constructor (App.xaml.cs)
-Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true;
+// App's constructor (`App.cs` or `App.xaml.cs`)
+Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor = true;
 ```
 
 ## AutomationId

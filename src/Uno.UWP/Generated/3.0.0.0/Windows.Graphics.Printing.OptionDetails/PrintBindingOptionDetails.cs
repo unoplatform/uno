@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.WarningText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintBindingOptionDetails.WarningText");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintBindingOptionDetails.Description");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintBindingOptionDetails.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintBindingOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cobject%3E%20PrintBindingOptionDetails.Items");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintBindingOptionDetails.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintBindingOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionStates%20PrintBindingOptionDetails.State");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintBindingOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.OptionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintBindingOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintBindingOptionDetails.OptionId");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintBindingOptionDetails.OptionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionType PrintBindingOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionType%20PrintBindingOptionDetails.OptionType");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintBindingOptionDetails.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object PrintBindingOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20PrintBindingOptionDetails.Value");
 			}
 		}
 		#endif
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySetValue( object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintBindingOptionDetails.TrySetValue(object value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PrintBindingOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintBindingOptionDetails.TrySetValue%28object%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails.Items.get

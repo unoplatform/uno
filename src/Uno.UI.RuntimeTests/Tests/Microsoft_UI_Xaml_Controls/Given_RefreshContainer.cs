@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			child.Child = grandChild;
 			refreshContainer.Content = child;
 			grid.Children.Add(refreshContainer);
-			
+
 			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(grandChild);

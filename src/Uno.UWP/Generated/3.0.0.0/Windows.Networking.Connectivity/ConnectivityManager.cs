@@ -11,7 +11,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionSession> AcquireConnectionAsync( global::Windows.Networking.Connectivity.CellularApnContext cellularApnContext)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionSession> ConnectivityManager.AcquireConnectionAsync(CellularApnContext cellularApnContext) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionSession> ConnectivityManager.AcquireConnectionAsync(CellularApnContext cellularApnContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CConnectionSession%3E%20ConnectivityManager.AcquireConnectionAsync%28CellularApnContext%20cellularApnContext%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

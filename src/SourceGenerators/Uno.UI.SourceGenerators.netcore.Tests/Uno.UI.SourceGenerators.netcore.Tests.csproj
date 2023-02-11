@@ -5,6 +5,7 @@
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">
@@ -53,7 +54,6 @@
 
 	<ItemGroup>
 		<Compile Remove="MetadataUpdateTests\Scenarios\**" />
-		<Page Remove="MetadataUpdateTests\Scenarios\**" />
 		<Content Include="MetadataUpdateTests\Scenarios\**" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 

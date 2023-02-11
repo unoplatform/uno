@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConfidence SpeechRecognitionResult.Confidence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConfidence SpeechRecognitionResult.Confidence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConfidence%20SpeechRecognitionResult.Confidence");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISpeechRecognitionConstraint SpeechRecognitionResult.Constraint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ISpeechRecognitionConstraint SpeechRecognitionResult.Constraint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ISpeechRecognitionConstraint%20SpeechRecognitionResult.Constraint");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechRecognitionResult.RawConfidence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double SpeechRecognitionResult.RawConfidence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SpeechRecognitionResult.RawConfidence");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SpeechRecognitionResult.RulePath is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SpeechRecognitionResult.RulePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20SpeechRecognitionResult.RulePath");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionSemanticInterpretation SpeechRecognitionResult.SemanticInterpretation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionSemanticInterpretation SpeechRecognitionResult.SemanticInterpretation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionSemanticInterpretation%20SpeechRecognitionResult.SemanticInterpretation");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionResultStatus SpeechRecognitionResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionResultStatus SpeechRecognitionResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionResultStatus%20SpeechRecognitionResult.Status");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionResult.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechRecognitionResult.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechRecognitionResult.Text");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechRecognitionResult.PhraseDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SpeechRecognitionResult.PhraseDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SpeechRecognitionResult.PhraseDuration");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SpeechRecognitionResult.PhraseStartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset SpeechRecognitionResult.PhraseStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20SpeechRecognitionResult.PhraseStartTime");
 			}
 		}
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates( uint maxAlternates)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<SpeechRecognitionResult> SpeechRecognitionResult.GetAlternates(uint maxAlternates) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<SpeechRecognitionResult> SpeechRecognitionResult.GetAlternates(uint maxAlternates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSpeechRecognitionResult%3E%20SpeechRecognitionResult.GetAlternates%28uint%20maxAlternates%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Constraint.get

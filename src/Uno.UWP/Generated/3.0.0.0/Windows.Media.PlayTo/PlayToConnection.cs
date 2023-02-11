@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnection.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnection.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToConnectionState%20PlayToConnection.State");
 			}
 		}
 		#endif

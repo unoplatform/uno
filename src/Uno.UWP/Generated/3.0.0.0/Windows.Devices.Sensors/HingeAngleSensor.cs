@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HingeAngleSensor.ReportThresholdInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double HingeAngleSensor.ReportThresholdInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20HingeAngleSensor.ReportThresholdInDegrees");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HingeAngleSensor.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HingeAngleSensor.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HingeAngleSensor.DeviceId");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HingeAngleSensor.MinReportThresholdInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double HingeAngleSensor.MinReportThresholdInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20HingeAngleSensor.MinReportThresholdInDegrees");
 			}
 		}
 		#endif
@@ -45,7 +45,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleReading> GetCurrentReadingAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleReading> HingeAngleSensor.GetCurrentReadingAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleReading> HingeAngleSensor.GetCurrentReadingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CHingeAngleReading%3E%20HingeAngleSensor.GetCurrentReadingAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensor.DeviceId.get
@@ -58,28 +58,28 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string HingeAngleSensor.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HingeAngleSensor.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HingeAngleSensor.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CHingeAngleSensor%3E%20HingeAngleSensor.GetDefaultAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetRelatedToAdjacentPanelsAsync( string firstPanelId,  string secondPanelId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CHingeAngleSensor%3E%20HingeAngleSensor.GetRelatedToAdjacentPanelsAsync%28string%20firstPanelId%2C%20string%20secondPanelId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CHingeAngleSensor%3E%20HingeAngleSensor.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.ShowGestureFeedback is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.ShowGestureFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GestureRecognizer.ShowGestureFeedback");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.PivotRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.PivotRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.PivotRadius");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point GestureRecognizer.PivotCenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point GestureRecognizer.PivotCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20GestureRecognizer.PivotCenter");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.ManipulationExact is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.ManipulationExact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GestureRecognizer.ManipulationExact");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDisplacement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDisplacement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.InertiaTranslationDisplacement");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDeceleration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDeceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.InertiaTranslationDeceleration");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationDeceleration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationDeceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.InertiaRotationDeceleration");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.InertiaRotationAngle");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansionDeceleration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansionDeceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.InertiaExpansionDeceleration");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.InertiaExpansion");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CrossSlideThresholds GestureRecognizer.CrossSlideThresholds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CrossSlideThresholds GestureRecognizer.CrossSlideThresholds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CrossSlideThresholds%20GestureRecognizer.CrossSlideThresholds");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideHorizontally is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideHorizontally is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GestureRecognizer.CrossSlideHorizontally");
 			}
 			set
 			{
@@ -182,7 +182,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideExact is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideExact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GestureRecognizer.CrossSlideExact");
 			}
 			set
 			{
@@ -196,7 +196,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.AutoProcessInertia is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.AutoProcessInertia is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GestureRecognizer.AutoProcessInertia");
 			}
 			set
 			{
@@ -211,7 +211,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.IsInertial is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.IsInertial is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GestureRecognizer.IsInertial");
 			}
 		}
 		#endif
@@ -221,7 +221,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MouseWheelParameters GestureRecognizer.MouseWheelParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MouseWheelParameters GestureRecognizer.MouseWheelParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MouseWheelParameters%20GestureRecognizer.MouseWheelParameters");
 			}
 		}
 		#endif
@@ -231,7 +231,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMinContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMinContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GestureRecognizer.TranslationMinContactCount");
 			}
 			set
 			{
@@ -245,7 +245,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMaxContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMaxContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GestureRecognizer.TranslationMaxContactCount");
 			}
 			set
 			{
@@ -259,7 +259,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMinContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMinContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GestureRecognizer.TapMinContactCount");
 			}
 			set
 			{
@@ -273,7 +273,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMaxContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMaxContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GestureRecognizer.TapMaxContactCount");
 			}
 			set
 			{
@@ -287,7 +287,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GestureRecognizer.HoldStartDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan GestureRecognizer.HoldStartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20GestureRecognizer.HoldStartDelay");
 			}
 			set
 			{
@@ -301,7 +301,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.HoldRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.HoldRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20GestureRecognizer.HoldRadius");
 			}
 			set
 			{
@@ -315,7 +315,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMinContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMinContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GestureRecognizer.HoldMinContactCount");
 			}
 			set
 			{
@@ -329,7 +329,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMaxContactCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMaxContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20GestureRecognizer.HoldMaxContactCount");
 			}
 			set
 			{

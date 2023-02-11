@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ESim.AvailableMemoryInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int? ESim.AvailableMemoryInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%3F%20ESim.AvailableMemoryInBytes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESim.Eid is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ESim.Eid is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ESim.Eid");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESim.FirmwareVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ESim.FirmwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ESim.FirmwareVersion");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESim.MobileBroadbandModemDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ESim.MobileBroadbandModemDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ESim.MobileBroadbandModemDeviceId");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimPolicy ESim.Policy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimPolicy ESim.Policy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimPolicy%20ESim.Policy");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimState ESim.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimState ESim.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimState%20ESim.State");
 			}
 		}
 		#endif
@@ -77,28 +77,28 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.ESimProfile> GetProfiles()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ESimProfile> ESim.GetProfiles() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ESimProfile> ESim.GetProfiles() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CESimProfile%3E%20ESim.GetProfiles%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> DeleteProfileAsync( string profileId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESim.DeleteProfileAsync(string profileId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESim.DeleteProfileAsync(string profileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CESimOperationResult%3E%20ESim.DeleteProfileAsync%28string%20profileId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult> DownloadProfileMetadataAsync( string activationCode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDownloadProfileMetadataResult> ESim.DownloadProfileMetadataAsync(string activationCode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDownloadProfileMetadataResult> ESim.DownloadProfileMetadataAsync(string activationCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CESimDownloadProfileMetadataResult%3E%20ESim.DownloadProfileMetadataAsync%28string%20activationCode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> ResetAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESim.ResetAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESim.ResetAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CESimOperationResult%3E%20ESim.ResetAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.ProfileChanged.add
@@ -107,28 +107,28 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.ESimDiscoverResult Discover()
 		{
-			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimDiscoverResult%20ESim.Discover%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.ESimDiscoverResult Discover( string serverAddress,  string matchingId)
 		{
-			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover(string serverAddress, string matchingId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover(string serverAddress, string matchingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimDiscoverResult%20ESim.Discover%28string%20serverAddress%2C%20string%20matchingId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDiscoverResult> DiscoverAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CESimDiscoverResult%3E%20ESim.DiscoverAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDiscoverResult> DiscoverAsync( string serverAddress,  string matchingId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync(string serverAddress, string matchingId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync(string serverAddress, string matchingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CESimDiscoverResult%3E%20ESim.DiscoverAsync%28string%20serverAddress%2C%20string%20matchingId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

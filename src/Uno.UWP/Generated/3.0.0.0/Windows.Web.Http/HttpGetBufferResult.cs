@@ -13,7 +13,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception HttpGetBufferResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception HttpGetBufferResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20HttpGetBufferResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpGetBufferResult.RequestMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpGetBufferResult.RequestMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestMessage%20HttpGetBufferResult.RequestMessage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage HttpGetBufferResult.ResponseMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseMessage HttpGetBufferResult.ResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessage%20HttpGetBufferResult.ResponseMessage");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpGetBufferResult.Succeeded is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HttpGetBufferResult.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpGetBufferResult.Succeeded");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HttpGetBufferResult.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer HttpGetBufferResult.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20HttpGetBufferResult.Value");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpGetBufferResult.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpGetBufferResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpGetBufferResult.ToString%28%29");
 		}
 		#endif
 		// Processing: System.IDisposable

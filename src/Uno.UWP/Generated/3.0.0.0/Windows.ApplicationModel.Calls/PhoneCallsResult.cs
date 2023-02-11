@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhoneCall> PhoneCallsResult.AllActivePhoneCalls is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PhoneCall> PhoneCallsResult.AllActivePhoneCalls is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPhoneCall%3E%20PhoneCallsResult.AllActivePhoneCalls");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineOperationStatus PhoneCallsResult.OperationStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneLineOperationStatus PhoneCallsResult.OperationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneLineOperationStatus%20PhoneCallsResult.OperationStatus");
 			}
 		}
 		#endif

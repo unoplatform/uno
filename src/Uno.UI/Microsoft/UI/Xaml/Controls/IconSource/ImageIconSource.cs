@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class ImageIconSource : IconSource
+	public partial class ImageIconSource : IconSource
 	{
 		public ImageSource ImageSource
 		{

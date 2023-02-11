@@ -13,7 +13,7 @@ namespace Windows.Management.Update
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet PreviewBuildsState.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet PreviewBuildsState.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20PreviewBuildsState.Properties");
 			}
 		}
 		#endif

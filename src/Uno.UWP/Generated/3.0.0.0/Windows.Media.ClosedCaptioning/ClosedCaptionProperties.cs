@@ -13,7 +13,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionColor ClosedCaptionProperties.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionColor ClosedCaptionProperties.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionColor%20ClosedCaptionProperties.BackgroundColor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionOpacity ClosedCaptionProperties.BackgroundOpacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionOpacity ClosedCaptionProperties.BackgroundOpacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionOpacity%20ClosedCaptionProperties.BackgroundOpacity");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ClosedCaptionProperties.ComputedBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color ClosedCaptionProperties.ComputedBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20ClosedCaptionProperties.ComputedBackgroundColor");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ClosedCaptionProperties.ComputedFontColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color ClosedCaptionProperties.ComputedFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20ClosedCaptionProperties.ComputedFontColor");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ClosedCaptionProperties.ComputedRegionColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color ClosedCaptionProperties.ComputedRegionColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20ClosedCaptionProperties.ComputedRegionColor");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionColor ClosedCaptionProperties.FontColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionColor ClosedCaptionProperties.FontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionColor%20ClosedCaptionProperties.FontColor");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionEdgeEffect ClosedCaptionProperties.FontEffect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionEdgeEffect ClosedCaptionProperties.FontEffect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionEdgeEffect%20ClosedCaptionProperties.FontEffect");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionOpacity ClosedCaptionProperties.FontOpacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionOpacity ClosedCaptionProperties.FontOpacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionOpacity%20ClosedCaptionProperties.FontOpacity");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionSize ClosedCaptionProperties.FontSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionSize ClosedCaptionProperties.FontSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionSize%20ClosedCaptionProperties.FontSize");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionStyle ClosedCaptionProperties.FontStyle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionStyle ClosedCaptionProperties.FontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionStyle%20ClosedCaptionProperties.FontStyle");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionColor ClosedCaptionProperties.RegionColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionColor ClosedCaptionProperties.RegionColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionColor%20ClosedCaptionProperties.RegionColor");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClosedCaptionOpacity ClosedCaptionProperties.RegionOpacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ClosedCaptionOpacity ClosedCaptionProperties.RegionOpacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ClosedCaptionOpacity%20ClosedCaptionProperties.RegionOpacity");
 			}
 		}
 		#endif

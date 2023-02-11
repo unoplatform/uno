@@ -57,7 +57,7 @@ namespace UnoSolutionTemplate.Wizard.Forms
 		{
 			checkPWA.Enabled = checkWebAssembly.Checked;
 
-			if(!checkPWA.Enabled)
+			if (!checkPWA.Enabled)
 			{
 				checkPWA.Checked = false;
 			}

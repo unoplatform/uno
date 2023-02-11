@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.TransmitInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverGameControllerDevice.TransmitInput");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverGameControllerDeviceUsageMode MiracastReceiverGameControllerDevice.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverGameControllerDeviceUsageMode MiracastReceiverGameControllerDevice.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverGameControllerDeviceUsageMode%20MiracastReceiverGameControllerDevice.Mode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverGameControllerDevice.IsRequestedByTransmitter");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsTransmittingInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsTransmittingInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverGameControllerDevice.IsTransmittingInput");
 			}
 		}
 		#endif

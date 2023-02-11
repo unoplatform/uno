@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsDrawerOpenSensorAvailable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsDrawerOpenSensorAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CashDrawerCapabilities.IsDrawerOpenSensorAvailable");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatisticsReportingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatisticsReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CashDrawerCapabilities.IsStatisticsReportingSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatisticsUpdatingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatisticsUpdatingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CashDrawerCapabilities.IsStatisticsUpdatingSupported");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatusMultiDrawerDetectSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatusMultiDrawerDetectSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CashDrawerCapabilities.IsStatusMultiDrawerDetectSupported");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatusReportingSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CashDrawerCapabilities.IsStatusReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CashDrawerCapabilities.IsStatusReportingSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType CashDrawerCapabilities.PowerReportingType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType CashDrawerCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UnifiedPosPowerReportingType%20CashDrawerCapabilities.PowerReportingType");
 			}
 		}
 		#endif

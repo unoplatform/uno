@@ -13,7 +13,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Year is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoProperties.Year");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoProperties.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoProperties.Title");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoProperties.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoProperties.Subtitle");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Rating is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoProperties.Rating");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoProperties.Publisher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VideoProperties.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VideoProperties.Publisher");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Bitrate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Bitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoProperties.Bitrate");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Directors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Directors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20VideoProperties.Directors");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan VideoProperties.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan VideoProperties.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20VideoProperties.Duration");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoProperties.Height");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Keywords is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20VideoProperties.Keywords");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? VideoProperties.Latitude is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? VideoProperties.Latitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20VideoProperties.Latitude");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? VideoProperties.Longitude is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? VideoProperties.Longitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20VideoProperties.Longitude");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoOrientation VideoProperties.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoOrientation VideoProperties.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoOrientation%20VideoProperties.Orientation");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Producers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Producers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20VideoProperties.Producers");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoProperties.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VideoProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VideoProperties.Width");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Writers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> VideoProperties.Writers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20VideoProperties.Writers");
 			}
 		}
 		#endif
@@ -212,21 +212,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync( global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> VideoProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> VideoProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIDictionary%3Cstring%2C%20object%3E%3E%20VideoProperties.RetrievePropertiesAsync%28IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VideoProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VideoProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VideoProperties.SavePropertiesAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20propertiesToSave%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VideoProperties.SavePropertiesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VideoProperties.SavePropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VideoProperties.SavePropertiesAsync%28%29");
 		}
 		#endif
 		// Processing: Windows.Storage.FileProperties.IStorageItemExtraProperties

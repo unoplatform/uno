@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoftwareBitmap ImageCue.SoftwareBitmap is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SoftwareBitmap ImageCue.SoftwareBitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20ImageCue.SoftwareBitmap");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextPoint ImageCue.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextPoint ImageCue.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextPoint%20ImageCue.Position");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextSize ImageCue.Extent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextSize ImageCue.Extent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextSize%20ImageCue.Extent");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ImageCue.StartTime");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageCue.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageCue.Id");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ImageCue.Duration");
 			}
 			set
 			{

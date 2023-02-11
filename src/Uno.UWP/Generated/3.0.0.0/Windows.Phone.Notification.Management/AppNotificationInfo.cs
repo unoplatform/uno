@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppNotificationInfo.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppNotificationInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppNotificationInfo.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppNotificationInfo.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppNotificationInfo.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppNotificationInfo.Name");
 			}
 		}
 		#endif

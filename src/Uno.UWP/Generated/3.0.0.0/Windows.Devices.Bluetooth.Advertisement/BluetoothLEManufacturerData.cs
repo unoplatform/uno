@@ -9,6 +9,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property CompanyId
+		// Skipping already declared method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData()
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData()
 		// Skipping already declared method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData(ushort, Windows.Storage.Streams.IBuffer)
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData(ushort, Windows.Storage.Streams.IBuffer)

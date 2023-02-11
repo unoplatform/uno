@@ -77,9 +77,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_VisibilityCollapsed_Then_ScrollViewerIgnoresElement()
 		{
-			var item1 = new Border { Height = 128};
+			var item1 = new Border { Height = 128 };
 			var item2 = new Border { Height = 4096, Visibility = Visibility.Collapsed };
-			var sv = new ScrollViewer {Content = new Grid {Children = {item1, item2}}};
+			var sv = new ScrollViewer { Content = new Grid { Children = { item1, item2 } } };
 
 			TestServices.WindowHelper.WindowContent = sv;
 			await Render();

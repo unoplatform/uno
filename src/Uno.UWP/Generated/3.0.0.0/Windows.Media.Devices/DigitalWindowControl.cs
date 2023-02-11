@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DigitalWindowMode DigitalWindowControl.CurrentMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DigitalWindowMode DigitalWindowControl.CurrentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DigitalWindowMode%20DigitalWindowControl.CurrentMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DigitalWindowControl.IsSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DigitalWindowControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DigitalWindowControl.IsSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DigitalWindowCapability> DigitalWindowControl.SupportedCapabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<DigitalWindowCapability> DigitalWindowControl.SupportedCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CDigitalWindowCapability%3E%20DigitalWindowControl.SupportedCapabilities");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DigitalWindowMode[] DigitalWindowControl.SupportedModes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DigitalWindowMode[] DigitalWindowControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DigitalWindowMode%5B%5D%20DigitalWindowControl.SupportedModes");
 			}
 		}
 		#endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.DigitalWindowBounds GetBounds()
 		{
-			throw new global::System.NotImplementedException("The member DigitalWindowBounds DigitalWindowControl.GetBounds() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DigitalWindowBounds DigitalWindowControl.GetBounds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DigitalWindowBounds%20DigitalWindowControl.GetBounds%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -76,7 +76,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.DigitalWindowCapability GetCapabilityForSize( int width,  int height)
 		{
-			throw new global::System.NotImplementedException("The member DigitalWindowCapability DigitalWindowControl.GetCapabilityForSize(int width, int height) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DigitalWindowCapability DigitalWindowControl.GetCapabilityForSize(int width, int height) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DigitalWindowCapability%20DigitalWindowControl.GetCapabilityForSize%28int%20width%2C%20int%20height%29");
 		}
 		#endif
 	}

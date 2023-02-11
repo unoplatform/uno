@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionInvitation RemoteSystemSessionInvitationReceivedEventArgs.Invitation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RemoteSystemSessionInvitation RemoteSystemSessionInvitationReceivedEventArgs.Invitation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemSessionInvitation%20RemoteSystemSessionInvitationReceivedEventArgs.Invitation");
 			}
 		}
 		#endif

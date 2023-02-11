@@ -13,7 +13,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CredentialCommandCredentialDeletedHandler CredentialCommand.CredentialDeleted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CredentialCommandCredentialDeletedHandler CredentialCommand.CredentialDeleted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CredentialCommandCredentialDeletedHandler%20CredentialCommand.CredentialDeleted");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential CredentialCommand.PasswordCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential CredentialCommand.PasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20CredentialCommand.PasswordCredential");
 			}
 		}
 		#endif

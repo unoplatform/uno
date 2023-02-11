@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderRequestTokenOperation.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderRequestTokenOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountProviderOperationKind%20WebAccountProviderRequestTokenOperation.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset WebAccountProviderRequestTokenOperation.CacheExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset WebAccountProviderRequestTokenOperation.CacheExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20WebAccountProviderRequestTokenOperation.CacheExpirationTime");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderTokenRequest WebAccountProviderRequestTokenOperation.ProviderRequest is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebProviderTokenRequest WebAccountProviderRequestTokenOperation.ProviderRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebProviderTokenRequest%20WebAccountProviderRequestTokenOperation.ProviderRequest");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WebProviderTokenResponse> WebAccountProviderRequestTokenOperation.ProviderResponses is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<WebProviderTokenResponse> WebAccountProviderRequestTokenOperation.ProviderResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CWebProviderTokenResponse%3E%20WebAccountProviderRequestTokenOperation.ProviderResponses");
 			}
 		}
 		#endif

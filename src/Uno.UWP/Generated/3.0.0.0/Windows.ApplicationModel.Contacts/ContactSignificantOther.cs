@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactSignificantOther.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactSignificantOther.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactSignificantOther.Name");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactSignificantOther.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactSignificantOther.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactSignificantOther.Description");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactRelationship ContactSignificantOther.Relationship is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactRelationship ContactSignificantOther.Relationship is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactRelationship%20ContactSignificantOther.Relationship");
 			}
 			set
 			{

@@ -62,7 +62,7 @@ namespace Windows.Devices.Sensors
 
 		private void StopReading()
 		{
-			if ( _listener != null)
+			if (_listener != null)
 			{
 				SensorHelpers.GetSensorManager().UnregisterListener(_listener, _sensor);
 				_listener.Dispose();
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sensors
 				_barometer = barometer;
 			}
 
-			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy)
+			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
 

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentRequestChangeKind PaymentRequestChangedArgs.ChangeKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentRequestChangeKind PaymentRequestChangedArgs.ChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentRequestChangeKind%20PaymentRequestChangedArgs.ChangeKind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentShippingOption PaymentRequestChangedArgs.SelectedShippingOption is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentShippingOption PaymentRequestChangedArgs.SelectedShippingOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentShippingOption%20PaymentRequestChangedArgs.SelectedShippingOption");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentAddress PaymentRequestChangedArgs.ShippingAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentAddress PaymentRequestChangedArgs.ShippingAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentAddress%20PaymentRequestChangedArgs.ShippingAddress");
 			}
 		}
 		#endif

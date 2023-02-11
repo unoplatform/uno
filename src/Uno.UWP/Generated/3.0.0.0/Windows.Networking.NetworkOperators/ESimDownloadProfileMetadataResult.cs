@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDownloadProfileMetadataResult.ProfileMetadata is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDownloadProfileMetadataResult.ProfileMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimProfileMetadata%20ESimDownloadProfileMetadataResult.ProfileMetadata");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDownloadProfileMetadataResult.Result is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDownloadProfileMetadataResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimOperationResult%20ESimDownloadProfileMetadataResult.Result");
 			}
 		}
 		#endif

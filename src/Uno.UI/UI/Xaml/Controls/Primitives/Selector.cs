@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateSelectedValue()
 		{
-			if (SelectedValuePath.HasValue())
+			if (!SelectedValuePath.IsNullOrEmpty())
 			{
 				if (_selectedValueBindingPath?.Path != SelectedValuePath)
 				{

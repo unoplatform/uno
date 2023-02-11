@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LocalContentSuggestionSettings.Enabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LocalContentSuggestionSettings.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LocalContentSuggestionSettings.Enabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LocalContentSuggestionSettings.AqsFilter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LocalContentSuggestionSettings.AqsFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LocalContentSuggestionSettings.AqsFilter");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<StorageFolder> LocalContentSuggestionSettings.Locations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<StorageFolder> LocalContentSuggestionSettings.Locations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CStorageFolder%3E%20LocalContentSuggestionSettings.Locations");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> LocalContentSuggestionSettings.PropertiesToMatch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> LocalContentSuggestionSettings.PropertiesToMatch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20LocalContentSuggestionSettings.PropertiesToMatch");
 			}
 		}
 		#endif

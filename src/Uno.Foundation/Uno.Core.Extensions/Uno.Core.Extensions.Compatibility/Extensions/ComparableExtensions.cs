@@ -21,91 +21,91 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-    internal static class ComparableExtensions
-    {
-        public static T Min<T>(this T left, T right)
-            where T : IComparable
-        {
-            if (left == null)
-            {
-                return right;
-            }
-            else if (right == null)
-            {
-                return left;
-            }
-            else
-            {
-                return left.CompareTo(right) < 0 ? left : right;
-            }
-        }
+	internal static class ComparableExtensions
+	{
+		public static T Min<T>(this T left, T right)
+			where T : IComparable
+		{
+			if (left == null)
+			{
+				return right;
+			}
+			else if (right == null)
+			{
+				return left;
+			}
+			else
+			{
+				return left.CompareTo(right) < 0 ? left : right;
+			}
+		}
 
-        public static T Max<T>(this T left, T right)
-            where T : IComparable
-        {
-            if (left == null)
-            {
-                return right;
-            }
-            else if (right == null)
-            {
-                return left;
-            }
-            else
-            {
-                return left.CompareTo(right) > 0 ? left : right;
-            }
-        }
+		public static T Max<T>(this T left, T right)
+			where T : IComparable
+		{
+			if (left == null)
+			{
+				return right;
+			}
+			else if (right == null)
+			{
+				return left;
+			}
+			else
+			{
+				return left.CompareTo(right) > 0 ? left : right;
+			}
+		}
 
-        public static T? Min<T>(this T? left, T? right)
-            where T : struct, IComparable
-        {
-            if (left == null)
-            {
-                return right;
-            }
-            else if (right == null)
-            {
-                return left;
-            }
-            else
-            {
-                return left.Value.CompareTo(right.Value) < 0 ? left.Value : right.Value;
-            }
-        }
+		public static T? Min<T>(this T? left, T? right)
+			where T : struct, IComparable
+		{
+			if (left == null)
+			{
+				return right;
+			}
+			else if (right == null)
+			{
+				return left;
+			}
+			else
+			{
+				return left.Value.CompareTo(right.Value) < 0 ? left.Value : right.Value;
+			}
+		}
 
-        public static T? Max<T>(this T? left, T? right)
-            where T : struct, IComparable
-        {
-            if (left == null)
-            {
-                return right;
-            }
-            else if (right == null)
-            {
-                return left;
-            }
-            else
-            {
-                return left.Value.CompareTo(right.Value) > 0 ? left.Value : right.Value;
-            }
-        }
+		public static T? Max<T>(this T? left, T? right)
+			where T : struct, IComparable
+		{
+			if (left == null)
+			{
+				return right;
+			}
+			else if (right == null)
+			{
+				return left;
+			}
+			else
+			{
+				return left.Value.CompareTo(right.Value) > 0 ? left.Value : right.Value;
+			}
+		}
 
-        public static int SafeCompareTo<T>(this T left, T right)
-            where T : IComparable
-        {
-            if(left != null)
-            {
-                return left.CompareTo(right);
-            }
-            else if(right == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-    }
+		public static int SafeCompareTo<T>(this T left, T right)
+			where T : IComparable
+		{
+			if (left != null)
+			{
+				return left.CompareTo(right);
+			}
+			else if (right == null)
+			{
+				return 0;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+	}
 }

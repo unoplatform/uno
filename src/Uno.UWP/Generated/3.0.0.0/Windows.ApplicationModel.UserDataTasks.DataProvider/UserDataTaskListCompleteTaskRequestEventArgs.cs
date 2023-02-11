@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListCompleteTaskRequest UserDataTaskListCompleteTaskRequestEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataTaskListCompleteTaskRequest UserDataTaskListCompleteTaskRequestEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataTaskListCompleteTaskRequest%20UserDataTaskListCompleteTaskRequestEventArgs.Request");
 			}
 		}
 		#endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral UserDataTaskListCompleteTaskRequestEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral UserDataTaskListCompleteTaskRequestEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20UserDataTaskListCompleteTaskRequestEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

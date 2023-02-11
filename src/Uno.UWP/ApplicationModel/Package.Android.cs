@@ -25,9 +25,9 @@ namespace Windows.ApplicationModel
 				var installer = ContextHelper.Current.PackageManager.GetInstallerPackageName(ContextHelper.Current.PackageName);
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
-				return !installer.HasValue();
+				return installer.IsNullOrEmpty();
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return false;
 			}

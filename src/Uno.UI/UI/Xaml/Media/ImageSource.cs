@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Media
 				url = MsAppXScheme + "://" + url;
 			}
 
-			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			if (!url.IsNullOrWhiteSpace() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
 			{
 				if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
 				{

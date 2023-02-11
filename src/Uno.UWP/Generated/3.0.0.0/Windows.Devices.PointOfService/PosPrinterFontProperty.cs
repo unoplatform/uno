@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SizeUInt32> PosPrinterFontProperty.CharacterSizes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SizeUInt32> PosPrinterFontProperty.CharacterSizes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSizeUInt32%3E%20PosPrinterFontProperty.CharacterSizes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterFontProperty.IsScalableToAnySize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PosPrinterFontProperty.IsScalableToAnySize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PosPrinterFontProperty.IsScalableToAnySize");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PosPrinterFontProperty.TypeFace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PosPrinterFontProperty.TypeFace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PosPrinterFontProperty.TypeFace");
 			}
 		}
 		#endif

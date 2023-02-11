@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatConversationThreadingKind ChatConversationThreadingInfo.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ChatConversationThreadingKind ChatConversationThreadingInfo.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ChatConversationThreadingKind%20ChatConversationThreadingInfo.Kind");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.Custom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.Custom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatConversationThreadingInfo.Custom");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.ConversationId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.ConversationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatConversationThreadingInfo.ConversationId");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.ContactId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChatConversationThreadingInfo.ContactId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChatConversationThreadingInfo.ContactId");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ChatConversationThreadingInfo.Participants is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ChatConversationThreadingInfo.Participants is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ChatConversationThreadingInfo.Participants");
 			}
 		}
 		#endif

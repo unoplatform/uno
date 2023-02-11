@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionEffectBrush LayerVisual.Effect is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionEffectBrush LayerVisual.Effect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionEffectBrush%20LayerVisual.Effect");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionShadow LayerVisual.Shadow is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionShadow LayerVisual.Shadow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionShadow%20LayerVisual.Shadow");
 			}
 			set
 			{

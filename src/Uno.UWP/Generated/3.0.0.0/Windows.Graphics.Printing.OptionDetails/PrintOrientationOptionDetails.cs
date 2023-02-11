@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintOrientationOptionDetails.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintOrientationOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cobject%3E%20PrintOrientationOptionDetails.Items");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintOrientationOptionDetails.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintOrientationOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionStates%20PrintOrientationOptionDetails.State");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintOrientationOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.OptionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintOrientationOptionDetails.OptionId");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintOrientationOptionDetails.OptionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionType PrintOrientationOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionType%20PrintOrientationOptionDetails.OptionType");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintOrientationOptionDetails.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object PrintOrientationOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20PrintOrientationOptionDetails.Value");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.WarningText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintOrientationOptionDetails.WarningText");
 			}
 			set
 			{
@@ -95,7 +95,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintOrientationOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintOrientationOptionDetails.Description");
 			}
 			set
 			{
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySetValue( object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintOrientationOptionDetails.TrySetValue(object value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PrintOrientationOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintOrientationOptionDetails.TrySetValue%28object%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.Items.get

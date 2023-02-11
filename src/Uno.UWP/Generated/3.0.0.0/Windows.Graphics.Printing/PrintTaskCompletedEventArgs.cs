@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskCompletion PrintTaskCompletedEventArgs.Completion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTaskCompletion PrintTaskCompletedEventArgs.Completion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTaskCompletion%20PrintTaskCompletedEventArgs.Completion");
 			}
 		}
 		#endif

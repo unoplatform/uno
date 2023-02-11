@@ -8,7 +8,7 @@ namespace $ext_safeprojectname$.macOS
 		{
 			NSApplication.Init();
 			NSApplication.SharedApplication.Delegate = new App();
-			NSApplication.Main(args);  
+			NSApplication.Main(args);
 		}
 	}
 }

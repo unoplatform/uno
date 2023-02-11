@@ -24,10 +24,10 @@ namespace Uno.UI.RemoteControl.Host
 					}
 				},
 			};
-			
+
 			p.Parse(args);
 
-			if(httpPort == 0)
+			if (httpPort == 0)
 			{
 				throw new ArgumentException($"The httpPort parameter is required.");
 			}

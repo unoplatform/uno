@@ -70,7 +70,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					: fileItem.GetMetadataValue("Link") is { Length: > 0 } link
 						? link
 						: fileItem.GetMetadataValue("Identity").Replace(projectDirectory, "");
-				
+
 				return ParseFile(fileItem.File, targetFilePath.Replace("\\", "/"), cancellationToken);
 			}
 		}
@@ -177,7 +177,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var newIgnored = ignoredNs
 				.Except(_includeXamlNamespaces)
-				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement?.GetNamespaceOfPrefix(n).HasValue() ?? false))
+				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement is { } documentElement && !documentElement.GetNamespaceOfPrefix(n).IsNullOrEmpty()))
 				.Concat(conditionals.ExcludedConditionals.Select(a => a.LocalName))
 				.ToArray();
 			var newIgnoredFlat = newIgnored.JoinBy(" ");
@@ -307,7 +307,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var excludeNamespaces = _excludeXamlNamespaces
 				.Select(n => new { Name = n, Namespace = document.DocumentElement?.GetNamespaceOfPrefix(n) })
-				.Where(n => n.Namespace.HasValue());
+				.Where(n => !n.Namespace.IsNullOrEmpty());
 
 			var shouldCreateIgnorable = false;
 

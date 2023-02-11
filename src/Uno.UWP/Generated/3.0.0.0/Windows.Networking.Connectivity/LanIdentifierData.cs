@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LanIdentifierData.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LanIdentifierData.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LanIdentifierData.Type");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<byte> LanIdentifierData.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<byte> LanIdentifierData.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cbyte%3E%20LanIdentifierData.Value");
 			}
 		}
 		#endif

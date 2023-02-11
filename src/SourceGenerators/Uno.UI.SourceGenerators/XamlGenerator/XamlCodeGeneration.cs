@@ -212,7 +212,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					Value = i.GetMetadataValue("Mappings")
 						?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
 						.Select(m => m.Trim())
-						.Where(m => m.HasValueTrimmed())
+						.Where(m => !m.IsNullOrWhiteSpace())
 				})
 				.GroupBy(p => p.Key)
 				.ToDictionary(p => p.Key, p => p.SelectMany(x => x.Value.Safe()).ToArray());
@@ -293,8 +293,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
 					|| PlatformHelper.IsAndroid(_generatorContext);
 
-				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
-				TryGenerateUnoResourcesKeyAttribute(resourceKeys);
+				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
+				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
 
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
@@ -348,7 +348,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									lastReferenceUpdateTime: lastBinaryUpdateTime,
 									analyzerSuppressions: _analyzerSuppressions,
 									globalStaticResourcesMap: globalStaticResourcesMap,
-									resourceKeys: resourceKeys,
+									resourceDetailsCollection: resourceDetailsCollection,
 									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 									uiAutomationMappings: _uiAutomationMappings,
 									defaultLanguage: _defaultLanguage,
@@ -402,10 +402,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void TryGenerateUnoResourcesKeyAttribute(ImmutableHashSet<string> resourceKeys)
+		private void TryGenerateUnoResourcesKeyAttribute(ResourceDetailsCollection resourceDetailsCollection)
 		{
-			var hasResources = !resourceKeys.IsEmpty;
-			
+			var hasResources = resourceDetailsCollection.HasLocalResources;
+
 			_generatorContext.AddSource(
 				"LocalizationResources",
 				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
@@ -508,7 +508,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var query = from sym in assembliesQuery
 						from module in sym.Modules
 
-						// Only consider assemblies that reference Uno.UI
+							// Only consider assemblies that reference Uno.UI
 						where module.ReferencedAssemblies.Any(r => r.Name == "Uno.UI") || sym.Name == "Uno.UI"
 
 						// Don't consider Uno.UI.FluentTheme assemblies, as they manage their own initialization
@@ -615,13 +615,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		//get keys of localized strings
-		private ImmutableHashSet<string> GetResourceKeys(CancellationToken ct)
+		// Get keys of localized strings
+		private ResourceDetailsCollection BuildResourceDetails(CancellationToken ct)
 		{
-			ImmutableHashSet<string> resourceKeys = _resourceFiles
+			var localResources = BuildLocalResourceDetails(ct);
+
+			var collection = new ResourceDetailsCollection(_metadataHelper.AssemblyName);
+
+			collection.AddRange(localResources);
+
+			return collection;
+		}
+
+		private ResourceDetails[] BuildLocalResourceDetails(CancellationToken ct)
+		{
+			var resourceKeys = _resourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
-				.SelectMany(file => {
+				.SelectMany(file =>
+				{
 #if DEBUG
 					Console.WriteLine("Parse resource file : " + file.Identity);
 #endif
@@ -629,6 +641,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var sourceText = file.File.GetText(ct)!;
 						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
+						var resourceFileName = Path.GetFileNameWithoutExtension(file.Identity);
+
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
 							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
@@ -642,15 +656,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var doc = new XmlDocument();
 						doc.LoadXml(sourceText.ToString());
 
-						var rewriterBuilder = new StringBuilder();
 
 						//extract all localization keys from Win10 resource file
 						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions
 						// Per this documentation, /root/data should be more performant than //data
 						var keys = doc.SelectNodes("/root/data")
 							?.Cast<XmlElement>()
-							.Select(node => RewriteResourceKeyName(rewriterBuilder, node.GetAttribute("name")))
-							.ToArray() ?? Array.Empty<string>();
+							.Select(node => new ResourceDetails(_metadataHelper.AssemblyName, resourceFileName, node.GetAttribute("name")))
+							.ToArray() ?? Array.Empty<ResourceDetails>();
 						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
 						return keys;
 					}
@@ -659,42 +672,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
 #if NETSTANDARD
-							var diagnostic = Diagnostic.Create(
-								XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
-								null,
-								message);
+						var diagnostic = Diagnostic.Create(
+							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
+							null,
+							message);
 
-							_generatorContext.ReportDiagnostic(diagnostic);
+						_generatorContext.ReportDiagnostic(diagnostic);
 
-							return Array.Empty<string>();
+						return Array.Empty<ResourceDetails>();
 #else
 						throw new InvalidOperationException(message, e);
 #endif
 					}
 				})
 				.Distinct()
-				.ToImmutableHashSet();
+				.ToArray();
 
 #if DEBUG
-			Console.WriteLine(resourceKeys.Count + " localization keys found");
+			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
-		}
-
-		private string RewriteResourceKeyName(StringBuilder builder, string keyName)
-		{
-			var firstDotIndex = keyName.IndexOf('.');
-			if (firstDotIndex != -1)
-			{
-				builder.Clear();
-				builder.Append(keyName);
-
-				builder[firstDotIndex] = '/';
-
-				return builder.ToString();
-			}
-
-			return keyName;
 		}
 
 		private DateTime GetLastBinaryUpdateTime()

@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ServerStreamWebSocketInformation ServerStreamWebSocket.Information is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ServerStreamWebSocketInformation ServerStreamWebSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ServerStreamWebSocketInformation%20ServerStreamWebSocket.Information");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInputStream ServerStreamWebSocket.InputStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IInputStream ServerStreamWebSocket.InputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IInputStream%20ServerStreamWebSocket.InputStream");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream ServerStreamWebSocket.OutputStream is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IOutputStream ServerStreamWebSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IOutputStream%20ServerStreamWebSocket.OutputStream");
 			}
 		}
 		#endif

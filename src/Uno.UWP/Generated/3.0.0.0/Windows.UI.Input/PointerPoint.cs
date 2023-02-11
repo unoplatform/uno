@@ -27,28 +27,28 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.PointerPoint GetCurrentPoint( uint pointerId)
 		{
-			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetCurrentPoint(uint pointerId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetCurrentPoint(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PointerPoint%20PointerPoint.GetCurrentPoint%28uint%20pointerId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints( uint pointerId)
 		{
-			throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CPointerPoint%3E%20PointerPoint.GetIntermediatePoints%28uint%20pointerId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.PointerPoint GetCurrentPoint( uint pointerId,  global::Windows.UI.Input.IPointerPointTransform transform)
 		{
-			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetCurrentPoint(uint pointerId, IPointerPointTransform transform) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetCurrentPoint(uint pointerId, IPointerPointTransform transform) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PointerPoint%20PointerPoint.GetCurrentPoint%28uint%20pointerId%2C%20IPointerPointTransform%20transform%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints( uint pointerId,  global::Windows.UI.Input.IPointerPointTransform transform)
 		{
-			throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId, IPointerPointTransform transform) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId, IPointerPointTransform transform) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CPointerPoint%3E%20PointerPoint.GetIntermediatePoints%28uint%20pointerId%2C%20IPointerPointTransform%20transform%29");
 		}
 		#endif
 	}

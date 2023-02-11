@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TileNotification.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TileNotification.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? TileNotification.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? TileNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20TileNotification.ExpirationTime");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapTileUriRequest MapTileUriRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapTileUriRequest MapTileUriRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapTileUriRequest%20MapTileUriRequestedEventArgs.Request");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.X is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.X is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileUriRequestedEventArgs.X");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.Y is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.Y is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileUriRequestedEventArgs.Y");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.ZoomLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.ZoomLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileUriRequestedEventArgs.ZoomLevel");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.FrameIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MapTileUriRequestedEventArgs.FrameIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MapTileUriRequestedEventArgs.FrameIndex");
 			}
 		}
 		#endif

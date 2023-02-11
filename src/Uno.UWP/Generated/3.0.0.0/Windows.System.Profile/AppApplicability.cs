@@ -11,7 +11,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Profile.UnsupportedAppRequirement> GetUnsupportedAppRequirements( global::System.Collections.Generic.IEnumerable<string> capabilities)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<UnsupportedAppRequirement> AppApplicability.GetUnsupportedAppRequirements(IEnumerable<string> capabilities) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<UnsupportedAppRequirement> AppApplicability.GetUnsupportedAppRequirements(IEnumerable<string> capabilities) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUnsupportedAppRequirement%3E%20AppApplicability.GetUnsupportedAppRequirements%28IEnumerable%3Cstring%3E%20capabilities%29");
 		}
 		#endif
 	}

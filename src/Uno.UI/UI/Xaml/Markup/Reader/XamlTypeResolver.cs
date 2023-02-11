@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (type != null)
 			{
 				var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-				var isKnownNamespace = ns?.Prefix?.HasValue() ?? false;
+				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
 
 				if (type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 				{

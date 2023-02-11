@@ -18,8 +18,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
-
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 
@@ -52,11 +50,6 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj">
 			<Name>Uno.Foundation</Name>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

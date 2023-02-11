@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SoftwareBitmap.DpiY");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SoftwareBitmap.DpiX");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapAlphaMode SoftwareBitmap.BitmapAlphaMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapAlphaMode SoftwareBitmap.BitmapAlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapAlphaMode%20SoftwareBitmap.BitmapAlphaMode");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPixelFormat SoftwareBitmap.BitmapPixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BitmapPixelFormat SoftwareBitmap.BitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapPixelFormat%20SoftwareBitmap.BitmapPixelFormat");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SoftwareBitmap.IsReadOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SoftwareBitmap.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SoftwareBitmap.IsReadOnly");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SoftwareBitmap.PixelHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int SoftwareBitmap.PixelHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20SoftwareBitmap.PixelHeight");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SoftwareBitmap.PixelWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int SoftwareBitmap.PixelWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20SoftwareBitmap.PixelWidth");
 			}
 		}
 		#endif
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer( global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
 		{
-			throw new global::System.NotImplementedException("The member BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BitmapBuffer%20SoftwareBitmap.LockBuffer%28BitmapBufferAccessMode%20mode%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
@@ -142,7 +142,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
 		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.GetReadOnlyView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.GetReadOnlyView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20SoftwareBitmap.GetReadOnlyView%28%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
@@ -156,49 +156,49 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Copy( global::Windows.Graphics.Imaging.SoftwareBitmap source)
 		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Copy(SoftwareBitmap source) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Copy(SoftwareBitmap source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20SoftwareBitmap.Copy%28SoftwareBitmap%20source%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Convert( global::Windows.Graphics.Imaging.SoftwareBitmap source,  global::Windows.Graphics.Imaging.BitmapPixelFormat format)
 		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20SoftwareBitmap.Convert%28SoftwareBitmap%20source%2C%20BitmapPixelFormat%20format%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Convert( global::Windows.Graphics.Imaging.SoftwareBitmap source,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format, BitmapAlphaMode alpha) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format, BitmapAlphaMode alpha) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20SoftwareBitmap.Convert%28SoftwareBitmap%20source%2C%20BitmapPixelFormat%20format%2C%20BitmapAlphaMode%20alpha%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer( global::Windows.Storage.Streams.IBuffer source,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height)
 		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20SoftwareBitmap.CreateCopyFromBuffer%28IBuffer%20source%2C%20BitmapPixelFormat%20format%2C%20int%20width%2C%20int%20height%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer( global::Windows.Storage.Streams.IBuffer source,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20SoftwareBitmap.CreateCopyFromBuffer%28IBuffer%20source%2C%20BitmapPixelFormat%20format%2C%20int%20width%2C%20int%20height%2C%20BitmapAlphaMode%20alpha%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> CreateCopyFromSurfaceAsync( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CSoftwareBitmap%3E%20SoftwareBitmap.CreateCopyFromSurfaceAsync%28IDirect3DSurface%20surface%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> CreateCopyFromSurfaceAsync( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface, BitmapAlphaMode alpha) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface, BitmapAlphaMode alpha) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CSoftwareBitmap%3E%20SoftwareBitmap.CreateCopyFromSurfaceAsync%28IDirect3DSurface%20surface%2C%20BitmapAlphaMode%20alpha%29");
 		}
 		#endif
 		// Processing: System.IDisposable

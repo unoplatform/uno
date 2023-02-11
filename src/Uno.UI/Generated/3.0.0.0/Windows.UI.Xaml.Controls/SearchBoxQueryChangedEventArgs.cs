@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxQueryChangedEventArgs.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxQueryChangedEventArgs.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxQueryChangedEventArgs.Language");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchQueryLinguisticDetails SearchBoxQueryChangedEventArgs.LinguisticDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SearchQueryLinguisticDetails SearchBoxQueryChangedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SearchQueryLinguisticDetails%20SearchBoxQueryChangedEventArgs.LinguisticDetails");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxQueryChangedEventArgs.QueryText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxQueryChangedEventArgs.QueryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxQueryChangedEventArgs.QueryText");
 			}
 		}
 		#endif

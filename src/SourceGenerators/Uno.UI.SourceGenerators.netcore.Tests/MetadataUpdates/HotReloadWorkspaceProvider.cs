@@ -28,11 +28,11 @@ internal class HotReloadWorkspace
 	private readonly bool _isDebugCompilation;
 	private readonly bool _isMono;
 	private readonly bool _useXamlReaderReload;
-	
+
 	private Dictionary<string, string[]> _projects = new();
 	private Dictionary<string, Dictionary<string, string>> _sourceFiles = new();
 	private Dictionary<string, Dictionary<string, string>> _additionalFiles = new();
-	
+
 	private Solution? _currentSolution;
 	private WatchHotReloadService? _hotReloadService;
 
@@ -71,7 +71,8 @@ internal class HotReloadWorkspace
 		}
 		else
 		{
-			_sourceFiles[project] = new() {
+			_sourceFiles[project] = new()
+			{
 				[fileName] = content
 			};
 		}
@@ -80,7 +81,7 @@ internal class HotReloadWorkspace
 		Directory.CreateDirectory(basePath);
 		File.WriteAllText(filePath, content, Encoding.UTF8);
 
-		if(_currentSolution is not null)
+		if (_currentSolution is not null)
 		{
 			var documents = _currentSolution
 				.Projects
@@ -106,7 +107,7 @@ internal class HotReloadWorkspace
 				[fileName] = content
 			};
 		}
-		
+
 		var basePath = Path.Combine(_baseWorkFolder, project);
 		Directory.CreateDirectory(basePath);
 		var filePath = Path.Combine(basePath, fileName);
@@ -175,7 +176,7 @@ internal class HotReloadWorkspace
 				.WithCompilationOutputInfo(
 					projectInfo.CompilationOutputInfo.WithAssemblyPath(Path.Combine(_baseWorkFolder, projectName + Guid.NewGuid() + ".dll")));
 
-			if(!_projects.TryGetValue(projectName, out var projectReferences))
+			if (!_projects.TryGetValue(projectName, out var projectReferences))
 			{
 				throw new InvalidOperationException($"Project {projectName} is not defined in the project list.");
 			}
@@ -293,30 +294,30 @@ internal class HotReloadWorkspace
 		Stack<string> currentProjects = new();
 		HashSet<string> processed = new();
 
-		foreach(var project in InnerEnumerate(_projects.Keys))
+		foreach (var project in InnerEnumerate(_projects.Keys))
 		{
 			yield return project;
 		}
 
 		IEnumerable<string> InnerEnumerate(IEnumerable<string> projects)
 		{
-			foreach(var project in projects)
+			foreach (var project in projects)
 			{
 				if (currentProjects.Contains(project))
 				{
-					throw new InvalidOperationException($"Circular dependency detected: { string.Join(" -> ", currentProjects) } -> {project}");
+					throw new InvalidOperationException($"Circular dependency detected: {string.Join(" -> ", currentProjects)} -> {project}");
 				}
 
 				currentProjects.Push(project);
-				
+
 				if (_projects.TryGetValue(project, out var children))
 				{
-					foreach(var child in InnerEnumerate(children))
+					foreach (var child in InnerEnumerate(children))
 					{
 						yield return child;
 					}
 				}
-				
+
 				if (!processed.Contains(project))
 				{
 					yield return project;
@@ -336,7 +337,7 @@ internal class HotReloadWorkspace
 			.Concat(_sourceFiles.Keys)
 			.Distinct()
 			.Except(_projects.Keys);
-		
+
 		foreach (var project in projects)
 		{
 			AddProject(project, Array.Empty<string>());
@@ -345,7 +346,7 @@ internal class HotReloadWorkspace
 
 	public async Task<UpdateResult> Update()
 	{
-		if(_hotReloadService is null || _currentSolution is null)
+		if (_hotReloadService is null || _currentSolution is null)
 		{
 			throw new InvalidOperationException($"Initialize must be called before Update");
 		}
@@ -390,7 +391,7 @@ internal class HotReloadWorkspace
 			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
 			.FirstOrDefault(File.Exists);
 
-		if(unoTarget is null)
+		if (unoTarget is null)
 		{
 			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
 		}

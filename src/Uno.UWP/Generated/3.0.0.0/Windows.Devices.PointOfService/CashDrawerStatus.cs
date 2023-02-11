@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CashDrawerStatus.ExtendedStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CashDrawerStatus.ExtendedStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CashDrawerStatus.ExtendedStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerStatusKind CashDrawerStatus.StatusKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CashDrawerStatusKind CashDrawerStatus.StatusKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CashDrawerStatusKind%20CashDrawerStatus.StatusKind");
 			}
 		}
 		#endif

@@ -17,7 +17,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePicker.DefaultFileExtension is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileSavePicker.DefaultFileExtension is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileSavePicker.DefaultFileExtension");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet FileSavePicker.ContinuationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet FileSavePicker.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20FileSavePicker.ContinuationData");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePicker.EnterpriseId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileSavePicker.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileSavePicker.EnterpriseId");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FileSavePicker.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User FileSavePicker.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20FileSavePicker.User");
 			}
 		}
 		#endif
@@ -90,7 +90,7 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSaveFileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileSavePicker.PickSaveFileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileSavePicker.PickSaveFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20FileSavePicker.PickSaveFileAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.User.get
@@ -98,7 +98,7 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.Pickers.FileSavePicker CreateForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member FileSavePicker FileSavePicker.CreateForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member FileSavePicker FileSavePicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileSavePicker%20FileSavePicker.CreateForUser%28User%20user%29");
 		}
 		#endif
 	}

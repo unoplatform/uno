@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SpatialSurfaceMeshBuffer.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer SpatialSurfaceMeshBuffer.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20SpatialSurfaceMeshBuffer.Data");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SpatialSurfaceMeshBuffer.ElementCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SpatialSurfaceMeshBuffer.ElementCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SpatialSurfaceMeshBuffer.ElementCount");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshBuffer.Format is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshBuffer.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20SpatialSurfaceMeshBuffer.Format");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SpatialSurfaceMeshBuffer.Stride is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SpatialSurfaceMeshBuffer.Stride is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SpatialSurfaceMeshBuffer.Stride");
 			}
 		}
 		#endif

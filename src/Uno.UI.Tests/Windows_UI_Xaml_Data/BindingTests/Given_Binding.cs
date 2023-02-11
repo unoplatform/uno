@@ -95,7 +95,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
 
 			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
-			 
+
 			var nestedDO = Binding_ElementName_In_Template_ItemsControl_NonUINested_Attached.GetNonUIObject(button);
 
 			Assert.IsNotNull(nestedDO);

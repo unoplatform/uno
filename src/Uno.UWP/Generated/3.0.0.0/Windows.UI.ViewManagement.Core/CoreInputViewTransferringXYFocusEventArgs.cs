@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreInputViewXYFocusTransferDirection CoreInputViewTransferringXYFocusEventArgs.Direction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreInputViewXYFocusTransferDirection CoreInputViewTransferringXYFocusEventArgs.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreInputViewXYFocusTransferDirection%20CoreInputViewTransferringXYFocusEventArgs.Direction");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreInputViewTransferringXYFocusEventArgs.Origin is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect CoreInputViewTransferringXYFocusEventArgs.Origin is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreInputViewTransferringXYFocusEventArgs.Origin");
 			}
 		}
 		#endif

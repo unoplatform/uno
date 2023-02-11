@@ -13,7 +13,7 @@ namespace Windows.Management.Update
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PreviewBuildsManager.ArePreviewBuildsAllowed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PreviewBuildsManager.ArePreviewBuildsAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PreviewBuildsManager.ArePreviewBuildsAllowed");
 			}
 			set
 			{
@@ -27,28 +27,28 @@ namespace Windows.Management.Update
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Management.Update.PreviewBuildsState GetCurrentState()
 		{
-			throw new global::System.NotImplementedException("The member PreviewBuildsState PreviewBuildsManager.GetCurrentState() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PreviewBuildsState PreviewBuildsManager.GetCurrentState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PreviewBuildsState%20PreviewBuildsManager.GetCurrentState%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PreviewBuildsManager.SyncAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PreviewBuildsManager.SyncAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20PreviewBuildsManager.SyncAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Management.Update.PreviewBuildsManager GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member PreviewBuildsManager PreviewBuildsManager.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PreviewBuildsManager PreviewBuildsManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PreviewBuildsManager%20PreviewBuildsManager.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool PreviewBuildsManager.IsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PreviewBuildsManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PreviewBuildsManager.IsSupported%28%29");
 		}
 		#endif
 	}

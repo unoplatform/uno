@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailQueryTextSearch.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailQueryTextSearch.Text");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySearchScope EmailQueryTextSearch.SearchScope is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailQuerySearchScope EmailQueryTextSearch.SearchScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailQuerySearchScope%20EmailQueryTextSearch.SearchScope");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySearchFields EmailQueryTextSearch.Fields is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailQuerySearchFields EmailQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailQuerySearchFields%20EmailQueryTextSearch.Fields");
 			}
 			set
 			{

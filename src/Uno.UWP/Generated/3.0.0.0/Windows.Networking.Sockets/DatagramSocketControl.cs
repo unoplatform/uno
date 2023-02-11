@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketQualityOfService DatagramSocketControl.QualityOfService is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketQualityOfService DatagramSocketControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketQualityOfService%20DatagramSocketControl.QualityOfService");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte DatagramSocketControl.OutboundUnicastHopLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte DatagramSocketControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20DatagramSocketControl.OutboundUnicastHopLimit");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DatagramSocketControl.InboundBufferSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint DatagramSocketControl.InboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20DatagramSocketControl.InboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.DontFragment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.DontFragment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DatagramSocketControl.DontFragment");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.MulticastOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.MulticastOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DatagramSocketControl.MulticastOnly");
 			}
 			set
 			{

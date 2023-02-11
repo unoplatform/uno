@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntryStates.Disabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntryStates.Disabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntryStates.Disabled");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntryStates.Hover is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntryStates.Hover is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntryStates.Hover");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntryStates.Selected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntryStates.Selected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntryStates.Selected");
 			}
 		}
 		#endif

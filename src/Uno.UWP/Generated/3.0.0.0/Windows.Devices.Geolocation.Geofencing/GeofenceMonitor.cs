@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Geofence> GeofenceMonitor.Geofences is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Geofence> GeofenceMonitor.Geofences is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CGeofence%3E%20GeofenceMonitor.Geofences");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geoposition GeofenceMonitor.LastKnownGeoposition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Geoposition GeofenceMonitor.LastKnownGeoposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geoposition%20GeofenceMonitor.LastKnownGeoposition");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeofenceMonitorStatus GeofenceMonitor.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeofenceMonitorStatus GeofenceMonitor.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeofenceMonitorStatus%20GeofenceMonitor.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeofenceMonitor GeofenceMonitor.Current is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GeofenceMonitor GeofenceMonitor.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GeofenceMonitor%20GeofenceMonitor.Current");
 			}
 		}
 		#endif
@@ -56,7 +56,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport> ReadReports()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<GeofenceStateChangeReport> GeofenceMonitor.ReadReports() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<GeofenceStateChangeReport> GeofenceMonitor.ReadReports() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CGeofenceStateChangeReport%3E%20GeofenceMonitor.ReadReports%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.StatusChanged.add

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PackageContentGroupStagingEventArgs.ActivityId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PackageContentGroupStagingEventArgs.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PackageContentGroupStagingEventArgs.ActivityId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PackageContentGroupStagingEventArgs.ContentGroupName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PackageContentGroupStagingEventArgs.ContentGroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PackageContentGroupStagingEventArgs.ContentGroupName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageContentGroupStagingEventArgs.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PackageContentGroupStagingEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PackageContentGroupStagingEventArgs.ErrorCode");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageContentGroupStagingEventArgs.IsComplete is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PackageContentGroupStagingEventArgs.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PackageContentGroupStagingEventArgs.IsComplete");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageContentGroupStagingEventArgs.IsContentGroupRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PackageContentGroupStagingEventArgs.IsContentGroupRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PackageContentGroupStagingEventArgs.IsContentGroupRequired");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageContentGroupStagingEventArgs.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageContentGroupStagingEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageContentGroupStagingEventArgs.Package");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PackageContentGroupStagingEventArgs.Progress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PackageContentGroupStagingEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PackageContentGroupStagingEventArgs.Progress");
 			}
 		}
 		#endif

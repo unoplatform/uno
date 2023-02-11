@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkInPipe> UsbInterface.BulkInPipes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkInPipe> UsbInterface.BulkInPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUsbBulkInPipe%3E%20UsbInterface.BulkInPipes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkOutPipe> UsbInterface.BulkOutPipes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkOutPipe> UsbInterface.BulkOutPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUsbBulkOutPipe%3E%20UsbInterface.BulkOutPipes");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbDescriptor> UsbInterface.Descriptors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbDescriptor> UsbInterface.Descriptors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUsbDescriptor%3E%20UsbInterface.Descriptors");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterface.InterfaceNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbInterface.InterfaceNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbInterface.InterfaceNumber");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterfaceSetting> UsbInterface.InterfaceSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterfaceSetting> UsbInterface.InterfaceSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUsbInterfaceSetting%3E%20UsbInterface.InterfaceSettings");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptInPipe> UsbInterface.InterruptInPipes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptInPipe> UsbInterface.InterruptInPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUsbInterruptInPipe%3E%20UsbInterface.InterruptInPipes");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptOutPipe> UsbInterface.InterruptOutPipes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptOutPipe> UsbInterface.InterruptOutPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUsbInterruptOutPipe%3E%20UsbInterface.InterruptOutPipes");
 			}
 		}
 		#endif

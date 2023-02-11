@@ -13,7 +13,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<BackgroundTransferFileRange> BackgroundTransferRangesDownloadedEventArgs.AddedRanges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<BackgroundTransferFileRange> BackgroundTransferRangesDownloadedEventArgs.AddedRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CBackgroundTransferFileRange%3E%20BackgroundTransferRangesDownloadedEventArgs.AddedRanges");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTransferRangesDownloadedEventArgs.WasDownloadRestarted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BackgroundTransferRangesDownloadedEventArgs.WasDownloadRestarted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BackgroundTransferRangesDownloadedEventArgs.WasDownloadRestarted");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral BackgroundTransferRangesDownloadedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral BackgroundTransferRangesDownloadedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20BackgroundTransferRangesDownloadedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

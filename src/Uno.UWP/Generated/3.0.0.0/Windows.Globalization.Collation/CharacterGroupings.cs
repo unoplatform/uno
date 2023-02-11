@@ -13,7 +13,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CharacterGroupings.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CharacterGroupings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CharacterGroupings.Size");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Lookup( string text)
 		{
-			throw new global::System.NotImplementedException("The member string CharacterGroupings.Lookup(string text) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string CharacterGroupings.Lookup(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CharacterGroupings.Lookup%28string%20text%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.GetAt(uint)

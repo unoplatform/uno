@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Translation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneModelTransform.Translation");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Scale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneModelTransform.Scale");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.RotationAxis is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SceneModelTransform.RotationAxis");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngleInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneModelTransform.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneModelTransform.RotationAngle");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SceneModelTransform.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Quaternion SceneModelTransform.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Quaternion%20SceneModelTransform.Orientation");
 			}
 			set
 			{

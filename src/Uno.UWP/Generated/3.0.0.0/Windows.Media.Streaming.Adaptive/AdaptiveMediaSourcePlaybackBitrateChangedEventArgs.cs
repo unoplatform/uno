@@ -13,7 +13,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.AudioOnly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.AudioOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.AudioOnly");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.NewValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.NewValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.NewValue");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.OldValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.OldValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20AdaptiveMediaSourcePlaybackBitrateChangedEventArgs.OldValue");
 			}
 		}
 		#endif

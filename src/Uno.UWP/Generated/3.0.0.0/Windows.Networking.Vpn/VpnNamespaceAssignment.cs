@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri VpnNamespaceAssignment.ProxyAutoConfigUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri VpnNamespaceAssignment.ProxyAutoConfigUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20VpnNamespaceAssignment.ProxyAutoConfigUri");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnNamespaceInfo> VpnNamespaceAssignment.NamespaceList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<VpnNamespaceInfo> VpnNamespaceAssignment.NamespaceList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CVpnNamespaceInfo%3E%20VpnNamespaceAssignment.NamespaceList");
 			}
 			set
 			{

@@ -716,7 +716,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			using var _ = new AssertionScope();
 
-			var sut = new WG.Calendar(new [] {"en"}, WG.CalendarIdentifiers.Japanese, "24HourClock");
+			var sut = new WG.Calendar(new[] { "en" }, WG.CalendarIdentifiers.Japanese, "24HourClock");
 
 			sut.SetToMin();
 			CheckLimits($"Min");

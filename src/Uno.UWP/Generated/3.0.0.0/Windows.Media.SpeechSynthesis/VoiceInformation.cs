@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceInformation.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceInformation.Description");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceInformation.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceInformation.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceGender VoiceInformation.Gender is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VoiceGender VoiceInformation.Gender is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VoiceGender%20VoiceInformation.Gender");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceInformation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceInformation.Id");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceInformation.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceInformation.Language");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.WarningText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintColorModeOptionDetails.WarningText");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintColorModeOptionDetails.Description");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintColorModeOptionDetails.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintColorModeOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cobject%3E%20PrintColorModeOptionDetails.Items");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintColorModeOptionDetails.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintColorModeOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionStates%20PrintColorModeOptionDetails.State");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintColorModeOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.OptionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintColorModeOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintColorModeOptionDetails.OptionId");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintColorModeOptionDetails.OptionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionType PrintColorModeOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionType%20PrintColorModeOptionDetails.OptionType");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintColorModeOptionDetails.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object PrintColorModeOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20PrintColorModeOptionDetails.Value");
 			}
 		}
 		#endif
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySetValue( object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintColorModeOptionDetails.TrySetValue(object value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PrintColorModeOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintColorModeOptionDetails.TrySetValue%28object%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Items.get

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapPropertySet.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BitmapPropertySet.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BitmapPropertySet.Size");
 			}
 		}
 		#endif

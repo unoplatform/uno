@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20AudioNodeEmitter.Position");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.Gain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeEmitter.Gain");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.DopplerVelocity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20AudioNodeEmitter.DopplerVelocity");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DopplerScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DopplerScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeEmitter.DopplerScale");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DistanceScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DistanceScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeEmitter.DistanceScale");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Direction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20AudioNodeEmitter.Direction");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitter.DecayModel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitter.DecayModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitterDecayModel%20AudioNodeEmitter.DecayModel");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioNodeEmitter.IsDopplerDisabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AudioNodeEmitter.IsDopplerDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AudioNodeEmitter.IsDopplerDisabled");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitter.Shape is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitter.Shape is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitterShape%20AudioNodeEmitter.Shape");
 			}
 		}
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialAudioModel AudioNodeEmitter.SpatialAudioModel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialAudioModel AudioNodeEmitter.SpatialAudioModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialAudioModel%20AudioNodeEmitter.SpatialAudioModel");
 			}
 			set
 			{

@@ -2,7 +2,7 @@ using System;
 
 namespace Windows.Security.Credentials
 {
-	public sealed partial class PasswordCredential 
+	public sealed partial class PasswordCredential
 	{
 		private string _userName;
 		private string _resource;
@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 		}
 
-		public PasswordCredential(string resource,  string userName,  string password)
+		public PasswordCredential(string resource, string userName, string password)
 		{
 			Resource = resource;
 			UserName = userName;

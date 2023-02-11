@@ -7,7 +7,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public partial class DraggingEventArgs 
+	public partial class DraggingEventArgs
 	{
 		internal DraggingEventArgs(PointerPoint point, DraggingState state, uint contactCount)
 		{

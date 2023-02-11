@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.AuthenticationFailed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.AuthenticationFailed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.AuthenticationFailed");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.AuthenticationRejectedByUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.AuthenticationRejectedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.AuthenticationRejectedByUser");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.ConnectionRefused is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.ConnectionRefused is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.ConnectionRefused");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.Fail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.Fail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.Fail");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InsufficientSecurity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InsufficientSecurity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InsufficientSecurity");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument1");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument2");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument3");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument4");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument5");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument6 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument6 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument6");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument7");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument8 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.InvalidArgument8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.InvalidArgument8");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.Ok is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.Ok is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.Ok");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.OperationTimedOut is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.OperationTimedOut is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.OperationTimedOut");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.OtherEndClosed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.OtherEndClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.OtherEndClosed");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.SslConnectFailed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.SslConnectFailed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.SslConnectFailed");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynStatus.SslIdentityVerificationFailed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AllJoynStatus.SslIdentityVerificationFailed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AllJoynStatus.SslIdentityVerificationFailed");
 			}
 		}
 		#endif

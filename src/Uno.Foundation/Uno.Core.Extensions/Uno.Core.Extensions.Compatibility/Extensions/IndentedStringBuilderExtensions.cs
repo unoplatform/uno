@@ -20,7 +20,7 @@ using System.Globalization;
 namespace Uno.Extensions
 {
 	internal static class IndentedStringBuilderExtensions
-    {
+	{
 		public static void AppendLineIndented(this IIndentedStringBuilder builder, string pattern)
 		{
 			builder.AppendIndented(pattern);

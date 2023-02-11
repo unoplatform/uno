@@ -44,7 +44,7 @@ namespace Windows.Devices.Sensors
 				var startDate = SensorHelpers.NSDateToDateTimeOffset(data.StartDate);
 				var endDate = SensorHelpers.NSDateToDateTimeOffset(data.EndDate);
 				_lastReading = DateTime.UtcNow;
-				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));				
+				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));
 			}
 		}
 	}

@@ -6,6 +6,6 @@
 public partial class UIContext
 {
 	internal UIContext()
-	{		
+	{
 	}
 }

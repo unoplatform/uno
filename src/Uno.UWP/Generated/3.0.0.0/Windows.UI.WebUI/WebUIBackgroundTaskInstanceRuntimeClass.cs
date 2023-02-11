@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebUIBackgroundTaskInstanceRuntimeClass.Progress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WebUIBackgroundTaskInstanceRuntimeClass.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WebUIBackgroundTaskInstanceRuntimeClass.Progress");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid WebUIBackgroundTaskInstanceRuntimeClass.InstanceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid WebUIBackgroundTaskInstanceRuntimeClass.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20WebUIBackgroundTaskInstanceRuntimeClass.InstanceId");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebUIBackgroundTaskInstanceRuntimeClass.SuspendedCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WebUIBackgroundTaskInstanceRuntimeClass.SuspendedCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WebUIBackgroundTaskInstanceRuntimeClass.SuspendedCount");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTaskRegistration WebUIBackgroundTaskInstanceRuntimeClass.Task is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BackgroundTaskRegistration WebUIBackgroundTaskInstanceRuntimeClass.Task is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTaskRegistration%20WebUIBackgroundTaskInstanceRuntimeClass.Task");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object WebUIBackgroundTaskInstanceRuntimeClass.TriggerDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object WebUIBackgroundTaskInstanceRuntimeClass.TriggerDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20WebUIBackgroundTaskInstanceRuntimeClass.TriggerDetails");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Background.BackgroundTaskDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member BackgroundTaskDeferral WebUIBackgroundTaskInstanceRuntimeClass.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BackgroundTaskDeferral WebUIBackgroundTaskInstanceRuntimeClass.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BackgroundTaskDeferral%20WebUIBackgroundTaskInstanceRuntimeClass.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

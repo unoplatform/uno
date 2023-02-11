@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member QuantumSizeSelectionMode AudioGraphSettings.QuantumSizeSelectionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member QuantumSizeSelectionMode AudioGraphSettings.QuantumSizeSelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=QuantumSizeSelectionMode%20AudioGraphSettings.QuantumSizeSelectionMode");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation AudioGraphSettings.PrimaryRenderDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation AudioGraphSettings.PrimaryRenderDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20AudioGraphSettings.PrimaryRenderDevice");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioGraphSettings.EncodingProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioGraphSettings.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioGraphSettings.EncodingProperties");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AudioGraphSettings.DesiredSamplesPerQuantum is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int AudioGraphSettings.DesiredSamplesPerQuantum is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20AudioGraphSettings.DesiredSamplesPerQuantum");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioProcessing AudioGraphSettings.DesiredRenderDeviceAudioProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioProcessing AudioGraphSettings.DesiredRenderDeviceAudioProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioProcessing%20AudioGraphSettings.DesiredRenderDeviceAudioProcessing");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioRenderCategory AudioGraphSettings.AudioRenderCategory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioRenderCategory AudioGraphSettings.AudioRenderCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioRenderCategory%20AudioGraphSettings.AudioRenderCategory");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioGraphSettings.MaxPlaybackSpeedFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioGraphSettings.MaxPlaybackSpeedFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioGraphSettings.MaxPlaybackSpeedFactor");
 			}
 			set
 			{

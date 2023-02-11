@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureInitializationSettings.VideoDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaCaptureInitializationSettings.VideoDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaCaptureInitializationSettings.VideoDeviceId");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamingCaptureMode MediaCaptureInitializationSettings.StreamingCaptureMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StreamingCaptureMode MediaCaptureInitializationSettings.StreamingCaptureMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StreamingCaptureMode%20MediaCaptureInitializationSettings.StreamingCaptureMode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoCaptureSource MediaCaptureInitializationSettings.PhotoCaptureSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoCaptureSource MediaCaptureInitializationSettings.PhotoCaptureSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoCaptureSource%20MediaCaptureInitializationSettings.PhotoCaptureSource");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureInitializationSettings.AudioDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaCaptureInitializationSettings.AudioDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaCaptureInitializationSettings.AudioDeviceId");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCategory MediaCaptureInitializationSettings.MediaCategory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCategory MediaCaptureInitializationSettings.MediaCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCategory%20MediaCaptureInitializationSettings.MediaCategory");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioProcessing MediaCaptureInitializationSettings.AudioProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioProcessing MediaCaptureInitializationSettings.AudioProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioProcessing%20MediaCaptureInitializationSettings.AudioProcessing");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaSource MediaCaptureInitializationSettings.VideoSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IMediaSource MediaCaptureInitializationSettings.VideoSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaSource%20MediaCaptureInitializationSettings.VideoSource");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaSource MediaCaptureInitializationSettings.AudioSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IMediaSource MediaCaptureInitializationSettings.AudioSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaSource%20MediaCaptureInitializationSettings.AudioSource");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfile MediaCaptureInitializationSettings.VideoProfile is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfile MediaCaptureInitializationSettings.VideoProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureVideoProfile%20MediaCaptureInitializationSettings.VideoProfile");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.RecordMediaDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.RecordMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureVideoProfileMediaDescription%20MediaCaptureInitializationSettings.RecordMediaDescription");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PreviewMediaDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PreviewMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureVideoProfileMediaDescription%20MediaCaptureInitializationSettings.PreviewMediaDescription");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PhotoMediaDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PhotoMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureVideoProfileMediaDescription%20MediaCaptureInitializationSettings.PhotoMediaDescription");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceGroup MediaCaptureInitializationSettings.SourceGroup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameSourceGroup MediaCaptureInitializationSettings.SourceGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameSourceGroup%20MediaCaptureInitializationSettings.SourceGroup");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureSharingMode MediaCaptureInitializationSettings.SharingMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureSharingMode MediaCaptureInitializationSettings.SharingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureSharingMode%20MediaCaptureInitializationSettings.SharingMode");
 			}
 			set
 			{
@@ -209,7 +209,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureMemoryPreference MediaCaptureInitializationSettings.MemoryPreference is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureMemoryPreference MediaCaptureInitializationSettings.MemoryPreference is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureMemoryPreference%20MediaCaptureInitializationSettings.MemoryPreference");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound");
 			}
 			set
 			{
@@ -237,7 +237,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential MediaCaptureInitializationSettings.DeviceUriPasswordCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential MediaCaptureInitializationSettings.DeviceUriPasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20MediaCaptureInitializationSettings.DeviceUriPasswordCredential");
 			}
 			set
 			{
@@ -251,7 +251,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri MediaCaptureInitializationSettings.DeviceUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri MediaCaptureInitializationSettings.DeviceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20MediaCaptureInitializationSettings.DeviceUri");
 			}
 			set
 			{

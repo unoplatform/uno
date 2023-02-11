@@ -9,6 +9,8 @@
     <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
     <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
 
+	<NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);IDE0055</NoWarn>
+
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
@@ -58,21 +60,33 @@
 
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
+
+	<ExtrasEnableDefaultPageItems>false</ExtrasEnableDefaultPageItems>
+	<EnableDefaultPageItems>false</EnableDefaultPageItems>
+	<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <!--This override is used to validate the use of specific version of the C# Compiler-->
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.5.0-2.final" PrivateAssets="all" />
+	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
+
+    <!-- Workaround the following error: -->
+    <!-- error CS9057: The analyzer assembly 'Microsoft.CodeAnalysis.CodeStyle.dll' references version '4.5.0.0' of the compiler, which is newer than the currently running version '4.4.0.0'. [D:\a\1\s\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\UnoSolutionTemplate.VSIX.2022.csproj] -->
+    <!-- For some reason, UnoSolutionTemplate.VSIX.2022.csproj isn't respecting Microsoft.Net.Compilers.Toolset -->
+    <PackageReference Condition="'$(UsingMicrosoftNETSDK)'=='true'" Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
     <LangVersion>11.0</LangVersion>
 
-    <!--
-    Roslyn generation is enabled by default for all uno projects (inside uno.ui only)
-    -->
+    <!-- Roslyn generation is enabled by default for all uno projects (inside uno.ui only) -->
     <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
-</PropertyGroup>
+  </PropertyGroup>
 
   <!--
   Adjust the output paths for runtime project in order for those
@@ -212,6 +226,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
@@ -230,9 +245,6 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
         <AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
-
-        <!-- Enable CodeStyle analyzers -->
-        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
       </PropertyGroup>
       <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
@@ -242,6 +254,8 @@
       <PropertyGroup>
         <!-- Even if we didn't install the NuGet package, we get the analyzers from the .NET SDK -->
         <EnableNetAnalyzers>false</EnableNetAnalyzers>
+		<!-- IDE0051: private member is unused. TODO: Remove this NoWarn to enable IDE0051 for samples/test projects -->
+		<NoWarn>$(NoWarn);IDE0051</NoWarn>
       </PropertyGroup>
     </Otherwise>
   </Choose>

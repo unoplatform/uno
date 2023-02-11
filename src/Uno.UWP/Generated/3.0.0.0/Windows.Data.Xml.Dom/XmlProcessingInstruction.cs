@@ -56,14 +56,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlProcessingInstruction.SelectSingleNodeNS(string xpath, object namespaces) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IXmlNode XmlProcessingInstruction.SelectSingleNodeNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlProcessingInstruction.SelectSingleNodeNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
-			throw new global::System.NotImplementedException("The member XmlNodeList XmlProcessingInstruction.SelectNodesNS(string xpath, object namespaces) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlNodeList XmlProcessingInstruction.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlNodeList%20XmlProcessingInstruction.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 		#endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.GetXml()

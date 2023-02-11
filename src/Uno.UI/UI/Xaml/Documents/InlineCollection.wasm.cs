@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Documents
 		public bool Contains(Inline item) => _collection.Contains(item);
 
 		/// <inheritdoc />
-		public void CopyTo(Inline[] array, int arrayIndex) => throw new NotSupportedException();
+		public void CopyTo(Inline[] array, int arrayIndex) => _collection.CopyTo(array, arrayIndex);
 
 		/// <inheritdoc />
 		public bool Remove(Inline item) => _collection.Remove(item);

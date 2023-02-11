@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType MediaItemDisplayProperties.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackType MediaItemDisplayProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackType%20MediaItemDisplayProperties.Type");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference MediaItemDisplayProperties.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RandomAccessStreamReference MediaItemDisplayProperties.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RandomAccessStreamReference%20MediaItemDisplayProperties.Thumbnail");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MusicDisplayProperties MediaItemDisplayProperties.MusicProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MusicDisplayProperties MediaItemDisplayProperties.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MusicDisplayProperties%20MediaItemDisplayProperties.MusicProperties");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoDisplayProperties MediaItemDisplayProperties.VideoProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoDisplayProperties MediaItemDisplayProperties.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDisplayProperties%20MediaItemDisplayProperties.VideoProperties");
 			}
 		}
 		#endif

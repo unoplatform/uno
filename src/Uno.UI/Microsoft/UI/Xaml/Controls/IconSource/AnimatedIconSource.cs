@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class AnimatedIconSource : IconSource
+	public partial class AnimatedIconSource : IconSource
 	{
 		public IconSource FallbackIconSource
 		{

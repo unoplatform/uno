@@ -420,7 +420,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				Log.Comment("Remove two items");
 				dataSource.Remove(index: 1, count: 1, reset: false);
-				dataSource.Remove(index: 0, count: 1, reset:false);
+				dataSource.Remove(index: 0, count: 1, reset: false);
 				repeater.UpdateLayout();
 				realized = VerifyRealizedRange(repeater, dataSource);
 				Verify.AreEqual(0, realized);

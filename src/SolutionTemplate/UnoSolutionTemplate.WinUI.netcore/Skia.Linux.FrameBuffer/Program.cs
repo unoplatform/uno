@@ -28,7 +28,7 @@ namespace $ext_safeprojectname$
 						}
 					};
 
-					return new App();
+					return new AppHead();
 				});
 				host.Run();
 			}

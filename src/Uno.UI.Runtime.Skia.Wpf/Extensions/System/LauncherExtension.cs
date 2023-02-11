@@ -9,7 +9,7 @@ using Windows.System;
 namespace Uno.Extensions.System
 {
 	internal class LauncherExtension : ILauncherExtension
-    {
+	{
 		public LauncherExtension(object owner)
 		{
 		}
@@ -35,7 +35,7 @@ namespace Uno.Extensions.System
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
 		{
 			var canOpenUri = CheckRegistry(RegistryHive.CurrentUser, uri) || CheckRegistry(RegistryHive.LocalMachine, uri);
-			var supportStatus =  canOpenUri ?
+			var supportStatus = canOpenUri ?
 				LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
 			return Task.FromResult(supportStatus);
 		}

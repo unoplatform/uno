@@ -11,7 +11,7 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IOutputStream GetOutputStream()
 		{
-			throw new global::System.NotImplementedException("The member IOutputStream PrintWorkflowPdlTargetStream.GetOutputStream() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IOutputStream PrintWorkflowPdlTargetStream.GetOutputStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IOutputStream%20PrintWorkflowPdlTargetStream.GetOutputStream%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AudioBuffer.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint AudioBuffer.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20AudioBuffer.Length");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AudioBuffer.Capacity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint AudioBuffer.Capacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20AudioBuffer.Capacity");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IMemoryBufferReference CreateReference()
 		{
-			throw new global::System.NotImplementedException("The member IMemoryBufferReference AudioBuffer.CreateReference() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IMemoryBufferReference AudioBuffer.CreateReference() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMemoryBufferReference%20AudioBuffer.CreateReference%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

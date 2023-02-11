@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDescriptor.DescriptorType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbDescriptor.DescriptorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbDescriptor.DescriptorType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDescriptor.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbDescriptor.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbDescriptor.Length");
 			}
 		}
 		#endif

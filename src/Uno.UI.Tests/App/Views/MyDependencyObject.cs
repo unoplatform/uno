@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.App.Views
 			get { return (int)GetValue(DPIntProperty); }
 			set { SetValue(DPIntProperty, value); }
 		}
-		
+
 		public static readonly DependencyProperty DPIntProperty =
 			DependencyProperty.Register("DPInt", typeof(int), typeof(MyDependencyObject), new PropertyMetadata(0));
 

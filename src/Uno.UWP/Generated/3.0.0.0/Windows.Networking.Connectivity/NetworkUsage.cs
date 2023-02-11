@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong NetworkUsage.BytesReceived is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong NetworkUsage.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20NetworkUsage.BytesReceived");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong NetworkUsage.BytesSent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong NetworkUsage.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20NetworkUsage.BytesSent");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan NetworkUsage.ConnectionDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan NetworkUsage.ConnectionDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20NetworkUsage.ConnectionDuration");
 			}
 		}
 		#endif

@@ -128,9 +128,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			//Simulate a deep-link navigation. Nav directly to MyThirdPage and add the logical previous pages into the BackStack manually
 			SUT.Navigate(typeof(MyThirdPage));
-            SUT.BackStack.Clear();
-            SUT.BackStack.Add(new PageStackEntry(typeof(MyFirstPage), null, null));
-            SUT.BackStack.Add(new PageStackEntry(typeof(MySecondPage), null, null));
+			SUT.BackStack.Clear();
+			SUT.BackStack.Add(new PageStackEntry(typeof(MyFirstPage), null, null));
+			SUT.BackStack.Add(new PageStackEntry(typeof(MySecondPage), null, null));
 
 			await TestServices.WindowHelper.WaitForIdle();
 

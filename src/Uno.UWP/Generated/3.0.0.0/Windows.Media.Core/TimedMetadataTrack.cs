@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataTrack.Label");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataTrack.Id");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataTrack.Language");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTrackKind TimedMetadataTrack.TrackKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaTrackKind TimedMetadataTrack.TrackKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaTrackKind%20TimedMetadataTrack.TrackKind");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaCue> TimedMetadataTrack.ActiveCues is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaCue> TimedMetadataTrack.ActiveCues is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CIMediaCue%3E%20TimedMetadataTrack.ActiveCues");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaCue> TimedMetadataTrack.Cues is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaCue> TimedMetadataTrack.Cues is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CIMediaCue%3E%20TimedMetadataTrack.Cues");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.DispatchType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.DispatchType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataTrack.DispatchType");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataKind TimedMetadataTrack.TimedMetadataKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataKind TimedMetadataTrack.TimedMetadataKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataKind%20TimedMetadataTrack.TimedMetadataKind");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedMetadataTrack.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedMetadataTrack.Name");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem TimedMetadataTrack.PlaybackItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem TimedMetadataTrack.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20TimedMetadataTrack.PlaybackItem");
 			}
 		}
 		#endif

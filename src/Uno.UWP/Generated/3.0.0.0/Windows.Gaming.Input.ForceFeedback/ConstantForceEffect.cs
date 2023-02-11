@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ConstantForceEffect.Gain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ConstantForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ConstantForceEffect.Gain");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState ConstantForceEffect.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState ConstantForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ForceFeedbackEffectState%20ConstantForceEffect.State");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentDataProviderConnection AppointmentDataProviderTriggerDetails.Connection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppointmentDataProviderConnection AppointmentDataProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppointmentDataProviderConnection%20AppointmentDataProviderTriggerDetails.Connection");
 			}
 		}
 		#endif

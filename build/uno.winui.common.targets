@@ -223,4 +223,32 @@
 			">
 		<Error Text="Building for the iOS Simulator requires the use of the static registrar. Make sure that `MtouchExtraArgs` contains `--registrar:static`. See https://github.com/unoplatform/uno/issues/9430 for more details." />
 	</Target>
+
+	<!-- Xamarin.iOS System.Memory version mismatch workaround -->
+	<Target 
+		Name="XamariniOS_VS_RemoveSystemMemory" 
+		BeforeTargets="FindReferenceAssembliesForReferences"
+		Condition="'$(UnoDisableSystemMemoryMismatchWorkaround)'!='true' and '$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+	<Target 
+		Name="XamariniOS_VSMac_RemoveSystemMemory" 
+		BeforeTargets="ResolveAssemblyReferences"
+		Condition="'$(UnoDisableSystemMemoryMismatchWorkaround)'!='true' and '$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
+    	<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+			<Reference Include="System.Memory" />
+		</ItemGroup>
+	</Target>
+  
 </Project>

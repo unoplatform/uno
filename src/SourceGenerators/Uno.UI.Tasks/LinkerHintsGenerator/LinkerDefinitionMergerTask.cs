@@ -64,7 +64,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					linkerNode.InnerXml += defDoc.DocumentElement.InnerXml;
 				}
 
-				doc.Save(TargetDefinitionFile);				
+				doc.Save(TargetDefinitionFile);
 			}
 
 			return true;

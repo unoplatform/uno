@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri UserActivityAttribution.IconUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri UserActivityAttribution.IconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20UserActivityAttribution.IconUri");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityAttribution.AlternateText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserActivityAttribution.AlternateText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserActivityAttribution.AlternateText");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserActivityAttribution.AddImageQuery is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool UserActivityAttribution.AddImageQuery is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UserActivityAttribution.AddImageQuery");
 			}
 			set
 			{

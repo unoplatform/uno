@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactQueryTextSearch.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactQueryTextSearch.Text");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchScope ContactQueryTextSearch.SearchScope is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactQuerySearchScope ContactQueryTextSearch.SearchScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactQuerySearchScope%20ContactQueryTextSearch.SearchScope");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchFields ContactQueryTextSearch.Fields is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactQuerySearchFields ContactQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactQuerySearchFields%20ContactQueryTextSearch.Fields");
 			}
 			set
 			{

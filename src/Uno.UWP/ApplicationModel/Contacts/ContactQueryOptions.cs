@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		public ContactQueryDesiredFields DesiredFields { get; set; }
 
-		public ContactQueryOptions(string text) 
+		public ContactQueryOptions(string text)
 		{
 			SearchText = text;
 			SearchFields = ContactQuerySearchFields.All;

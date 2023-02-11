@@ -8,7 +8,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Gyrometer
 	{
-		private const string JsType = "Windows.Devices.Sensors.Gyrometer";		
+		private const string JsType = "Windows.Devices.Sensors.Gyrometer";
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
@@ -30,11 +30,11 @@ namespace Windows.Devices.Sensors
 		}
 
 		private void StartReading()
-		{			
+		{
 			var command = $"{JsType}.startReading()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 		}
-		
+
 		private void StopReading()
 		{
 			var command = $"{JsType}.stopReading()";
@@ -68,7 +68,7 @@ namespace Windows.Devices.Sensors
 						y * SensorConstants.RadToDeg,
 						z * SensorConstants.RadToDeg,
 						now));
-			}			
+			}
 			return 0;
 		}
 	}

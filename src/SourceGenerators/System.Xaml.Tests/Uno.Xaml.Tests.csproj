@@ -6,6 +6,7 @@
 		<DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	<NoWarn>$(NoWarn);CS3003;CS0219;CS0162;CS0642;CS0067;CS0649;CS7033</NoWarn>
+	<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="NUnit" Version="3.13.3" />
