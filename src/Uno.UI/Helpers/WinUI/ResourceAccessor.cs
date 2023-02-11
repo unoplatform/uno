@@ -22,6 +22,7 @@ namespace Uno.UI.Helpers.WinUI
 	{
 #if !IS_UNO
 		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
+		private const string c_resourceLoc = "Microsoft.UI.Xaml/Resources";
 
 		private static ResourceMap s_resourceMap = GetPackageResourceMap();
 		private static ResourceContext s_resourceContext = ResourceContext.GetForViewIndependentUse();
