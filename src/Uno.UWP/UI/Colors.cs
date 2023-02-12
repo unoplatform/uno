@@ -14,8 +14,6 @@ namespace Windows.UI
 #endif
 	static partial class Colors
 	{
-		private static readonly Dictionary<string, Color> _colorMap = new(StringComparer.OrdinalIgnoreCase);
-
 		public static Color FromARGB(byte a, byte r, byte g, byte b) => new(a, r, g, b);
 
 		public static Color FromInteger(int color) => new((uint)color);
@@ -35,21 +33,153 @@ namespace Windows.UI
 				}
 				else
 				{
-					if (!_colorMap.TryGetValue(colorCode, out var color))
+					uint color = colorCode switch
 					{
-						var property = typeof(Colors).GetProperty(colorCode);
+						nameof(Transparent) => 0x00FFFFFF,
+						nameof(AliceBlue) => 0xFFF0F8FF,
+						nameof(AntiqueWhite) => 0xFFFAEBD7,
+						nameof(Aqua) => 0xFF00FFFF,
+						nameof(Aquamarine) => 0xFF7FFFD4,
+						nameof(Azure) => 0xFFF0FFFF,
+						nameof(Beige) => 0xFFF5F5DC,
+						nameof(Bisque) => 0xFFFFE4C4,
+						nameof(Black) => 0xFF000000,
+						nameof(BlanchedAlmond) => 0xFFFFEBCD,
+						nameof(Blue) => 0xFF0000FF,
+						nameof(BlueViolet) => 0xFF8A2BE2,
+						nameof(Brown) => 0xFFA52A2A,
+						nameof(BurlyWood) => 0xFFDEB887,
+						nameof(CadetBlue) => 0xFF5F9EA0,
+						nameof(Chartreuse) => 0xFF7FFF00,
+						nameof(Chocolate) => 0xFFD2691E,
+						nameof(Coral) => 0xFFFF7F50,
+						nameof(CornflowerBlue) => 0xFF6495ED,
+						nameof(Cornsilk) => 0xFFFFF8DC,
+						nameof(Crimson) => 0xFFDC143C,
+						nameof(Cyan) => 0xFF00FFFF,
+						nameof(DarkBlue) => 0xFF00008B,
+						nameof(DarkCyan) => 0xFF008B8B,
+						nameof(DarkGoldenrod) => 0xFFB8860B,
+						nameof(DarkGray) => 0xFFA9A9A9,
+						nameof(DarkGreen) => 0xFF006400,
+						nameof(DarkKhaki) => 0xFFBDB76B,
+						nameof(DarkMagenta) => 0xFF8B008B,
+						nameof(DarkOliveGreen) => 0xFF556B2F,
+						nameof(DarkOrange) => 0xFFFF8C00,
+						nameof(DarkOrchid) => 0xFF9932CC,
+						nameof(DarkRed) => 0xFF8B0000,
+						nameof(DarkSalmon) => 0xFFE9967A,
+						nameof(DarkSeaGreen) => 0xFF8FBC8B,
+						nameof(DarkSlateBlue) => 0xFF483D8B,
+						nameof(DarkSlateGray) => 0xFF2F4F4F,
+						nameof(DarkTurquoise) => 0xFF00CED1,
+						nameof(DarkViolet) => 0xFF9400D3,
+						nameof(DeepPink) => 0xFFFF1493,
+						nameof(DeepSkyBlue) => 0xFF00BFFF,
+						nameof(DimGray) => 0xFF696969,
+						nameof(DodgerBlue) => 0xFF1E90FF,
+						nameof(Firebrick) => 0xFFB22222,
+						nameof(FloralWhite) => 0xFFFFFAF0,
+						nameof(ForestGreen) => 0xFF228B22,
+						nameof(Fuchsia) => 0xFFFF00FF,
+						nameof(Gainsboro) => 0xFFDCDCDC,
+						nameof(GhostWhite) => 0xFFF8F8FF,
+						nameof(Gold) => 0xFFFFD700,
+						nameof(Goldenrod) => 0xFFDAA520,
+						nameof(Gray) => 0xFF808080,
+						nameof(Green) => 0xFF008000,
+						nameof(GreenYellow) => 0xFFADFF2F,
+						nameof(Honeydew) => 0xFFF0FFF0,
+						nameof(HotPink) => 0xFFFF69B4,
+						nameof(IndianRed) => 0xFFCD5C5C,
+						nameof(Indigo) => 0xFF4B0082,
+						nameof(Ivory) => 0xFFFFFFF0,
+						nameof(Khaki) => 0xFFF0E68C,
+						nameof(Lavender) => 0xFFE6E6FA,
+						nameof(LavenderBlush) => 0xFFFFF0F5,
+						nameof(LawnGreen) => 0xFF7CFC00,
+						nameof(LemonChiffon) => 0xFFFFFACD,
+						nameof(LightBlue) => 0xFFADD8E6,
+						nameof(LightCoral) => 0xFFF08080,
+						nameof(LightCyan) => 0xFFE0FFFF,
+						nameof(LightGoldenrodYellow) => 0xFFFAFAD2,
+						nameof(LightGray) => 0xFFD3D3D3,
+						nameof(LightGreen) => 0xFF90EE90,
+						nameof(LightPink) => 0xFFFFB6C1,
+						nameof(LightSalmon) => 0xFFFFA07A,
+						nameof(LightSeaGreen) => 0xFF20B2AA,
+						nameof(LightSkyBlue) => 0xFF87CEFA,
+						nameof(LightSlateGray) => 0xFF778899,
+						nameof(LightSteelBlue) => 0xFFB0C4DE,
+						nameof(LightYellow) => 0xFFFFFFE0,
+						nameof(Lime) => 0xFF00FF00,
+						nameof(LimeGreen) => 0xFF32CD32,
+						nameof(Linen) => 0xFFFAF0E6,
+						nameof(Magenta) => 0xFFFF00FF,
+						nameof(Maroon) => 0xFF800000,
+						nameof(MediumAquamarine) => 0xFF66CDAA,
+						nameof(MediumBlue) => 0xFF0000CD,
+						nameof(MediumOrchid) => 0xFFBA55D3,
+						nameof(MediumPurple) => 0xFF9370DB,
+						nameof(MediumSeaGreen) => 0xFF3CB371,
+						nameof(MediumSlateBlue) => 0xFF7B68EE,
+						nameof(MediumSpringGreen) => 0xFF00FA9A,
+						nameof(MediumTurquoise) => 0xFF48D1CC,
+						nameof(MediumVioletRed) => 0xFFC71585,
+						nameof(MidnightBlue) => 0xFF191970,
+						nameof(MintCream) => 0xFFF5FFFA,
+						nameof(MistyRose) => 0xFFFFE4E1,
+						nameof(Moccasin) => 0xFFFFE4B5,
+						nameof(NavajoWhite) => 0xFFFFDEAD,
+						nameof(Navy) => 0xFF000080,
+						nameof(OldLace) => 0xFFFDF5E6,
+						nameof(Olive) => 0xFF808000,
+						nameof(OliveDrab) => 0xFF6B8E23,
+						nameof(Orange) => 0xFFFFA500,
+						nameof(OrangeRed) => 0xFFFF4500,
+						nameof(Orchid) => 0xFFDA70D6,
+						nameof(PaleGoldenrod) => 0xFFEEE8AA,
+						nameof(PaleGreen) => 0xFF98FB98,
+						nameof(PaleTurquoise) => 0xFFAFEEEE,
+						nameof(PaleVioletRed) => 0xFFDB7093,
+						nameof(PapayaWhip) => 0xFFFFEFD5,
+						nameof(PeachPuff) => 0xFFFFDAB9,
+						nameof(Peru) => 0xFFCD853F,
+						nameof(Pink) => 0xFFFFC0CB,
+						nameof(Plum) => 0xFFDDA0DD,
+						nameof(PowderBlue) => 0xFFB0E0E6,
+						nameof(Purple) => 0xFF800080,
+						nameof(Red) => 0xFFFF0000,
+						nameof(RosyBrown) => 0xFFBC8F8F,
+						nameof(RoyalBlue) => 0xFF4169E1,
+						nameof(SaddleBrown) => 0xFF8B4513,
+						nameof(Salmon) => 0xFFFA8072,
+						nameof(SandyBrown) => 0xFFF4A460,
+						nameof(SeaGreen) => 0xFF2E8B57,
+						nameof(SeaShell) => 0xFFFFF5EE,
+						nameof(Sienna) => 0xFFA0522D,
+						nameof(Silver) => 0xFFC0C0C0,
+						nameof(SkyBlue) => 0xFF87CEEB,
+						nameof(SlateBlue) => 0xFF6A5ACD,
+						nameof(SlateGray) => 0xFF708090,
+						nameof(Snow) => 0xFFFFFAFA,
+						nameof(SpringGreen) => 0xFF00FF7F,
+						nameof(SteelBlue) => 0xFF4682B4,
+						nameof(Tan) => 0xFFD2B48C,
+						nameof(Teal) => 0xFF008080,
+						nameof(Thistle) => 0xFFD8BFD8,
+						nameof(Tomato) => 0xFFFF6347,
+						nameof(Turquoise) => 0xFF40E0D0,
+						nameof(Violet) => 0xFFEE82EE,
+						nameof(Wheat) => 0xFFF5DEB3,
+						nameof(White) => 0xFFFFFFFF,
+						nameof(WhiteSmoke) => 0xFFF5F5F5,
+						nameof(Yellow) => 0xFFFFFF00,
+						nameof(YellowGreen) => 0xFF9ACD32,
+						_ => throw new InvalidOperationException($"The color {colorCode} is unknown")
+					};
 
-						if (property != null)
-						{
-							_colorMap[colorCode] = color = (Color)property.GetValue(null)!;
-						}
-						else
-						{
-							throw new InvalidOperationException($"The color {colorCode} is unknown");
-						}
-					}
-
-					return color;
+					return new Color(color);
 				}
 			}
 			else
