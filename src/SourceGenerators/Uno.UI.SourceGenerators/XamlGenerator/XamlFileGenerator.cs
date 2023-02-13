@@ -4602,7 +4602,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					var typeName = fullMemberName.Substring(0, lastDotIndex);
-					return _metadataHelper.FindTypeByFullName(fullMemberName.Substring(0, lastDotIndex)) as INamedTypeSymbol
+					return _metadataHelper.FindTypeByFullName(typeName) as INamedTypeSymbol
 						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()), true);
 				}
 			}

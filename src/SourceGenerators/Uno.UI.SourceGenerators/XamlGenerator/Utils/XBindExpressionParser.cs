@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -59,38 +60,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
 			{
-				var e = base.VisitInvocationExpression(node);
+				var e = (InvocationExpressionSyntax)base.VisitInvocationExpression(node)!;
 
-				var isParentMemberStatic = node.Expression switch
+				var methodName = e.Expression.ToFullString();
+				var contextBuilder = ContextBuilder;
+				if (contextBuilder.Length > 0 && !methodName.StartsWith("global::", StringComparison.Ordinal) && !Helpers.IsAttachedPropertySyntax(node.Expression).result)
 				{
-					MemberAccessExpressionSyntax ma => _isStaticMember(ma.Expression.ToFullString()),
-					IdentifierNameSyntax ins => _isStaticMember(ins.ToFullString()),
-					_ => false
-				};
-
-				var isValidParent = !Helpers.IsInsideMethod(node).result
-					&& !Helpers.IsInsideMemberAccessExpression(node).result
-					&& !Helpers.IsInsideMemberAccessExpression(node.Expression).result;
-
-				if (isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
-				{
-					if (e is InvocationExpressionSyntax newSyntax)
-					{
-						var methodName = newSyntax.Expression.ToFullString();
-						var arguments = newSyntax.ArgumentList.ToFullString();
-						var contextBuilder = _isStaticMember(methodName) ? "" : ContextBuilder;
-
-						return Helpers.ParseMethodBody($"{contextBuilder}{methodName}{arguments}");
-					}
-					else
-					{
-						throw new Exception();
-					}
+					return e.WithExpression(SyntaxFactory.ParseExpression($"{contextBuilder}{methodName}"));
 				}
-				else
-				{
-					return e;
-				}
+
+				return e;
 			}
 
 			private string ContextBuilder
@@ -98,25 +77,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public override SyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
 			{
-				var e = base.VisitMemberAccessExpression(node);
+				var e = (MemberAccessExpressionSyntax)base.VisitMemberAccessExpression(node)!;
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
 				var isParentMemberStatic = node.Expression is MemberAccessExpressionSyntax m && _isStaticMember(m.ToFullString());
-				var isPathLessCast = Helpers.IsPathLessCast(node);
-				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
-				var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
+
 				var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
 
-				if (e != null
-					&& isValidParent
+				if (isValidParent
 					&& !_isStaticMember(node.Expression.ToFullString())
 					&& !isParentMemberStatic
-					&& !isParenthesizedExpression)
+					&& !isParenthesizedExpression
+					)
 				{
+					var isPathLessCast = Helpers.IsPathLessCast(node);
 					if (isPathLessCast.result)
 					{
 						return Helpers.ParseMethodBody($"({isPathLessCast.expression?.Expression}){_contextName}");
 					}
-					else if (isInsideAttachedPropertySyntax.result)
+
+					var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
+					if (isInsideAttachedPropertySyntax.result)
 					{
 						var contextBuilder = ContextBuilder;
 						return Helpers.ParseMethodBody($"{contextBuilder}{isInsideAttachedPropertySyntax.expression?.Expression.ToString().TrimEnd('.')}");
@@ -124,15 +104,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					else
 					{
 						var expression = e.ToFullString();
-						var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
+						var contextBuilder = expression.StartsWith("global::", StringComparison.Ordinal) ? "" : ContextBuilder;
 
 						return Helpers.ParseMethodBody($"{contextBuilder}{expression}");
 					}
 				}
-				else if (e != null && isAttachedPropertySyntax.result)
+
+				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
+				if (isAttachedPropertySyntax.result)
 				{
-					if (e is MemberAccessExpressionSyntax memberAccess
-						&& memberAccess.Expression is IdentifierNameSyntax identifierSyntax)
+					if (e.Expression is IdentifierNameSyntax)
 					{
 						if (
 							isAttachedPropertySyntax.expression?.ArgumentList.Arguments.FirstOrDefault() is { } property
