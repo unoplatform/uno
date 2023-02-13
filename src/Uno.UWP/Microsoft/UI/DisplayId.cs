@@ -13,20 +13,13 @@ namespace Microsoft.UI
 			=> x.Value == y.Value;
 
 		public static bool operator !=(DisplayId x, DisplayId y)
-			=> !(x == y);
+			=> x.Value != y.Value;
 
 		public bool Equals(DisplayId other)
-			=> this == other;
+			=> Value == other.Value;
 
 		public override bool Equals(object obj)
-		{
-			if (obj is DisplayId)
-			{
-				DisplayId y = (DisplayId)obj;
-				return this == y;
-			}
-			return false;
-		}
+			=> (obj is DisplayId y) && Equals(y);
 
 		public override int GetHashCode()
 			=> Value.GetHashCode();
