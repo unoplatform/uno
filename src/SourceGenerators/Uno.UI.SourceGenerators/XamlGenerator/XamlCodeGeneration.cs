@@ -407,7 +407,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var hasResources = resourceDetailsCollection.HasLocalResources;
 
 			_generatorContext.AddSource(
-				"LocalizationResources",
+				"LocalizationResources.g.cs",
 				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
 				$"\"UnoHasLocalizationResources\", " +
 				$"\"{hasResources.ToString(CultureInfo.InvariantCulture)}\")]");
