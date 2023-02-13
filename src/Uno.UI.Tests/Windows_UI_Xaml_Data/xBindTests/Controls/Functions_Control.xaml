@@ -51,10 +51,9 @@
 				   x:FieldModifier="public"
 				   Text="{x:Bind Parameterless()}" />
 
-		<!-- {x:Bind StaticParameterless()} doesn't work in Windows. -->
 		<TextBlock x:Name="_StaticFunction_Parameterless"
 				   x:FieldModifier="public"
-				   Text="" />
+				   Text="{x:Bind local:Functions_Control.StaticParameterless()}" />
 
 		<TextBlock x:Name="_InstanceFunction_OneParam"
 				   x:FieldModifier="public"
