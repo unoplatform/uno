@@ -79,16 +79,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
 
-			var isDebug = string.Equals(configuration, "Debug", StringComparison.OrdinalIgnoreCase);
-
-			useHotReload = true;
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var forceHotReloadCodeGen))
 			{
 				useHotReload = forceHotReloadCodeGen;
 			}
 			else
 			{
-				useHotReload = isDebug;
+				useHotReload = string.Equals(configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 			}
 		}
 	}
