@@ -2,6 +2,8 @@
 	<PropertyGroup>
 		$if$($UseWinUI$ == True)<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
 		<TargetFrameworks>$(TargetFrameworks);$libarybasetargetframework$</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);$libarybasetargetframework$-wasm1.0</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);$libarybasetargetframework$-skia1.0</TargetFrameworks>
 
 		<!-- 
 			This condition is used when building under Linux. If you're not building under
@@ -21,6 +23,11 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</TargetPlatformMinVersion>
+
+		<TargetPlatformSupported Condition="'$(TargetFramework)'=='net7.0-wasm1.0' or '$(TargetFramework)'=='net7.0-skia1.0'">true</TargetPlatformSupported>
+		<TargetPlatformVersion Condition="'$(TargetFramework)'=='net7.0-wasm1.0' or '$(TargetFramework)'=='net7.0-skia1.0'">1.0</TargetPlatformVersion>
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='net7.0-wasm1.0'">WebAssembly</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='net7.0-skia1.0' or '$(TargetFramework)'=='net7.0'">Skia</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -47,5 +54,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="wasm" />
+		<SupportedPlatform Include="skia" />
+		<SdkSupportedTargetPlatformVersion Include="1.0" />
 	</ItemGroup>
 </Project>

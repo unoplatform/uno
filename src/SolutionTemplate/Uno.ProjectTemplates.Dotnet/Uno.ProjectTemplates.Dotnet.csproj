@@ -339,7 +339,7 @@
 							s = Regex.Replace(s, pattern, @"$1<!--#if ($2)" + Environment.NewLine + "$1", RegexOptions.Multiline);
 
 							s = s
-								.Replace("$endif$", "\n#endif -->");
+								.Replace("$endif$", "\r\n#endif -->");
 								;
 						}
 

@@ -2,9 +2,12 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>$basetargetframework$</TargetFramework>
+		<TargetFramework>$basetargetframework$-wasm1.0</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
 		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
+
+		<TargetPlatformSupported>true</TargetPlatformSupported>
+		<TargetPlatformVersion>1.0</TargetPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -74,6 +77,11 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="wasm" />
+		<SdkSupportedTargetPlatformVersion Include="1.0" />
 	</ItemGroup>
 
 	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>

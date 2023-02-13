@@ -3,7 +3,9 @@
 	<PropertyGroup>
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-		<TargetFramework>$basetargetframework$</TargetFramework>
+		<TargetFramework>$basetargetframework$-skia1.0</TargetFramework>
+		<TargetPlatformSupported>true</TargetPlatformSupported>
+		<TargetPlatformVersion>1.0</TargetPlatformVersion>
 	</PropertyGroup>
 
 	<ItemGroup Condition="exists('..\$ext_safeprojectname$.Windows')">
@@ -23,6 +25,11 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="skia" />
+		<SdkSupportedTargetPlatformVersion Include="1.0" />
 	</ItemGroup>
 
 	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
