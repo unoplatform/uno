@@ -1,9 +1,9 @@
-# Get Started on Visual Studio For Mac 2022
+# Get Started on Visual Studio 2022 For Mac
 
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
 ## Prerequisites
-* [**Visual Studio for Mac 2022 Preview**](https://visualstudio.microsoft.com/vs/mac/preview/)
+* [**Visual Studio 2022 for Mac Preview**](https://visualstudio.microsoft.com/vs/mac/preview/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 14.1 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
@@ -21,7 +21,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
     ```
 
 1. Once created, open the `MyApp-vsmac.slnf` file
-    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio for Mac 2022.
+    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio 2022 for Mac.
     - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
 
@@ -42,7 +42,7 @@ You can create a new Uno Platform solution with the following terminal command:
     dotnet new unoapp -o MyProject --wasm=false
     ```
 
-Once created, you can open it using Visual Studio for Mac 2022.
+Once created, you can open it using Visual Studio 2022 for Mac.
 
 ### Build and Run for WebAssembly
 
