@@ -15,16 +15,16 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "MyProperty.A", "ctx.MyProperty.A")]
 		[DataRow("ctx", "MyProperty", "ctx.MyProperty")]
 		[DataRow("ctx", "MyStaticProperty", "MyStaticProperty")]
-		[DataRow("ctx", "MyStaticMethod()", "MyStaticMethod()")]
+		[DataRow("ctx", "MyStaticMethod()", "ctx.MyStaticMethod()")]
 		[DataRow("ctx", "MyProperty.A.ToLower()", "ctx.MyProperty.A.ToLower()")]
-		[DataRow("ctx", "System.String.Format('{0:X8}', a.Value)", "System.String.Format('{0:X8}', ctx.a.Value)")]
-		[DataRow("ctx", "Static.MyFunction(42.0)", "Static.MyFunction(42.0)")]
-		[DataRow("ctx", "Static.MyFunction(true)", "Static.MyFunction(true)")]
-		[DataRow("ctx", "Static.MyFunction(MyProperty)", "Static.MyFunction(ctx.MyProperty)")]
-		[DataRow("ctx", "MyNameSpace.Static2.MyProperty", "MyNameSpace.Static2.MyProperty")]
+		[DataRow("ctx", "global::System.String.Format('{0:X8}', a.Value)", "global::System.String.Format('{0:X8}', ctx.a.Value)")]
+		[DataRow("ctx", "Static.MyFunction(42.0)", "ctx.Static.MyFunction(42.0)")]
+		[DataRow("ctx", "Static.MyFunction(true)", "ctx.Static.MyFunction(true)")]
+		[DataRow("ctx", "Static.MyFunction(MyProperty)", "ctx.Static.MyFunction(ctx.MyProperty)")]
+		[DataRow("ctx", "MyNameSpace.Static2.MyProperty", "ctx.MyNameSpace.Static2.MyProperty")]
 		[DataRow("ctx", "MyNameSpace.Static2.MyEnum.EnumMember", "MyNameSpace.Static2.MyEnum.EnumMember")]
-		[DataRow("ctx", "MyNameSpace.Static2.MyProperty.ToArray()", "MyNameSpace.Static2.MyProperty.ToArray()")]
-		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
+		[DataRow("ctx", "MyNameSpace.Static2.MyProperty.ToArray()", "ctx.MyNameSpace.Static2.MyProperty.ToArray()")]
+		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "ctx.MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "", "ctx")]
 
@@ -41,7 +41,7 @@ namespace Uno.UI.SourceGenerators.Tests
 		// Attached properties
 		[DataRow("ctx", "AdornerCanvas.(MyNamespace.FrameworkElementExtensions.ActualWidth)", "MyNamespace.FrameworkElementExtensions.GetActualWidth(ctx.AdornerCanvas)")]
 		[DataRow("ctx", "AdornerCanvas.(Grid.Row)", "Grid.GetRow(ctx.AdornerCanvas)")]
-		[DataRow("ctx", "System.String.Format('{0:X8}', AdornerCanvas.(MyNamespace.FrameworkElementExtensions.ActualWidth))", "System.String.Format('{0:X8}', MyNamespace.FrameworkElementExtensions.GetActualWidth(ctx.AdornerCanvas))")]
+		[DataRow("ctx", "global::System.String.Format('{0:X8}', AdornerCanvas.(MyNamespace.FrameworkElementExtensions.ActualWidth))", "global::System.String.Format('{0:X8}', MyNamespace.FrameworkElementExtensions.GetActualWidth(ctx.AdornerCanvas))")]
 
 		// Not supported https://github.com/unoplatform/uno/issues/5061
 		[DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
