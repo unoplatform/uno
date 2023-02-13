@@ -15,8 +15,14 @@ using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace $ext_safeprojectname$
+namespace $ext_safeprojectname$;
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class MainPage : Page
 {
+<<<<<<< HEAD
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
@@ -28,3 +34,10 @@ namespace $ext_safeprojectname$
         }
     }
 }
+=======
+	public MainPage()
+	{
+		this.InitializeComponent();
+	}
+}
+>>>>>>> f415c58a8d (chore: Slight improvements to solution template)
