@@ -232,6 +232,47 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateHeaderVisibility();
 		}
 
+		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+		{
+			if (element is ContentControl cc)
+			{
+				foreach (var comboBoxProperty in DependencyProperty.GetPropertiesForType(this.GetType()))
+				{
+					if (comboBoxProperty.GetMetadata(this.GetType()) is FrameworkPropertyMetadata fpm
+						&& fpm.Options.HasInherits())
+					{
+						if (DependencyProperty.GetProperty(cc.GetType(), comboBoxProperty.Name) is { } containerProperty)
+						{
+							cc.SetValue(containerProperty, this.GetValue(comboBoxProperty));
+						}
+					}
+				}
+			}
+
+			base.PrepareContainerForItemOverride(element, item);
+		}
+
+		protected override void ClearContainerForItemOverride(DependencyObject element, object item)
+		{
+			if (element is ContentControl cc)
+			{
+				foreach (var comboBoxProperty in DependencyProperty.GetPropertiesForType(this.GetType()))
+				{
+					if (comboBoxProperty.GetMetadata(this.GetType()) is FrameworkPropertyMetadata fpm
+						&& fpm.Options.HasInherits())
+					{
+						if (DependencyProperty.GetProperty(cc.GetType(), comboBoxProperty.Name) is { } containerProperty)
+						{
+							cc.ClearValue(containerProperty);
+						}
+					}
+				}
+			}
+
+
+			base.ClearContainerForItemOverride(element, item);
+		}
+
 		private void UpdateHeaderVisibility()
 		{
 			var headerVisibility = (Header != null || HeaderTemplate != null)

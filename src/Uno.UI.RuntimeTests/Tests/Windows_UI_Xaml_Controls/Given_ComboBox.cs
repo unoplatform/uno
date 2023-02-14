@@ -427,6 +427,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_FontFamily_Inherits()
+		{
+			var SUT = new ComboBox()
+			{
+				FontFamily = new("Courier New"),
+				FontSize = 48
+			};
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new ObservableCollection<string>();
+				c.Add("One");
+				c.Add("Two");
+				c.Add("Three");
+
+				SUT.ItemsSource = c;
+
+				await WindowHelper.WaitForIdle();
+
+				SUT.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+
+				var container = SUT.ContainerFromIndex(0) as ContentControl;
+				Assert.IsNotNull(container);
+
+				Assert.AreEqual(SUT.FontFamily.Source, container.FontFamily.Source);
+				Assert.AreEqual(SUT.FontSize, container.FontSize);
+			}
+			finally
+			{
+				// SUT.IsDropDownOpen = false;
+			}
+		}
+
 #if HAS_UNO
 		[TestMethod]
 #if __MACOS__

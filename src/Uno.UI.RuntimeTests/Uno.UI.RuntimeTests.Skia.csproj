@@ -19,6 +19,8 @@
 
 		<!-- Validation for project transient assets -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+
+		<NoWarn>$(NoWarn);CS0105</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
