@@ -45,7 +45,7 @@ internal partial class BorderLayerRenderer
 			_borderInfoProvider.BorderBrush,
 			_borderInfoProvider.CornerRadius,
 			_borderInfoProvider.BackgroundImage);
-		
+
 		var previousLayoutState = _currentState;
 
 		if (!newState.Equals(previousLayoutState))
@@ -199,9 +199,9 @@ internal partial class BorderLayerRenderer
 					var spriteShape = compositor.CreateSpriteShape();
 					var geometry = new SkiaGeometrySource2D();
 
-				// Border brush
-				Brush.AssignAndObserveBrush(borderBrush, compositor, brush => spriteShape.StrokeBrush = brush)
-					.DisposeWith(disposables);
+					// Border brush
+					Brush.AssignAndObserveBrush(borderBrush, compositor, brush => spriteShape.StrokeBrush = brush)
+						.DisposeWith(disposables);
 
 					builder(spriteShape, geometry.Geometry);
 					spriteShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometry));
@@ -293,13 +293,13 @@ internal partial class BorderLayerRenderer
 
 				var sourceImageSize = new Size(imageData.Value.Image.Width, imageData.Value.Image.Height);
 
-			// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
-			var imageArea = adjustedArea.DeflateBy(borderThickness);
+				// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
+				var imageArea = adjustedArea.DeflateBy(borderThickness);
 
 				backgroundArea = imgBackground.GetArrangedImageRect(sourceImageSize, imageArea);
 
-			// surfaceBrush.Offset = new Vector2((float)imageFrame.Left, (float)imageFrame.Top);
-			var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
+				// surfaceBrush.Offset = new Vector2((float)imageFrame.Left, (float)imageFrame.Top);
+				var matrix = Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceImageSize.Width), (float)(backgroundArea.Height / sourceImageSize.Height));
 				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 
 				if (imgBackground.Transform != null)

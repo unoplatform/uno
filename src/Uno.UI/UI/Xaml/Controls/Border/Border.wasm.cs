@@ -35,37 +35,10 @@ namespace Windows.UI.Xaml.Controls
 			AddChild(newValue);
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			UpdateBorder();
-		}
-
-		partial void OnBorderBrushChangedPartial()
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnBackgroundChanged(e);
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs args) =>
 			UpdateHitTest();
-			UpdateBorder();
-		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

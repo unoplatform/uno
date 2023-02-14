@@ -36,30 +36,8 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnArrangeVisual(rect, clip);
 		}
 
-		partial void OnBorderBrushChangedPartial()
-		{
-			UpdateBorder();
-		}
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
 
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
-		{
-			base.OnBackgroundChanged(args);
-			UpdateBorder();
-		}
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

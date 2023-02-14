@@ -23,9 +23,9 @@ internal partial class BorderLayerRenderer
 
 		_borderInfoProvider = borderInfoProvider;
 
-		_owner.Loaded += (s, e) => Update();
-		_owner.Unloaded += (s, e) => Clear();
-		_owner.LayoutUpdated += (s, e) => Update();
+		_owner.Loaded += (s, e) => UpdateLayer();
+		_owner.Unloaded += (s, e) => ClearLayer();
+		_owner.LayoutUpdated += (s, e) => UpdateLayer();
 	}
 
 	internal void Update() => UpdateLayer();

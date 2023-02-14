@@ -20,17 +20,13 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-        partial void OnBorderBrushChangedPartial()
-		{
-			UpdateBorderLayer();
-		}
-
 		protected override void OnAfterArrange()
 		{
 			base.OnAfterArrange();
 			UpdateBorderLayer();
 		}
 
+		// MZ:TODO!!!
 		private void UpdateBorderLayer(_Image backgroundImage = null)
 		{
 			if (IsLoaded)
@@ -56,9 +52,10 @@ namespace Microsoft.UI.Xaml.Controls
 			this.SetNeedsDisplay();
 		}
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs args)
 		{
-			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
+			//TODO:MZ:
+			// Don't call base <-- THIS IS CURRENTLY NOT RIGHT AFTER?, we need to keep UIView.BackgroundColor set to transparent
 			// because we're overriding draw.
 
 			var old = args.OldValue as ImageBrush;
@@ -82,16 +79,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorderLayer(backgroundImage);
 		}
 
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorderLayer();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorderLayer();
-		}
-
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
 		{
 			previousValue?.RemoveFromSuperview();
@@ -104,10 +91,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorderLayer();
 		}
 
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorderLayer();
-		}
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 

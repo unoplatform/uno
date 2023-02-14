@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayer(
+				_borderRenderer.Update()
 					Background,
 					BackgroundSizing,
 					BorderThickness,
@@ -70,36 +70,6 @@ namespace Microsoft.UI.Xaml.Controls
 					willUpdateMeasures
 				);
 			}
-		}
-
-		partial void OnBorderBrushChangedPartial()
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder(true);
-		}
-
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
