@@ -45,30 +45,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnBackgroundChanged(e);
-			UpdateBorder();
 			UpdateHitTest();
 		}
 
