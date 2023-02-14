@@ -32,27 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		partial void UpdateBorder()
-		{
-			UpdateBorder(false);
-		}
-
-		private void UpdateBorder(bool willUpdateMeasures)
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					PaddingInternal,
-					willUpdateMeasures
-				);
-			}
-		}
-
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
@@ -66,31 +45,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		protected virtual void OnChildrenChanged()
-		{
-			UpdateBorder();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder(true);
-		}
-
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			UpdateBorder();
 		}

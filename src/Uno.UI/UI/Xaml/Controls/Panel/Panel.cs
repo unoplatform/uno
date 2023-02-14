@@ -190,12 +190,15 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
+			UpdateBorder();
 		}
+
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
 		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnBorderThicknessChangedPartial(oldValue, newValue);
+			UpdateBorder();
 		}
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
 
@@ -209,13 +212,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override bool CanHaveChildren() => true;
 
-		
 		private protected void OnBackgroundSizingChangedInnerPanel(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnBackgroundSizingChangedInner(e);
 
 			UpdateBorder();
 		}
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundChanged(e);
+			UpdateBorder();
+			OnBackgroundChangedPartial(e);
+		}
+
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}

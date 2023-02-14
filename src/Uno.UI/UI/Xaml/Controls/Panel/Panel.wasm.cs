@@ -20,43 +20,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		partial void UpdateBorder()
-		{
-			// Checking for Window avoids re-creating the layer until it is actually used.
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					null
-				);
-			}
-		}
 
 		protected virtual void OnChildrenChanged()
-		{
-			UpdateBorder();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
 			UpdateBorder();
 		}
@@ -75,11 +40,14 @@ namespace Microsoft.UI.Xaml.Controls
 			Children.Add(view);
 		}
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		public new IEnumerator GetEnumerator()
 		{
-			base.OnBackgroundChanged(e);
+			return this.GetChildren().GetEnumerator();
+		}
+
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
 			UpdateHitTest();
-			UpdateBorder();
 		}
 	}
 }

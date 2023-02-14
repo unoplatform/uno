@@ -19,15 +19,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-		{
-			UpdateBackground();
-		}
-
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			SetNeedsLayout();
-			UpdateBackground();
 		}
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
@@ -37,6 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
 		{
+			// TODO:MZ!!!!!
 			// Ignore the background changes provided from base, we're rendering it using the CALayer.
 			// base.OnBackgroundChanged(e);
 
@@ -50,21 +45,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
 			}
-
-			UpdateBackground();
 		}
 
 		private void OnBackgroundImageBrushChanged(UIImage backgroundImage)
 		{
-			UpdateBackground(backgroundImage);
+			UpdateBorder(backgroundImage);
 		}
 
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBackground();
-		}
-
-		private void UpdateBackground(UIImage backgroundImage = null)
+		private void UpdateBorder(UIImage backgroundImage = null)
 		{
 			// Checking for Window avoids re-creating the layer until it is actually used.
 			if (IsLoaded)
@@ -89,11 +77,6 @@ namespace Microsoft.UI.Xaml.Controls
 					backgroundImage
 				);
 			}
-		}
-
-		partial void UpdateBorder()
-		{
-			UpdateBackground();
 		}
 
 		protected virtual void OnChildrenChanged()

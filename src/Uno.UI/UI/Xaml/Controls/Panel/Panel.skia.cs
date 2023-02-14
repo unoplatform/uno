@@ -8,17 +8,18 @@ using System.Text;
 using System.Collections;
 using Uno.UI.DataBinding;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-using Microsoft.UI.Xaml.Shapes;
+using View = Windows.UI.Xaml.UIElement;
+using Windows.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
-	public partial class Panel
+	public partial class Panel : IEnumerable
 	{
 		/// <summary>        
 		/// Support for the C# collection initializer style.
@@ -44,45 +45,13 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
-		}
-
-		/// <summary>        
-		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Panel 
-		/// {
-		///    new Border()
-		/// }
-		/// </summary>
-		/// <param name="view"></param>
-		public void Add(UIElement view)
-		{
-			Children.Add(view);
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnBackgroundChanged(e);
-			UpdateBorder();
 			UpdateHitTest();
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

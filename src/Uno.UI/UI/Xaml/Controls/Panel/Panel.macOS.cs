@@ -26,25 +26,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnUnloadedPartial()
-		{
-			_borderRenderer.Clear();
-		}
-
-		partial void OnLoadedPartial()
-		{
-			UpdateBackground();
-		}
-
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-		{
-			UpdateBackground();
-		}
-
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			InvalidateMeasure();
-			UpdateBackground();
 		}
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
@@ -78,11 +62,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBackground(backgroundImage);
 		}
 
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBackground();
-		}
-
 		private void UpdateBackground(NSImage backgroundImage = null)
 		{
 			// Checking for Window avoids re-creating the layer until it is actually used.
@@ -99,11 +78,6 @@ namespace Microsoft.UI.Xaml.Controls
 					backgroundImage
 				);
 			}
-		}
-
-		partial void UpdateBorder()
-		{
-			UpdateBackground();
 		}
 
 		protected virtual void OnChildrenChanged()
