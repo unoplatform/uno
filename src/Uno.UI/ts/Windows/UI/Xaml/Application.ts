@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml {
+﻿namespace Microsoft.UI.Xaml {
 
 	export class Application {
 		private static dispatchThemeChange: () => number;
@@ -18,7 +18,7 @@
 
 		public static observeSystemTheme() {
 			if (!Application.dispatchThemeChange) {
-				Application.dispatchThemeChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+				Application.dispatchThemeChange = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Application:DispatchSystemThemeChange");
 			}
 
 			if (window.matchMedia) {
@@ -30,7 +30,7 @@
 
 		public static observeVisibility() {
 			if (!Application.dispatchVisibilityChange) {
-				Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+				Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Application:DispatchVisibilityChange");
 			}
 
 			if (document.onvisibilitychange !== undefined) {

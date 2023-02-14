@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Media.Imaging;
+﻿namespace Microsoft.UI.Xaml.Media.Imaging;
 
 /// <summary>
 /// Represents the method that will handle the DownloadProgress event.

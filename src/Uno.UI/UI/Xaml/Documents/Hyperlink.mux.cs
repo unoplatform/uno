@@ -6,7 +6,7 @@
 
 using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class Hyperlink
 	{

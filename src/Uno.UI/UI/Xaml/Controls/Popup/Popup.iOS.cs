@@ -1,6 +1,6 @@
-using UIKit;
+﻿using UIKit;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {

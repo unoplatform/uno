@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RatingControl.cpp, commit 3c73749
 
@@ -6,14 +6,14 @@ using System;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
 using System.Numerics;
 using RatingControlAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer;
 

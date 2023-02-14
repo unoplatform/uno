@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Uno;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot
 {

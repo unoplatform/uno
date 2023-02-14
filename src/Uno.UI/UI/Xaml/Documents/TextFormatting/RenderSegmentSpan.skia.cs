@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Documents.TextFormatting
+namespace Microsoft.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
 	/// Represents a span of a segment that is rendered on a render line.

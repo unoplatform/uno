@@ -6,7 +6,7 @@ using Windows.Foundation;
 using CoreGraphics;
 using Uno.UI;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal partial interface ILayouterElement
 {

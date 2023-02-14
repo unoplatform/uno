@@ -9,10 +9,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
 
 namespace Uno.UI.Tests.ListViewBaseTests
@@ -764,7 +764,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var source = new ObservableVector<string>() { "1", "2", "3" };
 
 			Style BuildContainerStyle() =>
-			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
 			{
 				Setters =  {
 					new Setter<ContentControl>("Template", t =>
@@ -824,7 +824,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 
 		private Style BuildBasicContainerStyle() =>
-		new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+		new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
 		{
 			Setters =  {
 				new Setter<ListViewItem>("Template", t =>

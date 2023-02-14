@@ -7,10 +7,10 @@ using Cairo;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Input;
-using WUX = Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using WUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using Uno.UI.Runtime.Skia.Helpers.Windows;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
@@ -66,7 +66,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private void InvalidateOverlays()
 		{
-			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+			_focusManager ??= VisualTree.GetFocusManagerForElement(Microsoft.UI.Xaml.Window.Current?.RootElement);
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
 			if (_focusManager?.FocusedElement is TextBox textBox)
 			{

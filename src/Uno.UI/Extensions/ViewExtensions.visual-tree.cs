@@ -10,8 +10,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -22,7 +22,7 @@ using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else
-using _View = Windows.UI.Xaml.DependencyObject;
+using _View = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
 namespace Uno.UI.Extensions;

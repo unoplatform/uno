@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
 using SkiaSharp;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush
 	{

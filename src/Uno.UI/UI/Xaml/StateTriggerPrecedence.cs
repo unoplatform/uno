@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Precedence of an active trigger

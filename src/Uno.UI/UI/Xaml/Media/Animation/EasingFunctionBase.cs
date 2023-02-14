@@ -7,7 +7,7 @@ using System.Text;
 using Android.Animation;
 #endif
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class EasingFunctionBase : DependencyObject, IEasingFunction
 	{

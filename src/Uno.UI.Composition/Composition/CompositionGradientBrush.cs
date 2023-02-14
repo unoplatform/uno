@@ -3,7 +3,7 @@
 using System;
 using System.Numerics;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGradientBrush : CompositionBrush
 	{

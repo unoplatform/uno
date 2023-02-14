@@ -4,15 +4,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Common;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls

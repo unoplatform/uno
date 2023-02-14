@@ -4,7 +4,7 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Win32.UI.XamlHost/UWPTypeFactory.cs
 
 using System;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost;
 

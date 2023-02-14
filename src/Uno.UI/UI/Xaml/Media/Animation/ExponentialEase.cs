@@ -1,8 +1,8 @@
-#pragma warning disable 108 // new keyword hiding
+﻿#pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class ExponentialEase : EasingFunctionBase
 	{
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static DependencyProperty ExponentProperty { get; } =
 			DependencyProperty.Register(
 			"Exponent", typeof(double),
-			typeof(global::Windows.UI.Xaml.Media.Animation.ExponentialEase),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.ExponentialEase),
 			new FrameworkPropertyMetadata(
 				defaultValue: 1.0,
 				propertyChangedCallback: (s, e) => (s as ExponentialEase)?.OnExponentChanged((double)e.OldValue, (double)e.NewValue)

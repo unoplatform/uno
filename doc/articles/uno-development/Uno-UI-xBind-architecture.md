@@ -1,4 +1,4 @@
-# x:Bind in Uno Platform
+﻿# x:Bind in Uno Platform
 
 
 
@@ -52,9 +52,9 @@ The code is similar to this:
 
 ```csharp
 c18.SetBinding(
-    global::Windows.UI.Xaml.Controls.TextBlock.TextProperty, 
-    new Windows.UI.Xaml.Data.Binding{ 
-        Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay,
+    global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty, 
+    new Microsoft.UI.Xaml.Data.Binding{ 
+        Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
     }
     .Apply(___b => 
         global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(

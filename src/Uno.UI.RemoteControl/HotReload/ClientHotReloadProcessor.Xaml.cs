@@ -10,14 +10,14 @@ using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.Storage.Pickers.Provider;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 #if __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.FrameworkElement;
+using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if __IOS__

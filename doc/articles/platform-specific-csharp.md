@@ -1,4 +1,4 @@
-# Platform-specific C# code in Uno
+﻿# Platform-specific C# code in Uno
 
 Uno allows you to reuse views and business logic across platforms. Sometimes though you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform. 
 
@@ -50,7 +50,7 @@ using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 ...

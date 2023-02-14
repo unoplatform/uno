@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public delegate void BindingFailedEventHandler(object sender, BindingFailedEventArgs e);
 }

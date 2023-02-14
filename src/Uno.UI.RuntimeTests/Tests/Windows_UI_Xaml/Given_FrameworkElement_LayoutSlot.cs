@@ -3,8 +3,8 @@ using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -29,11 +29,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var button = new Button()
 			{
 				BorderBrush = new SolidColorBrush(Colors.Blue),
-				BorderThickness = new Windows.UI.Xaml.Thickness(50),
+				BorderThickness = new Microsoft.UI.Xaml.Thickness(50),
 				Content = SUT,
-				Padding = new Windows.UI.Xaml.Thickness(0),
-				Margin = new Windows.UI.Xaml.Thickness(0),
-				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top
+				Padding = new Microsoft.UI.Xaml.Thickness(0),
+				Margin = new Microsoft.UI.Xaml.Thickness(0),
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Top
 			};
 
 			TestServices.WindowHelper.WindowContent = button;
@@ -58,17 +58,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var button = new Button()
 			{
 				BorderBrush = new SolidColorBrush(Colors.Blue),
-				BorderThickness = new Windows.UI.Xaml.Thickness(50),
+				BorderThickness = new Microsoft.UI.Xaml.Thickness(50),
 				Content = SUT,
-				Padding = new Windows.UI.Xaml.Thickness(0),
-				Margin = new Windows.UI.Xaml.Thickness(0),
-				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top
+				Padding = new Microsoft.UI.Xaml.Thickness(0),
+				Margin = new Microsoft.UI.Xaml.Thickness(0),
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Top
 			};
 
 			var page = new Page()
 			{
 				BorderBrush = new SolidColorBrush(Colors.Pink),
-				BorderThickness = new Windows.UI.Xaml.Thickness(50),
+				BorderThickness = new Microsoft.UI.Xaml.Thickness(50),
 				Content = button,
 			};
 

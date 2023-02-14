@@ -6,7 +6,7 @@ using Android.Graphics.Drawables;
 using Android.Widget;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class NativeImageView : ImageView
 	{

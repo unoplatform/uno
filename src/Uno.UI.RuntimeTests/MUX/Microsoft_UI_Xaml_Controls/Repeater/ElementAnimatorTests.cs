@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using System.Threading.Tasks;
 using System.Threading;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Common;
 
 #if USING_TAEF
@@ -31,7 +31,7 @@ using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class ElementAnimatorTests : MUXApiTestBase

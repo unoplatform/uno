@@ -5,7 +5,7 @@ using Uno.Extensions;
 using Uno.Disposables;
 using System.Drawing;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{

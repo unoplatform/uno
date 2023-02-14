@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using UIKit;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {

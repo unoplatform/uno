@@ -5,7 +5,7 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Widget;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {

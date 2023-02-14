@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -16,18 +16,18 @@ using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation.Collections;
-using ButtonBase = Windows.UI.Xaml.Controls.Primitives.ButtonBase;
+using ButtonBase = Microsoft.UI.Xaml.Controls.Primitives.ButtonBase;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Tests.Enterprise
 {
@@ -3757,7 +3757,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				root = (Grid)XamlReader.Load(@"<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
                                 xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-								xmlns:input=""using:Windows.UI.Xaml.Input"">
+								xmlns:input=""using:Microsoft.UI.Xaml.Input"">
                             <Grid.Resources>
                                 <input:XamlUICommand x:Key=""AcceptCommand"" Label=""Accept"">
                                     <input:XamlUICommand.IconSource>

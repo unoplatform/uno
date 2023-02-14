@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Disposables;
@@ -15,7 +15,7 @@ using System.Linq;
 using Uno.Foundation.Logging;
 
 using System.Collections.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
 
@@ -23,7 +23,7 @@ using Windows.Foundation;
 using ObjCRuntime;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public abstract partial class VirtualizingPanelLayout : UICollectionViewLayout, DependencyObject
 	{

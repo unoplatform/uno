@@ -5,7 +5,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal partial interface ILayouterElement
 {

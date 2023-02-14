@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.Storage.Helpers;
 
-namespace Windows.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
 /// <summary>
 /// WebAssembly-specific asynchronous font loader
@@ -181,11 +181,11 @@ internal class FontFamilyLoader
 
 			if (_fontFamily.ExternalSource is { Length: > 0 })
 			{
-				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.loadFont(\"{_fontFamily.CssFontName}\",\"{_fontFamily.ExternalSource}\")");
+				WebAssemblyRuntime.InvokeJS($"Microsoft.UI.Xaml.Media.FontFamily.loadFont(\"{_fontFamily.CssFontName}\",\"{_fontFamily.ExternalSource}\")");
 			}
 			else
 			{
-				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{_fontFamily.CssFontName}\")");
+				WebAssemblyRuntime.InvokeJS($"Microsoft.UI.Xaml.Media.FontFamily.forceFontUsage(\"{_fontFamily.CssFontName}\")");
 			}
 
 			_loadOperation = new TaskCompletionSource<bool>();

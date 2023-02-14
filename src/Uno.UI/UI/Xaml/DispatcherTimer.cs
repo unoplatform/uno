@@ -6,7 +6,7 @@ using System.Threading;
 using Windows.UI.Core;
 using Uno;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Provides a timer that is integrated into the Dispatcher queue, which is processed at a specified interval of time and at a specified priority.

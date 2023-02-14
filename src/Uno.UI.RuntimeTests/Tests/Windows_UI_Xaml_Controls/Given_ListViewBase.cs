@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,21 +16,21 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics;
 

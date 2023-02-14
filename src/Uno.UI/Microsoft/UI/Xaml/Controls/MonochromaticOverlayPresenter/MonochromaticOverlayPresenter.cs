@@ -2,10 +2,10 @@
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					_effectFactory = null;
 				}
 
-				var compositor = global::Windows.UI.Xaml.Window.Current.Compositor;
+				var compositor = global::Microsoft.UI.Xaml.Window.Current.Compositor;
 
 				if (_effectFactory == null)
 				{

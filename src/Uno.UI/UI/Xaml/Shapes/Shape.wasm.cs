@@ -6,15 +6,15 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Disposables;
 using Uno;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	[Markup.ContentProperty(Name = "SvgChildren")]
 	partial class Shape

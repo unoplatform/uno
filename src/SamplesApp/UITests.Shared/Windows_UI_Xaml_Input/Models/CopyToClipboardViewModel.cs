@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 

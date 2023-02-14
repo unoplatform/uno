@@ -1,4 +1,4 @@
-# Guidelines for breaking changes
+﻿# Guidelines for breaking changes
 
 ## Overview
 
@@ -48,7 +48,7 @@ You can find the report within the `NuGetPackages.zip` archive on the build serv
 Key things to pay attention to:
 - the report is for each TFM and the assemblies for that TFM.
 - breaking changes which have been blessed have been ~~struck out~~.
-- `Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()` is the breaking change which has not been blessed and thus the process failed the build.
+- `Microsoft.UI.Xaml.ResourceDictionary::MergedDictionaries()` is the breaking change which has not been blessed and thus the process failed the build.
 
 ```md
 ## MonoAndroid80 Platform
@@ -89,41 +89,41 @@ Key things to pay attention to:
 #### Uno.UI.dll
 ##### 0 missing types:
 ##### 15 missing or changed method in existing types:
-- `Windows.UI.Xaml.Controls.ComboBoxItem`
-	* ~~``Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextChangedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.Popup`
-	* ~~``Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()``~~
-	* ~~``System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)``~~
-- `Windows.UI.Xaml.Controls.TextBoxView`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxView..ctor()``~~
-	* ~~``System.String Windows.UI.Xaml.Controls.TextBoxView.get_BindableText()``~~
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)``~~
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()``~~
+- `Microsoft.UI.Xaml.Controls.ComboBoxItem`
+	* ~~``Microsoft.UI.Xaml.Controls.Popup Microsoft.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextChangedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.Popup`
+	* ~~``Android.Views.View Microsoft.UI.Xaml.Controls.Popup.get_Anchor()``~~
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxView`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxView..ctor()``~~
+	* ~~``System.String Microsoft.UI.Xaml.Controls.TextBoxView.get_BindableText()``~~
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)``~~
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()``~~
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 3 missing or changed properties in existing types:
-- `Windows.UI.Xaml.ResourceDictionary`
-	* ``Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()``
-- `Windows.UI.Xaml.Controls.Popup`
-	* ~~``Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxView`
-	* ~~``System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()``~~
+- `Microsoft.UI.Xaml.ResourceDictionary`
+	* ``Microsoft.UI.Xaml.ResourceDictionary[] Microsoft.UI.Xaml.ResourceDictionary::MergedDictionaries()``
+- `Microsoft.UI.Xaml.Controls.Popup`
+	* ~~``Android.Views.View Microsoft.UI.Xaml.Controls.Popup::Anchor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxView`
+	* ~~``System.String Microsoft.UI.Xaml.Controls.TextBoxView::BindableText()``~~
 #### Uno.UI.Toolkit.dll
 ##### 0 missing types:
 ##### 0 missing or changed method in existing types:
@@ -174,41 +174,41 @@ Key things to pay attention to:
 #### Uno.UI.dll
 ##### 0 missing types:
 ##### 15 missing or changed method in existing types:
-- `Windows.UI.Xaml.Controls.ComboBoxItem`
-	* ~~``Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextChangedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.Popup`
-	* ~~``Android.Views.View Windows.UI.Xaml.Controls.Popup.get_Anchor()``~~
-	* ~~``System.Void Windows.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)``~~
-- `Windows.UI.Xaml.Controls.TextBoxView`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxView..ctor()``~~
-	* ~~``System.String Windows.UI.Xaml.Controls.TextBoxView.get_BindableText()``~~
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)``~~
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()``~~
+- `Microsoft.UI.Xaml.Controls.ComboBoxItem`
+	* ~~``Microsoft.UI.Xaml.Controls.Popup Microsoft.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextChangedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.Popup`
+	* ~~``Android.Views.View Microsoft.UI.Xaml.Controls.Popup.get_Anchor()``~~
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.Popup.set_Anchor(Android.Views.View value)``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxView`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxView..ctor()``~~
+	* ~~``System.String Microsoft.UI.Xaml.Controls.TextBoxView.get_BindableText()``~~
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxView.set_BindableText(System.String value)``~~
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxView.NotifyTextChanged()``~~
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 3 missing or changed properties in existing types:
-- `Windows.UI.Xaml.ResourceDictionary`
-	* ``Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()``
-- `Windows.UI.Xaml.Controls.Popup`
-	* ~~``Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxView`
-	* ~~``System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()``~~
+- `Microsoft.UI.Xaml.ResourceDictionary`
+	* ``Microsoft.UI.Xaml.ResourceDictionary[] Microsoft.UI.Xaml.ResourceDictionary::MergedDictionaries()``
+- `Microsoft.UI.Xaml.Controls.Popup`
+	* ~~``Android.Views.View Microsoft.UI.Xaml.Controls.Popup::Anchor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxView`
+	* ~~``System.String Microsoft.UI.Xaml.Controls.TextBoxView::BindableText()``~~
 #### Uno.UI.Toolkit.dll
 ##### 0 missing types:
 ##### 0 missing or changed method in existing types:
@@ -251,29 +251,29 @@ Key things to pay attention to:
 #### Uno.UI.dll
 ##### 0 missing types:
 ##### 9 missing or changed method in existing types:
-- `Windows.UI.Xaml.Controls.ComboBoxItem`
-	* ~~``Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextChangedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ComboBoxItem`
+	* ~~``Microsoft.UI.Xaml.Controls.Popup Microsoft.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextChangedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 1 missing or changed properties in existing types:
-- `Windows.UI.Xaml.ResourceDictionary`
-	* ``Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()``
+- `Microsoft.UI.Xaml.ResourceDictionary`
+	* ``Microsoft.UI.Xaml.ResourceDictionary[] Microsoft.UI.Xaml.ResourceDictionary::MergedDictionaries()``
 #### Uno.UI.Toolkit.dll
 ##### 0 missing types:
 ##### 0 missing or changed method in existing types:
@@ -331,31 +331,31 @@ Key things to pay attention to:
 #### Uno.UI.dll
 ##### 0 missing types:
 ##### 10 missing or changed method in existing types:
-- `Windows.UI.Xaml.Controls.ComboBoxItem`
-	* ~~``Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextChangedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.VirtualizingPanelLayout`
-	* ~~``System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)``~~
+- `Microsoft.UI.Xaml.Controls.ComboBoxItem`
+	* ~~``Microsoft.UI.Xaml.Controls.Popup Microsoft.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextChangedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForItem(UIKit.UICollectionViewLayoutAttributes layoutAttributes)``~~
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 1 missing or changed properties in existing types:
-- `Windows.UI.Xaml.ResourceDictionary`
-	* ``Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()``
+- `Microsoft.UI.Xaml.ResourceDictionary`
+	* ``Microsoft.UI.Xaml.ResourceDictionary[] Microsoft.UI.Xaml.ResourceDictionary::MergedDictionaries()``
 #### Uno.UI.Toolkit.dll
 ##### 0 missing types:
 ##### 0 missing or changed method in existing types:
@@ -388,29 +388,29 @@ Key things to pay attention to:
 #### Uno.UI.dll
 ##### 0 missing types:
 ##### 9 missing or changed method in existing types:
-- `Windows.UI.Xaml.Controls.ComboBoxItem`
-	* ~~``Windows.UI.Xaml.Controls.Popup Windows.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingDeferral`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
-- `Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
-- `Windows.UI.Xaml.Controls.TextChangedEventArgs`
-	* ~~``System.Void Windows.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ComboBoxItem`
+	* ~~``Microsoft.UI.Xaml.Controls.Popup Microsoft.UI.Xaml.Controls.ComboBoxItem.GetPopupControl()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingDeferral..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs..ctor()``~~
+- `Microsoft.UI.Xaml.Controls.TextChangedEventArgs`
+	* ~~``System.Void Microsoft.UI.Xaml.Controls.TextChangedEventArgs..ctor()``~~
 ##### 0 missing or changed events in existing types:
 ##### 0 missing or changed fields in existing types:
 ##### 1 missing or changed properties in existing types:
-- `Windows.UI.Xaml.ResourceDictionary`
-	* ``Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()``
+- `Microsoft.UI.Xaml.ResourceDictionary`
+	* ``Microsoft.UI.Xaml.ResourceDictionary[] Microsoft.UI.Xaml.ResourceDictionary::MergedDictionaries()``
 #### Uno.Xaml.dll
 ##### 0 missing types:
 ##### 0 missing or changed method in existing types:

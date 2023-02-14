@@ -4,16 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 using Rectangle = System.Drawing.Rectangle;
 using Size = System.Drawing.Size;
 using Point = System.Drawing.Point;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {

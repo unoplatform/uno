@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System.Runtime.InteropServices;
 using Windows.Foundation;
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{

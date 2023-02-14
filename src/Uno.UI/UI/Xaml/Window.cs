@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Uno.Disposables;
@@ -8,13 +8,13 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Represents an application window.
@@ -212,13 +212,13 @@ namespace Windows.UI.Xaml
 		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 		/// </summary>
 		/// <returns>A disposable instance that will cancel the registration.</returns>
-		internal IDisposable RegisterSizeChangedEvent(Windows.UI.Xaml.WindowSizeChangedEventHandler handler)
+		internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
 		{
 			return WeakEventHelper.RegisterEvent(
 				_sizeChangedHandlers,
 				handler,
 				(h, s, e) =>
-					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+					(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 			);
 		}
 

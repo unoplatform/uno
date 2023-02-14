@@ -1,4 +1,4 @@
-# How Uno works on Android
+﻿# How Uno works on Android
 
 This article explores Android-specific details of Uno's internals, with a focus on information that's useful for contributors to Uno. For an overview of how Uno works on all platforms, see [this article](uno-internals-overview.md).
 
@@ -15,7 +15,7 @@ The `Uno.UI.BindingHelper.Android` project builds these Java types, and wraps th
 ## UIElement inherits from ViewGroup
 
 `UIElement` in Uno is a native view on Android, inheriting from the general `ViewGroup` type. To elaborate, `UIElement`'s base classes are the following:
-`Android.Views.View` → `Android.Views.ViewGroup` → `Uno.UI.UnoViewGroup` → `Uno.UI.Controls.BindableView` → `Windows.UI.Xaml.UIElement`
+`Android.Views.View` → `Android.Views.ViewGroup` → `Uno.UI.UnoViewGroup` → `Uno.UI.Controls.BindableView` → `Microsoft.UI.Xaml.UIElement`
 
 Recall that `UIElement` implements `DependencyObect` [as an interface](uno-internals-overview.md) in Uno.
 

@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Media {
+﻿namespace Microsoft.UI.Xaml.Media {
 
 	export class FontFamily {
 
@@ -50,7 +50,7 @@
 
 			if (!FontFamily.managedNotifyFontLoaded) {
 				FontFamily.managedNotifyFontLoaded =
-					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
+					(<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
 			}
 
 			FontFamily.managedNotifyFontLoaded(fontFamilyName);
@@ -60,7 +60,7 @@
 
 			if (!FontFamily.managedNotifyFontLoadFailed) {
 				FontFamily.managedNotifyFontLoadFailed =
-					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+					(<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
 			}
 
 			FontFamily.managedNotifyFontLoadFailed(fontFamilyName);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Services

@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 #if XAMARIN_IOS_UNIFIED
 using UIKit;
@@ -11,7 +11,7 @@ using UIKit;
 using MonoTouch.UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public abstract partial class ButtonBase : ContentControl
 	{

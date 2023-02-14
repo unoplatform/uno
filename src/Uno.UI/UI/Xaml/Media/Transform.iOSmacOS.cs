@@ -12,7 +12,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class Transform : GeneralTransform
 	{

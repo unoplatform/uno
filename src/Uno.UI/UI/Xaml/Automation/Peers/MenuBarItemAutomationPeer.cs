@@ -1,12 +1,12 @@
-using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class MenuBarItemAutomationPeer : FrameworkElementAutomationPeer
 	{
 		private MenuBarItem MenuBarItemOwner => Owner as MenuBarItem;
 
-		public MenuBarItemAutomationPeer(global::Windows.UI.Xaml.Controls.MenuBarItem owner) : base(owner)
+		public MenuBarItemAutomationPeer(global::Microsoft.UI.Xaml.Controls.MenuBarItem owner) : base(owner)
 		{
 		}
 

@@ -1,4 +1,4 @@
-# Logging
+﻿# Logging
 
 Virtually every production level application should utilize some form of logging. During development, especially when developing WASM applications where using a debugger can be more challenging, diagnostic logs can be invaluable for identifying issues. Once in production, capturing information about critical failures can be invaluable.
 
@@ -61,22 +61,22 @@ The standard Uno template configures logging in the **App.xaml.cs** file.
             builder.AddFilter("Microsoft", LogLevel.Warning);
 
             // Generic Xaml events
-            // builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+            // builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
 
             // Layouter specific messages
-            // builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
 
             // builder.AddFilter("Windows.Storage", LogLevel.Debug );
 
             // Binding related messages
-            // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
-            // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+            // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
 
             // Binder memory references tracking
             // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
@@ -137,34 +137,34 @@ In order to support logging to the debug output view in Visual Studio, complete 
                     // { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 
                     // Generic XAML events
-                    // { "Windows.UI.Xaml", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.UIElement", LogLevel.Debug },
 
                     // Layouter specific messages
-                    // { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug },
                     // { "Windows.Storage", LogLevel.Debug },
 
                     // Binding related messages
-                    // { "Windows.UI.Xaml.Data", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Data", LogLevel.Debug },
 
                     // DependencyObject memory references tracking
                     // { "ReferenceHolder", LogLevel.Debug },
 
                     // ListView-related messages
-                    // { "Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.ListView", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.GridView", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
-                    // { "Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
-                    // { "Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
-                    // { "Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
-                    // { "Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
+                    // { "Microsoft.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.ListView", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.GridView", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
+                    // { "Microsoft.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
+                    // { "Microsoft.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
+                    // { "Microsoft.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
+                    // { "Microsoft.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
+                    // { "Microsoft.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
                 }
             )
             //.AddConsole(LogLevel.Information);

@@ -79,7 +79,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
-						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
+						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.DependencyObject");
 						_additionalLinkerHintAttributeSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
 
 						var additionalLinkerHintSymbols = FindAdditionalLinkerHints(context);

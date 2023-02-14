@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// (c) Copyright Microsoft Corporation.
 	// This source is subject to the Microsoft Public License (Ms-PL).

@@ -12,11 +12,11 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Xaml.Media;
@@ -29,7 +29,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class TextBoxConstants
 	{

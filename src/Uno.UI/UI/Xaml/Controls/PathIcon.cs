@@ -6,9 +6,9 @@ using Uno.Extensions;
 using Uno;
 using Uno.UI.DataBinding;
 using System.Linq;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -27,7 +27,7 @@ using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PathIcon : IconElement
 	{

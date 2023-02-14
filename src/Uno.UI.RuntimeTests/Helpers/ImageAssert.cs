@@ -18,8 +18,8 @@ using Rectangle = System.Drawing.Rectangle;
 using Size = System.Drawing.Size;
 using Point = System.Drawing.Point;
 using SamplesApp.UITests;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers;
 

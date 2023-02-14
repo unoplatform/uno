@@ -5,9 +5,9 @@ using Uno.Extensions;
 using Uno;
 using Uno.UI.DataBinding;
 using System.Linq;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 using System.ComponentModel;
 
 #if XAMARIN_ANDROID
@@ -28,11 +28,11 @@ using Font = MonoTouch.UIKit.UIFont;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class IconElement : FrameworkElement
 	{

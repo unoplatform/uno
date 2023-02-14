@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using AppKit;
 using Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeMenuBarPresenter : FrameworkElement
 	{

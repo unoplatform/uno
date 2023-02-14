@@ -4,11 +4,11 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
@@ -19,7 +19,7 @@ using View = UIKit.UIView;
 using View = MonoTouch.UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel

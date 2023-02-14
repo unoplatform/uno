@@ -4,7 +4,7 @@
 
 using System;
 using System.Numerics;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Controls
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.Extensions.Logging;
 
 namespace UnoXFQuickStart.Wasm
@@ -10,7 +10,7 @@ namespace UnoXFQuickStart.Wasm
 		{
 			ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
 
-			Windows.UI.Xaml.Application.Start(_ => new UnoXFQuickStart.UWP.App());
+			Microsoft.UI.Xaml.Application.Start(_ => new UnoXFQuickStart.UWP.App());
 
 			return 0;
 		}
@@ -26,20 +26,20 @@ namespace UnoXFQuickStart.Wasm
 						{ "Windows", LogLevel.Warning },
 
 						// Generic Xaml events
-						// { "Windows.UI.Xaml", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
-						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
-						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Setter", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Shapes", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.UIElement", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Setter", LogLevel.Debug },
 
 						// Layouter specific messages
-						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug },
 
 						// Binding related messages
-						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Data", LogLevel.Debug },
 
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },

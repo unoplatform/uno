@@ -3,8 +3,8 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 #if XAMARIN_IOS
 using CoreGraphics;
 using UIKit;
@@ -13,7 +13,7 @@ using CoreGraphics;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup : FrameworkElement, IPopup
 {

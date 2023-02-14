@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Shapes
@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		private void ClearData(object sender, RoutedEventArgs e)
 		{
-			((Windows.UI.Xaml.Shapes.Path)sender).Data = null;
+			((Microsoft.UI.Xaml.Shapes.Path)sender).Data = null;
 		}
 	}
 }

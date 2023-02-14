@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public interface IDependencyObjectStoreProvider
 	{

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -11,10 +11,10 @@ using XSIZEF = Windows.Foundation.Size;
 using Xuint = System.Int32;
 using XFLOAT = System.Double;
 using XRECTF = Windows.Foundation.Rect;
-using PropertyChangedParams = Windows.UI.Xaml.DependencyPropertyChangedEventArgs;
-using CDOCollection = Windows.UI.Xaml.Controls.DefinitionCollectionBase;
+using PropertyChangedParams = Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs;
+using CDOCollection = Microsoft.UI.Xaml.Controls.DefinitionCollectionBase;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Grid
 	{

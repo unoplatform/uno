@@ -18,7 +18,7 @@ using ObjCRuntime;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 #elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;
@@ -250,10 +250,10 @@ namespace Uno.UI
 		/// <returns></returns>
 		public static CGSize GetScreenSize()
 		{
-			return GetScreenSizeInternal(window: Windows.UI.Xaml.Window.Current);
+			return GetScreenSizeInternal(window: Microsoft.UI.Xaml.Window.Current);
 		}
 
-		internal static CGSize GetScreenSizeInternal(Windows.UI.Xaml.Window window)
+		internal static CGSize GetScreenSizeInternal(Microsoft.UI.Xaml.Window window)
 		{
 #if __IOS__
 			var nativeFrame = window?.NativeWindow?.Frame ?? CGRect.Empty;

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.Tests.Animations
 {

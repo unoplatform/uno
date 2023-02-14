@@ -1,12 +1,12 @@
-#if !__WASM__
+﻿#if !__WASM__
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class InlineCollection : IList<Inline>, IEnumerable<Inline>
 	{

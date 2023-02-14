@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Automation.Provider
+namespace Microsoft.UI.Xaml.Automation.Provider
 {
 	partial interface IWindowProvider
 	{
 
-		global::Windows.UI.Xaml.Automation.WindowInteractionState InteractionState
+		global::Microsoft.UI.Xaml.Automation.WindowInteractionState InteractionState
 		{
 			get;
 		}
@@ -37,14 +37,14 @@ namespace Windows.UI.Xaml.Automation.Provider
 		}
 
 
-		global::Windows.UI.Xaml.Automation.WindowVisualState VisualState
+		global::Microsoft.UI.Xaml.Automation.WindowVisualState VisualState
 		{
 			get;
 		}
 		void Close();
 
 
-		void SetVisualState(global::Windows.UI.Xaml.Automation.WindowVisualState state);
+		void SetVisualState(global::Microsoft.UI.Xaml.Automation.WindowVisualState state);
 
 
 		bool WaitForInputIdle(int milliseconds);

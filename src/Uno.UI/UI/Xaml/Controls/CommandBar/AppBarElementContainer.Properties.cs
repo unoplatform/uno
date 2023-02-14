@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using CommandBar = Windows.UI.Xaml.Controls.CommandBar;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using CommandBar = Microsoft.UI.Xaml.Controls.CommandBar;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class AppBarElementContainer
 	{

@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// --------------------------------------------------------------------------------------------
 	//

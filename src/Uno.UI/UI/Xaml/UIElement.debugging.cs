@@ -1,7 +1,7 @@
 ﻿#if DEBUG
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -9,7 +9,7 @@ using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -18,9 +18,9 @@ using System;
 using System.Collections;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
 
@@ -39,11 +39,11 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement
 	{

@@ -1,4 +1,4 @@
-# Custom Fonts
+﻿# Custom Fonts
 
 The `FontFamily` of many controls (e.g. `TextBox` or `Control`) property allows you to customize the font used in your application's UI. Please note that in the following examples, `yourfont.ttf` is a placeholder for the font file name, and `Your Font Name` is a placeholder for its actual name. Use a font management app to make figuring out the correct format easier. The free application, [Character Map](https://www.microsoft.com/store/productId/9WZDNCRDXF41), can be used to extract the full string for your selected font:
 
@@ -36,7 +36,7 @@ public static void main(string[] orgs)
     // Preloads a font which has been specified as a CSS font, either with a data uri or a remote resource.
     Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("Roboto");
 
-    Windows.UI.Xaml.Application.Start(_ => _app = new App());
+    Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
 ```
 
 Uno Platform for WebAssembly also supports remote fonts directly from the XAML, but it is exclusively supported on WebAssembly:

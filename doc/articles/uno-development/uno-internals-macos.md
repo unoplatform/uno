@@ -1,11 +1,11 @@
-# How Uno works on macOS
+﻿# How Uno works on macOS
 
 This article explores macOS-specific details of Uno's internals, with a focus on information that's useful for contributors to Uno. For an overview of how Uno works on all platforms, see [this article](uno-internals-overview.md).
 
 ## UIElement inherits from NSView
 
 `UIElement` in Uno is a native view on macOS, inheriting from the general `NSView` type. To elaborate, `UIElement`'s base classes are the following:
-`AppKit.NSView` → `Uno.UI.Controls.BindableNSView` → `Windows.UI.Xaml.UIElement`
+`AppKit.NSView` → `Uno.UI.Controls.BindableNSView` → `Microsoft.UI.Xaml.UIElement`
 
 Recall that `UIElement` implements `DependencyObect` [as an interface](uno-internals-overview.md) in Uno.
 

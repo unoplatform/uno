@@ -93,15 +93,15 @@ namespace UnoWinUIRevert
 
 			// Generic replacements
 			var genericReplacements = new[] {
-				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
-				("Windows.UI.Composition", "Microsoft.UI.Composition"),
-				("Windows.UI.Colors", "Microsoft.UI.Colors"),
-				("Windows.UI.Text.FontWeights", "Microsoft.UI.Text.FontWeights"),
-				("Windows.UI.ColorHelper", "Microsoft.UI.ColorHelper"),
-				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
-				("__LinkerHints.Is_Windows_UI_Xaml", "__LinkerHints.Is_Microsoft_UI_Xaml"),
+				("Microsoft.UI.Xaml", "Microsoft.UI.Xaml"),
+				("Microsoft.UI.Composition", "Microsoft.UI.Composition"),
+				("Microsoft.UI.Colors", "Microsoft.UI.Colors"),
+				("Microsoft.UI.Text.FontWeights", "Microsoft.UI.Text.FontWeights"),
+				("Microsoft.UI.ColorHelper", "Microsoft.UI.ColorHelper"),
+				("Microsoft.UI.Xaml", "Microsoft.UI.Xaml"),
+				("__LinkerHints.Is_Microsoft_UI_Xaml", "__LinkerHints.Is_Microsoft_UI_Xaml"),
 				("Microsoft.UI.Xaml.Controls\", \"ProgressRing", "Uno.UI.Controls.Legacy\", \"ProgressRing"),
-				("<UNO_UWP_BUILD>true</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>"),
+				("<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>"),
 			};
 
 			ReplaceInFolders(basePath, genericReplacements);
@@ -114,10 +114,10 @@ namespace UnoWinUIRevert
 			ReplaceInFolders(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressRing"), progressRingReplacements);
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressRing", "ProgressRing.xaml"), "\"ProgressRing\"", "\"legacy:ProgressRing\"");
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Xaml", "Style", "Generic", "Generic.Native.xaml"), "ProgressRing", "legacy:ProgressRing");
-			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "Microsoft", "UI", "Xaml", "Controls", "ProgressRing", "ProgressRing.xaml"), "using:Windows.UI.Xaml.Controls", "using:Uno.UI.Controls.Legacy");
+			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "Microsoft", "UI", "Xaml", "Controls", "ProgressRing", "ProgressRing.xaml"), "using:Microsoft.UI.Xaml.Controls", "using:Uno.UI.Controls.Legacy");
 
 			// Restore DualPaneView XAML
-			// ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml"), "using:Windows.UI.Xaml.Controls", "using:Windows.UI.Xaml.Controls");
+			// ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml"), "using:Microsoft.UI.Xaml.Controls", "using:Microsoft.UI.Xaml.Controls");
 
 			// Adjust Colors
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Colors.cs"), "Windows.UI", "Microsoft.UI");
@@ -131,14 +131,14 @@ namespace UnoWinUIRevert
 			// Revert partial changes for WinUI 2.4 imported controls
 			//foreach (var file in Directory.EnumerateFiles(Path.Combine(basePath, @"src\Uno.UI\Microsoft\UI\Xaml\Controls"), "*.*", SearchOption.AllDirectories))
 			//{
-			//	ReplaceInFile(file, "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
+			//	ReplaceInFile(file, "namespace Microsoft.UI.Xaml.Controls", "namespace Microsoft.UI.Xaml.Controls");
 			//}
 
 			// Restore RadialGradientBrush
-			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.Android.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
-			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
-			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.iOSmacOS.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
-			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.wasm.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
+			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.Android.cs"), "namespace Microsoft.UI.Xaml.Controls", "namespace Microsoft.UI.Xaml.Controls");
+			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.cs"), "namespace Microsoft.UI.Xaml.Controls", "namespace Microsoft.UI.Xaml.Controls");
+			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.iOSmacOS.cs"), "namespace Microsoft.UI.Xaml.Controls", "namespace Microsoft.UI.Xaml.Controls");
+			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.wasm.cs"), "namespace Microsoft.UI.Xaml.Controls", "namespace Microsoft.UI.Xaml.Controls");
 		}
 
 		static string[] _exclusions = new string[] {

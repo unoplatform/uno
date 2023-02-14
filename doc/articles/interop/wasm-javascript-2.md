@@ -1,4 +1,4 @@
-# Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+﻿# Embedding Existing JavaScript Components Into Uno-WASM - Part 2
 Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://prismjs.com/). This library is simple and is self-contained - there's no external dependencies.
 # Integration of PrismJS in a project
 ## 0. Before starting
@@ -39,9 +39,9 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    using System;
    using System.Collections.Generic;
    using System.Text;
-   using Windows.UI.Xaml;
-   using Windows.UI.Xaml.Controls;
-   using Windows.UI.Xaml.Markup;
+   using Microsoft.UI.Xaml;
+   using Microsoft.UI.Xaml.Controls;
+   using Microsoft.UI.Xaml.Markup;
    using Uno.Foundation;
    using Uno.UI.Runtime.WebAssembly;
    
@@ -133,7 +133,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 5. Click on the first button and select the light-blue part in the app.
 
    ![Select Item button - F12](assets/image-20200325132528604.png)
-6. It will bring the DOM explorer to a `xamltype=Windows.UI.Xaml.Controls.Border` node. The `PrismJsView` should be right below after opening it.
+6. It will bring the DOM explorer to a `xamltype=Microsoft.UI.Xaml.Controls.Border` node. The `PrismJsView` should be right below after opening it.
 
    ![Html Explorer](assets/image-20200325132859849.png)
    The `xamltype="PrismJsDemo.Shared.PrismJsView"`) control is there!

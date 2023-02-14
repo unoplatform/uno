@@ -4,11 +4,11 @@ using System.Numerics;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement
 	{

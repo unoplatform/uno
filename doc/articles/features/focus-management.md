@@ -1,8 +1,8 @@
- # Focus Management
+﻿ # Focus Management
 
 ## Programmatic focus
 
-Support for programmatic focus is fully implemented on all Uno Platform targets and matches the logic provided by WinUI. To use programmatic focus, utilize the `Windows.UI.Xaml.Input.FocusManager` class and its static methods. For detailed documentation on its methods check the comments provided by IntelliSense in Visual Studio, the source code [here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Input/FocusManager.cs), or the official [WinUI documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Input.FocusManager).
+Support for programmatic focus is fully implemented on all Uno Platform targets and matches the logic provided by WinUI. To use programmatic focus, utilize the `Microsoft.UI.Xaml.Input.FocusManager` class and its static methods. For detailed documentation on its methods check the comments provided by IntelliSense in Visual Studio, the source code [here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Input/FocusManager.cs), or the official [WinUI documentation](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.Input.FocusManager).
 
 ## Keyboard focus
 

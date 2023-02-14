@@ -1,6 +1,6 @@
 ﻿using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Controls.Extensions
 {
@@ -30,8 +30,8 @@ namespace Uno.UI.Xaml.Controls.Extensions
 
 		int GetSelectionLength();
 
-		void SetForeground(Windows.UI.Xaml.Media.Brush brush);
+		void SetForeground(Microsoft.UI.Xaml.Media.Brush brush);
 
-		void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush);
+		void SetSelectionHighlightColor(Microsoft.UI.Xaml.Media.Brush brush);
 	}
 }

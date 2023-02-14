@@ -1,4 +1,4 @@
-// MUX Reference PersonPicture.cpp, commit de78834
+﻿// MUX Reference PersonPicture.cpp, commit de78834
 
 using System;
 using System.Globalization;
@@ -8,13 +8,13 @@ using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PersonPicture : Controls.Control
 	{

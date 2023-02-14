@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class DragUIOverride
 	{

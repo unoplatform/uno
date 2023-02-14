@@ -1,10 +1,10 @@
-using Android.App;
+﻿using Android.App;
 using Android.Views;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using System;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;

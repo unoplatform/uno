@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public abstract partial class SetterBase
 	{

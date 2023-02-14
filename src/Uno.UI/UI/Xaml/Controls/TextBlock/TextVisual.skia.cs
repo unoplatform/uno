@@ -10,12 +10,12 @@ using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 #nullable enable
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	internal class TextVisual : Visual
 	{

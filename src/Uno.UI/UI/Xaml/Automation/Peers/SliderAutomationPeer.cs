@@ -5,9 +5,9 @@
 using System;
 using DirectUI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	/// <summary>
 	/// Exposes Slider types to Microsoft UI Automation.

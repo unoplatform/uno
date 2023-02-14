@@ -4,7 +4,7 @@ using System.Text;
 using Uno.Extensions;
 using CoreGraphics;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -14,7 +14,7 @@ using AppKit;
 using _Image = AppKit.NSImage;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	// iOS partial for SolidColorBrush
 	public partial class Brush

@@ -1,17 +1,17 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Globalization;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using DirectUI;
 using DateTime = System.DateTimeOffset;
-using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.Control, Windows.UI.Xaml.Controls.FocusEngagedEventArgs>;
+using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs>;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	//struct VisibleIndicesUpdatedTraits
 	//{

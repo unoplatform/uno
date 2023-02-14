@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,7 +11,7 @@ using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using View = Windows.UI.Xaml.FrameworkElement;
+using View = Microsoft.UI.Xaml.FrameworkElement;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 {

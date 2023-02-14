@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {

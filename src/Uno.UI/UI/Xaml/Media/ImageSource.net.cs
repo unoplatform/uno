@@ -11,14 +11,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Uno;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 #if !IS_UNO
 using Uno.Web.Query;
 using Uno.Web.Query.Cache;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using SkiaSharp;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Windows.UI.Core;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class Compositor
 	{

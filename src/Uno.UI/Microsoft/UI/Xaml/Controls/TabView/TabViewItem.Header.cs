@@ -3,7 +3,7 @@
 // MUX Reference: TabViewItem.h, commit 27052f7
 
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {

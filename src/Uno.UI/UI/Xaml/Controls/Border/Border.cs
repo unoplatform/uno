@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using Android.Views;
@@ -28,11 +28,11 @@ using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 using _Debug = System.Diagnostics.Debug;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement

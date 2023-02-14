@@ -13,18 +13,18 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 #if XAMARIN_IOS
 using View = UIKit.UIView;
 #elif XAMARIN_ANDROID
 using View = Android.Views.View;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutBase : DependencyObject
 	{
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(FlyoutBase),
 			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));

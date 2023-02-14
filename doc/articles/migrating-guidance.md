@@ -1,4 +1,4 @@
-# General guidance for making UWP-only code Uno compatible
+﻿# General guidance for making UWP-only code Uno compatible
 
 This article explains adjustments that may need to be made to UWP-only code for it to run on Uno Platform, be it in an application or a class library.
 
@@ -25,12 +25,12 @@ This is relevant if you're targeting Android, iOS, and/or macOS, where Uno views
 
 Some common cases:
 
- - on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`. 
- - on Android, inside a control definition, references to the [`TextAlignment` enum](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://docs.microsoft.com/en-us/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Windows.UI.Xaml.TextAlignment`.
+ - on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Microsoft.UI.Xaml.Current`. 
+ - on Android, inside a control definition, references to the [`TextAlignment` enum](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://docs.microsoft.com/en-us/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Microsoft.UI.Xaml.TextAlignment`.
 
 #### What do I do if I have a nested namespace with `Windows` in it?
 
-If, for example, your control is defined in the `CoolControls` namespace, and you've also defined a `CoolControls.Windows` namespace, then the above will give a compilation error. You'll need to use the [`global` keyword](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/namespace-alias-qualifier), eg `global::Windows.UI.Xaml.Window.Current`.
+If, for example, your control is defined in the `CoolControls` namespace, and you've also defined a `CoolControls.Windows` namespace, then the above will give a compilation error. You'll need to use the [`global` keyword](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/namespace-alias-qualifier), eg `global::Microsoft.UI.Xaml.Window.Current`.
 
 ## Adjust for unsupported runtime features
 

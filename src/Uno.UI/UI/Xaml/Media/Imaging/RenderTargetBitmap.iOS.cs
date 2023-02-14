@@ -8,7 +8,7 @@ using Foundation;
 using UIKit;
 using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{

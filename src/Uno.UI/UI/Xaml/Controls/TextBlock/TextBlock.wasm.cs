@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Windows.Foundation;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation;
 using System.Linq;
 
 using Windows.UI.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
 	{

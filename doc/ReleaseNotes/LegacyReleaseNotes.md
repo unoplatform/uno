@@ -161,7 +161,7 @@
    * Includes `Logo`, `DisplayName` and `Arguments`
    * The activation proceeds through the `OnLaunched` method same as on UWP
 * Refactored `DrawableHelper` to the `Uno` project
-* Add full implementation of `Windows.UI.Xaml.Input.InputScopeNameValue` on all platforms.
+* Add full implementation of `Microsoft.UI.Xaml.Input.InputScopeNameValue` on all platforms.
 * Add support for `Windows.Devices.Sensors.Accelerometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `Shaken`
@@ -218,7 +218,7 @@
 * Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
-* Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
+* Add support for `Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
 * Add support for Runtime Tests that require UI integration
 * Enable iOS UI Tests
 * Add support for `PersonPicture`
@@ -258,7 +258,7 @@
 * [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
 * [#1939](https://github.com/unoplatform/uno/pull/1939) Handles nullables types in XAML file generator
 * [#1741](https://github.com/unoplatform/uno/issues/1741) On Android, `ApplicationData.Current.[LocalFolder|RoamingFolder]` can now be used in the ctor of App.xaml.cs
-    > This change introduces a new constructor in `Windows.UI.Xaml.NativeApplication` that requests a delegate. In the Visual Studio Templates for Uno Platform, the `Main.cs` for the Android, the constructor now provides `() => new App()` instead of `new App()`, you can do the same in your existing application. See [this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/UnoSolutionTemplate/Droid/Main.cs) for an example.
+    > This change introduces a new constructor in `Microsoft.UI.Xaml.NativeApplication` that requests a delegate. In the Visual Studio Templates for Uno Platform, the `Main.cs` for the Android, the constructor now provides `() => new App()` instead of `new App()`, you can do the same in your existing application. See [this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/UnoSolutionTemplate/Droid/Main.cs) for an example.
 * [#1767] Invalid `this` keyword generated for `Storyboard.SetTarget`
 * [#1781] WASM Images are no longer draggable and selectable by default to match UWP
 * [#1771](https://github.com/unoplatform/uno/pull/1771) Fix ".Uno" in project names resulted in build errors.
@@ -656,7 +656,7 @@
 * Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
   [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
   [Android] BindableSwitch was renamed `BindableSwitchCompat` in order to avoid confusion with the Switch control.
-* Remove invalid Windows.UI.Xaml.Input.VirtualKeyModifiers
+* Remove invalid Microsoft.UI.Xaml.Input.VirtualKeyModifiers
 * Time picker flyout default styles has been changed to include done and cancel buttons
 * DataTemplateSelector implementations are now called using the 2 parameters overload first with a fallback to the 1 parameter overload on null returned value.
   Old behavior could be restored using `FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload = true`.
@@ -769,7 +769,7 @@
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
  * #26 The explicit property <Style.Setters> does not initialize style setters properly
  * 104057 [Android] ListView shows overscroll effect even when it doesn't need to scroll
- * #376 iOS project compilation fails: Can't resolve the reference 'System.Void Windows.UI.Xaml.Documents.BlockCollection::Add(Windows.UI.Xaml.Documents.Block)
+ * #376 iOS project compilation fails: Can't resolve the reference 'System.Void Microsoft.UI.Xaml.Documents.BlockCollection::Add(Microsoft.UI.Xaml.Documents.Block)
  * 138099, 138463 [Android] fixed `ListView` scrolls up when tapping an item at the bottom of screen
  * 140548 [iOS] fixed `CommandBar` not rendering until reloaded
  * [147530] Add a missing `global::` qualifier in the `BindableMetadataGenerator`

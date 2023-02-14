@@ -2,12 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
 using System.Threading;
 using System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Windows.Foundation;
 using Common;
@@ -27,7 +27,7 @@ using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using NonVirtualizingLayout = Microsoft.UI.Xaml.Controls.NonVirtualizingLayout;
 using NonVirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 #if false
 	[TestClass]

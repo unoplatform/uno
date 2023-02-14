@@ -1,11 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BitmapIconSource.cpp, commit 083796a
 
 using System;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 				bitmapIcon.UriSource = UriSource;
 			}
 
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
 			{
 				bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
 			}

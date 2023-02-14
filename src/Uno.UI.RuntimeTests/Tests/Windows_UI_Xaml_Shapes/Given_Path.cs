@@ -1,5 +1,5 @@
-﻿using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+﻿using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes

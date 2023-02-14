@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.UI;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media
 		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
 
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Windows.UI.Xaml.Media.Transform Transform
+		public Microsoft.UI.Xaml.Media.Transform Transform
 		{
 			get => GetTransformValue();
 			set => SetTransformValue(value);

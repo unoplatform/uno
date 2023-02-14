@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox;
 

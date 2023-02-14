@@ -1,4 +1,4 @@
-using CoreGraphics;
+﻿using CoreGraphics;
 using ObjCRuntime;
 using Uno.UI.DataBinding;
 using Uno.UI.Views.Controls;
@@ -9,7 +9,7 @@ using System.Text;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
@@ -18,7 +18,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using static Uno.UI.FeatureConfiguration;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxView : UITextField, ITextBoxView, DependencyObject, IFontScalable
 	{

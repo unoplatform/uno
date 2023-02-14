@@ -1,8 +1,8 @@
 ﻿using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;

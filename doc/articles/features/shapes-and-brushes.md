@@ -1,4 +1,4 @@
-# Shapes & Brushes
+﻿# Shapes & Brushes
 
 ## Implemented Shapes
 
@@ -59,12 +59,12 @@ Notes:
 | Brush                              | Android | iOS     | macOS | Wasm |                                                              |
 | ---------------------------------- | ------- | ------- | ---- | ------------------------------------------------------------ | ---------------------------------- |
 | `AcrylicBrush`                     | Yes (3) | Yes (3) | Yes (3) | Yes   | [Documentation](https://docs.microsoft.com/fr-ca/uwp/api/windows.ui.xaml.media.acrylicbrush) |
-| `ImageBrush`                       | Yes (1) | Yes (1) |  | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Media.ImageBrush) |
-| `LinearGradientBrush` | Yes (2) | Yes (2) | Yes  | Yes | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Media.LinearGradientBrush) |
+| `ImageBrush`                       | Yes (1) | Yes (1) |  | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.Media.ImageBrush) |
+| `LinearGradientBrush` | Yes (2) | Yes (2) | Yes  | Yes | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.Media.LinearGradientBrush) |
 | `RadialGradientBrush` (WinUI 2.4+) | Yes | Yes  | Yes  | Yes |                                                              |
 | `RevealBrush` (WinUI 2.0+) | No     | No     | No   | No  |                                                              |
-| `SolidColorBrush`                  | Yes     | Yes     | Yes  | Yes  | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Media.SolidColorBrush) |
-| `WebViewBrush`                     | No      | No      | No    | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.WebViewBrush) |
+| `SolidColorBrush`                  | Yes     | Yes     | Yes  | Yes  | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.Media.SolidColorBrush) |
+| `WebViewBrush`                     | No      | No      | No    | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.Controls.WebViewBrush) |
 | `XamlCompositionBrushBase`         | No      | No      | No    | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.media.xamlcompositionbrushbase) |
 
 Notes:

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 
 #if XAMARIN_IOS_UNIFIED
@@ -13,7 +13,7 @@ using MonoTouch.UIKit;
 #elif XAMARIN_ANDROID
 using GenericColor = Android.Graphics.Color;
 #elif NETFX_CORE
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using GenericColor = Windows.UI.Color;
 using Windows.UI;
 #elif __MACOS__
@@ -22,7 +22,7 @@ using GenericColor = Windows.UI.Color;
 using GenericColor = System.Drawing.Color;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public static class SolidColorBrushHelper
 	{

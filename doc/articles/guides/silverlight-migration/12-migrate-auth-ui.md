@@ -1,4 +1,4 @@
-# Migrating the authentication UI
+﻿# Migrating the authentication UI
 
 The Silverlight Business App template includes the user login and registration UI:
 
@@ -70,7 +70,7 @@ The next task will take a look at creating the **LoginForm**. As discussed above
 > [!TIP]
 > To learn more about the **ContentDialog** control, review the following resources:
 > *
-> * [ContentDialog control](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
+> * [ContentDialog control](https://docs.microsoft.com/uwp/api/Microsoft.UI.Xaml.Controls.ContentDialog)
 > * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
 
 ### Create the LoginForm
@@ -126,7 +126,7 @@ The following steps will create the **LoginForm**.
     >
     > * [Data binding](https://docs.microsoft.com/windows/uwp/data-binding/)
     > * [Functions in x:Bind](https://docs.microsoft.com/windows/uwp/data-binding/function-bindings)
-    > * [Value Converters](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Data.IValueConverter)
+    > * [Value Converters](https://docs.microsoft.com/uwp/api/Microsoft.UI.Xaml.Data.IValueConverter)
 
 1. To add the input controls string resources, open the `Strings\en\Resources.resw` file and add the following strings:
 
@@ -163,8 +163,8 @@ Let's walk through the implementation.
     using System;
     using TimeEntryUno.Shared.Helpers;
     using TimeEntryUno.Shared.Services;
-    using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
     ```
 
     > [!Note]
@@ -491,8 +491,8 @@ Let's review the implementation.
     using TimeEntryUno.Shared.Models;
     using TimeEntryUno.Shared.Services;
     using Windows.ApplicationModel.Resources;
-    using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
     ```
 
     > [!Note]

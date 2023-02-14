@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Panel
 {

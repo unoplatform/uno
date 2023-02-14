@@ -3,7 +3,7 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<!--
 			Set to false as a temporary workaround for:
-			themeresources_v1_97762d01215702a8af845279714515f0.cs(1797,14): error CS1029: #error: 'Property for ErrorTemplate cannot be found on Windows.UI.Xaml.Controls.ComboBox' [/__w/1/s/src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj::TargetFramework=net7.0]
+			themeresources_v1_97762d01215702a8af845279714515f0.cs(1797,14): error CS1029: #error: 'Property for ErrorTemplate cannot be found on Microsoft.UI.Xaml.Controls.ComboBox' [/__w/1/s/src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj::TargetFramework=net7.0]
 			Remove this workaround when fixing https://github.com/unoplatform/uno/issues/10596
 		-->
 		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>

@@ -10,9 +10,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using GdkPoint = Gdk.Point;
 using GdkSize = Gdk.Size;
 using GtkWindow = Gtk.Window;
@@ -200,7 +200,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
+			var transformToRoot = _contentElement.TransformToVisual(Microsoft.UI.Xaml.Window.Current.Content);
 			var point = transformToRoot.TransformPoint(new Point(0, 0));
 			var pointX = point.X;
 			var pointY = point.Y;

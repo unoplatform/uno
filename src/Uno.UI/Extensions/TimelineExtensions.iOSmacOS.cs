@@ -5,7 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public static partial class TimelineExtensions
 	{

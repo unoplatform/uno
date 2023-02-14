@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using ObjCRuntime;
 

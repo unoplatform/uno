@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Uno;
 using Uno.UI;
 using Uno.Diagnostics.Eventing;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
 using Uno.Helpers.Theming;
@@ -13,7 +13,7 @@ using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using System.Collections.Generic;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Foundation.Extensibility;
 using Windows.UI.Popups.Internal;
 using Windows.UI.Popups;
@@ -40,11 +40,11 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class Application
 	{
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts());
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml
 		public void Exit() => CoreApplication.Exit();
 #endif
 
-		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
+		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
 			StartPartial(callback);
 		}
@@ -376,7 +376,7 @@ namespace Windows.UI.Xaml
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
 #endif
 
-		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
+		protected virtual void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)
 		{
 		}
 
@@ -415,7 +415,7 @@ namespace Windows.UI.Xaml
 			// Start from the real root, which may not be a FrameworkElement on some platforms
 			View GetTreeRoot()
 			{
-				View current = Windows.UI.Xaml.Window.Current.Content;
+				View current = Microsoft.UI.Xaml.Window.Current.Content;
 				var parent = current?.GetVisualTreeParent();
 				while (parent != null)
 				{

@@ -9,10 +9,10 @@ using DirectUI;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class Selector
 {

@@ -8,10 +8,10 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[TestMethod]
 		public void OpenPopups_Flyouts_Unique()
 		{
-			var button = new Windows.UI.Xaml.Controls.Button();
+			var button = new Microsoft.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			WindowHelper.WindowContent = button;

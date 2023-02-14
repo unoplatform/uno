@@ -5,7 +5,7 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T>, IJSObject where T : struct
 	{
@@ -94,18 +94,18 @@ namespace Windows.UI.Xaml.Media.Animation
 			public long CreateNativeInstance(IntPtr managedHandle)
 			{
 				var id = RenderingLoopAnimatorMetadataIdProvider.Next();
-				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.createInstance(\"{managedHandle}\", \"{id}\")");
+				WebAssemblyRuntime.InvokeJS($"Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.createInstance(\"{managedHandle}\", \"{id}\")");
 
 				return id;
 			}
 
 			/// <inheritdoc />
 			public string GetNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> $"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
+				=> $"Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
 
 			/// <inheritdoc />
 			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance(\"{jsHandle}\")");
+				=> WebAssemblyRuntime.InvokeJS($"Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance(\"{jsHandle}\")");
 
 			/// <inheritdoc />
 			public object InvokeManaged(object instance, string method, string parameters)

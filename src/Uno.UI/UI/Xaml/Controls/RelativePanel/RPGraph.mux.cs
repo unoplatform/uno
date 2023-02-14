@@ -1,8 +1,8 @@
 ﻿using System;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Controls;

@@ -6,7 +6,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer : ICustomClippingElement
 	{

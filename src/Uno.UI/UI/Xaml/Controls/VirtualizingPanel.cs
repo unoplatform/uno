@@ -1,7 +1,7 @@
-#pragma warning disable 108 // new keyword hiding
+﻿#pragma warning disable 108 // new keyword hiding
 using System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class VirtualizingPanel : Panel, IVirtualizingPanel
 	{

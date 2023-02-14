@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference NavigationViewHelper.h, commit 2ec9b1c
 
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {

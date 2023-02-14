@@ -15,10 +15,10 @@ using View = AppKit.NSView;
 #elif XAMARIN_IOS
 using View = MonoTouch.UIKit.UIView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>

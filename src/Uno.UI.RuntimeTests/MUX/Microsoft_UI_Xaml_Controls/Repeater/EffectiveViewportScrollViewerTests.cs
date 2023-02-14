@@ -5,19 +5,19 @@ using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Numerics;
 using Common;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -38,7 +38,7 @@ using ConfigurationChangedEventHandler = Microsoft.UI.Private.Controls.Configura
 using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHandler;
 using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChangedEventHandler;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[Ignore("Test are currently failing after target contract was raised (see issue #4830)")]

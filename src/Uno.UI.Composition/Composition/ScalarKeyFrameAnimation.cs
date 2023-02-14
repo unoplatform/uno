@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public partial class ScalarKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
+	public partial class ScalarKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
 		private List<(float normalizedProgressKey, float value)> _keys = new List<(float normalizedProgressKey, float value)>();
 

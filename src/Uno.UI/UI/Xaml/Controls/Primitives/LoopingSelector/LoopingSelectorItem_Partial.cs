@@ -1,6 +1,6 @@
-using Windows.Foundation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
+﻿using Windows.Foundation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -9,7 +9,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class LoopingSelectorItem
 	{

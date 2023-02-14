@@ -1,4 +1,4 @@
-# Updating an Uno application to WinUI 3.0
+﻿# Updating an Uno application to WinUI 3.0
 
 Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). This article details the changes required when migrating an application from the UWP API set to the WinUI 3 API set.
 
@@ -12,8 +12,8 @@ Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). Th
     - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
     - `Uno.UI.Foldable` becomes `Uno.WinUI.Foldable`
 - **String replacements:**
-    - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`
-    - `Windows.UI.Composition` becomes `Microsoft.UI.Composition`
+    - `Microsoft.UI.Xaml` becomes `Microsoft.UI.Xaml`
+    - `Microsoft.UI.Composition` becomes `Microsoft.UI.Composition`
 - **Update `App.xaml.cs`:**
     - If your solution was created with an older version of the Uno app template, you'll need to update `App.xaml.cs` for compatibility with WinUI 3/Project Reunion.
 

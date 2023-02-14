@@ -17,15 +17,15 @@ using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
 
 #if NETFX_CORE
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using Windows.Storage;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
-using FrameworkElement = Windows.UI.Xaml.IFrameworkElement;
+using FrameworkElement = Microsoft.UI.Xaml.IFrameworkElement;
 #endif
 
 namespace SampleControl.Presentation

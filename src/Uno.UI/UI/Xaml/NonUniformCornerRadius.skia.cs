@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 partial record struct NonUniformCornerRadius
 {

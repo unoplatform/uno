@@ -2,7 +2,7 @@
 using Android.Animation;
 using Android.Views.Animations;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public abstract partial class EasingFunctionBase
 	{

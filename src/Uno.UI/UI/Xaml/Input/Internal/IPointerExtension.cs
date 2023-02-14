@@ -1,5 +1,5 @@
 ﻿using Windows.Devices.Input;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Input;
 

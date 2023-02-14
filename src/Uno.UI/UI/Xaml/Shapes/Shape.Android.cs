@@ -2,11 +2,11 @@
 using Uno.Foundation.Logging;
 using Uno.UI;
 using System.Linq;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Canvas = Android.Graphics.Canvas;
 using System;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Shape
 	{

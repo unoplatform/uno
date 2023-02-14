@@ -1,4 +1,4 @@
-# Migrating the Silverlight Toolkit TreeView control to UWP and the Uno Platform
+﻿# Migrating the Silverlight Toolkit TreeView control to UWP and the Uno Platform
 
 _You can find [the code of the `TreeView`](https://github.com/unoplatform/uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/unoplatform/uno.UI.Toolkit.SL) repository, in which we will add new controls and accept contributions for controls as they are made available._
 
@@ -33,9 +33,9 @@ It will then be possible to create an installable NuGet package using the contex
 The process of importing the source is somewhat straightforward. Microsoft, in all its XAML variants, kept many of the APIs signature-compatible. This means that in a large majority of cases, [simply changing the namespaces](https://github.com/unoplatform/uno.UI.Toolkit.SL/commit/d4da7a8ff33da6c9d45bebafa8c8ca65f6182612#diff-b35234eeeb3bdb81d82b850985bf37b3L9) from `System.Windows` to `Windows.UI` is making the code compatible with UWP.
 
 Here are some examples:
-- `System.Windows.Controls` -> `Windows.UI.Xaml.Controls`
+- `System.Windows.Controls` -> `Microsoft.UI.Xaml.Controls`
 - `System.Windows.Input` -> `Windows.Devices.Input`
-- `System.Windows.Media` -> `Windows.UI.Xaml.Media`
+- `System.Windows.Media` -> `Microsoft.UI.Xaml.Media`
 
 One tip here to simplify the migration is to temporarily remove all non-windows targets in the cross-targeted projects to keep only `uap10.0`. This helps in keeping the compilation errors limited to the UWP apis, and avoids some of the API differences that may happen, including iOS/Android/Wasm targets. Once the Windows target builds, adding back the other targets will allow for special adjustments, if any.
 

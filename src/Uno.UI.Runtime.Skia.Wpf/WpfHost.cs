@@ -38,10 +38,10 @@ using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using UnoApplication = Windows.UI.Xaml.Application;
-using WinUI = Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using UnoApplication = Microsoft.UI.Xaml.Application;
+using WinUI = Microsoft.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
@@ -84,7 +84,7 @@ namespace Uno.UI.Skia.Platform
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
-			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
+			ApiExtensibility.Register<Microsoft.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
@@ -105,7 +105,7 @@ namespace Uno.UI.Skia.Platform
 
 		public bool IsIsland => false;
 
-		public Windows.UI.Xaml.UIElement? RootElement => null;
+		public Microsoft.UI.Xaml.UIElement? RootElement => null;
 
 		public static WpfHost? Current => _current;
 
@@ -171,7 +171,7 @@ namespace Uno.UI.Skia.Platform
 
 					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(iconPath));
 				}
-				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+				else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 				{
 					if (this.Log().IsEnabled(LogLevel.Information))
 					{
@@ -353,7 +353,7 @@ namespace Uno.UI.Skia.Platform
 
 		private void InvalidateOverlays()
 		{
-			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+			_focusManager ??= VisualTree.GetFocusManagerForElement(Microsoft.UI.Xaml.Window.Current?.RootElement);
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
 			if (_focusManager?.FocusedElement is TextBox textBox)
 			{

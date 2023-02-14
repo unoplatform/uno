@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections;
 using Uno.Disposables;
@@ -20,12 +20,12 @@ using Android.Graphics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions.Specialized;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public partial class BindableItemsView : LinearLayout
 	{
 		CompositeDisposable _subscriptions = new CompositeDisposable();

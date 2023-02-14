@@ -4,11 +4,11 @@
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Common;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -29,12 +29,12 @@ using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHo
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.RuntimeTests;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]

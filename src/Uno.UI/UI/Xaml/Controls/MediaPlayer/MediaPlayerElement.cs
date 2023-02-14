@@ -1,12 +1,12 @@
-#if __IOS__ || __ANDROID__ || __MACOS__
+﻿#if __IOS__ || __ANDROID__ || __MACOS__
 using System;
 using Uno.Extensions;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[TemplatePart(Name = PosterImageName, Type = typeof(Image))]
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
@@ -157,13 +157,13 @@ namespace Windows.UI.Xaml.Controls
 					_layoutRoot.RemoveFromSuperview();
 #endif
 
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+					Microsoft.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
 
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					Microsoft.UI.Xaml.Window.Current.DisplayFullscreen(null);
 
 #if __ANDROID__
 					this.AddView(_layoutRoot);

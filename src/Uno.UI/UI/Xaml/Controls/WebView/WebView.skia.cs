@@ -5,7 +5,7 @@ using System.Text;
 using Uno.UI;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Web;
 using System.Globalization;
 using System.Net.Http;
@@ -14,7 +14,7 @@ using System.Threading;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class WebView
 	{

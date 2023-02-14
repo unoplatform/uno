@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
@@ -6,12 +6,12 @@ using Uno.Extensions;
 using AppKit;
 using System.Linq;
 using System.Drawing;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {

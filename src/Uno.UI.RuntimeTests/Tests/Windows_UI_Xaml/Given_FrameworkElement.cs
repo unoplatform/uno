@@ -8,16 +8,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.Extensions;
 #if __IOS__
 using UIKit;
@@ -30,7 +30,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -219,7 +219,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Grid
 			{
 				Margin = new Thickness(0, 100, 0, 0),
-				BorderBrush = new SolidColorBrush(Windows.UI.Colors.DeepPink),
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
 				BorderThickness = new Thickness(5),
 				MinWidth = 100,
 				MinHeight = 100,
@@ -237,14 +237,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							ItemsSource="0123456789",
 							ItemTemplate = new DataTemplate(() => new Border
 							{
-								BorderBrush= new SolidColorBrush(Windows.UI.Colors.Red),
+								BorderBrush= new SolidColorBrush(Microsoft.UI.Colors.Red),
 								Margin= new Thickness(5),
 								BorderThickness=new Thickness(5),
 								Width=300,
 								Child = new TextBlock
 								{
 									TextWrapping= TextWrapping.Wrap,
-									Foreground = new SolidColorBrush(Windows.UI.Colors.Chartreuse)
+									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
 								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 							}),
 							Layout = new Microsoft.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}

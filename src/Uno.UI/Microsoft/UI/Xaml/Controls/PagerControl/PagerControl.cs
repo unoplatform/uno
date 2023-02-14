@@ -10,11 +10,11 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {

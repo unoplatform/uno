@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using Windows.Devices.Input;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf

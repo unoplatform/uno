@@ -1,5 +1,5 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
-namespace Windows.UI.Xaml.Controls
+﻿#if __ANDROID__ || __IOS__ || __MACOS__
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaTransportControlsHelper
 	{

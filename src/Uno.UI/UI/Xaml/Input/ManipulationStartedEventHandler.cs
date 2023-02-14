@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input
+﻿namespace Microsoft.UI.Xaml.Input
 {
-	public delegate void ManipulationStartedEventHandler(object @sender, global::Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs @e);
+	public delegate void ManipulationStartedEventHandler(object @sender, global::Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs @e);
 }

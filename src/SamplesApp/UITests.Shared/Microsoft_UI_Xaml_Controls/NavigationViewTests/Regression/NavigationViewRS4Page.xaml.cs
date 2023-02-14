@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Automation;
 using System;
 using Windows.ApplicationModel.Core;
 
@@ -208,15 +208,15 @@ namespace MUXControlsTestApp
 			{
 				case NavigationViewDisplayMode.Minimal:
 					DisplayModeTextBox.Text = "Minimal";
-					DisplayModeTextBox.Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DodgerBlue);
+					DisplayModeTextBox.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DodgerBlue);
 					break;
 				case NavigationViewDisplayMode.Compact:
 					DisplayModeTextBox.Text = "Compact";
-					DisplayModeTextBox.Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DarkMagenta);
+					DisplayModeTextBox.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkMagenta);
 					break;
 				case NavigationViewDisplayMode.Expanded:
 					DisplayModeTextBox.Text = "Expanded";
-					DisplayModeTextBox.Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DarkRed);
+					DisplayModeTextBox.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkRed);
 					break;
 			}
 		}
@@ -366,7 +366,7 @@ namespace MUXControlsTestApp
 
 		private void CopyGamesLabelButton_Click(object sender, RoutedEventArgs e)
 		{
-			var popups = VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window.Current);
+			var popups = VisualTreeHelper.GetOpenPopups(Microsoft.UI.Xaml.Window.Current);
 			if (popups != null && popups.Count > 0)
 			{
 				var popup = popups[0];

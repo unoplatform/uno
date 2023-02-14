@@ -1,4 +1,4 @@
-# How Uno works
+﻿# How Uno works
 
 This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno. 
 
@@ -8,7 +8,7 @@ Recall that the  Uno Platform is a cross-platform projection of Microsoft's UWP 
 
 Broadly then, Uno has two jobs to do:
 
-* duplicate the types provided by UWP, including views in the `Windows.UI.Xaml` namespace, and non-UI APIs such as `Windows.Foundation`, `Windows.Storage` etc
+* duplicate the types provided by UWP, including views in the `Microsoft.UI.Xaml` namespace, and non-UI APIs such as `Windows.Foundation`, `Windows.Storage` etc
 * perform compile-time tasks related to non-C# aspects of the UWP app contract (parse XAML files, process assets to platform-specific formats, etc)
 
 Like UWP, Uno provides access to the standard .NET libraries, via [Mono](https://www.mono-project.com/).

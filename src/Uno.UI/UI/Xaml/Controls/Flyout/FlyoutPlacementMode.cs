@@ -1,6 +1,6 @@
 ﻿using Uno;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Placement of the Flyout relative to its target control.

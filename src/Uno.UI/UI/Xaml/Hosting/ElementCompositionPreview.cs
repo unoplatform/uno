@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Linq;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
-namespace Windows.UI.Xaml.Hosting;
+namespace Microsoft.UI.Xaml.Hosting;
 
 /// <summary>
 /// Enables access to composition visual objects that back XAML elements in the XAML composition tree.
@@ -17,10 +17,10 @@ public partial class ElementCompositionPreview
 #endif
 
 	/// <summary>
-	/// Retrieves the Windows.UI.Composition.Visual object that backs a XAML element in the XAML composition tree.
+	/// Retrieves the Microsoft.UI.Composition.Visual object that backs a XAML element in the XAML composition tree.
 	/// </summary>
 	/// <param name="element">The element for which to retrieve the Visual.</param>
-	/// <returns>The Windows.UI.Composition.Visual object that backs the XAML element.</returns>
+	/// <returns>The Microsoft.UI.Composition.Visual object that backs the XAML element.</returns>
 	public static Visual GetElementVisual(UIElement element)
 	{
 #if __SKIA__
@@ -31,7 +31,7 @@ public partial class ElementCompositionPreview
 	}
 
 	/// <summary>
-	/// Sets a custom Windows.UI.Composition.Visual as the last child of the element's visual tree.
+	/// Sets a custom Microsoft.UI.Composition.Visual as the last child of the element's visual tree.
 	/// </summary>
 	/// <param name="element">The element to add the child Visual to.</param>
 	/// <param name="visual">The Visual to add to the element's visual tree.</param>

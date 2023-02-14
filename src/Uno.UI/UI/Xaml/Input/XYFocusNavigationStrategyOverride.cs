@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input
+﻿namespace Microsoft.UI.Xaml.Input
 {
 	/// <summary>
 	/// Specifies how the XAML framework determines the target of an XY navigation.

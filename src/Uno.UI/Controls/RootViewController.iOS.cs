@@ -4,7 +4,7 @@ using System.Text;
 using Windows.Graphics.Display;
 using Foundation;
 using UIKit;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Windows.Devices.Sensors;
 using CoreGraphics;
@@ -88,7 +88,7 @@ namespace Uno.UI.Controls
 		public override void TraitCollectionDidChange(UITraitCollection previousTraitCollection)
 		{
 			base.TraitCollectionDidChange(previousTraitCollection);
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			Microsoft.UI.Xaml.Application.Current.OnSystemThemeChanged();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-# Popup
+﻿# Popup
 
 ## Namespace discrepancy
 
@@ -6,9 +6,9 @@
 
 ```csharp
 #if NETFX_CORE
-using _Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using _Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 #else
-using _Popup = Windows.UI.Xaml.Controls.Popup;
+using _Popup = Microsoft.UI.Xaml.Controls.Popup;
 #endif
 
 ...

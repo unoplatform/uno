@@ -2,11 +2,11 @@
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{

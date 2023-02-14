@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml {
+﻿namespace Microsoft.UI.Xaml {
 
     export enum ApplicationTheme {
         Light = "Light",

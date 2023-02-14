@@ -6,10 +6,10 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TimePickerFlyout : PickerFlyoutBase
 	{

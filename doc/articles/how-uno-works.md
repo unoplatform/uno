@@ -1,4 +1,4 @@
-# How Uno Platform works
+﻿# How Uno Platform works
 
 How does Uno Platform make the same application code run on all platforms?
 
@@ -36,7 +36,7 @@ When rendered at runtime, certain `FrameworkElement` types implicitly create inn
 
 #### macOS AppKit
 
-On macOS, all types that inherit from `Windows.UI.Xaml.FrameworkElement`, also inherit from the native [`NSView` type](https://docs.microsoft.com/en-us/dotnet/api/appkit.nsview). That is to say, on macOS, all XAML visual elements are also native views.
+On macOS, all types that inherit from `Microsoft.UI.Xaml.FrameworkElement`, also inherit from the native [`NSView` type](https://docs.microsoft.com/en-us/dotnet/api/appkit.nsview). That is to say, on macOS, all XAML visual elements are also native views.
 
 When rendered at runtime, certain `FrameworkElement` types implicitly create inner views that inherit from higher-level native view types. For example, `Image` implicitly creates an inner `NativeImage` view, where `NativeImage` is an Uno-defined internal type that inherits directly from the native `AppKit.NSImageView` type.
 

@@ -4,8 +4,8 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {

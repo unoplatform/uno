@@ -54,9 +54,9 @@ namespace Uno.ReferenceImplComparer
 
 			foreach (var referenceType in referenceTypes.Where(t => t.IsPublic))
 			{
-				if (referenceType.FullName == "Windows.UI.Xaml.Documents.TextElement")
+				if (referenceType.FullName == "Microsoft.UI.Xaml.Documents.TextElement")
 				{
-					Console.WriteLine("Skipping Windows.UI.Xaml.Documents.TextElement comparison");
+					Console.WriteLine("Skipping Microsoft.UI.Xaml.Documents.TextElement comparison");
 					continue;
 				}
 
@@ -67,7 +67,7 @@ namespace Uno.ReferenceImplComparer
 
 						// Ignored because ArbitraryShapeBase only contains non-public members
 						// and that the hierarchy will be adjusted for wasm to match skia.
-						&& referenceType.BaseType?.FullName != "Windows.UI.Xaml.Shapes.ArbitraryShapeBase")
+						&& referenceType.BaseType?.FullName != "Microsoft.UI.Xaml.Shapes.ArbitraryShapeBase")
 					{
 						Console.Error.WriteLine($"Error: {referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 						hasError = true;

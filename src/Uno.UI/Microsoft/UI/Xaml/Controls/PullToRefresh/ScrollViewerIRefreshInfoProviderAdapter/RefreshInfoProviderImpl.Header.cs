@@ -6,7 +6,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;

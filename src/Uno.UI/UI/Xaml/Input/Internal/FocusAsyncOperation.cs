@@ -3,7 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Input
 {

@@ -8,9 +8,9 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Resources;
 
 namespace Uno.UI
 {

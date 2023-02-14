@@ -7,12 +7,12 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using _Debug = System.Diagnostics.Debug;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
 				ApplyTemplate();
-				Measure(Windows.UI.Xaml.Window.Current.Bounds.Size);
+				Measure(Microsoft.UI.Xaml.Window.Current.Bounds.Size);
 			}
 
 			return DesiredSize;
@@ -262,8 +262,8 @@ namespace Windows.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			screenWidth = Windows.UI.Xaml.Window.Current.Bounds.Width;
-			screenHeight = Windows.UI.Xaml.Window.Current.Bounds.Height;
+			screenWidth = Microsoft.UI.Xaml.Window.Current.Bounds.Width;
+			screenHeight = Microsoft.UI.Xaml.Window.Current.Bounds.Height;
 
 			var spTarget = Target;
 
@@ -433,10 +433,10 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = Windows.UI.Xaml.Window.Current.Bounds;
+			var visibleRect = Microsoft.UI.Xaml.Window.Current.Bounds;
 			var constraint = visibleRect;
 
-			var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
+			var windowRect = Microsoft.UI.Xaml.Window.Current.Bounds;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 

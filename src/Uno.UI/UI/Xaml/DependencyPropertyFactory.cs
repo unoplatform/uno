@@ -1,6 +1,6 @@
 ﻿using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	// This is a class to support code from WinUI
 	internal static class DependencyPropertyFactory

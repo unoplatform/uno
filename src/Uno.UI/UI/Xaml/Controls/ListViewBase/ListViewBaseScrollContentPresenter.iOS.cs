@@ -11,7 +11,7 @@ using Windows.Foundation;
 using ObjCRuntime;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter
 	{

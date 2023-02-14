@@ -5,9 +5,9 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 

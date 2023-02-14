@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup

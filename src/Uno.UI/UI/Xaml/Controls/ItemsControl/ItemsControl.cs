@@ -6,15 +6,15 @@ using Uno.Extensions;
 using Uno.UI;
 using System.Collections.Specialized;
 using Uno.Disposables;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Windows.Foundation.Collections;
 using Uno.Extensions.Specialized;
 
 using Uno.UI.Extensions;
 using System.ComponentModel;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 #if XAMARIN_ANDROID
@@ -33,10 +33,10 @@ using AppKit;
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Items")]
 	public partial class ItemsControl : Control, IItemsControl
@@ -1105,7 +1105,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Unset content of container. This should be called when the container is no longer going to be used.
 		/// </summary>
-		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
+		internal void CleanUpContainer(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			object item;
 			switch (element)

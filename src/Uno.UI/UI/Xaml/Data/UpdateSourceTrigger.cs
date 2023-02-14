@@ -1,6 +1,6 @@
 ﻿using Uno;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// Defines constants that indicate when a binding source is updated by its binding target in two-way binding.

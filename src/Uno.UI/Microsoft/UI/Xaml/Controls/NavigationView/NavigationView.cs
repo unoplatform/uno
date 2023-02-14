@@ -19,18 +19,18 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.System.Profile;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -1331,9 +1331,9 @@ namespace Microsoft.UI.Xaml.Controls
 #if !HAS_UNO_WINUI
 			// This validation is only relevant outside of the Windows build where WUXC and MUXC have distinct types.
 			// Certain items are disallowed in a NavigationView's items list. Check for them.
-			if (args.Element is Windows.UI.Xaml.Controls.NavigationViewItemBase)
+			if (args.Element is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
 			{
-				throw new InvalidOperationException("MenuItems contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
+				throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
 			}
 #endif
 
@@ -5034,7 +5034,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = Windows.UI.Xaml.Window.Current.Content;
+					UIElement root = Microsoft.UI.Xaml.Window.Current.Content;
 					GeneralTransform gt = TransformToVisual(root);
 					Point pos = gt.TransformPoint(Point.Zero);
 
@@ -6046,7 +6046,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
+		private bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow");
 
 		#endregion
 	}

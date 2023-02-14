@@ -9,7 +9,7 @@ using ElmSharp;
 using Windows.Devices.Input;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;

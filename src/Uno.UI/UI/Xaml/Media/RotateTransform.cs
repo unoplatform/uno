@@ -6,7 +6,7 @@ using global::System.Numerics;
 using Uno.Extensions;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	/// <summary>
 	/// RotateTransform :  Based on the WinRT Rotate transform

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Uno.UI.Samples.Controls;
 using Windows.Security.ExchangeActiveSyncProvisioning;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_Security.ExchangeActivesyncProvisioning
 {

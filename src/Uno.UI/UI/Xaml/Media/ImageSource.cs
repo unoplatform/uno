@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI;
 
 #if !IS_UNO
@@ -17,7 +17,7 @@ using Uno.Web.Query;
 using Uno.Web.Query.Cache;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Media_Imaging_SvgImageSource_Available
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Imaging_SvgImageSource_Available
 				&& (uri.LocalPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
 					uri.LocalPath.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
 			)

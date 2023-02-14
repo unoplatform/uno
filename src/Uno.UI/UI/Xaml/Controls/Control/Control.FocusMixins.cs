@@ -3,7 +3,7 @@
 // as the Control class does not declare these in WinUI.
 // We still need to keep this on for UWP compilation however, so
 // don't delete the file completely!
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control
 	{

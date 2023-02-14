@@ -8,7 +8,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.UI;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public static class SkiaExtensions
 	{

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference PipsPager.cpp, commit 6a79363
 
@@ -8,15 +8,15 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 #if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 #endif
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 

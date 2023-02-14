@@ -1,4 +1,4 @@
-<h1 align=center>
+﻿<h1 align=center>
  <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
 </h1>
 
@@ -16,7 +16,7 @@
 # What is the Uno Platform?
 The Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android, and Linux. 
 
-It allows C# and WinUI XAML code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Windows.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+It allows C# and WinUI XAML code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
 
 Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
@@ -66,9 +66,9 @@ For a larger example and features demo:
     * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
     * Any UWP project
 * Responsive Design:
-    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)
+    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
-    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
+    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available

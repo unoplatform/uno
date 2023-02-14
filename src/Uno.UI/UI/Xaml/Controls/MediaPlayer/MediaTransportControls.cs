@@ -1,12 +1,12 @@
-#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
+﻿#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
 using System;
 using System.Timers;
 using Uno.UI.Converters;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 
 #if __IOS__
@@ -17,7 +17,7 @@ using AppKit;
 using Uno.UI;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[TemplatePart(Name = "RootGrid", Type = typeof(Grid))]
 	[TemplatePart(Name = "PlayPauseButton", Type = typeof(Button))]

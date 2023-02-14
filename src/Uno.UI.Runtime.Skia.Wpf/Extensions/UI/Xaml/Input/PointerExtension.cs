@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Xaml.Input;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.Devices.Input;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input
 {

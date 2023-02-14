@@ -3,7 +3,7 @@
 
 using System;
 using System.Windows;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.WPF.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
@@ -193,7 +193,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
+			var transformToRoot = _contentElement.TransformToVisual(Microsoft.UI.Xaml.Window.Current.Content);
 			var point = transformToRoot.TransformPoint(new Point(0, 0));
 
 			updatePositionCore(_currentTextBoxInputWidget);
@@ -327,7 +327,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			return 0;
 		}
 
-		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		public void SetForeground(Microsoft.UI.Xaml.Media.Brush brush)
 		{
 			var wpfBrush = brush.ToWpfBrush();
 			if (_currentTextBoxInputWidget != null)
@@ -343,7 +343,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			}
 		}
 
-		public void SetSelectionHighlightColor(Windows.UI.Xaml.Media.Brush brush)
+		public void SetSelectionHighlightColor(Microsoft.UI.Xaml.Media.Brush brush)
 		{
 			var wpfBrush = brush.ToWpfBrush();
 			if (_currentTextBoxInputWidget != null)

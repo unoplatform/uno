@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class DispatcherTimer
 	{

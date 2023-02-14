@@ -1,6 +1,6 @@
 ﻿using Android.Graphics;
 using Android.Views;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Extensions;
 
 namespace Uno.UI

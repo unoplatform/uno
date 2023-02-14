@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Defines values used to specify how items can be selected.

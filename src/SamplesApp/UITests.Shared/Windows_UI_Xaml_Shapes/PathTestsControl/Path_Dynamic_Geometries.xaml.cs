@@ -1,8 +1,8 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 {

@@ -1,4 +1,4 @@
-# How to use Uno Platform Controls in Xamarin.Forms
+﻿# How to use Uno Platform Controls in Xamarin.Forms
 
 All Uno Platform UI controls inherit directly from native views, which makes for an easy way for its controls to be integrated in Xamarin.iOS and Xamarin.Android projects.
 
@@ -20,7 +20,7 @@ Example for Android:
             Uno.UI.ContextHelper.Current = Xamarin.Essentials.Platform.CurrentActivity;
 #endif
             // create an instance of Application, otherwise Uno.UI controls won't work in Xamarin.Forms
-            new Windows.UI.Xaml.Application();
+            new Microsoft.UI.Xaml.Application();
 
             InitializeComponent();
             MainPage = new MainPage();
@@ -36,8 +36,8 @@ Xamarin.Forms supports adding views directly in XAML documents, using platform s
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UnoFormsApp"
-             xmlns:ios="clr-namespace:Windows.UI.Xaml.Controls;assembly=Uno.UI;targetPlatform=iOS"
-             xmlns:android="clr-namespace:Windows.UI.Xaml.Controls;assembly=Uno.UI;targetPlatform=Android"
+             xmlns:ios="clr-namespace:Microsoft.UI.Xaml.Controls;assembly=Uno.UI;targetPlatform=iOS"
+             xmlns:android="clr-namespace:Microsoft.UI.Xaml.Controls;assembly=Uno.UI;targetPlatform=Android"
              x:Class="UnoFormsApp.MainPage">
 
     <StackLayout Margin="50">
@@ -70,7 +70,7 @@ From the code-behind, it's possible to use a ContentView control to host the Uno
 and the corresponding C# code:
 
 ```csharp
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
@@ -84,8 +84,8 @@ namespace UnoFormsApp
 
             myContent.Content = new ContentControl {
                 Content = new Border {
-                    BorderBrush = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Gray),
-                    BorderThickness = new Windows.UI.Xaml.Thickness(1),
+                    BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Gray),
+                    BorderThickness = new Microsoft.UI.Xaml.Thickness(1),
                     Child = new Pivot {
                         Items=
                         {

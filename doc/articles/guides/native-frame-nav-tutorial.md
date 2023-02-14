@@ -1,4 +1,4 @@
-# How to use native Frame navigation
+﻿# How to use native Frame navigation
 
 ## Example
 The complete sample code can be found here: [NativeFrameNav](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav)
@@ -85,7 +85,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 
     private void ConfigureNavigation()
     {
-        var frame = (Frame)Windows.UI.Xaml.Window.Current.Content;
+        var frame = (Frame)Microsoft.UI.Xaml.Window.Current.Content;
         var manager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
 
 

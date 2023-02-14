@@ -4,7 +4,7 @@ using System.Text;
 using Android.OS;
 using Java.Lang;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class DispatcherTimer
 	{

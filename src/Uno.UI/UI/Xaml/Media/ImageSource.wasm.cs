@@ -12,7 +12,7 @@ using Uno.Web.Query;
 using Uno.Web.Query.Cache;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{

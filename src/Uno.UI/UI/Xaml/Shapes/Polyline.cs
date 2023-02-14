@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Polyline
 #if LEGACY_SHAPE_MEASURE
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Shapes
 			set => SetValue(PointsProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty PointsProperty { get; } = DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty PointsProperty { get; } = DependencyProperty.Register(
 			"Points",
 			typeof(PointCollection),
 			typeof(Polyline),

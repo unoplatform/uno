@@ -5,10 +5,10 @@ using Uno.Extensions;
 using System.Linq;
 using System.Drawing;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{

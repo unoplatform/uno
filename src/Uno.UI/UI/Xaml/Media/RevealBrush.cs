@@ -1,5 +1,5 @@
 ﻿
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class RevealBrush : XamlCompositionBrushBase
 	{
@@ -22,10 +22,10 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty ColorProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Color), typeof(global::Windows.UI.Color),
-			typeof(global::Windows.UI.Xaml.Media.RevealBrush),
+			typeof(global::Microsoft.UI.Xaml.Media.RevealBrush),
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 	}
 }

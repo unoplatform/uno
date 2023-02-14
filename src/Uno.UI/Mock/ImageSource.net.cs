@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.ComponentModel;
 
-namespace Windows.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
 public partial class ImageSource
 {

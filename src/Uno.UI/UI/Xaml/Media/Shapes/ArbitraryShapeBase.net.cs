@@ -4,7 +4,7 @@ using System.Linq;
 using Uno.Disposables;
 using System.Text;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public abstract partial class ArbitraryShapeBase
 	{

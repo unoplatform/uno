@@ -925,7 +925,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// fullKey = $"{uidName}.[using:{ns}]{type}.{memberName}";
 				//
 				// Example:
-				// OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip
+				// OpenVideosButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip
 
 				var firstDotIndex = resource.Key.IndexOf('.');
 				var propertyPath = resource.Key.Substring(firstDotIndex + 1);

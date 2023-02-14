@@ -1,7 +1,7 @@
 ﻿using Uno.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public static class DataTemplateHelper
 	{

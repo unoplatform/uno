@@ -14,7 +14,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
 using Windows.UI.Core;
 using Windows.Storage;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
 using Uno.Extensions;
@@ -28,7 +28,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #endif
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
@@ -71,8 +71,8 @@ namespace SampleControl.Presentation
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
 		private bool _isRecordAllTests = false;
-		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
-	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
+		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
+	new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White);
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
@@ -96,7 +96,7 @@ namespace SampleControl.Presentation
 
 #if HAS_UNO
 			// Disable all pooling so that controls get collected quickly.
-			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
+			Microsoft.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
 #if NETFX_CORE
 			UseFluentStyles = true;
@@ -351,7 +351,7 @@ namespace SampleControl.Presentation
 					_log.Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
 
-				var target = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+				var target = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				foreach (var sample in tests)
 				{
@@ -1140,7 +1140,7 @@ description: {sample.Description}";
 			async
 #endif
 			Task GenerateBitmap(CancellationToken ct
-			, Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
+			, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
 			, StorageFile file
 			, FrameworkElement content
 			, (double MinWidth, double MinHeight, double Width, double Height) constraints)
@@ -1175,7 +1175,7 @@ description: {sample.Description}";
 				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
 
 				await Task.Yield();
-				targetBitmap = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				await targetBitmap.RenderAsync(element).AsTask(ct);
 

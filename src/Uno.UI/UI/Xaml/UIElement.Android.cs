@@ -1,4 +1,4 @@
-using Uno.UI;
+﻿using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
@@ -8,17 +8,17 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using AndroidX.Core.View;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views;
-using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Matrix = Microsoft.UI.Xaml.Media.Matrix;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{

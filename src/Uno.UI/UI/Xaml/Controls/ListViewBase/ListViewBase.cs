@@ -8,18 +8,18 @@ using _View = Android.Views.View;
 #elif XAMARIN_IOS
 using _View = UIKit.UIView;
 #else
-using View = Windows.UI.Xaml.FrameworkElement;
+using View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 using Uno;
 using Uno.Extensions;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Windows.Foundation.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Uno.Extensions.Specialized;
 using System.Collections;
 using System.Linq;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.Client;
@@ -27,10 +27,10 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ListViewBase : Selector
 	{

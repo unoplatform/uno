@@ -46,7 +46,7 @@ namespace Uno.UI.Skia.Platform
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Uno.UI.Skia.Platform
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
 

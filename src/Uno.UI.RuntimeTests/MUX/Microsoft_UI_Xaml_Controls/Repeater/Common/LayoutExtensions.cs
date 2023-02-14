@@ -2,14 +2,14 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 //using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
 using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public static class LayoutExtension
 	{

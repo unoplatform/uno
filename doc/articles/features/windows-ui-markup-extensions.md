@@ -1,4 +1,4 @@
-# Windows.UI.Xaml.Markup.MarkupExtension
+﻿# Microsoft.UI.Xaml.Markup.MarkupExtension
 
 Uno Platform supports the `MarkupExtension` class, which gives the ability to enhance the XAML-first experience.
 
@@ -9,12 +9,12 @@ Given the following code:
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 namespace MyMarkupExtension;
 
 [MarkupExtensionReturnType(ReturnType = typeof(string))]
-public class Simple : Windows.UI.Xaml.Markup.MarkupExtension
+public class Simple : Microsoft.UI.Xaml.Markup.MarkupExtension
 {
     public string TextValue { get; set; }
 
@@ -46,7 +46,7 @@ WinUI 3 provides enhanced support for MarkupExtension with the ability to get th
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 namespace MyMarkupExtension;
 

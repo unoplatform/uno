@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
@@ -14,10 +14,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 	[RunsOnUIThread]
 	public class Given_RenderTargetBitmap
 	{
-		private static readonly Windows.UI.Xaml.Media.SolidColorBrush Background
-			= new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 0, 255));
-		private static readonly Windows.UI.Xaml.Media.SolidColorBrush BorderBrush
-			= new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(125, 125, 0, 0));
+		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush Background
+			= new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 0, 255));
+		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush BorderBrush
+			= new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(125, 125, 0, 0));
 		private static readonly System.Numerics.Vector2 BorderSize
 			= new(10, 10);
 

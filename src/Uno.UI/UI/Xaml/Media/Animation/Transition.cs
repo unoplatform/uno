@@ -11,7 +11,7 @@ using View = UIKit.UIView;
 using View = MonoTouch.UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Transition : Based on WinRT Transition

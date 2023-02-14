@@ -6,9 +6,9 @@
 #nullable enable
 
 using Uno.Disposables;
-using Windows.UI.Composition;
-using Windows.UI.Composition.Interactions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Xaml;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;

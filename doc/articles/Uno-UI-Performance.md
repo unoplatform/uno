@@ -1,4 +1,4 @@
-# Uno.UI - Performance
+﻿# Uno.UI - Performance
 
 This article lists a number of performance tips to optimize your Uno Platform application.
 
@@ -38,7 +38,7 @@ Here's what to look for:
 		- `ProgressRing` and `ProgressBar` controls indeterminate mode generally consume rendering time. Make sure to set those to determinate modes when not visible.
 		- Troubleshooting of animations can be done by enabling the following logger:
 			```csharp
-			builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
+			builder.AddFilter("Microsoft.UI.Xaml.Media.Animation", LogLevel.Debug);
 			```
 			The logger will provide all the changes done to animated properties, with element names.
 
@@ -54,7 +54,7 @@ Here's what to look for:
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
 	- As of Uno 3.9, adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overridden to something else, ensure to set the DataContext before adding the control to its parent.T his will avoid having bindings be refreshed twice needlessly.
-	- Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
+	- Add the `Microsoft.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
 		- When data binding to classes not inheriting from DependencyObject, in Debug configuration only, the following message may appear:
 			```
 			The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider.

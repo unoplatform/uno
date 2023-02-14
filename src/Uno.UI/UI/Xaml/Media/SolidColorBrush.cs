@@ -19,7 +19,7 @@ using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
 		, IShareableDependencyObject //TODO: should be implemented on Brush

@@ -6,11 +6,11 @@ using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
 using System.Linq;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class Timeline : DependencyObject, ITimeline, IThemeChangeAware
 	{

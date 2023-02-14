@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// No more pending work, unhook from rendering event since being hooked up will case wux to try to 
 				// call the event at 60 frames per second
 				m_renderingToken = false;
-				Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
 				RepeaterTestHooks.NotifyBuildTreeCompleted();
 			}
 
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!m_renderingToken)
 			{
-				Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
 				m_renderingToken = true;
 			}
 		}

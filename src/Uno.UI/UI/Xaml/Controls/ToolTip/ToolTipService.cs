@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ToolTipService
 	{

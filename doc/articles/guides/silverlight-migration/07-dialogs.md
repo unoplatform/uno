@@ -1,4 +1,4 @@
-# Dialogs and errors
+﻿# Dialogs and errors
 
 The Silverlight **TimeEntryRia** makes use of **ChildWindow** controls to display dialog controls such as the **LoginForm** and **ErrorWindow**. The equivalent UWP control for these types of dialogs is the **ContentDialog**.
 
@@ -6,7 +6,7 @@ The Silverlight **TimeEntryRia** makes use of **ChildWindow** controls to displa
 > Dialog controls are modal UI overlays that provide contextual app information. They block interactions with the app window until being explicitly dismissed. They often request some kind of action from the user. The Microsoft guidelines on dialog controls in UWP can be reviewed below:
 >
 > * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
-> * [ContentDialog class](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
+> * [ContentDialog class](https://docs.microsoft.com/uwp/api/Microsoft.UI.Xaml.Controls.ContentDialog)
 
 The **ContentDialog** is a flexible control - a dialog box that can be customized to contain checkboxes, hyperlinks, buttons and any other XAML content. It can be created simply from code, or as a new item added to a project with full designer support. However, there is one major limitation:
 
@@ -107,7 +107,7 @@ The following steps will walk through the creation of some extensions that simpl
     using System.Threading;
     using System.Threading.Tasks;
     using Windows.Foundation;
-    using Windows.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Controls;
     ```
 
 1. Update the class definition as follows:
@@ -211,7 +211,7 @@ An unfortunate fact of development is that there is often the need to display wa
     using System.Threading;
     using System.Threading.Tasks;
     using Windows.Foundation;
-    using Windows.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Controls;
     ```
 
 1. Update the class definition as follows:

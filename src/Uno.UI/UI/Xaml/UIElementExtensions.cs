@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public static partial class UIElementExtensions
 	{

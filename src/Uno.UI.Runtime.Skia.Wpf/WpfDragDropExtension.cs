@@ -15,12 +15,12 @@ using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Point = Windows.Foundation.Point;
-using UIElement = Windows.UI.Xaml.UIElement;
+using UIElement = Microsoft.UI.Xaml.UIElement;
 using Window = System.Windows.Window;
 using Uno.Foundation.Logging;
 

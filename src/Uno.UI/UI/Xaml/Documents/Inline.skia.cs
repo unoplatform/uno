@@ -9,11 +9,11 @@ using Uno;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Inline
 	{

@@ -1,4 +1,4 @@
-# WinUI 3 and Uno Platform
+﻿# WinUI 3 and Uno Platform
 
 WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://docs.microsoft.com/windows/apps/windows-app-sdk/).
 
@@ -13,7 +13,7 @@ WinUI 3 differs in minor ways from UWP XAML in terms of API, and in more substan
 
 ### API
 
-The chief difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
+The chief difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
 
 ### Technical
 

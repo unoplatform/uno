@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal delegate (HitTestability elementTestability, GetHitTestability childrenGetHitTestability) GetHitTestability(UIElement element);
 

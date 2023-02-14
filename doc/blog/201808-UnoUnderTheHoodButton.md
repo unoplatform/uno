@@ -1,4 +1,4 @@
-# Pushing the right buttons: How Uno implements views
+﻿# Pushing the right buttons: How Uno implements views
 
 
 In a [previous article](./201808-UnoUnderTheHoodIntro.md), I outlined the three main jobs of the [Uno Platform](https://platform.uno/) in order to run a UWP app on iOS, Android, and in the browser:
@@ -42,8 +42,8 @@ code-behind:
 
 ```` csharp
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UnoExtTestbed
 {

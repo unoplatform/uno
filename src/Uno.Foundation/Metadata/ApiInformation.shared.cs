@@ -31,8 +31,8 @@ public partial class ApiInformation
 				// See C:\Program Files (x86)\Windows Kits\10\References\[version]\Windows.ApplicationModel.Calls.CallsPhoneContract
 				return majorVersion <= 6; // SDK 10.0.22000.0
 
-			case "Windows.UI.Xaml.Hosting.HostingContract":
-				// See C:\Program Files (x86)\Windows Kits\10\References\[version]\Windows.UI.Xaml.Hosting.HostingContract
+			case "Microsoft.UI.Xaml.Hosting.HostingContract":
+				// See C:\Program Files (x86)\Windows Kits\10\References\[version]\Microsoft.UI.Xaml.Hosting.HostingContract
 				return majorVersion <= 5; // SDK 10.0.22000.0			
 
 			case "Uno.WinUI":

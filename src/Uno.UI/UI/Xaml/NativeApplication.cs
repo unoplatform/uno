@@ -14,7 +14,7 @@ using Windows.Foundation.Metadata;
 using System.ComponentModel;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public class NativeApplication : Android.App.Application
 	{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 
 		private bool _isRunning;
 
-		public delegate Windows.UI.Xaml.Application AppBuilder();
+		public delegate Microsoft.UI.Xaml.Application AppBuilder();
 
 		/// <summary>
 		/// Creates an android Application instance
@@ -36,9 +36,9 @@ namespace Windows.UI.Xaml
 			// ApiInformation may return APIs as not implemented incorrectly.
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
-			// Delay create the Windows.UI.Xaml.Application in order to get the
+			// Delay create the Microsoft.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
 			_app = appBuilder();

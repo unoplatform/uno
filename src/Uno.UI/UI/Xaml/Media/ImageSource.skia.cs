@@ -11,9 +11,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Uno;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{

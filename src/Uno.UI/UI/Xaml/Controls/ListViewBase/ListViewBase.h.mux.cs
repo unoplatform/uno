@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	//  Abstract:
 	//      ListViewBase displays a rich, interactive collection of items.

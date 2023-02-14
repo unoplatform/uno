@@ -9,7 +9,7 @@
 
 		<!--
 			Set to false as a temporary workaround for:
-			mergedstyles_071591b3676f22ac4e4712a47cc7d18f.cs(1466,14): error CS1029: #error: 'Property for contract7Present:CornerRadius cannot be found on Windows.UI.Xaml.Controls.Button' [/Users/runner/work/1/s/src/Uno.UI/Uno.UI.netcoremobile.csproj::TargetFramework=net6.0-android]
+			mergedstyles_071591b3676f22ac4e4712a47cc7d18f.cs(1466,14): error CS1029: #error: 'Property for contract7Present:CornerRadius cannot be found on Microsoft.UI.Xaml.Controls.Button' [/Users/runner/work/1/s/src/Uno.UI/Uno.UI.netcoremobile.csproj::TargetFramework=net6.0-android]
 			Remove this workaround when fixing https://github.com/unoplatform/uno/issues/10596
 		-->
 		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>

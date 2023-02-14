@@ -4,7 +4,7 @@
 
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Ellipse
 #if LEGACY_SHAPE_MEASURE

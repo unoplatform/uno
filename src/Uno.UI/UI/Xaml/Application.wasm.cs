@@ -5,7 +5,7 @@ using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
@@ -27,7 +27,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class Application
 	{
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml
 		{
 			if (!_startInvoked)
 			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
 			Current = this;
@@ -54,14 +54,14 @@ namespace Windows.UI.Xaml
 
 		public static int DispatchSystemThemeChange()
 		{
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			Microsoft.UI.Xaml.Application.Current.OnSystemThemeChanged();
 			return 0;
 		}
 
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
-			var application = Windows.UI.Xaml.Application.Current;
-			var window = Windows.UI.Xaml.Window.Current;
+			var application = Microsoft.UI.Xaml.Application.Current;
+			var window = Microsoft.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml
 
 		partial void ObserveSystemThemeChanges()
 		{
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
+			WebAssemblyRuntime.InvokeJS("Microsoft.UI.Xaml.Application.observeSystemTheme()");
 		}
 
 		private void Initialize()
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 
 		private void ObserveApplicationVisibility()
 		{
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
+			WebAssemblyRuntime.InvokeJS("Microsoft.UI.Xaml.Application.observeVisibility()");
 		}
 	}
 }

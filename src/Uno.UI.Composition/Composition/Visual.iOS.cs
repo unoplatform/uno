@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 #if __IOS__
 using CoreAnimation;
@@ -11,9 +11,9 @@ using CoreGraphics;
 using ObjCRuntime;
 #endif
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public partial class Visual : global::Windows.UI.Composition.CompositionObject
+	public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		internal UIView? NativeOwner { get; set; }
 

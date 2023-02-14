@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 
 	public delegate void ExceptionRoutedEventHandler(object sender, ExceptionRoutedEventArgs e);

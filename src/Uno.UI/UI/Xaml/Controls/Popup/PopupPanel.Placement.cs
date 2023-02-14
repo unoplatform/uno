@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -14,7 +14,7 @@ using XamlWindow = Microsoft.UI.Xaml.Window;
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class PopupPanel
 {

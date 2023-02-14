@@ -1,24 +1,24 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer : DependencyObject
 	{
 		private AutomationPeer _parent;
 
 		[Uno.NotImplemented]
-		public static bool ListenerExists(Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId) => false;
+		public static bool ListenerExists(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId) => false;
 
 		#region Public
 
-		public object GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
+		public object GetPattern(Microsoft.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
 
-		public void SetParent(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer) => _parent = peer;
+		public void SetParent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer) => _parent = peer;
 
-		public global::Windows.UI.Xaml.Automation.Peers.AutomationPeer GetParent() => _parent;
+		public global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer GetParent() => _parent;
 
 		public string GetAcceleratorKey() => GetAcceleratorKeyCore();
 
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		public AutomationLiveSetting GetLiveSetting() => GetLiveSettingCore();
 
-		public object Navigate(Windows.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => NavigateCore(direction);
+		public object Navigate(Microsoft.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => NavigateCore(direction);
 
 		public object GetElementFromPoint(Point pointInWindowCoordinates) => GetElementFromPointCore(pointInWindowCoordinates);
 
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		#region Overrides
 
-		protected virtual object GetPatternCore(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => null;
+		protected virtual object GetPatternCore(Microsoft.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => null;
 
 		protected virtual string GetAcceleratorKeyCore() => string.Empty;
 
@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 		}
 
-		protected virtual object NavigateCore(Windows.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => null;
+		protected virtual object NavigateCore(Microsoft.UI.Xaml.Automation.Peers.AutomationNavigationDirection direction) => null;
 
 		protected virtual IReadOnlyList<AutomationPeer> GetControlledPeersCore() => null;
 
@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return false;
 		}
 
-		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
+		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
 
 		#endregion
 
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[Uno.NotImplemented]
 		public static bool ListenerfExists(AutomationEvents eventId)
 		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
 			return false;
 		}
 
@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		// This is here to make the method internal!
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected internal global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer)
+		protected internal global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer)
 		{
 			throw new global::System.NotImplementedException("The member IRawElementProviderSimple AutomationPeer.ProviderFromPeer(AutomationPeer peer) is not implemented in Uno.");
 		}

@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.UI.Runtime.Skia.Wpf;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf.Hosting
 {

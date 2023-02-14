@@ -7,17 +7,17 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
@@ -366,7 +366,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var pointerPoint = args.GetCurrentPoint(this);
 				if (pointerPoint.Properties.IsLeftButtonPressed)
 				{
-					var isCtrlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+					var isCtrlDown = (Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 					if (isCtrlDown)
 					{
 						// Return here so the base class will not pick it up, but let it remain unhandled so someone else could handle it.

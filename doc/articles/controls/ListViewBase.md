@@ -9,7 +9,7 @@ For contributors, [in-depth documentation on the internals of ListView is availa
 This is a stripped-down view of the default style for ListView in Uno:
 
 ```xml
-<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
+<!-- Default style for Microsoft.UI.Xaml.Controls.ListView -->
 <xamarin:Style TargetType="ListView">
   <Setter Property="ItemsPanel">
     <Setter.Value>

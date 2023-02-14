@@ -3,7 +3,7 @@
 
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 

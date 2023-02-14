@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using System.Linq;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.Foundation;
 using Windows.Graphics;
 using System.Numerics;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{

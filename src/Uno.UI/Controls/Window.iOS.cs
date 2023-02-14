@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using CoreGraphics;
@@ -16,10 +16,10 @@ using WebKit;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using ObjCRuntime;
 
@@ -295,7 +295,7 @@ namespace Uno.UI.Controls
 			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
 #else
 			var keyboardRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.BoundsUserInfoKey)).RectangleFValue;
-			var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
+			var windowRect = Microsoft.UI.Xaml.Window.Current.Bounds;
 			_inputPane.OccludedRect = new Rect(0, windowRect.Height - keyboardRect.Height, keyboardRect.Width, keyboardRect.Height);
 #endif
 		}
@@ -382,7 +382,7 @@ namespace Uno.UI.Controls
 			var viewRectInScrollView = CGRect.Empty;
 
 			//if the view is a multilineTextBox, we want to based our ScrollRectToVisible logic on caret position not on the bottom of the multilineTextBox view
-			var multilineTextBoxView = view as Windows.UI.Xaml.Controls.MultilineTextBoxView;
+			var multilineTextBoxView = view as Microsoft.UI.Xaml.Controls.MultilineTextBoxView;
 			if (multilineTextBoxView == null)
 			{
 				multilineTextBoxView = (view as TextBox)?.MultilineTextBox;

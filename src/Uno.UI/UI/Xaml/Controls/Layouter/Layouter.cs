@@ -1,4 +1,4 @@
-// #define LOG_LAYOUT
+﻿// #define LOG_LAYOUT
 
 #if !UNO_REFERENCE_API
 using System;
@@ -8,8 +8,8 @@ using System.Linq;
 using System.Text;
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -40,10 +40,10 @@ using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
 #elif NET461 || __WASM__
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal abstract partial class Layouter : ILayouter
 	{

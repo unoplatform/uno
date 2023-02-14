@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public partial class BitmapSource : ImageSource
 	{

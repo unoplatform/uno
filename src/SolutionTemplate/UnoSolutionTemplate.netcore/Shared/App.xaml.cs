@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace $ext_safeprojectname$
 {
@@ -51,7 +51,7 @@ namespace $ext_safeprojectname$
 			MainWindow = new Window();
 			MainWindow.Activate();
 #else
-			MainWindow = Windows.UI.Xaml.Window.Current;
+			MainWindow = Microsoft.UI.Xaml.Window.Current;
 #endif
 
 			var rootFrame = MainWindow.Content as Frame;
@@ -148,22 +148,22 @@ namespace $ext_safeprojectname$
 				builder.AddFilter("Microsoft", LogLevel.Warning);
 
 				// Generic Xaml events
-				// builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+				// builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
 
 				// Layouter specific messages
-				// builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
 
 				// builder.AddFilter("Windows.Storage", LogLevel.Debug );
 
 				// Binding related messages
-				// builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
-				// builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+				// builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
 
 				// Binder memory references tracking
 				// builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );

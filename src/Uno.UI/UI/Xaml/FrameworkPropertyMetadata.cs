@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml.Data;
+﻿using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements

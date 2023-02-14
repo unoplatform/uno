@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 {

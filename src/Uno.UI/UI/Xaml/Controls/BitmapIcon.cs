@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class BitmapIcon : IconElement
 	{
@@ -49,10 +49,10 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(ShowAsMonochromeProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty ShowAsMonochromeProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty ShowAsMonochromeProperty { get; } =
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				"ShowAsMonochrome", typeof(bool),
-				typeof(global::Windows.UI.Xaml.Controls.BitmapIcon),
+				typeof(global::Microsoft.UI.Xaml.Controls.BitmapIcon),
 				new FrameworkPropertyMetadata(true, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
 		private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 using System.Collections;
 using Uno.UI;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{

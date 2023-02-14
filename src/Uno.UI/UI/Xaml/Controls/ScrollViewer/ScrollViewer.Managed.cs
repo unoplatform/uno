@@ -1,20 +1,20 @@
 ﻿#nullable enable
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
 using Windows.UI;
 using Uno;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer
 	{
@@ -24,12 +24,12 @@ namespace Windows.UI.Xaml.Controls
 		public Color BackgroundColor
 		{
 			get => throw new NotImplementedException();
-			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "Color ScrollContentPresenter.BackgroundColor");
+			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "Color ScrollContentPresenter.BackgroundColor");
 		}
 
 		[NotImplemented]
 		private void UpdateZoomedContentAlignment()
-			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "float ZoomFactor");
+			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "float ZoomFactor");
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
 			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;

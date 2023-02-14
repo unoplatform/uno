@@ -5,7 +5,7 @@ using System.Linq;
 using Uno.UI.DataBinding;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 #if XAMARIN_ANDROID
 using Android.Widget;
@@ -18,10 +18,10 @@ using View = UIKit.UIView;
 using AppKit;
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{

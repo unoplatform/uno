@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,13 +8,13 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Prism.Modularity;
 using Prism;
 using Prism.Ioc;
@@ -87,34 +87,34 @@ namespace BlankApp
 						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 
 						// Generic Xaml events
-						// { "Windows.UI.Xaml", LogLevel.Debug },
-						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
-						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.UIElement", LogLevel.Debug },
 
 						// Layouter specific messages
-						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug },
 						// { "Windows.Storage", LogLevel.Debug },
 
 						// Binding related messages
-						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Data", LogLevel.Debug },
 
 						// DependencyObject memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
 
 						// ListView-related messages
-						// { "Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.ListView", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.GridView", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
-						// { "Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
-						// { "Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
-						// { "Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
-						// { "Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
-						// { "Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
+						// { "Microsoft.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.ListView", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.GridView", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
+						// { "Microsoft.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
+						// { "Microsoft.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
+						// { "Microsoft.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
+						// { "Microsoft.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
+						// { "Microsoft.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
 					}
 				)
 #if DEBUG

@@ -11,11 +11,11 @@ using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static Windows.UI.Xaml.UIElement;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft.UI.Xaml.UIElement;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -76,13 +76,13 @@ internal partial class InputManager
 
 			if (_inputManager._contentRoot.Type == ContentRootType.CoreWindow)
 			{
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerMoved += (c, e) => OnPointerMoved(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerEntered += (c, e) => OnPointerEntered(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerExited += (c, e) => OnPointerExited(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerPressed += (c, e) => OnPointerPressed(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerReleased += (c, e) => OnPointerReleased(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerCancelled += (c, e) => OnPointerCancelled(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerMoved += (c, e) => OnPointerMoved(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerEntered += (c, e) => OnPointerEntered(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerExited += (c, e) => OnPointerExited(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerPressed += (c, e) => OnPointerPressed(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerReleased += (c, e) => OnPointerReleased(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
+				Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCancelled += (c, e) => OnPointerCancelled(e);
 			}
 		}
 
@@ -93,7 +93,7 @@ internal partial class InputManager
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+			originalSource ??= Microsoft.UI.Xaml.Window.Current.Content;
 
 			if (originalSource is null)
 			{
@@ -137,7 +137,7 @@ internal partial class InputManager
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+			originalSource ??= Microsoft.UI.Xaml.Window.Current.Content;
 
 			if (originalSource is null)
 			{
@@ -162,7 +162,7 @@ internal partial class InputManager
 		internal void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			var originalSource = Windows.UI.Xaml.Window.Current.Content;
+			var originalSource = Microsoft.UI.Xaml.Window.Current.Content;
 			if (originalSource == null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -208,7 +208,7 @@ internal partial class InputManager
 			// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+			originalSource ??= Microsoft.UI.Xaml.Window.Current.Content;
 
 			if (originalSource is null)
 			{
@@ -240,7 +240,7 @@ internal partial class InputManager
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+			originalSource ??= Microsoft.UI.Xaml.Window.Current.Content;
 
 			if (originalSource is null)
 			{
@@ -275,7 +275,7 @@ internal partial class InputManager
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+			originalSource ??= Microsoft.UI.Xaml.Window.Current.Content;
 
 			if (originalSource is null)
 			{
@@ -316,7 +316,7 @@ internal partial class InputManager
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= Windows.UI.Xaml.Window.Current.Content;
+			originalSource ??= Microsoft.UI.Xaml.Window.Current.Content;
 
 			if (originalSource is null)
 			{

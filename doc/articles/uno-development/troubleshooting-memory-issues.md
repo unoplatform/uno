@@ -1,4 +1,4 @@
-# Troubleshooting Memory Issues 
+﻿# Troubleshooting Memory Issues 
 
 Uno Platform provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
 an Uno.UI issue or from an invalid pattern in user code.
@@ -30,7 +30,7 @@ private void EnableViewsMemoryStatistics()
 	// in the logger settings, so that the statistics are showing up.
 	//
 
-	var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+	var unused = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 		CoreDispatcherPriority.Normal,
 		async () =>
 		{

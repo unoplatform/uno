@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
@@ -22,8 +22,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var child = new Border()
 			{
 				Background = new SolidColorBrush(Colors.Red),
-				HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch,
-				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch,
+				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch,
 			};
 			var grandChild = new Border()
 			{

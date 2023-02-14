@@ -1,11 +1,11 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
@@ -13,13 +13,13 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 

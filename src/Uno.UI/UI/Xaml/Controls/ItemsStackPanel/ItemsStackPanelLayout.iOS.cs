@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,7 +26,7 @@ using CGPoint = System.Drawing.PointF;
 using CGSize = System.Drawing.SizeF;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A native layout which implements <see cref="ItemsStackPanel"/> behaviour.

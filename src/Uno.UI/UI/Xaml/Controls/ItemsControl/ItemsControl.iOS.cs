@@ -16,7 +16,7 @@ using MonoTouch.CoreGraphics;
 using nfloat = System.Single;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsControl : Control
 	{

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
 using Uno.Foundation.Logging;
-using View = Windows.UI.Xaml.UIElement;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls.Primitives;
+using View = Microsoft.UI.Xaml.UIElement;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Layouter : ILayouter
 	{

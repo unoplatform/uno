@@ -6,7 +6,7 @@ using System.Text;
 using Uno;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public static class TransformExtensions
 	{

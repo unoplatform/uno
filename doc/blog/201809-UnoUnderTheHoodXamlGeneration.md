@@ -1,4 +1,4 @@
-# Talkin' 'bout my generation: How the Uno Platform generates code, part 1
+﻿# Talkin' 'bout my generation: How the Uno Platform generates code, part 1
 
 In [previous](https://medium.com/@unoplatform/under-the-hood-an-introduction-to-uno-platform-6064a765d6a) [articles](https://hackernoon.com/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688) we've covered how the [Uno Platform](https://platform.uno/) takes a visual tree defined in the [XAML](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview) markup language and creates it on iOS, Android, and WebAssembly. In this article I want to dive into a key intermediate step: how the XAML is parsed and mapped to generated C# code. In an upcoming part 2, we'll look at a few other ways in which Uno leverages code generation to make the wheels turn. 
 
@@ -36,19 +36,19 @@ The generated output can be found in the 'obj' folder under the project head.
 This is a part of the generated code, showing the output for the XAML snippet above: 
 
 ```` csharp
-    public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page 
+    public sealed partial class MainPage : Microsoft.UI.Xaml.Controls.Page 
     { 
         private void InitializeComponent() 
         { 
-            var nameScope = new global::Windows.UI.Xaml.NameScope(); 
+            var nameScope = new global::Microsoft.UI.Xaml.NameScope(); 
             NameScope.SetNameScope(this, nameScope); 
             // Source ..\..\..\..\..\..\UnoExtTestbed.Shared\MainPage.xaml (Line 1:2) 
-            Content =             new global::Windows.UI.Xaml.Controls.StackPanel 
+            Content =             new global::Microsoft.UI.Xaml.Controls.StackPanel 
             { 
                 // Source ..\..\..\..\..\..\UnoExtTestbed.Shared\MainPage.xaml (Line 8:3) 
                 Children =  
                 { 
-                    new global::Windows.UI.Xaml.Controls.TextBlock 
+                    new global::Microsoft.UI.Xaml.Controls.TextBlock 
                     { 
                         Name = "ClickTextBlock", 
                         Text = "Button wasn't clicked yet", 
@@ -61,7 +61,7 @@ This is a part of the generated code, showing the output for the XAML snippet ab
                     } 
                     )) 
                     , 
-                    new global::Windows.UI.Xaml.Controls.Button 
+                    new global::Microsoft.UI.Xaml.Controls.Button 
                     { 
                         Content = @"Click me", 
                         // Source ..\..\..\..\..\..\UnoExtTestbed.Shared\MainPage.xaml (Line 11:4) 
@@ -82,4 +82,4 @@ In the normal course of Uno development you don't need to look at code generated
 
 You can see that something called `Button_Click` is subscribed to the Button's Click event. Recall that `Button_Click` is defined in [the code-behind](https://medium.com/@unoplatform/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688#the-number-goes-up) in `MainPage.xaml.cs`. As far as the compiler is concerned, both the authored and generated files are just [partial definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) of the same class. 
 
-One last fun fact: when building on macOS using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) (which Uno tentatively supports in preview), Uno uses an internal port in place of the System.Xaml namespace which isn't available on Mac. The same code backs Uno's support for runtime Xaml interpretation via [Windows.UI.Xaml.Markup.XamlReader](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.markup.xamlreader). That in turn is used in the [interactive mode](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Playground.xaml) of the [Uno Gallery app](https://github.com/unoplatform/uno.Playground) and [Uno.Playground website](https://playground.platform.uno/), which allows you to edit snippets of XAML and see the results in realtime. Check it out!
+One last fun fact: when building on macOS using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) (which Uno tentatively supports in preview), Uno uses an internal port in place of the System.Xaml namespace which isn't available on Mac. The same code backs Uno's support for runtime Xaml interpretation via [Microsoft.UI.Xaml.Markup.XamlReader](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.markup.xamlreader). That in turn is used in the [interactive mode](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Playground.xaml) of the [Uno Gallery app](https://github.com/unoplatform/uno.Playground) and [Uno.Playground website](https://playground.platform.uno/), which allows you to edit snippets of XAML and see the results in realtime. Check it out!

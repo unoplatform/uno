@@ -16,10 +16,10 @@ using ObjCRuntime;
 using _View = AppKit.NSView;
 using ObjCRuntime;
 #elif UNO_REFERENCE_API || NET461
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Canvas : ICustomClippingElement
 	{

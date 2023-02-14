@@ -20,7 +20,7 @@ using Color = Windows.UI.Color;
 using Windows.UI;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class GradientStop : DependencyObject
 	{

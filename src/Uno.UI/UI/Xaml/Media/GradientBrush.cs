@@ -1,7 +1,7 @@
-﻿using Windows.UI.Xaml.Markup;
+﻿using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = "GradientStops")]
 	public abstract partial class GradientBrush : Brush

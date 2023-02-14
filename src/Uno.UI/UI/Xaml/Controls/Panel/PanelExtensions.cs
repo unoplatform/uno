@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if XAMARIN_IOS_UNIFIED
 using GenericColor = UIKit.UIColor;
@@ -16,7 +16,7 @@ using GenericColor = Windows.UI.Color;
 using GenericColor = System.Drawing.Color;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public static class PanelExtensions
 	{

@@ -1,4 +1,4 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -16,10 +16,10 @@ using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal interface ILayouter
 	{

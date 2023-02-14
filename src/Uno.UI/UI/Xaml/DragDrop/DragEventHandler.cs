@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-	public delegate void DragEventHandler(object sender, global::Windows.UI.Xaml.DragEventArgs e);
+	public delegate void DragEventHandler(object sender, global::Microsoft.UI.Xaml.DragEventArgs e);
 }

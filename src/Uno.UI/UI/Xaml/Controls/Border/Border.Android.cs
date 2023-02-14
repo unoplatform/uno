@@ -6,7 +6,7 @@ using Uno.Extensions;
 using Android.Graphics.Drawables.Shapes;
 using System.Linq;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
 #if XAMARIN_ANDROID
@@ -22,7 +22,7 @@ using Font = MonoTouch.UIKit.UIFont;
 using Color = System.Drawing.Color;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{

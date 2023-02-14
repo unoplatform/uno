@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Uno.UI.Dispatching;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal interface IFrameworkTemplatePoolPlatformProvider
 {

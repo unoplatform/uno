@@ -3,15 +3,15 @@
 using Uno.Foundation;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
 {
-	private const string JsType = "Windows.UI.Xaml.Input.FocusVisual";
+	private const string JsType = "Microsoft.UI.Xaml.Input.FocusVisual";
 
 	partial void AttachVisualPartial()
 	{

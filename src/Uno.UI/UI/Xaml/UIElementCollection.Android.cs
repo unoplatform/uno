@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{

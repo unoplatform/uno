@@ -10,11 +10,11 @@ using NUnit.Framework;
 using Uno.UITest;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UITest.Helpers.Queries;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using SamplesApp.UITests;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
 using MUXControlsTestApp;
 using Windows.Foundation.Metadata;
 
@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__ //Color are not interpreted the same way in Mac
 			Assert.Inconclusive();
 #endif
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
@@ -82,7 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__
 			Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
 #endif
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -125,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 			Assert.Inconclusive(); //Color are not interpreted the same way in Mac
 #endif
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}

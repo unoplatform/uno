@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 #if __MACOS__
 using System;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public partial class VisualCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Visual>
+	public partial class VisualCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Visual>
 	{
 		partial void InsertAbovePartial(Visual newChild, Visual sibling)
 		{

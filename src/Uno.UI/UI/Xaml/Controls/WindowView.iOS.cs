@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 
 #if NET6_0_OR_GREATER
@@ -20,7 +20,7 @@ using nint = System.Int32;
 using CGSize = System.Drawing.SizeF;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[Data.Bindable]
 	public partial class WindowView : UIView

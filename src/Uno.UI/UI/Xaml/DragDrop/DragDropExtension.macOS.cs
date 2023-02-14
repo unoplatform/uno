@@ -1,4 +1,4 @@
-#if __MACOS__
+﻿#if __MACOS__
 #nullable enable
 
 using System;
@@ -10,10 +10,10 @@ using Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
-using UIElement = Windows.UI.Xaml.UIElement;
+using UIElement = Microsoft.UI.Xaml.UIElement;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;

@@ -3,13 +3,13 @@
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -18,16 +18,16 @@ using System;
 using System.Collections;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Composition;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 
@@ -35,7 +35,7 @@ using Uno.UI.Extensions;
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
@@ -666,7 +666,7 @@ namespace Windows.UI.Xaml
 			// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
 			//
 			// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
-			var bounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var bounds = Microsoft.UI.Xaml.Window.Current.Bounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);

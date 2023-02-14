@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using RefreshVisualizer = Microsoft.UI.Xaml.Controls.RefreshVisualizer;
 using RefreshVisualizerState = Microsoft.UI.Xaml.Controls.RefreshVisualizerState;
 using RefreshRequestedEventArgs = Microsoft.UI.Xaml.Controls.RefreshRequestedEventArgs;

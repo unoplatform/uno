@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -14,7 +14,7 @@ using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
 
@@ -194,9 +194,9 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
+			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+				Microsoft.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 			});
 		}
 
@@ -206,13 +206,13 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseResuming();
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
+			Microsoft.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(
+			Microsoft.UI.Xaml.Window.Current?.OnActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -222,15 +222,15 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+			Microsoft.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
+			Microsoft.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
 		partial void InnerDestroy() => ResignCurrent();

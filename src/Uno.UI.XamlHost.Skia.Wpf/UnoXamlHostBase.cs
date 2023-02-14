@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHost.cs
@@ -7,10 +7,10 @@ using System;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Windows.UI.Xaml;
-using WinUI = Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {

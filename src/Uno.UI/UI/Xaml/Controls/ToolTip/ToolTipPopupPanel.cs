@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class ToolTipPopupPanel : PopupPanel
 	{

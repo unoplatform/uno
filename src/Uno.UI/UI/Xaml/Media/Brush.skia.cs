@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Numerics;
 using Uno.Disposables;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{

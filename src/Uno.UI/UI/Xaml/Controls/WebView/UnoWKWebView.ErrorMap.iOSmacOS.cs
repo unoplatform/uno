@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using ObjCRuntime;
 using Uno.UI.Web;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class UnoWKWebView
 	{

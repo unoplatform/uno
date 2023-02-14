@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -23,10 +23,10 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static Windows.UI.Xaml.Window _currentTestWindow;
+			private static Microsoft.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
-			public static Windows.UI.Xaml.Window CurrentTestWindow
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow
 			{
 				get
 				{

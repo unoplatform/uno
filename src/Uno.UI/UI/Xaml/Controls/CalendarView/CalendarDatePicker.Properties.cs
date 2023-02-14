@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 
 using DateTime = System.DateTimeOffset;
 using Calendar = Windows.Globalization.Calendar;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarDatePicker
 	{

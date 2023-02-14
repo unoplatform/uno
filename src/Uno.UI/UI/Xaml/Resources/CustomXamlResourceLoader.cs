@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Resources
+namespace Microsoft.UI.Xaml.Resources
 {
 	public partial class CustomXamlResourceLoader
 	{

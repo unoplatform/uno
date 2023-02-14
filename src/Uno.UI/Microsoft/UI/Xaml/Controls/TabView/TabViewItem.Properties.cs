@@ -3,7 +3,7 @@
 // MUX Reference: TabViewItem.Properties.cpp, commit de78834
 
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {

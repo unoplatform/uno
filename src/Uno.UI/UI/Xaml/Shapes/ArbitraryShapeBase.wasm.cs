@@ -2,13 +2,13 @@
 using System.Diagnostics;
 using System.Globalization;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using System.Numerics;
 using Uno.UI;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class ArbitraryShapeBase
 	{

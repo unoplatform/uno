@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using View = Windows.UI.Xaml.FrameworkElement;
+using View = Microsoft.UI.Xaml.FrameworkElement;
 using Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls;
 
 namespace Uno.UI.Tests.GridTests

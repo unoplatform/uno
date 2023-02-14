@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Android.Text;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal static class InputScopeHelper
 	{

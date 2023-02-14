@@ -7,7 +7,7 @@ using Uno.Disposables;
 using Windows.Foundation.Collections;
 using Windows.UI; // Required for WinUI 3+ Color
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{

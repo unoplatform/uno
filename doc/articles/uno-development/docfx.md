@@ -1,4 +1,4 @@
-# The Uno docs website and DocFX
+﻿# The Uno docs website and DocFX
 
 Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [html files](https://platform.uno/docs/articles/intro.html).
 
@@ -61,7 +61,7 @@ Markdown:
 
 # [UWP](#tab/tabid-2)
 
-`Windows.UI.Xaml.FrameworkElement`
+`Microsoft.UI.Xaml.FrameworkElement`
 
 ***
 ```
@@ -74,7 +74,7 @@ Html output:
 
 # [UWP](#tab/tabid-2)
 
-`Windows.UI.Xaml.FrameworkElement`
+`Microsoft.UI.Xaml.FrameworkElement`
 
 ***
 

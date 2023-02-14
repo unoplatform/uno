@@ -23,10 +23,10 @@ using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using UnoApplication = Windows.UI.Xaml.Application;
-using WUX = Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using UnoApplication = Microsoft.UI.Xaml.Application;
+using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using System.ComponentModel;
 using Uno.Disposables;
@@ -85,7 +85,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
-			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+			Microsoft.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
 
 			if (!InitializeGtk())
 			{
@@ -96,7 +96,7 @@ namespace Uno.UI.Runtime.Skia
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
-			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => new GtkApplicationExtension(o));
+			ApiExtensibility.Register<Microsoft.UI.Xaml.Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => new GtkApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
@@ -476,7 +476,7 @@ namespace Uno.UI.Runtime.Skia
 
 					GtkHost.Window.SetIconFromFile(iconPath);
 				}
-				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+				else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 				{
 					if (this.Log().IsEnabled(LogLevel.Information))
 					{

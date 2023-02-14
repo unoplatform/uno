@@ -1,4 +1,4 @@
-# Incorporating native views to the Uno visual tree
+﻿# Incorporating native views to the Uno visual tree
 
 The Android, iOS, and macOS targets for Uno support the notion of a purely native view, that is not coming from Uno Platform but instead defined in a third-party library, via a Xamarin binding, or in the native framework itself. Since Uno's views are inheriting from the base native view type on these platforms, you can incorporate native views into your app's visual tree.
 
@@ -29,7 +29,7 @@ An example:
 Adding native views in C# code requires you to first 'wrap' the native view in a special `UIElement`, because 'container' elements like `Panel` and `Border` expect a child of type `UIElement` (as of Uno 3.0 and above). The recommended way to do this is with the `VisualTreeHelper.AdaptNative()` static method:
 
 ```csharp
-using Windows.UI.Xaml.Media
+using Microsoft.UI.Xaml.Media
 
 ...
 

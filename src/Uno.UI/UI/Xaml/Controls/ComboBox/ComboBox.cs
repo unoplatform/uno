@@ -1,14 +1,14 @@
 ﻿#nullable enable
 
 using System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Windows.System;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
@@ -23,7 +23,7 @@ using _View = UIKit.UIView;
 using AppKit;
 using _View = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.FrameworkElement;
+using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if HAS_UNO_WINUI
@@ -32,7 +32,7 @@ using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ComboBox : Selector
 	{
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ComboBox);
 		}
 
-		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
+		public global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
 
 		protected override DependencyObject GetContainerForItemOverride() => new ComboBoxItem { IsGeneratedContainer = true };
 

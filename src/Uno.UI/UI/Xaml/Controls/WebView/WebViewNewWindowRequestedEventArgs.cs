@@ -1,5 +1,5 @@
-using System;
-namespace Windows.UI.Xaml.Controls
+﻿using System;
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class WebViewNewWindowRequestedEventArgs
 	{

@@ -6,7 +6,7 @@ using System.Text;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial class ColumnDefinition : DefinitionBase, DependencyObject

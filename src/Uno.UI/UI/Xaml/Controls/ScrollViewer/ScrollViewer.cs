@@ -12,12 +12,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -35,13 +35,13 @@ using Font = UIKit.UIFont;
 using View = AppKit.NSView;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using _ScrollContentPresenter = Windows.UI.Xaml.Controls.ScrollContentPresenter;
+using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 #else
-using _ScrollContentPresenter = Windows.UI.Xaml.Controls.IScrollContentPresenter;
+using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
 #if HAS_UNO_WINUI
@@ -51,7 +51,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
@@ -264,13 +264,13 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static bool GetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element)
+		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static void SetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
+		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
 #if __IOS__

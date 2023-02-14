@@ -5,8 +5,8 @@
 using System;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Composition.Interactions;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Private.Controls;

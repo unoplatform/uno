@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{
@@ -36,7 +36,7 @@ namespace Windows.UI.Composition
 		}
 
 		[global::Uno.NotImplemented]
-		public virtual void InsertKeyFrame(float normalizedProgressKey, float value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
+		public virtual void InsertKeyFrame(float normalizedProgressKey, float value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
 		{
 
 		}
