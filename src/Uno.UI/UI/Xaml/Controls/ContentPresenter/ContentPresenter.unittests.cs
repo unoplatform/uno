@@ -17,11 +17,6 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		private void SetUpdateTemplate()
-		{
-			UpdateContentTemplateRoot();
-		}
-
 		partial void RegisterContentTemplateRoot()
 		{
 			AddChild(ContentTemplateRoot);
@@ -32,21 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 			RemoveChild(ContentTemplateRoot);
 		}
 
-		private void UpdateCornerRadius(CornerRadius radius)
-		{
-		}
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 
-		private void UpdateBorder()
-		{
-		}
-
-		private void ClearBorder()
-		{
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

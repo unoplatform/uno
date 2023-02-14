@@ -87,12 +87,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 
 		partial void ArrangeNativeElement(Rect arrangeRect)
 		{
