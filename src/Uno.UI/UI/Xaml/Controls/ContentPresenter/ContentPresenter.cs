@@ -495,12 +495,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnPaddingChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -577,10 +572,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateCornerRadius(newValue);
-		}
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) =>
+			UpdateBorder();
 
 		#endregion
 
@@ -648,6 +641,14 @@ namespace Windows.UI.Xaml.Controls
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
+
+		private void SetUpdateTemplate()
+		{
+			UpdateContentTemplateRoot();
+			SetUpdateTemplatePartial();
+		}
+
+		partial void SetUpdateTemplatePartial();
 
 		private void TrySetDataContextFromContent(object value)
 		{
