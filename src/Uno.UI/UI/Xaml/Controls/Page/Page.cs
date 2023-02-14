@@ -91,9 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) =>
 			UpdateBorder();
-		}
 	}
 }
