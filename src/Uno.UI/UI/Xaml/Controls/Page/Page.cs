@@ -92,12 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) =>
 			UpdateBorder();
-#if __WASM__
-			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
-#endif
-		}
 	}
 }

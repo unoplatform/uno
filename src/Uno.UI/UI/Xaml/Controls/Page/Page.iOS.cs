@@ -16,20 +16,5 @@ namespace Microsoft.UI.Xaml.Controls
 			base.LayoutSubviews();
 			UpdateBorder();
 		}
-
-		private void UpdateBorder()
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					Thickness.Empty,
-					null,
-					CornerRadius.None,
-					null
-				);
-			}
-		}
 	}
 }
