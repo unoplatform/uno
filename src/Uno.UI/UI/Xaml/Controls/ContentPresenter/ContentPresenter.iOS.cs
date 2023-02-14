@@ -18,9 +18,8 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter
 	{
-		private void SetUpdateTemplate()
+		partial void SetUpdateTemplatePartial()
 		{
-			UpdateContentTemplateRoot();
 			SetNeedsLayout();
 		}
 
@@ -48,28 +47,6 @@ namespace Windows.UI.Xaml.Controls
 		public override void LayoutSubviews()
 		{
 			base.LayoutSubviews();
-			UpdateBorder();
-		}
-
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-
-		private void UpdateBorder()
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
-			}
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
 			UpdateBorder();
 		}
 

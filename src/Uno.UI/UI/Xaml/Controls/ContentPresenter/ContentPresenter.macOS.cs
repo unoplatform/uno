@@ -17,9 +17,8 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter
 	{
-		private void SetUpdateTemplate()
+		partial void SetUpdateTemplatePartial()
 		{
-			UpdateContentTemplateRoot();
 			this.InvalidateMeasure();
 		}
 
@@ -48,23 +47,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.Layout();
 			UpdateBorder();
-		}
-
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-
-		private void UpdateBorder()
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
-			}
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
