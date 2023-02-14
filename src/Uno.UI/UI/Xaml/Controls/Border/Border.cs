@@ -115,12 +115,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			OnCornerRadiusUpdatedPartial(oldValue, newValue);
-		}
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue);
 		#endregion
 
 		#region ChildTransitions
@@ -181,12 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnPaddingChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -201,11 +192,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnBackgroundSizingChangedPartial(e);
+			UpdateBorder();
 			base.OnBackgroundSizingChangedInner(e);
 		}
 
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
 
 		#region BorderThickness DependencyProperty
@@ -220,12 +210,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnBorderThicknessChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
+		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -264,32 +249,32 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_borderBrushColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
 					SolidColorBrush.ColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
+					(s, colorArg) => UpdateBorder()
 				);
 				_borderBrushOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
 					SolidColorBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
+					(s, _) => UpdateBorder()
 				);
 			}
 			else if (newValue is GradientBrush gb)
 			{
 				_borderBrushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
+					(s, colorArg) => UpdateBorder()
 				);
 				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
+					(s, _) => UpdateBorder()
 				);
 			}
 			else if (newValue is AcrylicBrush ab)
 			{
 				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
 					AcrylicBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial());
+					(s, colorArg) => UpdateBorder());
 				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
 					AcrylicBrush.OpacityProperty,
-					(s, arg) => OnBorderBrushChangedPartial());
+					(s, arg) => UpdateBorder());
 			}
 			else
 			{
@@ -297,12 +282,19 @@ namespace Windows.UI.Xaml.Controls
 				_borderBrushOpacityChanged.Disposable = null;
 			}
 
-			OnBorderBrushChangedPartial();
+			UpdateBorder();
 		}
 
-		partial void OnBorderBrushChangedPartial();
-
 		#endregion
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundChanged(e);
+			OnBackgroundChangedPartial();
+			UpdateBorder();
+		}
+
+		partial void OnBackgroundChangedPartial();
 
 		internal override bool CanHaveChildren() => true;
 
