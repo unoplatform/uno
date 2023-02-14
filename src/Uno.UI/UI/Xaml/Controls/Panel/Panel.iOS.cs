@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class Panel
+	partial class Panel
 	{
 		public override void SubviewAdded(UIView uiview)
 		{
@@ -100,20 +100,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_transitionHelper?.SetInitialChildrenPositions();
 
 			UpdateBackground();
-		}
-
-		/// <summary>        
-		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Panel 
-		/// {
-		///    new Border()
-		/// }
-		/// </summary>
-		/// <param name="view"></param>
-		public new void Add(UIView view)
-		{
-			Children.Add(view);
 		}
 
 		public bool HitTestOutsideFrame
