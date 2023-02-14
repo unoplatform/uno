@@ -10,10 +10,10 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
 
-internal partial class BorderLayerRenderer
+partial class BorderLayerRenderer
 {
-	private static SKPoint[] _outerRadiiStore = new SKPoint[4];
-	private static SKPoint[] _innerRadiiStore = new SKPoint[4];
+	private readonly static SKPoint[] _outerRadiiStore = new SKPoint[4];
+	private readonly static SKPoint[] _innerRadiiStore = new SKPoint[4];
 
 	private LayoutState _currentState;
 
