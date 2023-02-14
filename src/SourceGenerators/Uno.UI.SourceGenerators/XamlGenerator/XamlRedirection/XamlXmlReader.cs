@@ -7,18 +7,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlXmlReader : IDisposable
 	{
-		private XmlReader document;
-		private XamlSchemaContext context;
-		private XamlXmlReaderSettings settings;
-
 		private __uno::Uno.Xaml.XamlXmlReader _unoReader;
 
 		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings)
 		{
-			this.document = document;
-			this.context = context;
-			this.settings = settings;
-
 			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner);
 		}
 

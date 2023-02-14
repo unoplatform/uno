@@ -633,12 +633,12 @@ namespace Uno.Xaml
 				var regex = new System.Text.RegularExpressions.Regex(@"\s+");
 				value = regex.Replace(value, " ");
 
-				if(isFirstElementString)
+				if (isFirstElementString)
 				{
 					value = value.TrimStart(Array.Empty<char>());
 				}
 
-				if(r.NodeType == XmlNodeType.EndElement)
+				if (r.NodeType == XmlNodeType.EndElement)
 				{
 					value = value.TrimEnd(Array.Empty<char>());
 				}

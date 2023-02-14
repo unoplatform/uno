@@ -1542,6 +1542,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(SUT["PrimaryColor"]);
 		}
 
+		[TestMethod]
+		public void When_WhiteSpace_Between_Elements()
+		{
+			var SUT = Windows.UI.Xaml.Markup.XamlReader.Load("""
+				<TextBlock xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TextWrapping="WrapWholeWords">
+				   BeforeLineBreak
+				<LineBreak />
+				   You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.
+				<LineBreak />
+				   AfterLineBreak 
+				</TextBlock>
+				""") as TextBlock;
+
+			Assert.AreEqual(5, SUT.Inlines.Count);
+			Assert.AreEqual("BeforeLineBreak", ((Run)SUT.Inlines[0]).Text);
+			Assert.IsInstanceOfType(SUT.Inlines[1], typeof(LineBreak));
+			Assert.AreEqual("You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.", ((Run)SUT.Inlines[2]).Text);
+			Assert.IsInstanceOfType(SUT.Inlines[3], typeof(LineBreak));
+			Assert.AreEqual("AfterLineBreak", ((Run)SUT.Inlines[4]).Text);
+		}
+
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
 		/// </summary>

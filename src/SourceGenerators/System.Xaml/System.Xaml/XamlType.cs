@@ -748,6 +748,12 @@ namespace Uno.Xaml
 
 		protected virtual bool LookupTrimSurroundingWhitespace ()
 		{
+			// Uno specific: We are not adding TrimSurroundingWhitespaceAttribute to LineBreak, so we special-case it here.
+			if (PreferredXamlNamespace.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal) && Name == "LineBreak")
+			{
+				return true;
+			}
+
 			return this.GetCustomAttribute<TrimSurroundingWhitespaceAttribute> () != null;
 		}
 
