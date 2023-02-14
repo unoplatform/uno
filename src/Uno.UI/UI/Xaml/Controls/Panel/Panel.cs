@@ -152,12 +152,8 @@ namespace Windows.UI.Xaml.Controls
 			IsItemsHost = itemsOwner != null;
 		}
 
-		protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			OnCornerRadiusChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue);
+		protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) =>
+			UpdateBorder();
 
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
@@ -174,11 +170,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
 
-		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-			OnBorderBrushChangedPartial(oldValue, newValue);
-		}
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
+		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue) =>
+			UpdateBorder();
 
 		private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
 

@@ -34,7 +34,7 @@ namespace Uno.UI.Xaml.Media
 				// When absolute, the major stop is either the one with
 				// larger offset or the second stop in order if same.
 				return firstStop.Offset <= secondStop.Offset ?
-					secondStop : firstStop;				
+					secondStop : firstStop;
 			}
 			else
 			{

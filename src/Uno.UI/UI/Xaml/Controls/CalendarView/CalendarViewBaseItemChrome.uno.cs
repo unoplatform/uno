@@ -69,13 +69,13 @@ namespace Windows.UI.Xaml.Controls
 			_borderRenderer.Update();
 		}
 
-		
+
 		Brush IBorderInfoProvider.Background
 		{
 			get
 			{
 				var background = Background;
-				
+
 				if (IsClear(background))
 				{
 					if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 				return borderBrush;
 			}
 		}
-			
+
 
 		Thickness IBorderInfoProvider.BorderThickness => GetItemBorderThickness();
 

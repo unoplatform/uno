@@ -85,6 +85,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }
