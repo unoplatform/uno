@@ -16,8 +16,13 @@ internal partial class BorderLayerRenderer
 	public BorderLayerRenderer(FrameworkElement owner)
 	{
 		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
-		_borderInfoProvider = _owner as IBorderInfoProvider;
-		
+		if (owner is not IBorderInfoProvider borderInfoProvider)
+		{
+			throw new InvalidOperationException("BorderLayerRenderer requires an owner which implements IBorderInfoProvider");
+		}
+
+		_borderInfoProvider = borderInfoProvider;
+
 		_owner.Loaded += (s, e) => Update();
 		_owner.Unloaded += (s, e) => Clear();
 		_owner.LayoutUpdated += (s, e) => Update();
