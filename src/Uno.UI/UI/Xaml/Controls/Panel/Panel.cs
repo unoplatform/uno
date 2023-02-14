@@ -11,13 +11,6 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml;
-#if XAMARIN_ANDROID
-using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
-using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -86,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public UIElementCollection Children => _children;
 
-		#region ChildrenTransitions Dependency Property
+#region ChildrenTransitions Dependency Property
 
 		public TransitionCollection ChildrenTransitions
 		{
@@ -113,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#endregion
+#endregion
 
 		internal Thickness PaddingInternal { get; set; }
 
@@ -123,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal CornerRadius CornerRadiusInternal { get; set; }
 
-		#region IsItemsHost DependencyProperty
+#region IsItemsHost DependencyProperty
 		public static DependencyProperty IsItemsHostProperty { get; } = DependencyProperty.Register(
 			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 
@@ -132,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			get { return (bool)this.GetValue(IsItemsHostProperty); }
 			private set { this.SetValue(IsItemsHostProperty, value); }
 		}
-		#endregion
+#endregion
 
 		private ManagedWeakReference _itemsOwnerRef;
 
