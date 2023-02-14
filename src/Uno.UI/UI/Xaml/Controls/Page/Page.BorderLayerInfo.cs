@@ -7,15 +7,15 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class Page : IBorderInfoProvider
 {
-	Brush IBorderInfoProvider.Background => Background;
+	Brush? IBorderInfoProvider.Background => Background;
 
 	BackgroundSizing IBorderInfoProvider.BackgroundSizing => InternalBackgroundSizing;
 
-	Brush IBorderInfoProvider.BorderBrush => BorderBrush;
+	Brush? IBorderInfoProvider.BorderBrush => null;
 
-	Thickness IBorderInfoProvider.BorderThickness => BorderThickness;
+	Thickness IBorderInfoProvider.BorderThickness => Thickness.Empty;
 
-	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius;
+	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
 
 	object? IBorderInfoProvider.BackgroundImage => null;
 }
