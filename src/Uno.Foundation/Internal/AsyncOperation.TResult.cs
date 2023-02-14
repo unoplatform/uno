@@ -5,11 +5,12 @@ using Uno;
 
 namespace Windows.Foundation;
 
+/// <summary>
+/// Represents an asynchronous operation with result value.
+/// </summary>
+/// <typeparam name="TResult"></typeparam>
 internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperationInternal<TResult>
 {
-	public static AsyncOperation<TResult> FromTask(FuncAsync<AsyncOperation<TResult>, TResult> builder)
-		=> new AsyncOperation<TResult>(builder);
-
 	private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 	private AsyncOperationCompletedHandler<TResult>? _onCompleted;
 	private AsyncStatus _status;
@@ -19,28 +20,9 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 		Task = BuildTaskAsync(taskBuilder);
 	}
 
-	private async Task<TResult> BuildTaskAsync(FuncAsync<AsyncOperation<TResult>, TResult> taskBuilder)
-	{
-		Status = AsyncStatus.Started;
+	public uint Id { get; } = AsyncOperation.CreateId();
 
-		try
-		{
-			var result = await taskBuilder(_cts.Token, this);
-			Status = AsyncStatus.Completed;
-			return result;
-		}
-		catch (OperationCanceledException)
-		{
-			Status = AsyncStatus.Canceled;
-			throw;
-		}
-		catch (Exception e)
-		{
-			ErrorCode = e;
-			Status = AsyncStatus.Error;
-			throw;
-		}
-	}
+	public Task<TResult> Task { get; }
 
 	public AsyncOperationCompletedHandler<TResult>? Completed
 	{
@@ -54,10 +36,6 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 			}
 		}
 	}
-
-	public uint Id { get; } = AsyncOperation.CreateId();
-
-	public Task<TResult> Task { get; }
 
 	public Exception? ErrorCode { get; private set; }
 
@@ -82,4 +60,27 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 
 	public TResult GetResults()
 		=> Task.Result;
+
+	private async Task<TResult> BuildTaskAsync(FuncAsync<AsyncOperation<TResult>, TResult> taskBuilder)
+	{
+		Status = AsyncStatus.Started;
+
+		try
+		{
+			var result = await taskBuilder(_cts.Token, this);
+			Status = AsyncStatus.Completed;
+			return result;
+		}
+		catch (OperationCanceledException)
+		{
+			Status = AsyncStatus.Canceled;
+			throw;
+		}
+		catch (Exception e)
+		{
+			ErrorCode = e;
+			Status = AsyncStatus.Error;
+			throw;
+		}
+	}
 }

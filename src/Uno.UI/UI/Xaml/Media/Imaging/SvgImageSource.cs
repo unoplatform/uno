@@ -78,9 +78,7 @@ public partial class SvgImageSource : ImageSource
 #if __NETSTD__
 		async
 #endif
-		Task<SvgImageSourceLoadStatus> SetSourceAsync(
-			CancellationToken ct,
-			AsyncOperation<SvgImageSourceLoadStatus> _)
+		Task<SvgImageSourceLoadStatus> SetSourceAsync(CancellationToken ct)
 		{
 			if (streamSource == null)
 			{
@@ -114,7 +112,7 @@ public partial class SvgImageSource : ImageSource
 #endif
 		}
 
-		return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
+		return Foundation.AsyncOperation.FromTask(SetSourceAsync);
 	}
 
 #if !__NETSTD__

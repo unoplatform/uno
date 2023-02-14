@@ -33,7 +33,7 @@ namespace Windows.Graphics.Imaging
 
 		public static IAsyncOperation<BitmapEncoder> CreateAsync(Guid encoderId
 			, Storage.Streams.IRandomAccessStream stream) =>
-			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
+			AsyncOperation.FromTask(ct =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{
