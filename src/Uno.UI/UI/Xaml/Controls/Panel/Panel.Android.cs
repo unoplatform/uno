@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Panel : IEnumerable
+	partial class Panel : IEnumerable
 	{
 		protected override void OnChildViewAdded(View child)
 		{
@@ -63,20 +63,6 @@ namespace Windows.UI.Xaml.Controls
 
 			//We trigger all layoutUpdated animations
 			_transitionHelper?.LayoutUpdatedTransition();
-		}
-
-		/// <summary>        
-		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Panel 
-		/// {
-		///    new Border()
-		/// }
-		/// </summary>
-		/// <param name="view"></param>
-		public void Add(UIElement view)
-		{
-			Children.Add(view);
 		}
 
 		public IEnumerator GetEnumerator()
