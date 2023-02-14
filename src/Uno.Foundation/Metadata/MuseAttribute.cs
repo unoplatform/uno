@@ -1,22 +1,20 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates that a runtime class is compatible with UWP apps that are web browsers.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed partial class MuseAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class MuseAttribute : Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	public MuseAttribute() : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MuseAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.MuseAttribute", "MuseAttribute.MuseAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.MuseAttribute.MuseAttribute()
-		#if false
-		public  uint Version;
-		#endif
 	}
+
+	/// <summary>
+	/// Specifies the version.
+	/// </summary>
+	public uint Version;
 }

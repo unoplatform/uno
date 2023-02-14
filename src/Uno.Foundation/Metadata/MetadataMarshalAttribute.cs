@@ -1,19 +1,16 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates that tools should create an entry for an interface when creating an application package.
+/// </summary>
+[AttributeUsage(AttributeTargets.Delegate | AttributeTargets.Interface | AttributeTargets.Class)]
+[AttributeName("metadata_marshal")]
+public partial class MetadataMarshalAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class MetadataMarshalAttribute : Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	public MetadataMarshalAttribute() : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MetadataMarshalAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.MetadataMarshalAttribute", "MetadataMarshalAttribute.MetadataMarshalAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.MetadataMarshalAttribute.MetadataMarshalAttribute()
 	}
 }

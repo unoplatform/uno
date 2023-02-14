@@ -1,22 +1,27 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Specifies the marshaling type for the class.
+/// </summary>
+public enum MarshalingType 
 {
-	#if false
-	public   enum MarshalingType 
-	{
-		#if false
-		None = 1,
-		#endif
-		#if false
-		Agile = 2,
-		#endif
-		#if false
-		Standard = 3,
-		#endif
-		#if false
-		InvalidMarshaling = 0,
-		#endif
-	}
-	#endif
+	/// <summary>
+	/// The class can't be marshaled.
+	/// </summary>
+	InvalidMarshaling = 0,
+
+	/// <summary>
+	/// The class prevents marshaling on all interfaces.
+	/// </summary>
+	None = 1,
+
+	/// <summary>
+	/// The class marshals and unmarshals to the same pointer value on all interfaces.
+	/// </summary>
+	Agile = 2,
+
+	/// <summary>
+	/// The class does not implement IMarshal or forwards to CoGetStandardMarshal on all interfaces.
+	/// </summary>
+	Standard = 3,
 }

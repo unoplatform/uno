@@ -1,19 +1,16 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates the marshaling behavior of a Windows Runtime component.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public sealed partial class MarshalingBehaviorAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class MarshalingBehaviorAttribute : Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	/// <param name="behavior">One of the enumeration values.</param>
+	public MarshalingBehaviorAttribute(MarshalingType behavior) : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MarshalingBehaviorAttribute( global::Windows.Foundation.Metadata.MarshalingType behavior) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.MarshalingBehaviorAttribute", "MarshalingBehaviorAttribute.MarshalingBehaviorAttribute(MarshalingType behavior)");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.MarshalingBehaviorAttribute.MarshalingBehaviorAttribute(Windows.Foundation.Metadata.MarshalingType)
 	}
 }

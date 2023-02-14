@@ -1,19 +1,16 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates that the type is an instance of a variant object. Applies to runtime classes, interfaces, and parameterized interfaces.
+/// </summary>
+[AttributeUsage(AttributeTargets.All)]
+[AttributeName("hasvariant")]
+public partial class HasVariantAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class HasVariantAttribute : Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	public HasVariantAttribute() : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HasVariantAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.HasVariantAttribute", "HasVariantAttribute.HasVariantAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.HasVariantAttribute.HasVariantAttribute()
 	}
 }

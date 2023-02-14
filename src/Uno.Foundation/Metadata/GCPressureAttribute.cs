@@ -12,5 +12,8 @@ public partial class GCPressureAttribute : Attribute
 	{
 	}
 
+	/// <summary>
+	/// GC pressure amount.
+	/// </summary>
 	public GCPressureAmount amount;
 }

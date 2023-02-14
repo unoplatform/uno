@@ -1,19 +1,15 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.Foundation.Metadata
+namespace Windows.Foundation.Metadata;
+
+/// <summary>
+/// Indicates that a type or member should be marked in metadata as internal to the SDK or framework, and for consumption by system components only.
+/// </summary>
+[AttributeUsage(AttributeTargets.Delegate | AttributeTargets.Enum | AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Module)]
+public partial class InternalAttribute : Attribute
 {
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class InternalAttribute : Attribute
+	/// <summary>
+	/// Creates and initializes a new instance of the attribute.
+	/// </summary>
+	public InternalAttribute() : base()
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public InternalAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.InternalAttribute", "InternalAttribute.InternalAttribute()");
-		}
-		#endif
-		// Forced skipping of method Windows.Foundation.Metadata.InternalAttribute.InternalAttribute()
 	}
 }
