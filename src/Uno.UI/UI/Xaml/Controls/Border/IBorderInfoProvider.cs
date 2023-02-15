@@ -40,4 +40,10 @@ internal partial interface IBorderInfoProvider
 	/// Gets the background image.
 	/// </summary>
 	object? BackgroundImage { get; }
+
+#if __ANDROID__
+	Thickness Padding { get; }
+
+	bool ShouldUpdateMeasures { get; }
+#endif
 }
