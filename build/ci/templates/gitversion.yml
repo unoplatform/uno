@@ -1,5 +1,4 @@
 parameters:
-  dotnetInstallationPath: ''
   skipCacheDownload: ''
 
 steps:
@@ -18,17 +17,9 @@ steps:
       $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-"
       echo "Updating PR Version Tag in GitVersion to $PR_VERSION"
       (Get-Content gitversion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content gitversion.yml
-  
+
     condition: eq(variables['Build.Reason'], 'PullRequest')
     displayName: Update GitVersion file for PullRequests
-
-  - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 6.0.4'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: runtime
-      version: 6.0.4
-      installationPath: '${{parameters.dotnetInstallationPath}}'
 
   - task: gitversion/setup@0
     retryCountOnTaskFailure: 3
