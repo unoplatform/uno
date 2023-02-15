@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -212,11 +213,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
 		}
 
-#if !__WASN__ // RenderTargetBitmap not yet available on Wasm.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var SUT = new TextBlock
 			{
 				Text = "••••••••",
@@ -232,6 +237,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await RawBitmap.From(renderer, SUT);
 			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Color.FromArgb(127, 127, 0, 0));
 		}
-#endif
 	}
 }
