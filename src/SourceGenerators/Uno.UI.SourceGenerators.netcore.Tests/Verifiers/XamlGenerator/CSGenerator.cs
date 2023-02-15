@@ -61,6 +61,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					# For now, there is no need to customize these for each test.
 					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
 					build_property.RootNamespace = MyProject
+					build_property.UnoForceHotReloadCodeGen = false
 					""");
 				globalConfigBuilder.AppendLine(globalConfig);
 
