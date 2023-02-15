@@ -2,6 +2,7 @@
 using System.Text;
 using Android.Runtime;
 using System;
+using System.Globalization;
 using Uno.Foundation.Logging;
 using System.ComponentModel;
 
@@ -33,7 +34,7 @@ public static class JavaObjectExtensions
 			if (instance.Log().IsEnabled(LogLevel.Warning))
 			{
 				instance.Log().Warn(
-					string.Format("Native invocation discarded for {0} at {1}:{2} ({3}). The object may not have been disposed properly by its owner."
+					string.Format(CultureInfo.CurrentCulture, "Native invocation discarded for {0} at {1}:{2} ({3}). The object may not have been disposed properly by its owner."
 					, instance.GetType()
 					, member
 					, line
