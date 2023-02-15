@@ -1,6 +1,4 @@
-﻿using System.Web;
-
-namespace Uno.Extensions;
+﻿namespace Uno.Extensions;
 
 public static class UriExtensions
 {
@@ -8,8 +6,12 @@ public static class UriExtensions
 
 	public static IDictionary<string, string> GetParameters(this Uri uri)
 	{
-		var nameValueCollection = HttpUtility.ParseQueryString(uri.Query);
-		return nameValueCollection.AllKeys.ToDictionary(k => k, key => nameValueCollection[key]);
+		return uri
+			.OriginalString
+			.Split(new[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries)
+			.Select(p => p.Split(new[] { '=' }))
+			.Where(parts => parts.Length > 1)
+			.ToDictionary(parts => parts[0], parts => String.Join("=", parts.Skip(1)));
 	}
 
 	internal static Uri TrimEndUriSlash(this Uri uri) => new(uri.OriginalString.TrimEnd("/"));
