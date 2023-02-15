@@ -134,7 +134,8 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="item">Item to check.</param>
 	/// <returns>True if found.</returns>
-	public bool Contains(KeyValuePair<string, string> item) => _strings.Contains(item);
+	public bool Contains(KeyValuePair<string, string> item) =>
+		TryGetValue(item.Key, out var val) && Equals(item.Value, val);
 
 	/// <summary>
 	/// Copies the string map to an array.
@@ -154,7 +155,8 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="item">Item to remove.</param>
 	/// <returns>True if found.</returns>
-	public bool Remove(KeyValuePair<string, string> item) => Remove(item.Key);
+	public bool Remove(KeyValuePair<string, string> item) =>
+		Contains(item) && Remove(item.Key);
 
 	/// <summary>
 	/// Returns an enumerator for the string map.

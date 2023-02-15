@@ -135,7 +135,8 @@ public sealed partial class ValuesSet :
 	/// </summary>
 	/// <param name="item">Item to check.</param>
 	/// <returns>True if found.</returns>
-	public bool Contains(KeyValuePair<string, object> item) => _properties.Contains(item);
+	public bool Contains(KeyValuePair<string, object> item) =>
+		TryGetValue(item.Key, out var val) && Equals(item.Value, val);
 
 	/// <summary>
 	/// Copies the value set to an array.
@@ -155,7 +156,8 @@ public sealed partial class ValuesSet :
 	/// </summary>
 	/// <param name="item">Item to remove.</param>
 	/// <returns>True if found.</returns>
-	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
+	public bool Remove(KeyValuePair<string, object> item) =>
+		Contains(item) && Remove(item.Key);
 
 	/// <summary>
 	/// Returns an enumerator for the value set.

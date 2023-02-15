@@ -67,7 +67,7 @@ internal class NullableKeyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		}
 		else
 		{
-			value = _containsNullKey ? _nullKeyValue : default!;
+			value = _nullKeyValue;
 			return _containsNullKey;
 		}
 	}
@@ -163,7 +163,7 @@ internal class NullableKeyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	}
 
 	public bool Contains(KeyValuePair<TKey, TValue> item) =>
-		TryGetValue(item.Key, out var val) ? Equals(item.Value, val) : false;
+		TryGetValue(item.Key, out var val) && Equals(item.Value, val);
 
 	public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
@@ -174,7 +174,8 @@ internal class NullableKeyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		}
 	}
 
-	public bool Remove(KeyValuePair<TKey, TValue> item) => Contains(item) ? Remove(item.Key) : false;
+	public bool Remove(KeyValuePair<TKey, TValue> item) =>
+		Contains(item) && Remove(item.Key);
 
 	public int Count => _containsNullKey ? _dictionary.Count + 1 : _dictionary.Count;
 
