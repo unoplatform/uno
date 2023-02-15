@@ -304,11 +304,11 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnBackgroundChanged(e);
-			OnBackgroundChangedPartial();
+			OnBackgroundChangedPartial(e);
 			UpdateBorder();
 		}
 
-		partial void OnBackgroundChangedPartial();
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		internal override bool CanHaveChildren() => true;
 

@@ -59,9 +59,6 @@ partial class BorderLayerRenderer
 		}
 	}
 
-	/// <summary>
-	/// Removes the added layers during a call to <see cref="UpdateLayer" />.
-	/// </summary>
 	partial void ClearLayer()
 	{
 		_layerDisposable.Disposable = null;

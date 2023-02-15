@@ -1,94 +1,132 @@
 ﻿using System;
+using System.Linq;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
 
-internal partial class BorderLayerRenderer
+partial class BorderLayerRenderer
 {
-	private Brush _currentBackground;
-	private (Brush, Thickness) _currentBorder;
-	private CornerRadius _currentCornerRadius;
+	private Brush _background;
+	private (Brush, Thickness) _border;
+	private CornerRadius _cornerRadius;
 
 	private SerialDisposable _backgroundSubscription;
-	private SerialDisposable _borderSubscription;
 
-	public void UpdateLayer(
-		Brush background,
-		BackgroundSizing backgroundSizing,
-		Thickness borderThickness,
-		Brush borderBrush,
-		CornerRadius cornerRadius,
-		object image)
+	partial void UpdateLayer()
 	{
-		UpdateBackground(background, backgroundSizing);
-		UpdateBorder(borderBrush, borderThickness, cornerRadius);
-	}
-
-	private void UpdateBorder(Brush brush, Thickness thickness, CornerRadius cornerRadius)
-	{
-		var cornerRadiusChanged = cornerRadius != _currentCornerRadius;
-
-		if (cornerRadiusChanged)
+		if (_background != background && element is FrameworkElement fwElt)
 		{
-			SetCornerRadius(cornerRadius);
-		}
-
-		var borderChanged = _currentBorder != (brush, thickness) ||
-			(brush is LinearGradientBrush && cornerRadiusChanged); // Corner radius impacts linear gradient border rendering.
-
-		if (!borderChanged)
-		{
-			return;
-		}
-
-		var subscription = _borderSubscription ??= new SerialDisposable();
-		subscription.Disposable = null;
-		subscription.Disposable = SetAndObserveBorder(brush, thickness, cornerRadius);
-	}
-
-	private void UpdateBackground(Brush background, BackgroundSizing backgroundSizing)
-	{
-		if (_currentBackground != background && _owner is FrameworkElement fwElt)
-		{
-			_currentBackground = background;
+			_background = background;
 			var subscription = _backgroundSubscription ??= new SerialDisposable();
 
 			subscription.Disposable = null;
-			subscription.Disposable = SetAndObserveBackground(background);
+			subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, background);
+		}
+
+		if (_border != (borderBrush, borderThickness))
+		{
+			_border = (borderBrush, borderThickness);
+			SetBorder(element, borderThickness, borderBrush);
+		}
+
+		if (_cornerRadius != cornerRadius)
+		{
+			_cornerRadius = cornerRadius;
+			SetCornerRadius(element, cornerRadius);
 		}
 	}
 
-	private IDisposable SetAndObserveBorder(Brush brush, Thickness thickness, CornerRadius cornerRadius)
+	partial void ClearLayer()
 	{
-		SetBorder(brush, thickness, cornerRadius);
-		return Brush.AssignAndObserveBrush(brush, _ => SetBorder(brush, thickness, cornerRadius));
+		//TODO:MZ
 	}
 
-	private IDisposable SetAndObserveBackground(Brush brush)
+	public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
 	{
-		SetBackground(brush);
+		if (cornerRadius == CornerRadius.None)
+		{
+			element.ResetStyle("border-radius", "overflow");
+		}
+		else
+		{
+			var borderRadiusCssString = $"min(50%,{cornerRadius.TopLeft.ToStringInvariant()}px) min(50%,{cornerRadius.TopRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomLeft.ToStringInvariant()}px)";
+			element.SetStyle(
+				("border-radius", borderRadiusCssString),
+				("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+		}
+	}
+
+	public static void SetBorder(UIElement element, Thickness thickness, Brush brush)
+	{
+		if (thickness == Thickness.Empty)
+		{
+			element.SetStyle(
+				("border-style", "none"),
+				("border-color", ""),
+				("border-width", ""));
+		}
+		else
+		{
+			var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
+			switch (brush)
+			{
+				case SolidColorBrush solidColorBrush:
+					var borderColor = solidColorBrush.ColorWithOpacity;
+					element.SetStyle(
+						("border", ""),
+						("border-style", "solid"),
+						("border-color", borderColor.ToHexString()),
+						("border-width", borderWidth));
+					break;
+				case GradientBrush gradientBrush:
+					var border = gradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+					element.SetStyle(
+						("border-style", "solid"),
+						("border-color", ""),
+						("border-image", border),
+						("border-width", borderWidth),
+						("border-image-slice", "1"));
+					break;
+				case AcrylicBrush acrylicBrush:
+					var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
+					element.SetStyle(
+						("border", ""),
+						("border-style", "solid"),
+						("border-color", acrylicFallbackColor.ToHexString()),
+						("border-width", borderWidth));
+					break;
+				default:
+					element.ResetStyle("border-style", "border-color", "border-image", "border-width");
+					break;
+			}
+		}
+	}
+
+	public static IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
+	{
+		SetBackgroundBrush(element, brush);
 
 		if (brush is ImageBrush imgBrush)
 		{
-			RecalculateBrushOnSizeChanged(false);
+			RecalculateBrushOnSizeChanged(element, false);
 			return imgBrush.Subscribe(img =>
 			{
 				switch (img.Kind)
 				{
 					case ImageDataKind.Empty:
 					case ImageDataKind.Error:
-						_owner.ResetStyle("background-color", "background-image", "background-size");
+						element.ResetStyle("background-color", "background-image", "background-size");
 						break;
 
 					case ImageDataKind.DataUri:
 					case ImageDataKind.Url:
 					default:
-						_owner.SetStyle(
+						element.SetStyle(
 							("background-color", ""),
 							("background-origin", "content-box"),
 							("background-position", imgBrush.ToCssPosition()),
@@ -102,152 +140,55 @@ internal partial class BorderLayerRenderer
 		}
 		else if (brush is AcrylicBrush acrylicBrush)
 		{
-			return acrylicBrush.Subscribe(_owner);
+			return acrylicBrush.Subscribe(element);
 		}
 		else
 		{
-			return Brush.AssignAndObserveBrush(brush, _ => SetBackground(brush));
+			return Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(element, brush));
 		}
 	}
 
-	private void SetCornerRadius(CornerRadius cornerRadius)
-	{
-		if (cornerRadius == CornerRadius.None)
-		{
-			_owner.ResetStyle("border-radius", "overflow");
-		}
-		else
-		{
-			WindowManagerInterop.SetBorderRadius(_owner.HtmlId, cornerRadius);
-		}
-
-		_currentCornerRadius = cornerRadius;
-	}
-
-	private void SetBackground(Brush brush)
+	public static void SetBackgroundBrush(FrameworkElement element, Brush brush)
 	{
 		switch (brush)
 		{
 			case SolidColorBrush solidColorBrush:
 				var color = solidColorBrush.ColorWithOpacity;
-				WindowManagerInterop.SetElementBackgroundColor(_owner.HtmlId, color);
-				RecalculateBrushOnSizeChanged(false);
+				WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, color);
+				RecalculateBrushOnSizeChanged(element, false);
 				break;
 			case GradientBrush gradientBrush:
-				WindowManagerInterop.SetElementBackgroundGradient(_owner.HtmlId, gradientBrush.ToCssString(_owner.RenderSize));
-				RecalculateBrushOnSizeChanged(true);
+				WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, gradientBrush.ToCssString(element.RenderSize));
+				RecalculateBrushOnSizeChanged(element, true);
 				break;
 			case XamlCompositionBrushBase unsupportedCompositionBrush:
 				var fallbackColor = unsupportedCompositionBrush.FallbackColorWithOpacity;
-				WindowManagerInterop.SetElementBackgroundColor(_owner.HtmlId, fallbackColor);
-				RecalculateBrushOnSizeChanged(false);
+				WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, fallbackColor);
+				RecalculateBrushOnSizeChanged(element, false);
 				break;
 			default:
-				WindowManagerInterop.ResetElementBackground(_owner.HtmlId);
-				RecalculateBrushOnSizeChanged(false);
+				WindowManagerInterop.ResetElementBackground(element.HtmlId);
+				RecalculateBrushOnSizeChanged(element, false);
 				break;
 		}
 	}
 
-	private void SetBorder(Brush brush, Thickness thickness, CornerRadius cornerRadius)
+	private static readonly SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
 	{
-		void ApplyGradientBorder(GradientBrush gradient, string borderWidth)
-		{
-			var border = gradient.ToCssString(_owner.RenderSize); // TODO: Reevaluate when size is changing
-			_owner.SetGradientBorder(border, borderWidth);
-		}
+		var fe = sender as FrameworkElement;
+		SetBackgroundBrush(fe, fe.Background);
+	};
 
-		void ApplySolidColorBorder(Windows.UI.Color color, string borderWidth)
+	private static void RecalculateBrushOnSizeChanged(FrameworkElement element, bool shouldRecalculate)
+	{
+		if (shouldRecalculate)
 		{
-			_owner.SetSolidColorBorder(color, borderWidth);
-		}
-
-		if (thickness == Thickness.Empty)
-		{
-			_owner.SetStyle(
-				("border-style", "none"),
-				("border-color", ""),
-				("border-width", ""));
+			element.SizeChanged -= _onSizeChangedForBrushCalculation;
+			element.SizeChanged += _onSizeChangedForBrushCalculation;
 		}
 		else
 		{
-			var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
-
-			switch (brush)
-			{
-				case SolidColorBrush solidColorBrush:
-					ApplySolidColorBorder(solidColorBrush.ColorWithOpacity, borderWidth);
-					break;
-				case LinearGradientBrush linearGradientBrush:
-					if (cornerRadius == CornerRadius.None ||
-						!BorderGradientBrushHelper.CanApplySolidColorRendering(linearGradientBrush))
-					{
-						ApplyGradientBorder(linearGradientBrush, borderWidth);
-					}
-					else
-					{
-						var majorStop = BorderGradientBrushHelper.GetMajorStop(linearGradientBrush);
-						var borderColor = Windows.UI.Color.FromArgb((byte)(linearGradientBrush.Opacity * majorStop.Color.A), majorStop.Color.R, majorStop.Color.G, majorStop.Color.B);
-
-						ApplySolidColorBorder(borderColor, borderWidth);
-					}
-					break;
-				case GradientBrush gradientBrush:
-					ApplyGradientBorder(gradientBrush, borderWidth);
-					break;
-				case AcrylicBrush acrylicBrush:
-					if (Brush.TryGetColorWithOpacity(acrylicBrush, out var acrylicFallbackColor))
-					{
-						ApplySolidColorBorder(acrylicFallbackColor, borderWidth);
-					}
-					break;
-				default:
-					_owner.ResetStyle("border-style", "border-color", "border-image", "border-width");
-					break;
-			}
+			element.SizeChanged -= _onSizeChangedForBrushCalculation;
 		}
-
-		_currentBorder = (brush, thickness);
-	}
-
-	internal void Clear()
-	{
-		if (_backgroundSubscription != null)
-		{
-			_backgroundSubscription.Disposable = null;
-		}
-		if (_borderSubscription != null)
-		{
-			_borderSubscription.Disposable = null;
-		}
-	}
-
-	private void RecalculateBrushOnSizeChanged(bool shouldRecalculate)
-	{
-		if (_owner is FrameworkElement fw)
-		{
-			if (shouldRecalculate)
-			{
-				fw.SizeChanged -= OnElementSizeChanged;
-				fw.SizeChanged += OnElementSizeChanged;
-			}
-			else
-			{
-				fw.SizeChanged -= OnElementSizeChanged;
-			}
-		}
-
-		internal void Clear()
-		{
-			_background = null;
-			_border = default;
-
-		}
-	}
-
-	private void OnElementSizeChanged(object sender, SizeChangedEventArgs e)
-	{
-		var fe = _owner as FrameworkElement;
-		SetBackground(fe.Background);
 	}
 }

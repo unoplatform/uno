@@ -28,8 +28,14 @@ internal partial class BorderLayerRenderer
 		_owner.LayoutUpdated += (s, e) => UpdateLayer();
 	}
 
+	/// <summary>
+	/// Updates the border.
+	/// </summary>
 	internal void Update() => UpdateLayer();
 
+	/// <summary>
+	/// Removes added layers and subscriptions.
+	/// </summary>
 	internal void Clear() => ClearLayer();
 
 	partial void UpdateLayer();
