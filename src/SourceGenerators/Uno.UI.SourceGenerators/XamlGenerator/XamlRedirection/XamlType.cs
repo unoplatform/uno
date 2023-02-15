@@ -34,6 +34,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		public string PreferredXamlNamespace
 			=> _isUnknown ? unknownTypeNamespace : _unoDeclaringType.PreferredXamlNamespace;
 
+		public bool TrimSurroundingWhitespace
+			=> PreferredXamlNamespace.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal) && Name == "LineBreak";
+
 		public override string ToString() => _unoDeclaringType.ToString();
 
 		public bool Equals(XamlType other) => _isUnknown

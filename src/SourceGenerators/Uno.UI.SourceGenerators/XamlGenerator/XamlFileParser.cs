@@ -487,7 +487,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private XamlMemberDefinition VisitMember(XamlXmlReader reader, XamlObjectDefinition owner)
 		{
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
-
+			var lastWasLiteralInline = false;
+			var lastWasTrimSurroundingWhiteSpace = false;
 			while (reader.Read())
 			{
 				WriteState(reader);
@@ -501,11 +502,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.Value:
 						if (IsLiteralInlineText(reader.Value, member, owner))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader);
+							var run = ConvertLiteralInlineTextToRun(reader, trimStart: lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
+							lastWasLiteralInline = true;
+							lastWasTrimSurroundingWhiteSpace = false;
 						}
 						else
 						{
+							lastWasLiteralInline = false;
+							lastWasTrimSurroundingWhiteSpace = false;
 							if (member.Value is string s)
 							{
 								member.Value += ", " + reader.Value;
@@ -519,14 +524,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						member.Objects.Add(VisitObject(reader, owner));
+						var obj = VisitObject(reader, owner);
+						if (lastWasLiteralInline && obj.Type.TrimSurroundingWhitespace && member.Objects.Count > 0 &&
+							member.Objects[member.Objects.Count - 1].Members.Single() is { Value: string previousValue } runDefinition)
+						{
+							runDefinition.Value = previousValue.TrimEnd();
+						}
+
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = obj.Type.TrimSurroundingWhitespace;
+						member.Objects.Add(obj);
 						break;
 
 					case XamlNodeType.EndObject:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						_depth--;
 						break;
 
 					case XamlNodeType.NamespaceDeclaration:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						// Skip
 						break;
 
@@ -553,7 +571,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
 
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
+		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,
@@ -570,7 +588,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					new XamlMemberDefinition(textMember, reader.LineNumber, reader.LinePosition)
 					{
-						Value = reader.Value
+						Value = trimStart ? ((string)reader.Value).TrimStart() : reader.Value
 					}
 				}
 			};
