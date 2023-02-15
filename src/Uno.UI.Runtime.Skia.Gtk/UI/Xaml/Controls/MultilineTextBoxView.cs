@@ -57,7 +57,7 @@ internal class MultilineTextBoxView : GtkTextBoxView
 	{
 		base.UpdateProperties(textBox);
 
-		_textView.Editable = !textBox.IsReadOnly;
+		_textView.Editable = !textBox.IsReadOnly && textBox.IsTabStop;
 		_textView.WrapMode = textBox.TextWrapping switch
 		{
 			Windows.UI.Xaml.TextWrapping.Wrap => Gtk.WrapMode.WordChar,

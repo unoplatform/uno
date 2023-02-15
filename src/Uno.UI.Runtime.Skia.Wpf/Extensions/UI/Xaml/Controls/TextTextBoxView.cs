@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Wpf.Controls;
 using Windows.UI.Xaml.Controls;
+using static Uno.UI.FeatureConfiguration;
 using PasswordBox = Windows.UI.Xaml.Controls.PasswordBox;
 using WpfElement = System.Windows.UIElement;
 
@@ -46,7 +47,7 @@ internal class TextTextBoxView : WpfTextBoxView
 	{
 		SetFont(_textBox, winUITextBox);
 		SetForegroundAndHighlightColor(_textBox, winUITextBox);
-		//TODO:MZ:
+		_textBox.IsReadOnly = !winUITextBox.IsReadOnly && winUITextBox.IsTabStop;
 
 		_textBox.AcceptsReturn = winUITextBox.AcceptsReturn;
 		_textBox.TextAlignment = winUITextBox.TextAlignment switch

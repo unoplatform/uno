@@ -51,7 +51,7 @@ internal class SinglelineTextBoxView : GtkTextBoxView
 	{
 		base.UpdateProperties(textBox);
 
-		_entry.IsEditable = !textBox.IsReadOnly;
+		_entry.IsEditable = !textBox.IsReadOnly && textBox.IsTabStop;
 		_entry.MaxLength = textBox.MaxLength;
 		if (_isPassword && textBox is PasswordBox passwordBox)
 		{

@@ -6,6 +6,7 @@ using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
+using WpfTextBox = System.Windows.Controls.TextBox;
 using WpfElement = System.Windows.FrameworkElement;
 using WpfFontWeight = System.Windows.FontWeight;
 
@@ -117,5 +118,15 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 			passwordBox.CaretBrush = foregroundBrush;
 			passwordBox.SelectionBrush = selectionHighlightBrush;
 		}
+	}
+
+	protected void SetCommonProperties(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
+	{
+		wpfControl.Opacity = source.Opacity;
+	}
+
+	protected void SetWpfTextBoxProperties(WpfTextBox wpfTextBox, Windows.UI.Xaml.Controls.TextBox source)
+	{
+		wpfTextBox.IsReadOnly = source.IsReadOnly || !source.IsTabStop;
 	}
 }
