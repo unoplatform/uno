@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					case XamlNodeType.Value:
 						if (IsLiteralInlineText(reader.Value, member, owner))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader, trimStart: lastWasTrimSurroundingWhiteSpace);
+							var run = ConvertLiteralInlineTextToRun(reader, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
 							lastWasLiteralInline = true;
 							lastWasTrimSurroundingWhiteSpace = false;
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					case XamlNodeType.StartObject:
 						_depth++;
 						var obj = VisitObject(reader, owner);
-						if (lastWasLiteralInline && obj.Type.TrimSurroundingWhitespace && member.Objects.Count > 0 &&
+						if (!reader.PreserveWhitespace && lastWasLiteralInline && obj.Type.TrimSurroundingWhitespace && member.Objects.Count > 0 &&
 							member.Objects[member.Objects.Count - 1].Members.Single() is { Value: string previousValue } runDefinition)
 						{
 							runDefinition.Value = previousValue.TrimEnd();

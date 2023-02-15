@@ -123,6 +123,8 @@ namespace Uno.Xaml
 		XamlXmlParser parser;
 		IEnumerator<XamlXmlNodeInfo> iter;
 
+		public bool PreserveWhitespace => parser.Reader.XmlSpace == XmlSpace.Preserve;
+
 		public bool HasLineInfo {
 			get { return iter != null ? iter.Current.HasLineInfo : false; }
 		}

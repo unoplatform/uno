@@ -45,5 +45,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		public void Dispose() => ((IDisposable)_unoReader).Dispose();
 
 		internal bool Read() => _unoReader.Read();
+
+		internal bool PreserveWhitespace => _unoReader.PreserveWhitespace;
 	}
 }
