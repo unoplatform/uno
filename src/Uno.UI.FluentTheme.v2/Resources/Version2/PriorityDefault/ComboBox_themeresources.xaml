@@ -13,7 +13,6 @@
   xmlns:not_win="http://uno.ui/not_win"
   xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:ufc="using:Uno.UI.FluentTheme.Controls"
   mc:ignorable="not_win">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -396,7 +395,11 @@
         <Setter Property="PlaceholderForeground" Value="{ThemeResource ComboBoxPlaceHolderForeground}" />
         <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />
         <Setter Property="Background" Value="{ThemeResource ComboBoxBackground}" />
-        <Setter Property="BorderBrush" Value="{ThemeResource ComboBoxBorderBrush}" />
+        
+        <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
+        <win:Setter Property="BorderBrush" Value="{ThemeResource ComboBoxBorderBrush}" />
+        <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+        
         <Setter Property="BorderThickness" Value="{ThemeResource ComboBoxBorderThemeThickness}" />
         <Setter Property="TabNavigation" Value="Once" />
         <contract7Present:Setter Property="TextBoxStyle" Value="{StaticResource ComboBoxTextBoxStyle}" />
@@ -448,9 +451,10 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
+                                        <!-- Uno specific (LinearGradientBrush borders): Do not change border brush -->
+                                        <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushPointerOver}" />
-                                        </ObjectAnimationUsingKeyFrames>
+                                        </win:ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -472,6 +476,10 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
+                                        <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                        </not_win:ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxForegroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -493,6 +501,10 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
+                                        <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                        </not_win:ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxHeaderForegroundDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -671,13 +683,14 @@
                             MinWidth="{ThemeResource ComboBoxThemeMinWidth}" />
 
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBorderPresenter
+                        <not_win:Border x:Name="BottomBorderElement"
                             Grid.Row="1"
                             Grid.Column="0"
-                            Grid.ColumnSpan="2"
-                            RequestedBorderBrush="{Binding ElementName=Background, Path=BorderBrush}"
-                            RequestedBorderThickness="{Binding ElementName=Background, Path=BorderThickness}"
-                            RequestedCornerRadius="{Binding ElementName=Background, Path=CornerRadius}" />
+                            Grid.ColumnSpan="2"                        
+                            BorderThickness="0,0,0,1"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                            BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
 
                         <Rectangle x:Name="Pill"
                             Style="{StaticResource ComboBoxItemPill}"
@@ -1001,6 +1014,10 @@
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundDisabled}" />
                                         <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundDisabled}" />
+
+                                        <!-- Uno specific - simulates bottom border gradient -->
+                                        <Setter Target="BottomBorderElement.Visibility" Value="Collapsed" />
+
                                         <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                                         <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
                                         <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />
@@ -1009,7 +1026,8 @@
                                 <VisualState x:Name="PointerOver">
                                     <VisualState.Setters>
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundPointerOver}" />
-                                        <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
+                                        <!-- Uno specific: avoid applying LinearGradientBrush -->
+                                        <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushPointerOver}" /> -->
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundPointerOver}" />
                                         <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                                         <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" /> -->
@@ -1019,7 +1037,12 @@
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundFocused}" />
-                                        <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" />
+                                        
+                                        <!-- Uno specific: Simulates focused bottom border -->
+                                        <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" /> -->
+                                        <Setter Target="BottomBorderElement.BorderThickness" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
+                                        <Setter Target="BottomBorderElement.BorderBrush" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+
                                         <Setter Target="BorderElement.BorderThickness" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
                                         <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundFocused}" />
                                         <Setter Target="ContentElement.RequestedTheme" Value="Light" />
@@ -1039,11 +1062,12 @@
                             contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                             contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
 
-                        <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBorderPresenter
-                            RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}"
-                            RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}"
-                            RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
+                        <!-- Uno specific: Simulates bottom border linear gradient shadow -->
+                        <Border x:Name="BottomBorderElement"                                
+                            BorderThickness="0,0,0,1"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                            BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
 
                         <ScrollViewer x:Name="ContentElement"
                             Margin="{TemplateBinding BorderThickness}"
