@@ -6,14 +6,13 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+public partial class Page
 {
-	public partial class Page
+	public override void Layout()
 	{
-		public override void Layout()
-		{
-			base.Layout();
-			UpdateBorder();
-		}
+		base.Layout();
+		UpdateBorder();
 	}
 }

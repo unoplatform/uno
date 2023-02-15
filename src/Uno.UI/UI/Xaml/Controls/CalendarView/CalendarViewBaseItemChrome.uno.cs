@@ -126,6 +126,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		object IBorderInfoProvider.BackgroundImage => default;
 
+#if __ANDROID__
+		Thickness IBorderInfoProvider.Padding => Padding;
+
+		bool IBorderInfoProvider.ShouldUpdateMeasures => false;
+#endif
+
 		private bool IsClear(Brush brush)
 			=> brush is null
 				|| brush.Opacity == 0

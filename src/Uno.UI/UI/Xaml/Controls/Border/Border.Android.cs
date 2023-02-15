@@ -1,5 +1,4 @@
-﻿#if XAMARIN
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -9,71 +8,35 @@ using Uno.Disposables;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-#if XAMARIN_ANDROID
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-using Android.Views;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-#else
-using Color = System.Drawing.Color;
-#endif
+namespace Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+public partial class Border
 {
-	public partial class Border
+	protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 	{
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
-		{
-			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
+		base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
-			UpdateBorder();
-		}
-
-		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
-		{
-			if (previousValue != null)
-			{
-				RemoveView(previousValue);
-			}
-
-			if (newValue != null)
-			{
-				AddView(newValue);
-			}
-		}
-
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
-		{
-			AdjustCornerRadius(canvas, CornerRadius);
-		}
-
-		private void UpdateBorder()
-		{
-			UpdateBorder(false);
-		}
-
-		private void UpdateBorder(bool willUpdateMeasures)
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.Update()
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					Padding,
-					willUpdateMeasures
-				);
-			}
-		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		UpdateBorder();
 	}
+
+	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
+	{
+		if (previousValue != null)
+		{
+			RemoveView(previousValue);
+		}
+
+		if (newValue != null)
+		{
+			AddView(newValue);
+		}
+	}
+
+	protected override void OnDraw(Android.Graphics.Canvas canvas)
+	{
+		AdjustCornerRadius(canvas, CornerRadius);
+	}
+
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 }
-#endif

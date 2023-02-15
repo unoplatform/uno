@@ -9,7 +9,7 @@ public partial class Page : IBorderInfoProvider
 {
 	Brush? IBorderInfoProvider.Background => Background;
 
-	BackgroundSizing IBorderInfoProvider.BackgroundSizing => InternalBackgroundSizing;
+	BackgroundSizing IBorderInfoProvider.BackgroundSizing => BackgroundSizing.InnerBorderEdge;
 
 	Brush? IBorderInfoProvider.BorderBrush => null;
 
@@ -18,4 +18,10 @@ public partial class Page : IBorderInfoProvider
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
 
 	object? IBorderInfoProvider.BackgroundImage => null;
+
+#if __ANDROID__
+	Thickness IBorderInfoProvider.Padding => Padding;
+
+	bool IBorderInfoProvider.ShouldUpdateMeasures => false;
+#endif
 }

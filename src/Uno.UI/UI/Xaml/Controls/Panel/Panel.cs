@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public UIElementCollection Children => _children;
 
-#region ChildrenTransitions Dependency Property
+		#region ChildrenTransitions Dependency Property
 
 		public TransitionCollection ChildrenTransitions
 		{
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
 		/// <summary>
 		/// This corresponds to WinUI's IOrientedPanel::get_PhysicalOrientation, but its overrides
@@ -146,7 +146,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal CornerRadius CornerRadiusInternal { get; set; }
 
-#region IsItemsHost DependencyProperty
+		#region IsItemsHost DependencyProperty
 		public static DependencyProperty IsItemsHostProperty { get; } = DependencyProperty.Register(
 			"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
 
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return (bool)this.GetValue(IsItemsHostProperty); }
 			private set { this.SetValue(IsItemsHostProperty, value); }
 		}
-#endregion
+		#endregion
 
 		private ManagedWeakReference _itemsOwnerRef;
 

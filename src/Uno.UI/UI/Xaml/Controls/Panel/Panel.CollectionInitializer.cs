@@ -23,7 +23,11 @@ partial class Panel
 	/// }
 	/// </summary>
 	/// <param name="view"></param>
-	public new void Add(View view)
+	public
+#if !__ANDROID__
+		new
+#endif
+		void Add(View view)
 	{
 		Children.Add(view);
 	}

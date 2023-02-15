@@ -15,7 +15,7 @@ public partial class FauxGradientBorderPresenter : ContentControl
 #if __WASM__ || __IOS__ || __MACOS__
 	private static readonly Dictionary<LinearGradientBrush, SolidColorBrush> _overlayBrushCache = new();
 
-	private readonly Border? _displayBorder = null;
+	private readonly Border? _displayBorder;
 #endif
 
 	public FauxGradientBorderPresenter()

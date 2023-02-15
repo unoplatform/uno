@@ -32,9 +32,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		private void SetUpdateTemplate()
+		partial void SetUpdateTemplatePartial()
 		{
-			UpdateContentTemplateRoot();
 			RequestLayout();
 		}
 

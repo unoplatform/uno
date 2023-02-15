@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
-			UpdateBorder(changed);
+			UpdateBorder();
 		}
 
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
@@ -65,10 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_transitionHelper?.LayoutUpdatedTransition();
 		}
 
-		public IEnumerator GetEnumerator()
-		{
-			return this.GetChildren().GetEnumerator();
-		}
+		public IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 

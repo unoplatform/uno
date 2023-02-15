@@ -7,14 +7,13 @@ using Uno.UI.DataBinding;
 using UIKit;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+public partial class Page
 {
-	public partial class Page
+	public override void LayoutSubviews()
 	{
-		public override void LayoutSubviews()
-		{
-			base.LayoutSubviews();
-			UpdateBorder();
-		}
+		base.LayoutSubviews();
+		UpdateBorder();
 	}
 }
