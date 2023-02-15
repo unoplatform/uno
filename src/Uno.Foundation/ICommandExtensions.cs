@@ -5,8 +5,8 @@ using Uno.Extensions;
 
 namespace Uno.Client
 {
-    internal static class ICommandExtensions
-    {
+	internal static class ICommandExtensions
+	{
 		/// <summary>
 		/// Executes the command if CanExecute returns true.
 		/// </summary>
