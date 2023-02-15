@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Documents
 							red: scb.Color.R,
 							green: scb.Color.G,
 							blue: scb.Color.B,
-							alpha: (byte)(scb.Color.A * compositor.CurrentOpacity));
+							alpha: (byte)(scb.Color.A * scb.Opacity * compositor.CurrentOpacity));
 					}
 
 					var decorations = segment.Inline.TextDecorations;
