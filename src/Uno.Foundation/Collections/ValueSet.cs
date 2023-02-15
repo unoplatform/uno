@@ -5,7 +5,7 @@ namespace Windows.Foundation.Collections;
 /// <summary>
 /// Implements a map with keys of type String and values of type Object.
 /// </summary>
-public sealed partial class ValuesSet :
+public sealed partial class ValueSet :
 	IDictionary<string, object>,
 	IEnumerable<KeyValuePair<string, object>>,
 	IObservableMap<string, object>,
@@ -16,7 +16,7 @@ public sealed partial class ValuesSet :
 	/// <summary>
 	/// Creates and initializes a new instance of the value set.
 	/// </summary>
-	public ValuesSet()
+	public ValueSet()
 	{
 	}
 
