@@ -65,39 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 			AdjustCornerRadius(canvas, CornerRadius);
 		}
 
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder(false);
-
-		private void UpdateBorder()
-		{
-			UpdateBorder(false);
-		}
-
-		private void UpdateBorder(bool willUpdateMeasures)
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					Padding,
-					willUpdateMeasures
-				);
-			}
-		}
-
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder(true);
-		}
-
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;

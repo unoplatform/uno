@@ -9,13 +9,6 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	/// <summary>
-	/// Declares a Content presenter
-	/// </summary>
-	/// <remarks>
-	/// The content presenter is used for compatibility with WPF concepts,
-	/// but the ContentSource property is not available, because there are ControlTemplates for now.
-	/// </remarks>
 	public partial class ContentPresenter
 	{
 		partial void SetUpdateTemplatePartial()

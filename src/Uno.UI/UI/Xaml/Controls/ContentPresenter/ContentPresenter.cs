@@ -39,6 +39,10 @@ using ViewGroup = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Displays the content of a ContentControl. Can also provide content presentation for non-controls.
+	/// Provides a base class for specialized presenters such as ScrollContentPresenter.
+	/// </summary>
 	[ContentProperty(Name = "Content")]
 	public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
