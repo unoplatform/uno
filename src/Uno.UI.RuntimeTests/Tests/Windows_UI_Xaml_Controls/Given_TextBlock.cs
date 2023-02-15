@@ -212,6 +212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
 		}
 
+#if !__WASN__ // RenderTargetBitmap not yet available on Wasm.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_SolidColorBrush_With_Opacity()
@@ -231,5 +232,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await RawBitmap.From(renderer, SUT);
 			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Color.FromArgb(127, 127, 0, 0));
 		}
+#endif
 	}
 }
